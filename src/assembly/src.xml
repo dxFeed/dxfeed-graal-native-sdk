@@ -1,0 +1,28 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 http://maven.apache.org/xsd/assembly-2.1.1.xsd">
+    <id>distribution</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/${native.image.path}</directory>
+            <includes>
+                <include>*.dylib</include>
+                <include>*.dll</include>
+                <include>*.so</include>
+                <include>*.h</include>
+            </includes>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/c-project</directory>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/c</directory>
+            <outputDirectory/>
+        </fileSet>
+    </fileSets>
+</assembly>

@@ -1,0 +1,30 @@
+[
+  {
+    "name" : "com.dxfeed.api.impl.DXFeedScheme",
+    "methods" : [
+      { "name" : "getInstance"}
+    ]
+  },
+  {
+    "name" : "com.devexperts.qd.spi.QDFilterFactory",
+    "methods" : [
+      { "name" : "combineFactories", "parameterTypes" : ["java.util.List"] }
+    ]
+  },
+  {
+    "name" : "com.devexperts.connector.proto.ApplicationConnectionFactory",
+    "methods" : [
+      { "name" : "getName"},
+      { "name" : "setName", "parameterTypes" : ["java.lang.String"] }
+    ]
+  },
+  {
+    "name" : "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+    "methods" : [
+      { "name" : "getUser"},
+      { "name" : "setUser", "parameterTypes" : ["java.lang.String"] },
+      { "name" : "getPassword"},
+      { "name" : "setPassword", "parameterTypes" : ["java.lang.String"] }
+    ]
+  }
+]
