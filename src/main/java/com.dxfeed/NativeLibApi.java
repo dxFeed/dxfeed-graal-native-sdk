@@ -2,10 +2,11 @@ package com.dxfeed;
 
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeedSubscription;
+import com.dxfeed.event.market.MarketEvent;
 import com.dxfeed.event.market.Quote;
+import com.dxfeed.event.market.TimeAndSale;
+import com.dxfeed.mapper.ListEventMapper;
 import com.oracle.svm.core.c.ProjectHeaderFile;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
@@ -15,17 +16,19 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
-import org.graalvm.nativeimage.c.struct.*;
+import org.graalvm.nativeimage.c.struct.CField;
+import org.graalvm.nativeimage.c.struct.CPointerTo;
+import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 import org.graalvm.word.PointerBase;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @CContext(NativeLibApi.NativeLibApiDirectives.class)
 public class NativeLibApi {
+    private static final ListEventMapper LIST_EVENT_MAPPER = new ListEventMapper();
+
     static class NativeLibApiDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
@@ -37,9 +40,8 @@ public class NativeLibApi {
         }
     }
 
-
     @CEnum("dxf_event_type_t")
-    enum EventsTypes {
+    public enum EventsTypes {
         DXF_EVENT_TYPE_QUOTE,
         DXF_EVENT_TYPE_TIME_AND_SALE,
         DXF_EVENT_TYPE_CANDLES;
@@ -55,7 +57,7 @@ public class NativeLibApi {
      * Base type of all events.
      */
     @CStruct("dxf_event_t")
-    interface EventNative extends PointerBase {
+    public interface EventNative extends PointerBase {
         @CField("event_type")
         int getEventType();
 
@@ -91,7 +93,7 @@ public class NativeLibApi {
      * The Quote.
      */
     @CStruct("dxf_event_quote_t")
-    interface QuoteNative extends EventNative {
+    public interface QuoteNative extends EventNative {
         @CField("bid_price")
         double getBidPrice();
 
@@ -109,7 +111,7 @@ public class NativeLibApi {
      * The TimeAndSale.
      */
     @CStruct("dxf_event_time_and_sale_t")
-    interface TimeAndSaleNative extends EventNative {
+    public interface TimeAndSaleNative extends EventNative {
         @CField("event_flag")
         int getEventFlag();
 
@@ -133,40 +135,27 @@ public class NativeLibApi {
         final IsolateThread ignoreIsolate,
         final EventListenerFunctionPtr listener
     ) {
-        DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
-            .withRole(DXEndpoint.Role.FEED)
-            .build()
-            .user("demo")
-            .password("demo");
-        DXFeedSubscription<Quote> subscription = dxEndpoint.getFeed().createSubscription(Quote.class);
+        final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+                .withRole(DXEndpoint.Role.FEED)
+                .build()
+                .user("demo")
+                .password("demo");
+
+        final DXFeedSubscription<MarketEvent> subscription = dxEndpoint.getFeed().createSubscription(
+                Quote.class, TimeAndSale.class
+        );
         dxEndpoint.connect("demo.dxfeed.com:7300");
 
-        subscription.addEventListener(quotes -> {
-            final EventNativePtr events = UnmanagedMemory.calloc(SizeOf.get(EventNativePtr.class) * quotes.size());
-            for (int i = 0; i < quotes.size(); i++) {
-                final QuoteNative quoteNative = UnmanagedMemory.calloc(SizeOf.get(QuoteNative.class));
-                quoteNative.setEventType(EventsTypes.DXF_EVENT_TYPE_QUOTE.getCValue());
-                quoteNative.setSymbolName(allocCString(quotes.get(i).getEventSymbol()));
-                quoteNative.setAskPrice(quotes.get(i).getAskPrice());
-                quoteNative.setBidPrice(quotes.get(i).getBidPrice());
-                events.addressOf(i).write(quoteNative);
+        subscription.addEventListener(qdEvents -> {
+            final EventNativePtr nativeEvents = LIST_EVENT_MAPPER.nativeObject(qdEvents);
+            try {
+                listener.invoke(nativeEvents, qdEvents.size());
+            } finally {
+                LIST_EVENT_MAPPER.delete(nativeEvents, qdEvents.size());
             }
-
-            listener.invoke(events, quotes.size());
-
-            UnmanagedMemory.free(events);
         });
 
         subscription.addSymbols(Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD"));
-    }
-
-    private static CCharPointer allocCString(final String string) {
-        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
-        final CCharPointer pointer = UnmanagedMemory.calloc(bytes.length + 1);
-        for (int i = 0; i < bytes.length; ++i) {
-            pointer.addressOf(i).write(bytes[i]);
-        }
-        return pointer;
     }
 
     /**
@@ -176,19 +165,6 @@ public class NativeLibApi {
      */
     @CEntryPoint(name = "native_test_api_create_isolate", builtin = CEntryPoint.Builtin.CREATE_ISOLATE)
     static native IsolateThread createIsolate();
-
-    /**
-     * Adds two integer numbers.
-     *
-     * @param thread The graalvm native thread.
-     * @param a      The first number.
-     * @param b      The seconds number.
-     * @return Returns sum of two numbers.
-     */
-    @CEntryPoint(name = "native_test_api_add")
-    static int add(final IsolateThread thread, final int a, final int b) {
-        return a + b;
-    }
 
     /**
      * Sets Java System Property as key-value pair.
