@@ -15,6 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <graalvm.version>22.1.0</graalvm.version>
         <native.image.path>native-image</native.image.path>
+        <native.image.name>libQdNativeApi</native.image.name>
     </properties>
 
     <dependencies>
@@ -61,6 +62,20 @@
       </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <native.image.name>QdNativeApi</native.image.name>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <extensions>
             <extension>
@@ -85,7 +100,7 @@
                 <configuration>
                     <skip>false</skip>
                     <mainClass>com.dxfeed.NativeLibMain</mainClass>
-                    <imageName>libGraalvmTestNative</imageName>
+                    <imageName>${native.image.name}</imageName>
                     <buildArgs>
                         <!-- NativeImage options links: -->
                         <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->

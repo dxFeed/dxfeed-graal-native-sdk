@@ -1,5 +1,5 @@
-#ifndef __GRAALVMTESTNATIVE_H
-#define __GRAALVMTESTNATIVE_H
+#ifndef __QDNATIVEAPI_H
+#define __QDNATIVEAPI_H
 
 #include <graal_isolate.h>
 
@@ -27,4 +27,4 @@ void vmLocatorSymbol(graal_isolatethread_t* thread);
 }
 #endif
 
-#endif // __GRAALVMTESTNATIVE_H
+#endif // __QDNATIVEAPI_H

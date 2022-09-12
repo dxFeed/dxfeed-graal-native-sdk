@@ -3,7 +3,7 @@
 #
 
 # Target
-set(target GraalvmTestNative)
+set(target QdNativeApi)
 
 # Print status
 message(STATUS "Imported lib ${target}")
