@@ -135,17 +135,13 @@ public class NativeLibApi {
         final IsolateThread ignoreIsolate,
         final EventListenerFunctionPtr listener
     ) {
+        final String token = System.getProperty("token");
         final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
                 .withRole(DXEndpoint.Role.FEED)
-                .build()
-                .user("demo")
-                .password("demo");
-
-        final DXFeedSubscription<MarketEvent> subscription = dxEndpoint.getFeed().createSubscription(
-                Quote.class, TimeAndSale.class
-        );
-        dxEndpoint.connect("demo.dxfeed.com:7300");
-
+                .withProperties(System.getProperties())
+                .build();
+        final DXFeedSubscription<MarketEvent> subscription = dxEndpoint.getFeed().createSubscription(Quote.class, TimeAndSale.class);
+        dxEndpoint.connect("lessona.dxfeed.com:7905[login=entitle:" + token + "]");
         subscription.addEventListener(qdEvents -> {
             final EventNativePtr nativeEvents = LIST_EVENT_MAPPER.nativeObject(qdEvents);
             try {
@@ -154,8 +150,7 @@ public class NativeLibApi {
                 LIST_EVENT_MAPPER.delete(nativeEvents, qdEvents.size());
             }
         });
-
-        subscription.addSymbols(Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD"));
+        subscription.addSymbols(Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD", "BTC/USDT:CXBINA"));
     }
 
     /**

@@ -23,6 +23,17 @@
             <artifactId>qds</artifactId>
             <version>3.312</version>
         </dependency>
+        <dependency>
+            <groupId>com.devexperts.mdd</groupId>
+            <artifactId>auther-api</artifactId>
+            <version>441</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.devexperts.qd</groupId>
+                    <artifactId>qds-monitoring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
@@ -43,6 +54,10 @@
         <id>qd</id>
         <name>Devexperts QD repository</name>
         <url>https://maven.in.devexperts.com/content/repositories/qd</url>
+      </repository>
+      <repository>
+        <id>mdd</id>
+        <url>https://maven.in.devexperts.com/content/repositories/mdd</url>
       </repository>
     </repositories>
 
@@ -80,7 +95,7 @@
                         <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                         <buildArg>-H:Path=${native.image.path}</buildArg>
                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/reflection-config.json</buildArg>
-                        <buildArg>-H:IncludeResources=META-INF/services/*.*</buildArg>
+                        <buildArg>-H:ResourceConfigurationFiles=${project.basedir}/resource-config.json</buildArg>
                     </buildArgs>
                 </configuration>
             </plugin>
