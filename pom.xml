@@ -30,7 +30,6 @@
             <version>${graalvm.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
@@ -48,6 +47,13 @@
     </repositories>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.0</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.graalvm.nativeimage</groupId>
@@ -83,7 +89,6 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.4.2</version>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/assembly/src.xml</descriptor>
                     </descriptors>
