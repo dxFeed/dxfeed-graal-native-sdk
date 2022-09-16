@@ -15,6 +15,10 @@
                 <include>*.h</include>
                 <include>*.lib</include>
             </includes>
+            <excludes>
+                <exclude>${native.image.name}.h</exclude>
+                <exclude>${native.image.name}_dynamic.h</exclude>
+            </excludes>
             <outputDirectory/>
         </fileSet>
         <fileSet>
