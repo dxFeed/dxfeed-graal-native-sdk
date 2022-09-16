@@ -13,6 +13,7 @@
                 <include>*.dll</include>
                 <include>*.so</include>
                 <include>*.h</include>
+                <include>*.lib</include>
             </includes>
             <outputDirectory/>
         </fileSet>
