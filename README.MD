@@ -16,6 +16,9 @@ jenv enable-plugin maven
 
 ### Installing
 
+https://www.graalvm.org/22.1/reference-manual/native-image/
+
+
 ```shell
 cd ~/Downloads
 curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-darwin-aarch64-22.1.0.tar.gz
@@ -28,6 +31,7 @@ java -version
 #openjdk version "11.0.15" 2022-04-19
 #OpenJDK Runtime Environment GraalVM CE 22.1.0 (build 11.0.15+10-jvmci-22.1-b06)
 #OpenJDK 64-Bit Server VM GraalVM CE 22.1.0 (build 11.0.15+10-jvmci-22.1-b06, mixed mode)
+xcode-select --install
 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home/bin/gu install native-image
 ```
 

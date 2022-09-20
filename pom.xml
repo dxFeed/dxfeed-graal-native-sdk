@@ -16,6 +16,7 @@
         <graalvm.version>22.1.0</graalvm.version>
         <native.image.path>native-image</native.image.path>
         <native.image.name>libQdNativeApi</native.image.name>
+        <set-rpath.skip>true</set-rpath.skip>
     </properties>
 
     <dependencies>
@@ -74,6 +75,17 @@
                 <native.image.name>QdNativeApi</native.image.name>
             </properties>
         </profile>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <set-rpath.skip>false</set-rpath.skip>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
@@ -99,7 +111,6 @@
                 </executions>
                 <configuration>
                     <skip>false</skip>
-                    <mainClass>com.dxfeed.NativeLibMain</mainClass>
                     <imageName>${native.image.name}</imageName>
                     <buildArgs>
                         <!-- NativeImage options links: -->
@@ -113,6 +124,31 @@
                         <buildArg>-H:ResourceConfigurationFiles=${project.basedir}/resource-config.json</buildArg>
                     </buildArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>set-rpath</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <skip>${set-rpath.skip}</skip>
+                            <executable>install_name_tool</executable>
+                            <arguments>
+                                <argument>-id</argument>
+                                <argument>@rpath/${native.image.name}.dylib</argument>
+                                <argument>
+                                    ${project.build.directory}/${native.image.path}/${native.image.name}.dylib
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

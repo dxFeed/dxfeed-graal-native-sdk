@@ -1,5 +1,3 @@
-package com.dxfeed;
-
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.event.market.MarketEvent;
