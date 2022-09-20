@@ -118,10 +118,10 @@
                         <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
                         <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
                         <buildArg>-H:+SharedLibrary</buildArg>
+                        <buildArg>-H:Name=${native.image.name}</buildArg>
                         <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                         <buildArg>-H:Path=${native.image.path}</buildArg>
-                        <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/reflection-config.json</buildArg>
-                        <buildArg>-H:ResourceConfigurationFiles=${project.basedir}/resource-config.json</buildArg>
+                        <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
                     </buildArgs>
                 </configuration>
             </plugin>
@@ -158,6 +158,14 @@
                     <descriptors>
                         <descriptor>src/assembly/src.xml</descriptor>
                     </descriptors>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
                 <executions>
                     <execution>

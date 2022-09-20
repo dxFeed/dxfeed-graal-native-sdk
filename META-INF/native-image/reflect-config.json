@@ -1,0 +1,141 @@
+[
+{
+  "name":"com.devexperts.connector.codec.delayed.DelayedCodecFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.connector.codec.shaped.ShapedCodecFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.connector.codec.ssl.SSLCodecFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.connector.proto.ApplicationConnectionFactory",
+  "methods":[
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"setName","parameterTypes":["java.lang.String"] }
+  ],
+  "queriedMethods":[{"name":"getChunkPool","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.logging.Log4j2Logging"
+},
+{
+  "name":"com.devexperts.logging.Log4jLogging"
+},
+{
+  "name":"com.devexperts.mdd.auth.entitle.EntitleLoginHandlerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.logger.LoggedQDFactory",
+  "methods":[{"name":"getInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
+  "methods":[{"name":"setFilter","parameterTypes":["java.lang.String"] }],
+  "queriedMethods":[{"name":"getFilter","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"setLogin","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.TapeConnectorFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.nio.NioConnectorFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.socket.ClientSocketConnector",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.devexperts.qd.qtp.socket.ClientSocketConnectorMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.devexperts.qd.spi.QDFilterFactory",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"combineFactories","parameterTypes":["java.util.List"] }]
+},
+{
+  "name":"com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.api.impl.DXFeedScheme",
+  "methods":[{"name":"getInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.api.impl.FilterFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.api.impl.HistorySubscriptionFilterImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.candle.CandleFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.market.MarketFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.misc.MiscFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.option.OptionFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.ipf.filter.IPFFilterFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.security.MessageDigestSpi"
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}]
+},
+{
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]
