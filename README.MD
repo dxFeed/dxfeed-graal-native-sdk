@@ -39,5 +39,19 @@ We use [teamcity](https://dxcity.in.devexperts.com/project/Eugenics_DxfeedGraalN
 1. The "deployment osx", "deployment windows", "deploy nuget" builds will start automatically, after which you can see the new artifacts in [artifactory](https://dxfeed.jfrog.io/ui/repos/tree/General/maven-open/com/dxfeed/graal-native-api). You can also see them in Jazz at the path: /Projects/mdd/DXFG/Release/.
 1. Additionally, you can build an artifact for another platform on your computer by checkout to the corresponding TAG and running mvn deploy before build "deploy nuget" (or run "deploy nuget" after).
 
+# IOS
+
+https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
+
+```shell
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home/bin/gu install llvm-toolchain
+```
+
+deploy
+
+```shell
+mvn -DmacIos=true deploy
+```
+
 # License
 MPL-2.0

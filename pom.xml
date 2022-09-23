@@ -84,27 +84,18 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <graalvm.version>22.1.0</graalvm.version>
     <native.image.path>native-image</native.image.path>
-    <native.image.name>DxFeedGraalNativeApi</native.image.name>
-    <final.native.image.name>${native.image.name}</final.native.image.name>
+    <native.image.name>libDxFeedGraalNativeApi</native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <install.dir>./target/install</install.dir>
     <deploy.dir />
-    <artifact.name>${project.name}-${os.arch}-${os.detected.name}.zip</artifact.name>
+    <arch.name>${os.arch}-${os.detected.name}</arch.name>
+    <artifact.name>${project.name}-${arch.name}.zip</artifact.name>
+    <macIos>false</macIos>
+    <notMacIos>true</notMacIos>
   </properties>
 
   <profiles>
-    <profile>
-      <id>linux</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <final.native.image.name>lib${native.image.name}</final.native.image.name>
-      </properties>
-    </profile>
     <profile>
       <id>mac</id>
       <activation>
@@ -114,8 +105,74 @@
       </activation>
       <properties>
         <set-rpath.skip>false</set-rpath.skip>
-        <final.native.image.name>lib${native.image.name}</final.native.image.name>
       </properties>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <native.image.name>DxFeedGraalNativeApi</native.image.name>
+      </properties>
+    </profile>
+    <profile>
+      <id>ios</id>
+      <activation>
+        <property>
+          <name>macIos</name>
+        </property>
+      </activation>
+      <properties>
+        <set-rpath.skip>true</set-rpath.skip>
+        <arch.name>aarch64-ios</arch.name>
+        <notMacIos>false</notMacIos>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.graalvm.nativeimage</groupId>
+            <artifactId>native-image-maven-plugin</artifactId>
+            <version>21.2.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>native-image</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <skip>false</skip>
+              <imageName>${native.image.name}</imageName>
+              <buildArgs>
+                <!-- NativeImage options links: -->
+                <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
+                <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
+                <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
+                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>-H:+SharedLibrary</buildArg>
+                <buildArg>-H:Name=${native.image.name}</buildArg>
+                <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
+                <buildArg>-H:Path=${native.image.path}</buildArg>
+                <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
+                <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl</buildArg>
+
+
+                <buildArg>--native-image-info</buildArg>
+                <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
+                <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
+                <buildArg>-H:PageSize=16384</buildArg>
+                <buildArg>-Dsvm.targetName=iOS</buildArg>
+                <buildArg>-Dsvm.targetArch=arm64</buildArg>
+                <buildArg>-Dsvm.platform=org.graalvm.nativeimage.Platform$IOS_AARCH64</buildArg>
+              </buildArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
@@ -142,7 +199,7 @@
         </executions>
         <configuration>
           <skip>false</skip>
-          <imageName>${final.native.image.name}</imageName>
+          <imageName>${native.image.name}</imageName>
           <buildArgs>
             <!-- NativeImage options links: -->
             <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
@@ -150,7 +207,7 @@
             <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
             <buildArg>--enable-url-protocols=http,https</buildArg>
             <buildArg>-H:+SharedLibrary</buildArg>
-            <buildArg>-H:Name=${final.native.image.name}</buildArg>
+            <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
             <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
@@ -174,11 +231,41 @@
               <executable>install_name_tool</executable>
               <arguments>
                 <argument>-id</argument>
-                <argument>@rpath/${final.native.image.name}.dylib</argument>
+                <argument>@rpath/${native.image.name}.dylib</argument>
                 <argument>
-                  ${project.build.directory}/${native.image.path}/${final.native.image.name}.dylib
+                  ${project.build.directory}/${native.image.path}/${native.image.name}.dylib
                 </argument>
               </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>copy-ios-lib</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${notMacIos}</skip>
+              <target>
+                <copy todir="${project.build.directory}/${native.image.path}">
+                  <fileset dir="${project.build.directory}/tmp_IOS">
+                    <include name="**/*.o" />
+                  </fileset>
+                  <mapper type="flatten" />
+                </copy>
+                <copy todir="${project.build.directory}/${native.image.path}">
+                  <fileset dir="${project.basedir}/jre-ios">
+                    <include name="**/*.a" />
+                  </fileset>
+                  <mapper type="flatten" />
+                </copy>
+              </target>
             </configuration>
           </execution>
         </executions>

@@ -8,7 +8,7 @@
   </servers>
   <profiles>
     <profile>
-      <id>linux</id>
+      <id>linux-agent</id>
       <activation>
         <os>
           <family>unix</family>
@@ -19,7 +19,7 @@
       </properties>
     </profile>
     <profile>
-      <id>mac</id>
+      <id>mac-agent</id>
       <activation>
         <os>
           <family>mac</family>
@@ -30,7 +30,7 @@
       </properties>
     </profile>
     <profile>
-      <id>windows</id>
+      <id>windows-agent</id>
       <activation>
         <os>
           <family>windows</family>
