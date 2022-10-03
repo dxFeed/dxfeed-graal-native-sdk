@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.devexperts.qd</groupId>
-    <artifactId>native-lib</artifactId>
+    <artifactId>dxfeed-graal-native-api</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <graalvm.version>22.1.0</graalvm.version>
         <native.image.path>native-image</native.image.path>
-        <native.image.name>libQdNativeApi</native.image.name>
+        <native.image.name>libGraalNativeApi</native.image.name>
         <set-rpath.skip>true</set-rpath.skip>
     </properties>
 
@@ -72,7 +72,7 @@
                 </os>
             </activation>
             <properties>
-                <native.image.name>QdNativeApi</native.image.name>
+                <native.image.name>GraalNativeApi</native.image.name>
             </properties>
         </profile>
         <profile>

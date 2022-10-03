@@ -3,7 +3,7 @@
 #
 
 # Target
-set(target QdNativeApi)
+set(target GraalNativeApi)
 
 # Print status
 message(STATUS "Imported lib ${target}")
