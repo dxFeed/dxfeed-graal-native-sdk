@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 package com.dxfeed;
 
 import com.dxfeed.api.DXEndpoint;

@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: MPL-2.0
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.OS_NAME }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            OS_NAME: amd64-linux
+          - os: windows-latest
+            OS_NAME: amd64-windows
+          - os: macos-latest
+            OS_NAME: x86_64-osx
+    # Uncomment for enable self-hosted runner on MAC M1.
+    #     - os: [self-hosted, macOS, ARM64]
+    #       OS_NAME: arm64-osx
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: "22.1.0"
+          java-version: "11"
+          components: "native-image"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: |
+          mvn clean package
+
+      - name: Extract Maven project name and version
+        id: project
+        run: |
+          echo "::set-output name=name::$(mvn help:evaluate -Dexpression="project.name" -q -DforceStdout)"
+          echo "::set-output name=version::$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}
+          path: |
+            target/${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}-dir/
+
+      - name: Release
+        if: startsWith(github.event.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            target/${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}

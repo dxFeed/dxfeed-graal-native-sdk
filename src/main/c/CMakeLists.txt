@@ -1,6 +1,8 @@
-#
-# Library name and options
-#
+# SPDX-License-Identifier: MPL-2.0
+
+project(GraalNativeApi)
+
+cmake_minimum_required(VERSION 3.10)
 
 # Target
 set(target GraalNativeApi)
@@ -31,7 +33,7 @@ elseif (APPLE)
 elseif (UNIX)
     set(lib_prefix "lib")
     set(lib_extension "so")
-else()
+else ()
     message(ERROR "Unknown platform!")
 endif ()
 

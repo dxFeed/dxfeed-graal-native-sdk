@@ -7,7 +7,7 @@ Version JDK 11:  26 Apr 2022 vm-22.1.0 3f79371
 
 ### Prepare
 
-We recommend using the tool [jenv](https://github.com/jenv/jenv) to switch between JDKs.
+We recommend using the tool [jenv](https://github.com/jenv/jenv) or [sdkman](https://sdkman.io/) to switch between JDKs.
 
 ```shell
 brew install jenv
@@ -61,3 +61,6 @@ $JAVA_HOME/bin/java -Dtoken=<TOKEN> -agentlib:native-image-agent=config-output-d
 
 
 ```
+
+# License
+MPL-2.0
