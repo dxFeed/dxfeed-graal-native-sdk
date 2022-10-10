@@ -30,7 +30,9 @@ public class ErrorNative {
         DX_EC_UNKNOWN_ERR,
         DX_EC_NULL_POINTER_EX,
         DX_EC_ILLEGAL_ARGUMENT_EX,
-        DX_EC_SECURITY_EX;
+        DX_EC_SECURITY_EX,
+        DX_EC_ILLEGAL_STATE_EX,
+        DX_EC_UNKNOWN_DESCRIPTOR;
 
         @CEnumValue
         public native int getCValue();

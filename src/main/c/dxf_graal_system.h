@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+
 #ifndef DXFEED_GRAAL_NATIVE_API_SYSTEM_H_
 #define DXFEED_GRAAL_NATIVE_API_SYSTEM_H_
 

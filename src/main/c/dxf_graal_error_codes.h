@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+
 #ifndef DXFEED_GRAAL_NATIVE_API_ERROR_CODES_H_
 #define DXFEED_GRAAL_NATIVE_API_ERROR_CODES_H_
 
@@ -23,6 +24,10 @@ typedef enum dxf_graal_error_code_t {
     DX_EC_ILLEGAL_ARGUMENT_EX,
     /// Represents security exception.
     DX_EC_SECURITY_EX,
+    /// Represents IllegalStateException.
+    DX_EC_ILLEGAL_STATE_EX,
+    /// An unknown descriptor was passed.
+    DX_EC_UNKNOWN_DESCRIPTOR,
 } dxf_graal_error_code_t;
 
 /**

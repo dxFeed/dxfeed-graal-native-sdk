@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+
 #ifndef __GRAAL_ISOLATE_H
 #define __GRAAL_ISOLATE_H
 
