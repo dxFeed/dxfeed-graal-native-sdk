@@ -16,7 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <graalvm.version>22.1.0</graalvm.version>
         <native.image.path>native-image</native.image.path>
-        <native.image.name>libGraalNativeApi</native.image.name>
+        <native.image.name>libDxFeedGraalNativeApi</native.image.name>
         <set-rpath.skip>true</set-rpath.skip>
     </properties>
 

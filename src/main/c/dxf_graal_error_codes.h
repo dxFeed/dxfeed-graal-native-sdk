@@ -14,19 +14,33 @@ extern "C" {
  * @brief List of error codes.
  */
 typedef enum dxf_graal_error_code_t {
-    /// OK.
+    /**
+     * @brief OK.
+     */
     DX_EC_SUCCESS = 0,
-    /// Shouldn't happen.
+    /**
+     * @brief Shouldn't happen.
+     */
     DX_EC_UNKNOWN_ERR,
-    /// Represents NPE exception.
+    /**
+     * @brief Represents NullPointerException.
+     */
     DX_EC_NULL_POINTER_EX,
-    /// Represents illegal argument exception.
+    /**
+     * @brief Represents IllegalArgumentException.
+     */
     DX_EC_ILLEGAL_ARGUMENT_EX,
-    /// Represents security exception.
+    /**
+     * @brief Represents SecurityException.
+     */
     DX_EC_SECURITY_EX,
-    /// Represents IllegalStateException.
+    /**
+     * @brief Represents IllegalStateException.
+     */
     DX_EC_ILLEGAL_STATE_EX,
-    /// An unknown descriptor was passed.
+    /**
+     * @brief An unknown descriptor was passed.
+     */
     DX_EC_UNKNOWN_DESCRIPTOR,
 } dxf_graal_error_code_t;
 

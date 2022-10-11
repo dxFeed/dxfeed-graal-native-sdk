@@ -19,12 +19,14 @@ public final class SystemNative {
     static class SystemNativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
-            /*
-             * The header file with the C declarations that are imported. We use a helper class that
-             * locates the file in our project structure.
-             */
-            return Collections.singletonList(ProjectHeaderFile.resolve("com.dxfeed", "src/main/c/dxf_graal_system.h"));
+            return Collections.singletonList(ProjectHeaderFile.resolve(
+                    "com.dxfeed",
+                    "src/main/c/dxf_graal_system.h"));
         }
+    }
+
+    private SystemNative() {
+        throw new IllegalStateException("Native class");
     }
 
     @CEntryPoint(name = "dxf_graal_system_set_property")

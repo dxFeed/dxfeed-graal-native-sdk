@@ -16,19 +16,27 @@ import java.util.Collections;
 import java.util.List;
 
 @CContext(UtilsNative.UtilsNativeDirectives.class)
-
 public class UtilsNative {
     static class UtilsNativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
-            /*
-             * The header file with the C declarations that are imported. We use a helper class that
-             * locates the file in our project structure.
-             */
-            return Collections.singletonList(ProjectHeaderFile.resolve("com.dxfeed", "src/main/c/dxf_graal_utils.h"));
+            return Collections.singletonList(ProjectHeaderFile.resolve(
+                    "com.dxfeed",
+                    "src/main/c/dxf_graal_utils.h"));
         }
     }
 
+    private UtilsNative() {
+        throw new IllegalStateException("Native class");
+    }
+
+    /**
+     * Creates a null-terminated C-string in UTF-8 format from Java string.
+     * The created string must be freed by {@link UnmanagedMemory#free(PointerBase) UnmanagedMemory.free}.
+     *
+     * @param string The Java string.
+     * @return Returns unmanaged pointer to C-string in UTF-8 format or null pointer if Java string is null.
+     */
     public static CCharPointer createCString(String string) {
         if (string == null) {
             return WordFactory.nullPointer();

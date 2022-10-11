@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: MPL-2.0
 
-project(GraalNativeApi)
-
 cmake_minimum_required(VERSION 3.10)
 
 # Target
-set(target GraalNativeApi)
+set(target DxFeedGraalNativeApi)
+
+# Set project
+project(${target})
 
 # Print status
 message(STATUS "Imported lib ${target}")

@@ -28,30 +28,36 @@ public class EndpointNative {
     static class EndpointNativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
-            return Collections.singletonList(ProjectHeaderFile.resolve("com.dxfeed", "src/main/c/dxf_graal_endpoint.h"));
+            return Collections.singletonList(ProjectHeaderFile.resolve(
+                    "com.dxfeed",
+                    "src/main/c/dxf_graal_endpoint.h"));
         }
     }
 
-    @CEnum("dxf_graal_error_code_t")
-    public enum EndpointState {
-        DXF_ENDPOINT_NOT_CONNECTED,
-        DXF_ENDPOINT_CONNECTING,
-        DXF_ENDPOINT_CONNECTED,
-        DXF_ENDPOINT_CLOSED,
-        DXF_ENDPOINT_UNKNOWN;
+    private EndpointNative() {
+        throw new IllegalStateException("Native class");
+    }
 
-        public static EndpointState fromDxEndpointState(DXEndpoint.State state) {
+    @CEnum("dxf_graal_endpoint_state_t")
+    public enum EndpointStateNative {
+        DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED,
+        DXF_GRAAL_ENDPOINT_STATE_CONNECTING,
+        DXF_GRAAL_ENDPOINT_STATE_CONNECTED,
+        DXF_GRAAL_ENDPOINT_STATE_CLOSED,
+        DXF_GRAAL_ENDPOINT_STATE_UNKNOWN;
+
+        public static EndpointStateNative fromDxEndpointState(DXEndpoint.State state) {
             switch (state) {
                 case NOT_CONNECTED:
-                    return EndpointState.DXF_ENDPOINT_NOT_CONNECTED;
+                    return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED;
                 case CONNECTING:
-                    return EndpointState.DXF_ENDPOINT_CONNECTING;
+                    return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_CONNECTING;
                 case CONNECTED:
-                    return EndpointState.DXF_ENDPOINT_CONNECTED;
+                    return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_CONNECTED;
                 case CLOSED:
-                    return EndpointState.DXF_ENDPOINT_CLOSED;
+                    return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_CLOSED;
                 default:
-                    return EndpointState.DXF_ENDPOINT_UNKNOWN;
+                    return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_UNKNOWN;
             }
         }
 
@@ -59,16 +65,16 @@ public class EndpointNative {
         public native int getCValue();
 
         @CEnumLookup
-        public static native EndpointState fromCValue(int value);
+        public static native EndpointStateNative fromCValue(int value);
     }
 
     interface StateChangeListenerPtr extends CFunctionPointer {
         @InvokeCFunctionPointer
-        void invoke(EndpointState oldState, EndpointState newState);
+        void invoke(EndpointStateNative oldState, EndpointStateNative newState);
     }
 
-    @CEntryPoint(name = "dxf_endpoint_create")
-    public static ErrorCodes endpointCreate(IsolateThread ignoredThread, CLongPointer endpointDesc) {
+    @CEntryPoint(name = "dxf_graal_endpoint_create")
+    public static ErrorCodes create(IsolateThread ignoredThread, CLongPointer endpointDesc) {
         if (endpointDesc.isNull()) {
             return ErrorCodes.DX_EC_NULL_POINTER_EX;
         }
@@ -86,12 +92,22 @@ public class EndpointNative {
         }
     }
 
-    @CEntryPoint(name = "dxf_endpoint_connect")
-    public static ErrorCodes endpointConnect(IsolateThread ignoredThread, long endpointDesc, CCharPointer address) {
+    @CEntryPoint(name = "dxf_graal_endpoint_close")
+    public static ErrorCodes close(IsolateThread ignoredThread, long endpointDesc) {
+        var endpoint = getEndpointByDescriptor(endpointDesc);
+        if (endpoint == null) {
+            return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
+        }
+        endpoint.close();
+        return ErrorCodes.DX_EC_SUCCESS;
+    }
+
+    @CEntryPoint(name = "dxf_graal_endpoint_connect")
+    public static ErrorCodes connect(IsolateThread ignoredThread, long endpointDesc, CCharPointer address) {
         if (address.isNull()) {
             return ErrorCodes.DX_EC_NULL_POINTER_EX;
         }
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
             return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
         }
@@ -103,9 +119,9 @@ public class EndpointNative {
         }
     }
 
-    @CEntryPoint(name = "dxf_endpoint_reconnect")
-    public static ErrorCodes endpointReconnect(IsolateThread ignoredThread, long endpointDesc) {
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+    @CEntryPoint(name = "dxf_graal_endpoint_reconnect")
+    public static ErrorCodes reconnect(IsolateThread ignoredThread, long endpointDesc) {
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
             return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
         }
@@ -113,9 +129,9 @@ public class EndpointNative {
         return ErrorCodes.DX_EC_SUCCESS;
     }
 
-    @CEntryPoint(name = "dxf_endpoint_disconnect")
-    public static ErrorCodes endpointDisconnect(IsolateThread ignoredThread, long endpointDesc) {
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+    @CEntryPoint(name = "dxf_graal_endpoint_disconnect")
+    public static ErrorCodes disconnect(IsolateThread ignoredThread, long endpointDesc) {
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
             return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
         }
@@ -123,50 +139,42 @@ public class EndpointNative {
         return ErrorCodes.DX_EC_SUCCESS;
     }
 
-    @CEntryPoint(name = "dxf_endpoint_close")
-    public static ErrorCodes endpointClose(IsolateThread ignoredThread, long endpointDesc) {
-        var endpoint = ENDPOINT_MAP.remove(endpointDesc);
+    @CEntryPoint(name = "dxf_graal_endpoint_get_state")
+    public static EndpointStateNative getState(IsolateThread ignoredThread, long endpointDesc) {
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
-            return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
+            return EndpointStateNative.DXF_GRAAL_ENDPOINT_STATE_UNKNOWN;
         }
-        endpoint.close();
-        return ErrorCodes.DX_EC_SUCCESS;
+        return EndpointStateNative.fromDxEndpointState(endpoint.getState());
     }
 
-    @CEntryPoint(name = "dxf_endpoint_get_state")
-    public static EndpointState endpointGetState(IsolateThread ignoredThread, long endpointDesc) {
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
-        if (endpoint == null) {
-            return EndpointState.DXF_ENDPOINT_UNKNOWN;
-        }
-        return EndpointState.fromDxEndpointState(endpoint.getState());
-    }
-
-    @CEntryPoint(name = "dxf_endpoint_add_state_change_listener")
-    public static ErrorCodes endpointAddStateChangeListener(IsolateThread ignoredThread, long endpointDesc, StateChangeListenerPtr listenerPtr) {
+    @CEntryPoint(name = "dxf_graal_endpoint_add_state_change_listener")
+    public static ErrorCodes addStateChangeListener(IsolateThread ignoredThread,
+                                                    long endpointDesc, StateChangeListenerPtr listenerPtr) {
         if (listenerPtr.isNull()) {
             return ErrorCodes.DX_EC_NULL_POINTER_EX;
         }
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
             return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
         }
         if (!STATE_CHANGE_LISTENER_MAP.containsKey(listenerPtr.rawValue())) {
             PropertyChangeListener listener = e -> listenerPtr.invoke(
-                    EndpointState.fromDxEndpointState((DXEndpoint.State) e.getOldValue()),
-                    EndpointState.fromDxEndpointState((DXEndpoint.State) e.getNewValue()));
+                    EndpointStateNative.fromDxEndpointState((DXEndpoint.State) e.getOldValue()),
+                    EndpointStateNative.fromDxEndpointState((DXEndpoint.State) e.getNewValue()));
             endpoint.addStateChangeListener(listener);
             STATE_CHANGE_LISTENER_MAP.put(listenerPtr.rawValue(), listener);
         }
         return ErrorCodes.DX_EC_SUCCESS;
     }
 
-    @CEntryPoint(name = "dxf_endpoint_remove_state_change_listener")
-    public static ErrorCodes endpointRemoveStateChangeListener(IsolateThread ignoredThread, long endpointDesc, StateChangeListenerPtr listenerPtr) {
+    @CEntryPoint(name = "dxf_graal_endpoint_remove_state_change_listener")
+    public static ErrorCodes removeStateChangeListener(IsolateThread ignoredThread,
+                                                       long endpointDesc, StateChangeListenerPtr listenerPtr) {
         if (listenerPtr.isNull()) {
             return ErrorCodes.DX_EC_NULL_POINTER_EX;
         }
-        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+        var endpoint = getEndpointByDescriptor(endpointDesc);
         if (endpoint == null) {
             return ErrorCodes.DX_EC_UNKNOWN_DESCRIPTOR;
         }
@@ -175,6 +183,16 @@ public class EndpointNative {
             endpoint.removeStateChangeListener(listener);
         }
         return ErrorCodes.DX_EC_SUCCESS;
+    }
+
+    /**
+     * Gets endpoint object from endpoint map by descriptor.
+     *
+     * @param endpointDesc The descriptor.
+     * @return Returns DXEndpoint or null if this descriptor not exist.
+     */
+    public static DXEndpoint getEndpointByDescriptor(long endpointDesc) {
+        return ENDPOINT_MAP.get(endpointDesc);
     }
 
     /**

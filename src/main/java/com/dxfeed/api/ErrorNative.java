@@ -16,12 +16,14 @@ public class ErrorNative {
     static class ErrorNativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
-            /*
-             * The header file with the C declarations that are imported. We use a helper class that
-             * locates the file in our project structure.
-             */
-            return Collections.singletonList(ProjectHeaderFile.resolve("com.dxfeed", "src/main/c/dxf_graal_error_codes.h"));
+            return Collections.singletonList(ProjectHeaderFile.resolve(
+                    "com.dxfeed",
+                    "src/main/c/dxf_graal_error_codes.h"));
         }
+    }
+
+    private ErrorNative() {
+        throw new IllegalStateException("Native class");
     }
 
     @CEnum("dxf_graal_error_code_t")
