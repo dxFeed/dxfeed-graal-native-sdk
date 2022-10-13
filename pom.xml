@@ -16,7 +16,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <graalvm.version>22.1.0</graalvm.version>
         <native.image.path>native-image</native.image.path>
-        <native.image.name>libDxFeedGraalNativeApi</native.image.name>
+        <native.image.name>DxFeedGraalNativeApi</native.image.name>
+        <final.native.image.name>${native.image.name}</final.native.image.name>
         <set-rpath.skip>true</set-rpath.skip>
     </properties>
 
@@ -62,17 +63,6 @@
 
     <profiles>
         <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <native.image.name>GraalNativeApi</native.image.name>
-            </properties>
-        </profile>
-        <profile>
             <id>mac</id>
             <activation>
                 <os>
@@ -81,6 +71,19 @@
             </activation>
             <properties>
                 <set-rpath.skip>false</set-rpath.skip>
+                <final.native.image.name>lib${native.image.name}</final.native.image.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                </os>
+            </activation>
+            <properties>
+                <final.native.image.name>lib${native.image.name}</final.native.image.name>
             </properties>
         </profile>
     </profiles>
@@ -108,14 +111,14 @@
                 </executions>
                 <configuration>
                     <skip>false</skip>
-                    <imageName>${native.image.name}</imageName>
+                    <imageName>${final.native.image.name}</imageName>
                     <buildArgs>
                         <!-- NativeImage options links: -->
                         <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
                         <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
                         <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
                         <buildArg>-H:+SharedLibrary</buildArg>
-                        <buildArg>-H:Name=${native.image.name}</buildArg>
+                        <buildArg>-H:Name=${final.native.image.name}</buildArg>
                         <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                         <buildArg>-H:Path=${native.image.path}</buildArg>
                         <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
@@ -138,9 +141,9 @@
                             <executable>install_name_tool</executable>
                             <arguments>
                                 <argument>-id</argument>
-                                <argument>@rpath/${native.image.name}.dylib</argument>
+                                <argument>@rpath/${final.native.image.name}.dylib</argument>
                                 <argument>
-                                    ${project.build.directory}/${native.image.path}/${native.image.name}.dylib
+                                    ${project.build.directory}/${native.image.path}/${final.native.image.name}.dylib
                                 </argument>
                             </arguments>
                         </configuration>

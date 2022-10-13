@@ -14,9 +14,9 @@ import static com.dxfeed.api.ErrorNative.ErrorCodes;
 
 import java.util.*;
 
-@CContext(SystemNative.SystemNativeDirectives.class)
+@CContext(SystemNative.NativeDirectives.class)
 public final class SystemNative {
-    static class SystemNativeDirectives implements CContext.Directives {
+    public static class NativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
@@ -30,7 +30,7 @@ public final class SystemNative {
     }
 
     @CEntryPoint(name = "dxf_graal_system_set_property")
-    static ErrorCodes setSystemProperty(IsolateThread ignoredThread, CCharPointer key, CCharPointer value) {
+    private static ErrorCodes setSystemProperty(IsolateThread ignoredThread, CCharPointer key, CCharPointer value) {
         try {
             System.setProperty(CTypeConversion.toJavaString(key), CTypeConversion.toJavaString(value));
             return ErrorCodes.DX_EC_SUCCESS;
@@ -46,7 +46,7 @@ public final class SystemNative {
     }
 
     @CEntryPoint(name = "dxf_graal_system_get_property")
-    static CCharPointer getSystemProperty(IsolateThread ignoredThread, CCharPointer key) {
+    private static CCharPointer getSystemProperty(IsolateThread ignoredThread, CCharPointer key) {
         try {
             return UtilsNative.createCString(System.getProperty(CTypeConversion.toJavaString(key)));
         } catch (Exception e) {

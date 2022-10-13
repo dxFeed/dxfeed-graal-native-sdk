@@ -11,9 +11,9 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 import java.util.Collections;
 import java.util.List;
 
-@CContext(ErrorNative.ErrorNativeDirectives.class)
-public class ErrorNative {
-    static class ErrorNativeDirectives implements CContext.Directives {
+@CContext(ErrorNative.NativeDirectives.class)
+public final class ErrorNative {
+    public static class NativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(

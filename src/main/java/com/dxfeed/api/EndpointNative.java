@@ -20,12 +20,12 @@ import static com.dxfeed.api.ErrorNative.ErrorCodes;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
-@CContext(EndpointNative.EndpointNativeDirectives.class)
+@CContext(EndpointNative.NativeDirectives.class)
 public class EndpointNative {
     private static final HashMap<Long, DXEndpoint> ENDPOINT_MAP = new HashMap<>();
     private static final HashMap<Long, PropertyChangeListener> STATE_CHANGE_LISTENER_MAP = new HashMap<>();
 
-    static class EndpointNativeDirectives implements CContext.Directives {
+    static class NativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
@@ -193,6 +193,17 @@ public class EndpointNative {
      */
     public static DXEndpoint getEndpointByDescriptor(long endpointDesc) {
         return ENDPOINT_MAP.get(endpointDesc);
+    }
+
+    /**
+     * Gets feed object from endpoint map by descriptor.
+     *
+     * @param endpointDesc The descriptor.
+     * @return Returns DXFeed or null if this descriptor not exist.
+     */
+    public static DXFeed getFeedByDescriptor(long endpointDesc) {
+        var endpoint = ENDPOINT_MAP.get(endpointDesc);
+        return endpoint != null ? endpoint.getFeed() : null;
     }
 
     /**

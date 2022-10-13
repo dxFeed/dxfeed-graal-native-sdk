@@ -16,7 +16,7 @@ extern "C" {
 /**
  * @brief Frees pointer that was previously allocated in Java method (by UnmanagedMemory).
  * @param[in] thread The pointer to the runtime data structure for a thread.
- * @param[in] ptr The pointer to release. Pointer not valid after function call. Pointer can be nullptr.
+ * @param[in] ptr The pointer to release. Pointer not valid after function call. Pointer can be NULL.
  */
 void dxf_graal_utils_free(graal_isolatethread_t *thread, void *ptr);
 

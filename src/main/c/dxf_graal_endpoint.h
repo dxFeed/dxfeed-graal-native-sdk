@@ -32,10 +32,10 @@ typedef enum dxf_graal_endpoint_state_t {
     /**
      * @brief Endpoint was created by is not connected to remote endpoints.
      */
-    DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED,
+    DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED = 0,
 
     /**
-     * @brief The dxf_graal_endpoint_connect method was called to establish connection to remove endpoint,
+     * @brief The dxf_graal_endpoint_connect() method was called to establish connection to remove endpoint,
      * but connection is not actually established yet or was lost.
      */
     DXF_GRAAL_ENDPOINT_STATE_CONNECTING,
@@ -46,7 +46,7 @@ typedef enum dxf_graal_endpoint_state_t {
     DXF_GRAAL_ENDPOINT_STATE_CONNECTED,
 
     /**
-     * @brief Endpoint was dxf_graal_endpoint_close closed.
+     * @brief Endpoint was dxf_graal_endpoint_close() closed.
      */
     DXF_GRAAL_ENDPOINT_STATE_CLOSED,
     /**
@@ -56,7 +56,7 @@ typedef enum dxf_graal_endpoint_state_t {
 } dxf_graal_endpoint_state_t;
 
 /**
- * @brief Change endpoint state listener.
+ * @brief Endpoint state change listener.
  */
 typedef void (*dxf_graal_endpoint_on_changing_state)(dxf_graal_endpoint_state_t old_state,
                                                      dxf_graal_endpoint_state_t new_state);
@@ -64,7 +64,7 @@ typedef void (*dxf_graal_endpoint_on_changing_state)(dxf_graal_endpoint_state_t 
 /**
  * @brief Creates new dxf_graal_endpoint_t instance.
  * dxf_graal_endpoint_t is used for connect/disconnect from remote hosts, receive instances of other classes.
- * The created endpoint should be closed with dxf_graal_endpoint_close.
+ * The created endpoint should be closed with dxf_graal_endpoint_close().
  * @param[in]  thread The pointer to the runtime data structure for a thread.
  * @param[out] endpoint The created endpoint.
  * @return 0 - if the operation was successful; otherwise, an error code.
@@ -74,11 +74,11 @@ ERROR_CODE dxf_graal_endpoint_create(graal_isolatethread_t *thread, dxf_graal_en
 /**
  * @brief Closes this endpoint.
  * All network connection are terminated as with disconnect method and no further connections can be established.
- * The endpoint state immediately becomes DXF_GRAAL_ENDPOINT_STATE_CLOSED. All resources associated with this endpoint are
- * released. Once closed, the dxf_graal_endpoint_t descriptor cannot be used in other functions. Removes all internal
- * ref to DXEndpoint.
+ * The endpoint state immediately becomes DXF_GRAAL_ENDPOINT_STATE_CLOSED. All resources associated with this endpoint
+ * are released. Once closed, the dxf_graal_endpoint_t descriptor cannot be used in other functions.
+ * Removes all internal ref to DXEndpoint.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxf_graal_endpoint_close(graal_isolatethread_t *thread, dxf_graal_endpoint_t endpoint);
@@ -98,10 +98,10 @@ ERROR_CODE dxf_graal_endpoint_close(graal_isolatethread_t *thread, dxf_graal_end
  * @note This method does not wait until connection actually gets established.
  * The actual connection establishment happens asynchronously after the invocation of this method.
  * However, this method waits until notification about state transition
- * from DXF_GRAAL_ENDPOIN_STATE_T_NOT_CONNECTED to DXF_GRAAL_ENDPOINT_STATE_CONNECTING gets processed
+ * from DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED to DXF_GRAAL_ENDPOINT_STATE_CONNECTING gets processed
  * by all listeners that were installed via dxf_graal_endpoint_add_state_change_listener() method.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @param[in] address  The address string.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
@@ -110,15 +110,16 @@ ERROR_CODE dxf_graal_endpoint_connect(graal_isolatethread_t *thread, dxf_graal_e
 
 /**
  * @brief Terminates all established network connections and initiates connecting again with the same address.
- * The effect of the method is alike to invoking dxf_graal_endpoint_disconnect
- * and dxf_graal_ndpoint_connect with the current address,
+ * The effect of the method is alike to invoking dxf_graal_endpoint_disconnect()
+ * and dxf_graal_endpoint_connect() with the current address,
  * but internal resources used for connections may be reused by implementation.
  * @note The method will not connect endpoint that was not initially connected
- * with dxf_graal_endpoint_connect method or was disconnected with dxf_graal_endpoint_disconnect() method.
+ * with dxf_graal_endpoint_connect() method or was disconnected with dxf_graal_endpoint_disconnect() method.
  * The method initiates a short-path way for reconnecting, so whether observers
- * will have a chance to see an intermediate state DXF_GRAAL_ENDPOIN_STATE_T_NOT_CONNECTED depends on the implementation.
+ * will have a chance to see an intermediate state
+ * DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED depends on the implementation.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxf_graal_endpoint_reconnect(graal_isolatethread_t *thread, dxf_graal_endpoint_t endpoint);
@@ -126,11 +127,11 @@ ERROR_CODE dxf_graal_endpoint_reconnect(graal_isolatethread_t *thread, dxf_graal
 /**
  * @brief Terminates all remote network connections.
  * This method does nothing if this endpoint is DXF_GRAAL_ENDPOINT_STATE_CLOSED.
- * The endpoint state immediately becomes DXF_GRAAL_ENDPOIN_STATE_T_NOT_CONNECTED otherwise.
+ * The endpoint state immediately becomes DXF_GRAAL_ENDPOINT_STATE_NOT_CONNECTED otherwise.
  * This method does not release all resources that are associated with this endpoint.
  * Use dxf_graal_endpoint_close() method to release all resources.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxf_graal_endpoint_disconnect(graal_isolatethread_t *thread, dxf_graal_endpoint_t endpoint);
@@ -138,16 +139,17 @@ ERROR_CODE dxf_graal_endpoint_disconnect(graal_isolatethread_t *thread, dxf_graa
 /**
  * @brief Returns the state of this endpoint.
  * @param[in] thread The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
- * @return The endpoint state.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
+ * @return The endpoint state. State may be DXF_GRAAL_ENDPOINT_STATE_UNKNOWN if descriptor not exist
+ * or Java implementation returns unknown state.
  */
 dxf_graal_endpoint_state_t dxf_graal_endpoint_get_state(graal_isolatethread_t *thread, dxf_graal_endpoint_t endpoint);
 
 /**
  * @brief Adds listener that is notified about changes in state connections.
- * Installed listener can be removed with dxf_graal_endpoint_remove_state_change_listener method.
+ * Installed listener can be removed with dxf_graal_endpoint_remove_state_change_listener() method.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @param[in] listener The listener to add.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
@@ -156,9 +158,9 @@ ERROR_CODE dxf_graal_endpoint_add_state_change_listener(graal_isolatethread_t *t
 
 /**
  * @brief Removes listener that is notified about changes in state property.
- * It removes the listener that was previously installed with dxf_graal_endpoint_add_state_change_listener method
+ * It removes the listener that was previously installed with dxf_graal_endpoint_add_state_change_listener() method.
  * @param[in] thread  The pointer to the runtime data structure for a thread.
- * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create.
+ * @param[in] endpoint The descriptor that was created by dxf_graal_endpoint_create().
  * @param[in] listener The listener to remove.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */

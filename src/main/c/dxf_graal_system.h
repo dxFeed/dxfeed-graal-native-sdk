@@ -25,11 +25,11 @@ ERROR_CODE dxf_graal_system_set_property(graal_isolatethread_t *thread, const ch
 
 /**
  * @brief Gets the system property indicated by the specified key.
- * @warning Return value must be free by dxf_graal_utils_free(graal_isolatethread_t *, void *).
+ * @warning Return value must be free by dxf_graal_utils_free().
  * @param[in] thread The pointer to the runtime data structure for a thread.
  * @param[in] key The name of the system property.
- * @return The string value of the system property, or null if there is no property with that key.
- * Don't forget to delete with dxf_graal_utils_free(graal_isolatethread_t *, void *).
+ * @return The string value of the system property, or null if there is no property with that key or error occur.
+ * Don't forget to delete with dxf_graal_utils_free().
  */
 const char *dxf_graal_system_get_property(graal_isolatethread_t *thread, const char *key);
 
