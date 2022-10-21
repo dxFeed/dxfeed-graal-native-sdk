@@ -28,7 +28,7 @@ public final class EndpointNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_endpoint.h"));
+                    "src/main/c/api/dxfg_endpoint.h"));
         }
     }
 
@@ -104,6 +104,24 @@ public final class EndpointNative {
         return ErrorCodes.DXFG_EC_SUCCESS;
     }
 
+    @CEntryPoint(name = "dxfg_endpoint_close_and_await_termination")
+    private static ErrorCodes closeAndAwaitTermination(IsolateThread ignoredThread, long endpointDescriptor) {
+        var endpoint = removeEndpointFromMap(endpointDescriptor);
+        if (endpoint == null) {
+            return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
+        }
+        try {
+            endpoint.awaitProcessed();
+            endpoint.closeAndAwaitTermination();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ErrorCodes.DXFG_EC_INTERRUPTED_EX;
+        } catch (Exception e) {
+            return ErrorCodes.DXFG_EC_UNKNOWN_ERR;
+        }
+        return ErrorCodes.DXFG_EC_SUCCESS;
+    }
+
     @CEntryPoint(name = "dxfg_endpoint_connect")
     private static ErrorCodes connect(IsolateThread ignoredThread, long endpointDescriptor, CCharPointer address) {
         if (address.isNull()) {
@@ -138,6 +156,23 @@ public final class EndpointNative {
             return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
         }
         endpoint.disconnect();
+        return ErrorCodes.DXFG_EC_SUCCESS;
+    }
+
+    @CEntryPoint(name = "dxfg_endpoint_await_not_connected")
+    private static ErrorCodes awaitNotConnected(IsolateThread ignoredThread, long endpointDescriptor) {
+        var endpoint = getEndpointByDescriptor(endpointDescriptor);
+        if (endpoint == null) {
+            return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
+        }
+        try {
+            endpoint.awaitNotConnected();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ErrorCodes.DXFG_EC_INTERRUPTED_EX;
+        } catch (Exception e) {
+            return ErrorCodes.DXFG_EC_UNKNOWN_ERR;
+        }
         return ErrorCodes.DXFG_EC_SUCCESS;
     }
 

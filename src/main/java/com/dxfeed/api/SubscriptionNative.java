@@ -2,6 +2,8 @@
 
 package com.dxfeed.api;
 
+import com.dxfeed.api.events.BaseSymbol;
+import com.dxfeed.api.events.BaseSymbol.BaseSymbolPtr;
 import com.dxfeed.api.events.EventTypesNative;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.market.ListEventMapper;
@@ -26,7 +28,7 @@ public class SubscriptionNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_subscription.h"));
+                    "src/main/c/api/dxfg_subscription.h"));
         }
     }
 
@@ -115,25 +117,25 @@ public class SubscriptionNative {
     }
 
     @CEntryPoint(name = "dxfg_sub_add_symbol")
-    public static ErrorCodes addSymbol(IsolateThread ignoreThread, long subscriptionDescriptor, CCharPointer symbol) {
+    public static ErrorCodes addSymbol(IsolateThread ignoreThread, long subscriptionDescriptor, BaseSymbol symbol) {
         var sub = getSubscriptionByDescriptor(subscriptionDescriptor);
         if (sub == null) {
             return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
         }
-        sub.addSymbols(CTypeConversion.toJavaString(symbol));
+        sub.addSymbols(CTypeConversion.toJavaString(symbol.getSymbolName()));
         return ErrorCodes.DXFG_EC_SUCCESS;
     }
 
     @CEntryPoint(name = "dxfg_sub_add_symbols")
     public static ErrorCodes addSymbols(IsolateThread ignoreThread,
-                                        long subscriptionDescriptor, CCharPointerPointer symbols, int symbolsSize) {
+                                        long subscriptionDescriptor, BaseSymbolPtr symbols, int symbolsSize) {
         var sub = getSubscriptionByDescriptor(subscriptionDescriptor);
         if (sub == null) {
             return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
         }
         var listSymbols = new ArrayList<String>();
         for (int i = 0; i < symbolsSize; ++i) {
-            listSymbols.add(CTypeConversion.toJavaString(symbols.read(i)));
+            listSymbols.add(CTypeConversion.toJavaString(symbols.addressOf(i).read().getSymbolName()));
         }
         sub.addSymbols(listSymbols);
         return ErrorCodes.DXFG_EC_SUCCESS;
@@ -141,25 +143,25 @@ public class SubscriptionNative {
 
     @CEntryPoint(name = "dxfg_sub_remove_symbol")
     public static ErrorCodes removeSymbol(IsolateThread ignoreThread,
-                                          long subscriptionDescriptor, CCharPointer symbol) {
+                                          long subscriptionDescriptor, BaseSymbol symbol) {
         var sub = getSubscriptionByDescriptor(subscriptionDescriptor);
         if (sub == null) {
             return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
         }
-        sub.removeSymbols(CTypeConversion.toJavaString(symbol));
+        sub.removeSymbols(CTypeConversion.toJavaString(symbol.getSymbolName()));
         return ErrorCodes.DXFG_EC_SUCCESS;
     }
 
     @CEntryPoint(name = "dxfg_sub_remove_symbols")
     public static ErrorCodes removeSymbols(IsolateThread ignoreThread,
-                                           long subscriptionDescriptor, CCharPointerPointer symbols, int symbolSize) {
+                                           long subscriptionDescriptor, BaseSymbolPtr symbols, int symbolSize) {
         var sub = getSubscriptionByDescriptor(subscriptionDescriptor);
         if (sub == null) {
             return ErrorCodes.DXFG_EC_UNKNOWN_DESCRIPTOR;
         }
         var listSymbols = new ArrayList<String>();
         for (int i = 0; i < symbolSize; ++i) {
-            listSymbols.add(CTypeConversion.toJavaString(symbols.read(i)));
+            listSymbols.add(CTypeConversion.toJavaString(symbols.addressOf(i).read().getSymbolName()));
         }
         sub.removeSymbols(listSymbols);
         return ErrorCodes.DXFG_EC_SUCCESS;

@@ -21,7 +21,7 @@ public final class SystemNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_system.h"));
+                    "src/main/c/api/dxfg_system.h"));
         }
     }
 

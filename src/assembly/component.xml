@@ -17,7 +17,7 @@
             <outputDirectory/>
         </fileSet>
         <fileSet>
-            <directory>${project.basedir}/src/main/c</directory>
+            <directory>${project.basedir}/src/main/c/api</directory>
             <excludes>
                 <exclude>.idea/**</exclude>
                 <exclude>cmake-**/**</exclude>

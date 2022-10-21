@@ -64,8 +64,7 @@ typedef enum dxfg_endpoint_state_t {
  * @brief Endpoint state change listener.
  * (<a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>)
  */
-typedef void (*dxfg_endpoint_on_change_state)(dxfg_endpoint_state_t old_state,
-                                                     dxfg_endpoint_state_t new_state);
+typedef void (*dxfg_endpoint_on_change_state)(dxfg_endpoint_state_t old_state, dxfg_endpoint_state_t new_state);
 
 /**
  * @brief Creates new dxfg_endpoint_t instance.
@@ -92,6 +91,23 @@ ERROR_CODE dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *
 ERROR_CODE dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint);
 
 /**
+ * @brief Closes this endpoint and wait until all pending data processing tasks are completed.
+ * This method performs the same actions as close dxfg_endpoint_close(),
+ * but also awaits termination of all outstanding data processing tasks.
+ * It is designed to be used with STREAM_FEED role after dxfg_endpoint_await_not_connected()
+ * method returns to make sure that file was completely processed.
+ * Removes all internal ref to DXEndpoint.
+ * This method is blocking. When using a single-threaded executor with endpoint,
+ * don't invoke this method from the executor thread — it will wait forever,
+ * blocking the same thread that is needed to complete the action that is being waited for.
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#closeAndAwaitTermination--">Javadoc</a>)
+ * @param[in] thread  The pointer to the runtime data structure for a thread.
+ * @param[in] endpoint The descriptor that was created by dxfg_endpoint_create().
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+ERROR_CODE dxfg_endpoint_close_and_await_termination(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint);
+
+/**
  * @brief Connects to the specified remote address.
  * Previously established connections are closed if the new address is different from the old one.
  * This method does nothing if address does not change or if this endpoint is DXFG_ENDPOINT_STATE_CLOSED.
@@ -114,8 +130,7 @@ ERROR_CODE dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t en
  * @param[in] address  The address string.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_endpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint,
-                                      const char *address);
+ERROR_CODE dxfg_endpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint, const char *address);
 
 /**
  * @brief Terminates all established network connections and initiates connecting again with the same address.
@@ -146,6 +161,22 @@ ERROR_CODE dxfg_endpoint_reconnect(graal_isolatethread_t *thread, dxfg_endpoint_
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxfg_endpoint_disconnect(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint);
+
+/**
+ * @brief Waits while this endpoint state becomes DXFG_ENDPOINT_STATE_NOT_CONNECTED or DXFG_ENDPOINT_STATE_CLOSED.
+ * It is a signal that any files that were opened with dxfg_endpoint_connect("file:...") method were finished reading,
+ * but not necessary were completely processed by the corresponding subscription listeners.
+ * Use dxfg_endpoint_close_and_await_termination()
+ * after this method returns to make sure that all processing has completed.
+ * This method is blocking. When using a single-threaded executor with endpoint,
+ * don't invoke this method from the executor thread — it will wait forever,
+ * blocking the same thread that is needed to complete the action that is being waited for.
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#awaitNotConnected--">Javadoc</a>)
+ * @param[in] thread  The pointer to the runtime data structure for a thread.
+ * @param[in] endpoint The descriptor that was created by dxfg_endpoint_create().
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+ERROR_CODE dxfg_endpoint_await_not_connected(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint);
 
 /**
  * @brief Terminates all remote network connections and clears stored data.
@@ -180,7 +211,7 @@ dxfg_endpoint_state_t dxfg_endpoint_get_state(graal_isolatethread_t *thread, dxf
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint,
-                                                        dxfg_endpoint_on_change_state listener);
+                                                   dxfg_endpoint_on_change_state listener);
 
 /**
  * @brief Removes listener that is notified about changes in state property.
@@ -192,7 +223,7 @@ ERROR_CODE dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxfg_endpoint_remove_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint,
-                                                           dxfg_endpoint_on_change_state listener);
+                                                      dxfg_endpoint_on_change_state listener);
 
 /** @} */ // end of Endpoint
 

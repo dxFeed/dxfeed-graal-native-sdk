@@ -57,6 +57,13 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.devexperts.qd.qtp.file.FileConnector",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"getMethods","parameterTypes":[] },
+    {"name":"setSpeed","parameterTypes":["double"] }]
+},
+{
   "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },

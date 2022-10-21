@@ -18,7 +18,7 @@ public interface QuoteNative extends BaseEventNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_events.h"));
+                    "src/main/c/api/dxfg_events.h"));
         }
     }
 

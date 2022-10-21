@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
+
 name: Build
 
 on:
@@ -21,7 +22,7 @@ jobs:
             OS_NAME: x86_64-osx
     # Uncomment for enable self-hosted runner on MAC M1.
     #     - os: [self-hosted, macOS, ARM64]
-    #       OS_NAME: arm64-osx
+    #       OS_NAME: aarch64-osx
 
     steps:
       - uses: actions/checkout@v3
@@ -32,22 +33,38 @@ jobs:
           components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build API library
         run: |
           mvn clean package
+        shell: bash
 
-      - name: Extract Maven project name and version
+      - name: Build API samples
+        run: |
+          cd src/main/c
+          cmake --preset="conf-release" -DCMAKE_BUILD_TYPE=Release .
+          cmake --build --preset="build-release" --config=Release
+          cmake --install build/conf-release --config=Release --strip --component=runtime
+        shell: bash
+
+      - name: Extract API project name and version
         id: project
         run: |
           echo "::set-output name=name::$(mvn help:evaluate -Dexpression="project.name" -q -DforceStdout)"
           echo "::set-output name=version::$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)"
 
-      - name: Upload artifact
+      - name: Upload API library
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}
           path: |
             target/${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}-dir/
+
+      - name: Upload API samples
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.project.outputs.name }}-samples-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}
+          path: |
+            src/main/c/install/
 
       - name: Release
         if: startsWith(github.event.ref, 'refs/tags/v')

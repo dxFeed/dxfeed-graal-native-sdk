@@ -1,0 +1,82 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "cmake-pedantic",
+      "hidden": true,
+      "description": "Pedantic settings for cmake",
+      "warnings": {
+        "dev": true,
+        "deprecated": true,
+        "uninitialized": true,
+        "unusedCli": true,
+        "systemVars": false
+      },
+      "errors": {
+        "dev": true,
+        "deprecated": true
+      }
+    },
+    {
+      "name": "conf-common",
+      "hidden": true,
+      "description": "General settings that apply to all configurations",
+      "inherits": [
+        "cmake-pedantic"
+      ],
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_ENABLE_EXPORTS": "TRUE",
+        "SKIP_TESTS": {
+          "type": "BOOL",
+          "value": "FALSE"
+        }
+      }
+    },
+    {
+      "name": "language-std",
+      "hidden": true,
+      "description": "This preset makes sure the project actually builds with at least the specified standard",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "14",
+        "CMAKE_C_STANDARD": "11",
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF"
+      }
+    },
+    {
+      "name": "conf-release",
+      "description": "Release preset",
+      "inherits": [
+        "conf-common",
+        "language-std"
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "conf-debug",
+      "description": "Debug preset",
+      "inherits": [
+        "conf-common",
+        "language-std"
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-release",
+      "configurePreset": "conf-release"
+    },
+    {
+      "name": "build-debug",
+      "configurePreset": "conf-debug"
+    }
+  ]
+}

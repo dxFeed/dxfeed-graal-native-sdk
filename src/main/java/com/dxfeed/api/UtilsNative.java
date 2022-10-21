@@ -21,7 +21,7 @@ public final class UtilsNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_utils.h"));
+                    "src/main/c/api/dxfg_utils.h"));
         }
     }
 

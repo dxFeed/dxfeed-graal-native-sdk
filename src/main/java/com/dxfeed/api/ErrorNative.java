@@ -17,7 +17,7 @@ public final class ErrorNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_error_codes.h"));
+                    "src/main/c/api/dxfg_error_codes.h"));
         }
     }
 
@@ -33,6 +33,7 @@ public final class ErrorNative {
         DXFG_EC_ILLEGAL_ARGUMENT_EX,
         DXFG_EC_SECURITY_EX,
         DXFG_EC_ILLEGAL_STATE_EX,
+        DXFG_EC_INTERRUPTED_EX,
         DXFG_EC_UNKNOWN_DESCRIPTOR;
 
         @CEnumValue

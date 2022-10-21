@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
+import org.graalvm.nativeimage.c.struct.CPointerTo;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
@@ -17,7 +18,7 @@ public interface BaseSymbol extends PointerBase {
     public List<String> getHeaderFiles() {
       return Collections.singletonList(ProjectHeaderFile.resolve(
           "com.dxfeed",
-          "src/main/c/dxfg_events.h"));
+          "src/main/c/api/dxfg_events.h"));
     }
   }
 
@@ -26,4 +27,13 @@ public interface BaseSymbol extends PointerBase {
 
   @CField("symbol_name")
   void setSymbolName(CCharPointer symbolName);
+
+  @CPointerTo(BaseSymbol.class)
+  public interface BaseSymbolPtr extends PointerBase {
+    BaseSymbolPtr addressOf(int index);
+
+    BaseSymbol read();
+
+    void write(BaseSymbol data);
+  }
 }

@@ -39,6 +39,10 @@ typedef enum dxfg_error_code_t {
      */
     DXFG_EC_ILLEGAL_STATE_EX,
     /**
+     * @brief Represents InterruptedException.
+     */
+    DXFG_EC_INTERRUPTED_EX,
+    /**
      * @brief An unknown descriptor was passed.
      */
     DXFG_EC_UNKNOWN_DESCRIPTOR,

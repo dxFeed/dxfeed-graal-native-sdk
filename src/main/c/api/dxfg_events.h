@@ -21,20 +21,20 @@ typedef enum dxfg_event_type_t {
 /**
  * @brief Side of an order or a trade.
  */
-typedef enum dxfg_event_side {
+typedef enum dxfg_event_side_t {
+    /**
+     * @brief Side is undefined, unknown or inapplicable.
+     */
+    DXFG_EVENT_SIDE_UNDEFINED = 0,
     /**
      * @brief Buy side (bid).
      */
-    DXFG_EVENT_SIDE_BUY = 0,
+    DXFG_EVENT_SIDE_BUY,
     /**
      * @brief Sell side (ask or offer).
      */
     DXFG_EVENT_SIDE_SELL,
-    /**
-     * @brief Side is undefined, unknown or inapplicable.
-     */
-    DXFG_EVENT_SIDE_UNDEFINED,
-} dxfg_event_side;
+} dxfg_event_side_t;
 
 typedef struct dxfg_symbol_t {
     const char *symbol_name;
@@ -104,14 +104,14 @@ typedef struct dxfg_symbol_candle_t {
 typedef struct dxfg_event_t {
     dxfg_event_type_t event_type;
     int64_t event_time;
-    dxfg_symbol_t *symbol;
+    const dxfg_symbol_t *symbol;
 } dxfg_event_t;
 
 /**
  * @brief Represents Quote market event.
  */
 typedef struct dxfg_event_quote_t {
-    dxfg_event_t event;
+    dxfg_event_t base_event;
     int32_t time_millis_sequence;
     int32_t time_nano_part;
     int64_t bid_time;
@@ -150,7 +150,7 @@ typedef enum dxfg_event_time_and_sale_type_t {
  * @brief Represents TimeAndSale market event.
  */
 typedef struct dxfg_event_time_and_sale_t {
-    dxfg_event_t event;
+    dxfg_event_t base_event;
     int32_t event_flags;
     int64_t index;
     int32_t time_nano_part;

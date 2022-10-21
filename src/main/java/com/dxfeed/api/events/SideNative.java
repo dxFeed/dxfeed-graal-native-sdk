@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @CContext(SideNative.NativeDirectives.class)
-@CEnum("dxfg_event_side")
+@CEnum("dxfg_event_side_t")
 public enum SideNative {
     DXFG_EVENT_SIDE_UNDEFINED,
     DXFG_EVENT_SIDE_BUY,
@@ -24,7 +24,7 @@ public enum SideNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxfg_events.h"));
+                    "src/main/c/api/dxfg_events.h"));
         }
     }
 

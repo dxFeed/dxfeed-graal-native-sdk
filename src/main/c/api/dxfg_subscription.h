@@ -45,7 +45,7 @@ typedef void (*dxfg_sub_event_listener)(const dxfg_event_t **events, int32_t siz
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxfg_sub_create_from_endpoint(graal_isolatethread_t *thread, dxfg_endpoint_t endpoint,
-                                              dxfg_event_type_t *eventTypes, int32_t size, dxfg_sub_t *sub);
+                                         dxfg_event_type_t *eventTypes, int32_t size, dxfg_sub_t *sub);
 
 /**
  * @brief Clears the set of subscribed symbols and closes this subscription.
@@ -66,8 +66,7 @@ ERROR_CODE dxfg_sub_close(graal_isolatethread_t *thread, dxfg_sub_t sub);
  * @param[in] listener The event listener.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_sub_add_event_listener(graal_isolatethread_t *thread, dxfg_sub_t sub,
-                                            dxfg_sub_event_listener listener);
+ERROR_CODE dxfg_sub_add_event_listener(graal_isolatethread_t *thread, dxfg_sub_t sub, dxfg_sub_event_listener listener);
 
 /**
  * @brief Removes listener for events.
@@ -77,7 +76,7 @@ ERROR_CODE dxfg_sub_add_event_listener(graal_isolatethread_t *thread, dxfg_sub_t
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 ERROR_CODE dxfg_sub_remove_event_listener(graal_isolatethread_t *thread, dxfg_sub_t sub,
-                                               dxfg_sub_event_listener listener);
+                                          dxfg_sub_event_listener listener);
 
 /**
  * @brief Add the specified symbol to the set of subscribed symbols.
@@ -96,8 +95,8 @@ ERROR_CODE dxfg_sub_add_symbol(graal_isolatethread_t *thread, dxfg_sub_t sub, dx
  * @param[in] size The count of symbols to add.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_sub_add_symbols(graal_isolatethread_t *thread, dxfg_sub_t sub, dxfg_symbol_t **symbol,
-                                     int32_t size);
+ERROR_CODE dxfg_sub_add_symbols(graal_isolatethread_t *thread, dxfg_sub_t sub, const dxfg_symbol_t **symbol,
+                                int32_t size);
 
 /**
  * @brief Removes the specified symbol from the set of subscribed symbols.
@@ -106,7 +105,7 @@ ERROR_CODE dxfg_sub_add_symbols(graal_isolatethread_t *thread, dxfg_sub_t sub, d
  * @param[in] symbol The symbol to remove.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_sub_remove_symbol(graal_isolatethread_t *thread, dxfg_sub_t sub, dxfg_symbol_t *symbol);
+ERROR_CODE dxfg_sub_remove_symbol(graal_isolatethread_t *thread, dxfg_sub_t sub, const dxfg_symbol_t *symbol);
 
 /**
  * @brief Removes the specified array of symbols from the set of subscribed symbols
@@ -116,8 +115,8 @@ ERROR_CODE dxfg_sub_remove_symbol(graal_isolatethread_t *thread, dxfg_sub_t sub,
  * @param[in] size The count of remove symbols.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_sub_remove_symbols(graal_isolatethread_t *thread, dxfg_sub_t sub, dxfg_symbol_t *symbol,
-                                        int32_t size);
+ERROR_CODE dxfg_sub_remove_symbols(graal_isolatethread_t *thread, dxfg_sub_t sub, const dxfg_symbol_t **symbol,
+                                   int32_t size);
 
 /**
  * @brief Clears the set of subscribed symbols.
