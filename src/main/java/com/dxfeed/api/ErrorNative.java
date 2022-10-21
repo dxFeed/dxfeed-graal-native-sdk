@@ -8,8 +8,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @CContext(ErrorNative.NativeDirectives.class)
 public final class ErrorNative {
@@ -18,7 +17,7 @@ public final class ErrorNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxf_graal_error_codes.h"));
+                    "src/main/c/dxfg_error_codes.h"));
         }
     }
 
@@ -26,15 +25,15 @@ public final class ErrorNative {
         throw new IllegalStateException("Native class");
     }
 
-    @CEnum("dxf_graal_error_code_t")
+    @CEnum("dxfg_error_code_t")
     public enum ErrorCodes {
-        DX_EC_SUCCESS,
-        DX_EC_UNKNOWN_ERR,
-        DX_EC_NULL_POINTER_EX,
-        DX_EC_ILLEGAL_ARGUMENT_EX,
-        DX_EC_SECURITY_EX,
-        DX_EC_ILLEGAL_STATE_EX,
-        DX_EC_UNKNOWN_DESCRIPTOR;
+        DXFG_EC_SUCCESS,
+        DXFG_EC_UNKNOWN_ERR,
+        DXFG_EC_NULL_POINTER_EX,
+        DXFG_EC_ILLEGAL_ARGUMENT_EX,
+        DXFG_EC_SECURITY_EX,
+        DXFG_EC_ILLEGAL_STATE_EX,
+        DXFG_EC_UNKNOWN_DESCRIPTOR;
 
         @CEnumValue
         public native int getCValue();

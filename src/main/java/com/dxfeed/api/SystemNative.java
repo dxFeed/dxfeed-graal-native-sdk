@@ -21,7 +21,7 @@ public final class SystemNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxf_graal_system.h"));
+                    "src/main/c/dxfg_system.h"));
         }
     }
 
@@ -29,23 +29,23 @@ public final class SystemNative {
         throw new IllegalStateException("Native class");
     }
 
-    @CEntryPoint(name = "dxf_graal_system_set_property")
+    @CEntryPoint(name = "dxfg_system_set_property")
     private static ErrorCodes setSystemProperty(IsolateThread ignoredThread, CCharPointer key, CCharPointer value) {
         try {
             System.setProperty(CTypeConversion.toJavaString(key), CTypeConversion.toJavaString(value));
-            return ErrorCodes.DX_EC_SUCCESS;
+            return ErrorCodes.DXFG_EC_SUCCESS;
         } catch (NullPointerException e) {
-            return ErrorCodes.DX_EC_NULL_POINTER_EX;
+            return ErrorCodes.DXFG_EC_NULL_POINTER_EX;
         } catch (IllegalArgumentException e) {
-            return ErrorCodes.DX_EC_ILLEGAL_ARGUMENT_EX;
+            return ErrorCodes.DXFG_EC_ILLEGAL_ARGUMENT_EX;
         } catch (SecurityException e) {
-            return ErrorCodes.DX_EC_SECURITY_EX;
+            return ErrorCodes.DXFG_EC_SECURITY_EX;
         } catch (Exception e) {
-            return ErrorCodes.DX_EC_UNKNOWN_ERR;
+            return ErrorCodes.DXFG_EC_UNKNOWN_ERR;
         }
     }
 
-    @CEntryPoint(name = "dxf_graal_system_get_property")
+    @CEntryPoint(name = "dxfg_system_get_property")
     private static CCharPointer getSystemProperty(IsolateThread ignoredThread, CCharPointer key) {
         try {
             return UtilsNative.createCString(System.getProperty(CTypeConversion.toJavaString(key)));

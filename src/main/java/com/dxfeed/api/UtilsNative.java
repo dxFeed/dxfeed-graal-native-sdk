@@ -21,7 +21,7 @@ public final class UtilsNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxf_graal_utils.h"));
+                    "src/main/c/dxfg_utils.h"));
         }
     }
 
@@ -29,7 +29,7 @@ public final class UtilsNative {
         throw new IllegalStateException("Native class");
     }
 
-    @CEntryPoint(name = "dxf_graal_utils_free")
+    @CEntryPoint(name = "dxfg_utils_free")
     private static void free(IsolateThread ignoredThread, PointerBase pointer) {
         if (pointer.isNonNull()) {
             UnmanagedMemory.free(pointer);
@@ -39,7 +39,7 @@ public final class UtilsNative {
     /**
      * Creates a null-terminated C-string in UTF-8 format from Java string.
      * The created string must be freed by {@link UnmanagedMemory#free(PointerBase) UnmanagedMemory.free}.
-     * The native code frees this string with dxf_graal_utils_free().
+     * The native code frees this string with dxfg_utils_free().
      *
      * @param string The Java string.
      * @return Returns unmanaged pointer to C-string in UTF-8 format or null pointer if Java string is null.
@@ -48,6 +48,7 @@ public final class UtilsNative {
         if (string == null) {
             return WordFactory.nullPointer();
         }
+        // ToDo: Avoid creating a byte array, use the previously allocated one instead.
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         // Alloc +1 byte for null-terminate.
         CCharPointer pointer = UnmanagedMemory.malloc(bytes.length + 1);

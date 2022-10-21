@@ -13,41 +13,41 @@ extern "C" {
 /**
  * @brief List of error codes.
  */
-typedef enum dxf_graal_error_code_t {
+typedef enum dxfg_error_code_t {
     /**
      * @brief OK.
      */
-    DX_EC_SUCCESS = 0,
+    DXFG_EC_SUCCESS = 0,
     /**
      * @brief Shouldn't happen.
      */
-    DX_EC_UNKNOWN_ERR,
+    DXFG_EC_UNKNOWN_ERR,
     /**
      * @brief Represents NullPointerException.
      */
-    DX_EC_NULL_POINTER_EX,
+    DXFG_EC_NULL_POINTER_EX,
     /**
      * @brief Represents IllegalArgumentException.
      */
-    DX_EC_ILLEGAL_ARGUMENT_EX,
+    DXFG_EC_ILLEGAL_ARGUMENT_EX,
     /**
      * @brief Represents SecurityException.
      */
-    DX_EC_SECURITY_EX,
+    DXFG_EC_SECURITY_EX,
     /**
      * @brief Represents IllegalStateException.
      */
-    DX_EC_ILLEGAL_STATE_EX,
+    DXFG_EC_ILLEGAL_STATE_EX,
     /**
      * @brief An unknown descriptor was passed.
      */
-    DX_EC_UNKNOWN_DESCRIPTOR,
-} dxf_graal_error_code_t;
+    DXFG_EC_UNKNOWN_DESCRIPTOR,
+} dxfg_error_code_t;
 
 /**
  * @brief Represents the error code.
  */
-typedef dxf_graal_error_code_t ERROR_CODE;
+typedef dxfg_error_code_t ERROR_CODE;
 
 #ifdef __cplusplus
 }

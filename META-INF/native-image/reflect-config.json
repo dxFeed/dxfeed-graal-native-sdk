@@ -35,7 +35,8 @@
 },
 {
   "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
-  "queryAllPublicMethods":true
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getFieldReplacer","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
@@ -45,7 +46,11 @@
 {
   "name":"com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
   "queryAllPublicMethods":true,
-  "methods":[{"name":"setLogin","parameterTypes":["java.lang.String"] }]
+  "methods":[
+    {"name":"setLogin","parameterTypes":["java.lang.String"] },
+    {"name":"getUser","parameterTypes":[] },
+    {"name":"getPassword","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",

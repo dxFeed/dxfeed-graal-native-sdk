@@ -117,6 +117,7 @@
                         <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
                         <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
                         <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
+                        <buildArg>--enable-url-protocols=http,https</buildArg>
                         <buildArg>-H:+SharedLibrary</buildArg>
                         <buildArg>-H:Name=${final.native.image.name}</buildArg>
                         <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>

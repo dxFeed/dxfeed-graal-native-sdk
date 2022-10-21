@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.mapper;
+package com.dxfeed.event.market;
 
 import org.graalvm.word.PointerBase;
 

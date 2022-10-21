@@ -19,11 +19,11 @@ public class EventNative {
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxf_graal_events.h"));
+                    "src/main/c/dxfg_events.h"));
         }
     }
 
-    @CStruct("dxf_graal_event_t")
+    @CStruct("dxfg_event_t")
     public interface BaseEventNative extends PointerBase {
         @CField("event_type")
         int getEventType();
@@ -31,11 +31,17 @@ public class EventNative {
         @CField("event_type")
         void setEventType(int eventType);
 
-        @CField("symbol_name")
-        CCharPointer getSymbolName();
+        @CField("event_time")
+        long getEventTime();
 
-        @CField("symbol_name")
-        void setSymbolName(CCharPointer symbolName);
+        @CField("event_time")
+        void setEventTime(long eventTime);
+
+        @CField("symbol")
+        BaseSymbol getSymbol();
+
+        @CField("symbol")
+        void setSymbol(BaseSymbol symbolName);
     }
 
     @CPointerTo(BaseEventNative.class)

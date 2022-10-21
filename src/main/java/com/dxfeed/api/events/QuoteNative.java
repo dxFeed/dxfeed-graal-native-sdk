@@ -11,34 +11,22 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import java.util.*;
 
 @CContext(QuoteNative.NativeDirectives.class)
-@CStruct("dxf_graal_event_quote_t")
+@CStruct("dxfg_event_quote_t")
 public interface QuoteNative extends BaseEventNative {
     class NativeDirectives implements CContext.Directives {
         @Override
         public List<String> getHeaderFiles() {
             return Collections.singletonList(ProjectHeaderFile.resolve(
                     "com.dxfeed",
-                    "src/main/c/dxf_graal_events.h"));
+                    "src/main/c/dxfg_events.h"));
         }
     }
 
-    @CField("sequence")
-    int getSequence();
+    @CField("time_millis_sequence")
+    int getTimeMillisSequence();
 
-    @CField("sequence")
-    void setSequence(int sequence);
-
-    @CField("time")
-    long getTime();
-
-    @CField("time")
-    void setTime(long time);
-
-    @CField("time_nanos")
-    long getTimeNanos();
-
-    @CField("time_nanos")
-    void setTimeNanos(long timeNanos);
+    @CField("time_millis_sequence")
+    void setTimeMillisSequence(int timeMillisSequence);
 
     @CField("time_nano_part")
     int getTimeNanoPart();

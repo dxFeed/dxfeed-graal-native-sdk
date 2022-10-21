@@ -2,22 +2,22 @@
 
 package com.dxfeed.api.events;
 
-import com.dxfeed.event.EventType;
-import com.dxfeed.event.market.Quote;
-import com.dxfeed.event.market.TimeAndSale;
+import com.dxfeed.event.market.Side;
 import com.oracle.svm.core.c.ProjectHeaderFile;
-import java.util.Collections;
-import java.util.List;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(EventTypesNative.NativeDirectives.class)
-@CEnum("dxfg_event_type_t")
-public enum EventTypesNative {
-    DXFG_EVENT_TYPE_QUOTE,
-    DXFG_EVENT_TYPE_TIME_AND_SALE;
+import java.util.Collections;
+import java.util.List;
+
+@CContext(SideNative.NativeDirectives.class)
+@CEnum("dxfg_event_side")
+public enum SideNative {
+    DXFG_EVENT_SIDE_UNDEFINED,
+    DXFG_EVENT_SIDE_BUY,
+    DXFG_EVENT_SIDE_SELL;
 
     static class NativeDirectives implements CContext.Directives {
         @Override
@@ -28,14 +28,14 @@ public enum EventTypesNative {
         }
     }
 
-    public static Class<? extends EventType<?>> toEventType(int value) {
-        switch (fromCValue(value)) {
-            case DXFG_EVENT_TYPE_QUOTE:
-                return Quote.class;
-            case DXFG_EVENT_TYPE_TIME_AND_SALE:
-                return TimeAndSale.class;
+    public static SideNative fromSide(Side side) {
+        switch (side) {
+            case BUY:
+                return DXFG_EVENT_SIDE_BUY;
+            case SELL:
+                return DXFG_EVENT_SIDE_SELL;
             default:
-                return null;
+                return DXFG_EVENT_SIDE_UNDEFINED;
         }
     }
 
@@ -43,5 +43,5 @@ public enum EventTypesNative {
     public native int getCValue();
 
     @CEnumLookup
-    public static native EventTypesNative fromCValue(int value);
+    public static native SideNative fromCValue(int value);
 }
