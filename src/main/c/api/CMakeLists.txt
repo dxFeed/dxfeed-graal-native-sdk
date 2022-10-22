@@ -11,6 +11,17 @@ project(${target})
 # Print status
 message(STATUS "Imported lib ${target}")
 
+set(src_location ${CMAKE_CURRENT_SOURCE_DIR})
+set(bin_location ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (DEFINED GRAAL_CUSTOM_SRC_LOCATION)
+    set(src_location ${GRAAL_CUSTOM_SRC_LOCATION})
+endif ()
+
+if (DEFINED GRAAL_CUSTOM_BIN_LOCATION)
+    set(bin_location ${GRAAL_CUSTOM_BIN_LOCATION})
+endif ()
+
 
 #
 # Create target
@@ -46,11 +57,17 @@ endif ()
 # Target properties
 set_target_properties(${target}
         PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+        INTERFACE_INCLUDE_DIRECTORIES "${src_location}"
         # Path to dynamic library
-        IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/${lib_prefix}${target}.${lib_extension}"
+        IMPORTED_LOCATION "${bin_location}/${lib_prefix}${target}.${lib_extension}"
         # For Windows
-        IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/${lib_prefix}${target}.lib"
+        IMPORTED_IMPLIB "${bin_location}/${lib_prefix}${target}.lib"
         # For Linux and macOS
         IMPORTED_NO_SONAME "TRUE"
+        )
+
+# Deployment
+install(IMPORTED_RUNTIME_ARTIFACTS ${target}
+        RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
+        LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
         )

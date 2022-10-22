@@ -23,38 +23,6 @@ set_policy(CMP0135 NEW) # Sets the timestamps of extracted contents (FetchConten
 
 
 #
-# Configure platform specific variable
-#
-set(ARCH_POSTFIX "")
-if (WIN32)
-    set(ARCH_POSTFIX "amd64-windows")
-    set(CMAKE_CXX_FLAGS "/utf-8 /W4 /volatile:iso /EHsc /Zc:throwingNew")
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS "ON")
-elseif (APPLE)
-    if (CMAKE_APPLE_SILICON_PROCESSOR STREQUAL "arm64")
-        set(ARCH_POSTFIX "aarch64-osx")
-    else ()
-        set(ARCH_POSTFIX "x86_64-osx")
-    endif ()
-    set(CMAKE_MACOSX_RPATH "ON")
-    set(CMAKE_SKIP_BUILD_RPATH "ON")
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH "ON")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH "OFF")
-    set(CMAKE_BUILD_RPATH_USE_ORIGIN "ON")
-    set(CMAKE_INSTALL_RPATH "@loader_path")
-elseif (UNIX)
-    set(ARCH_POSTFIX "amd64-linux")
-    set(CMAKE_SKIP_BUILD_RPATH "ON")
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH "ON")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH "OFF")
-    set(CMAKE_BUILD_RPATH_USE_ORIGIN "ON")
-    set(CMAKE_INSTALL_RPATH "$ORIGIN")
-else ()
-    message(ERROR "Unknown platform!")
-endif ()
-
-
-#
 # Project description and (meta) information
 #
 
@@ -124,6 +92,39 @@ file(WRITE "${OUTPUT_PATH}/${META_PROJECT_NAME}-version" "${META_NAME_VERSION}")
 
 
 #
+# Configure platform specific variable
+#
+
+set(ARCH_POSTFIX "")
+if (WIN32)
+    set(ARCH_POSTFIX "amd64-windows")
+    set(CMAKE_CXX_FLAGS "/utf-8 /W4 /volatile:iso /EHsc /Zc:throwingNew")
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS "ON")
+elseif (APPLE)
+    if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "arm64")
+        set(ARCH_POSTFIX "aarch64-osx")
+    else ()
+        set(ARCH_POSTFIX "x86_64-osx")
+    endif ()
+    set(CMAKE_MACOSX_RPATH "ON")
+    set(CMAKE_SKIP_BUILD_RPATH "ON")
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH "ON")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH "OFF")
+    set(CMAKE_BUILD_RPATH_USE_ORIGIN "ON")
+    set(CMAKE_INSTALL_RPATH "@loader_path")
+elseif (UNIX)
+    set(ARCH_POSTFIX "amd64-linux")
+    set(CMAKE_SKIP_BUILD_RPATH "ON")
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH "ON")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH "OFF")
+    set(CMAKE_BUILD_RPATH_USE_ORIGIN "ON")
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+else ()
+    message(ERROR "Unknown platform!")
+endif ()
+
+
+#
 # Deployment
 #
 
@@ -137,20 +138,6 @@ set(INSTALL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/install)
 # External dependencies
 #
 
-# Add DxFeedGraalNativeApi lib
-set(GraalNativeApi DxFeedGraalNativeApi)
-set(GraalNativeApiPath
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../target/dxfeed-graal-native-api-${META_VERSION}-${ARCH_POSTFIX}.zip"
-        )
-FetchContent_Declare(${GraalNativeApi}
-        URL ${GraalNativeApiPath}
-        )
-FetchContent_MakeAvailable(${GraalNativeApi})
-install(IMPORTED_RUNTIME_ARTIFACTS ${GraalNativeApi}
-        RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
-        LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
-        )
-
 # Add date lib
 FetchContent_Declare(date
         GIT_REPOSITORY https://github.com/HowardHinnant/date.git
@@ -158,12 +145,17 @@ FetchContent_Declare(date
         )
 FetchContent_MakeAvailable(date)
 
+
 #
 # Project modules
 #
 
 # Set compile options
 include(cmake/CompileOptions.cmake)
+
+# Add GRAAL_API
+set(GRAAL_CUSTOM_BIN_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../../target/native-image/)
+add_subdirectory(api)
 
 # Add sources directory
 add_subdirectory(extern)
