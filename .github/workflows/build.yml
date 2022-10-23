@@ -20,8 +20,8 @@ jobs:
             OS_NAME: amd64-windows
           - os: macos-latest
             OS_NAME: x86_64-osx
-    # Comment/Uncomment for disable/enable self-hosted runner on MAC M1.
-          - os: [self-hosted, macOS, ARM64]
+          # Comment/Uncomment for disable/enable self-hosted runner on MAC M1.
+          - os: [ self-hosted, macOS, ARM64 ]
             OS_NAME: aarch64-osx
 
     steps:
@@ -43,26 +43,43 @@ jobs:
           cd src/main/c
           cmake --preset="conf-release" -DCMAKE_BUILD_TYPE=Release .
           cmake --build --preset="build-release" --config=Release
+          ctest --test-dir build/conf-release -C Release --extra-verbose
+        shell: bash
+
+      - name: Test API samples
+        run: |
+          cd src/main/c
+          ctest --test-dir build/conf-release -C Release --extra-verbose
+        shell: bash
+
+      - name: Install API samples
+        run: |
+          cd src/main/c
           cmake --install build/conf-release --config=Release --strip --component=runtime
+          cpack --config build/conf-release/CPackConfig.cmake
         shell: bash
 
       - name: Extract API project name and version
         id: project
         run: |
-          echo "::set-output name=name::$(mvn help:evaluate -Dexpression="project.name" -q -DforceStdout)"
-          echo "::set-output name=version::$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)"
+          export name=$(mvn help:evaluate -Dexpression="project.name" -q -DforceStdout)
+          export version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
+          export full_api_name=$name-$version-${{ matrix.OS_NAME }}
+          export full_samples_name=$name-samples-$version-${{ matrix.OS_NAME }}          
+          echo "full_api_name=$full_api_name" >> $GITHUB_OUTPUT
+          echo "full_samples_name=$full_samples_name" >> $GITHUB_OUTPUT
 
       - name: Upload API library
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}
+          name: ${{ steps.project.outputs.full_api_name }}
           path: |
-            target/${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}-dir/
+            target/${{ steps.project.outputs.full_api_name }}-dir/
 
       - name: Upload API samples
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.project.outputs.name }}-samples-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}
+          name: ${{ steps.project.outputs.full_samples_name }}
           path: |
             src/main/c/install/
 
@@ -72,5 +89,6 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            target/${{ steps.project.outputs.name }}-${{ steps.project.outputs.version }}-${{ matrix.OS_NAME }}.zip
+            target/${{ steps.project.outputs.full_api_name }}.zip
+            src/main/c/package/${{ steps.project.outputs.full_samples_name }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "CommandLineParser.hpp"
-#include <Utils/StringUtils.hpp>
+#include <DxfgUtils/StringUtils.hpp>
 #include <stdexcept>
 
 namespace dxfg {
 
 const std::string CommandLineParser::propertyPattern_ = "-D";
-const std::unordered_map<std::string, dxfg_event_type_t> CommandLineParser::typesMap_ = {
+const std::unordered_map<std::string, dxfg_event_type_t> CommandLineParser::eventTypesMap_ = {
     {"Quote", DXFG_EVENT_TYPE_QUOTE},
     {"TimeAndSale", DXFG_EVENT_TYPE_TIME_AND_SALE},
 };
@@ -33,8 +33,8 @@ std::vector<dxfg_event_type_t> CommandLineParser::parseEventTypes(char **argv, i
     std::vector<dxfg_event_type_t> eventTypes{};
     const auto stringListEventTypes = StringUtils::splitString(argv[currentArg++], ',');
     for (const auto &stringEventType : stringListEventTypes) {
-        auto it = typesMap_.find(stringEventType);
-        if (it != typesMap_.end()) {
+        auto it = eventTypesMap_.find(stringEventType);
+        if (it != eventTypesMap_.end()) {
             eventTypes.push_back(it->second);
         } else {
             throw std::invalid_argument("Unknown events type: " + stringEventType);

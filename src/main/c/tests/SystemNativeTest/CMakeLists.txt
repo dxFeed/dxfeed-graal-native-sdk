@@ -1,17 +1,15 @@
-# SPDX-License-Identifier: MPL-2.0
-
 #
 # Executable name and options
 #
 
 # Target name
-set(target DxfgClient)
+set(target SystemNativeTest)
 
 # Output name
 set(output_name ${target})
 
 # Print status
-message(STATUS "App ${target}")
+message(STATUS "Test ${target}")
 
 
 #
@@ -47,9 +45,6 @@ target_sources(${target}
         "${sources}"
         )
 
-# Create namespaced alias
-add_executable(${META_PROJECT_NAME}::${target} ALIAS ${target})
-
 
 #
 # Project options
@@ -82,9 +77,8 @@ target_include_directories(${target}
 target_link_libraries(${target}
         PRIVATE
         ${DEFAULT_LIBRARIES}
+        Catch2::Catch2WithMain
         DxFeedGraalNativeApi
-        DxfgUtils
-        DxfgEventFormatter
         )
 
 
@@ -119,14 +113,10 @@ target_link_options(${target}
 
 
 #
-# Deployment
+# Testing
 #
 
-# Executable
-install(TARGETS ${target}
-        RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
-        BUNDLE  DESTINATION ${INSTALL_BIN} COMPONENT runtime
-        )
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
 
 
 #

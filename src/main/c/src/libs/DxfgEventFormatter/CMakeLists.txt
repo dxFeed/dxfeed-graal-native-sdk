@@ -5,7 +5,7 @@
 #
 
 # Target
-set(target Utils)
+set(target DxfgEventFormatter)
 
 # Print status
 message(STATUS "Lib ${target}")
@@ -101,7 +101,7 @@ target_link_libraries(${target}
 
         PUBLIC
         ${DEFAULT_LIBRARIES}
-        DxFeedGraalNativeApi
+        DxfgUtils
         date::date
 
         INTERFACE

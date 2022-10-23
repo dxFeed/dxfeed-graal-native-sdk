@@ -11,7 +11,7 @@ namespace dxfg {
 class CommandLineParser {
   private:
     static const std::string propertyPattern_;
-    static const std::unordered_map<std::string, dxfg_event_type_t> typesMap_;
+    static const std::unordered_map<std::string, dxfg_event_type_t> eventTypesMap_;
 
   public:
     static std::unordered_map<std::string, std::string> parseSystemProperties(char **argv, int &currentArg);

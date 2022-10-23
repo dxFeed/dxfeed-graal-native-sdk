@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "CommandLineParser.hpp"
-#include <Utils/EventFormatter.hpp>
+#include <DxfgEventFormatter/QuoteFormatter.hpp>
+#include <DxfgEventFormatter/TimeAndSaleFormatter.hpp>
 #include <dxfg_api.h>
 #include <iostream>
 
@@ -18,10 +19,10 @@ static bool isQuiteMode = false;
 inline static void printEvent(const dxfg_event_t *event) {
     if (event->event_type == DXFG_EVENT_TYPE_QUOTE) {
         const auto quote = reinterpret_cast<const dxfg_event_quote_t *>(event);
-        std::clog << EventFormatter::Quote::toString(quote) << std::endl;
+        std::clog << QuoteFormatter::toString(quote) << std::endl;
     } else if (event->event_type == DXFG_EVENT_TYPE_TIME_AND_SALE) {
         const auto tns = reinterpret_cast<const dxfg_event_time_and_sale_t *>(event);
-        std::clog << EventFormatter::TimeAndSale::toString(tns) << std::endl;
+        std::clog << TimeAndSaleFormatter::toString(tns) << std::endl;
     } else {
         std::cerr << "UnknownEventType{}" << std::endl;
     }

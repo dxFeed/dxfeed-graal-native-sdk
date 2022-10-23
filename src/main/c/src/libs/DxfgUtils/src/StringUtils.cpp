@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <Utils/StringUtils.hpp>
+#include <DxfgUtils/StringUtils.hpp>
 #include <iomanip>
 #include <sstream>
 
@@ -29,7 +29,5 @@ std::string StringUtils::encodeUtf16Char(int16_t c) {
 }
 
 std::string StringUtils::encodeString(const char *string) { return string == nullptr ? "null" : std::string(string); }
-
-std::string StringUtils::encodeBool(int8_t val) { return val == 0 ? "false" : "true"; }
 
 } // namespace dxfg
