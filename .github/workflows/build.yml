@@ -68,6 +68,7 @@ jobs:
           export full_samples_name=$name-samples-$version-${{ matrix.OS_NAME }}          
           echo "full_api_name=$full_api_name" >> $GITHUB_OUTPUT
           echo "full_samples_name=$full_samples_name" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Upload API library
         uses: actions/upload-artifact@v3
