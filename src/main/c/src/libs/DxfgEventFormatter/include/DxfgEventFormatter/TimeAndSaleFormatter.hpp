@@ -34,19 +34,17 @@ class TimeAndSaleFormatter {
     static const int32_t TYPE_MASK = 3;
     static const int32_t TYPE_SHIFT = 0;
 
-    static const std::unordered_map<dxfg_event_time_and_sale_type_t, std::string> typesMap_;
-    static const std::unordered_map<dxfg_event_side_t, std::string> sidesMap_;
+    static const std::unordered_map<dxfg_time_and_sale_t, std::string> typesMap_;
 
   public:
-    static int64_t getTime(const dxfg_event_time_and_sale_t *e);
-    static int32_t getSequence(const dxfg_event_time_and_sale_t *e);
-    static int16_t getTradeThroughExempt(const dxfg_event_time_and_sale_t *e);
-    static dxfg_event_side_t getAggressorSide(const dxfg_event_time_and_sale_t *e);
-    static bool isSpreadLeg(const dxfg_event_time_and_sale_t *e);
-    static bool isExtendedTradingHours(const dxfg_event_time_and_sale_t *e);
-    static bool isValidTick(const dxfg_event_time_and_sale_t *e);
-    static dxfg_event_time_and_sale_type_t getType(const dxfg_event_time_and_sale_t *e);
-    static std::string toString(const dxfg_event_time_and_sale_t *e);
+    static int64_t getTime(const dxfg_time_and_sale_t *e);
+    static int32_t getSequence(const dxfg_time_and_sale_t *e);
+    static int16_t getTradeThroughExempt(const dxfg_time_and_sale_t *e);
+    static bool isSpreadLeg(const dxfg_time_and_sale_t *e);
+    static bool isExtendedTradingHours(const dxfg_time_and_sale_t *e);
+    static bool isValidTick(const dxfg_time_and_sale_t *e);
+    static dxfg_time_and_sale_t getType(const dxfg_time_and_sale_t *e);
+    static std::string toString(const dxfg_time_and_sale_t *e);
 };
 
 } // namespace dxfg

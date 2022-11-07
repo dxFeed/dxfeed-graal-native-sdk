@@ -20,9 +20,9 @@ jobs:
             OS_NAME: amd64-windows
           - os: macos-latest
             OS_NAME: x86_64-osx
-          # Comment/Uncomment for disable/enable self-hosted runner on MAC M1.
-          - os: [ self-hosted, macOS, ARM64 ]
-            OS_NAME: aarch64-osx
+#          Comment/Uncomment for disable/enable self-hosted runner on MAC M1.
+#          - os: [ self-hosted, macOS, ARM64 ]
+#            OS_NAME: aarch64-osx
 
     steps:
       - uses: actions/checkout@v3
@@ -65,7 +65,7 @@ jobs:
           export name=$(mvn help:evaluate -Dexpression="project.name" -q -DforceStdout)
           export version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
           export full_api_name=$name-$version-${{ matrix.OS_NAME }}
-          export full_samples_name=$name-samples-$version-${{ matrix.OS_NAME }}          
+          export full_samples_name=$name-samples-$version-${{ matrix.OS_NAME }}
           echo "full_api_name=$full_api_name" >> $GITHUB_OUTPUT
           echo "full_samples_name=$full_samples_name" >> $GITHUB_OUTPUT
         shell: bash

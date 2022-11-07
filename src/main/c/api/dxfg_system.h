@@ -5,9 +5,11 @@
 
 #ifdef __cplusplus
 extern "C" {
+#    include <cstdint>
+#else
+#    include <stdint.h>
 #endif
 
-#include "dxfg_error_codes.h"
 #include "graal_isolate.h"
 
 /** @defgroup System
@@ -21,7 +23,7 @@ extern "C" {
  * @param[in] value The value of the system property.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-ERROR_CODE dxfg_system_set_property(graal_isolatethread_t *thread, const char *key, const char *value);
+int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key, const char *value);
 
 /**
  * @brief Gets the system property indicated by the specified key.

@@ -1,33 +1,31 @@
-// SPDX-License-Identifier: MPL-2.0
-
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.EventTypesNative;
-import com.dxfeed.api.events.QuoteNative;
+import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgQuote;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class QuoteNativeMapper extends BaseEventNativeMapper<Quote, QuoteNative> {
-    @Override
-    protected QuoteNative createNativeEvent(Quote quote) {
-        QuoteNative quoteNative = UnmanagedMemory.calloc(SizeOf.get(QuoteNative.class));
-        quoteNative.setEventType(EventTypesNative.DXFG_EVENT_TYPE_QUOTE.getCValue());
-        quoteNative.setEventTime(quote.getEventTime());
-        quoteNative.setTimeMillisSequence(quote.getTimeMillisSequence());
-        quoteNative.setTimeNanoPart(quote.getTimeNanoPart());
-        quoteNative.setBidTime(quote.getBidTime());
-        quoteNative.setBidExchangeCode(quote.getBidExchangeCode());
-        quoteNative.setBidPrice(quote.getBidPrice());
-        quoteNative.setBidSize(quote.getBidSizeAsDouble());
-        quoteNative.setAskTime(quote.getAskTime());
-        quoteNative.setAskExchangeCode(quote.getAskExchangeCode());
-        quoteNative.setAskPrice(quote.getAskPrice());
-        quoteNative.setAskSize(quote.getAskSizeAsDouble());
-        return quoteNative;
-    }
+public class QuoteNativeMapper extends MarketEventNativeMapper<Quote, DxfgQuote> {
 
-    @Override
-    protected void doDelete(QuoteNative quoteNative) {
-        UnmanagedMemory.free(quoteNative);
-    }
+  @Override
+  protected DxfgQuote createNativeEvent(final Quote quote) {
+    final DxfgQuote dxfgQuote = UnmanagedMemory.calloc(SizeOf.get(DxfgQuote.class));
+    dxfgQuote.setKind(DxfgEventKind.DXFG_EVENT_TYPE_QUOTE.getCValue());
+    dxfgQuote.setTimeMillisSequence(quote.getTimeMillisSequence());
+    dxfgQuote.setTimeNanoPart(quote.getTimeNanoPart());
+    dxfgQuote.setBidTime(quote.getBidTime());
+    dxfgQuote.setBidExchangeCode(quote.getBidExchangeCode());
+    dxfgQuote.setBidPrice(quote.getBidPrice());
+    dxfgQuote.setBidSize(quote.getBidSizeAsDouble());
+    dxfgQuote.setAskTime(quote.getAskTime());
+    dxfgQuote.setAskExchangeCode(quote.getAskExchangeCode());
+    dxfgQuote.setAskPrice(quote.getAskPrice());
+    dxfgQuote.setAskSize(quote.getAskSizeAsDouble());
+    return dxfgQuote;
+  }
+
+  @Override
+  protected void doDelete(final DxfgQuote dxfgQuote) {
+    UnmanagedMemory.free(dxfgQuote);
+  }
 }

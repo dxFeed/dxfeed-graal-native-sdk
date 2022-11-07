@@ -4,22 +4,22 @@
 
 namespace dxfg {
 
-int64_t QuoteFormatter::getTime(const dxfg_event_quote_t *e) {
+int64_t QuoteFormatter::getTime(const dxfg_quote_t *e) {
     auto max = static_cast<double>(std::max(e->bid_time, e->ask_time)) / 1000.0;
     auto floorMax = static_cast<int64_t>(std::floor(max));
     return floorMax * 1000 + (e->time_millis_sequence >> 22);
 }
 
-int32_t QuoteFormatter::getSequence(const dxfg_event_quote_t *e) {
+int32_t QuoteFormatter::getSequence(const dxfg_quote_t *e) {
     return e->time_millis_sequence & MAX_SEQUENCE;
 }
 
-std::string QuoteFormatter::toString(const dxfg_event_quote_t *e) {
+std::string QuoteFormatter::toString(const dxfg_quote_t *e) {
     std::stringstream ss{};
     ss.precision(9);
     // clang-format off
-    ss << "Quote{" <<  StringUtils::encodeString(e->base_event.symbol->symbol_name) <<
-       ", eventTime=" << StringUtils::encodeTime<std::chrono::milliseconds>(e->base_event.event_time) <<
+    ss << "Quote{" <<  StringUtils::encodeString(e->market_event.event_symbol) <<
+       ", eventTime=" << StringUtils::encodeTime<std::chrono::milliseconds>(e->market_event.event_time) <<
        ", time=" << StringUtils::encodeTime<std::chrono::milliseconds>(getTime(e)) <<
        ", timeNanoPart=" << e->time_nano_part <<
        ", sequence=" << getSequence(e) <<

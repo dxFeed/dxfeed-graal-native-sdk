@@ -7,9 +7,10 @@
 namespace dxfg {
 
 const std::string CommandLineParser::propertyPattern_ = "-D";
-const std::unordered_map<std::string, dxfg_event_type_t> CommandLineParser::eventTypesMap_ = {
+const std::unordered_map<std::string, dxfg_event_kind_t> CommandLineParser::eventTypesMap_ = {
     {"Quote", DXFG_EVENT_TYPE_QUOTE},
     {"TimeAndSale", DXFG_EVENT_TYPE_TIME_AND_SALE},
+    {"Candle", DXFG_EVENT_TYPE_CANDLE},
 };
 
 std::unordered_map<std::string, std::string> CommandLineParser::parseSystemProperties(char **argv, int &currentArg) {
@@ -29,8 +30,8 @@ std::unordered_map<std::string, std::string> CommandLineParser::parseSystemPrope
 
 std::string CommandLineParser::parseAddress(char **argv, int &currentArg) { return argv[currentArg++]; }
 
-std::vector<dxfg_event_type_t> CommandLineParser::parseEventTypes(char **argv, int &currentArg) {
-    std::vector<dxfg_event_type_t> eventTypes{};
+std::vector<dxfg_event_kind_t> CommandLineParser::parseEventTypes(char **argv, int &currentArg) {
+    std::vector<dxfg_event_kind_t> eventTypes{};
     const auto stringListEventTypes = StringUtils::splitString(argv[currentArg++], ',');
     for (const auto &stringEventType : stringListEventTypes) {
         auto it = eventTypesMap_.find(stringEventType);

@@ -7,10 +7,10 @@
 extern "C" {
 #endif
 
+#include "dxfg_catch_exception.h"
 #include "dxfg_endpoint.h"
-#include "dxfg_error_codes.h"
 #include "dxfg_events.h"
-#include "dxfg_subscription.h"
+#include "dxfg_feed.h"
 #include "dxfg_system.h"
 #include "dxfg_utils.h"
 #include "graal_isolate.h"

@@ -14,7 +14,7 @@
 {
   "name":"com.devexperts.connector.proto.ApplicationConnectionFactory",
   "methods":[
-    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] },
     {"name":"setName","parameterTypes":["java.lang.String"] }
   ],
   "queriedMethods":[{"name":"getChunkPool","parameterTypes":[] }]
@@ -60,7 +60,6 @@
   "name":"com.devexperts.qd.qtp.file.FileConnector",
   "queryAllPublicMethods":true,
   "methods":[
-    {"name":"getMethods","parameterTypes":[] },
     {"name":"setSpeed","parameterTypes":["double"] }]
 },
 {

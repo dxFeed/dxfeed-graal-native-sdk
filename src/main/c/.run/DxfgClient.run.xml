@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DxfgClient" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-Ddxfeed.aggregationPeriod=1s demo.dxfeed.com:7300 Quote,Candle,TimeAndSale AAPL,IBM,/BTCUSD:CXBINA" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="dxfeed-graal-native-api-samples" TARGET_NAME="DxfgClient" CONFIG_NAME="conf-debug" RUN_TARGET_PROJECT_NAME="dxfeed-graal-native-api-samples" RUN_TARGET_NAME="DxfgClient">
+    <method v="2">
+      <option name="CMake.Explicit.Target" explicitTargetName="clean" />
+      <option name="CMake.Explicit.Target" explicitTargetName="install" />
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

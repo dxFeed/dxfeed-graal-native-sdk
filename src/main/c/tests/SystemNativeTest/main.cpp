@@ -39,7 +39,7 @@ TEST_CASE("Check write/read property", "[SystemNative]") {
         auto currentKey = std::string(key + std::to_string(i));
         auto currentVal = std::string(val + std::to_string(i));
         auto res = dxfg_system_set_property(thread, currentKey.c_str(), currentVal.c_str());
-        REQUIRE(res == DXFG_EC_SUCCESS);
+        REQUIRE(res == 0);
     }
 
     // Gets properties.
@@ -79,9 +79,9 @@ TEST_CASE("Check in different isolate", "[SystemNative]") {
         auto currentValFirst = std::string(valFirst + std::to_string(i));
         auto currentValSecond = std::string(valSecond + std::to_string(i));
         auto res = dxfg_system_set_property(threadFirst, currentKey.c_str(), currentValFirst.c_str());
-        REQUIRE(res == DXFG_EC_SUCCESS);
+        REQUIRE(res == 0);
         res = dxfg_system_set_property(threadSecond, currentKey.c_str(), currentValSecond.c_str());
-        REQUIRE(res == DXFG_EC_SUCCESS);
+        REQUIRE(res == 0);
     }
 
     // Gets properties.
