@@ -20,7 +20,6 @@ import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.constant.CEnum;
-import org.graalvm.nativeimage.c.constant.CEnumConstant;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 

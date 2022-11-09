@@ -13,11 +13,21 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.word.WordFactory;
 
-public class ListEventMapper implements ListNativeMapper<EventType<?>, DxfgEventPointer> {
+public class ListEventMapper implements ListMapper<EventType<?>, DxfgEventPointer> {
 
-  private static final QuoteNativeMapper QUOTE_NATIVE_MAPPER = new QuoteNativeMapper();
-  private static final TimeAndSaleNativeMapper TIME_AND_SALE_NATIVE_MAPPER = new TimeAndSaleNativeMapper();
-  private static final CandleNativeMapper CANDLE_NATIVE_MAPPER = new CandleNativeMapper();
+  protected final QuoteMapper quoteMapper;
+  protected final TimeAndSaleMapper timeAndSaleMapper;
+  protected final CandleMapper candleMapper;
+
+  public ListEventMapper(
+      final QuoteMapper quoteMapper,
+      final TimeAndSaleMapper timeAndSaleMapper,
+      final CandleMapper candleMapper
+  ) {
+    this.quoteMapper = quoteMapper;
+    this.timeAndSaleMapper = timeAndSaleMapper;
+    this.candleMapper = candleMapper;
+  }
 
   @Override
   public DxfgEventPointer nativeObject(final List<EventType<?>> events) {
@@ -27,11 +37,11 @@ public class ListEventMapper implements ListNativeMapper<EventType<?>, DxfgEvent
       final EventType<?> eventType = events.get(i);
       final DxfgEventType nativeEvent;
       if (eventType instanceof Quote) {
-        nativeEvent = QUOTE_NATIVE_MAPPER.nativeObject((Quote) eventType);
+        nativeEvent = quoteMapper.nativeObject((Quote) eventType);
       } else if (eventType instanceof TimeAndSale) {
-        nativeEvent = TIME_AND_SALE_NATIVE_MAPPER.nativeObject((TimeAndSale) eventType);
+        nativeEvent = timeAndSaleMapper.nativeObject((TimeAndSale) eventType);
       } else if (eventType instanceof Candle) {
-        nativeEvent = CANDLE_NATIVE_MAPPER.nativeObject((Candle) eventType);
+        nativeEvent = candleMapper.nativeObject((Candle) eventType);
       } else {
         nativeEvent = WordFactory.nullPointer();
       }
@@ -47,11 +57,11 @@ public class ListEventMapper implements ListNativeMapper<EventType<?>, DxfgEvent
       if (nativeEvent.isNonNull()) {
         final int kind = nativeEvent.getKind();
         if (DxfgEventKind.fromCValue(kind) == DxfgEventKind.DXFG_EVENT_TYPE_QUOTE) {
-          QUOTE_NATIVE_MAPPER.delete((DxfgQuote) nativeEvent);
+          quoteMapper.delete((DxfgQuote) nativeEvent);
         } else if (DxfgEventKind.fromCValue(kind) == DxfgEventKind.DXFG_EVENT_TYPE_TIME_AND_SALE) {
-          TIME_AND_SALE_NATIVE_MAPPER.delete((DxfgTimeAndSale) nativeEvent);
+          timeAndSaleMapper.delete((DxfgTimeAndSale) nativeEvent);
         } else if (DxfgEventKind.fromCValue(kind) == DxfgEventKind.DXFG_EVENT_TYPE_CANDLE) {
-          CANDLE_NATIVE_MAPPER.delete((DxfgCandle) nativeEvent);
+          candleMapper.delete((DxfgCandle) nativeEvent);
         } else {
           throw new UnsupportedOperationException("It has not yet been implemented.");
         }

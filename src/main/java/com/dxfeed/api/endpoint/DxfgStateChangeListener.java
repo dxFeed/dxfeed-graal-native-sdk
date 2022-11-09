@@ -1,24 +1,21 @@
 package com.dxfeed.api.endpoint;
 
-import org.graalvm.nativeimage.ObjectHandle;
+import com.oracle.svm.core.c.CTypedef;
+import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
-import org.graalvm.nativeimage.c.struct.CField;
-import org.graalvm.nativeimage.c.struct.CStruct;
-import org.graalvm.word.PointerBase;
+import org.graalvm.nativeimage.c.function.CFunctionPointer;
+import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
-@CStruct("dxfg_endpoint_state_change_listener_t")
-interface DxfgStateChangeListener extends PointerBase {
+@CTypedef(name = "dxfg_endpoint_state_change_listener")
+interface DxfgStateChangeListener extends CFunctionPointer {
 
-  @CField("java_object_handle")
-  ObjectHandle getJavaObjectHandler();
-
-  @CField("java_object_handle")
-  void setJavaObjectHandler(ObjectHandle value);
-
-  @CField("dxfg_endpoint_state_change_listener")
-  DxfgStateChangeListenerFunction getStateChangeListener();
-
-  @CField("dxfg_endpoint_state_change_listener")
-  void setStateChangeListener(DxfgStateChangeListenerFunction printFunction);
+  @InvokeCFunctionPointer
+  void invoke(
+      final IsolateThread thread,
+      final DxfgEndpointState oldState,
+      final DxfgEndpointState newState,
+      final VoidPointer userData
+  );
 }

@@ -82,13 +82,13 @@ static void parseArgs(int argc, char *argv[]) {
     }
 }
 
-void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, int32_t size) {
+void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, int32_t size, void *user_data) {
     for (int i = 0; i < size; ++i) {
-        dxfg_event_type_t *pEvent = (dxfg_event_type_t *)(*(events + i));
+        auto *pEvent = (dxfg_event_type_t *)(*(events + i));
         if (pEvent->kind == DXFG_EVENT_TYPE_QUOTE) {
-            dxfg_quote_t *quote = (dxfg_quote_t *)(*(events + i));
+            auto *quote = (dxfg_quote_t *)(*(events + i));
             printf(
-                "C: QUOTE{event_symbol=%s, event_time=%d, time_millis_sequence=%d, time_nano_part=%d, bid_time=%d, bid_exchange_code=%d, bid_price=%E, ask_time=%d, ask_exchange_code=%d, ask_price=%E, ask_size=%E}\n",
+                "C: QUOTE{event_symbol=%s, event_time=%lld, time_millis_sequence=%d, time_nano_part=%d, bid_time=%lld, bid_exchange_code=%d, bid_price=%E, ask_time=%f, ask_exchange_code=%lld, ask_price=%hd, ask_size=%E}\n",
                 quote->market_event.event_symbol,
                 quote->market_event.event_time,
                 quote->time_millis_sequence,
@@ -103,9 +103,9 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
                 quote->ask_size
                 );
         } else if (pEvent->kind == DXFG_EVENT_TYPE_TIME_AND_SALE) {
-            dxfg_time_and_sale_t *time_and_sale = (dxfg_time_and_sale_t *)(*(events + i));
+            auto *time_and_sale = (dxfg_time_and_sale_t *)(*(events + i));
             printf(
-                "C: TIME_AND_SALE{event_symbol=%s, bid_price=%d, buyer=%s, seller=%s}\n",
+                "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, buyer=%s, seller=%s}\n",
                 time_and_sale->market_event.event_symbol,
                 time_and_sale->bid_price,
                 time_and_sale->buyer,
@@ -114,8 +114,12 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
         } else if (pEvent->kind == DXFG_EVENT_TYPE_CANDLE) {
             dxfg_candle_t *candle = (dxfg_candle_t *)(*(events + i));
             printf(
-                "C: CANDLE{symbol=%s, base_symbol=%s, index=%d, ask_volume=%E}\n",
-                   candle->event_symbol.symbol, candle->event_symbol.base_symbol, candle->index, candle->ask_volume
+                "C: CANDLE{symbol=%s, base_symbol=%s, exchange_code=%d, index=%lld, ask_volume=%E}\n",
+                   candle->event_symbol->symbol,
+                candle->event_symbol->base_symbol,
+                candle->event_symbol->exchange->exchange_code,
+                candle->index,
+                candle->ask_volume
                 );
         }
     }
@@ -128,7 +132,7 @@ void print_exception(graal_isolatethread_t *thread) {
     printf("C: %s\n", exception.stackTrace);
 }
 
-void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state, dxfg_endpoint_state_t new_state) {
+void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state, dxfg_endpoint_state_t new_state, void *user_data) {
     printf("C: state %d -> %d\n", old_state, new_state);
 }
 
@@ -164,9 +168,8 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
     }
 
-    dxfg_endpoint_state_change_listener_t stateListener;
-    stateListener.dxfg_endpoint_state_change_listener = &endpoint_state_change_listener;
-    dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
+    dxfg_endpoint_state_change_listener stateListener = &endpoint_state_change_listener;
+    dxfg_endpoint_add_state_change_listener(thread, &endpoint, stateListener, nullptr);
 
 
     // Connects to an address.
@@ -200,12 +203,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Adds an event listener, before symbols are added.
-    dxfg_subscription_event_listener_t listener;
-    listener.dxfg_subscription_event_listener = &c_print;
+    dxfg_subscription_event_listener listener = &c_print;
 
 
 
-    res = dxfg_subscription_add_event_listener(thread, &sub, &listener);
+    res = dxfg_subscription_add_event_listener(thread, &sub, listener, nullptr);
     if (res != 0) {
         print_exception(thread);
     }
@@ -220,4 +222,9 @@ int main(int argc, char *argv[]) {
 
     // Waiting for input to exit.
     std::cin.get();
+
+    res = dxfg_endpoint_close_and_await_termination(thread, &endpoint);
+    if (res != 0) {
+        print_exception(thread);
+    }
 }

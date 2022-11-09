@@ -120,7 +120,7 @@ typedef struct dxfg_candle_symbol_t {
     dxfg_candle_session_t session;
     dxfg_candle_period_t *period;
     dxfg_candle_alignment_t alignment;
-    dxfg_candle_price_level_t price_level;
+    dxfg_candle_price_level_t *price_level;
 } dxfg_candle_symbol_t;
 
 /**
@@ -241,7 +241,7 @@ typedef struct dxfg_candle_t {
     dxfg_event_type_t event_type;
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
-    dxfg_candle_symbol_t event_symbol;
+    dxfg_candle_symbol_t *event_symbol;
     int32_t event_flags;
     int64_t event_time;
     int64_t index;

@@ -36,11 +36,8 @@ typedef enum dxfg_endpoint_state_t {
 /**
  * <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>
  */
-typedef struct dxfg_endpoint_state_change_listener_t {
-    void *java_object_handle;
-    void (*dxfg_endpoint_state_change_listener)(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
-                                                dxfg_endpoint_state_t new_state);
-} dxfg_endpoint_state_change_listener_t;
+typedef void (*dxfg_endpoint_state_change_listener)(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
+                                                dxfg_endpoint_state_t new_state, void *user_data);
 
 int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 int32_t dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
@@ -52,9 +49,9 @@ int32_t dxfg_endpoint_disconnect_and_clear(graal_isolatethread_t *thread, dxfg_e
 int32_t dxfg_endpoint_await_not_connected(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 int32_t dxfg_endpoint_get_state(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_endpoint_state_t *state);
 int32_t dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                dxfg_endpoint_state_change_listener_t *listener);
+                                                dxfg_endpoint_state_change_listener listener, void *user_data);
 int32_t dxfg_endpoint_remove_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                   dxfg_endpoint_state_change_listener_t *listener);
+                                                   dxfg_endpoint_state_change_listener listener);
 
 /** @} */ // end of Endpoint
 

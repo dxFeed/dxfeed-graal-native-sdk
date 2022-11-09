@@ -1,16 +1,14 @@
 package com.dxfeed.api.events;
 
-import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
-import org.graalvm.nativeimage.c.struct.CFieldAddress;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_candle_symbol_t")
-public interface DxfgCandleSymbol extends DxfgCandleExchange, DxfgCandlePeriod, DxfgCandlePriceLevel, PointerBase {
+public interface DxfgCandleSymbol extends PointerBase {
 
   @CField("symbol")
   CCharPointer getSymbol();
@@ -24,8 +22,11 @@ public interface DxfgCandleSymbol extends DxfgCandleExchange, DxfgCandlePeriod, 
   @CField("base_symbol")
   void setBaseSymbol(CCharPointer baseSymbol);
 
-  @CFieldAddress("exchange")
+  @CField("exchange")
   DxfgCandleExchange getExchange();
+
+  @CField("exchange")
+  void setExchange(DxfgCandleExchange baseSymbol);
 
   @CField("price")
   int getPrice();
@@ -39,8 +40,11 @@ public interface DxfgCandleSymbol extends DxfgCandleExchange, DxfgCandlePeriod, 
   @CField("session")
   void setSession(int session);
 
-  @CFieldAddress("period")
+  @CField("period")
   DxfgCandlePeriod getPeriod();
+
+  @CField("period")
+  void setPeriod(DxfgCandlePeriod period);
 
   @CField("alignment")
   int getAlignment();
@@ -48,6 +52,9 @@ public interface DxfgCandleSymbol extends DxfgCandleExchange, DxfgCandlePeriod, 
   @CField("alignment")
   void setAlignment(int alignment);
 
-  @CFieldAddress("price_level")
+  @CField("price_level")
   DxfgCandlePriceLevel getPriceLevel();
+
+  @CField("price_level")
+  void setPriceLevel(DxfgCandlePriceLevel priceLevel);
 }

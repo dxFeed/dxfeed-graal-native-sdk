@@ -2,15 +2,17 @@ package com.dxfeed.api.events;
 
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
-import org.graalvm.nativeimage.c.struct.CFieldAddress;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_candle_t")
-public interface DxfgCandle extends DxfgEventType, DxfgCandleSymbol {
+public interface DxfgCandle extends DxfgEventType {
 
-  @CFieldAddress("event_symbol")
-  DxfgCandleSymbol dxfgCandleSymbol();
+  @CField("event_symbol")
+  DxfgCandleSymbol getCandleSymbol();
+
+  @CField("event_symbol")
+  void setCandleSymbol(final DxfgCandleSymbol dxfgCandleSymbol);
 
   @CField("event_flags")
   int getEventFlags();

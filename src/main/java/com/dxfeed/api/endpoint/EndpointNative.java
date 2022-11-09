@@ -7,23 +7,30 @@ import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXEndpoint.Builder;
 import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXEndpoint.State;
-import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXPublisher;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.event.EventType;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CIntPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
+import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
 public final class EndpointNative extends BaseNative {
+
+  private static final Map<Long, PropertyChangeListener> STATE_CHANGE_LISTENERS = new HashMap<>();
+  private static final Map<DXEndpoint, Long> FEED_OBJECT_HANDLES = new HashMap<>();
 
   public static DXEndpoint getInstance() {
     throw new UnsupportedOperationException("It has not yet been implemented.");
@@ -81,17 +88,20 @@ public final class EndpointNative extends BaseNative {
   public static int addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgStateChangeListener listenerPtr
+      final DxfgStateChangeListener listenerPtr,
+      final VoidPointer userData
   ) {
-    final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-    final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.getStateChangeListener()
-        .invoke(
-            CurrentIsolate.getCurrentThread(),
-            DxfgEndpointState.fromDxEndpointState((State) changeEvent.getOldValue()),
-            DxfgEndpointState.fromDxEndpointState((State) changeEvent.getNewValue())
-        );
-    listenerPtr.setJavaObjectHandler(createJavaObjectHandler(propertyChangeListener));
-    dxEndpoint.addStateChangeListener(propertyChangeListener);
+    if (!STATE_CHANGE_LISTENERS.containsKey(listenerPtr.rawValue())) {
+      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
+      final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.invoke(
+          CurrentIsolate.getCurrentThread(),
+          DxfgEndpointState.fromDxEndpointState((State) changeEvent.getOldValue()),
+          DxfgEndpointState.fromDxEndpointState((State) changeEvent.getNewValue()),
+          userData
+      );
+      STATE_CHANGE_LISTENERS.put(listenerPtr.rawValue(), propertyChangeListener);
+      dxEndpoint.addStateChangeListener(propertyChangeListener);
+    }
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -104,9 +114,10 @@ public final class EndpointNative extends BaseNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgStateChangeListener listenerPtr
   ) {
-    final PropertyChangeListener listener = getJavaObject(listenerPtr.getJavaObjectHandler());
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).removeStateChangeListener(listener);
-    destroyJavaObjectHandler(listenerPtr.getJavaObjectHandler());
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
+        .removeStateChangeListener(
+            STATE_CHANGE_LISTENERS.remove(listenerPtr.rawValue())
+        );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -180,7 +191,7 @@ public final class EndpointNative extends BaseNative {
       final DxfgEndpoint dxfgEndpoint
   ) {
     getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).close();
-    destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
+    destroyDxfgEndpoint(dxfgEndpoint);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -209,7 +220,7 @@ public final class EndpointNative extends BaseNative {
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
     getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).closeAndAwaitTermination();
-    destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
+    destroyDxfgEndpoint(dxfgEndpoint);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -226,12 +237,28 @@ public final class EndpointNative extends BaseNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgFeed dxfgFeed
   ) {
-    final DXFeed feed = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getFeed();
-    dxfgFeed.setJavaObjectHandler(createJavaObjectHandler(feed));
+    final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
+    if (!FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+      final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint.getFeed());
+      FEED_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
+    }
+    dxfgFeed.setJavaObjectHandler(
+        WordFactory.pointer(FEED_OBJECT_HANDLES.get(dxEndpoint))
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
   public static DXPublisher getPublisher() {
     throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  private static void destroyDxfgEndpoint(final DxfgEndpoint dxfgEndpoint) {
+    final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
+    if (FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+      destroyJavaObjectHandler(
+          WordFactory.pointer(FEED_OBJECT_HANDLES.remove(dxEndpoint))
+      );
+    }
+    destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
   }
 }
