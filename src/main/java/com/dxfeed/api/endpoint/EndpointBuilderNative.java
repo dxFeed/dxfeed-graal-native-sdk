@@ -49,9 +49,8 @@ public final class EndpointBuilderNative extends BaseNative {
       final DxfgEndpointBuilder dxfgEndpointBuilder,
       DxfgEndpointRole role
   ) {
-    final var oldBuilder = getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler());
-    final var newBuilder = oldBuilder.withRole(DxfgEndpointRole.toDxEndpointRole(role));
-    compareAndReplaceBuilderIfNeeded(oldBuilder, newBuilder, dxfgEndpointBuilder);
+    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+        .withRole(DxfgEndpointRole.toDxEndpointRole(role));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -64,9 +63,8 @@ public final class EndpointBuilderNative extends BaseNative {
       final DxfgEndpointBuilder dxfgEndpointBuilder,
       CCharPointer name
   ) {
-    final var oldBuilder = getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler()).withName(toJavaString(name));
-    final var newBuilder = oldBuilder.withName(toJavaString(name));
-    compareAndReplaceBuilderIfNeeded(oldBuilder, newBuilder, dxfgEndpointBuilder);
+    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+        .withName(toJavaString(name));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -80,9 +78,8 @@ public final class EndpointBuilderNative extends BaseNative {
       CCharPointer key,
       CCharPointer value
   ) {
-    final var oldBuilder = getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler());
-    final var newBuilder = oldBuilder.withProperty(toJavaString(key), toJavaString(value));
-    compareAndReplaceBuilderIfNeeded(oldBuilder, newBuilder, dxfgEndpointBuilder);
+    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+        .withProperty(toJavaString(key), toJavaString(value));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -96,8 +93,9 @@ public final class EndpointBuilderNative extends BaseNative {
       CCharPointer key,
       CIntPointer isSupports
   ) {
-    final var builder = getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler());
-    isSupports.write(builder.supportsProperty(toJavaString(key)) ? 1 : 0);
+    isSupports.write(
+        getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+            .supportsProperty(toJavaString(key)) ? 1 : 0);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -113,25 +111,5 @@ public final class EndpointBuilderNative extends BaseNative {
     dxfgEndpoint.setJavaObjectHandler(createJavaObjectHandler(
         getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler()).build()));
     return EXECUTE_SUCCESSFULLY;
-  }
-
-  /**
-   * Compares the old builder (associated with dxfgEndpointBuilder) with the new builder and
-   * destroys the old builder if it differs from the new builder. The new builder will be written to
-   * dxfgEndpointBuilder object handle.
-   *
-   * @param oldBuilder          The old DXEndpoint.Builder.
-   * @param newBuilder          The old DXEndpoint.Builder.
-   * @param dxfgEndpointBuilder The object handle.
-   */
-  private static void compareAndReplaceBuilderIfNeeded(
-      final DXEndpoint.Builder oldBuilder,
-      final DXEndpoint.Builder newBuilder,
-      final DxfgEndpointBuilder dxfgEndpointBuilder
-  ) {
-    if (oldBuilder != newBuilder) {
-      destroyJavaObjectHandler(dxfgEndpointBuilder.getJavaObjectHandler());
-      dxfgEndpointBuilder.setJavaObjectHandler(createJavaObjectHandler(newBuilder));
-    }
   }
 }
