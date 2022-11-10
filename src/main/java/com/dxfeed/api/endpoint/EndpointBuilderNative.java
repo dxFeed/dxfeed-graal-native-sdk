@@ -36,7 +36,6 @@ public final class EndpointBuilderNative extends BaseNative {
       final DxfgEndpointBuilder dxfgEndpointBuilder
   ) {
     destroyJavaObjectHandler(dxfgEndpointBuilder.getJavaObjectHandler());
-    dxfgEndpointBuilder.setJavaObjectHandler(WordFactory.nullPointer());
     return EXECUTE_SUCCESSFULLY;
   }
 

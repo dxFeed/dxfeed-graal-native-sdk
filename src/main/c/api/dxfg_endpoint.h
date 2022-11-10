@@ -168,6 +168,21 @@ int32_t dxfg_endpoint_builder_build(graal_isolatethread_t *thread, dxfg_endpoint
 int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
+ * @brief Creates an dxfg_endpoint_t with a specified role. The shortcut for
+ * dxfg_endpoint_builder_create()->dxfg_endpoint_builder_with_role(role)->dxfg_endpoint_builder_build().
+ * The created endpoint should be closed with dxfg_endpoint_close()
+ * or dxfg_endpoint_close_and_await_termination() after use.
+ * <br><a
+ * href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#create-com.dxfeed.api.DXEndpoint.Role-">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[out] endpoint The created endpoint.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_create_with_role(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                       dxfg_endpoint_role_t role);
+
+/**
  * @brief Closes this endpoint and release all associated resources.
  * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#close--">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
@@ -177,7 +192,8 @@ int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *end
 int32_t dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
- * @brief Closes this endpoint and wait until all pending data processing tasks are completed.
+ * @brief Closes this endpoint, wait until all pending data processing tasks are completed
+ * and release all associated resources.
  * <br><a href=
  * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#closeAndAwaitTermination--">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
@@ -187,11 +203,46 @@ int32_t dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endp
 int32_t dxfg_endpoint_close_and_await_termination(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
+ * @brief Returns the role of this endpoint.
+ * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getRole--">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] endpoint The endpoint.
+ * @param[out] role The role of this endpoint.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_get_role(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_endpoint_role_t *role);
+
+/**
+ * @brief Changes user name for this endpoint.
+ * This method shall be called before dxfg_endpoint_connect() together with dxfg_endpoint_set_password()
+ * to configure service access credentials.
+ * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#user-java.lang.String-">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] endpoint The endpoint.
+ * @param[in] user The user name.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_set_user(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *user);
+
+/**
+ * @brief Changes password for this endpoint.
+ * This method shall be called before dxfg_endpoint_connect() together with dxfg_endpoint_set_user()
+ * to configure service access credentials.
+ * <br><a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#password-java.lang.String-">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] endpoint The endpoint.
+ * @param[in] password The user password.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_set_password(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *password);
+
+/**
  * @brief Connects to the specified remote address.
  * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#connect-java.lang.String-">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] endpoint The descriptor that was created by dxfg_endpoint_create().
  * @param[in] endpoint The endpoint.
+ * @param[in] address The data source address.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *address);
@@ -222,6 +273,15 @@ int32_t dxfg_endpoint_disconnect(graal_isolatethread_t *thread, dxfg_endpoint_t 
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_disconnect_and_clear(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+
+/**
+ * @brief Waits until this endpoint stops processing data (becomes quiescent).
+ * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#awaitProcessed--">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] endpoint The endpoint.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_await_processed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
  * @brief Waits while this endpoint state becomes DXFG_ENDPOINT_STATE_NOT_CONNECTED or DXFG_ENDPOINT_STATE_CLOSED.

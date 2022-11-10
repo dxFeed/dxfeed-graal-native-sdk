@@ -51,81 +51,86 @@ public final class EndpointNative extends BaseNative {
     return EXECUTE_SUCCESSFULLY;
   }
 
-  public static DXEndpoint create(final Role role) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public static Role getRole() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
   @CEntryPoint(
-      name = "dxfg_endpoint_get_state",
+      name = "dxfg_endpoint_create_with_role",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getState(
+  public static int create(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final CIntPointer result
+      final DxfgEndpointRole role
   ) {
-    result.write(
-        DxfgEndpointState.fromDXEndpointState(
-            getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getState()
-        ).getCValue()
-    );
+    dxfgEndpoint.setJavaObjectHandler(
+        createJavaObjectHandler(DXEndpoint.create(DxfgEndpointRole.toDXEndpointRole(role))));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_add_state_change_listener",
+      name = "dxfg_endpoint_close",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int addStateChangeListener(
+  public static int close(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgStateChangeListener listenerPtr,
-      final VoidPointer userData
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    if (!STATE_CHANGE_LISTENERS.containsKey(listenerPtr.rawValue())) {
-      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-      final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.invoke(
-          CurrentIsolate.getCurrentThread(),
-          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
-          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
-          userData
-      );
-      STATE_CHANGE_LISTENERS.put(listenerPtr.rawValue(), propertyChangeListener);
-      dxEndpoint.addStateChangeListener(propertyChangeListener);
-    }
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).close();
+    destroyDxfgEndpoint(dxfgEndpoint);
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_remove_state_change_listener",
+      name = "dxfg_endpoint_close_and_await_termination",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int removeStateChangeListener(
+  public static int closeAndAwaitTermination(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgStateChangeListener listenerPtr
-  ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
-        .removeStateChangeListener(
-            STATE_CHANGE_LISTENERS.remove(listenerPtr.rawValue())
-        );
+      final DxfgEndpoint dxfgEndpoint
+  ) throws InterruptedException {
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).closeAndAwaitTermination();
+    destroyDxfgEndpoint(dxfgEndpoint);
     return EXECUTE_SUCCESSFULLY;
   }
 
-  public static DXEndpoint executor(Executor executor) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_role",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getRole(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final CIntPointer role
+  ) {
+    role.write(
+        DxfgEndpointRole.fromDXEndpointRole(
+            getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getRole()
+        ).getCValue());
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  public static DXEndpoint user(String user) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_endpoint_set_user",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int user(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final CCharPointer user
+  ) {
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).user(toJavaString(user));
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  public static DXEndpoint password(String password) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_endpoint_set_password",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int password(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final CCharPointer password
+  ) {
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).password(toJavaString(password));
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -178,15 +183,14 @@ public final class EndpointNative extends BaseNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_close",
+      name = "dxfg_endpoint_await_processed",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int close(
+  public static int awaitProcessed(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
-  ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).close();
-    destroyDxfgEndpoint(dxfgEndpoint);
+  ) throws InterruptedException {
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).awaitProcessed();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -202,25 +206,61 @@ public final class EndpointNative extends BaseNative {
     return EXECUTE_SUCCESSFULLY;
   }
 
-  public static void awaitProcessed() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
   @CEntryPoint(
-      name = "dxfg_endpoint_close_and_await_termination",
+      name = "dxfg_endpoint_get_state",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int closeAndAwaitTermination(
+  public static int getState(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
-  ) throws InterruptedException {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).closeAndAwaitTermination();
-    destroyDxfgEndpoint(dxfgEndpoint);
+      final DxfgEndpoint dxfgEndpoint,
+      final CIntPointer state
+  ) {
+    state.write(
+        DxfgEndpointState.fromDXEndpointState(
+            getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getState()
+        ).getCValue()
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
-  public static Set<Class<? extends EventType<?>>> getEventTypes() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_endpoint_add_state_change_listener",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int addStateChangeListener(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgStateChangeListener listenerPtr,
+      final VoidPointer userData
+  ) {
+    if (!STATE_CHANGE_LISTENERS.containsKey(listenerPtr.rawValue())) {
+      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
+      final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.invoke(
+          CurrentIsolate.getCurrentThread(),
+          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
+          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
+          userData
+      );
+      STATE_CHANGE_LISTENERS.put(listenerPtr.rawValue(), propertyChangeListener);
+      dxEndpoint.addStateChangeListener(propertyChangeListener);
+    }
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_endpoint_remove_state_change_listener",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int removeStateChangeListener(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgStateChangeListener listenerPtr
+  ) {
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
+        .removeStateChangeListener(
+            STATE_CHANGE_LISTENERS.remove(listenerPtr.rawValue())
+        );
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -243,10 +283,6 @@ public final class EndpointNative extends BaseNative {
     return EXECUTE_SUCCESSFULLY;
   }
 
-  public static DXPublisher getPublisher() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
   private static void destroyDxfgEndpoint(final DxfgEndpoint dxfgEndpoint) {
     final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
     if (FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
@@ -255,5 +291,17 @@ public final class EndpointNative extends BaseNative {
       );
     }
     destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
+  }
+
+  public static DXEndpoint executor(Executor executor) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  public static Set<Class<? extends EventType<?>>> getEventTypes() {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  public static DXPublisher getPublisher() {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 }
