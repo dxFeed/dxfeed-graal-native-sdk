@@ -250,7 +250,8 @@ void print_exception(graal_isolatethread_t *thread) {
     }
 }
 
-void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state, dxfg_endpoint_state_t new_state, void *user_data) {
+void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
+                                    dxfg_endpoint_state_t new_state, void *user_data) {
     printf("C: state %d -> %d\n", old_state, new_state);
 }
 
@@ -286,9 +287,10 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
     }
 
-    dxfg_endpoint_state_change_listener stateListener = &endpoint_state_change_listener;
-    dxfg_endpoint_add_state_change_listener(thread, &endpoint, stateListener, nullptr);
-
+    dxfg_endpoint_property_change_listener_t stateListener;
+    dxfg_endpoint_create_property_change_listener(thread, endpoint_state_change_listener, nullptr, &stateListener);
+    dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
+    dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
 
     // Connects to an address.
     res = dxfg_endpoint_connect(thread, &endpoint, address.c_str());

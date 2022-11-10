@@ -28,16 +28,7 @@ import org.graalvm.word.WordFactory;
 @CContext(Directives.class)
 public final class EndpointNative extends BaseNative {
 
-  private static final Map<Long, PropertyChangeListener> STATE_CHANGE_LISTENERS = new HashMap<>();
   private static final Map<DXEndpoint, Long> FEED_OBJECT_HANDLES = new HashMap<>();
-
-  public static DXEndpoint getInstance() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public static DXEndpoint getInstance(final Role role) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
 
   @CEntryPoint(
       name = "dxfg_endpoint_create",
@@ -224,26 +215,48 @@ public final class EndpointNative extends BaseNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_endpoint_create_property_change_listener",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int createPropertyChangeListener(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointStateChangeListener userFunc,
+      final VoidPointer userData,
+      final DxfgEndpointPropertyChangeListener listener
+  ) {
+    final PropertyChangeListener propertyChangeListener = changeEvent -> userFunc.invoke(
+        CurrentIsolate.getCurrentThread(),
+        DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
+        DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
+        userData
+    );
+    listener.setJavaObjectHandler(createJavaObjectHandler(propertyChangeListener));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_endpoint_close_property_change_listener",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int closePropertyChangeListener(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointPropertyChangeListener listener
+  ) {
+    destroyJavaObjectHandler(listener.getJavaObjectHandler());
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_endpoint_add_state_change_listener",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
   public static int addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgStateChangeListener listenerPtr,
-      final VoidPointer userData
+      final DxfgEndpointPropertyChangeListener listener
   ) {
-    if (!STATE_CHANGE_LISTENERS.containsKey(listenerPtr.rawValue())) {
-      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-      final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.invoke(
-          CurrentIsolate.getCurrentThread(),
-          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
-          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
-          userData
-      );
-      STATE_CHANGE_LISTENERS.put(listenerPtr.rawValue(), propertyChangeListener);
-      dxEndpoint.addStateChangeListener(propertyChangeListener);
-    }
+    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
+        .addStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -254,12 +267,10 @@ public final class EndpointNative extends BaseNative {
   public static int removeStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgStateChangeListener listenerPtr
+      final DxfgEndpointPropertyChangeListener listener
   ) {
     getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
-        .removeStateChangeListener(
-            STATE_CHANGE_LISTENERS.remove(listenerPtr.rawValue())
-        );
+        .removeStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -291,6 +302,14 @@ public final class EndpointNative extends BaseNative {
       );
     }
     destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
+  }
+
+  public static DXEndpoint getInstance() {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  public static DXEndpoint getInstance(final Role role) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
   public static DXEndpoint executor(Executor executor) {

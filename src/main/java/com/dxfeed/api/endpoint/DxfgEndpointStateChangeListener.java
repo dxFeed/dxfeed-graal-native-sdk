@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
 @CTypedef(name = "dxfg_endpoint_state_change_listener")
-interface DxfgStateChangeListener extends CFunctionPointer {
+interface DxfgEndpointStateChangeListener extends CFunctionPointer {
 
   @InvokeCFunctionPointer
   void invoke(

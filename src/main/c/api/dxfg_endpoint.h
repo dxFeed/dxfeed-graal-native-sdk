@@ -33,6 +33,14 @@ typedef struct dxfg_endpoint_builder_t {
 } dxfg_endpoint_builder_t;
 
 /**
+ * @brief The PropertyChangeListener.
+ * <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>
+ */
+typedef struct dxfg_endpoint_property_change_listener_t {
+    void *java_object_handle;
+} dxfg_endpoint_property_change_listener_t;
+
+/**
  * @brief List of endpoint roles.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html">Javadoc</a>
  */
@@ -172,8 +180,7 @@ int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *end
  * dxfg_endpoint_builder_create()->dxfg_endpoint_builder_with_role(role)->dxfg_endpoint_builder_build().
  * The created endpoint should be closed with dxfg_endpoint_close()
  * or dxfg_endpoint_close_and_await_termination() after use.
- * <br><a
- * href=
+ * <br><a href=
  * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#create-com.dxfeed.api.DXEndpoint.Role-">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[out] endpoint The created endpoint.
@@ -303,6 +310,29 @@ int32_t dxfg_endpoint_await_not_connected(graal_isolatethread_t *thread, dxfg_en
 int32_t dxfg_endpoint_get_state(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_endpoint_state_t *state);
 
 /**
+ * @brief Create property change listener, which can be added with dxfg_endpoint_add_state_change_listener().
+ * The created listener must be released with dxfg_endpoint_close_property_change_listener() after use.
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] user_func The pointer to user function, which will be called after the state change.
+ * @param[in] user_data The pointer to user data.
+ * @param[out] listener The created property change listener.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_create_property_change_listener(graal_isolatethread_t *thread,
+                                                      dxfg_endpoint_state_change_listener user_func, void *user_data,
+                                                      dxfg_endpoint_property_change_listener_t *listener);
+
+/**
+ * @brief Closes property change listener and release all associated resources.
+ * Closing a listener does not cause it to be removed from endpoint.
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[int] listener The property change listener.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_close_property_change_listener(graal_isolatethread_t *thread,
+                                                     dxfg_endpoint_property_change_listener_t *listener);
+
+/**
  * @brief Adds listener that is notified about changes in state connections.
  * Installed listener can be removed with dxfg_endpoint_remove_state_change_listener() function.
  * <br><a href=
@@ -311,10 +341,11 @@ int32_t dxfg_endpoint_get_state(graal_isolatethread_t *thread, dxfg_endpoint_t *
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[in] endpoint The endpoint.
  * @param[in] listener The listener to add.
+ * @param[in] user_data The pointer to user data.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                dxfg_endpoint_state_change_listener listener, void *user_data);
+                                                dxfg_endpoint_property_change_listener_t *listener);
 
 /**
  * @brief Removes listener that is notified about changes in state connections.
@@ -328,7 +359,7 @@ int32_t dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, d
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_remove_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                   dxfg_endpoint_state_change_listener listener);
+                                                   dxfg_endpoint_property_change_listener_t *listener);
 
 /** @} */ // end of Endpoint
 
