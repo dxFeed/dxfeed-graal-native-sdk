@@ -48,7 +48,9 @@
   "queryAllPublicMethods":true,
   "methods":[
     {"name":"setLogin","parameterTypes":["java.lang.String"] },
+    {"name":"setUser","parameterTypes":["java.lang.String"] },
     {"name":"getUser","parameterTypes":[] },
+    {"name":"setPassword","parameterTypes":["java.lang.String"] },
     {"name":"getPassword","parameterTypes":[] }
   ]
 },
@@ -60,7 +62,25 @@
   "name":"com.devexperts.qd.qtp.file.FileConnector",
   "queryAllPublicMethods":true,
   "methods":[
-    {"name":"setSpeed","parameterTypes":["double"] }]
+    {"name":"setSpeed","parameterTypes":["double"] },
+    {"name":"setCycle","parameterTypes":["boolean"] },
+    {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
+    {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }
+  ]
+},
+{
+  "name":"com.devexperts.qd.qtp.MessageType",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"valueOf","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.FileFormat",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"valueOf","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
