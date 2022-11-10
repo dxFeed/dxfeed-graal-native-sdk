@@ -50,7 +50,7 @@ public final class EndpointBuilderNative extends BaseNative {
       DxfgEndpointRole role
   ) {
     getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
-        .withRole(DxfgEndpointRole.toDxEndpointRole(role));
+        .withRole(DxfgEndpointRole.toDXEndpointRole(role));
     return EXECUTE_SUCCESSFULLY;
   }
 

@@ -15,7 +15,7 @@ public enum DxfgEndpointState {
   DXFG_ENDPOINT_STATE_CLOSED,
   ;
 
-  public static DxfgEndpointState fromDxEndpointState(final DXEndpoint.State state) {
+  public static DxfgEndpointState fromDXEndpointState(final DXEndpoint.State state) {
     switch (state) {
       case NOT_CONNECTED:
         return DxfgEndpointState.DXFG_ENDPOINT_STATE_NOT_CONNECTED;
@@ -26,7 +26,7 @@ public enum DxfgEndpointState {
       case CLOSED:
         return DxfgEndpointState.DXFG_ENDPOINT_STATE_CLOSED;
       default:
-        throw new IllegalStateException();
+        throw new IllegalArgumentException("Unknown DXEndpoint.State: " + state.name());
     }
   }
 

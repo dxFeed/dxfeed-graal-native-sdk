@@ -18,7 +18,7 @@ public enum DxfgEndpointRole {
   DXFG_ENDPOINT_ROLE_LOCAL_HUB,
   ;
 
-  public static DXEndpoint.Role toDxEndpointRole(final DxfgEndpointRole role) {
+  public static DXEndpoint.Role toDXEndpointRole(final DxfgEndpointRole role) {
     switch (role) {
       case DXFG_ENDPOINT_ROLE_FEED:
         return Role.FEED;
@@ -33,11 +33,11 @@ public enum DxfgEndpointRole {
       case DXFG_ENDPOINT_ROLE_LOCAL_HUB:
         return Role.LOCAL_HUB;
       default:
-        throw new IllegalStateException();
+        throw new IllegalArgumentException("Unknown DxfgEndpointRole: " + role.getCValue());
     }
   }
 
-  public static DxfgEndpointRole fromDxEndpointRole(final DXEndpoint.Role role) {
+  public static DxfgEndpointRole fromDXEndpointRole(final DXEndpoint.Role role) {
     switch (role) {
       case FEED:
         return DXFG_ENDPOINT_ROLE_FEED;
@@ -52,7 +52,7 @@ public enum DxfgEndpointRole {
       case LOCAL_HUB:
         return DXFG_ENDPOINT_ROLE_LOCAL_HUB;
       default:
-        throw new IllegalStateException();
+        throw new IllegalArgumentException("Unknown DXEndpoint.Role: " + role.name());
     }
   }
 

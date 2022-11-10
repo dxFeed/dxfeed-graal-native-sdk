@@ -69,7 +69,7 @@ public final class EndpointNative extends BaseNative {
       final CIntPointer result
   ) {
     result.write(
-        DxfgEndpointState.fromDxEndpointState(
+        DxfgEndpointState.fromDXEndpointState(
             getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getState()
         ).getCValue()
     );
@@ -90,8 +90,8 @@ public final class EndpointNative extends BaseNative {
       final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
       final PropertyChangeListener propertyChangeListener = changeEvent -> listenerPtr.invoke(
           CurrentIsolate.getCurrentThread(),
-          DxfgEndpointState.fromDxEndpointState((State) changeEvent.getOldValue()),
-          DxfgEndpointState.fromDxEndpointState((State) changeEvent.getNewValue()),
+          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
+          DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
           userData
       );
       STATE_CHANGE_LISTENERS.put(listenerPtr.rawValue(), propertyChangeListener);
