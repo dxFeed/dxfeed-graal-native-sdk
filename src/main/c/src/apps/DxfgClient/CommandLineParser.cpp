@@ -9,7 +9,22 @@ namespace dxfg {
 const std::string CommandLineParser::propertyPattern_ = "-D";
 const std::unordered_map<std::string, dxfg_event_kind_t> CommandLineParser::eventTypesMap_ = {
     {"Quote", DXFG_EVENT_TYPE_QUOTE},
+    {"Series", DXFG_EVENT_TYPE_SERIES},
     {"TimeAndSale", DXFG_EVENT_TYPE_TIME_AND_SALE},
+    {"SpreadOrder", DXFG_EVENT_TYPE_SPREAD_ORDER},
+    {"Order", DXFG_EVENT_TYPE_ORDER},
+    {"AnalyticOrder", DXFG_EVENT_TYPE_ANALYTIC_ORDER},
+    {"Message", DXFG_EVENT_TYPE_MESSAGE},
+    {"OrderBase", DXFG_EVENT_TYPE_ORDER_BASE},
+    {"Configuration", DXFG_EVENT_TYPE_CONFIGURATION},
+    {"Trade", DXFG_EVENT_TYPE_TRADE},
+    {"TradeETH", DXFG_EVENT_TYPE_TRADE_ETH},
+    {"TheoPrice", DXFG_EVENT_TYPE_THEO_PRICE},
+    {"Underlying", DXFG_EVENT_TYPE_UNDERLYING},
+    {"Greeks", DXFG_EVENT_TYPE_GREEKS},
+    {"Summary", DXFG_EVENT_TYPE_SUMMARY},
+    {"Profile", DXFG_EVENT_TYPE_PROFILE},
+    {"DailyCandle", DXFG_EVENT_TYPE_DAILY_CANDLE},
     {"Candle", DXFG_EVENT_TYPE_CANDLE},
 };
 

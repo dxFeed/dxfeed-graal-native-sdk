@@ -26,7 +26,9 @@ public class StringMapper extends Mapper<String, CCharPointer> {
 
   @Override
   protected int size() {
-    throw new IllegalStateException();
+    throw new IllegalStateException(
+        "The size of the string depends on the content. It is an array."
+    );
   }
 
   @Override

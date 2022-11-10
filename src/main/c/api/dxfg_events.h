@@ -222,7 +222,7 @@ typedef struct dxfg_greeks_t {
     dxfg_market_event_t market_event;
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
-    int32_t eventFlags;
+    int32_t event_flags;
 
     int64_t index;
     double price;
@@ -272,15 +272,15 @@ typedef struct dxfg_underlying_t {
     dxfg_market_event_t market_event;
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
-    int32_t eventFlags;
+    int32_t event_flags;
 
     int64_t index;
     double volatility;
-    double frontVolatility;
-    double backVolatility;
-    double callVolume;
-    double putVolume;
-    double putCallRatio;
+    double front_volatility;
+    double back_volatility;
+    double call_volume;
+    double put_volume;
+    double put_call_ratio;
 } dxfg_underlying_t;
 
 /**
@@ -290,11 +290,11 @@ typedef struct dxfg_theo_price_t {
     dxfg_market_event_t market_event;
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
-    int32_t eventFlags;
+    int32_t event_flags;
 
     int64_t index;
     double price;
-    double underlyingPrice;
+    double underlying_price;
     double delta;
     double gamma;
     double dividend;
@@ -307,15 +307,15 @@ typedef struct dxfg_theo_price_t {
 typedef struct dxfg_trade_base_t {
     dxfg_market_event_t market_event;
     //    dxfg_lasting_event_t lasting_event;
-    int64_t timeSequence;
-    int32_t timeNanoPart;
-    int16_t exchangeCode;
+    int64_t time_sequence;
+    int32_t time_nano_part;
+    int16_t exchange_code;
     double price;
     double change;
     double size;
-    int32_t dayId;
-    double dayVolume;
-    double dayTurnover;
+    int32_t day_id;
+    double day_volume;
+    double day_turnover;
     int32_t flags;
 } dxfg_trade_base_t;
 
@@ -337,9 +337,10 @@ typedef struct dxfg_trade_eth_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html">Javadoc</a>
  */
 typedef struct dxfg_configuration_t {
+    dxfg_event_type_t event_type;
     //    dxfg_lasting_event_t lasting_event;
-    const char *eventSymbol;
-    int64_t eventTime;
+    const char *event_symbol;
+    int64_t event_time;
     int32_t version;
     void *attachment;
 } dxfg_configuration_t;
@@ -380,25 +381,25 @@ typedef struct dxfg_time_and_sale_t {
 typedef struct dxfg_order_base_t {
     dxfg_market_event_t market_event;
     //    dxfg_indexed_event_t indexed_event;
-    int32_t eventFlags;
+    int32_t event_flags;
 
     int64_t index;
-    int64_t timeSequence;
-    int32_t timeNanoPart;
+    int64_t time_sequence;
+    int32_t time_nano_part;
 
-    int64_t actionTime;
-    int64_t orderId;
-    int64_t auxOrderId;
+    int64_t action_time;
+    int64_t order_id;
+    int64_t aux_order_id;
 
     double price;
     double size;
-    double executedSize;
+    double executed_size;
     int64_t count;
     int32_t flags;
 
-    int64_t tradeId;
-    double tradePrice;
-    double tradeSize;
+    int64_t trade_id;
+    double trade_price;
+    double trade_size;
 } dxfg_order_base_t;
 
 /**
@@ -406,7 +407,7 @@ typedef struct dxfg_order_base_t {
  */
 typedef struct dxfg_order_t {
     dxfg_order_base_t order_base;
-    const char *marketMaker;
+    const char *market_maker;
 } dxfg_order_t;
 
 /**
@@ -414,10 +415,10 @@ typedef struct dxfg_order_t {
  */
 typedef struct dxfg_analytic_order_t {
     dxfg_order_base_t order_base;
-    double icebergPeakSize;
-    double icebergHiddenSize;
-    double icebergExecutedSize;
-    int32_t icebergFlags;
+    double iceberg_peak_size;
+    double iceberg_hidden_size;
+    double iceberg_executed_size;
+    int32_t iceberg_flags;
 } dxfg_analytic_order_t;
 
 /**
@@ -425,7 +426,7 @@ typedef struct dxfg_analytic_order_t {
  */
 typedef struct dxfg_spread_order_t {
     dxfg_order_base_t order_base;
-    const char *spreadSymbol;
+    const char *spread_symbol;
 } dxfg_spread_order_t;
 
 /**
@@ -435,16 +436,16 @@ typedef struct dxfg_series_t {
     dxfg_market_event_t market_event;
     //    dxfg_indexed_event_t indexed_event;
 
-    int32_t eventFlags;
+    int32_t event_flags;
 
     int64_t index;
-    int64_t timeSequence;
+    int64_t time_sequence;
     int32_t expiration;
     double volatility;
-    double callVolume;
-    double putVolume;
-    double putCallRatio;
-    double forwardPrice;
+    double call_volume;
+    double put_volume;
+    double put_call_ratio;
+    double forward_price;
     double dividend;
     double interest;
 } dxfg_series_t;

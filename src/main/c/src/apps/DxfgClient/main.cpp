@@ -101,7 +101,15 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
                 quote->ask_exchange_code,
                 quote->ask_price,
                 quote->ask_size
-                );
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_SERIES) {
+            auto *event = (dxfg_series_t *)(*(events + i));
+            printf(
+                "C: SERIES{event_symbol=%s, index=%lld, volatility=%f}\n",
+                event->market_event.event_symbol,
+                event->index,
+                event->volatility
+            );
         } else if (pEvent->kind == DXFG_EVENT_TYPE_TIME_AND_SALE) {
             auto *time_and_sale = (dxfg_time_and_sale_t *)(*(events + i));
             printf(
@@ -110,17 +118,124 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
                 time_and_sale->bid_price,
                 time_and_sale->buyer,
                 time_and_sale->seller
-                );
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_SPREAD_ORDER) {
+            auto *event = (dxfg_spread_order_t *)(*(events + i));
+            printf(
+                "C: SPREAD_ORDER{order_base.count=%lld, spread_symbol=%s}\n",
+                event->order_base.count,
+                event->spread_symbol
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_ORDER) {
+            auto *event = (dxfg_order_t *)(*(events + i));
+            printf(
+                "C: ORDER{order_base.count=%lld, market_maker=%s}\n",
+                event->order_base.count,
+                event->market_maker
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_ANALYTIC_ORDER) {
+            auto *event = (dxfg_analytic_order_t *)(*(events + i));
+            printf(
+                "C: ANALYTIC_ORDER{order_base.count=%lld, iceberg_peak_size=%f}\n",
+                event->order_base.count,
+                event->iceberg_peak_size
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_MESSAGE) {
+            auto *event = (dxfg_message_t *)(*(events + i));
+            printf(
+                "C: MESSAGE{event_symbol=%s, event_time=%lld}\n",
+                event->event_symbol,
+                event->event_time
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_ORDER_BASE) {
+            auto *event = (dxfg_order_base_t *)(*(events + i));
+            printf(
+                "C: ORDER_BASE{size=%f, index=%lld}\n",
+                event->size,
+                event->index
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_CONFIGURATION) {
+            auto *event = (dxfg_configuration_t *)(*(events + i));
+            printf(
+                "C: CONFIGURATION{event_symbol=%s, version=%d}\n",
+                event->event_symbol,
+                event->version
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_TRADE) {
+            auto *event = (dxfg_trade_t *)(*(events + i));
+            printf(
+                "C: TRADE{trade_base.size=%f, trade_base.price=%f}\n",
+                event->trade_base.size,
+                event->trade_base.price
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_TRADE_ETH) {
+            auto *event = (dxfg_trade_eth_t *)(*(events + i));
+            printf(
+                "C: TRADE_ETH{trade_base.size=%f, trade_base.price=%f}\n",
+                event->trade_base.size,
+                event->trade_base.price
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_THEO_PRICE) {
+            auto *event = (dxfg_theo_price_t *)(*(events + i));
+            printf(
+                "C: THEO_PRICE{index=%lld, price=%f}\n",
+                event->index,
+                event->price
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_UNDERLYING) {
+            auto *event = (dxfg_underlying_t *)(*(events + i));
+            printf(
+                "C: UNDERLYING{index=%lld, volatility=%f}\n",
+                event->index,
+                event->volatility
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_GREEKS) {
+            auto *event = (dxfg_greeks_t *)(*(events + i));
+            printf(
+                "C: GREEKS{index=%lld, volatility=%f}\n",
+                event->index,
+                event->volatility
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_SUMMARY) {
+            auto *event = (dxfg_summary_t *)(*(events + i));
+            printf(
+                "C: SUMMARY{day_id=%d, day_open_price=%f}\n",
+                event->day_id,
+                event->day_open_price
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_PROFILE) {
+            auto *event = (dxfg_profile_t *)(*(events + i));
+            printf(
+                "C: PROFILE{description=%s, status_reason=%s, high_52_week_price=%f}\n",
+                event->description,
+                event->status_reason,
+                event->high_52_week_price
+            );
         } else if (pEvent->kind == DXFG_EVENT_TYPE_CANDLE) {
-            dxfg_candle_t *candle = (dxfg_candle_t *)(*(events + i));
+            auto *event = (dxfg_candle_t *)(*(events + i));
             printf(
                 "C: CANDLE{symbol=%s, base_symbol=%s, exchange_code=%d, index=%lld, ask_volume=%E}\n",
-                   candle->event_symbol->symbol,
-                candle->event_symbol->base_symbol,
-                candle->event_symbol->exchange->exchange_code,
-                candle->index,
-                candle->ask_volume
-                );
+                event->event_symbol->symbol,
+                event->event_symbol->base_symbol,
+                event->event_symbol->exchange->exchange_code,
+                event->index,
+                event->ask_volume
+            );
+        } else if (pEvent->kind == DXFG_EVENT_TYPE_DAILY_CANDLE) {
+            auto *event = (dxfg_daily_candle_t *)(*(events + i));
+            printf(
+                "C: DAILY_CANDLE{symbol=%s, base_symbol=%s, exchange_code=%d, index=%lld, ask_volume=%E}\n",
+                event->candle.event_symbol->symbol,
+                event->candle.event_symbol->base_symbol,
+                event->candle.event_symbol->exchange->exchange_code,
+                event->candle.index,
+                event->candle.ask_volume
+            );
+        } else {
+            printf(
+                "C: %u{}\n",
+                pEvent->kind
+            );
         }
     }
 

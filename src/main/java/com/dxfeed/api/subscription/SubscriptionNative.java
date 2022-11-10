@@ -11,15 +11,30 @@ import com.dxfeed.api.events.DxfgEventPointer;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
+import com.dxfeed.event.market.AnalyticOrderMapper;
 import com.dxfeed.event.market.CandleExchangeMapper;
 import com.dxfeed.event.market.CandleMapper;
 import com.dxfeed.event.market.CandlePeriodMapper;
 import com.dxfeed.event.market.CandlePriceLevelMapper;
 import com.dxfeed.event.market.CandleSymbolMapper;
+import com.dxfeed.event.market.ConfigurationMapper;
+import com.dxfeed.event.market.DailyCandleMapper;
+import com.dxfeed.event.market.GreeksMapper;
 import com.dxfeed.event.market.ListEventMapper;
+import com.dxfeed.event.market.MessageMapper;
+import com.dxfeed.event.market.OrderBaseMapper;
+import com.dxfeed.event.market.OrderMapper;
+import com.dxfeed.event.market.ProfileMapper;
 import com.dxfeed.event.market.QuoteMapper;
+import com.dxfeed.event.market.SeriesMapper;
+import com.dxfeed.event.market.SpreadOrderMapper;
 import com.dxfeed.event.market.StringMapper;
+import com.dxfeed.event.market.SummaryMapper;
+import com.dxfeed.event.market.TheoPriceMapper;
 import com.dxfeed.event.market.TimeAndSaleMapper;
+import com.dxfeed.event.market.TradeETHMapper;
+import com.dxfeed.event.market.TradeMapper;
+import com.dxfeed.event.market.UnderlyingMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,17 +57,31 @@ public class SubscriptionNative extends BaseNative {
 
   static {
     final StringMapper stringMapper = new StringMapper();
+    final CandleSymbolMapper candleSymbolMapper = new CandleSymbolMapper(
+        stringMapper,
+        new CandlePeriodMapper(stringMapper),
+        new CandleExchangeMapper(),
+        new CandlePriceLevelMapper()
+    );
     EVENT_MAPPER = new ListEventMapper(
         new QuoteMapper(stringMapper),
+        new SeriesMapper(stringMapper),
         new TimeAndSaleMapper(stringMapper),
-        new CandleMapper(
-            new CandleSymbolMapper(
-                stringMapper,
-                new CandlePeriodMapper(stringMapper),
-                new CandleExchangeMapper(),
-                new CandlePriceLevelMapper()
-            )
-        )
+        new SpreadOrderMapper(stringMapper),
+        new OrderMapper(stringMapper),
+        new AnalyticOrderMapper(stringMapper),
+        new MessageMapper(stringMapper),
+        new OrderBaseMapper(stringMapper),
+        new ConfigurationMapper(stringMapper),
+        new TradeMapper(stringMapper),
+        new TradeETHMapper(stringMapper),
+        new TheoPriceMapper(stringMapper),
+        new UnderlyingMapper(stringMapper),
+        new GreeksMapper(stringMapper),
+        new SummaryMapper(stringMapper),
+        new ProfileMapper(stringMapper),
+        new DailyCandleMapper(candleSymbolMapper),
+        new CandleMapper(candleSymbolMapper)
     );
   }
 
