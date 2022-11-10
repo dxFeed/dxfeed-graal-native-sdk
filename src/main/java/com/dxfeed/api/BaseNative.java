@@ -22,6 +22,10 @@ public abstract class BaseNative {
     return getJavaObject(objectHandle);
   }
 
+  protected static DXEndpoint.Builder getDxEndpointBuilder(final ObjectHandle objectHandle) {
+    return getJavaObject(objectHandle);
+  }
+
   protected static DXFeedSubscription<EventType<?>> getDxFeedSubscription(
       final ObjectHandle objectHandle
   ) {

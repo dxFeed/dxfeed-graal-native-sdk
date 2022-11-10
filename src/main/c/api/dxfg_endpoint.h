@@ -24,6 +24,25 @@ typedef struct dxfg_endpoint_t {
 } dxfg_endpoint_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html">Javadoc</a>
+ */
+typedef struct dxfg_endpoint_builder_t {
+    void *java_object_handle;
+} dxfg_endpoint_builder_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html">Javadoc</a>
+ */
+typedef enum dxfg_endpoint_role_t {
+    DXFG_ENDPOINT_ROLE_FEED = 0,
+    DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED,
+    DXFG_ENDPOINT_ROLE_STREAM_FEED,
+    DXFG_ENDPOINT_ROLE_PUBLISHER,
+    DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER,
+    DXFG_ENDPOINT_ROLE_LOCAL_HUB,
+} dxfg_endpoint_role_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.State.html">Javadoc</a>
  */
 typedef enum dxfg_endpoint_state_t {
@@ -37,7 +56,25 @@ typedef enum dxfg_endpoint_state_t {
  * <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>
  */
 typedef void (*dxfg_endpoint_state_change_listener)(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
-                                                dxfg_endpoint_state_t new_state, void *user_data);
+                                                    dxfg_endpoint_state_t new_state, void *user_data);
+
+/** @defgroup Builder
+ *  @{
+ */
+
+int32_t dxfg_endpoint_builder_create(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);
+int32_t dxfg_endpoint_builder_close(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);
+int32_t dxfg_endpoint_builder_with_role(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                        dxfg_endpoint_role_t role);
+int32_t dxfg_endpoint_builder_with_name(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                        const char *name);
+int32_t dxfg_endpoint_builder_with_property(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                            const char *key, const char *value);
+int32_t dxfg_endpoint_builder_supports_property(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                                const char *key, int32_t *isSupports);
+int32_t dxfg_endpoint_builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                    dxfg_endpoint_t *endpoint);
+/** @} */ // end of Builder
 
 int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 int32_t dxfg_endpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);

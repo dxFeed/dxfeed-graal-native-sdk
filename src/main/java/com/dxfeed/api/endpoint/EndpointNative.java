@@ -4,7 +4,6 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 
 import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXEndpoint;
-import com.dxfeed.api.DXEndpoint.Builder;
 import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXEndpoint.State;
 import com.dxfeed.api.DXPublisher;
@@ -37,10 +36,6 @@ public final class EndpointNative extends BaseNative {
   }
 
   public static DXEndpoint getInstance(final Role role) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public static Builder newBuilder() {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
