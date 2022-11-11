@@ -15,7 +15,10 @@ public abstract class Mapper<V, T extends PointerBase> {
     return nObject;
   }
 
-  public final void delete(final T nObject) {
+  public void delete(final T nObject) {
+    if (nObject.isNull()) {
+      return;
+    }
     cleanNativeObject(nObject);
     UnmanagedMemory.free(nObject);
   }

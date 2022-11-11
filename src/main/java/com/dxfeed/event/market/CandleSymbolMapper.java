@@ -6,16 +6,17 @@ import com.dxfeed.api.events.DxfgCandleSession;
 import com.dxfeed.api.events.DxfgCandleSymbol;
 import com.dxfeed.event.candle.CandleSymbol;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class CandleSymbolMapper extends Mapper<CandleSymbol, DxfgCandleSymbol> {
 
-  protected final StringMapper stringMapper;
+  protected final Mapper<String, CCharPointer> stringMapper;
   protected final CandlePeriodMapper candlePeriodMapper;
   protected final CandleExchangeMapper candleExchangeMapper;
   protected final CandlePriceLevelMapper candlePriceLevelMapper;
 
   public CandleSymbolMapper(
-      final StringMapper stringMapper,
+      final Mapper<String, CCharPointer> stringMapper,
       final CandlePeriodMapper candlePeriodMapper,
       final CandleExchangeMapper candleExchangeMapper,
       final CandlePriceLevelMapper candlePriceLevelMapper

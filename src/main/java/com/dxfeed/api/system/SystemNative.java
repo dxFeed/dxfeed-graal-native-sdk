@@ -5,7 +5,8 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.event.market.StringMapper;
+import com.dxfeed.event.market.Mapper;
+import com.dxfeed.event.market.StringMapperUnlimitedStore;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -14,7 +15,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 @CContext(Directives.class)
 public final class SystemNative extends BaseNative {
 
-  private static final StringMapper STRING_MAPPER = new StringMapper();
+  private static final Mapper<String, CCharPointer> STRING_MAPPER = new StringMapperUnlimitedStore();
 
   @CEntryPoint(
       name = "dxfg_system_set_property",
@@ -38,7 +39,17 @@ public final class SystemNative extends BaseNative {
       final CCharPointer key
   ) {
     return STRING_MAPPER.nativeObject(System.getProperty(toJavaString(key)));
-    //TODO STRING_MAPPER#delete
   }
 
+  @CEntryPoint(
+      name = "dxfg_system_release_property",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int releaseSystemProperty(
+      final IsolateThread ignoredThread,
+      final CCharPointer value
+  ) {
+    STRING_MAPPER.delete(value);
+    return EXECUTE_SUCCESSFULLY;
+  }
 }

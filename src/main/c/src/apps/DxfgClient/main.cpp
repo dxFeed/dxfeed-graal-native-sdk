@@ -88,7 +88,7 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
         if (pEvent->kind == DXFG_EVENT_TYPE_QUOTE) {
             auto *quote = (dxfg_quote_t *)(*(events + i));
             printf(
-                "C: QUOTE{event_symbol=%s, event_time=%lld, time_millis_sequence=%d, time_nano_part=%d, bid_time=%lld, bid_exchange_code=%d, bid_price=%E, ask_time=%f, ask_exchange_code=%lld, ask_price=%hd, ask_size=%E}\n",
+                "C: QUOTE{event_symbol=%s, event_time=%lld, time_millis_sequence=%d, time_nano_part=%d, bid_time=%lld, bid_exchange_code=%d, bid_price=%E, bid_size=%E, ask_time=%lld, ask_exchange_code=%hd, ask_price=%f, ask_size=%E}\n",
                 quote->market_event.event_symbol,
                 quote->market_event.event_time,
                 quote->time_millis_sequence,
@@ -113,9 +113,10 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
         } else if (pEvent->kind == DXFG_EVENT_TYPE_TIME_AND_SALE) {
             auto *time_and_sale = (dxfg_time_and_sale_t *)(*(events + i));
             printf(
-                "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, buyer=%s, seller=%s}\n",
+                "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, exchange_sale_conditions=%s, buyer=%s, seller=%s}\n",
                 time_and_sale->market_event.event_symbol,
                 time_and_sale->bid_price,
+                time_and_sale->exchange_sale_conditions,
                 time_and_sale->buyer,
                 time_and_sale->seller
             );
@@ -242,9 +243,11 @@ void c_print(graal_isolatethread_t *thread, const dxfg_event_type_t **events, in
 }
 
 void print_exception(graal_isolatethread_t *thread) {
-    dxfg_exception_t exception;
-    dxfg_get_and_clear_thread_exception_t(thread, &exception);
-    printf("C: %s\n", exception.stackTrace);
+    dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
+    if (exception) {
+        printf("C: %s\n", exception->stackTrace);
+        dxfg_release_exception_t(thread, exception);
+    }
 }
 
 void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state, dxfg_endpoint_state_t new_state, void *user_data) {

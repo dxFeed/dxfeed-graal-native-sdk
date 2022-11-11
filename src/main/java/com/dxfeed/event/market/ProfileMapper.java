@@ -3,11 +3,19 @@ package com.dxfeed.event.market;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgProfile;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
+public class ProfileMapper extends Mapper<Profile, DxfgProfile> {
 
-  public ProfileMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+  private final Mapper<String, CCharPointer> stringMapper;
+
+  public ProfileMapper(
+      final MarketEventMapper marketEventMapper,
+      final Mapper<String, CCharPointer> stringMapper
+  ) {
+    this.marketEventMapper = marketEventMapper;
+    this.stringMapper = stringMapper;
   }
 
   @Override
@@ -16,10 +24,11 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgProfile nObject, final Profile jObject) {
+  protected void fillNativeObject(final DxfgProfile nObject, final Profile jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_PROFILE.getCValue());
-    nObject.setDescription(super.stringMapper.nativeObject(jObject.getDescription()));
-    nObject.setStatusReason(super.stringMapper.nativeObject(jObject.getStatusReason()));
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
+    nObject.setDescription(this.stringMapper.nativeObject(jObject.getDescription()));
+    nObject.setStatusReason(this.stringMapper.nativeObject(jObject.getStatusReason()));
     nObject.setHaltStartTime(jObject.getHaltStartTime());
     nObject.setHaltEndTime(jObject.getHaltEndTime());
     nObject.setHighLimitPrice(jObject.getHighLimitPrice());
@@ -30,8 +39,9 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgProfile nObject) {
-    super.stringMapper.delete(nObject.getDescription());
-    super.stringMapper.delete(nObject.getStatusReason());
+  protected void cleanNativeObject(final DxfgProfile nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
+    this.stringMapper.delete(nObject.getDescription());
+    this.stringMapper.delete(nObject.getStatusReason());
   }
 }

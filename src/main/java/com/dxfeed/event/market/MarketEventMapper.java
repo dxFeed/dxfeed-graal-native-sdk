@@ -1,31 +1,30 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.api.events.DxfgMarketEvent;
+import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public abstract class MarketEventMapper
-    <V extends MarketEvent, T extends DxfgMarketEvent>
-    extends Mapper<V, T> {
+public class MarketEventMapper extends Mapper<MarketEvent, DxfgMarketEvent> {
 
-  protected final StringMapper stringMapper;
+  private final Mapper<String, CCharPointer> stringMapper;
 
-  protected MarketEventMapper(final StringMapper stringMapper) {
-    this.stringMapper = stringMapper;
+  public MarketEventMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
+    this.stringMapper = stringMapperForMarketEvent;
   }
 
   @Override
-  protected final void fillNativeObject(final T nObject, final V jObject) {
+  protected int size() {
+    return SizeOf.get(DxfgMarketEvent.class);
+  }
+
+  @Override
+  protected final void fillNativeObject(final DxfgMarketEvent nObject, final MarketEvent jObject) {
     nObject.setEventSymbol(stringMapper.nativeObject(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
-    doFillNativeObject(nObject, jObject);
   }
 
   @Override
-  protected final void cleanNativeObject(final T nObject) {
+  protected final void cleanNativeObject(final DxfgMarketEvent nObject) {
     stringMapper.delete(nObject.getEventSymbol());
-    doCleanNativeObject(nObject);
   }
-
-  protected abstract void doFillNativeObject(final T nObject, final V jObject);
-
-  protected abstract void doCleanNativeObject(final T nObject);
 }

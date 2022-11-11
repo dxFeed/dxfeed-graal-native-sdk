@@ -3,11 +3,19 @@ package com.dxfeed.event.market;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgTimeAndSale;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAndSale> {
+public class TimeAndSaleMapper extends Mapper<TimeAndSale, DxfgTimeAndSale> {
 
-  public TimeAndSaleMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+  private final Mapper<String, CCharPointer> stringMapper;
+
+  public TimeAndSaleMapper(
+      final MarketEventMapper marketEventMapper,
+      final Mapper<String, CCharPointer> stringMapper
+  ) {
+    this.marketEventMapper = marketEventMapper;
+    this.stringMapper = stringMapper;
   }
 
   @Override
@@ -16,8 +24,9 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgTimeAndSale nObject, final TimeAndSale jObject) {
+  protected void fillNativeObject(final DxfgTimeAndSale nObject, final TimeAndSale jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_TIME_AND_SALE.getCValue());
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
@@ -27,17 +36,18 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     nObject.setBidPrice(jObject.getBidPrice());
     nObject.setAskPrice(jObject.getAskPrice());
     nObject.setExchangeSaleConditions(
-        super.stringMapper.nativeObject(jObject.getExchangeSaleConditions())
+        this.stringMapper.nativeObject(jObject.getExchangeSaleConditions())
     );
     nObject.setFlags(jObject.getFlags());
-    nObject.setBuyer(super.stringMapper.nativeObject(jObject.getBuyer()));
-    nObject.setSeller(super.stringMapper.nativeObject(jObject.getSeller()));
+    nObject.setBuyer(this.stringMapper.nativeObject(jObject.getBuyer()));
+    nObject.setSeller(this.stringMapper.nativeObject(jObject.getSeller()));
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgTimeAndSale nObject) {
-    super.stringMapper.delete(nObject.getExchangeSaleConditions());
-    super.stringMapper.delete(nObject.getBuyer());
-    super.stringMapper.delete(nObject.getSeller());
+  protected void cleanNativeObject(final DxfgTimeAndSale nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
+    this.stringMapper.delete(nObject.getExchangeSaleConditions());
+    this.stringMapper.delete(nObject.getBuyer());
+    this.stringMapper.delete(nObject.getSeller());
   }
 }

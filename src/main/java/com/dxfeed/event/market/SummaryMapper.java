@@ -4,10 +4,12 @@ import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgSummary;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
+public class SummaryMapper extends Mapper<Summary, DxfgSummary> {
 
-  public SummaryMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+
+  public SummaryMapper(final MarketEventMapper marketEventMapper) {
+    this.marketEventMapper = marketEventMapper;
   }
 
   @Override
@@ -16,8 +18,9 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgSummary nObject, final Summary jObject) {
+  protected void fillNativeObject(final DxfgSummary nObject, final Summary jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_SUMMARY.getCValue());
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setDayId(jObject.getDayId());
     nObject.setDayOpenPrice(jObject.getDayOpenPrice());
     nObject.setDayHighPrice(jObject.getDayHighPrice());
@@ -31,7 +34,7 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgSummary nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgSummary nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
   }
 }

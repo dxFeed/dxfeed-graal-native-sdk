@@ -4,12 +4,13 @@ import com.dxfeed.api.events.DxfgConfiguration;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.event.misc.Configuration;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ConfigurationMapper extends Mapper<Configuration, DxfgConfiguration> {
 
-  protected final StringMapper stringMapper;
+  protected final Mapper<String, CCharPointer> stringMapper;
 
-  public ConfigurationMapper(final StringMapper stringMapper) {
+  public ConfigurationMapper(final Mapper<String, CCharPointer> stringMapper) {
     this.stringMapper = stringMapper;
   }
 

@@ -3,14 +3,17 @@ package com.dxfeed.event.market;
 import com.dxfeed.api.events.DxfgTradeBase;
 
 public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBase> extends
-    MarketEventMapper<V, T> {
+    Mapper<V, T> {
 
-  public TradeBaseMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+
+  public TradeBaseMapper(final MarketEventMapper marketEventMapper) {
+    this.marketEventMapper = marketEventMapper;
   }
 
   @Override
-  protected void doFillNativeObject(final T nObject, final V jObject) {
+  protected void fillNativeObject(final T nObject, final V jObject) {
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setTimeSequence(jObject.getTimeSequence());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
     nObject.setExchangeCode(jObject.getExchangeCode());
@@ -21,5 +24,10 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
     nObject.setDayVolume(jObject.getDayVolume());
     nObject.setDayTurnover(jObject.getDayTurnover());
     nObject.setFlags(jObject.getFlags());
+  }
+
+  @Override
+  protected void cleanNativeObject(final T nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
   }
 }

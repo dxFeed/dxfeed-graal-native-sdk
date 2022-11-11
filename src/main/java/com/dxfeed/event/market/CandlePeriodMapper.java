@@ -4,12 +4,13 @@ import com.dxfeed.api.events.DxfgCandlePeriod;
 import com.dxfeed.api.events.DxfgCandleType;
 import com.dxfeed.event.candle.CandlePeriod;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class CandlePeriodMapper extends Mapper<CandlePeriod, DxfgCandlePeriod> {
 
-  protected final StringMapper stringMapper;
+  protected final Mapper<String, CCharPointer> stringMapper;
 
-  public CandlePeriodMapper(final StringMapper stringMapper) {
+  public CandlePeriodMapper(final Mapper<String, CCharPointer> stringMapper) {
     this.stringMapper = stringMapper;
   }
 

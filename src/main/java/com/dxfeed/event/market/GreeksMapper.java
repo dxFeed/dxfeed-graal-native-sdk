@@ -5,10 +5,12 @@ import com.dxfeed.api.events.DxfgGreeks;
 import com.dxfeed.event.option.Greeks;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
+public class GreeksMapper extends Mapper<Greeks, DxfgGreeks> {
 
-  public GreeksMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+
+  public GreeksMapper(final MarketEventMapper marketEventMapper) {
+    this.marketEventMapper = marketEventMapper;
   }
 
   @Override
@@ -17,8 +19,9 @@ public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgGreeks nObject, final Greeks jObject) {
+  protected void fillNativeObject(final DxfgGreeks nObject, final Greeks jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_GREEKS.getCValue());
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setPrice(jObject.getPrice());
@@ -31,7 +34,7 @@ public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgGreeks nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgGreeks nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
   }
 }

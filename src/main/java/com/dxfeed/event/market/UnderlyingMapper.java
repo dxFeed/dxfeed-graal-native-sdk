@@ -5,10 +5,12 @@ import com.dxfeed.api.events.DxfgUnderlying;
 import com.dxfeed.event.option.Underlying;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlying> {
+public class UnderlyingMapper extends Mapper<Underlying, DxfgUnderlying> {
 
-  public UnderlyingMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+
+  public UnderlyingMapper(final MarketEventMapper marketEventMapper) {
+    this.marketEventMapper = marketEventMapper;
   }
 
   @Override
@@ -17,8 +19,9 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgUnderlying nObject, final Underlying jObject) {
+  protected void fillNativeObject(final DxfgUnderlying nObject, final Underlying jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_UNDERLYING.getCValue());
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setVolatility(jObject.getVolatility());
@@ -29,7 +32,7 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgUnderlying nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgUnderlying nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
   }
 }

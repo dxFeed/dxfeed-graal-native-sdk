@@ -6,8 +6,8 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
 
-  public TradeMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  public TradeMapper(final MarketEventMapper marketEventMapper) {
+    super(marketEventMapper);
   }
 
   @Override
@@ -16,13 +16,13 @@ public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgTrade nObject, final Trade jObject) {
+  protected void fillNativeObject(final DxfgTrade nObject, final Trade jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_TRADE.getCValue());
-    super.doFillNativeObject(nObject, jObject);
+    super.fillNativeObject(nObject, jObject);
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgTrade nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgTrade nObject) {
+    super.cleanNativeObject(nObject);
   }
 }

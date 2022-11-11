@@ -1,6 +1,7 @@
 package com.dxfeed.api.subscription;
 
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXFeed;
@@ -19,8 +20,11 @@ import com.dxfeed.event.market.CandlePriceLevelMapper;
 import com.dxfeed.event.market.CandleSymbolMapper;
 import com.dxfeed.event.market.ConfigurationMapper;
 import com.dxfeed.event.market.DailyCandleMapper;
+import com.dxfeed.event.market.EventMappersImpl;
 import com.dxfeed.event.market.GreeksMapper;
 import com.dxfeed.event.market.ListEventMapper;
+import com.dxfeed.event.market.Mapper;
+import com.dxfeed.event.market.MarketEventMapper;
 import com.dxfeed.event.market.MessageMapper;
 import com.dxfeed.event.market.OrderBaseMapper;
 import com.dxfeed.event.market.OrderMapper;
@@ -29,6 +33,8 @@ import com.dxfeed.event.market.QuoteMapper;
 import com.dxfeed.event.market.SeriesMapper;
 import com.dxfeed.event.market.SpreadOrderMapper;
 import com.dxfeed.event.market.StringMapper;
+import com.dxfeed.event.market.StringMapperCacheStore;
+import com.dxfeed.event.market.StringMapperUnlimitedStore;
 import com.dxfeed.event.market.SummaryMapper;
 import com.dxfeed.event.market.TheoPriceMapper;
 import com.dxfeed.event.market.TimeAndSaleMapper;
@@ -42,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -54,34 +62,40 @@ public class SubscriptionNative extends BaseNative {
 
   private static final ListEventMapper EVENT_MAPPER;
   private static final Map<Long, DXFeedEventListener<EventType<?>>> EVENT_LISTENERS = new HashMap<>();
+  private static final StringMapperCacheStore STRING_MAPPER_CACHE_STORE = new StringMapperCacheStore(3000);
 
   static {
-    final StringMapper stringMapper = new StringMapper();
+    final Mapper<String, CCharPointer> stringMapper = new StringMapper();
+    final Mapper<String, CCharPointer> stringMapperUnlimitedStore = new StringMapperUnlimitedStore();
+
     final CandleSymbolMapper candleSymbolMapper = new CandleSymbolMapper(
-        stringMapper,
-        new CandlePeriodMapper(stringMapper),
+        stringMapperUnlimitedStore,
+        new CandlePeriodMapper(STRING_MAPPER_CACHE_STORE),
         new CandleExchangeMapper(),
         new CandlePriceLevelMapper()
     );
+    final MarketEventMapper marketEventMapper = new MarketEventMapper(stringMapperUnlimitedStore);
     EVENT_MAPPER = new ListEventMapper(
-        new QuoteMapper(stringMapper),
-        new SeriesMapper(stringMapper),
-        new TimeAndSaleMapper(stringMapper),
-        new SpreadOrderMapper(stringMapper),
-        new OrderMapper(stringMapper),
-        new AnalyticOrderMapper(stringMapper),
-        new MessageMapper(stringMapper),
-        new OrderBaseMapper(stringMapper),
-        new ConfigurationMapper(stringMapper),
-        new TradeMapper(stringMapper),
-        new TradeETHMapper(stringMapper),
-        new TheoPriceMapper(stringMapper),
-        new UnderlyingMapper(stringMapper),
-        new GreeksMapper(stringMapper),
-        new SummaryMapper(stringMapper),
-        new ProfileMapper(stringMapper),
-        new DailyCandleMapper(candleSymbolMapper),
-        new CandleMapper(candleSymbolMapper)
+        new EventMappersImpl(
+            new QuoteMapper(marketEventMapper),
+            new SeriesMapper(marketEventMapper),
+            new TimeAndSaleMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
+            new SpreadOrderMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
+            new OrderMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
+            new AnalyticOrderMapper(marketEventMapper),
+            new MessageMapper(stringMapper),
+            new OrderBaseMapper(marketEventMapper),
+            new ConfigurationMapper(stringMapper),
+            new TradeMapper(marketEventMapper),
+            new TradeETHMapper(marketEventMapper),
+            new TheoPriceMapper(marketEventMapper),
+            new UnderlyingMapper(marketEventMapper),
+            new GreeksMapper(marketEventMapper),
+            new SummaryMapper(marketEventMapper),
+            new ProfileMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
+            new DailyCandleMapper(candleSymbolMapper),
+            new CandleMapper(candleSymbolMapper)
+        )
     );
   }
 
@@ -186,11 +200,11 @@ public class SubscriptionNative extends BaseNative {
       final VoidPointer userData
   ) {
     if (!EVENT_LISTENERS.containsKey(dxfgEventListener.rawValue())) {
+      SingletonScheduledExecutorService.start(STRING_MAPPER_CACHE_STORE::cleanUp, 1000);
       final DXFeedEventListener<EventType<?>> listener = events -> {
         final DxfgEventPointer nativeEvents = EVENT_MAPPER.nativeObject(events);
-        final IsolateThread currentThread = CurrentIsolate.getCurrentThread();
         final int size = events.size();
-        dxfgEventListener.invoke(currentThread, nativeEvents, size, userData);
+        dxfgEventListener.invoke(CurrentIsolate.getCurrentThread(), nativeEvents, size, userData);
         EVENT_MAPPER.delete(nativeEvents, size);
       };
       EVENT_LISTENERS.put(dxfgEventListener.rawValue(), listener);
@@ -243,9 +257,7 @@ public class SubscriptionNative extends BaseNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public boolean containsEventType(
-      final Class<?> eventType
-  ) {
+  public boolean containsEventType(final Class<?> eventType) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
@@ -253,15 +265,11 @@ public class SubscriptionNative extends BaseNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public void setSymbols(
-      final Collection<?> symbols
-  ) {
+  public void setSymbols(final Collection<?> symbols) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public void setSymbols(
-      final Object... symbols
-  ) {
+  public void setSymbols(final Object... symbols) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
@@ -273,15 +281,11 @@ public class SubscriptionNative extends BaseNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public void setExecutor(
-      final Executor executor
-  ) {
+  public void setExecutor(final Executor executor) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public synchronized void addChangeListener(
-      final ObservableSubscriptionChangeListener listener
-  ) {
+  public synchronized void addChangeListener(final ObservableSubscriptionChangeListener listener) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
@@ -289,5 +293,26 @@ public class SubscriptionNative extends BaseNative {
       final ObservableSubscriptionChangeListener listener
   ) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+}
+
+class SingletonScheduledExecutorService {
+
+  private static volatile ScheduledExecutorService instance;
+
+  public static void start(final Runnable task, final int periodInMs) {
+    if (instance == null) {
+      synchronized (SingletonScheduledExecutorService.class) {
+        if (instance == null) {
+          instance = Executors.newScheduledThreadPool(1, runnable -> {
+            final Thread thread = new Thread(runnable);
+            thread.setDaemon(true);
+            thread.setName("clean cache");
+            return thread;
+          });
+          instance.scheduleAtFixedRate(task, periodInMs, periodInMs, MILLISECONDS);
+        }
+      }
+    }
   }
 }

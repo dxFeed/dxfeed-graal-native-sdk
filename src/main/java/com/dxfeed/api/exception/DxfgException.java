@@ -8,7 +8,7 @@ import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_exception_t")
-interface DxfgException extends PointerBase {
+public interface DxfgException extends PointerBase {
 
   @CField("className")
   CCharPointer getClassName();

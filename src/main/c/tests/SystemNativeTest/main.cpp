@@ -16,7 +16,7 @@ TEST_CASE("Check reads unset property", "[SystemNative]") {
     auto prop = dxfg_system_get_property(thread, "first_prop");
     REQUIRE(prop == nullptr);
     // Frees nullptr does not result in an error.
-    dxfg_utils_free(thread, (void *)(prop));
+    dxfg_system_release_property(thread, prop);
 
     // Tear down graal.
     graal_result = graal_detach_all_threads_and_tear_down_isolate(thread);
@@ -49,7 +49,7 @@ TEST_CASE("Check write/read property", "[SystemNative]") {
         auto currentVal = dxfg_system_get_property(thread, currentKey.c_str());
         REQUIRE(currentVal != nullptr);
         REQUIRE(std::string(currentVal) == expectedVal);
-        dxfg_utils_free(thread, (void *)currentVal);
+        dxfg_system_release_property(thread, currentVal);
     }
 
     // Tear down graal.
@@ -93,12 +93,12 @@ TEST_CASE("Check in different isolate", "[SystemNative]") {
         auto currentVal = dxfg_system_get_property(threadFirst, currentKey.c_str());
         REQUIRE(currentVal != nullptr);
         REQUIRE(std::string(currentVal) == expectedValFirst);
-        dxfg_utils_free(threadFirst, (void *)currentVal);
+        dxfg_system_release_property(threadFirst, currentVal);
 
         currentVal = dxfg_system_get_property(threadSecond, currentKey.c_str());
         REQUIRE(currentVal != nullptr);
         REQUIRE(std::string(currentVal) == expectedValSecond);
-        dxfg_utils_free(threadFirst, (void *)currentVal);
+        dxfg_system_release_property(threadFirst, currentVal);
     }
 
     // Tear down graal.

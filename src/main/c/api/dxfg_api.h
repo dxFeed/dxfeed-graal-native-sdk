@@ -12,7 +12,6 @@ extern "C" {
 #include "dxfg_events.h"
 #include "dxfg_feed.h"
 #include "dxfg_system.h"
-#include "dxfg_utils.h"
 #include "graal_isolate.h"
 #include "graal_isolate_dynamic.h"
 

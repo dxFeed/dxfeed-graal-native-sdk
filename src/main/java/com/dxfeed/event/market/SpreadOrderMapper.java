@@ -3,11 +3,18 @@ package com.dxfeed.event.market;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgSpreadOrder;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpreadOrder> {
 
-  public SpreadOrderMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final Mapper<String, CCharPointer> stringMapper;
+
+  public SpreadOrderMapper(
+      final MarketEventMapper marketEventMapper,
+      final Mapper<String, CCharPointer> stringMapper
+  ) {
+    super(marketEventMapper);
+    this.stringMapper = stringMapper;
   }
 
   @Override
@@ -16,14 +23,15 @@ public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpre
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgSpreadOrder nObject, final SpreadOrder jObject) {
+  protected void fillNativeObject(final DxfgSpreadOrder nObject, final SpreadOrder jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_SPREAD_ORDER.getCValue());
-    super.doFillNativeObject(nObject, jObject);
-    nObject.setSpreadSymbol(super.stringMapper.nativeObject(jObject.getSpreadSymbol()));
+    super.fillNativeObject(nObject, jObject);
+    nObject.setSpreadSymbol(this.stringMapper.nativeObject(jObject.getSpreadSymbol()));
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgSpreadOrder nObject) {
-    super.stringMapper.delete(nObject.getSpreadSymbol());
+  protected void cleanNativeObject(final DxfgSpreadOrder nObject) {
+    super.cleanNativeObject(nObject);
+    this.stringMapper.delete(nObject.getSpreadSymbol());
   }
 }

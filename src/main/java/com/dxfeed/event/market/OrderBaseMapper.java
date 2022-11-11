@@ -6,8 +6,8 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class OrderBaseMapper extends OrderAbstractMapper<OrderBase, DxfgOrderBase> {
 
-  public OrderBaseMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  public OrderBaseMapper(final MarketEventMapper marketEventMapper) {
+    super(marketEventMapper);
   }
 
   @Override
@@ -16,13 +16,13 @@ public class OrderBaseMapper extends OrderAbstractMapper<OrderBase, DxfgOrderBas
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgOrderBase nObject, final OrderBase jObject) {
+  protected void fillNativeObject(final DxfgOrderBase nObject, final OrderBase jObject) {
+    super.fillNativeObject(nObject, jObject);
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_ORDER_BASE.getCValue());
-    super.doFillNativeObject(nObject, jObject);
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgOrderBase nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgOrderBase nObject) {
+    super.cleanNativeObject(nObject);
   }
 }

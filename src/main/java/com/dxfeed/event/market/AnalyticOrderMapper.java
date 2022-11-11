@@ -6,8 +6,8 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class AnalyticOrderMapper extends OrderAbstractMapper<AnalyticOrder, DxfgAnalyticOrder> {
 
-  public AnalyticOrderMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  public AnalyticOrderMapper(final MarketEventMapper marketEventMapper) {
+    super(marketEventMapper);
   }
 
   @Override
@@ -16,9 +16,9 @@ public class AnalyticOrderMapper extends OrderAbstractMapper<AnalyticOrder, Dxfg
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgAnalyticOrder nObject, final AnalyticOrder jObject) {
+  protected void fillNativeObject(final DxfgAnalyticOrder nObject, final AnalyticOrder jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_ANALYTIC_ORDER.getCValue());
-    super.doFillNativeObject(nObject, jObject);
+    super.fillNativeObject(nObject, jObject);
     nObject.setIcebergPeakSize(jObject.getIcebergPeakSize());
     nObject.setIcebergHiddenSize(jObject.getIcebergHiddenSize());
     nObject.setIcebergExecutedSize(jObject.getIcebergExecutedSize());
@@ -26,7 +26,7 @@ public class AnalyticOrderMapper extends OrderAbstractMapper<AnalyticOrder, Dxfg
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgAnalyticOrder nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgAnalyticOrder nObject) {
+    super.cleanNativeObject(nObject);
   }
 }

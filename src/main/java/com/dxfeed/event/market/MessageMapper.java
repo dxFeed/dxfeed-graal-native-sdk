@@ -4,12 +4,13 @@ import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgMessage;
 import com.dxfeed.event.misc.Message;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class MessageMapper extends Mapper<Message, DxfgMessage> {
 
-  protected final StringMapper stringMapper;
+  protected final Mapper<String, CCharPointer> stringMapper;
 
-  public MessageMapper(final StringMapper stringMapper) {
+  public MessageMapper(final Mapper<String, CCharPointer> stringMapper) {
     this.stringMapper = stringMapper;
   }
 

@@ -4,10 +4,12 @@ import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgQuote;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
+public class QuoteMapper extends Mapper<Quote, DxfgQuote> {
 
-  public QuoteMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  private final MarketEventMapper marketEventMapper;
+
+  public QuoteMapper(final MarketEventMapper marketEventMapper) {
+    this.marketEventMapper = marketEventMapper;
   }
 
   @Override
@@ -16,8 +18,9 @@ public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgQuote nObject, final Quote jObject) {
+  protected void fillNativeObject(final DxfgQuote nObject, final Quote jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_QUOTE.getCValue());
+    this.marketEventMapper.fillNativeObject(nObject, jObject);
     nObject.setTimeMillisSequence(jObject.getTimeMillisSequence());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
     nObject.setBidTime(jObject.getBidTime());
@@ -31,7 +34,7 @@ public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgQuote nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgQuote nObject) {
+    this.marketEventMapper.cleanNativeObject(nObject);
   }
 }

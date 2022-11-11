@@ -6,8 +6,8 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
 
-  public TradeETHMapper(final StringMapper stringMapper) {
-    super(stringMapper);
+  public TradeETHMapper(final MarketEventMapper marketEventMapper) {
+    super(marketEventMapper);
   }
 
   @Override
@@ -16,13 +16,13 @@ public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
   }
 
   @Override
-  protected void doFillNativeObject(final DxfgTradeETH nObject, final TradeETH jObject) {
+  protected void fillNativeObject(final DxfgTradeETH nObject, final TradeETH jObject) {
     nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_TRADE_ETH.getCValue());
-    super.doFillNativeObject(nObject, jObject);
+    super.fillNativeObject(nObject, jObject);
   }
 
   @Override
-  protected void doCleanNativeObject(final DxfgTradeETH nObject) {
-    // nothing
+  protected void cleanNativeObject(final DxfgTradeETH nObject) {
+    super.cleanNativeObject(nObject);
   }
 }
