@@ -39,7 +39,6 @@ typedef void (*dxfg_subscription_event_listener)(graal_isolatethread_t *thread, 
 
 int32_t dxfg_feed_create_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_kind_t *eventTypes,
                                       int32_t size, dxfg_subscription_t *sub);
-int32_t dxfg_endpoint_get_feed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_feed_t *feed);
 int32_t dxfg_subscription_close(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 int32_t dxfg_subscription_add_event_listener(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
                                              dxfg_subscription_event_listener listener, void *user_data);

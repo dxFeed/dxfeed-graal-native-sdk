@@ -17,6 +17,11 @@ extern "C" {
  */
 
 /**
+ * @brief Forward declarations.
+ */
+typedef struct dxfg_feed_t dxfg_feed_t;
+
+/**
  * @brief The DXEndpoint.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html">Javadoc</a>
  */
@@ -360,6 +365,15 @@ int32_t dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, d
  */
 int32_t dxfg_endpoint_remove_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                    dxfg_endpoint_property_change_listener_t *listener);
+
+/**
+ * @brief Returns feed that is associated with this endpoint.
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] endpoint The endpoint.
+ * @param[out] feed The return feed.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_get_feed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_feed_t *feed);
 
 /** @} */ // end of Endpoint
 
