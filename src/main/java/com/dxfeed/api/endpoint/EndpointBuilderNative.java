@@ -4,6 +4,7 @@ import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -20,9 +21,9 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int create(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder
+      final DxfgEndpointBuilder builder
   ) {
-    dxfgEndpointBuilder.setJavaObjectHandler(createJavaObjectHandler(DXEndpoint.newBuilder()));
+    builder.setJavaObjectHandler(createBuilder());
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -32,9 +33,9 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int close(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder
+      final DxfgEndpointBuilder builder
   ) {
-    destroyJavaObjectHandler(dxfgEndpointBuilder.getJavaObjectHandler());
+    destroyBuilder(builder);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -44,10 +45,10 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int withRole(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder,
+      final DxfgEndpointBuilder builder,
       DxfgEndpointRole role
   ) {
-    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+    getBuilder(builder)
         .withRole(DxfgEndpointRole.toDXEndpointRole(role));
     return EXECUTE_SUCCESSFULLY;
   }
@@ -58,10 +59,10 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int withName(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder,
+      final DxfgEndpointBuilder builder,
       CCharPointer name
   ) {
-    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+    getBuilder(builder)
         .withName(toJavaString(name));
     return EXECUTE_SUCCESSFULLY;
   }
@@ -72,11 +73,11 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int withProperty(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder,
+      final DxfgEndpointBuilder builder,
       CCharPointer key,
       CCharPointer value
   ) {
-    getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
+    getBuilder(builder)
         .withProperty(toJavaString(key), toJavaString(value));
     return EXECUTE_SUCCESSFULLY;
   }
@@ -87,13 +88,13 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int supportsProperty(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder,
+      final DxfgEndpointBuilder builder,
       CCharPointer key,
       CIntPointer isSupports
   ) {
     isSupports.write(
-        getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler())
-            .supportsProperty(toJavaString(key)) ? 1 : 0);
+        getBuilder(builder).supportsProperty(toJavaString(key)) ? 1 : 0
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -103,11 +104,26 @@ public final class EndpointBuilderNative extends BaseNative {
   )
   public static int build(
       final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder dxfgEndpointBuilder,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpointBuilder builder,
+      final DxfgEndpoint endpoint
   ) {
-    dxfgEndpoint.setJavaObjectHandler(createJavaObjectHandler(
-        getDxEndpointBuilder(dxfgEndpointBuilder.getJavaObjectHandler()).build()));
+    endpoint.setJavaObjectHandler(buildEndpoint(builder));
     return EXECUTE_SUCCESSFULLY;
+  }
+
+  private static ObjectHandle createBuilder() {
+    return createJavaObjectHandler(DXEndpoint.newBuilder());
+  }
+
+  private static void destroyBuilder(final DxfgEndpointBuilder builder) {
+    destroyJavaObjectHandler(builder.getJavaObjectHandler());
+  }
+
+  private static DXEndpoint.Builder getBuilder(final DxfgEndpointBuilder builder) {
+    return getJavaObject(builder.getJavaObjectHandler());
+  }
+
+  private static ObjectHandle buildEndpoint(final DxfgEndpointBuilder builder) {
+    return createJavaObjectHandler(getBuilder(builder).build());
   }
 }

@@ -160,7 +160,7 @@ int32_t dxfg_endpoint_builder_supports_property(graal_isolatethread_t *thread, d
  * <br><a href= "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html#build--">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[in] builder The endpoint builder.
- * @param[out] endpoint The created endpoint.
+ * @param[out] endpoint The constructed endpoint.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
@@ -192,7 +192,7 @@ int32_t dxfg_endpoint_get_instance_with_role(graal_isolatethread_t *thread, dxfg
 
 /**
  * @brief Creates new dxfg_endpoint_t instance.
- * The shortcut for  dxfg_endpoint_builder_create()->dxfg_endpoint_builder_build().
+ * The shortcut for dxfg_endpoint_builder_create()->dxfg_endpoint_builder_build().
  * The created endpoint should be closed with dxfg_endpoint_close()
  * or dxfg_endpoint_close_and_await_termination() after use.
  * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#create--">Javadoc</a>
@@ -369,7 +369,6 @@ int32_t dxfg_endpoint_close_property_change_listener(graal_isolatethread_t *thre
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[in] endpoint The endpoint.
  * @param[in] listener The listener to add.
- * @param[in] user_data The pointer to user data.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
 int32_t dxfg_endpoint_add_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
