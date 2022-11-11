@@ -28,7 +28,52 @@ import org.graalvm.word.WordFactory;
 @CContext(Directives.class)
 public final class EndpointNative extends BaseNative {
 
+  private static final Map<DXEndpoint, Long> ENDPOINT_OBJECT_HANDLES = new HashMap<>();
+
   private static final Map<DXEndpoint, Long> FEED_OBJECT_HANDLES = new HashMap<>();
+
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_instance",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getInstance(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint
+  ) {
+    synchronized (ENDPOINT_OBJECT_HANDLES) {
+      final DXEndpoint dxEndpoint = DXEndpoint.getInstance();
+      if (!ENDPOINT_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint);
+        ENDPOINT_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
+      }
+      dxfgEndpoint.setJavaObjectHandler(
+          WordFactory.pointer(ENDPOINT_OBJECT_HANDLES.get(dxEndpoint))
+      );
+    }
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_instance_with_role",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getInstance(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointRole role,
+      final DxfgEndpoint dxfgEndpoint
+  ) {
+    synchronized (ENDPOINT_OBJECT_HANDLES) {
+      final DXEndpoint dxEndpoint = DXEndpoint.getInstance(DxfgEndpointRole.toDXEndpointRole(role));
+      if (!ENDPOINT_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint);
+        ENDPOINT_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
+      }
+      dxfgEndpoint.setJavaObjectHandler(
+          WordFactory.pointer(ENDPOINT_OBJECT_HANDLES.get(dxEndpoint))
+      );
+    }
+    return EXECUTE_SUCCESSFULLY;
+  }
 
   @CEntryPoint(
       name = "dxfg_endpoint_create",
@@ -48,8 +93,8 @@ public final class EndpointNative extends BaseNative {
   )
   public static int create(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointRole role
+      final DxfgEndpointRole role,
+      final DxfgEndpoint dxfgEndpoint
   ) {
     dxfgEndpoint.setJavaObjectHandler(
         createJavaObjectHandler(DXEndpoint.create(DxfgEndpointRole.toDXEndpointRole(role))));
@@ -283,33 +328,29 @@ public final class EndpointNative extends BaseNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgFeed dxfgFeed
   ) {
-    final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-    if (!FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-      final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint.getFeed());
-      FEED_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
+    synchronized (FEED_OBJECT_HANDLES) {
+      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
+      if (!FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint.getFeed());
+        FEED_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
+      }
+      dxfgFeed.setJavaObjectHandler(
+          WordFactory.pointer(FEED_OBJECT_HANDLES.get(dxEndpoint))
+      );
     }
-    dxfgFeed.setJavaObjectHandler(
-        WordFactory.pointer(FEED_OBJECT_HANDLES.get(dxEndpoint))
-    );
     return EXECUTE_SUCCESSFULLY;
   }
 
   private static void destroyDxfgEndpoint(final DxfgEndpoint dxfgEndpoint) {
     final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-    if (FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-      destroyJavaObjectHandler(
-          WordFactory.pointer(FEED_OBJECT_HANDLES.remove(dxEndpoint))
-      );
+    synchronized (FEED_OBJECT_HANDLES) {
+      if (FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
+        destroyJavaObjectHandler(
+            WordFactory.pointer(FEED_OBJECT_HANDLES.remove(dxEndpoint))
+        );
+      }
     }
     destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
-  }
-
-  public static DXEndpoint getInstance() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public static DXEndpoint getInstance(final Role role) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
   public static DXEndpoint executor(Executor executor) {

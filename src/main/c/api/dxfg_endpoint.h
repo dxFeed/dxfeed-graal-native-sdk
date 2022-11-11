@@ -169,6 +169,28 @@ int32_t dxfg_endpoint_builder_build(graal_isolatethread_t *thread, dxfg_endpoint
 /** @} */ // end of Builder
 
 /**
+ * @brief Returns a default application-wide singleton instance of DXEndpoint with a DXFG_ENDPOINT_ROLE_FEED role.
+ * <br><a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getInstance--">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[out] endpoint The endpoint instance.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_get_instance(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+
+/**
+ * @brief Returns a default application-wide singleton instance of DXEndpoint for a specific role.
+ * <br><a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getInstance-com.dxfeed.api.DXEndpoint.Role-">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] role The endpoint role.
+ * @param[out] endpoint The endpoint instance.
+ * @return 0 - if the operation was successful; otherwise, an error code.
+ */
+int32_t dxfg_endpoint_get_instance_with_role(graal_isolatethread_t *thread, dxfg_endpoint_role_t role,
+                                             dxfg_endpoint_t *endpoint);
+
+/**
  * @brief Creates new dxfg_endpoint_t instance.
  * The shortcut for  dxfg_endpoint_builder_create()->dxfg_endpoint_builder_build().
  * The created endpoint should be closed with dxfg_endpoint_close()
@@ -188,11 +210,12 @@ int32_t dxfg_endpoint_create(graal_isolatethread_t *thread, dxfg_endpoint_t *end
  * <br><a href=
  * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#create-com.dxfeed.api.DXEndpoint.Role-">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] role The endpoint role.
  * @param[out] endpoint The created endpoint.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-int32_t dxfg_endpoint_create_with_role(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                       dxfg_endpoint_role_t role);
+int32_t dxfg_endpoint_create_with_role(graal_isolatethread_t *thread, dxfg_endpoint_role_t role,
+                                       dxfg_endpoint_t *endpoint);
 
 /**
  * @brief Closes this endpoint and release all associated resources.
@@ -368,6 +391,7 @@ int32_t dxfg_endpoint_remove_state_change_listener(graal_isolatethread_t *thread
 
 /**
  * @brief Returns feed that is associated with this endpoint.
+ * <br><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getFeed--">Javadoc</a>
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[in] endpoint The endpoint.
  * @param[out] feed The return feed.
