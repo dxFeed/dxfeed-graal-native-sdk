@@ -4,7 +4,6 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 
 import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXEndpoint;
-import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXEndpoint.State;
 import com.dxfeed.api.DXPublisher;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
@@ -40,17 +39,7 @@ public final class EndpointNative extends BaseNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    synchronized (ENDPOINT_OBJECT_HANDLES) {
-      final DXEndpoint dxEndpoint = DXEndpoint.getInstance();
-      if (!ENDPOINT_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint);
-        ENDPOINT_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
-      }
-      dxfgEndpoint.setJavaObjectHandler(
-          WordFactory.pointer(ENDPOINT_OBJECT_HANDLES.get(dxEndpoint))
-      );
-    }
-    return EXECUTE_SUCCESSFULLY;
+    return getInstance(ignoredThread, DxfgEndpointRole.DXFG_ENDPOINT_ROLE_FEED, dxfgEndpoint);
   }
 
   @CEntryPoint(
