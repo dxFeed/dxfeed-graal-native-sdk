@@ -1,4 +1,4 @@
-package com.dxfeed.api.endpoint;
+package com.dxfeed.api.publisher;
 
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
@@ -7,8 +7,8 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
-@CStruct("dxfg_endpoint_t")
-interface DxfgEndpointPropertyChangeListener extends PointerBase {
+@CStruct("dxfg_publisher_t")
+public interface DxfgPublisher extends PointerBase {
 
   @CField("java_object_handle")
   ObjectHandle getJavaObjectHandler();

@@ -287,8 +287,8 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
     }
 
-    dxfg_endpoint_property_change_listener_t stateListener;
-    dxfg_endpoint_create_property_change_listener(thread, endpoint_state_change_listener, nullptr, &stateListener);
+    dxfg_endpoint_state_change_listener_t stateListener;
+    dxfg_endpoint_create_state_change_listener(thread, endpoint_state_change_listener, nullptr, &stateListener);
     dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
     dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
 

@@ -5,14 +5,13 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXEndpoint.State;
-import com.dxfeed.api.DXPublisher;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.event.EventType;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -27,9 +26,11 @@ import org.graalvm.word.WordFactory;
 @CContext(Directives.class)
 public final class EndpointNative extends BaseNative {
 
-  private static final Map<DXEndpoint, Long> ENDPOINT_OBJECT_HANDLES = new HashMap<>();
+  private static final Map<DXEndpoint, Long> SINGLETON_ENDPOINT_HANDLES = new ConcurrentHashMap<>();
 
-  private static final Map<DXEndpoint, Long> FEED_OBJECT_HANDLES = new HashMap<>();
+  private static final Map<DXEndpoint, Long> FEED_HANDLES = new ConcurrentHashMap<>();
+
+  private static final Map<DXEndpoint, Long> PUBLISHER_HANDLES = new ConcurrentHashMap<>();
 
   @CEntryPoint(
       name = "dxfg_endpoint_get_instance",
@@ -37,9 +38,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getInstance(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    return getInstance(ignoredThread, DxfgEndpointRole.DXFG_ENDPOINT_ROLE_FEED, dxfgEndpoint);
+    return getInstance(ignoredThread, DxfgEndpointRole.DXFG_ENDPOINT_ROLE_FEED, endpoint);
   }
 
   @CEntryPoint(
@@ -49,18 +50,14 @@ public final class EndpointNative extends BaseNative {
   public static int getInstance(
       final IsolateThread ignoredThread,
       final DxfgEndpointRole role,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    synchronized (ENDPOINT_OBJECT_HANDLES) {
-      final DXEndpoint dxEndpoint = DXEndpoint.getInstance(DxfgEndpointRole.toDXEndpointRole(role));
-      if (!ENDPOINT_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint);
-        ENDPOINT_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
-      }
-      dxfgEndpoint.setJavaObjectHandler(
-          WordFactory.pointer(ENDPOINT_OBJECT_HANDLES.get(dxEndpoint))
-      );
-    }
+    final DXEndpoint dxEndpoint = DXEndpoint.getInstance(DxfgEndpointRole.toDXEndpointRole(role));
+    endpoint.setJavaObjectHandler(
+        WordFactory.pointer(SINGLETON_ENDPOINT_HANDLES.computeIfAbsent(
+            dxEndpoint,
+            k -> createJavaObjectHandler(dxEndpoint).rawValue()))
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -70,9 +67,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int create(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    dxfgEndpoint.setJavaObjectHandler(createJavaObjectHandler(DXEndpoint.create()));
+    endpoint.setJavaObjectHandler(createEndpoint());
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -83,10 +80,9 @@ public final class EndpointNative extends BaseNative {
   public static int create(
       final IsolateThread ignoredThread,
       final DxfgEndpointRole role,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    dxfgEndpoint.setJavaObjectHandler(
-        createJavaObjectHandler(DXEndpoint.create(DxfgEndpointRole.toDXEndpointRole(role))));
+    endpoint.setJavaObjectHandler(createEndpoint(role));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -96,10 +92,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int close(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).close();
-    destroyDxfgEndpoint(dxfgEndpoint);
+    getEndpoint(endpoint)
+        .close();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -109,10 +105,22 @@ public final class EndpointNative extends BaseNative {
   )
   public static int closeAndAwaitTermination(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) throws InterruptedException {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).closeAndAwaitTermination();
-    destroyDxfgEndpoint(dxfgEndpoint);
+    getEndpoint(endpoint)
+        .closeAndAwaitTermination();
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_endpoint_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int release(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint endpoint
+  ) {
+    releaseEndpoint(endpoint);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -122,13 +130,12 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getRole(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpoint endpoint,
       final CIntPointer role
   ) {
     role.write(
-        DxfgEndpointRole.fromDXEndpointRole(
-            getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getRole()
-        ).getCValue());
+        DxfgEndpointRole.fromDXEndpointRole(getEndpoint(endpoint).getRole()).getCValue()
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -138,10 +145,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int user(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpoint endpoint,
       final CCharPointer user
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).user(toJavaString(user));
+    getEndpoint(endpoint)
+        .user(toJavaString(user));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -151,10 +159,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int password(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpoint endpoint,
       final CCharPointer password
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).password(toJavaString(password));
+    getEndpoint(endpoint)
+        .password(toJavaString(password));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -164,10 +173,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int connect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpoint endpoint,
       final CCharPointer address
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).connect(toJavaString(address));
+    getEndpoint(endpoint)
+        .connect(toJavaString(address));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -177,9 +187,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int reconnect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).reconnect();
+    getEndpoint(endpoint)
+        .reconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -189,9 +200,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int disconnect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).disconnect();
+    getEndpoint(endpoint)
+        .disconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -201,9 +213,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int disconnectAndClear(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).disconnectAndClear();
+    getEndpoint(endpoint)
+        .disconnectAndClear();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -213,9 +226,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int awaitProcessed(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) throws InterruptedException {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).awaitProcessed();
+    getEndpoint(endpoint)
+        .awaitProcessed();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -225,9 +239,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int awaitNotConnected(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
+      final DxfgEndpoint endpoint
   ) throws InterruptedException {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).awaitNotConnected();
+    getEndpoint(endpoint)
+        .awaitNotConnected();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -237,26 +252,24 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getState(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpoint endpoint,
       final CIntPointer state
   ) {
     state.write(
-        DxfgEndpointState.fromDXEndpointState(
-            getDxEndpoint(dxfgEndpoint.getJavaObjectHandler()).getState()
-        ).getCValue()
+        DxfgEndpointState.fromDXEndpointState(getEndpoint(endpoint).getState()).getCValue()
     );
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_create_property_change_listener",
+      name = "dxfg_endpoint_create_state_change_listener",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int createPropertyChangeListener(
+  public static int createStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpointStateChangeListener userFunc,
+      final DxfgEndpointStateChangeListenerFunc userFunc,
       final VoidPointer userData,
-      final DxfgEndpointPropertyChangeListener listener
+      final DxfgEndpointStateChangeListener listener
   ) {
     final PropertyChangeListener propertyChangeListener = changeEvent -> userFunc.invoke(
         CurrentIsolate.getCurrentThread(),
@@ -269,12 +282,12 @@ public final class EndpointNative extends BaseNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_close_property_change_listener",
+      name = "dxfg_endpoint_release_state_change_listener",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int closePropertyChangeListener(
+  public static int releaseStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpointPropertyChangeListener listener
+      final DxfgEndpointStateChangeListener listener
   ) {
     destroyJavaObjectHandler(listener.getJavaObjectHandler());
     return EXECUTE_SUCCESSFULLY;
@@ -286,10 +299,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int addStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointPropertyChangeListener listener
+      final DxfgEndpoint endpoint,
+      final DxfgEndpointStateChangeListener listener
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
+    getEndpoint(endpoint)
         .addStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
@@ -300,10 +313,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int removeStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointPropertyChangeListener listener
+      final DxfgEndpoint endpoint,
+      final DxfgEndpointStateChangeListener listener
   ) {
-    getDxEndpoint(dxfgEndpoint.getJavaObjectHandler())
+    getEndpoint(endpoint)
         .removeStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
@@ -314,32 +327,64 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getFeed(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgFeed dxfgFeed
+      final DxfgEndpoint endpoint,
+      final DxfgFeed feed
   ) {
-    synchronized (FEED_OBJECT_HANDLES) {
-      final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-      if (!FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-        final ObjectHandle javaObjectHandler = createJavaObjectHandler(dxEndpoint.getFeed());
-        FEED_OBJECT_HANDLES.put(dxEndpoint, javaObjectHandler.rawValue());
-      }
-      dxfgFeed.setJavaObjectHandler(
-          WordFactory.pointer(FEED_OBJECT_HANDLES.get(dxEndpoint))
-      );
-    }
+    feed.setJavaObjectHandler(createFeed(getEndpoint(endpoint)));
     return EXECUTE_SUCCESSFULLY;
   }
 
-  private static void destroyDxfgEndpoint(final DxfgEndpoint dxfgEndpoint) {
-    final DXEndpoint dxEndpoint = getDxEndpoint(dxfgEndpoint.getJavaObjectHandler());
-    synchronized (FEED_OBJECT_HANDLES) {
-      if (FEED_OBJECT_HANDLES.containsKey(dxEndpoint)) {
-        destroyJavaObjectHandler(
-            WordFactory.pointer(FEED_OBJECT_HANDLES.remove(dxEndpoint))
-        );
-      }
-    }
-    destroyJavaObjectHandler(dxfgEndpoint.getJavaObjectHandler());
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_publisher",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getPublisher(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint endpoint,
+      final DxfgFeed publisher
+  ) {
+    publisher.setJavaObjectHandler(createPublisher(getEndpoint(endpoint)));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  private static ObjectHandle createEndpoint() {
+    return createJavaObjectHandler(DXEndpoint.create());
+  }
+
+  private static ObjectHandle createEndpoint(DxfgEndpointRole role) {
+    return createJavaObjectHandler(DXEndpoint.create(DxfgEndpointRole.toDXEndpointRole(role)));
+  }
+
+  private static void releaseEndpoint(DxfgEndpoint endpoint) {
+    releaseFeed(getEndpoint(endpoint));
+    releasePublisher(getEndpoint(endpoint));
+    destroyJavaObjectHandler(endpoint.getJavaObjectHandler());
+  }
+
+  private static DXEndpoint getEndpoint(DxfgEndpoint endpoint) {
+    return getJavaObject(endpoint.getJavaObjectHandler());
+  }
+
+  private static ObjectHandle createFeed(DXEndpoint endpoint) {
+    return WordFactory.pointer(FEED_HANDLES.computeIfAbsent(
+        endpoint,
+        k -> createJavaObjectHandler(endpoint.getFeed()).rawValue()
+    ));
+  }
+
+  private static void releaseFeed(DXEndpoint endpoint) {
+    destroyJavaObjectHandler(WordFactory.pointer(FEED_HANDLES.remove(endpoint)));
+  }
+
+  private static ObjectHandle createPublisher(DXEndpoint endpoint) {
+    return WordFactory.pointer(PUBLISHER_HANDLES.computeIfAbsent(
+        endpoint,
+        k -> createJavaObjectHandler(endpoint.getPublisher()).rawValue()
+    ));
+  }
+
+  private static void releasePublisher(DXEndpoint endpoint) {
+    destroyJavaObjectHandler(WordFactory.pointer(PUBLISHER_HANDLES.remove(endpoint)));
   }
 
   public static DXEndpoint executor(Executor executor) {
@@ -347,10 +392,6 @@ public final class EndpointNative extends BaseNative {
   }
 
   public static Set<Class<? extends EventType<?>>> getEventTypes() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public static DXPublisher getPublisher() {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 }

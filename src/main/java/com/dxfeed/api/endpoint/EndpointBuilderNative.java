@@ -28,14 +28,14 @@ public final class EndpointBuilderNative extends BaseNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_close",
+      name = "dxfg_endpoint_builder_release",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int close(
+  public static int release(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder
   ) {
-    destroyBuilder(builder);
+    releaseBuilder(builder);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -115,7 +115,7 @@ public final class EndpointBuilderNative extends BaseNative {
     return createJavaObjectHandler(DXEndpoint.newBuilder());
   }
 
-  private static void destroyBuilder(final DxfgEndpointBuilder builder) {
+  private static void releaseBuilder(final DxfgEndpointBuilder builder) {
     destroyJavaObjectHandler(builder.getJavaObjectHandler());
   }
 
