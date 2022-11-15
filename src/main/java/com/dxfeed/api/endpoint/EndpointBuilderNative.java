@@ -89,8 +89,8 @@ public final class EndpointBuilderNative extends BaseNative {
   public static int supportsProperty(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder,
-      CCharPointer key,
-      CIntPointer isSupports
+      final CCharPointer key,
+      final CIntPointer isSupports
   ) {
     isSupports.write(
         getBuilder(builder).supportsProperty(toJavaString(key)) ? 1 : 0

@@ -43,6 +43,7 @@ import com.dxfeed.event.market.TradeMapper;
 import com.dxfeed.event.market.UnderlyingMapper;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CContext(Directives.class)
 public class SubscriptionNative extends BaseNative {
 
-  private static final ListEventMapper EVENT_MAPPER;
+  public static final ListEventMapper EVENT_MAPPER;
   private static final Map<Long, DXFeedEventListener<EventType<?>>> EVENT_LISTENERS = new HashMap<>();
   private static final StringMapperCacheStore STRING_MAPPER_CACHE_STORE = new StringMapperCacheStore(3000);
 

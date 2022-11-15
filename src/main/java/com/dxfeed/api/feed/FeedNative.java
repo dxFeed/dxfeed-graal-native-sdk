@@ -12,6 +12,7 @@ import com.dxfeed.api.events.DxfgEventPointer;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.subscription.DxfgSubscription;
+import com.dxfeed.api.subscription.SubscriptionNative;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
@@ -19,16 +20,19 @@ import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.market.MarketEventMapper;
+import com.dxfeed.event.market.OrderSource;
 import com.dxfeed.event.market.Quote;
 import com.dxfeed.promise.Promise;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CIntPointer;
+import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
 public class FeedNative extends BaseNative {
@@ -110,10 +114,20 @@ public class FeedNative extends BaseNative {
       final DxfgFeed feed,
       final DxfgEventKind eventType,
       final CCharPointer symbol,
-      final DxfgEventPointer events,
-      final CIntPointer eventsSize
+      final DxfgEventPointer event
   ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+    var result = getFeed(feed)
+        .getLastEventIfSubscribed(
+            (Class<LastingEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            toJavaString(symbol)
+        );
+    if (result == null) {
+      event.write(WordFactory.nullPointer());
+    } else {
+      event.write(
+          SubscriptionNative.EVENT_MAPPER.nativeObject(Collections.singletonList(result)).read());
+    }
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -129,7 +143,21 @@ public class FeedNative extends BaseNative {
       final DxfgEventPointer events,
       final CIntPointer eventsSize
   ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+    final var result = (List<? extends EventType<?>>) getFeed(feed)
+        .getIndexedEventsIfSubscribed(
+            (Class<IndexedEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            toJavaString(symbol),
+            OrderSource.valueOf(toJavaString(source))
+        );
+    if (result == null) {
+      events.write(WordFactory.nullPointer());
+      eventsSize.write(0);
+    } else {
+      events.write(
+          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read());
+      eventsSize.write(result.size());
+    }
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -146,7 +174,22 @@ public class FeedNative extends BaseNative {
       final DxfgEventPointer events,
       final CIntPointer eventsSize
   ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+    final var result = (List<? extends EventType<?>>) getFeed(feed)
+        .getTimeSeriesIfSubscribed(
+            (Class<TimeSeriesEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            toJavaString(symbol),
+            fromTime,
+            toTime
+        );
+    if (result == null) {
+      events.write(WordFactory.nullPointer());
+      eventsSize.write(0);
+    } else {
+      events.write(
+          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read());
+      eventsSize.write(result.size());
+    }
+    return EXECUTE_SUCCESSFULLY;
   }
 
   public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(

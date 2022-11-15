@@ -340,8 +340,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
+
+    dxfg_quote_t* quote = nullptr;
+    dxfg_feed_get_last_event_if_subscribed(thread, &feed, DXFG_EVENT_TYPE_QUOTE, "AAPLA", (dxfg_event_type_t**)&quote);
+
     // Waiting for input to exit.
     std::cin.get();
+
+
 
     res = dxfg_endpoint_close_and_await_termination(thread, &endpoint);
     if (res != 0) {
