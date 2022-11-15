@@ -3,10 +3,13 @@ package com.dxfeed.api.feed;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.BaseNative;
+import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventPointer;
+import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.subscription.DxfgSubscription;
 import com.dxfeed.event.EventType;
@@ -14,12 +17,17 @@ import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
+import com.dxfeed.event.candle.Candle;
+import com.dxfeed.event.market.MarketEventMapper;
+import com.dxfeed.event.market.Quote;
 import com.dxfeed.promise.Promise;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CIntPointer;
 
 @CContext(Directives.class)
@@ -51,6 +59,96 @@ public class FeedNative extends BaseNative {
     return EXECUTE_SUCCESSFULLY;
   }
 
+  @CEntryPoint(
+      name = "dxfg_feed_attach_subscription",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int attachSubscription(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgSubscription subscription
+  ) {
+    getFeed(feed)
+        .attachSubscription(getSubscription(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_detach_subscription",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int detachSubscription(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgSubscription subscription
+  ) {
+    getFeed(feed)
+        .detachSubscription(getSubscription(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_detach_subscription_and_clear",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int detachSubscriptionAndClear(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgSubscription subscription
+  ) {
+    getFeed(feed)
+        .detachSubscriptionAndClear(getSubscription(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_get_last_event_if_subscribed",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getLastEventIfSubscribed(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventKind eventType,
+      final CCharPointer symbol,
+      final DxfgEventPointer events,
+      final CIntPointer eventsSize
+  ) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_get_indexed_event_if_subscribed",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getIndexedEventIfSubscribed(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventKind eventType,
+      final CCharPointer symbol,
+      final CCharPointer source,
+      final DxfgEventPointer events,
+      final CIntPointer eventsSize
+  ) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_get_time_series_event_if_subscribed",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getTimeSeriesEventIfSubscribed(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventKind eventType,
+      final CCharPointer symbol,
+      final long fromTime,
+      final long toTime,
+      final DxfgEventPointer events,
+      final CIntPointer eventsSize
+  ) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
   public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
       final Class<? extends E> eventType
   ) {
@@ -60,24 +158,6 @@ public class FeedNative extends BaseNative {
   @SafeVarargs
   public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
       final Class<? extends E>... eventTypes
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public void attachSubscription(
-      final DXFeedSubscription<?> subscription
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public void detachSubscription(
-      final DXFeedSubscription<?> subscription
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public void detachSubscriptionAndClear(
-      final DXFeedSubscription<?> subscription
   ) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
@@ -101,13 +181,6 @@ public class FeedNative extends BaseNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public <E extends LastingEvent<?>> E getLastEventIfSubscribed(
-      final Class<E> eventType,
-      final Object symbol
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
   public <E extends LastingEvent<?>> List<Promise<E>> getLastEventsPromises(
       final Class<E> eventType,
       final Collection<?> symbols
@@ -116,14 +189,6 @@ public class FeedNative extends BaseNative {
   }
 
   public <E extends IndexedEvent<?>> Promise<List<E>> getIndexedEventsPromise(
-      final Class<E> eventType,
-      final Object symbol,
-      final IndexedEventSource source
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends IndexedEvent<?>> List<E> getIndexedEventsIfSubscribed(
       final Class<E> eventType,
       final Object symbol,
       final IndexedEventSource source
@@ -140,12 +205,11 @@ public class FeedNative extends BaseNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  public <E extends TimeSeriesEvent<?>> List<E> getTimeSeriesIfSubscribed(
-      final Class<E> eventType,
-      final Object symbol,
-      final long fromTime,
-      final long toTime
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  private static DXFeed getFeed(DxfgFeed feed) {
+    return getJavaObject(feed.getJavaObjectHandler());
+  }
+
+  private static DXFeedSubscription<?> getSubscription(DxfgSubscription sub) {
+    return getJavaObject(sub.getJavaObjectHandler());
   }
 }

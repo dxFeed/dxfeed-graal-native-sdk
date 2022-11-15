@@ -11,6 +11,6 @@ class Directives implements CContext.Directives {
   public List<String> getHeaderFiles() {
     return Collections.singletonList(ProjectHeaderFile.resolve(
         "com.dxfeed",
-        "src/main/c/api/dxfg_feed.h"));
+        "src/main/c/api/dxfg_subscription.h"));
   }
 }

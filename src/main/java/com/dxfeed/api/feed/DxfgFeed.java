@@ -10,9 +10,9 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_feed_t")
 public interface DxfgFeed extends PointerBase {
 
-  @CField("f_java_object_handle")
+  @CField("java_object_handle")
   ObjectHandle getJavaObjectHandler();
 
-  @CField("f_java_object_handle")
+  @CField("java_object_handle")
   void setJavaObjectHandler(ObjectHandle value);
 }
