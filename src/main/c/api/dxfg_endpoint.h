@@ -71,6 +71,14 @@ typedef enum dxfg_endpoint_state_t {
 } dxfg_endpoint_state_t;
 
 /**
+ * @brief The Executor.
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#executor-java.util.concurrent.Executor-">Javadoc</a>
+ */
+typedef struct dxfg_executor_t {
+    void *java_object_handle;
+} dxfg_executor_t;
+
+/**
  * @brief Function pointer to the endpoint state change listener.
  * @param[in] thread The pointer to a run-time data structure for the thread.
  * @param[in] old_state The old endpoint state.
@@ -141,6 +149,19 @@ int32_t dxfg_endpoint_builder_with_name(graal_isolatethread_t *thread, dxfg_endp
  */
 int32_t dxfg_endpoint_builder_with_property(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
                                             const char *key, const char *value);
+
+/**
+ * @brief Sets the specified property. Unsupported properties are ignored.
+ * <br><a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html#withProperties-java.util.Properties-">
+ * Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[in] builder The endpoint builder.
+ * @param[in] file_path Path to properties file.
+ * @return 0 - if the operation was successful; otherwise -1.
+ */
+int32_t dxfg_endpoint_builder_with_properties(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder,
+                                            const char *file_path);
 
 /**
  * @brief Checks if the property is supported.
@@ -416,6 +437,27 @@ int32_t dxfg_endpoint_get_feed(graal_isolatethread_t *thread, dxfg_endpoint_t *e
  */
 int32_t dxfg_endpoint_get_publisher(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                     dxfg_publisher_t *publisher);
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#executor-java.util.concurrent.Executor-">Javadoc</a>
+ */
+int32_t dxfg_endpoint_set_executor(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                    dxfg_executor_t *executor);
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getEventTypes--">Javadoc</a>
+ */
+int32_t dxfg_endpoint_get_event_types_size(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.html#getEventTypes--">Javadoc</a>
+ */
+int32_t dxfg_endpoint_get_event_types(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const int* types);
+
+int32_t dxfg_executor_new_fixed_thread_pool(graal_isolatethread_t *thread, int nThreads,
+                                            const char* nameThreads, dxfg_executor_t *executor);
+
+int32_t dxfg_executor_release(graal_isolatethread_t *thread, dxfg_executor_t *executor);
 
 /** @} */ // end of Endpoint
 

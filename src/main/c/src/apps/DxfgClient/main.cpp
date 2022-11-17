@@ -287,6 +287,11 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
     }
 
+
+    dxfg_executor_t executor;
+    dxfg_executor_new_fixed_thread_pool(thread, 2, "thread-processing-events", &executor);
+    dxfg_endpoint_set_executor(thread, &endpoint, &executor);
+
     dxfg_endpoint_state_change_listener_t stateListener;
     dxfg_endpoint_create_state_change_listener(thread, endpoint_state_change_listener, nullptr, &stateListener);
     dxfg_endpoint_add_state_change_listener(thread, &endpoint, &stateListener);
@@ -296,6 +301,13 @@ int main(int argc, char *argv[]) {
     res = dxfg_endpoint_connect(thread, &endpoint, address.c_str());
     if (res != 0) {
         print_exception(thread);
+    }
+
+    int size = dxfg_endpoint_get_event_types_size(thread, &endpoint);
+    int* array = (int*)malloc(sizeof(int) * size);;
+    dxfg_endpoint_get_event_types(thread, &endpoint, array);
+    for (int i = 0; i < size; ++i) {
+        printf("%d \n", array[i]);
     }
 
     dxfg_feed_t feed;

@@ -1,8 +1,8 @@
 package com.dxfeed.api.system;
 
+import static com.dxfeed.api.NativeUtils.toJavaString;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
-import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.event.market.Mapper;
@@ -13,7 +13,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 @CContext(Directives.class)
-public final class SystemNative extends BaseNative {
+public final class SystemNative {
 
   private static final Mapper<String, CCharPointer> STRING_MAPPER = new StringMapperUnlimitedStore();
 

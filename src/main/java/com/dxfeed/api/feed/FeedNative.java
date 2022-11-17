@@ -1,15 +1,15 @@
 package com.dxfeed.api.feed;
 
+import static com.dxfeed.api.NativeUtils.createHandler;
+import static com.dxfeed.api.NativeUtils.extractHandler;
+import static com.dxfeed.api.NativeUtils.toJavaString;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
-import com.dxfeed.api.BaseNative;
-import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgEventPointer;
-import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.subscription.DxfgSubscription;
 import com.dxfeed.api.subscription.SubscriptionNative;
@@ -18,12 +18,8 @@ import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
-import com.dxfeed.event.candle.Candle;
-import com.dxfeed.event.market.MarketEventMapper;
 import com.dxfeed.event.market.OrderSource;
-import com.dxfeed.event.market.Quote;
 import com.dxfeed.promise.Promise;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +31,7 @@ import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
-public class FeedNative extends BaseNative {
+public class FeedNative {
 
   public static DXFeed getInstance() {
     throw new UnsupportedOperationException("It has not yet been implemented.");
@@ -52,13 +48,13 @@ public class FeedNative extends BaseNative {
       final int eventTypesSize,
       final DxfgSubscription dxfgSubscription
   ) {
-    final DXFeed feed = getJavaObject(dxfgFeed.getJavaObjectHandler());
+    final DXFeed feed = extractHandler(dxfgFeed.getJavaObjectHandler());
     final Class<? extends EventType<?>>[] types = new Class[eventTypesSize];
     for (int i = 0; i < eventTypesSize; ++i) {
-      types[i] = DxfgEventKind.toEventType(eventTypes.read(i));
+      types[i] = DxfgEventKind.fromCValue(eventTypes.read(i)).clazz;
     }
     dxfgSubscription.setJavaObjectHandler(
-        createJavaObjectHandler(feed.createSubscription(types))
+        createHandler(feed.createSubscription(types))
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -118,7 +114,7 @@ public class FeedNative extends BaseNative {
   ) {
     var result = getFeed(feed)
         .getLastEventIfSubscribed(
-            (Class<LastingEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            (Class<LastingEvent<?>>) eventType.clazz,
             toJavaString(symbol)
         );
     if (result == null) {
@@ -145,7 +141,7 @@ public class FeedNative extends BaseNative {
   ) {
     final var result = (List<? extends EventType<?>>) getFeed(feed)
         .getIndexedEventsIfSubscribed(
-            (Class<IndexedEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            (Class<IndexedEvent<?>>) eventType.clazz,
             toJavaString(symbol),
             OrderSource.valueOf(toJavaString(source))
         );
@@ -176,7 +172,7 @@ public class FeedNative extends BaseNative {
   ) {
     final var result = (List<? extends EventType<?>>) getFeed(feed)
         .getTimeSeriesIfSubscribed(
-            (Class<TimeSeriesEvent<?>>) DxfgEventKind.toEventType(eventType.getCValue()),
+            (Class<TimeSeriesEvent<?>>) eventType.clazz,
             toJavaString(symbol),
             fromTime,
             toTime
@@ -186,7 +182,8 @@ public class FeedNative extends BaseNative {
       eventsSize.write(0);
     } else {
       events.write(
-          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read());
+          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read()
+      );
       eventsSize.write(result.size());
     }
     return EXECUTE_SUCCESSFULLY;
@@ -249,10 +246,10 @@ public class FeedNative extends BaseNative {
   }
 
   private static DXFeed getFeed(DxfgFeed feed) {
-    return getJavaObject(feed.getJavaObjectHandler());
+    return extractHandler(feed.getJavaObjectHandler());
   }
 
   private static DXFeedSubscription<?> getSubscription(DxfgSubscription sub) {
-    return getJavaObject(sub.getJavaObjectHandler());
+    return extractHandler(sub.getJavaObjectHandler());
   }
 }

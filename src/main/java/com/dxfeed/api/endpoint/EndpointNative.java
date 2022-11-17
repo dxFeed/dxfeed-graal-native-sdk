@@ -1,21 +1,30 @@
 package com.dxfeed.api.endpoint;
 
+import static com.dxfeed.api.NativeUtils.createHandler;
+import static com.dxfeed.api.NativeUtils.destroyHandler;
+import static com.dxfeed.api.NativeUtils.extractHandler;
+import static com.dxfeed.api.NativeUtils.toJavaString;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
-import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXEndpoint.State;
+import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.feed.DxfgFeed;
+import com.dxfeed.api.publisher.DxfgPublisher;
 import com.dxfeed.event.EventType;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
-import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,13 +33,13 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
-public final class EndpointNative extends BaseNative {
+public final class EndpointNative {
 
-  private static final Map<DXEndpoint, Long> SINGLETON_ENDPOINT_HANDLES = new ConcurrentHashMap<>();
-
-  private static final Map<DXEndpoint, Long> FEED_HANDLES = new ConcurrentHashMap<>();
-
-  private static final Map<DXEndpoint, Long> PUBLISHER_HANDLES = new ConcurrentHashMap<>();
+  public static final Map<DXEndpoint, Long> FEED_HANDLES = new ConcurrentHashMap<>();
+  public static final Map<DXEndpoint, Long> PUBLISHER_HANDLES = new ConcurrentHashMap<>();
+  public static final Map<Role, Long> INSTANCES = Collections.synchronizedMap(
+      new EnumMap<>(Role.class)
+  );
 
   @CEntryPoint(
       name = "dxfg_endpoint_get_instance",
@@ -38,9 +47,17 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getInstance(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    return getInstance(ignoredThread, DxfgEndpointRole.DXFG_ENDPOINT_ROLE_FEED, endpoint);
+    dxfgEndpoint.setJavaObjectHandler(
+        WordFactory.signed(
+            INSTANCES.computeIfAbsent(
+                DXEndpoint.getInstance().getRole(),
+                role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
+            )
+        )
+    );
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -49,14 +66,16 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getInstance(
       final IsolateThread ignoredThread,
-      final DxfgEndpointRole role,
-      final DxfgEndpoint endpoint
+      final DxfgEndpointRole dxfgEndpointRole,
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    final DXEndpoint dxEndpoint = DXEndpoint.getInstance(DxfgEndpointRole.toDXEndpointRole(role));
-    endpoint.setJavaObjectHandler(
-        WordFactory.pointer(SINGLETON_ENDPOINT_HANDLES.computeIfAbsent(
-            dxEndpoint,
-            k -> createJavaObjectHandler(dxEndpoint).rawValue()))
+    dxfgEndpoint.setJavaObjectHandler(
+        WordFactory.signed(
+            INSTANCES.computeIfAbsent(
+                dxfgEndpointRole.qdRole,
+                role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
+            )
+        )
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -67,9 +86,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int create(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    endpoint.setJavaObjectHandler(createEndpoint());
+    dxfgEndpoint.setJavaObjectHandler(createHandler(DXEndpoint.create()));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -79,10 +98,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int create(
       final IsolateThread ignoredThread,
-      final DxfgEndpointRole role,
-      final DxfgEndpoint endpoint
+      final DxfgEndpointRole dxfgEndpointRole,
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    endpoint.setJavaObjectHandler(createEndpoint(role));
+    dxfgEndpoint.setJavaObjectHandler(createHandler(DXEndpoint.create(dxfgEndpointRole.qdRole)));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -92,10 +111,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int close(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    getEndpoint(endpoint)
-        .close();
+    toJavaEndpoint(dxfgEndpoint).close();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -105,10 +123,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int closeAndAwaitTermination(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    getEndpoint(endpoint)
-        .closeAndAwaitTermination();
+    toJavaEndpoint(dxfgEndpoint).closeAndAwaitTermination();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -118,9 +135,17 @@ public final class EndpointNative extends BaseNative {
   )
   public static int release(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    releaseEndpoint(endpoint);
+    final Long feed = FEED_HANDLES.remove(toJavaEndpoint(dxfgEndpoint));
+    if (feed != null) {
+      destroyHandler(WordFactory.signed(feed));
+    }
+    final Long publisher = PUBLISHER_HANDLES.remove(toJavaEndpoint(dxfgEndpoint));
+    if (publisher != null) {
+      destroyHandler(WordFactory.signed(publisher));
+    }
+    destroyHandler(dxfgEndpoint.getJavaObjectHandler());
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -130,11 +155,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getRole(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final CIntPointer role
   ) {
     role.write(
-        DxfgEndpointRole.fromDXEndpointRole(getEndpoint(endpoint).getRole()).getCValue()
+        DxfgEndpointRole.of(toJavaEndpoint(dxfgEndpoint).getRole()).getCValue()
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -145,11 +170,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int user(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final CCharPointer user
   ) {
-    getEndpoint(endpoint)
-        .user(toJavaString(user));
+    toJavaEndpoint(dxfgEndpoint).user(toJavaString(user));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -159,11 +183,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int password(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final CCharPointer password
   ) {
-    getEndpoint(endpoint)
-        .password(toJavaString(password));
+    toJavaEndpoint(dxfgEndpoint).password(toJavaString(password));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -173,11 +196,10 @@ public final class EndpointNative extends BaseNative {
   )
   public static int connect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final CCharPointer address
   ) {
-    getEndpoint(endpoint)
-        .connect(toJavaString(address));
+    toJavaEndpoint(dxfgEndpoint).connect(toJavaString(address));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -187,10 +209,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int reconnect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    getEndpoint(endpoint)
-        .reconnect();
+    toJavaEndpoint(dxfgEndpoint).reconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -200,10 +221,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int disconnect(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    getEndpoint(endpoint)
-        .disconnect();
+    toJavaEndpoint(dxfgEndpoint).disconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -213,10 +233,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int disconnectAndClear(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    getEndpoint(endpoint)
-        .disconnectAndClear();
+    toJavaEndpoint(dxfgEndpoint).disconnectAndClear();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -226,10 +245,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int awaitProcessed(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    getEndpoint(endpoint)
-        .awaitProcessed();
+    toJavaEndpoint(dxfgEndpoint).awaitProcessed();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -239,10 +257,9 @@ public final class EndpointNative extends BaseNative {
   )
   public static int awaitNotConnected(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint
+      final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    getEndpoint(endpoint)
-        .awaitNotConnected();
+    toJavaEndpoint(dxfgEndpoint).awaitNotConnected();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -252,11 +269,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getState(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final CIntPointer state
   ) {
     state.write(
-        DxfgEndpointState.fromDXEndpointState(getEndpoint(endpoint).getState()).getCValue()
+        DxfgEndpointState.of(toJavaEndpoint(dxfgEndpoint).getState()).getCValue()
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -273,11 +290,11 @@ public final class EndpointNative extends BaseNative {
   ) {
     final PropertyChangeListener propertyChangeListener = changeEvent -> userFunc.invoke(
         CurrentIsolate.getCurrentThread(),
-        DxfgEndpointState.fromDXEndpointState((State) changeEvent.getOldValue()),
-        DxfgEndpointState.fromDXEndpointState((State) changeEvent.getNewValue()),
+        DxfgEndpointState.of((State) changeEvent.getOldValue()),
+        DxfgEndpointState.of((State) changeEvent.getNewValue()),
         userData
     );
-    listener.setJavaObjectHandler(createJavaObjectHandler(propertyChangeListener));
+    listener.setJavaObjectHandler(createHandler(propertyChangeListener));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -289,7 +306,7 @@ public final class EndpointNative extends BaseNative {
       final IsolateThread ignoredThread,
       final DxfgEndpointStateChangeListener listener
   ) {
-    destroyJavaObjectHandler(listener.getJavaObjectHandler());
+    destroyHandler(listener.getJavaObjectHandler());
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -299,11 +316,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int addStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final DxfgEndpointStateChangeListener listener
   ) {
-    getEndpoint(endpoint)
-        .addStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
+    toJavaEndpoint(dxfgEndpoint)
+        .addStateChangeListener(extractHandler(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -313,11 +330,11 @@ public final class EndpointNative extends BaseNative {
   )
   public static int removeStateChangeListener(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
+      final DxfgEndpoint dxfgEndpoint,
       final DxfgEndpointStateChangeListener listener
   ) {
-    getEndpoint(endpoint)
-        .removeStateChangeListener(getJavaObject(listener.getJavaObjectHandler()));
+    toJavaEndpoint(dxfgEndpoint)
+        .removeStateChangeListener(extractHandler(listener.getJavaObjectHandler()));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -327,10 +344,18 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getFeed(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
-      final DxfgFeed feed
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgFeed dxfgFeed
   ) {
-    feed.setJavaObjectHandler(createFeed(getEndpoint(endpoint)));
+    final DXEndpoint endpoint = toJavaEndpoint(dxfgEndpoint);
+    dxfgFeed.setJavaObjectHandler(
+        WordFactory.signed(
+            FEED_HANDLES.computeIfAbsent(
+                endpoint,
+                k -> createHandler(k.getFeed()).rawValue()
+            )
+        )
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -340,58 +365,119 @@ public final class EndpointNative extends BaseNative {
   )
   public static int getPublisher(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint endpoint,
-      final DxfgFeed publisher
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgPublisher dxfgPublisher
   ) {
-    publisher.setJavaObjectHandler(createPublisher(getEndpoint(endpoint)));
+    final DXEndpoint endpoint = toJavaEndpoint(dxfgEndpoint);
+    dxfgPublisher.setJavaObjectHandler(
+        WordFactory.signed(
+            PUBLISHER_HANDLES.computeIfAbsent(
+                endpoint,
+                k -> createHandler(k.getPublisher()).rawValue()
+            )
+        )
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
-  private static ObjectHandle createEndpoint() {
-    return createJavaObjectHandler(DXEndpoint.create());
-  }
-
-  private static ObjectHandle createEndpoint(DxfgEndpointRole role) {
-    return createJavaObjectHandler(DXEndpoint.create(DxfgEndpointRole.toDXEndpointRole(role)));
-  }
-
-  private static void releaseEndpoint(DxfgEndpoint endpoint) {
-    releaseFeed(getEndpoint(endpoint));
-    releasePublisher(getEndpoint(endpoint));
-    destroyJavaObjectHandler(endpoint.getJavaObjectHandler());
-  }
-
-  private static DXEndpoint getEndpoint(DxfgEndpoint endpoint) {
-    return getJavaObject(endpoint.getJavaObjectHandler());
-  }
-
-  private static ObjectHandle createFeed(DXEndpoint endpoint) {
-    return WordFactory.pointer(FEED_HANDLES.computeIfAbsent(
-        endpoint,
-        k -> createJavaObjectHandler(endpoint.getFeed()).rawValue()
+  @CEntryPoint(
+      name = "dxfg_executor_new_fixed_thread_pool",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int newFixedThreadPool(
+      final IsolateThread ignoredThread,
+      final int nThreads,
+      final CCharPointer name,
+      final DxfgExecuter dxfgExecuter
+  ) {
+    dxfgExecuter.setJavaObjectHandler(createHandler(
+        Executors.newFixedThreadPool(
+            nThreads,
+            new PoolThreadFactory(toJavaString(name))
+        )
     ));
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  private static void releaseFeed(DXEndpoint endpoint) {
-    destroyJavaObjectHandler(WordFactory.pointer(FEED_HANDLES.remove(endpoint)));
+  @CEntryPoint(
+      name = "dxfg_executor_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int releaseFixedThreadPool(
+      final IsolateThread ignoredThread,
+      final DxfgExecuter dxfgExecuter
+  ) {
+    destroyHandler(dxfgExecuter.getJavaObjectHandler());
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  private static ObjectHandle createPublisher(DXEndpoint endpoint) {
-    return WordFactory.pointer(PUBLISHER_HANDLES.computeIfAbsent(
-        endpoint,
-        k -> createJavaObjectHandler(endpoint.getPublisher()).rawValue()
-    ));
+  @CEntryPoint(
+      name = "dxfg_endpoint_set_executor",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int executor(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgExecuter dxfgExecuter
+  ) {
+    toJavaEndpoint(dxfgEndpoint).executor(extractHandler(dxfgExecuter.getJavaObjectHandler()));
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  private static void releasePublisher(DXEndpoint endpoint) {
-    destroyJavaObjectHandler(WordFactory.pointer(PUBLISHER_HANDLES.remove(endpoint)));
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_event_types_size",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getEventTypesSize(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint
+  ) {
+    return toJavaEndpoint(dxfgEndpoint).getEventTypes().size();
   }
 
-  public static DXEndpoint executor(Executor executor) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_endpoint_get_event_types",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getEventTypes(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final CIntPointer array
+  ) {
+    int i = 0;
+    final Set<Class<? extends EventType<?>>> eventTypes = toJavaEndpoint(dxfgEndpoint).getEventTypes();
+    for (final Class<? extends EventType<?>> eventType : eventTypes) {
+      array.addressOf(i++).write(DxfgEventKind.of(eventType).getCValue());
+    }
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  public static Set<Class<? extends EventType<?>>> getEventTypes() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  private static DXEndpoint toJavaEndpoint(final DxfgEndpoint endpoint) {
+    return extractHandler(endpoint.getJavaObjectHandler());
+  }
+
+
+  private static class PoolThreadFactory implements ThreadFactory {
+
+    private final String name;
+    private final AtomicInteger index = new AtomicInteger();
+    private final ThreadGroup group;
+
+    {
+      final SecurityManager s = System.getSecurityManager();
+      group = (s != null) ? s.getThreadGroup() :
+          Thread.currentThread().getThreadGroup();
+    }
+
+    PoolThreadFactory(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public Thread newThread(final Runnable r) {
+      final Thread thread = new Thread(group, r, name + "-" + index.incrementAndGet());
+      thread.setDaemon(true);
+      return thread;
+    }
   }
 }

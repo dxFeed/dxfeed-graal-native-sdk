@@ -1,6 +1,5 @@
 package com.dxfeed.api.exception;
 
-import com.dxfeed.api.BaseNative;
 import com.dxfeed.event.market.ExceptionMapper;
 import com.dxfeed.event.market.StringMapper;
 import com.oracle.svm.jni.JNIThreadLocalPendingException;
@@ -9,7 +8,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
 @CContext(Directives.class)
-public final class CatchExceptionNative extends BaseNative {
+public final class CatchExceptionNative {
 
   private static final ExceptionMapper EXCEPTION_MAPPER = new ExceptionMapper(new StringMapper());
 

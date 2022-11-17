@@ -1,9 +1,10 @@
 package com.dxfeed.api.subscription;
 
+import static com.dxfeed.api.NativeUtils.extractHandler;
+import static com.dxfeed.api.NativeUtils.toJavaString;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import com.dxfeed.api.BaseNative;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
@@ -43,7 +44,6 @@ import com.dxfeed.event.market.TradeMapper;
 import com.dxfeed.event.market.UnderlyingMapper;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,17 +53,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
-public class SubscriptionNative extends BaseNative {
+public class SubscriptionNative {
 
   public static final ListEventMapper EVENT_MAPPER;
   private static final Map<Long, DXFeedEventListener<EventType<?>>> EVENT_LISTENERS = new HashMap<>();
-  private static final StringMapperCacheStore STRING_MAPPER_CACHE_STORE = new StringMapperCacheStore(3000);
+  private static final StringMapperCacheStore STRING_MAPPER_CACHE_STORE = new StringMapperCacheStore(
+      3000);
 
   static {
     final Mapper<String, CCharPointer> stringMapper = new StringMapper();
@@ -294,6 +296,12 @@ public class SubscriptionNative extends BaseNative {
       final ObservableSubscriptionChangeListener listener
   ) {
     throw new UnsupportedOperationException("It has not yet been implemented.");
+  }
+
+  private static DXFeedSubscription<EventType<?>> getDxFeedSubscription(
+      final ObjectHandle objectHandle
+  ) {
+    return extractHandler(objectHandle);
   }
 }
 
