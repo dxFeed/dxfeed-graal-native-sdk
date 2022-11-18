@@ -6,7 +6,7 @@ import java.util.List;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class ListEventMapper implements ListMapper<EventType<?>, DxfgEventPointer> {
+public class ListEventMapper {
 
   protected final EventMappers eventMappers;
 
@@ -14,9 +14,7 @@ public class ListEventMapper implements ListMapper<EventType<?>, DxfgEventPointe
     this.eventMappers = eventMappers;
   }
 
-
-  @Override
-  public DxfgEventPointer nativeObject(final List<EventType<?>> events) {
+  public DxfgEventPointer nativeObject(final List<? extends EventType<?>> events) {
     final DxfgEventPointer nativeEvents = UnmanagedMemory.calloc(
         SizeOf.get(DxfgEventPointer.class) * events.size()
     );
@@ -26,7 +24,6 @@ public class ListEventMapper implements ListMapper<EventType<?>, DxfgEventPointe
     return nativeEvents;
   }
 
-  @Override
   public void delete(final DxfgEventPointer nativeEvents, final int size) {
     for (int i = 0; i < size; ++i) {
       eventMappers.delete(nativeEvents.addressOf(i).read());

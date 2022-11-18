@@ -1,18 +1,24 @@
 package com.dxfeed.api.feed;
 
+import static com.dxfeed.api.NativeUtils.EVENT_MAPPER;
 import static com.dxfeed.api.NativeUtils.createHandler;
 import static com.dxfeed.api.NativeUtils.extractHandler;
 import static com.dxfeed.api.NativeUtils.toJavaString;
+import static com.dxfeed.api.NativeUtils.toJavaSymbol;
+import static com.dxfeed.api.endpoint.EndpointNative.FEED_HANDLES;
+import static com.dxfeed.api.endpoint.EndpointNative.INSTANCES;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
+import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.events.DxfgEventKind;
 import com.dxfeed.api.events.DxfgEventPointer;
+import com.dxfeed.api.events.DxfgSymbol;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.subscription.DxfgSubscription;
-import com.dxfeed.api.subscription.SubscriptionNative;
+import com.dxfeed.api.subscription.DxfgTimeSeriesSubscription;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
@@ -33,8 +39,27 @@ import org.graalvm.word.WordFactory;
 @CContext(Directives.class)
 public class FeedNative {
 
-  public static DXFeed getInstance() {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+  @CEntryPoint(
+      name = "dxfg_feed_get_instance",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int getInstance(
+      final IsolateThread ignoredThread,
+      final DxfgFeed dxfgFeed
+  ) {
+    INSTANCES.computeIfAbsent(
+        DXEndpoint.getInstance().getRole(),
+        role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
+    );
+    dxfgFeed.setJavaObjectHandler(
+        WordFactory.signed(
+            FEED_HANDLES.computeIfAbsent(
+                DXEndpoint.getInstance(),
+                k -> createHandler(k.getFeed()).rawValue()
+            )
+        )
+    );
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -48,15 +73,43 @@ public class FeedNative {
       final int eventTypesSize,
       final DxfgSubscription dxfgSubscription
   ) {
-    final DXFeed feed = extractHandler(dxfgFeed.getJavaObjectHandler());
     final Class<? extends EventType<?>>[] types = new Class[eventTypesSize];
     for (int i = 0; i < eventTypesSize; ++i) {
       types[i] = DxfgEventKind.fromCValue(eventTypes.read(i)).clazz;
     }
+    final DXFeed feed = extractHandler(dxfgFeed.getJavaObjectHandler());
     dxfgSubscription.setJavaObjectHandler(
         createHandler(feed.createSubscription(types))
     );
     return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_feed_create_time_series_subscription",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int createTimeSeriesSubscription(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventKind eventType,
+      final DxfgTimeSeriesSubscription dxfgTimeSeriesSubscription
+  ) {
+    dxfgTimeSeriesSubscription.setJavaObjectHandler(
+        createHandler(
+            toJavaFeed(feed)
+                .createTimeSeriesSubscription(
+                    (Class<TimeSeriesEvent<?>>) eventType.clazz
+                )
+        )
+    );
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @SafeVarargs
+  public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
+      final Class<? extends E>... eventTypes
+  ) {
+    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
   @CEntryPoint(
@@ -68,8 +121,7 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgSubscription subscription
   ) {
-    getFeed(feed)
-        .attachSubscription(getSubscription(subscription));
+    toJavaFeed(feed).attachSubscription(toJavaSubscription(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -82,8 +134,7 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgSubscription subscription
   ) {
-    getFeed(feed)
-        .detachSubscription(getSubscription(subscription));
+    toJavaFeed(feed).detachSubscription(toJavaSubscription(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -96,8 +147,7 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgSubscription subscription
   ) {
-    getFeed(feed)
-        .detachSubscriptionAndClear(getSubscription(subscription));
+    toJavaFeed(feed).detachSubscriptionAndClear(toJavaSubscription(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -109,19 +159,18 @@ public class FeedNative {
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventKind eventType,
-      final CCharPointer symbol,
+      final DxfgSymbol dxfgSymbol,
       final DxfgEventPointer event
   ) {
-    var result = getFeed(feed)
+    final LastingEvent<?> result = toJavaFeed(feed)
         .getLastEventIfSubscribed(
             (Class<LastingEvent<?>>) eventType.clazz,
-            toJavaString(symbol)
+            toJavaSymbol(dxfgSymbol)
         );
     if (result == null) {
       event.write(WordFactory.nullPointer());
     } else {
-      event.write(
-          SubscriptionNative.EVENT_MAPPER.nativeObject(Collections.singletonList(result)).read());
+      event.write(EVENT_MAPPER.nativeObject(Collections.singletonList(result)).read());
     }
     return EXECUTE_SUCCESSFULLY;
   }
@@ -134,23 +183,22 @@ public class FeedNative {
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventKind eventType,
-      final CCharPointer symbol,
+      final DxfgSymbol dxfgSymbol,
       final CCharPointer source,
       final DxfgEventPointer events,
       final CIntPointer eventsSize
   ) {
-    final var result = (List<? extends EventType<?>>) getFeed(feed)
+    final List<? extends EventType<?>> result = toJavaFeed(feed)
         .getIndexedEventsIfSubscribed(
             (Class<IndexedEvent<?>>) eventType.clazz,
-            toJavaString(symbol),
+            toJavaSymbol(dxfgSymbol),
             OrderSource.valueOf(toJavaString(source))
         );
     if (result == null) {
       events.write(WordFactory.nullPointer());
       eventsSize.write(0);
     } else {
-      events.write(
-          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read());
+      events.write(EVENT_MAPPER.nativeObject(result).read());
       eventsSize.write(result.size());
     }
     return EXECUTE_SUCCESSFULLY;
@@ -164,16 +212,16 @@ public class FeedNative {
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventKind eventType,
-      final CCharPointer symbol,
+      final DxfgSymbol dxfgSymbol,
       final long fromTime,
       final long toTime,
       final DxfgEventPointer events,
       final CIntPointer eventsSize
   ) {
-    final var result = (List<? extends EventType<?>>) getFeed(feed)
+    final List<TimeSeriesEvent<?>> result = toJavaFeed(feed)
         .getTimeSeriesIfSubscribed(
             (Class<TimeSeriesEvent<?>>) eventType.clazz,
-            toJavaString(symbol),
+            toJavaSymbol(dxfgSymbol),
             fromTime,
             toTime
         );
@@ -181,25 +229,10 @@ public class FeedNative {
       events.write(WordFactory.nullPointer());
       eventsSize.write(0);
     } else {
-      events.write(
-          SubscriptionNative.EVENT_MAPPER.nativeObject((List<EventType<?>>) result).read()
-      );
+      events.write(EVENT_MAPPER.nativeObject(result).read());
       eventsSize.write(result.size());
     }
     return EXECUTE_SUCCESSFULLY;
-  }
-
-  public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
-      final Class<? extends E> eventType
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  @SafeVarargs
-  public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
-      final Class<? extends E>... eventTypes
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
   public <E extends LastingEvent<?>> E getLastEvent(
@@ -218,6 +251,13 @@ public class FeedNative {
       final Class<E> eventType,
       final Object symbol
   ) {
+//        if (symbol instanceof CandleSymbol)
+//            return symbol;
+//        if (symbol instanceof String)
+//            return CandleSymbol.valueOf((String) symbol);
+//        if (symbol instanceof WildcardSymbol)
+//            return symbol;
+    DXFeed.getInstance().getLastEventPromise(null, null);
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
@@ -245,11 +285,11 @@ public class FeedNative {
     throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
-  private static DXFeed getFeed(DxfgFeed feed) {
+  private static DXFeed toJavaFeed(final DxfgFeed feed) {
     return extractHandler(feed.getJavaObjectHandler());
   }
 
-  private static DXFeedSubscription<?> getSubscription(DxfgSubscription sub) {
+  private static DXFeedSubscription<?> toJavaSubscription(final DxfgSubscription sub) {
     return extractHandler(sub.getJavaObjectHandler());
   }
 }

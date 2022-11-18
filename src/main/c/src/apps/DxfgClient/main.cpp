@@ -344,21 +344,29 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
     }
 
+    dxfg_symbol_t symbol;
+    symbol.symbol_type = WILDCARD;
+    symbol.symbol = nullptr;
+
     // Adds symbols.
-    for (const auto &symbol : symbols) {
-        res = dxfg_subscription_add_symbol(thread, &sub, symbol.c_str());
+//    for (const auto &symbol : symbols) {
+        res = dxfg_subscription_add_symbol(thread, &sub, &symbol);
         if (res != 0) {
             print_exception(thread);
         }
-    }
+//    }
 
 
     dxfg_quote_t* quote = nullptr;
-    dxfg_feed_get_last_event_if_subscribed(thread, &feed, DXFG_EVENT_TYPE_QUOTE, "AAPLA", (dxfg_event_type_t**)&quote);
+    dxfg_symbol_t symbol1;
+    symbol1.symbol_type = STRING;
+    symbol1.symbol = "AAPL";
+    dxfg_feed_get_last_event_if_subscribed(thread, &feed, DXFG_EVENT_TYPE_QUOTE, &symbol1, (dxfg_event_type_t**)&quote);
 
     // Waiting for input to exit.
     std::cin.get();
 
+    dxfg_feed_get_last_event_if_subscribed(thread, &feed, DXFG_EVENT_TYPE_QUOTE, &symbol1, (dxfg_event_type_t**)&quote);
 
 
     res = dxfg_endpoint_close_and_await_termination(thread, &endpoint);

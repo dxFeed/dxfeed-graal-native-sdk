@@ -81,11 +81,11 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
           if (node.counter == 0) {
             cache.remove(node.key);
             cache2.remove(node.value.address());
+            node.value.close();
           }
         } finally {
           readWriteLock.writeLock().unlock();
         }
-        node.value.close();
       }
     }
   }

@@ -10,6 +10,17 @@ extern "C" {
 #    include <stdint.h>
 #endif
 
+typedef enum dxfg_symbol_type_t {
+    STRING = 0,
+    CANDLE,
+    WILDCARD
+} dxfg_symbol_type_t;
+
+typedef struct dxfg_symbol_t {
+    dxfg_symbol_type_t symbol_type;
+    const char *symbol;
+} dxfg_symbol_t;
+
 /**
  * In the Java implementation, all events are lined up in a hierarchy
  * from the underlying EventType interface. In the C implementation,

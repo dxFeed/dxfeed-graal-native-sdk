@@ -1,53 +1,28 @@
 package com.dxfeed.api.subscription;
 
+import static com.dxfeed.api.NativeUtils.EVENT_MAPPER;
+import static com.dxfeed.api.NativeUtils.STRING_MAPPER_CACHE_STORE;
 import static com.dxfeed.api.NativeUtils.extractHandler;
 import static com.dxfeed.api.NativeUtils.toJavaString;
+import static com.dxfeed.api.NativeUtils.toJavaSymbol;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
-import com.dxfeed.api.events.DxfgCCharPointerPointer;
 import com.dxfeed.api.events.DxfgEventPointer;
+import com.dxfeed.api.events.DxfgSymbol;
+import com.dxfeed.api.events.DxfgSymbolPointer;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
-import com.dxfeed.event.market.AnalyticOrderMapper;
-import com.dxfeed.event.market.CandleExchangeMapper;
-import com.dxfeed.event.market.CandleMapper;
-import com.dxfeed.event.market.CandlePeriodMapper;
-import com.dxfeed.event.market.CandlePriceLevelMapper;
-import com.dxfeed.event.market.CandleSymbolMapper;
-import com.dxfeed.event.market.ConfigurationMapper;
-import com.dxfeed.event.market.DailyCandleMapper;
-import com.dxfeed.event.market.EventMappersImpl;
-import com.dxfeed.event.market.GreeksMapper;
-import com.dxfeed.event.market.ListEventMapper;
-import com.dxfeed.event.market.Mapper;
-import com.dxfeed.event.market.MarketEventMapper;
-import com.dxfeed.event.market.MessageMapper;
-import com.dxfeed.event.market.OrderBaseMapper;
-import com.dxfeed.event.market.OrderMapper;
-import com.dxfeed.event.market.ProfileMapper;
-import com.dxfeed.event.market.QuoteMapper;
-import com.dxfeed.event.market.SeriesMapper;
-import com.dxfeed.event.market.SpreadOrderMapper;
-import com.dxfeed.event.market.StringMapper;
-import com.dxfeed.event.market.StringMapperCacheStore;
-import com.dxfeed.event.market.StringMapperUnlimitedStore;
-import com.dxfeed.event.market.SummaryMapper;
-import com.dxfeed.event.market.TheoPriceMapper;
-import com.dxfeed.event.market.TimeAndSaleMapper;
-import com.dxfeed.event.market.TradeETHMapper;
-import com.dxfeed.event.market.TradeMapper;
-import com.dxfeed.event.market.UnderlyingMapper;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -62,45 +37,7 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CContext(Directives.class)
 public class SubscriptionNative {
 
-  public static final ListEventMapper EVENT_MAPPER;
-  private static final Map<Long, DXFeedEventListener<EventType<?>>> EVENT_LISTENERS = new HashMap<>();
-  private static final StringMapperCacheStore STRING_MAPPER_CACHE_STORE = new StringMapperCacheStore(
-      3000);
-
-  static {
-    final Mapper<String, CCharPointer> stringMapper = new StringMapper();
-    final Mapper<String, CCharPointer> stringMapperUnlimitedStore = new StringMapperUnlimitedStore();
-
-    final CandleSymbolMapper candleSymbolMapper = new CandleSymbolMapper(
-        stringMapperUnlimitedStore,
-        new CandlePeriodMapper(STRING_MAPPER_CACHE_STORE),
-        new CandleExchangeMapper(),
-        new CandlePriceLevelMapper()
-    );
-    final MarketEventMapper marketEventMapper = new MarketEventMapper(stringMapperUnlimitedStore);
-    EVENT_MAPPER = new ListEventMapper(
-        new EventMappersImpl(
-            new QuoteMapper(marketEventMapper),
-            new SeriesMapper(marketEventMapper),
-            new TimeAndSaleMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
-            new SpreadOrderMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
-            new OrderMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
-            new AnalyticOrderMapper(marketEventMapper),
-            new MessageMapper(stringMapper),
-            new OrderBaseMapper(marketEventMapper),
-            new ConfigurationMapper(stringMapper),
-            new TradeMapper(marketEventMapper),
-            new TradeETHMapper(marketEventMapper),
-            new TheoPriceMapper(marketEventMapper),
-            new UnderlyingMapper(marketEventMapper),
-            new GreeksMapper(marketEventMapper),
-            new SummaryMapper(marketEventMapper),
-            new ProfileMapper(marketEventMapper, STRING_MAPPER_CACHE_STORE),
-            new DailyCandleMapper(candleSymbolMapper),
-            new CandleMapper(candleSymbolMapper)
-        )
-    );
-  }
+  private static final Map<Long, DXFeedEventListener<EventType<?>>> EVENT_LISTENERS = new ConcurrentHashMap<>();
 
   @CEntryPoint(
       name = "dxfg_subscription_close",
@@ -133,15 +70,14 @@ public class SubscriptionNative {
   public static int addSymbols(
       final IsolateThread ignoreThread,
       final DxfgSubscription dxfgSubscription,
-      final DxfgCCharPointerPointer dxfgCCharPointerPointer,
+      final DxfgSymbolPointer symbols,
       final int symbolsSize
   ) {
-    final List<String> listSymbols = new ArrayList<>(symbolsSize);
+    final List<Object> listSymbols = new ArrayList<>(symbolsSize);
     for (int i = 0; i < symbolsSize; ++i) {
-      listSymbols.add(toJavaString(dxfgCCharPointerPointer.addressOf(i).read()));
+      listSymbols.add(toJavaSymbol(symbols.addressOf(i).read()));
     }
-    getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler())
-        .addSymbols(listSymbols);
+    getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler()).addSymbols(listSymbols);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -152,10 +88,10 @@ public class SubscriptionNative {
   public static int addSymbols(
       final IsolateThread ignoreThread,
       final DxfgSubscription dxfgSubscription,
-      final CCharPointer charPointer
+      final DxfgSymbol dxfgSymbol
   ) {
     getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler())
-        .addSymbols(toJavaString(charPointer));
+        .addSymbols(toJavaSymbol(dxfgSymbol));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -166,15 +102,14 @@ public class SubscriptionNative {
   public static int removeSymbols(
       final IsolateThread ignoreThread,
       final DxfgSubscription dxfgSubscription,
-      final DxfgCCharPointerPointer dxfgCCharPointerPointer,
+      final DxfgSymbolPointer symbols,
       final int symbolsSize
   ) {
-    final List<String> listSymbols = new ArrayList<>(symbolsSize);
+    final List<Object> listSymbols = new ArrayList<>(symbolsSize);
     for (int i = 0; i < symbolsSize; ++i) {
-      listSymbols.add(toJavaString(dxfgCCharPointerPointer.addressOf(i).read()));
+      listSymbols.add(toJavaSymbol(symbols.addressOf(i).read()));
     }
-    getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler())
-        .removeSymbols(listSymbols);
+    getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler()).removeSymbols(listSymbols);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -185,10 +120,10 @@ public class SubscriptionNative {
   public static int removeSymbol(
       final IsolateThread ignoreThread,
       final DxfgSubscription dxfgSubscription,
-      final CCharPointer charPointer
+      final DxfgSymbol dxfgSymbol
   ) {
     getDxFeedSubscription(dxfgSubscription.getJavaObjectHandler())
-        .removeSymbols(toJavaString(charPointer));
+        .removeSymbols(toJavaSymbol(dxfgSymbol));
     return EXECUTE_SUCCESSFULLY;
   }
 

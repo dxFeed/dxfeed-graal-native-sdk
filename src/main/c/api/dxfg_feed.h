@@ -23,12 +23,27 @@ extern "C" {
 typedef struct dxfg_subscription_t dxfg_subscription_t;
 
 /**
+ * @brief Forward declarations.
+ */
+typedef struct dxfg_time_series_subscription_t dxfg_time_series_subscription_t;
+
+/**
  * @brief The DXFeed.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html">Javadoc</a>
  */
 typedef struct dxfg_feed_t {
     void *java_object_handle;
 } dxfg_feed_t;
+
+/**
+ * @brief Returns a default application-wide singleton instance of DXFeed with a DXFG_ENDPOINT_ROLE_FEED role.
+ * <br><a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getInstance--">Javadoc</a>
+ * @param[in] thread The pointer to a run-time data structure for the thread.
+ * @param[out] feed The feed instance.
+ * @return 0 - if the operation was successful; otherwise -1.
+ */
+int32_t dxfg_feed_get_instance(graal_isolatethread_t *thread, dxfg_feed_t *feed);
 
 /**
  * @brief Creates new subscription for a single event type that is attached to this feed.
@@ -44,6 +59,16 @@ typedef struct dxfg_feed_t {
  */
 int32_t dxfg_feed_create_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_kind_t *eventTypes,
                                       int32_t eventTypesSize, dxfg_subscription_t *sub);
+
+
+
+
+/**
+ * <a href=
+ * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#createTimeSeriesSubscription-java.lang.Class-">
+ * Javadoc</a>
+ */
+int32_t dxfg_feed_create_time_series_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_kind_t *eventType, dxfg_time_series_subscription_t *sub);
 
 /**
  * @brief Attaches the given subscription to this feed.
@@ -96,7 +121,8 @@ int32_t dxfg_feed_detach_subscription_and_clear(graal_isolatethread_t *thread, d
  * @return 0 - if the operation was successful; otherwise -1.
  */
 int32_t dxfg_feed_get_last_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                               dxfg_event_kind_t eventType, const char *symbol,
+                                               dxfg_event_kind_t eventType,
+                                               dxfg_symbol_t *symbol,
                                                dxfg_event_type_t **event);
 
 /**
@@ -115,7 +141,8 @@ int32_t dxfg_feed_get_last_event_if_subscribed(graal_isolatethread_t *thread, dx
  * @return 0 - if the operation was successful; otherwise -1.
  */
 int32_t dxfg_feed_get_indexed_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                                  dxfg_event_kind_t eventType, const char *symbol, const char *source,
+                                                  dxfg_event_kind_t eventType,
+                                                  dxfg_symbol_t *symbol, const char *source,
                                                   dxfg_event_type_t **events, int32_t *eventsSize);
 
 /**
@@ -136,7 +163,8 @@ int32_t dxfg_feed_get_indexed_event_if_subscribed(graal_isolatethread_t *thread,
  * @return 0 - if the operation was successful; otherwise -1.
  */
 int32_t dxfg_feed_get_time_series_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                                      dxfg_event_kind_t type, const char *symbol, int64_t from_time,
+                                                      dxfg_event_kind_t type,
+                                                      dxfg_symbol_t *symbol, int64_t from_time,
                                                       int64_t to_time, dxfg_event_type_t **event, int32_t *eventsSize);
 
 /** @} */ // end of Feed
