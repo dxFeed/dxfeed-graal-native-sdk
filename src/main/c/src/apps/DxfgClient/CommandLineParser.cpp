@@ -7,25 +7,25 @@
 namespace dxfg {
 
 const std::string CommandLineParser::propertyPattern_ = "-D";
-const std::unordered_map<std::string, dxfg_event_kind_t> CommandLineParser::eventTypesMap_ = {
-    {"Quote", DXFG_EVENT_TYPE_QUOTE},
-    {"Series", DXFG_EVENT_TYPE_SERIES},
-    {"TimeAndSale", DXFG_EVENT_TYPE_TIME_AND_SALE},
-    {"SpreadOrder", DXFG_EVENT_TYPE_SPREAD_ORDER},
-    {"Order", DXFG_EVENT_TYPE_ORDER},
-    {"AnalyticOrder", DXFG_EVENT_TYPE_ANALYTIC_ORDER},
-    {"Message", DXFG_EVENT_TYPE_MESSAGE},
-    {"OrderBase", DXFG_EVENT_TYPE_ORDER_BASE},
-    {"Configuration", DXFG_EVENT_TYPE_CONFIGURATION},
-    {"Trade", DXFG_EVENT_TYPE_TRADE},
-    {"TradeETH", DXFG_EVENT_TYPE_TRADE_ETH},
-    {"TheoPrice", DXFG_EVENT_TYPE_THEO_PRICE},
-    {"Underlying", DXFG_EVENT_TYPE_UNDERLYING},
-    {"Greeks", DXFG_EVENT_TYPE_GREEKS},
-    {"Summary", DXFG_EVENT_TYPE_SUMMARY},
-    {"Profile", DXFG_EVENT_TYPE_PROFILE},
-    {"DailyCandle", DXFG_EVENT_TYPE_DAILY_CANDLE},
-    {"Candle", DXFG_EVENT_TYPE_CANDLE},
+const std::unordered_map<std::string, dxfg_event_clazz_t> CommandLineParser::eventTypesMap_ = {
+    {"Quote", DXFG_EVENT_QUOTE},
+    {"Series", DXFG_EVENT_SERIES},
+    {"TimeAndSale", DXFG_EVENT_TIME_AND_SALE},
+    {"SpreadOrder", DXFG_EVENT_SPREAD_ORDER},
+    {"Order", DXFG_EVENT_ORDER},
+    {"AnalyticOrder", DXFG_EVENT_ANALYTIC_ORDER},
+    {"Message", DXFG_EVENT_MESSAGE},
+    {"OrderBase", DXFG_EVENT_ORDER_BASE},
+    {"Configuration", DXFG_EVENT_CONFIGURATION},
+    {"Trade", DXFG_EVENT_TRADE},
+    {"TradeETH", DXFG_EVENT_TRADE_ETH},
+    {"TheoPrice", DXFG_EVENT_THEO_PRICE},
+    {"Underlying", DXFG_EVENT_UNDERLYING},
+    {"Greeks", DXFG_EVENT_GREEKS},
+    {"Summary", DXFG_EVENT_SUMMARY},
+    {"Profile", DXFG_EVENT_PROFILE},
+    {"DailyCandle", DXFG_EVENT_DAILY_CANDLE},
+    {"Candle", DXFG_EVENT_CANDLE},
 };
 
 std::unordered_map<std::string, std::string> CommandLineParser::parseSystemProperties(char **argv, int &currentArg) {
@@ -45,8 +45,8 @@ std::unordered_map<std::string, std::string> CommandLineParser::parseSystemPrope
 
 std::string CommandLineParser::parseAddress(char **argv, int &currentArg) { return argv[currentArg++]; }
 
-std::vector<dxfg_event_kind_t> CommandLineParser::parseEventTypes(char **argv, int &currentArg) {
-    std::vector<dxfg_event_kind_t> eventTypes{};
+std::vector<dxfg_event_clazz_t> CommandLineParser::parseEventTypes(char **argv, int &currentArg) {
+    std::vector<dxfg_event_clazz_t> eventTypes{};
     const auto stringListEventTypes = StringUtils::splitString(argv[currentArg++], ',');
     for (const auto &stringEventType : stringListEventTypes) {
         auto it = eventTypesMap_.find(stringEventType);

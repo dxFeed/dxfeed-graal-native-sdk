@@ -1,14 +1,16 @@
 package com.dxfeed.event.market;
 
+import com.oracle.svm.core.SubstrateUtil;
 import java.nio.charset.StandardCharsets;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 import org.graalvm.word.WordFactory;
 
 public class StringMapper extends Mapper<String, CCharPointer> {
 
   @Override
-  public CCharPointer nativeObject(final String jObject) {
+  public CCharPointer toNativeObject(final String jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
@@ -25,19 +27,29 @@ public class StringMapper extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  protected int size() {
-    throw new IllegalStateException(
-        "The size of the string depends on the content. It is an array."
-    );
-  }
-
-  @Override
-  protected void fillNativeObject(final CCharPointer nObject, final String jObject) {
-    // nothing
+  public void fillNativeObject(final String jObject, final CCharPointer nObject) {
+    throw new IllegalStateException();
   }
 
   @Override
   protected void cleanNativeObject(final CCharPointer nObject) {
     // nothing
+  }
+
+  @Override
+  public String toJavaObject(final CCharPointer nObject) {
+    if (nObject.isNull()) {
+      return null;
+    }
+    return CTypeConversion.toJavaString(
+        nObject,
+        SubstrateUtil.strlen(nObject),
+        StandardCharsets.UTF_8
+    );
+  }
+
+  @Override
+  public void fillJavaObject(final CCharPointer nObject, final String jObject) {
+    throw new IllegalStateException();
   }
 }

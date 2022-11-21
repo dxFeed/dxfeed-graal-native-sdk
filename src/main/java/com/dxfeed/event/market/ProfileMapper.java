@@ -1,34 +1,35 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgProfile;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class ProfileMapper extends Mapper<Profile, DxfgProfile> {
+public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
 
-  private final MarketEventMapper marketEventMapper;
   private final Mapper<String, CCharPointer> stringMapper;
 
   public ProfileMapper(
-      final MarketEventMapper marketEventMapper,
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    this.marketEventMapper = marketEventMapper;
+    super(stringMapperForMarketEvent);
     this.stringMapper = stringMapper;
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgProfile.class);
+  public DxfgProfile createNativeObject() {
+    final DxfgProfile nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgProfile.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_PROFILE.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgProfile nObject, final Profile jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_PROFILE.getCValue());
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
-    nObject.setDescription(this.stringMapper.nativeObject(jObject.getDescription()));
-    nObject.setStatusReason(this.stringMapper.nativeObject(jObject.getStatusReason()));
+  public void fillNativeObject(final Profile jObject, final DxfgProfile nObject) {
+    super.fillNativeObject(jObject, nObject);
+    nObject.setDescription(this.stringMapper.toNativeObject(jObject.getDescription()));
+    nObject.setStatusReason(this.stringMapper.toNativeObject(jObject.getStatusReason()));
     nObject.setHaltStartTime(jObject.getHaltStartTime());
     nObject.setHaltEndTime(jObject.getHaltEndTime());
     nObject.setHighLimitPrice(jObject.getHighLimitPrice());
@@ -40,8 +41,29 @@ public class ProfileMapper extends Mapper<Profile, DxfgProfile> {
 
   @Override
   protected void cleanNativeObject(final DxfgProfile nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
-    this.stringMapper.delete(nObject.getDescription());
-    this.stringMapper.delete(nObject.getStatusReason());
+    super.cleanNativeObject(nObject);
+    this.stringMapper.release(nObject.getDescription());
+    this.stringMapper.release(nObject.getStatusReason());
+  }
+
+  @Override
+  public Profile toJavaObject(final DxfgProfile nObject) {
+    final Profile jObject = new Profile();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgProfile nObject, final Profile jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setDescription(this.stringMapper.toJavaObject(nObject.getDescription()));
+    jObject.setStatusReason(this.stringMapper.toJavaObject(nObject.getStatusReason()));
+    jObject.setHaltStartTime(nObject.getHaltStartTime());
+    jObject.setHaltEndTime(nObject.getHaltEndTime());
+    jObject.setHighLimitPrice(nObject.getHighLimitPrice());
+    jObject.setLowLimitPrice(nObject.getLowLimitPrice());
+    jObject.setHigh52WeekPrice(nObject.getHigh52WeekPrice());
+    jObject.setLow52WeekPrice(nObject.getLow52WeekPrice());
+    jObject.setFlags(nObject.getFlags());
   }
 }

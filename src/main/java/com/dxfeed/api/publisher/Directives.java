@@ -1,10 +1,9 @@
 package com.dxfeed.api.publisher;
 
 import com.oracle.svm.core.c.ProjectHeaderFile;
-import org.graalvm.nativeimage.c.CContext;
-
 import java.util.Collections;
 import java.util.List;
+import org.graalvm.nativeimage.c.CContext;
 
 class Directives implements CContext.Directives {
 

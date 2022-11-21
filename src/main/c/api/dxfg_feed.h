@@ -11,6 +11,8 @@ extern "C" {
 #endif
 
 #include "dxfg_events.h"
+#include "dxfg_catch_exception.h"
+#include "dxfg_javac.h"
 #include "graal_isolate.h"
 
 /** @defgroup Feed
@@ -21,151 +23,83 @@ extern "C" {
  * @brief Forward declarations.
  */
 typedef struct dxfg_subscription_t dxfg_subscription_t;
-
-/**
- * @brief Forward declarations.
- */
 typedef struct dxfg_time_series_subscription_t dxfg_time_series_subscription_t;
+typedef struct dxfg_executor_t dxfg_executor_t;
 
 /**
  * @brief The DXFeed.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html">Javadoc</a>
  */
 typedef struct dxfg_feed_t {
-    void *java_object_handle;
+    dxfg_java_object_handler handler;
 } dxfg_feed_t;
 
 /**
- * @brief Returns a default application-wide singleton instance of DXFeed with a DXFG_ENDPOINT_ROLE_FEED role.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getInstance--">Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[out] feed The feed instance.
- * @return 0 - if the operation was successful; otherwise -1.
+ * @brief The DXFeed.
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/promise/Promise.html">Javadoc</a>
  */
-int32_t dxfg_feed_get_instance(graal_isolatethread_t *thread, dxfg_feed_t *feed);
-
-/**
- * @brief Creates new subscription for a single event type that is attached to this feed.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#createSubscription-java.lang.Class-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] eventTypes The list of event types.
- * @param[in] eventTypesSize The count of event types.
- * @param[out] sub The created subscription.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_create_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_kind_t *eventTypes,
-                                      int32_t eventTypesSize, dxfg_subscription_t *sub);
+typedef struct dxfg_promise_t {
+    dxfg_java_object_handler handler;
+} dxfg_promise_t;
 
 
+typedef struct dxfg_promise_list {
+    dxfg_java_object_handler_list list;
+} dxfg_promise_list;
+
+typedef struct dxfg_promise_events_t {
+    dxfg_promise_t base;
+} dxfg_promise_events_t;
 
 
-/**
- * <a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#createTimeSeriesSubscription-java.lang.Class-">
- * Javadoc</a>
- */
-int32_t dxfg_feed_create_time_series_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_kind_t *eventType, dxfg_time_series_subscription_t *sub);
+typedef struct dxfg_promise_event_t {
+    dxfg_promise_t handler;
+} dxfg_promise_event_t;
 
-/**
- * @brief Attaches the given subscription to this feed.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#attachSubscription-com.dxfeed.api.DXFeedSubscription-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] sub The subscription.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_attach_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
+dxfg_feed_t*                      dxfg_DXFeed_getInstance(graal_isolatethread_t *thread);
+dxfg_subscription_t*              dxfg_DXFeed_createSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz);
+dxfg_subscription_t*              dxfg_DXFeed_createSubscription2(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_list_t *eventClazzes);
+dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz);
+dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription2(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_list_t *eventClazzes);
+int32_t                           dxfg_DXFeed_attachSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
+int32_t                           dxfg_DXFeed_detachSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
+int32_t                           dxfg_DXFeed_detachSubscriptionAndClear(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
+dxfg_event_type_t*                dxfg_DXFeed_getLastEventIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
+dxfg_event_type_list*             dxfg_DXFeed_getIndexedEventsIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, const char *source);
+dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, int64_t from_time, int64_t to_time);
+// use dxfg_EventType_new to create an empty structure so that java tries to free up memory when replacing subjects
+int32_t                           dxfg_DXFeed_getLastEvent(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_t *event);
+int32_t                           dxfg_DXFeed_getLastEvents(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_list *events);
+dxfg_promise_event_t*             dxfg_DXFeed_getLastEventPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
+dxfg_promise_list*                dxfg_DXFeed_getLastEventsPromises(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_list *symbols);
+dxfg_promise_events_t*            dxfg_DXFeed_getIndexedEventsPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, dxfg_indexed_event_source* source);
+dxfg_promise_events_t*            dxfg_DXFeed_getTimeSeriesPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t clazz, dxfg_symbol_t *symbol, int64_t fromTime, int64_t toTime);
 
-/**
- * @brief Detaches the given subscription from this feed.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#detachSubscription-com.dxfeed.api.DXFeedSubscription-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] sub The subscription.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_detach_subscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
+int32_t                           dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t *thread, dxfg_time_series_subscription_t *sub, int64_t fromTime);
 
-/**
- * @brief Detaches the given subscription from this feed
- * and clears data delivered to this subscription by publishing empty events.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#detachSubscriptionAndClear-com.dxfeed.api.DXFeedSubscription-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] sub The subscription.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_detach_subscription_and_clear(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                                dxfg_subscription_t *sub);
+typedef void (*dxfg_promise_handler_function)(graal_isolatethread_t *thread, dxfg_promise_t *promise, void *user_data);
 
-/**
- * @brief Returns the last event for the specified event type and symbol if there is a subscription for it.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEventIfSubscribed-java.lang.Class-java.lang.Object-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] eventType The event type.
- * @param[in] symbol The event symbol.
- * @param[out] event The event or null if there is no subscription for the specified event type and symbol.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_get_last_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                               dxfg_event_kind_t eventType,
-                                               dxfg_symbol_t *symbol,
-                                               dxfg_event_type_t **event);
+int32_t               dxfg_Promise_isDone(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_hasResult(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_hasException(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_isCancelled(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+dxfg_event_type_t*    dxfg_Promise_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_event_t *promise);
+dxfg_event_type_list* dxfg_Promise_List_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_events_t *promise);
+dxfg_exception_t*     dxfg_Promise_getException(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_await(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_await2(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
+int32_t               dxfg_Promise_awaitWithoutException(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
+int32_t               dxfg_Promise_cancel(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+int32_t               dxfg_Promise_List_EventType_complete(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_event_type_list* events);
+int32_t               dxfg_Promise_EventType_complete(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_event_type_t* event);
+int32_t               dxfg_Promise_completeExceptionally(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_exception_t* exception);
+int32_t               dxfg_Promise_whenDone(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_promise_handler_function promise_handler_function, void *user_data);
+int32_t               dxfg_Promise_whenDoneAsync(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_promise_handler_function promise_handler_function, void *user_data, dxfg_executor_t* executor);
+dxfg_promise_t*       dxfg_Promise_completed(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_java_object_handler *handler);
+dxfg_promise_t*       dxfg_Promise_failed(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_exception_t* exception);
 
-/**
- * @brief Returns a list of indexed events for the specified event type, symbol,
- * and source if there is a subscription for it.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getIndexedEventsIfSubscribed-java.lang.Class-java.lang.Object-com.dxfeed.event.IndexedEventSource-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] eventType The event type.
- * @param[in] symbol The event symbol.
- * @param[in] source The order source.
- * @param[out] events The event or null if there is no subscription for the specified event type and symbol.
- * @param[out] eventsSize The count of events.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_get_indexed_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                                  dxfg_event_kind_t eventType,
-                                                  dxfg_symbol_t *symbol, const char *source,
-                                                  dxfg_event_type_t **events, int32_t *eventsSize);
+dxfg_promise_t*       dxfg_Promises_allOf(graal_isolatethread_t *thread, dxfg_promise_list *promises);
 
-/**
- * @brief Returns time series of events for the specified event type, symbol,
- * and a range of time if there is a subscription for it.
- * <br><a href=
- * "https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getTimeSeriesIfSubscribed-java.lang.Class-java.lang.Object-long-long-">
- * Javadoc</a>
- * @param[in] thread The pointer to a run-time data structure for the thread.
- * @param[in] feed The feed.
- * @param[in] eventType The event type.
- * @param[in] symbol The event symbol.
- * @param[in] from_time The time, inclusive, to return events from (in milliseconds).
- * @param[in] to_time The time, inclusive, to return events to (in milliseconds).
- * @param[out] events The list of events or null if there is no subscription
- * for the specified event type, symbol, and time range.
- * @param[out] eventsSize The count of events.
- * @return 0 - if the operation was successful; otherwise -1.
- */
-int32_t dxfg_feed_get_time_series_event_if_subscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed,
-                                                      dxfg_event_kind_t type,
-                                                      dxfg_symbol_t *symbol, int64_t from_time,
-                                                      int64_t to_time, dxfg_event_type_t **event, int32_t *eventsSize);
 
 /** @} */ // end of Feed
 

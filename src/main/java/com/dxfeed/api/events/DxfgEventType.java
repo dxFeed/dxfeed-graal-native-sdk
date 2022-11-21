@@ -9,9 +9,9 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_event_type_t")
 public interface DxfgEventType extends PointerBase {
 
-  @CField("kind")
-  int getKind();
+  @CField("clazz")
+  int getClazz();
 
-  @CField("kind")
-  void setKind(int kind);
+  @CField("clazz")
+  void setClazz(int clazz);
 }

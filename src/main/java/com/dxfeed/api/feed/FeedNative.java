@@ -1,295 +1,250 @@
 package com.dxfeed.api.feed;
 
-import static com.dxfeed.api.NativeUtils.EVENT_MAPPER;
-import static com.dxfeed.api.NativeUtils.createHandler;
-import static com.dxfeed.api.NativeUtils.extractHandler;
-import static com.dxfeed.api.NativeUtils.toJavaString;
-import static com.dxfeed.api.NativeUtils.toJavaSymbol;
-import static com.dxfeed.api.endpoint.EndpointNative.FEED_HANDLES;
-import static com.dxfeed.api.endpoint.EndpointNative.INSTANCES;
+import static com.dxfeed.api.NativeUtils.MAPPER_ENEVET_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENT;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
+import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
+import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
+import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
+import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
-import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
-import com.dxfeed.api.DXFeedTimeSeriesSubscription;
-import com.dxfeed.api.events.DxfgEventKind;
-import com.dxfeed.api.events.DxfgEventPointer;
+import com.dxfeed.api.events.DxfgEventClazz;
+import com.dxfeed.api.events.DxfgEventClazzList;
+import com.dxfeed.api.events.DxfgEventType;
+import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgSymbol;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
+import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.subscription.DxfgSubscription;
 import com.dxfeed.api.subscription.DxfgTimeSeriesSubscription;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
-import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.market.OrderSource;
-import com.dxfeed.promise.Promise;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CIntPointer;
-import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
 public class FeedNative {
 
   @CEntryPoint(
-      name = "dxfg_feed_get_instance",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_getInstance",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int getInstance(
-      final IsolateThread ignoredThread,
-      final DxfgFeed dxfgFeed
+  public static DxfgFeed dxfg_DXFeed_getInstance(
+      final IsolateThread ignoredThread
   ) {
-    INSTANCES.computeIfAbsent(
-        DXEndpoint.getInstance().getRole(),
-        role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
-    );
-    dxfgFeed.setJavaObjectHandler(
-        WordFactory.signed(
-            FEED_HANDLES.computeIfAbsent(
-                DXEndpoint.getInstance(),
-                k -> createHandler(k.getFeed()).rawValue()
-            )
-        )
-    );
-    return EXECUTE_SUCCESSFULLY;
+    return newJavaObjectHandler(DXFeed.getInstance());
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_create_subscription",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_createSubscription",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int createSubscription(
+  public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeed_createSubscription(
       final IsolateThread ignoredThread,
       final DxfgFeed dxfgFeed,
-      final CIntPointer eventTypes,
-      final int eventTypesSize,
-      final DxfgSubscription dxfgSubscription
+      final DxfgEventClazz dxfgClazz
   ) {
-    final Class<? extends EventType<?>>[] types = new Class[eventTypesSize];
-    for (int i = 0; i < eventTypesSize; ++i) {
-      types[i] = DxfgEventKind.fromCValue(eventTypes.read(i)).clazz;
-    }
-    final DXFeed feed = extractHandler(dxfgFeed.getJavaObjectHandler());
-    dxfgSubscription.setJavaObjectHandler(
-        createHandler(feed.createSubscription(types))
+    return newJavaObjectHandler(
+        toJava(dxfgFeed).createSubscription(dxfgClazz.clazz)
     );
-    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_create_time_series_subscription",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_createSubscription2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int createTimeSeriesSubscription(
+  public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeed_createSubscription2(
       final IsolateThread ignoredThread,
-      final DxfgFeed feed,
-      final DxfgEventKind eventType,
-      final DxfgTimeSeriesSubscription dxfgTimeSeriesSubscription
+      final DxfgFeed dxfgFeed,
+      final DxfgEventClazzList eventClazzList
   ) {
-    dxfgTimeSeriesSubscription.setJavaObjectHandler(
-        createHandler(
-            toJavaFeed(feed)
-                .createTimeSeriesSubscription(
-                    (Class<TimeSeriesEvent<?>>) eventType.clazz
-                )
+    return newJavaObjectHandler(
+        toJava(dxfgFeed).createSubscription(
+            MAPPER_ENEVET_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
         )
     );
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @SafeVarargs
-  public final <E extends TimeSeriesEvent<?>> DXFeedTimeSeriesSubscription<E> createTimeSeriesSubscription(
-      final Class<? extends E>... eventTypes
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_attach_subscription",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_createTimeSeriesSubscription",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int attachSubscription(
+  public static DxfgTimeSeriesSubscription dxfg_DXFeed_createTimeSeriesSubscription(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgSubscription subscription
+      final DxfgEventClazz dxfgClazz
   ) {
-    toJavaFeed(feed).attachSubscription(toJavaSubscription(subscription));
-    return EXECUTE_SUCCESSFULLY;
+    return newJavaObjectHandler(
+        toJava(feed).createTimeSeriesSubscription((Class<TimeSeriesEvent<?>>) dxfgClazz.clazz)
+    );
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_detach_subscription",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_createTimeSeriesSubscription2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int detachSubscription(
+  public static DxfgTimeSeriesSubscription dxfg_DXFeed_createTimeSeriesSubscription2(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgSubscription subscription
+      final DxfgEventClazzList eventClazzList
   ) {
-    toJavaFeed(feed).detachSubscription(toJavaSubscription(subscription));
-    return EXECUTE_SUCCESSFULLY;
+    return newJavaObjectHandler(
+        toJava(feed).createTimeSeriesSubscription(
+            MAPPER_ENEVET_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+        )
+    );
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_detach_subscription_and_clear",
+      name = "dxfg_DXFeedTimeSeriesSubscription_setFromTime",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int detachSubscriptionAndClear(
+  public static int dxfg_DXFeedTimeSeriesSubscription_setFromTime(
       final IsolateThread ignoredThread,
-      final DxfgFeed feed,
-      final DxfgSubscription subscription
+      final DxfgTimeSeriesSubscription dxfgTimeSeriesSubscription,
+      final long fromTime
   ) {
-    toJavaFeed(feed).detachSubscriptionAndClear(toJavaSubscription(subscription));
+    toJava(dxfgTimeSeriesSubscription).setFromTime(fromTime);
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_get_last_event_if_subscribed",
+      name = "dxfg_DXFeed_attachSubscription",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getLastEventIfSubscribed(
+  public static int dxfg_DXFeed_attachSubscription(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgEventKind eventType,
+      final DxfgSubscription<?> subscription
+  ) {
+    toJava(feed).attachSubscription(toJava(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeed_detachSubscription",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeed_detachSubscription(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgSubscription<?> subscription
+  ) {
+    toJava(feed).detachSubscription(toJava(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeed_detachSubscriptionAndClear",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeed_detachSubscriptionAndClear(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgSubscription<?> subscription
+  ) {
+    toJava(feed).detachSubscriptionAndClear(toJava(subscription));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeed_getLastEventIfSubscribed",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEventType dxfg_DXFeed_getLastEventIfSubscribed(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventClazz dxfgClazz,
+      final DxfgSymbol dxfgSymbol
+  ) {
+    return MAPPER_EVENT.toNativeObject(
+        toJava(feed).getLastEventIfSubscribed(
+            (Class<LastingEvent<?>>) dxfgClazz.clazz,
+            MAPPER_SYMBOL.toJavaObject(dxfgSymbol)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeed_getIndexedEventsIfSubscribed",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEventTypeList dxfg_DXFeed_getIndexedEventsIfSubscribed(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventClazz dxfgClazz,
       final DxfgSymbol dxfgSymbol,
-      final DxfgEventPointer event
+      final CCharPointer source
   ) {
-    final LastingEvent<?> result = toJavaFeed(feed)
-        .getLastEventIfSubscribed(
-            (Class<LastingEvent<?>>) eventType.clazz,
-            toJavaSymbol(dxfgSymbol)
-        );
-    if (result == null) {
-      event.write(WordFactory.nullPointer());
-    } else {
-      event.write(EVENT_MAPPER.nativeObject(Collections.singletonList(result)).read());
-    }
-    return EXECUTE_SUCCESSFULLY;
+    return MAPPER_EVENTS.toNativeList(
+        toJava(feed).getIndexedEventsIfSubscribed(
+            (Class<IndexedEvent<?>>) dxfgClazz.clazz,
+            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
+            OrderSource.valueOf(MAPPER_STRING.toJavaObject(source))
+        )
+    );
   }
 
   @CEntryPoint(
-      name = "dxfg_feed_get_indexed_event_if_subscribed",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXFeed_getTimeSeriesIfSubscribed",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int getIndexedEventIfSubscribed(
+  public static DxfgEventTypeList dxfg_DXFeed_getTimeSeriesIfSubscribed(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgEventKind eventType,
+      final DxfgEventClazz dxfgClazz,
       final DxfgSymbol dxfgSymbol,
-      final CCharPointer source,
-      final DxfgEventPointer events,
-      final CIntPointer eventsSize
-  ) {
-    final List<? extends EventType<?>> result = toJavaFeed(feed)
-        .getIndexedEventsIfSubscribed(
-            (Class<IndexedEvent<?>>) eventType.clazz,
-            toJavaSymbol(dxfgSymbol),
-            OrderSource.valueOf(toJavaString(source))
-        );
-    if (result == null) {
-      events.write(WordFactory.nullPointer());
-      eventsSize.write(0);
-    } else {
-      events.write(EVENT_MAPPER.nativeObject(result).read());
-      eventsSize.write(result.size());
-    }
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_feed_get_time_series_event_if_subscribed",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int getTimeSeriesEventIfSubscribed(
-      final IsolateThread ignoredThread,
-      final DxfgFeed feed,
-      final DxfgEventKind eventType,
-      final DxfgSymbol dxfgSymbol,
-      final long fromTime,
-      final long toTime,
-      final DxfgEventPointer events,
-      final CIntPointer eventsSize
-  ) {
-    final List<TimeSeriesEvent<?>> result = toJavaFeed(feed)
-        .getTimeSeriesIfSubscribed(
-            (Class<TimeSeriesEvent<?>>) eventType.clazz,
-            toJavaSymbol(dxfgSymbol),
-            fromTime,
-            toTime
-        );
-    if (result == null) {
-      events.write(WordFactory.nullPointer());
-      eventsSize.write(0);
-    } else {
-      events.write(EVENT_MAPPER.nativeObject(result).read());
-      eventsSize.write(result.size());
-    }
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  public <E extends LastingEvent<?>> E getLastEvent(
-      final E event
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends LastingEvent<?>> Collection<E> getLastEvents(
-      final Collection<E> events
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends LastingEvent<?>> Promise<E> getLastEventPromise(
-      final Class<E> eventType,
-      final Object symbol
-  ) {
-//        if (symbol instanceof CandleSymbol)
-//            return symbol;
-//        if (symbol instanceof String)
-//            return CandleSymbol.valueOf((String) symbol);
-//        if (symbol instanceof WildcardSymbol)
-//            return symbol;
-    DXFeed.getInstance().getLastEventPromise(null, null);
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends LastingEvent<?>> List<Promise<E>> getLastEventsPromises(
-      final Class<E> eventType,
-      final Collection<?> symbols
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends IndexedEvent<?>> Promise<List<E>> getIndexedEventsPromise(
-      final Class<E> eventType,
-      final Object symbol,
-      final IndexedEventSource source
-  ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
-  }
-
-  public <E extends TimeSeriesEvent<?>> Promise<List<E>> getTimeSeriesPromise(
-      final Class<E> eventType,
-      final Object symbol,
       final long fromTime,
       final long toTime
   ) {
-    throw new UnsupportedOperationException("It has not yet been implemented.");
+    return MAPPER_EVENTS.toNativeList(
+        toJava(feed).getTimeSeriesIfSubscribed(
+            (Class<TimeSeriesEvent<?>>) dxfgClazz.clazz,
+            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
+            fromTime,
+            toTime
+        )
+    );
   }
 
-  private static DXFeed toJavaFeed(final DxfgFeed feed) {
-    return extractHandler(feed.getJavaObjectHandler());
+  @CEntryPoint(
+      name = "dxfg_DXFeed_getLastEvent",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeed_getLastEvent(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventType nEvent
+  ) {
+    final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJavaObject(nEvent);
+    toJava(feed).getLastEvent(jEvent);
+    MAPPER_EVENT.fillNativeObject(jEvent, nEvent);
+    return EXECUTE_SUCCESSFULLY;
   }
 
-  private static DXFeedSubscription<?> toJavaSubscription(final DxfgSubscription sub) {
-    return extractHandler(sub.getJavaObjectHandler());
+  @CEntryPoint(
+      name = "dxfg_DXFeed_getLastEvents",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeed_getLastEvents(
+      final IsolateThread ignoredThread,
+      final DxfgFeed feed,
+      final DxfgEventTypeList nEvents
+  ) {
+    for (int i = 0; i < nEvents.getSize(); i++) {
+      final DxfgEventType nEvent = nEvents.getElements().addressOf(i).read();
+      final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJavaObject(nEvent);
+      toJava(feed).getLastEvent(jEvent);
+      MAPPER_EVENT.fillNativeObject(jEvent, nEvent);
+    }
+    return EXECUTE_SUCCESSFULLY;
   }
 }

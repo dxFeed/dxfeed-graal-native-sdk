@@ -10760,7 +10760,7 @@ namespace Catch {
 
 namespace Catch {
 
-    // If neither SEH nor signal handling is required, the handler impls
+    // If neither SEH nor signal handling is required, the base impls
     // do not have to do anything, and can be empty.
     void FatalConditionHandler::engage_platform() {}
     void FatalConditionHandler::disengage_platform() {}
@@ -10841,16 +10841,16 @@ namespace Catch {
     FatalConditionHandler::~FatalConditionHandler() = default;
 
     void FatalConditionHandler::engage_platform() {
-        // Register as first handler in current chain
+        // Register as first base in current chain
         exceptionHandlerHandle = AddVectoredExceptionHandler(1, handleVectoredException);
         if (!exceptionHandlerHandle) {
-            CATCH_RUNTIME_ERROR("Could not register vectored exception handler");
+            CATCH_RUNTIME_ERROR("Could not register vectored exception base");
         }
     }
 
     void FatalConditionHandler::disengage_platform() {
         if (!RemoveVectoredExceptionHandler(exceptionHandlerHandle)) {
-            CATCH_RUNTIME_ERROR("Could not unregister vectored exception handler");
+            CATCH_RUNTIME_ERROR("Could not unregister vectored exception base");
         }
         exceptionHandlerHandle = nullptr;
     }
@@ -10921,7 +10921,7 @@ namespace Catch {
     }
 
     FatalConditionHandler::FatalConditionHandler() {
-        assert(!altStackMem && "Cannot initialize POSIX signal handler when one already exists");
+        assert(!altStackMem && "Cannot initialize POSIX signal base when one already exists");
         if (altStackSize == 0) {
             altStackSize = std::max(static_cast<size_t>(SIGSTKSZ), minStackSizeForErrors);
         }

@@ -14,6 +14,7 @@ extern "C" {
 #include "dxfg_publisher.h"
 #include "dxfg_subscription.h"
 #include "dxfg_system.h"
+#include "dxfg_javac.h"
 #include "graal_isolate.h"
 #include "graal_isolate_dynamic.h"
 

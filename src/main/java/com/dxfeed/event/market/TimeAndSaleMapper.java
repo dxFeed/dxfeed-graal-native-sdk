@@ -1,32 +1,33 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTimeAndSale;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class TimeAndSaleMapper extends Mapper<TimeAndSale, DxfgTimeAndSale> {
+public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAndSale> {
 
-  private final MarketEventMapper marketEventMapper;
   private final Mapper<String, CCharPointer> stringMapper;
 
   public TimeAndSaleMapper(
-      final MarketEventMapper marketEventMapper,
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    this.marketEventMapper = marketEventMapper;
+    super(stringMapperForMarketEvent);
     this.stringMapper = stringMapper;
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgTimeAndSale.class);
+  public DxfgTimeAndSale createNativeObject() {
+    final DxfgTimeAndSale nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeAndSale.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgTimeAndSale nObject, final TimeAndSale jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_TIME_AND_SALE.getCValue());
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
+  public void fillNativeObject(final TimeAndSale jObject, final DxfgTimeAndSale nObject) {
+    super.fillNativeObject(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
@@ -36,18 +37,44 @@ public class TimeAndSaleMapper extends Mapper<TimeAndSale, DxfgTimeAndSale> {
     nObject.setBidPrice(jObject.getBidPrice());
     nObject.setAskPrice(jObject.getAskPrice());
     nObject.setExchangeSaleConditions(
-        this.stringMapper.nativeObject(jObject.getExchangeSaleConditions())
+        this.stringMapper.toNativeObject(jObject.getExchangeSaleConditions())
     );
     nObject.setFlags(jObject.getFlags());
-    nObject.setBuyer(this.stringMapper.nativeObject(jObject.getBuyer()));
-    nObject.setSeller(this.stringMapper.nativeObject(jObject.getSeller()));
+    nObject.setBuyer(this.stringMapper.toNativeObject(jObject.getBuyer()));
+    nObject.setSeller(this.stringMapper.toNativeObject(jObject.getSeller()));
   }
 
   @Override
   protected void cleanNativeObject(final DxfgTimeAndSale nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
-    this.stringMapper.delete(nObject.getExchangeSaleConditions());
-    this.stringMapper.delete(nObject.getBuyer());
-    this.stringMapper.delete(nObject.getSeller());
+    super.cleanNativeObject(nObject);
+    this.stringMapper.release(nObject.getExchangeSaleConditions());
+    this.stringMapper.release(nObject.getBuyer());
+    this.stringMapper.release(nObject.getSeller());
+  }
+
+  @Override
+  public TimeAndSale toJavaObject(final DxfgTimeAndSale nObject) {
+    final TimeAndSale jObject = new TimeAndSale();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgTimeAndSale nObject, final TimeAndSale jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setEventFlags(nObject.getEventFlags());
+    jObject.setIndex(nObject.getIndex());
+    jObject.setTimeNanoPart(nObject.getTimeNanoPart());
+    jObject.setExchangeCode(nObject.getExchangeCode());
+    jObject.setPrice(nObject.getPrice());
+    jObject.setSizeAsDouble(nObject.getSize());
+    jObject.setBidPrice(nObject.getBidPrice());
+    jObject.setAskPrice(nObject.getAskPrice());
+    jObject.setExchangeSaleConditions(
+        this.stringMapper.toJavaObject(nObject.getExchangeSaleConditions())
+    );
+    jObject.setFlags(nObject.getFlags());
+    jObject.setBuyer(this.stringMapper.toJavaObject(nObject.getBuyer()));
+    jObject.setSeller(this.stringMapper.toJavaObject(nObject.getSeller()));
   }
 }

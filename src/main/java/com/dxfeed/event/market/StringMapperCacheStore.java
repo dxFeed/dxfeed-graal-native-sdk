@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.oracle.svm.core.SubstrateUtil;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.graalvm.nativeimage.PinnedObject;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.WordFactory;
 
@@ -27,7 +29,7 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public CCharPointer nativeObject(final String jObject) {
+  public CCharPointer toNativeObject(final String jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
@@ -59,7 +61,7 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public void delete(final CCharPointer nObject) {
+  public void release(final CCharPointer nObject) {
     if (nObject.isNull()) {
       return;
     }
@@ -91,20 +93,30 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  protected int size() {
-    throw new IllegalStateException(
-        "The size of the string depends on the content. It is an array."
-    );
-  }
-
-  @Override
-  protected void fillNativeObject(final CCharPointer nObject, final String jObject) {
+  public void fillNativeObject(final String jObject, final CCharPointer nObject) {
     // nothing
   }
 
   @Override
   protected void cleanNativeObject(final CCharPointer nObject) {
     // nothing
+  }
+
+  @Override
+  public String toJavaObject(final CCharPointer nObject) {
+    if (nObject.isNull()) {
+      return null;
+    }
+    return CTypeConversion.toJavaString(
+        nObject,
+        SubstrateUtil.strlen(nObject),
+        StandardCharsets.UTF_8
+    );
+  }
+
+  @Override
+  public void fillJavaObject(final CCharPointer nObject, final String jObject) {
+    throw new IllegalStateException();
   }
 
 

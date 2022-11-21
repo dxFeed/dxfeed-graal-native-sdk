@@ -123,6 +123,7 @@
                         <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                         <buildArg>-H:Path=${native.image.path}</buildArg>
                         <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
+                        <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl</buildArg>
                     </buildArgs>
                 </configuration>
             </plugin>

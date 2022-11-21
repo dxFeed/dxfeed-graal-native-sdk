@@ -19,7 +19,7 @@ typedef struct dxfg_exception_t {
 } dxfg_exception_t;
 
 dxfg_exception_t* dxfg_get_and_clear_thread_exception_t(graal_isolatethread_t *thread);
-void dxfg_release_exception_t(graal_isolatethread_t *thread, dxfg_exception_t *exception);
+void dxfg_Exception_release(graal_isolatethread_t *thread, dxfg_exception_t *exception);
 
 #ifdef __cplusplus
 }

@@ -1,14 +1,13 @@
 package com.dxfeed.api.endpoint;
 
-import static com.dxfeed.api.NativeUtils.createHandler;
-import static com.dxfeed.api.NativeUtils.destroyHandler;
-import static com.dxfeed.api.NativeUtils.extractHandler;
-import static com.dxfeed.api.NativeUtils.toJavaString;
+import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
+import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
+import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
-import java.io.ByteArrayInputStream;
+import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -16,122 +15,98 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CIntPointer;
 
 @CContext(Directives.class)
 public final class EndpointBuilderNative {
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_create",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      name = "dxfg_DXEndpoint_newBuilder",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static int create(
-      final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder builder
+  public static DxfgEndpointBuilder dxfg_DXEndpoint_newBuilder(
+      final IsolateThread ignoreThread
   ) {
-    builder.setJavaObjectHandler(createHandler(DXEndpoint.newBuilder()));
-    return EXECUTE_SUCCESSFULLY;
+    return newJavaObjectHandler(DXEndpoint.newBuilder());
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_release",
+      name = "dxfg_DXEndpoint_Builder_withRole",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int release(
-      final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder builder
-  ) {
-    destroyHandler(builder.getJavaObjectHandler());
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_builder_with_role",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int withRole(
+  public static int dxfg_DXEndpoint_Builder_withRole(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder,
       final DxfgEndpointRole role
   ) {
-    toJavaBuilder(builder).withRole(role.qdRole);
+    toJava(builder).withRole(role.qdRole);
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_with_name",
+      name = "dxfg_DXEndpoint_Builder_withName",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int withName(
+  public static int dxfg_DXEndpoint_Builder_withName(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder,
       final CCharPointer name
   ) {
-    toJavaBuilder(builder).withName(toJavaString(name));
+    toJava(builder).withName(MAPPER_STRING.toJavaObject(name));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_with_property",
+      name = "dxfg_DXEndpoint_Builder_withProperty",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int withProperty(
+  public static int dxfg_DXEndpoint_Builder_withProperty(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder,
       final CCharPointer key,
       final CCharPointer value
   ) {
-    toJavaBuilder(builder).withProperty(toJavaString(key), toJavaString(value));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_builder_with_properties",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int withProperties(
-      final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder builder,
-      final CCharPointer pathToFile
-  ) throws IOException {
-   final Properties properties = new Properties();
-    properties.load(new FileInputStream(toJavaString(pathToFile)));
-    toJavaBuilder(builder).withProperties(properties);
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_builder_supports_property",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int supportsProperty(
-      final IsolateThread ignoreThread,
-      final DxfgEndpointBuilder builder,
-      final CCharPointer key,
-      final CIntPointer isSupports
-  ) {
-    isSupports.write(
-        toJavaBuilder(builder).supportsProperty(toJavaString(key))
-            ? 1
-            : 0
+    toJava(builder).withProperty(
+        MAPPER_STRING.toJavaObject(key),
+        MAPPER_STRING.toJavaObject(value)
     );
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_builder_build",
+      name = "dxfg_DXEndpoint_Builder_withProperties",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int build(
+  public static int dxfg_DXEndpoint_Builder_withProperties(
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder,
-      final DxfgEndpoint dxfgEndpoint
-  ) {
-    dxfgEndpoint.setJavaObjectHandler(createHandler(toJavaBuilder(builder).build()));
+      final CCharPointer pathToFile
+  ) throws IOException {
+    final Properties properties = new Properties();
+    properties.load(new FileInputStream(MAPPER_STRING.toJavaObject(pathToFile)));
+    toJava(builder).withProperties(properties);
     return EXECUTE_SUCCESSFULLY;
   }
 
-  private static DXEndpoint.Builder toJavaBuilder(final DxfgEndpointBuilder builder) {
-    return extractHandler(builder.getJavaObjectHandler());
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_Builder_supportsProperty",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXEndpoint_Builder_supportsProperty(
+      final IsolateThread ignoreThread,
+      final DxfgEndpointBuilder builder,
+      final CCharPointer key
+  ) {
+    return toJava(builder).supportsProperty(MAPPER_STRING.toJavaObject(key)) ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_Builder_build",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpoint dxfg_DXEndpoint_Builder_build(
+      final IsolateThread ignoreThread,
+      final DxfgEndpointBuilder builder
+  ) {
+    return newJavaObjectHandler(toJava(builder).build());
   }
 }

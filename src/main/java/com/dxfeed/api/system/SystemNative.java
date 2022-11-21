@@ -1,12 +1,10 @@
 package com.dxfeed.api.system;
 
-import static com.dxfeed.api.NativeUtils.toJavaString;
+import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.event.market.Mapper;
-import com.dxfeed.event.market.StringMapperUnlimitedStore;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -14,8 +12,6 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 @CContext(Directives.class)
 public final class SystemNative {
-
-  private static final Mapper<String, CCharPointer> STRING_MAPPER = new StringMapperUnlimitedStore();
 
   @CEntryPoint(
       name = "dxfg_system_set_property",
@@ -26,7 +22,10 @@ public final class SystemNative {
       final CCharPointer key,
       final CCharPointer value
   ) {
-    System.setProperty(toJavaString(key), toJavaString(value));
+    System.setProperty(
+        MAPPER_STRING.toJavaObject(key),
+        MAPPER_STRING.toJavaObject(value)
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -38,7 +37,9 @@ public final class SystemNative {
       final IsolateThread ignoredThread,
       final CCharPointer key
   ) {
-    return STRING_MAPPER.nativeObject(System.getProperty(toJavaString(key)));
+    return MAPPER_STRING.toNativeObject(
+        System.getProperty(MAPPER_STRING.toJavaObject(key))
+    );
   }
 
   @CEntryPoint(
@@ -49,7 +50,7 @@ public final class SystemNative {
       final IsolateThread ignoredThread,
       final CCharPointer value
   ) {
-    STRING_MAPPER.delete(value);
+    MAPPER_STRING.release(value);
     return EXECUTE_SUCCESSFULLY;
   }
 }

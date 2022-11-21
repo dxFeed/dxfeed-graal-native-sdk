@@ -1,18 +1,12 @@
 package com.dxfeed.api.endpoint;
 
-import org.graalvm.nativeimage.ObjectHandle;
+import com.dxfeed.api.javac.JavaObjectHandler;
+import java.beans.PropertyChangeListener;
 import org.graalvm.nativeimage.c.CContext;
-import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
-import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_endpoint_state_change_listener_t")
-interface DxfgEndpointStateChangeListener extends PointerBase {
+interface DxfgEndpointStateChangeListener extends JavaObjectHandler<PropertyChangeListener> {
 
-  @CField("java_object_handle")
-  ObjectHandle getJavaObjectHandler();
-
-  @CField("java_object_handle")
-  void setJavaObjectHandler(ObjectHandle value);
 }

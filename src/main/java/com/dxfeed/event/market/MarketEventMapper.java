@@ -1,10 +1,10 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.api.events.DxfgMarketEvent;
-import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class MarketEventMapper extends Mapper<MarketEvent, DxfgMarketEvent> {
+public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMarketEvent>
+    extends EventMapper<T, V> {
 
   private final Mapper<String, CCharPointer> stringMapper;
 
@@ -13,18 +13,27 @@ public class MarketEventMapper extends Mapper<MarketEvent, DxfgMarketEvent> {
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgMarketEvent.class);
-  }
-
-  @Override
-  protected final void fillNativeObject(final DxfgMarketEvent nObject, final MarketEvent jObject) {
-    nObject.setEventSymbol(stringMapper.nativeObject(jObject.getEventSymbol()));
+  public void fillNativeObject(final T jObject, final V nObject) {
+//    cleanNativeObject(nObject);
+    nObject.setEventSymbol(this.stringMapper.toNativeObject(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
   }
 
   @Override
-  protected final void cleanNativeObject(final DxfgMarketEvent nObject) {
-    stringMapper.delete(nObject.getEventSymbol());
+  protected void cleanNativeObject(final V nObject) {
+    this.stringMapper.release(nObject.getEventSymbol());
+  }
+
+  @Override
+  public void fillJavaObject(final V nObject, final T jObject) {
+    jObject.setEventSymbol(this.stringMapper.toJavaObject(nObject.getEventSymbol()));
+    jObject.setEventTime(nObject.getEventTime());
+  }
+
+  @Override
+  public V createNativeObject(final String symbol) {
+    final V nObject = createNativeObject();
+    nObject.setEventSymbol(this.stringMapper.toNativeObject(symbol));
+    return nObject;
   }
 }

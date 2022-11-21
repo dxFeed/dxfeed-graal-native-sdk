@@ -5,8 +5,10 @@ import com.dxfeed.api.events.DxfgCandlePrice;
 import com.dxfeed.api.events.DxfgCandleSession;
 import com.dxfeed.api.events.DxfgCandleSymbol;
 import com.dxfeed.event.candle.CandleSymbol;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.word.WordFactory;
 
 public class CandleSymbolMapper extends Mapper<CandleSymbol, DxfgCandleSymbol> {
 
@@ -28,28 +30,44 @@ public class CandleSymbolMapper extends Mapper<CandleSymbol, DxfgCandleSymbol> {
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgCandleSymbol.class);
+  public DxfgCandleSymbol toNativeObject(final CandleSymbol jObject) {
+    if (jObject == null) {
+      return WordFactory.nullPointer();
+    }
+    final DxfgCandleSymbol nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandleSymbol.class));
+    fillNativeObject(jObject, nObject);
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgCandleSymbol nObject, final CandleSymbol jObject) {
-    nObject.setSymbol(stringMapper.nativeObject(jObject.toString()));
-    nObject.setBaseSymbol(stringMapper.nativeObject(jObject.getBaseSymbol()));
-    nObject.setExchange(candleExchangeMapper.nativeObject(jObject.getExchange()));
+  public void fillNativeObject(final CandleSymbol jObject, final DxfgCandleSymbol nObject) {
+    cleanNativeObject(nObject);
+    nObject.setSymbol(this.stringMapper.toNativeObject(jObject.toString()));
+    nObject.setBaseSymbol(this.stringMapper.toNativeObject(jObject.getBaseSymbol()));
+    nObject.setExchange(this.candleExchangeMapper.toNativeObject(jObject.getExchange()));
     nObject.setPrice(DxfgCandlePrice.valueOf(jObject.getPrice().name()).getCValue());
     nObject.setSession(DxfgCandleSession.valueOf(jObject.getSession().name()).getCValue());
-    nObject.setPeriod(candlePeriodMapper.nativeObject(jObject.getPeriod()));
+    nObject.setPeriod(this.candlePeriodMapper.toNativeObject(jObject.getPeriod()));
     nObject.setAlignment(DxfgCandleAlignment.valueOf(jObject.getAlignment().name()).getCValue());
-    nObject.setPriceLevel(candlePriceLevelMapper.nativeObject(jObject.getPriceLevel()));
+    nObject.setPriceLevel(this.candlePriceLevelMapper.toNativeObject(jObject.getPriceLevel()));
   }
 
   @Override
   protected void cleanNativeObject(final DxfgCandleSymbol nObject) {
-    stringMapper.delete(nObject.getSymbol());
-    stringMapper.delete(nObject.getBaseSymbol());
-    candleExchangeMapper.delete(nObject.getExchange());
-    candlePeriodMapper.delete(nObject.getPeriod());
-    candlePriceLevelMapper.delete(nObject.getPriceLevel());
+    this.stringMapper.release(nObject.getSymbol());
+    this.stringMapper.release(nObject.getBaseSymbol());
+    this.candleExchangeMapper.release(nObject.getExchange());
+    this.candlePeriodMapper.release(nObject.getPeriod());
+    this.candlePriceLevelMapper.release(nObject.getPriceLevel());
+  }
+
+  @Override
+  public CandleSymbol toJavaObject(final DxfgCandleSymbol nObject) {
+    return CandleSymbol.valueOf(this.stringMapper.toJavaObject(nObject.getSymbol()));
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgCandleSymbol nObject, final CandleSymbol jObject) {
+    throw new IllegalStateException();
   }
 }

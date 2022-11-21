@@ -1,25 +1,20 @@
 package com.dxfeed.api.endpoint;
 
-import static com.dxfeed.api.NativeUtils.createHandler;
-import static com.dxfeed.api.NativeUtils.destroyHandler;
-import static com.dxfeed.api.NativeUtils.extractHandler;
-import static com.dxfeed.api.NativeUtils.toJavaString;
+import static com.dxfeed.api.NativeUtils.MAPPER_ENEVET_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
+import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
+import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXEndpoint;
-import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXEndpoint.State;
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazzList;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
+import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
+import com.dxfeed.api.javac.DxfgExecuter;
 import com.dxfeed.api.publisher.DxfgPublisher;
-import com.dxfeed.event.EventType;
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,434 +23,303 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
-import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
 public final class EndpointNative {
 
-  public static final Map<DXEndpoint, Long> FEED_HANDLES = new ConcurrentHashMap<>();
-  public static final Map<DXEndpoint, Long> PUBLISHER_HANDLES = new ConcurrentHashMap<>();
-  public static final Map<Role, Long> INSTANCES = Collections.synchronizedMap(
-      new EnumMap<>(Role.class)
-  );
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_getInstance",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpoint dxfg_DXEndpoint_getInstance(
+      final IsolateThread ignoredThread
+  ) {
+    return newJavaObjectHandler(DXEndpoint.getInstance());
+  }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_instance",
+      name = "dxfg_DXEndpoint_getInstance2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpoint dxfg_DXEndpoint_getInstance2(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointRole dxfgEndpointRole
+  ) {
+    return newJavaObjectHandler(DXEndpoint.create(dxfgEndpointRole.qdRole));
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_create",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpoint dxfg_DXEndpoint_create(
+      final IsolateThread ignoredThread
+  ) {
+    return newJavaObjectHandler(DXEndpoint.create());
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_create2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpoint dxfg_DXEndpoint_create2(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointRole dxfgEndpointRole
+  ) {
+    return newJavaObjectHandler(DXEndpoint.create(dxfgEndpointRole.qdRole));
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_close",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getInstance(
+  public static int dxfg_DXEndpoint_close(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    dxfgEndpoint.setJavaObjectHandler(
-        WordFactory.signed(
-            INSTANCES.computeIfAbsent(
-                DXEndpoint.getInstance().getRole(),
-                role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
-            )
-        )
-    );
+    toJava(dxfgEndpoint).close();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_instance_with_role",
+      name = "dxfg_DXEndpoint_closeAndAwaitTermination",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getInstance(
-      final IsolateThread ignoredThread,
-      final DxfgEndpointRole dxfgEndpointRole,
-      final DxfgEndpoint dxfgEndpoint
-  ) {
-    dxfgEndpoint.setJavaObjectHandler(
-        WordFactory.signed(
-            INSTANCES.computeIfAbsent(
-                dxfgEndpointRole.qdRole,
-                role -> createHandler(DXEndpoint.getInstance(role)).rawValue()
-            )
-        )
-    );
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_create",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int create(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
-  ) {
-    dxfgEndpoint.setJavaObjectHandler(createHandler(DXEndpoint.create()));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_create_with_role",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int create(
-      final IsolateThread ignoredThread,
-      final DxfgEndpointRole dxfgEndpointRole,
-      final DxfgEndpoint dxfgEndpoint
-  ) {
-    dxfgEndpoint.setJavaObjectHandler(createHandler(DXEndpoint.create(dxfgEndpointRole.qdRole)));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_close",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int close(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
-  ) {
-    toJavaEndpoint(dxfgEndpoint).close();
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_close_and_await_termination",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int closeAndAwaitTermination(
+  public static int dxfg_DXEndpoint_closeAndAwaitTermination(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    toJavaEndpoint(dxfgEndpoint).closeAndAwaitTermination();
+    toJava(dxfgEndpoint).closeAndAwaitTermination();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_release",
+      name = "dxfg_DXEndpoint_getRole",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int release(
+  public static int dxfg_DXEndpoint_getRole(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    final Long feed = FEED_HANDLES.remove(toJavaEndpoint(dxfgEndpoint));
-    if (feed != null) {
-      destroyHandler(WordFactory.signed(feed));
-    }
-    final Long publisher = PUBLISHER_HANDLES.remove(toJavaEndpoint(dxfgEndpoint));
-    if (publisher != null) {
-      destroyHandler(WordFactory.signed(publisher));
-    }
-    destroyHandler(dxfgEndpoint.getJavaObjectHandler());
-    return EXECUTE_SUCCESSFULLY;
+    return DxfgEndpointRole.of(toJava(dxfgEndpoint).getRole()).getCValue();
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_role",
+      name = "dxfg_DXEndpoint_user",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getRole(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final CIntPointer role
-  ) {
-    role.write(
-        DxfgEndpointRole.of(toJavaEndpoint(dxfgEndpoint).getRole()).getCValue()
-    );
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_set_user",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int user(
+  public static int dxfg_DXEndpoint_user(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer user
   ) {
-    toJavaEndpoint(dxfgEndpoint).user(toJavaString(user));
+    toJava(dxfgEndpoint).user(MAPPER_STRING.toJavaObject(user));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_set_password",
+      name = "dxfg_DXEndpoint_password",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int password(
+  public static int dxfg_DXEndpoint_password(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer password
   ) {
-    toJavaEndpoint(dxfgEndpoint).password(toJavaString(password));
+    toJava(dxfgEndpoint).password(MAPPER_STRING.toJavaObject(password));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_connect",
+      name = "dxfg_DXEndpoint_connect",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int connect(
+  public static int dxfg_DXEndpoint_connect(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer address
   ) {
-    toJavaEndpoint(dxfgEndpoint).connect(toJavaString(address));
+    toJava(dxfgEndpoint).connect(MAPPER_STRING.toJavaObject(address));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_reconnect",
+      name = "dxfg_DXEndpoint_reconnect",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int reconnect(
+  public static int dxfg_DXEndpoint_reconnect(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJavaEndpoint(dxfgEndpoint).reconnect();
+    toJava(dxfgEndpoint).reconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_disconnect",
+      name = "dxfg_DXEndpoint_disconnect",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int disconnect(
+  public static int dxfg_DXEndpoint_disconnect(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJavaEndpoint(dxfgEndpoint).disconnect();
+    toJava(dxfgEndpoint).disconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_disconnect_and_clear",
+      name = "dxfg_DXEndpoint_disconnectAndClear",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int disconnectAndClear(
+  public static int dxfg_DXEndpoint_disconnectAndClear(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJavaEndpoint(dxfgEndpoint).disconnectAndClear();
+    toJava(dxfgEndpoint).disconnectAndClear();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_await_processed",
+      name = "dxfg_DXEndpoint_awaitProcessed",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int awaitProcessed(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint
-  ) throws InterruptedException {
-    toJavaEndpoint(dxfgEndpoint).awaitProcessed();
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_await_not_connected",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int awaitNotConnected(
+  public static int dxfg_DXEndpoint_awaitProcessed(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    toJavaEndpoint(dxfgEndpoint).awaitNotConnected();
+    toJava(dxfgEndpoint).awaitProcessed();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_state",
+      name = "dxfg_DXEndpoint_awaitNotConnected",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getState(
+  public static int dxfg_DXEndpoint_awaitNotConnected(
       final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final CIntPointer state
-  ) {
-    state.write(
-        DxfgEndpointState.of(toJavaEndpoint(dxfgEndpoint).getState()).getCValue()
-    );
+      final DxfgEndpoint dxfgEndpoint
+  ) throws InterruptedException {
+    toJava(dxfgEndpoint).awaitNotConnected();
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_create_state_change_listener",
+      name = "dxfg_DXEndpoint_getState",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int createStateChangeListener(
+  public static int dxfg_DXEndpoint_getState(
       final IsolateThread ignoredThread,
-      final DxfgEndpointStateChangeListenerFunc userFunc,
-      final VoidPointer userData,
-      final DxfgEndpointStateChangeListener listener
+      final DxfgEndpoint dxfgEndpoint
   ) {
-    final PropertyChangeListener propertyChangeListener = changeEvent -> userFunc.invoke(
+    return DxfgEndpointState.of(toJava(dxfgEndpoint).getState()).getCValue();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_PropertyChangeListener_new",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEndpointStateChangeListener dxfg_PropertyChangeListener_new(
+      final IsolateThread ignoredThread,
+      final DxfgEndpointStateChangeListenerFunction userFunc,
+      final VoidPointer userData
+  ) {
+    return newJavaObjectHandler((PropertyChangeListener) changeEvent -> userFunc.invoke(
         CurrentIsolate.getCurrentThread(),
         DxfgEndpointState.of((State) changeEvent.getOldValue()),
         DxfgEndpointState.of((State) changeEvent.getNewValue()),
         userData
-    );
-    listener.setJavaObjectHandler(createHandler(propertyChangeListener));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_release_state_change_listener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int releaseStateChangeListener(
-      final IsolateThread ignoredThread,
-      final DxfgEndpointStateChangeListener listener
-  ) {
-    destroyHandler(listener.getJavaObjectHandler());
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_add_state_change_listener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int addStateChangeListener(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointStateChangeListener listener
-  ) {
-    toJavaEndpoint(dxfgEndpoint)
-        .addStateChangeListener(extractHandler(listener.getJavaObjectHandler()));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_remove_state_change_listener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int removeStateChangeListener(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointStateChangeListener listener
-  ) {
-    toJavaEndpoint(dxfgEndpoint)
-        .removeStateChangeListener(extractHandler(listener.getJavaObjectHandler()));
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_get_feed",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int getFeed(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgFeed dxfgFeed
-  ) {
-    final DXEndpoint endpoint = toJavaEndpoint(dxfgEndpoint);
-    dxfgFeed.setJavaObjectHandler(
-        WordFactory.signed(
-            FEED_HANDLES.computeIfAbsent(
-                endpoint,
-                k -> createHandler(k.getFeed()).rawValue()
-            )
-        )
-    );
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_get_publisher",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int getPublisher(
-      final IsolateThread ignoredThread,
-      final DxfgEndpoint dxfgEndpoint,
-      final DxfgPublisher dxfgPublisher
-  ) {
-    final DXEndpoint endpoint = toJavaEndpoint(dxfgEndpoint);
-    dxfgPublisher.setJavaObjectHandler(
-        WordFactory.signed(
-            PUBLISHER_HANDLES.computeIfAbsent(
-                endpoint,
-                k -> createHandler(k.getPublisher()).rawValue()
-            )
-        )
-    );
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_executor_new_fixed_thread_pool",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int newFixedThreadPool(
-      final IsolateThread ignoredThread,
-      final int nThreads,
-      final CCharPointer name,
-      final DxfgExecuter dxfgExecuter
-  ) {
-    dxfgExecuter.setJavaObjectHandler(createHandler(
-        Executors.newFixedThreadPool(
-            nThreads,
-            new PoolThreadFactory(toJavaString(name))
-        )
     ));
-    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_executor_release",
+      name = "dxfg_DXEndpoint_addStateChangeListener",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int releaseFixedThreadPool(
-      final IsolateThread ignoredThread,
-      final DxfgExecuter dxfgExecuter
-  ) {
-    destroyHandler(dxfgExecuter.getJavaObjectHandler());
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_endpoint_set_executor",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int executor(
+  public static int dxfg_DXEndpoint_addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgExecuter dxfgExecuter
+      final DxfgEndpointStateChangeListener listener
   ) {
-    toJavaEndpoint(dxfgEndpoint).executor(extractHandler(dxfgExecuter.getJavaObjectHandler()));
+    toJava(dxfgEndpoint).addStateChangeListener(toJava(listener));
     return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_event_types_size",
+      name = "dxfg_DXEndpoint_removeStateChangeListener",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getEventTypesSize(
+  public static int dxfg_DXEndpoint_removeStateChangeListener(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint,
+      final DxfgEndpointStateChangeListener listener
+  ) {
+    toJava(dxfgEndpoint).removeStateChangeListener(toJava(listener));
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_getFeed",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgFeed dxfg_DXEndpoint_getFeed(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return toJavaEndpoint(dxfgEndpoint).getEventTypes().size();
+    return newJavaObjectHandler(toJava(dxfgEndpoint).getFeed());
   }
 
   @CEntryPoint(
-      name = "dxfg_endpoint_get_event_types",
+      name = "dxfg_DXEndpoint_getPublisher",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgPublisher dxfg_DXEndpoint_getPublisher(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint
+  ) {
+    return newJavaObjectHandler(toJava(dxfgEndpoint).getPublisher());
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Executors_newFixedThreadPool",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgExecuter dxfg_Executors_newFixedThreadPool(
+      final IsolateThread ignoredThread,
+      final int nThreads,
+      final CCharPointer name
+  ) {
+    return newJavaObjectHandler(
+        Executors.newFixedThreadPool(
+            nThreads,
+            new PoolThreadFactory(MAPPER_STRING.toJavaObject(name))
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_executor",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int getEventTypes(
+  public static int dxfg_DXEndpoint_executor(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final CIntPointer array
+      final DxfgExecuter dxfgExecuter
   ) {
-    int i = 0;
-    final Set<Class<? extends EventType<?>>> eventTypes = toJavaEndpoint(dxfgEndpoint).getEventTypes();
-    for (final Class<? extends EventType<?>> eventType : eventTypes) {
-      array.addressOf(i++).write(DxfgEventKind.of(eventType).getCValue());
-    }
+    toJava(dxfgEndpoint).executor(toJava(dxfgExecuter));
     return EXECUTE_SUCCESSFULLY;
   }
 
-  private static DXEndpoint toJavaEndpoint(final DxfgEndpoint endpoint) {
-    return extractHandler(endpoint.getJavaObjectHandler());
+  @CEntryPoint(
+      name = "dxfg_DXEndpoint_getEventTypes",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgEventClazzList dxfg_DXEndpoint_getEventTypes(
+      final IsolateThread ignoredThread,
+      final DxfgEndpoint dxfgEndpoint
+  ) {
+    return MAPPER_ENEVET_TYPES.toNativeList(toJava(dxfgEndpoint).getEventTypes());
   }
-
 
   private static class PoolThreadFactory implements ThreadFactory {
 

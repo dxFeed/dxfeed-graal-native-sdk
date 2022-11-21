@@ -1,33 +1,42 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventPointer;
+import com.dxfeed.api.events.DxfgEventType;
+import com.dxfeed.api.events.DxfgEventTypeList;
+import com.dxfeed.api.events.DxfgEventTypePointer;
 import com.dxfeed.event.EventType;
-import java.util.List;
-import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class ListEventMapper {
+public class ListEventMapper extends
+    ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> {
 
-  protected final EventMappers eventMappers;
+  private final Mapper<EventType<?>, DxfgEventType> eventMappers;
 
-  public ListEventMapper(final EventMappers eventMappers) {
+  public ListEventMapper(final Mapper<EventType<?>, DxfgEventType> eventMappers) {
     this.eventMappers = eventMappers;
   }
 
-  public DxfgEventPointer nativeObject(final List<? extends EventType<?>> events) {
-    final DxfgEventPointer nativeEvents = UnmanagedMemory.calloc(
-        SizeOf.get(DxfgEventPointer.class) * events.size()
-    );
-    for (int i = 0; i < events.size(); ++i) {
-      nativeEvents.addressOf(i).write(eventMappers.nativeObject(events.get(i)));
-    }
-    return nativeEvents;
+  @Override
+  protected EventType<?> toJava(final DxfgEventType nObject) {
+    return eventMappers.toJavaObject(nObject);
   }
 
-  public void delete(final DxfgEventPointer nativeEvents, final int size) {
-    for (int i = 0; i < size; ++i) {
-      eventMappers.delete(nativeEvents.addressOf(i).read());
-    }
-    UnmanagedMemory.free(nativeEvents);
+  @Override
+  protected void releaseNative(final DxfgEventType nObject) {
+    eventMappers.release(nObject);
+  }
+
+  @Override
+  protected DxfgEventType toNative(final EventType<?> jObject) {
+    return eventMappers.toNativeObject(jObject);
+  }
+
+  @Override
+  protected int getSizeElementInCList() {
+    return SizeOf.get(DxfgEventType.class);
+  }
+
+  @Override
+  protected int getSizeCList() {
+    return SizeOf.get(DxfgEventTypeList.class);
   }
 }

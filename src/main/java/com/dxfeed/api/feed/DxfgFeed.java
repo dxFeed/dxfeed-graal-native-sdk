@@ -1,18 +1,12 @@
 package com.dxfeed.api.feed;
 
-import org.graalvm.nativeimage.ObjectHandle;
+import com.dxfeed.api.DXFeed;
+import com.dxfeed.api.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
-import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
-import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_feed_t")
-public interface DxfgFeed extends PointerBase {
+public interface DxfgFeed extends JavaObjectHandler<DXFeed> {
 
-  @CField("java_object_handle")
-  ObjectHandle getJavaObjectHandler();
-
-  @CField("java_object_handle")
-  void setJavaObjectHandler(ObjectHandle value);
 }

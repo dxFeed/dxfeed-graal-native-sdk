@@ -1,27 +1,30 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgUnderlying;
 import com.dxfeed.event.option.Underlying;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class UnderlyingMapper extends Mapper<Underlying, DxfgUnderlying> {
+public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlying> {
 
-  private final MarketEventMapper marketEventMapper;
-
-  public UnderlyingMapper(final MarketEventMapper marketEventMapper) {
-    this.marketEventMapper = marketEventMapper;
+  public UnderlyingMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent
+  ) {
+    super(stringMapperForMarketEvent);
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgUnderlying.class);
+  public DxfgUnderlying createNativeObject() {
+    final DxfgUnderlying nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgUnderlying.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_UNDERLYING.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgUnderlying nObject, final Underlying jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_UNDERLYING.getCValue());
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
+  public void fillNativeObject(final Underlying jObject, final DxfgUnderlying nObject) {
+    super.fillNativeObject(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setVolatility(jObject.getVolatility());
@@ -33,6 +36,25 @@ public class UnderlyingMapper extends Mapper<Underlying, DxfgUnderlying> {
 
   @Override
   protected void cleanNativeObject(final DxfgUnderlying nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
+    super.cleanNativeObject(nObject);
+  }
+
+  @Override
+  public Underlying toJavaObject(final DxfgUnderlying nObject) {
+    final Underlying jObject = new Underlying();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgUnderlying nObject, final Underlying jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setEventFlags(nObject.getEventFlags());
+    jObject.setIndex(nObject.getIndex());
+    jObject.setVolatility(nObject.getVolatility());
+    jObject.setBackVolatility(nObject.getBackVolatility());
+    jObject.setCallVolume(nObject.getCallVolume());
+    jObject.setPutVolume(nObject.getPutVolume());
+    jObject.setPutCallRatio(nObject.getPutCallRatio());
   }
 }

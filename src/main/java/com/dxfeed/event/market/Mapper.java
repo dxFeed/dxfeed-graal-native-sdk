@@ -2,20 +2,12 @@ package com.dxfeed.event.market;
 
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.word.PointerBase;
-import org.graalvm.word.WordFactory;
 
 public abstract class Mapper<V, T extends PointerBase> {
 
-  public T nativeObject(final V jObject) {
-    if (jObject == null) {
-      return WordFactory.nullPointer();
-    }
-    final T nObject = UnmanagedMemory.calloc(size());
-    fillNativeObject(nObject, jObject);
-    return nObject;
-  }
+  public abstract T toNativeObject(final V jObject);
 
-  public void delete(final T nObject) {
+  public void release(final T nObject) {
     if (nObject.isNull()) {
       return;
     }
@@ -23,9 +15,11 @@ public abstract class Mapper<V, T extends PointerBase> {
     UnmanagedMemory.free(nObject);
   }
 
-  protected abstract int size();
-
-  protected abstract void fillNativeObject(final T nObject, final V jObject);
+  public abstract void fillNativeObject(final V jObject, final T nObject);
 
   protected abstract void cleanNativeObject(final T nObject);
+
+  public abstract V toJavaObject(final T nObject);
+
+  public abstract void fillJavaObject(final T nObject, final V jObject);
 }

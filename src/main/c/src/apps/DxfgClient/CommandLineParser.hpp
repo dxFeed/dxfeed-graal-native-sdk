@@ -11,12 +11,12 @@ namespace dxfg {
 class CommandLineParser {
   private:
     static const std::string propertyPattern_;
-    static const std::unordered_map<std::string, dxfg_event_kind_t> eventTypesMap_;
+    static const std::unordered_map<std::string, dxfg_event_clazz_t> eventTypesMap_;
 
   public:
     static std::unordered_map<std::string, std::string> parseSystemProperties(char **argv, int &currentArg);
     static std::string parseAddress(char **argv, int &currentArg);
-    static std::vector<dxfg_event_kind_t> parseEventTypes(char **argv, int &currentArg);
+    static std::vector<dxfg_event_clazz_t> parseEventTypes(char **argv, int &currentArg);
     static std::vector<std::string> parseSymbols(char **argv, int &currentArg);
 };
 

@@ -1,27 +1,30 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSeries;
 import com.dxfeed.event.option.Series;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class SeriesMapper extends Mapper<Series, DxfgSeries> {
+public class SeriesMapper extends MarketEventMapper<Series, DxfgSeries> {
 
-  private final MarketEventMapper marketEventMapper;
-
-  public SeriesMapper(final MarketEventMapper marketEventMapper) {
-    this.marketEventMapper = marketEventMapper;
+  public SeriesMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent
+  ) {
+    super(stringMapperForMarketEvent);
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgSeries.class);
+  public DxfgSeries createNativeObject() {
+    final DxfgSeries nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgSeries.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_SERIES.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgSeries nObject, final Series jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_SERIES.getCValue());
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
+  public void fillNativeObject(final Series jObject, final DxfgSeries nObject) {
+    super.fillNativeObject(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());
@@ -37,6 +40,29 @@ public class SeriesMapper extends Mapper<Series, DxfgSeries> {
 
   @Override
   protected void cleanNativeObject(final DxfgSeries nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
+    super.cleanNativeObject(nObject);
+  }
+
+  @Override
+  public Series toJavaObject(final DxfgSeries nObject) {
+    final Series jObject = new Series();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgSeries nObject, final Series jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setEventFlags(nObject.getEventFlags());
+    jObject.setIndex(nObject.getIndex());
+    jObject.setTimeSequence(nObject.getTimeSequence());
+    jObject.setExpiration(nObject.getExpiration());
+    jObject.setVolatility(nObject.getVolatility());
+    jObject.setCallVolume(nObject.getCallVolume());
+    jObject.setPutVolume(nObject.getPutVolume());
+    jObject.setPutCallRatio(nObject.getPutCallRatio());
+    jObject.setForwardPrice(nObject.getForwardPrice());
+    jObject.setDividend(nObject.getDividend());
+    jObject.setInterest(nObject.getInterest());
   }
 }

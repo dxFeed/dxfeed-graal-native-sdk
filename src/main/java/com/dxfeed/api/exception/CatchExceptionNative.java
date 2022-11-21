@@ -1,7 +1,7 @@
 package com.dxfeed.api.exception;
 
-import com.dxfeed.event.market.ExceptionMapper;
-import com.dxfeed.event.market.StringMapper;
+import static com.dxfeed.api.NativeUtils.MAPPER_EXCEPTION;
+
 import com.oracle.svm.jni.JNIThreadLocalPendingException;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -10,24 +10,23 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 @CContext(Directives.class)
 public final class CatchExceptionNative {
 
-  private static final ExceptionMapper EXCEPTION_MAPPER = new ExceptionMapper(new StringMapper());
-
   @CEntryPoint(
       name = "dxfg_get_and_clear_thread_exception_t",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
   public static DxfgException getAndClearThreadException(final IsolateThread ignoredThread) {
-    return EXCEPTION_MAPPER.nativeObject(
+    final DxfgException dxfgException = MAPPER_EXCEPTION.toNativeObject(
         JNIThreadLocalPendingException.get()
     );
+    JNIThreadLocalPendingException.clear();
+    return dxfgException;
   }
 
-  @CEntryPoint(name = "dxfg_release_exception_t")
+  @CEntryPoint(name = "dxfg_Exception_release")
   public static void releaseException(
       final IsolateThread ignoredThread,
       final DxfgException dxfgException
   ) {
-    EXCEPTION_MAPPER.delete(dxfgException);
-    JNIThreadLocalPendingException.clear();
+    MAPPER_EXCEPTION.release(dxfgException);
   }
 }

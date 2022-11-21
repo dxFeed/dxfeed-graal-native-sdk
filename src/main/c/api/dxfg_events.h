@@ -10,6 +10,8 @@ extern "C" {
 #    include <stdint.h>
 #endif
 
+#include "dxfg_javac.h"
+
 typedef enum dxfg_symbol_type_t {
     STRING = 0,
     CANDLE,
@@ -21,33 +23,42 @@ typedef struct dxfg_symbol_t {
     const char *symbol;
 } dxfg_symbol_t;
 
+typedef struct dxfg_symbol_list {
+    int32_t size;
+    dxfg_symbol_t **elements;
+} dxfg_symbol_list;
+
+typedef struct dxfg_indexed_event_source {
+    dxfg_java_object_handler handler;
+} dxfg_indexed_event_source;
+
 /**
  * In the Java implementation, all events are lined up in a hierarchy
  * from the underlying EventType interface. In the C implementation,
  * we specify the type in the event in a separate field because we
  * cannot get it from the class name.
  */
-typedef enum dxfg_event_kind_t {
-    DXFG_EVENT_TYPE_QUOTE = 0,    // LASTING
-    DXFG_EVENT_TYPE_PROFILE,      // LASTING
-    DXFG_EVENT_TYPE_SUMMARY,      // LASTING
-    DXFG_EVENT_TYPE_GREEKS,       // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_TYPE_CANDLE,       // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_TYPE_DAILY_CANDLE, // LASTING + INDEXED -> TIME_SERIES -> CANDLE
-    DXFG_EVENT_TYPE_UNDERLYING,   // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_TYPE_THEO_PRICE,   // LASTING + INDEXED -> TIME_SERIES
-    // abstract DXFG_EVENT_TYPE_TRADE_BASE,     // LASTING
-    DXFG_EVENT_TYPE_TRADE,          // LASTING -> TRADE_BASE
-    DXFG_EVENT_TYPE_TRADE_ETH,      // LASTING -> TRADE_BASE
-    DXFG_EVENT_TYPE_CONFIGURATION,  // LASTING
-    DXFG_EVENT_TYPE_MESSAGE,        //
-    DXFG_EVENT_TYPE_TIME_AND_SALE,  // INDEXED -> TIME_SERIES
-    DXFG_EVENT_TYPE_ORDER_BASE,     // INDEXED
-    DXFG_EVENT_TYPE_ORDER,          // INDEXED -> ORDER_BASE
-    DXFG_EVENT_TYPE_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
-    DXFG_EVENT_TYPE_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
-    DXFG_EVENT_TYPE_SERIES,         // INDEXED
-} dxfg_event_kind_t;
+typedef enum dxfg_event_clazz_t {
+    DXFG_EVENT_QUOTE = 0,      // LASTING
+    DXFG_EVENT_PROFILE,        // LASTING
+    DXFG_EVENT_SUMMARY,        // LASTING
+    DXFG_EVENT_GREEKS,         // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_CANDLE,         // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_DAILY_CANDLE,   // LASTING + INDEXED -> TIME_SERIES -> CANDLE
+    DXFG_EVENT_UNDERLYING,     // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_THEO_PRICE,     // LASTING + INDEXED -> TIME_SERIES
+    // abstract DXFG_EVENT_TRADE_BASE,     // LASTING
+    DXFG_EVENT_TRADE,          // LASTING -> TRADE_BASE
+    DXFG_EVENT_TRADE_ETH,      // LASTING -> TRADE_BASE
+    DXFG_EVENT_CONFIGURATION,  // LASTING
+    DXFG_EVENT_MESSAGE,        //
+    DXFG_EVENT_TIME_AND_SALE,  // INDEXED -> TIME_SERIES
+    DXFG_EVENT_ORDER_BASE,     // INDEXED
+    DXFG_EVENT_ORDER,          // INDEXED -> ORDER_BASE
+    DXFG_EVENT_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
+    DXFG_EVENT_SERIES,         // INDEXED
+} dxfg_event_clazz_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleExchange.html">Javadoc</a>
@@ -138,7 +149,7 @@ typedef struct dxfg_candle_symbol_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/EventType.html">Javadoc</a>
  */
 typedef struct dxfg_event_type_t {
-    dxfg_event_kind_t kind;
+    dxfg_event_clazz_t clazz;
 } dxfg_event_type_t;
 
 /**
@@ -460,6 +471,42 @@ typedef struct dxfg_series_t {
     double dividend;
     double interest;
 } dxfg_series_t;
+
+typedef struct dxfg_event_type_list {
+    int32_t size;
+    dxfg_event_type_t **elements;
+} dxfg_event_type_list;
+
+typedef struct dxfg_event_clazz_list_t {
+    int32_t size;
+    dxfg_event_clazz_t **elements;
+} dxfg_event_clazz_list_t;
+
+dxfg_symbol_t*              dxfg_Symbol_new(graal_isolatethread_t *thread, const char *symbol, dxfg_symbol_type_t symbolType);
+int32_t                     dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t* symbol);
+dxfg_event_type_t*          dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
+int32_t                     dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
+int32_t                     dxfg_CList_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_list* eventTypes);// free the memory occupied by the с data structure (list and all events)
+int32_t                     dxfg_CList_EventClazz_release(graal_isolatethread_t *thread, dxfg_event_clazz_list_t* eventClazzes);// free the memory occupied by the с data structure (list and all int-pointer)
+int32_t                     dxfg_CList_symbol_release(graal_isolatethread_t *thread, dxfg_symbol_list*);// free the memory occupied by the с data structure (list and all int-pointer)
+dxfg_indexed_event_source*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
+dxfg_indexed_event_source*  dxfg_IndexedEventSource_new(graal_isolatethread_t *thread, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+
+
+typedef struct dxfg_observable_subscription_change_listener_t {
+    dxfg_java_object_handler handler;
+} dxfg_observable_subscription_change_listener_t;
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed)(graal_isolatethread_t *thread, void *user_data);
+dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
+    graal_isolatethread_t *thread,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved function_symbolsRemoved,
+    dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
+    void *user_data
+);
+
 
 #ifdef __cplusplus
 }

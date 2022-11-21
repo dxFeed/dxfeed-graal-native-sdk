@@ -1,4 +1,4 @@
-package com.dxfeed.api.endpoint;
+package com.dxfeed.api.events;
 
 import com.oracle.svm.core.c.CTypedef;
 import org.graalvm.nativeimage.IsolateThread;
@@ -8,14 +8,13 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
-@CTypedef(name = "dxfg_endpoint_state_change_listener_func")
-interface DxfgEndpointStateChangeListenerFunc extends CFunctionPointer {
+@CTypedef(name = "dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed")
+public interface DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed
+    extends CFunctionPointer {
 
   @InvokeCFunctionPointer
   void invoke(
       final IsolateThread thread,
-      final DxfgEndpointState oldState,
-      final DxfgEndpointState newState,
       final VoidPointer userData
   );
 }

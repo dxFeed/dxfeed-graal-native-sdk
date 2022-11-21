@@ -1,26 +1,29 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgQuote;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class QuoteMapper extends Mapper<Quote, DxfgQuote> {
+public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
 
-  private final MarketEventMapper marketEventMapper;
-
-  public QuoteMapper(final MarketEventMapper marketEventMapper) {
-    this.marketEventMapper = marketEventMapper;
+  public QuoteMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent
+  ) {
+    super(stringMapperForMarketEvent);
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgQuote.class);
+  public DxfgQuote createNativeObject() {
+    final DxfgQuote nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgQuote.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_QUOTE.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgQuote nObject, final Quote jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_QUOTE.getCValue());
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
+  public void fillNativeObject(final Quote jObject, final DxfgQuote nObject) {
+    super.fillNativeObject(jObject, nObject);
     nObject.setTimeMillisSequence(jObject.getTimeMillisSequence());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
     nObject.setBidTime(jObject.getBidTime());
@@ -35,6 +38,28 @@ public class QuoteMapper extends Mapper<Quote, DxfgQuote> {
 
   @Override
   protected void cleanNativeObject(final DxfgQuote nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
+    super.cleanNativeObject(nObject);
+  }
+
+  @Override
+  public Quote toJavaObject(final DxfgQuote nObject) {
+    final Quote jObject = new Quote();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgQuote nObject, final Quote jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setTimeMillisSequence(nObject.getTimeMillisSequence());
+    jObject.setTimeNanoPart(nObject.getTimeNanoPart());
+    jObject.setBidTime(nObject.getBidTime());
+    jObject.setBidExchangeCode(nObject.getBidExchangeCode());
+    jObject.setBidPrice(nObject.getBidPrice());
+    jObject.setBidSizeAsDouble(nObject.getBidSize());
+    jObject.setAskTime(nObject.getAskTime());
+    jObject.setAskExchangeCode(nObject.getAskExchangeCode());
+    jObject.setAskPrice(nObject.getAskPrice());
+    jObject.setAskSizeAsDouble(nObject.getAskSize());
   }
 }

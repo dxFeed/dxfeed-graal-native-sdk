@@ -1,11 +1,13 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.api.events.DxfgCandle;
-import com.dxfeed.api.events.DxfgEventKind;
+import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.event.candle.Candle;
+import com.dxfeed.event.candle.CandleSymbol;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class CandleMapper extends Mapper<Candle, DxfgCandle> {
+public class CandleMapper extends EventMapper<Candle, DxfgCandle> {
 
   protected final CandleSymbolMapper candleSymbolMapper;
 
@@ -14,13 +16,15 @@ public class CandleMapper extends Mapper<Candle, DxfgCandle> {
   }
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgCandle.class);
+  public DxfgCandle createNativeObject() {
+    final DxfgCandle nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandle.class));
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_CANDLE.getCValue());
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(final DxfgCandle nObject, final Candle jObject) {
-    nObject.setKind(DxfgEventKind.DXFG_EVENT_TYPE_CANDLE.getCValue());
+  public void fillNativeObject(final Candle jObject, final DxfgCandle nObject) {
+    cleanNativeObject(nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setEventTime(jObject.getEventTime());
     nObject.setIndex(jObject.getIndex());
@@ -29,17 +33,50 @@ public class CandleMapper extends Mapper<Candle, DxfgCandle> {
     nObject.setHigh(jObject.getHigh());
     nObject.setLow(jObject.getLow());
     nObject.setClose(jObject.getClose());
-    nObject.setVolume(jObject.getVolume());
+    nObject.setVolume(jObject.getVolumeAsDouble());
     nObject.setVwap(jObject.getVWAP());
-    nObject.setBidVolume(jObject.getBidVolume());
-    nObject.setAskVolume(jObject.getAskVolume());
+    nObject.setBidVolume(jObject.getBidVolumeAsDouble());
+    nObject.setAskVolume(jObject.getAskVolumeAsDouble());
     nObject.setImpVolatility(jObject.getImpVolatility());
-    nObject.setOpenInterest(jObject.getOpenInterest());
-    nObject.setCandleSymbol(candleSymbolMapper.nativeObject(jObject.getEventSymbol()));
+    nObject.setOpenInterest(jObject.getOpenInterestAsDouble());
+    nObject.setCandleSymbol(this.candleSymbolMapper.toNativeObject(jObject.getEventSymbol()));
   }
 
   @Override
   protected void cleanNativeObject(final DxfgCandle nObject) {
-    candleSymbolMapper.delete(nObject.getCandleSymbol());
+    this.candleSymbolMapper.release(nObject.getCandleSymbol());
+  }
+
+  @Override
+  public Candle toJavaObject(final DxfgCandle nObject) {
+    final Candle jObject = new Candle();
+    fillJavaObject(nObject, jObject);
+    return jObject;
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgCandle nObject, final Candle jObject) {
+    jObject.setEventFlags(nObject.getEventFlags());
+    jObject.setEventTime(nObject.getEventTime());
+    jObject.setIndex(nObject.getIndex());
+    jObject.setCount(nObject.getCount());
+    jObject.setOpen(nObject.getOpen());
+    jObject.setHigh(nObject.getHigh());
+    jObject.setLow(nObject.getLow());
+    jObject.setClose(nObject.getClose());
+    jObject.setVolumeAsDouble(nObject.getVolume());
+    jObject.setVWAP(nObject.getVwap());
+    jObject.setBidVolumeAsDouble(nObject.getBidVolume());
+    jObject.setAskVolumeAsDouble(nObject.getAskVolume());
+    jObject.setImpVolatility(nObject.getImpVolatility());
+    jObject.setOpenInterestAsDouble(nObject.getOpenInterest());
+    jObject.setEventSymbol(candleSymbolMapper.toJavaObject(nObject.getCandleSymbol()));
+  }
+
+  @Override
+  public DxfgCandle createNativeObject(final String symbol) {
+    final DxfgCandle nObject = createNativeObject();
+    nObject.setCandleSymbol(this.candleSymbolMapper.toNativeObject(CandleSymbol.valueOf(symbol)));
+    return nObject;
   }
 }

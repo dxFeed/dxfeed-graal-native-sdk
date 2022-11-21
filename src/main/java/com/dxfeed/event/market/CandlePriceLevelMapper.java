@@ -2,19 +2,26 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.api.events.DxfgCandlePriceLevel;
 import com.dxfeed.event.candle.CandlePriceLevel;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.word.WordFactory;
 
 public class CandlePriceLevelMapper extends Mapper<CandlePriceLevel, DxfgCandlePriceLevel> {
 
   @Override
-  protected int size() {
-    return SizeOf.get(DxfgCandlePriceLevel.class);
+  public DxfgCandlePriceLevel toNativeObject(final CandlePriceLevel jObject) {
+    if (jObject == null) {
+      return WordFactory.nullPointer();
+    }
+    final DxfgCandlePriceLevel nObject = UnmanagedMemory.calloc(
+        SizeOf.get(DxfgCandlePriceLevel.class));
+    fillNativeObject(jObject, nObject);
+    return nObject;
   }
 
   @Override
-  protected void fillNativeObject(
-      final DxfgCandlePriceLevel nObject,
-      final CandlePriceLevel jObject
+  public void fillNativeObject(
+      final CandlePriceLevel jObject, final DxfgCandlePriceLevel nObject
   ) {
     nObject.setValuePriceLevel(jObject.getValue());
   }
@@ -22,5 +29,15 @@ public class CandlePriceLevelMapper extends Mapper<CandlePriceLevel, DxfgCandleP
   @Override
   protected void cleanNativeObject(final DxfgCandlePriceLevel nObject) {
     // nothing
+  }
+
+  @Override
+  public CandlePriceLevel toJavaObject(final DxfgCandlePriceLevel nObject) {
+    throw new IllegalStateException();
+  }
+
+  @Override
+  public void fillJavaObject(final DxfgCandlePriceLevel nObject, final CandlePriceLevel jObject) {
+    throw new IllegalStateException();
   }
 }

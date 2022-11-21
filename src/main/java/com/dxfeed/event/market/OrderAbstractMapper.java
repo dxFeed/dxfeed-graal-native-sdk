@@ -1,19 +1,20 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.api.events.DxfgOrderBase;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrderBase> extends
-    Mapper<V, T> {
+public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrderBase>
+    extends MarketEventMapper<V, T> {
 
-  private final MarketEventMapper marketEventMapper;
-
-  public OrderAbstractMapper(final MarketEventMapper marketEventMapper) {
-    this.marketEventMapper = marketEventMapper;
+  public OrderAbstractMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent
+  ) {
+    super(stringMapperForMarketEvent);
   }
 
   @Override
-  protected void fillNativeObject(final T nObject, final V jObject) {
-    this.marketEventMapper.fillNativeObject(nObject, jObject);
+  public void fillNativeObject(final V jObject, final T nObject) {
+    super.fillNativeObject(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());
@@ -22,7 +23,7 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
     nObject.setOrderId(jObject.getOrderId());
     nObject.setAuxOrderId(jObject.getAuxOrderId());
     nObject.setPrice(jObject.getPrice());
-    nObject.setSize(jObject.getSize());
+    nObject.setSize(jObject.getSizeAsDouble());
     nObject.setExecutedSize(jObject.getExecutedSize());
     nObject.setCount(jObject.getCount());
     nObject.setFlags(jObject.getFlags());
@@ -33,6 +34,26 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
 
   @Override
   protected void cleanNativeObject(final T nObject) {
-    this.marketEventMapper.cleanNativeObject(nObject);
+    super.cleanNativeObject(nObject);
+  }
+
+  @Override
+  public void fillJavaObject(final T nObject, final V jObject) {
+    super.fillJavaObject(nObject, jObject);
+    jObject.setEventFlags(nObject.getEventFlags());
+    jObject.setIndex(nObject.getIndex());
+    jObject.setTimeSequence(nObject.getTimeSequence());
+    jObject.setTimeNanoPart(nObject.getTimeNanoPart());
+    jObject.setActionTime(nObject.getActionTime());
+    jObject.setOrderId(nObject.getOrderId());
+    jObject.setAuxOrderId(nObject.getAuxOrderId());
+    jObject.setPrice(nObject.getPrice());
+    jObject.setSizeAsDouble(nObject.getSize());
+    jObject.setExecutedSize(nObject.getExecutedSize());
+    jObject.setCount(nObject.getCount());
+    jObject.setFlags(nObject.getFlags());
+    jObject.setTradeId(nObject.getTradeId());
+    jObject.setTradePrice(nObject.getTradePrice());
+    jObject.setTradeSize(nObject.getTradeSize());
   }
 }

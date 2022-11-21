@@ -35,8 +35,7 @@
 },
 {
   "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"getFieldReplacer","parameterTypes":[] }]
+  "queryAllPublicMethods":true
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
@@ -55,34 +54,12 @@
   ]
 },
 {
-  "name":"com.devexperts.qd.qtp.MessageType",
-  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
-},
-{
   "name":"com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"com.devexperts.qd.qtp.file.FileConnector",
-  "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setCycle","parameterTypes":["boolean"] },
-    {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
-    {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] },
-    {"name":"setSpeed","parameterTypes":["double"] }
-  ]
-},
-{
   "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.devexperts.qd.qtp.file.FileConnectorMBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.devexperts.qd.qtp.file.FileFormat",
-  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.TapeConnectorFactory",
@@ -108,10 +85,6 @@
 {
   "name":"com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory",
-  "queryAllPublicMethods":true
 },
 {
   "name":"com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",
@@ -160,8 +133,8 @@
   "fields":[{"name":"theUnsafe"}]
 },
 {
-  "name":"sun.security.provider.DRBG",
-  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"sun.security.provider.SHA",
