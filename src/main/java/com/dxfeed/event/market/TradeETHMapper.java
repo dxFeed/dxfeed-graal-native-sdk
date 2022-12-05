@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTradeETH;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -20,24 +21,24 @@ public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
   }
 
   @Override
-  public void fillNativeObject(final TradeETH jObject, final DxfgTradeETH nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final TradeETH jObject, final DxfgTradeETH nObject) {
+    super.fillNative(jObject, nObject);
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgTradeETH nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgTradeETH nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public TradeETH toJavaObject(final DxfgTradeETH nObject) {
+  public TradeETH toJava(final DxfgTradeETH nObject) {
     final TradeETH jObject = new TradeETH();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgTradeETH nObject, final TradeETH jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgTradeETH nObject, final TradeETH jObject) {
+    super.fillJava(nObject, jObject);
   }
 }

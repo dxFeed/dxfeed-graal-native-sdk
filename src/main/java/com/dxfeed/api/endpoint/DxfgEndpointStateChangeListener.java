@@ -7,6 +7,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_endpoint_state_change_listener_t")
-interface DxfgEndpointStateChangeListener extends JavaObjectHandler<PropertyChangeListener> {
+public interface DxfgEndpointStateChangeListener extends JavaObjectHandler<PropertyChangeListener> {
 
 }

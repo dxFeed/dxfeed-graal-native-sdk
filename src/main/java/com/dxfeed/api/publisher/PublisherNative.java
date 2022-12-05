@@ -1,9 +1,10 @@
 package com.dxfeed.api.publisher;
 
-import static com.dxfeed.api.NativeUtils.MAPPER_ENEVET_TYPES;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
-import static com.dxfeed.api.NativeUtils.toJava;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION;
+import static com.dxfeed.api.NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER;
+import static com.dxfeed.api.NativeUtils.MAPPER_PUBLISHER;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXPublisher;
@@ -27,7 +28,7 @@ public class PublisherNative {
   public static DxfgPublisher dxfg_DXPublisher_getInstance(
       final IsolateThread ignoredThread
   ) {
-    return newJavaObjectHandler(DXPublisher.getInstance());
+    return MAPPER_PUBLISHER.toNative(DXPublisher.getInstance());
   }
 
   @CEntryPoint(
@@ -39,7 +40,8 @@ public class PublisherNative {
       final DxfgPublisher dxfgPublisher,
       final DxfgEventTypeList dxfgEventTypeList
   ) {
-    toJava(dxfgPublisher).publishEvents(MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
+    MAPPER_PUBLISHER.toJava(dxfgPublisher)
+        .publishEvents(MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -52,7 +54,8 @@ public class PublisherNative {
       final DxfgPublisher dxfgPublisher,
       final DxfgEventClazz dxfgClazz
   ) {
-    return newJavaObjectHandler(toJava(dxfgPublisher).getSubscription(dxfgClazz.clazz));
+    return MAPPER_OBSERVABLE_SUBSCRIPTION.toNative(
+        MAPPER_PUBLISHER.toJava(dxfgPublisher).getSubscription(dxfgClazz.clazz));
   }
 
   @CEntryPoint(
@@ -63,7 +66,7 @@ public class PublisherNative {
       final IsolateThread ignoredThread,
       final DxfgObservableSubscription dxfgObservableSubscription
   ) {
-    return toJava(dxfgObservableSubscription).isClosed() ? 1 : 0;
+    return MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).isClosed() ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -74,7 +77,8 @@ public class PublisherNative {
       final IsolateThread ignoredThread,
       final DxfgObservableSubscription dxfgObservableSubscription
   ) {
-    return MAPPER_ENEVET_TYPES.toNativeList(toJava(dxfgObservableSubscription).getEventTypes());
+    return MAPPER_EVENT_TYPES.toNativeList(
+        MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).getEventTypes());
   }
 
   @CEntryPoint(
@@ -86,7 +90,8 @@ public class PublisherNative {
       final DxfgObservableSubscription dxfgObservableSubscription,
       final DxfgEventClazz dxfgClazz
   ) {
-    return toJava(dxfgObservableSubscription).containsEventType(dxfgClazz.clazz) ? 1 : 0;
+    return MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription)
+        .containsEventType(dxfgClazz.clazz) ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -98,7 +103,8 @@ public class PublisherNative {
       final DxfgObservableSubscription dxfgObservableSubscription,
       final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
   ) {
-    toJava(dxfgObservableSubscription).addChangeListener(toJava(dxfgFeedEventListener));
+    MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).addChangeListener(
+        MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -111,7 +117,8 @@ public class PublisherNative {
       final DxfgObservableSubscription dxfgObservableSubscription,
       final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
   ) {
-    toJava(dxfgObservableSubscription).removeChangeListener(toJava(dxfgFeedEventListener));
+    MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).removeChangeListener(
+        MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener));
     return EXECUTE_SUCCESSFULLY;
   }
 }

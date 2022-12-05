@@ -1,6 +1,8 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.NativeUtils;
+import static com.dxfeed.api.NativeUtils.MAPPER_PROMISE;
+
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.feed.DxfgPromise;
 import com.dxfeed.api.feed.DxfgPromiseList;
 import com.dxfeed.api.feed.DxfgPromisePointer;
@@ -8,21 +10,27 @@ import com.dxfeed.promise.Promise;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListPromiseMapper
-    extends ListMapper<Promise<?>, DxfgPromise<?>, DxfgPromisePointer, DxfgPromiseList> {
+    extends ListMapper<Promise<?>, DxfgPromise, DxfgPromisePointer, DxfgPromiseList> {
 
-  @Override
-  protected Promise<?> toJava(final DxfgPromise<?> nObject) {
-    return NativeUtils.toJava(nObject);
+  protected final Mapper<Promise<?>, DxfgPromise> promiseMapper;
+
+  public ListPromiseMapper(final Mapper<Promise<?>, DxfgPromise> promiseMapper) {
+    this.promiseMapper = promiseMapper;
   }
 
   @Override
-  protected DxfgPromise<?> toNative(final Promise<?> jObject) {
-    return NativeUtils.newJavaObjectHandler(jObject);
+  protected Promise<?> toJava(final DxfgPromise nObject) {
+    return MAPPER_PROMISE.toJava(nObject);
   }
 
   @Override
-  protected void releaseNative(final DxfgPromise<?> nObject) {
-    NativeUtils.release(nObject);
+  protected DxfgPromise toNative(final Promise<?> jObject) {
+    return MAPPER_PROMISE.toNative(jObject);
+  }
+
+  @Override
+  protected void releaseNative(final DxfgPromise nObject) {
+    MAPPER_PROMISE.release(nObject);
   }
 
   @Override

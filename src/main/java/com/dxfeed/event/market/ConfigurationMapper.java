@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgConfiguration;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.event.misc.Configuration;
@@ -23,41 +24,41 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
   }
 
   @Override
-  public final void fillNativeObject(
+  public final void fillNative(
       final Configuration jObject, final DxfgConfiguration nObject
   ) {
-    cleanNativeObject(nObject);
-    nObject.setEventSymbol(stringMapper.toNativeObject(jObject.getEventSymbol()));
+    cleanNative(nObject);
+    nObject.setEventSymbol(stringMapper.toNative(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
     nObject.setVersion(jObject.getVersion());
-    nObject.setAttachment(stringMapper.toNativeObject(jObject.getAttachment().toString()));
+    nObject.setAttachment(stringMapper.toNative(jObject.getAttachment().toString()));
   }
 
   @Override
-  protected final void cleanNativeObject(final DxfgConfiguration nObject) {
+  public final void cleanNative(final DxfgConfiguration nObject) {
     stringMapper.release(nObject.getEventSymbol());
     stringMapper.release(nObject.getAttachment());
   }
 
   @Override
-  public Configuration toJavaObject(final DxfgConfiguration nObject) {
+  public Configuration toJava(final DxfgConfiguration nObject) {
     final Configuration jObject = new Configuration();
-    fillJavaObject(nObject, jObject);
+    fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgConfiguration nObject, final Configuration jObject) {
-    jObject.setEventSymbol(stringMapper.toJavaObject(nObject.getEventSymbol()));
+  public void fillJava(final DxfgConfiguration nObject, final Configuration jObject) {
+    jObject.setEventSymbol(stringMapper.toJava(nObject.getEventSymbol()));
     jObject.setEventTime(nObject.getEventTime());
     jObject.setVersion(nObject.getVersion());
-    jObject.setAttachment(stringMapper.toJavaObject(nObject.getAttachment())); //TODO
+    jObject.setAttachment(stringMapper.toJava(nObject.getAttachment())); //TODO
   }
 
   @Override
   public DxfgConfiguration createNativeObject(final String symbol) {
     final DxfgConfiguration nObject = createNativeObject();
-    nObject.setEventSymbol(this.stringMapper.toNativeObject(symbol));
+    nObject.setEventSymbol(this.stringMapper.toNative(symbol));
     return nObject;
   }
 }

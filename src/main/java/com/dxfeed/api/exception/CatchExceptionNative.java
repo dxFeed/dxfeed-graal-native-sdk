@@ -15,7 +15,7 @@ public final class CatchExceptionNative {
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
   public static DxfgException getAndClearThreadException(final IsolateThread ignoredThread) {
-    final DxfgException dxfgException = MAPPER_EXCEPTION.toNativeObject(
+    final DxfgException dxfgException = MAPPER_EXCEPTION.toNative(
         JNIThreadLocalPendingException.get()
     );
     JNIThreadLocalPendingException.clear();

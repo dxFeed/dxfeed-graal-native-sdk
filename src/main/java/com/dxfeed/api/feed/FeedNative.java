@@ -1,12 +1,13 @@
 package com.dxfeed.api.feed;
 
-import static com.dxfeed.api.NativeUtils.MAPPER_ENEVET_TYPES;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_FEED;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
+import static com.dxfeed.api.NativeUtils.MAPPER_SUBSCRIPTION;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
-import static com.dxfeed.api.NativeUtils.toJava;
+import static com.dxfeed.api.NativeUtils.MAPPER_TIME_SERIES_SUBSCRIPTION;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXFeed;
@@ -40,7 +41,7 @@ public class FeedNative {
   public static DxfgFeed dxfg_DXFeed_getInstance(
       final IsolateThread ignoredThread
   ) {
-    return newJavaObjectHandler(DXFeed.getInstance());
+    return MAPPER_FEED.toNative(DXFeed.getInstance());
   }
 
   @CEntryPoint(
@@ -52,8 +53,8 @@ public class FeedNative {
       final DxfgFeed dxfgFeed,
       final DxfgEventClazz dxfgClazz
   ) {
-    return newJavaObjectHandler(
-        toJava(dxfgFeed).createSubscription(dxfgClazz.clazz)
+    return MAPPER_SUBSCRIPTION.toNative(
+        MAPPER_FEED.toJava(dxfgFeed).createSubscription(dxfgClazz.clazz)
     );
   }
 
@@ -66,9 +67,9 @@ public class FeedNative {
       final DxfgFeed dxfgFeed,
       final DxfgEventClazzList eventClazzList
   ) {
-    return newJavaObjectHandler(
-        toJava(dxfgFeed).createSubscription(
-            MAPPER_ENEVET_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+    return MAPPER_SUBSCRIPTION.toNative(
+        MAPPER_FEED.toJava(dxfgFeed).createSubscription(
+            MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
         )
     );
   }
@@ -82,8 +83,9 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgEventClazz dxfgClazz
   ) {
-    return newJavaObjectHandler(
-        toJava(feed).createTimeSeriesSubscription((Class<TimeSeriesEvent<?>>) dxfgClazz.clazz)
+    return MAPPER_TIME_SERIES_SUBSCRIPTION.toNative(
+        MAPPER_FEED.toJava(feed)
+            .createTimeSeriesSubscription((Class<TimeSeriesEvent<?>>) dxfgClazz.clazz)
     );
   }
 
@@ -96,9 +98,9 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgEventClazzList eventClazzList
   ) {
-    return newJavaObjectHandler(
-        toJava(feed).createTimeSeriesSubscription(
-            MAPPER_ENEVET_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+    return MAPPER_TIME_SERIES_SUBSCRIPTION.toNative(
+        MAPPER_FEED.toJava(feed).createTimeSeriesSubscription(
+            MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
         )
     );
   }
@@ -112,7 +114,7 @@ public class FeedNative {
       final DxfgTimeSeriesSubscription dxfgTimeSeriesSubscription,
       final long fromTime
   ) {
-    toJava(dxfgTimeSeriesSubscription).setFromTime(fromTime);
+    MAPPER_TIME_SERIES_SUBSCRIPTION.toJava(dxfgTimeSeriesSubscription).setFromTime(fromTime);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -123,9 +125,9 @@ public class FeedNative {
   public static int dxfg_DXFeed_attachSubscription(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgSubscription<?> subscription
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> subscription
   ) {
-    toJava(feed).attachSubscription(toJava(subscription));
+    MAPPER_FEED.toJava(feed).attachSubscription(MAPPER_SUBSCRIPTION.toJava(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -136,9 +138,9 @@ public class FeedNative {
   public static int dxfg_DXFeed_detachSubscription(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgSubscription<?> subscription
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> subscription
   ) {
-    toJava(feed).detachSubscription(toJava(subscription));
+    MAPPER_FEED.toJava(feed).detachSubscription(MAPPER_SUBSCRIPTION.toJava(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -149,9 +151,9 @@ public class FeedNative {
   public static int dxfg_DXFeed_detachSubscriptionAndClear(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
-      final DxfgSubscription<?> subscription
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> subscription
   ) {
-    toJava(feed).detachSubscriptionAndClear(toJava(subscription));
+    MAPPER_FEED.toJava(feed).detachSubscriptionAndClear(MAPPER_SUBSCRIPTION.toJava(subscription));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -165,10 +167,10 @@ public class FeedNative {
       final DxfgEventClazz dxfgClazz,
       final DxfgSymbol dxfgSymbol
   ) {
-    return MAPPER_EVENT.toNativeObject(
-        toJava(feed).getLastEventIfSubscribed(
+    return MAPPER_EVENT.toNative(
+        MAPPER_FEED.toJava(feed).getLastEventIfSubscribed(
             (Class<LastingEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol)
+            MAPPER_SYMBOL.toJava(dxfgSymbol)
         )
     );
   }
@@ -185,10 +187,10 @@ public class FeedNative {
       final CCharPointer source
   ) {
     return MAPPER_EVENTS.toNativeList(
-        toJava(feed).getIndexedEventsIfSubscribed(
+        MAPPER_FEED.toJava(feed).getIndexedEventsIfSubscribed(
             (Class<IndexedEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
-            OrderSource.valueOf(MAPPER_STRING.toJavaObject(source))
+            MAPPER_SYMBOL.toJava(dxfgSymbol),
+            OrderSource.valueOf(MAPPER_STRING.toJava(source))
         )
     );
   }
@@ -206,9 +208,9 @@ public class FeedNative {
       final long toTime
   ) {
     return MAPPER_EVENTS.toNativeList(
-        toJava(feed).getTimeSeriesIfSubscribed(
+        MAPPER_FEED.toJava(feed).getTimeSeriesIfSubscribed(
             (Class<TimeSeriesEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
+            MAPPER_SYMBOL.toJava(dxfgSymbol),
             fromTime,
             toTime
         )
@@ -224,9 +226,9 @@ public class FeedNative {
       final DxfgFeed feed,
       final DxfgEventType nEvent
   ) {
-    final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJavaObject(nEvent);
-    toJava(feed).getLastEvent(jEvent);
-    MAPPER_EVENT.fillNativeObject(jEvent, nEvent);
+    final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJava(nEvent);
+    MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
+    MAPPER_EVENT.fillNative(jEvent, nEvent);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -241,9 +243,9 @@ public class FeedNative {
   ) {
     for (int i = 0; i < nEvents.getSize(); i++) {
       final DxfgEventType nEvent = nEvents.getElements().addressOf(i).read();
-      final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJavaObject(nEvent);
-      toJava(feed).getLastEvent(jEvent);
-      MAPPER_EVENT.fillNativeObject(jEvent, nEvent);
+      final LastingEvent<?> jEvent = (LastingEvent<?>) MAPPER_EVENT.toJava(nEvent);
+      MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
+      MAPPER_EVENT.fillNative(jEvent, nEvent);
     }
     return EXECUTE_SUCCESSFULLY;
   }

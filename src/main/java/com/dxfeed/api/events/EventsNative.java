@@ -2,9 +2,11 @@ package com.dxfeed.api.events;
 
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_INDEXED_EVENT_SOURCE;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
+import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOLS;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 import static org.graalvm.nativeimage.c.type.CTypeConversion.toJavaString;
 
@@ -16,7 +18,6 @@ import com.dxfeed.event.candle.CandleSymbol;
 import com.dxfeed.event.market.EventMappers;
 import com.dxfeed.event.market.OrderSource;
 import org.graalvm.nativeimage.IsolateThread;
-import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -35,15 +36,15 @@ public class EventsNative {
   ) {
     switch (symbolType) {
       case STRING:
-        return MAPPER_SYMBOL.toNativeObject(
-            MAPPER_STRING.toJavaObject(symbol)
+        return MAPPER_SYMBOL.toNative(
+            MAPPER_STRING.toJava(symbol)
         );
       case CANDLE:
-        return MAPPER_SYMBOL.toNativeObject(
-            CandleSymbol.valueOf(MAPPER_STRING.toJavaObject(symbol))
+        return MAPPER_SYMBOL.toNative(
+            CandleSymbol.valueOf(MAPPER_STRING.toJava(symbol))
         );
       case WILDCARD:
-        return MAPPER_SYMBOL.toNativeObject(WildcardSymbol.ALL);
+        return MAPPER_SYMBOL.toNative(WildcardSymbol.ALL);
       default:
         throw new IllegalStateException();
     }
@@ -70,7 +71,7 @@ public class EventsNative {
       final CCharPointer symbol,
       final DxfgEventClazz dxfgEventClazz
   ) {
-    return ((EventMappers)MAPPER_EVENT).createNativeEvent(dxfgEventClazz, symbol);
+    return ((EventMappers) MAPPER_EVENT).createNativeEvent(dxfgEventClazz, symbol);
   }
 
   @CEntryPoint(
@@ -105,11 +106,7 @@ public class EventsNative {
       final IsolateThread ignoredThread,
       final DxfgEventClazzList eventClazzList
   ) {
-    for (int i = 0; i < eventClazzList.getSize(); i++) {
-      UnmanagedMemory.free(eventClazzList.getElements().addressOf(i).read());
-    }
-    UnmanagedMemory.free(eventClazzList.getElements());
-    UnmanagedMemory.free(eventClazzList);
+    MAPPER_EVENT_TYPES.release(eventClazzList);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -121,13 +118,7 @@ public class EventsNative {
       final IsolateThread ignoredThread,
       final DxfgSymbolList symbolList
   ) {
-    for (int i = 0; i < symbolList.getSize(); i++) {
-      final DxfgSymbol dxfgSymbol = symbolList.getElements().addressOf(i).read();
-      UnmanagedMemory.free(dxfgSymbol.getSymbolString());
-      UnmanagedMemory.free(dxfgSymbol);
-    }
-    UnmanagedMemory.free(symbolList.getElements());
-    UnmanagedMemory.free(symbolList);
+    MAPPER_SYMBOLS.release(symbolList);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -139,9 +130,11 @@ public class EventsNative {
       final IsolateThread ignoredThread,
       final CCharPointer source
   ) {
-    return source.isNull()
-        ? newJavaObjectHandler(IndexedEventSource.DEFAULT)
-        : newJavaObjectHandler(OrderSource.valueOf(toJavaString(source)));
+    return MAPPER_INDEXED_EVENT_SOURCE.toNative(
+        source.isNull()
+            ? IndexedEventSource.DEFAULT
+            : OrderSource.valueOf(toJavaString(source))
+    );
   }
 
   @CEntryPoint(
@@ -160,7 +153,7 @@ public class EventsNative {
       case DXFG_EVENT_UNDERLYING:
       case DXFG_EVENT_THEO_PRICE:
       case DXFG_EVENT_SERIES:
-        return newJavaObjectHandler(IndexedEventSource.DEFAULT);
+        return MAPPER_INDEXED_EVENT_SOURCE.toNative(IndexedEventSource.DEFAULT);
       case DXFG_EVENT_ORDER_BASE:
       case DXFG_EVENT_SPREAD_ORDER:
       case DXFG_EVENT_ORDER:
@@ -170,7 +163,7 @@ public class EventsNative {
         if (!OrderSource.isSpecialSourceId(sourceId)) {
           sourceId = (int) (index >> 32);
         }
-        return newJavaObjectHandler(OrderSource.valueOf(sourceId));
+        return MAPPER_INDEXED_EVENT_SOURCE.toNative(OrderSource.valueOf(sourceId));
       default:
         throw new ClassCastException(
             DxfgEventClazz.fromCValue(event.getClazz()).clazz.getCanonicalName()

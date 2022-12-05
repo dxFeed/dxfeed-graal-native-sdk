@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgSymbol;
 import com.dxfeed.api.events.DxfgSymbolType;
 import com.dxfeed.api.osub.WildcardSymbol;
@@ -18,23 +19,23 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
   }
 
   @Override
-  public DxfgSymbol toNativeObject(final Object jObject) {
+  public DxfgSymbol toNative(final Object jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
     final DxfgSymbol nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgSymbol.class));
-    fillNativeObject(jObject, nObject);
+    fillNative(jObject, nObject);
     return nObject;
   }
 
   @Override
-  public void fillNativeObject(final Object jObject, final DxfgSymbol nObject) {
+  public void fillNative(final Object jObject, final DxfgSymbol nObject) {
     if (jObject instanceof CandleSymbol) {
       nObject.setSymbolType(DxfgSymbolType.CANDLE.getCValue());
-      nObject.setSymbolString(this.stringMapper.toNativeObject(jObject.toString()));
+      nObject.setSymbolString(this.stringMapper.toNative(jObject.toString()));
     } else if (jObject instanceof String) {
       nObject.setSymbolType(DxfgSymbolType.STRING.getCValue());
-      nObject.setSymbolString(this.stringMapper.toNativeObject(jObject.toString()));
+      nObject.setSymbolString(this.stringMapper.toNative(jObject.toString()));
     } else if (jObject instanceof WildcardSymbol) {
       nObject.setSymbolType(DxfgSymbolType.WILDCARD.getCValue());
       nObject.setSymbolString(WordFactory.nullPointer());
@@ -42,21 +43,21 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgSymbol nObject) {
-    this.stringMapper.cleanNativeObject(nObject.getSymbolString());
+  public void cleanNative(final DxfgSymbol nObject) {
+    this.stringMapper.cleanNative(nObject.getSymbolString());
   }
 
   @Override
-  public Object toJavaObject(final DxfgSymbol nObject) {
+  public Object toJava(final DxfgSymbol nObject) {
     if (nObject.isNull()) {
       return null;
     }
     return DxfgSymbolType.fromCValue(nObject.getSymbolType())
-        .createSymbolFunction.apply(this.stringMapper.toJavaObject(nObject.getSymbolString()));
+        .createSymbolFunction.apply(this.stringMapper.toJava(nObject.getSymbolString()));
   }
 
   @Override
-  public void fillJavaObject(final DxfgSymbol nObject, final Object jObject) {
+  public void fillJava(final DxfgSymbol nObject, final Object jObject) {
     throw new IllegalStateException();
   }
 }

@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgCandlePeriod;
 import com.dxfeed.api.events.DxfgCandleType;
 import com.dxfeed.event.candle.CandlePeriod;
@@ -17,36 +18,36 @@ public class CandlePeriodMapper extends Mapper<CandlePeriod, DxfgCandlePeriod> {
   }
 
   @Override
-  public DxfgCandlePeriod toNativeObject(final CandlePeriod jObject) {
+  public DxfgCandlePeriod toNative(final CandlePeriod jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
     final DxfgCandlePeriod nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandlePeriod.class));
-    fillNativeObject(jObject, nObject);
+    fillNative(jObject, nObject);
     return nObject;
   }
 
   @Override
-  public void fillNativeObject(final CandlePeriod jObject, final DxfgCandlePeriod nObject) {
-    cleanNativeObject(nObject);
+  public void fillNative(final CandlePeriod jObject, final DxfgCandlePeriod nObject) {
+    cleanNative(nObject);
     nObject.setPeriodIntervalMillis(jObject.getPeriodIntervalMillis());
     nObject.setValueCandlePeriod(jObject.getValue());
     nObject.setType(DxfgCandleType.valueOf(jObject.getType().name()).getCValue());
-    nObject.setString(stringMapper.toNativeObject(jObject.toString()));
+    nObject.setString(stringMapper.toNative(jObject.toString()));
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgCandlePeriod nObject) {
+  public void cleanNative(final DxfgCandlePeriod nObject) {
     stringMapper.release(nObject.getString());
   }
 
   @Override
-  public CandlePeriod toJavaObject(final DxfgCandlePeriod nObject) {
+  public CandlePeriod toJava(final DxfgCandlePeriod nObject) {
     throw new IllegalStateException();
   }
 
   @Override
-  public void fillJavaObject(final DxfgCandlePeriod nObject, final CandlePeriod jObject) {
+  public void fillJava(final DxfgCandlePeriod nObject, final CandlePeriod jObject) {
     throw new IllegalStateException();
   }
 }

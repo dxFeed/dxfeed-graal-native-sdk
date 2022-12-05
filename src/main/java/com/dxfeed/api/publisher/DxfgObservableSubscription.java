@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_observable_subscription_t")
-public interface DxfgObservableSubscription extends
-    JavaObjectHandler<ObservableSubscription<EventType<?>>> {
+public interface DxfgObservableSubscription
+    extends JavaObjectHandler<ObservableSubscription<? extends EventType<?>>> {
 
 }

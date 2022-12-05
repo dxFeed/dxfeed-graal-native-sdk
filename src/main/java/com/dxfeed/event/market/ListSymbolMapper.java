@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgSymbol;
 import com.dxfeed.api.events.DxfgSymbolList;
 import com.dxfeed.api.events.DxfgSymbolPointer;
@@ -25,12 +26,12 @@ public class ListSymbolMapper extends
 
   @Override
   protected Object toJava(final DxfgSymbol nObject) {
-    return this.symbolMapper.toJavaObject(nObject);
+    return this.symbolMapper.toJava(nObject);
   }
 
   @Override
   protected DxfgSymbol toNative(final Object jObject) {
-    return this.symbolMapper.toNativeObject(jObject);
+    return this.symbolMapper.toNative(jObject);
   }
 
   @Override

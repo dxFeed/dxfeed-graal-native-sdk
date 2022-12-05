@@ -14,7 +14,7 @@ interface DxfgPromiseHandlerFunction extends CFunctionPointer {
   @InvokeCFunctionPointer
   void invoke(
       final IsolateThread thread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final VoidPointer userData
   );
 }

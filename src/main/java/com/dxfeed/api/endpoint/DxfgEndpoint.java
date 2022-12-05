@@ -7,6 +7,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_endpoint_t")
-interface DxfgEndpoint extends JavaObjectHandler<DXEndpoint> {
+public interface DxfgEndpoint extends JavaObjectHandler<DXEndpoint> {
 
 }

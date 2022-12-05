@@ -7,6 +7,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_promise_t")
-public interface DxfgPromise<V> extends JavaObjectHandler<Promise<V>> {
+public interface DxfgPromise extends JavaObjectHandler<Promise<?>> {
 
 }

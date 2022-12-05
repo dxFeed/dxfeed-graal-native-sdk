@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgEventTypePointer;
@@ -17,7 +18,7 @@ public class ListEventMapper extends
 
   @Override
   protected EventType<?> toJava(final DxfgEventType nObject) {
-    return eventMappers.toJavaObject(nObject);
+    return eventMappers.toJava(nObject);
   }
 
   @Override
@@ -27,7 +28,7 @@ public class ListEventMapper extends
 
   @Override
   protected DxfgEventType toNative(final EventType<?> jObject) {
-    return eventMappers.toNativeObject(jObject);
+    return eventMappers.toNative(jObject);
   }
 
   @Override

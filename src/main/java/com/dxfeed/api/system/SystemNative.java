@@ -23,8 +23,8 @@ public final class SystemNative {
       final CCharPointer value
   ) {
     System.setProperty(
-        MAPPER_STRING.toJavaObject(key),
-        MAPPER_STRING.toJavaObject(value)
+        MAPPER_STRING.toJava(key),
+        MAPPER_STRING.toJava(value)
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -37,8 +37,8 @@ public final class SystemNative {
       final IsolateThread ignoredThread,
       final CCharPointer key
   ) {
-    return MAPPER_STRING.toNativeObject(
-        System.getProperty(MAPPER_STRING.toJavaObject(key))
+    return MAPPER_STRING.toNative(
+        System.getProperty(MAPPER_STRING.toJava(key))
     );
   }
 

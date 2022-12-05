@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSummary;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -22,8 +23,8 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  public void fillNativeObject(final Summary jObject, final DxfgSummary nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final Summary jObject, final DxfgSummary nObject) {
+    super.fillNative(jObject, nObject);
     nObject.setDayId(jObject.getDayId());
     nObject.setDayOpenPrice(jObject.getDayOpenPrice());
     nObject.setDayHighPrice(jObject.getDayHighPrice());
@@ -37,20 +38,20 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgSummary nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgSummary nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Summary toJavaObject(final DxfgSummary nObject) {
+  public Summary toJava(final DxfgSummary nObject) {
     final Summary jObject = new Summary();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgSummary nObject, final Summary jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgSummary nObject, final Summary jObject) {
+    super.fillJava(nObject, jObject);
     jObject.setDayId(nObject.getDayId());
     jObject.setDayOpenPrice(nObject.getDayOpenPrice());
     jObject.setDayHighPrice(nObject.getDayHighPrice());

@@ -19,6 +19,7 @@ import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_TRADE;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_TRADE_ETH;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_UNDERLYING;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.event.EventType;
@@ -105,7 +106,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public DxfgEventType toNativeObject(final EventType<?> jEvent) {
+  public DxfgEventType toNative(final EventType<?> jEvent) {
     if (jEvent == null) {
       return WordFactory.nullPointer();
     }
@@ -122,12 +123,12 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public void fillNativeObject(final EventType<?> jObject, final DxfgEventType nObject) {
+  public void fillNative(final EventType<?> jObject, final DxfgEventType nObject) {
     this.mapperByClass.get(jObject.getClass()).fillNativeObjectWithCast(jObject, nObject);
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgEventType nObject) {
+  public void cleanNative(final DxfgEventType nObject) {
     if (nObject.isNull()) {
       return;
     }
@@ -136,7 +137,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public EventType<?> toJavaObject(final DxfgEventType nObject) {
+  public EventType<?> toJava(final DxfgEventType nObject) {
     if (nObject.isNull()) {
       return null;
     }
@@ -145,7 +146,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public void fillJavaObject(final DxfgEventType nObject, final EventType<?> jObject) {
+  public void fillJava(final DxfgEventType nObject, final EventType<?> jObject) {
     final DxfgEventClazz key = DxfgEventClazz.fromCValue(nObject.getClazz());
     this.mapperByDxfgEventType.get(key).fillJavaObjectWithCast(nObject, jObject);
   }
@@ -155,6 +156,6 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
       final CCharPointer symbol
   ) {
     return this.mapperByDxfgEventType.get(dxfgClazz)
-        .createNativeObject(this.stringMapperForMarketEvent.toJavaObject(symbol));
+        .createNativeObject(this.stringMapperForMarketEvent.toJava(symbol));
   }
 }

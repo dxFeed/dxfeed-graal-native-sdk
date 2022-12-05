@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTrade;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -20,24 +21,24 @@ public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
   }
 
   @Override
-  public void fillNativeObject(final Trade jObject, final DxfgTrade nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final Trade jObject, final DxfgTrade nObject) {
+    super.fillNative(jObject, nObject);
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgTrade nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgTrade nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Trade toJavaObject(final DxfgTrade nObject) {
+  public Trade toJava(final DxfgTrade nObject) {
     final Trade jObject = new Trade();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgTrade nObject, final Trade jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgTrade nObject, final Trade jObject) {
+    super.fillJava(nObject, jObject);
   }
 }

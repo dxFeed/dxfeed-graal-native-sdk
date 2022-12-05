@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSeries;
 import com.dxfeed.event.option.Series;
@@ -23,8 +24,8 @@ public class SeriesMapper extends MarketEventMapper<Series, DxfgSeries> {
   }
 
   @Override
-  public void fillNativeObject(final Series jObject, final DxfgSeries nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final Series jObject, final DxfgSeries nObject) {
+    super.fillNative(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());
@@ -39,20 +40,20 @@ public class SeriesMapper extends MarketEventMapper<Series, DxfgSeries> {
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgSeries nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgSeries nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Series toJavaObject(final DxfgSeries nObject) {
+  public Series toJava(final DxfgSeries nObject) {
     final Series jObject = new Series();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgSeries nObject, final Series jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgSeries nObject, final Series jObject) {
+    super.fillJava(nObject, jObject);
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setIndex(nObject.getIndex());
     jObject.setTimeSequence(nObject.getTimeSequence());

@@ -1,5 +1,6 @@
-package com.dxfeed.event.market;
+package com.dxfeed.api.maper;
 
+import com.dxfeed.api.Mapper;
 import com.oracle.svm.core.SubstrateUtil;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public CCharPointer toNativeObject(final String jObject) {
+  public CCharPointer toNative(final String jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
@@ -93,17 +94,17 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public void fillNativeObject(final String jObject, final CCharPointer nObject) {
+  public void fillNative(final String jObject, final CCharPointer nObject) {
     // nothing
   }
 
   @Override
-  protected void cleanNativeObject(final CCharPointer nObject) {
+  public void cleanNative(final CCharPointer nObject) {
     // nothing
   }
 
   @Override
-  public String toJavaObject(final CCharPointer nObject) {
+  public String toJava(final CCharPointer nObject) {
     if (nObject.isNull()) {
       return null;
     }
@@ -115,7 +116,7 @@ public class StringMapperCacheStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public void fillJavaObject(final CCharPointer nObject, final String jObject) {
+  public void fillJava(final CCharPointer nObject, final String jObject) {
     throw new IllegalStateException();
   }
 

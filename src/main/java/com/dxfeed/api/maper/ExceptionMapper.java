@@ -1,5 +1,6 @@
-package com.dxfeed.event.market;
+package com.dxfeed.api.maper;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.exception.DxfgException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,39 +18,39 @@ public class ExceptionMapper extends Mapper<Throwable, DxfgException> {
   }
 
   @Override
-  public DxfgException toNativeObject(final Throwable jObject) {
+  public DxfgException toNative(final Throwable jObject) {
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
     final DxfgException nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgException.class));
-    fillNativeObject(jObject, nObject);
+    fillNative(jObject, nObject);
     return nObject;
   }
 
   @Override
-  public final void fillNativeObject(final Throwable jObject, final DxfgException nObject) {
-    cleanNativeObject(nObject);
-    nObject.setClassName(this.stringMapper.toNativeObject(jObject.getClass().getCanonicalName()));
-    nObject.setMessage(this.stringMapper.toNativeObject(jObject.getMessage()));
+  public final void fillNative(final Throwable jObject, final DxfgException nObject) {
+    cleanNative(nObject);
+    nObject.setClassName(this.stringMapper.toNative(jObject.getClass().getCanonicalName()));
+    nObject.setMessage(this.stringMapper.toNative(jObject.getMessage()));
     final StringWriter sw = new StringWriter();
     jObject.printStackTrace(new PrintWriter(sw));
-    nObject.setStackTrace(this.stringMapper.toNativeObject(sw.toString()));
+    nObject.setStackTrace(this.stringMapper.toNative(sw.toString()));
   }
 
   @Override
-  protected final void cleanNativeObject(final DxfgException nObject) {
+  public final void cleanNative(final DxfgException nObject) {
     stringMapper.release(nObject.getClassName());
     stringMapper.release(nObject.getMessage());
     stringMapper.release(nObject.getStackTrace());
   }
 
   @Override
-  public Throwable toJavaObject(final DxfgException nObject) {
+  public Throwable toJava(final DxfgException nObject) {
     throw new IllegalStateException();
   }
 
   @Override
-  public void fillJavaObject(final DxfgException nObject, final Throwable jObject) {
+  public void fillJava(final DxfgException nObject, final Throwable jObject) {
     throw new IllegalStateException();
   }
 }

@@ -1,8 +1,8 @@
 package com.dxfeed.api.endpoint;
 
+import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT;
+import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT_BUILDER;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
-import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXEndpoint;
@@ -26,7 +26,7 @@ public final class EndpointBuilderNative {
   public static DxfgEndpointBuilder dxfg_DXEndpoint_newBuilder(
       final IsolateThread ignoreThread
   ) {
-    return newJavaObjectHandler(DXEndpoint.newBuilder());
+    return MAPPER_ENDPOINT_BUILDER.toNative(DXEndpoint.newBuilder());
   }
 
   @CEntryPoint(
@@ -38,7 +38,7 @@ public final class EndpointBuilderNative {
       final DxfgEndpointBuilder builder,
       final DxfgEndpointRole role
   ) {
-    toJava(builder).withRole(role.qdRole);
+    MAPPER_ENDPOINT_BUILDER.toJava(builder).withRole(role.qdRole);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -51,7 +51,7 @@ public final class EndpointBuilderNative {
       final DxfgEndpointBuilder builder,
       final CCharPointer name
   ) {
-    toJava(builder).withName(MAPPER_STRING.toJavaObject(name));
+    MAPPER_ENDPOINT_BUILDER.toJava(builder).withName(MAPPER_STRING.toJava(name));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -65,9 +65,9 @@ public final class EndpointBuilderNative {
       final CCharPointer key,
       final CCharPointer value
   ) {
-    toJava(builder).withProperty(
-        MAPPER_STRING.toJavaObject(key),
-        MAPPER_STRING.toJavaObject(value)
+    MAPPER_ENDPOINT_BUILDER.toJava(builder).withProperty(
+        MAPPER_STRING.toJava(key),
+        MAPPER_STRING.toJava(value)
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -82,8 +82,8 @@ public final class EndpointBuilderNative {
       final CCharPointer pathToFile
   ) throws IOException {
     final Properties properties = new Properties();
-    properties.load(new FileInputStream(MAPPER_STRING.toJavaObject(pathToFile)));
-    toJava(builder).withProperties(properties);
+    properties.load(new FileInputStream(MAPPER_STRING.toJava(pathToFile)));
+    MAPPER_ENDPOINT_BUILDER.toJava(builder).withProperties(properties);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -96,7 +96,9 @@ public final class EndpointBuilderNative {
       final DxfgEndpointBuilder builder,
       final CCharPointer key
   ) {
-    return toJava(builder).supportsProperty(MAPPER_STRING.toJavaObject(key)) ? 1 : 0;
+    return MAPPER_ENDPOINT_BUILDER.toJava(builder).supportsProperty(MAPPER_STRING.toJava(key))
+        ? 1
+        : 0;
   }
 
   @CEntryPoint(
@@ -107,6 +109,6 @@ public final class EndpointBuilderNative {
       final IsolateThread ignoreThread,
       final DxfgEndpointBuilder builder
   ) {
-    return newJavaObjectHandler(toJava(builder).build());
+    return MAPPER_ENDPOINT.toNative(MAPPER_ENDPOINT_BUILDER.toJava(builder).build());
   }
 }

@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgGreeks;
 import com.dxfeed.event.option.Greeks;
@@ -23,8 +24,8 @@ public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
   }
 
   @Override
-  public void fillNativeObject(final Greeks jObject, final DxfgGreeks nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final Greeks jObject, final DxfgGreeks nObject) {
+    super.fillNative(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setPrice(jObject.getPrice());
@@ -37,20 +38,20 @@ public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgGreeks nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgGreeks nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Greeks toJavaObject(final DxfgGreeks nObject) {
+  public Greeks toJava(final DxfgGreeks nObject) {
     final Greeks jObject = new Greeks();
-    fillJavaObject(nObject, jObject);
+    fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgGreeks nObject, final Greeks jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgGreeks nObject, final Greeks jObject) {
+    super.fillJava(nObject, jObject);
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setIndex(nObject.getIndex());
     jObject.setPrice(nObject.getPrice());

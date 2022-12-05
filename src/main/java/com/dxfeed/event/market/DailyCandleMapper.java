@@ -23,8 +23,8 @@ public class DailyCandleMapper extends EventMapper<DailyCandle, DxfgDailyCandle>
   }
 
   @Override
-  public void fillNativeObject(final DailyCandle jObject, final DxfgDailyCandle nObject) {
-    cleanNativeObject(nObject);
+  public void fillNative(final DailyCandle jObject, final DxfgDailyCandle nObject) {
+    cleanNative(nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setEventTime(jObject.getEventTime());
     nObject.setIndex(jObject.getIndex());
@@ -39,23 +39,23 @@ public class DailyCandleMapper extends EventMapper<DailyCandle, DxfgDailyCandle>
     nObject.setAskVolume(jObject.getAskVolumeAsDouble());
     nObject.setImpVolatility(jObject.getImpVolatility());
     nObject.setOpenInterest(jObject.getOpenInterestAsDouble());
-    nObject.setCandleSymbol(this.candleSymbolMapper.toNativeObject(jObject.getEventSymbol()));
+    nObject.setCandleSymbol(this.candleSymbolMapper.toNative(jObject.getEventSymbol()));
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgDailyCandle nObject) {
+  public void cleanNative(final DxfgDailyCandle nObject) {
     this.candleSymbolMapper.release(nObject.getCandleSymbol());
   }
 
   @Override
-  public DailyCandle toJavaObject(final DxfgDailyCandle nObject) {
+  public DailyCandle toJava(final DxfgDailyCandle nObject) {
     final DailyCandle jObject = new DailyCandle();
-    fillJavaObject(nObject, jObject);
+    fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgDailyCandle nObject, final DailyCandle jObject) {
+  public void fillJava(final DxfgDailyCandle nObject, final DailyCandle jObject) {
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setEventTime(nObject.getEventTime());
     jObject.setIndex(nObject.getIndex());
@@ -70,13 +70,13 @@ public class DailyCandleMapper extends EventMapper<DailyCandle, DxfgDailyCandle>
     jObject.setAskVolumeAsDouble(nObject.getAskVolume());
     jObject.setImpVolatility(nObject.getImpVolatility());
     jObject.setOpenInterestAsDouble(nObject.getOpenInterest());
-    jObject.setEventSymbol(this.candleSymbolMapper.toJavaObject(nObject.getCandleSymbol()));
+    jObject.setEventSymbol(this.candleSymbolMapper.toJava(nObject.getCandleSymbol()));
   }
 
   @Override
   public DxfgDailyCandle createNativeObject(final String symbol) {
     final DxfgDailyCandle nObject = createNativeObject();
-    nObject.setCandleSymbol(this.candleSymbolMapper.toNativeObject(CandleSymbol.valueOf(symbol)));
+    nObject.setCandleSymbol(this.candleSymbolMapper.toNative(CandleSymbol.valueOf(symbol)));
     return nObject;
   }
 }

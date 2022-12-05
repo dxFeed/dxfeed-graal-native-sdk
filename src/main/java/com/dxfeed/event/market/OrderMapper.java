@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgOrder;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -26,26 +27,26 @@ public class OrderMapper extends OrderAbstractMapper<Order, DxfgOrder> {
   }
 
   @Override
-  public void fillNativeObject(final Order jObject, final DxfgOrder nObject) {
-    super.fillNativeObject(jObject, nObject);
-    nObject.setMarketMaker(this.stringMapper.toNativeObject(jObject.getMarketMaker()));
+  public void fillNative(final Order jObject, final DxfgOrder nObject) {
+    super.fillNative(jObject, nObject);
+    nObject.setMarketMaker(this.stringMapper.toNative(jObject.getMarketMaker()));
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgOrder nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgOrder nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Order toJavaObject(final DxfgOrder nObject) {
+  public Order toJava(final DxfgOrder nObject) {
     final Order jObject = new Order();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgOrder nObject, final Order jObject) {
-    super.fillJavaObject(nObject, jObject);
-    jObject.setMarketMaker(this.stringMapper.toJavaObject(nObject.getMarketMaker()));
+  public void fillJava(final DxfgOrder nObject, final Order jObject) {
+    super.fillJava(nObject, jObject);
+    jObject.setMarketMaker(this.stringMapper.toJava(nObject.getMarketMaker()));
   }
 }

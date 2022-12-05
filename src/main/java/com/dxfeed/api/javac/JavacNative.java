@@ -1,9 +1,9 @@
 package com.dxfeed.api.javac;
 
+import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLER;
 import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLERS;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
-import com.dxfeed.api.NativeUtils;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -18,9 +18,9 @@ public class JavacNative {
   )
   public static int dxfg_JavaObjectHandler_release(
       final IsolateThread ignoredThread,
-      final JavaObjectHandler<?> javaObjectHandler
+      final JavaObjectHandler<Object> javaObjectHandler
   ) {
-    NativeUtils.release(javaObjectHandler);
+    MAPPER_JAVA_OBJECT_HANDLER.release(javaObjectHandler);
     return EXECUTE_SUCCESSFULLY;
   }
 

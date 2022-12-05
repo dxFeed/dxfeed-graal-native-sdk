@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTheoPrice;
 import com.dxfeed.event.option.TheoPrice;
@@ -23,8 +24,8 @@ public class TheoPriceMapper extends MarketEventMapper<TheoPrice, DxfgTheoPrice>
   }
 
   @Override
-  public void fillNativeObject(final TheoPrice jObject, final DxfgTheoPrice nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final TheoPrice jObject, final DxfgTheoPrice nObject) {
+    super.fillNative(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setPrice(jObject.getPrice());
@@ -36,20 +37,20 @@ public class TheoPriceMapper extends MarketEventMapper<TheoPrice, DxfgTheoPrice>
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgTheoPrice nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgTheoPrice nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public TheoPrice toJavaObject(final DxfgTheoPrice nObject) {
+  public TheoPrice toJava(final DxfgTheoPrice nObject) {
     final TheoPrice jObject = new TheoPrice();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgTheoPrice nObject, final TheoPrice jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgTheoPrice nObject, final TheoPrice jObject) {
+    super.fillJava(nObject, jObject);
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setIndex(nObject.getIndex());
     jObject.setPrice(nObject.getPrice());

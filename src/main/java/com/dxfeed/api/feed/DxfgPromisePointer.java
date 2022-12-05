@@ -6,6 +6,6 @@ import org.graalvm.nativeimage.c.struct.CPointerTo;
 
 @CContext(Directives.class)
 @CPointerTo(DxfgPromise.class)
-public interface DxfgPromisePointer extends CPointerOnPointer<DxfgPromise<?>> {
+public interface DxfgPromisePointer extends CPointerOnPointer<DxfgPromise> {
 
 }

@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgProfile;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -26,10 +27,10 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  public void fillNativeObject(final Profile jObject, final DxfgProfile nObject) {
-    super.fillNativeObject(jObject, nObject);
-    nObject.setDescription(this.stringMapper.toNativeObject(jObject.getDescription()));
-    nObject.setStatusReason(this.stringMapper.toNativeObject(jObject.getStatusReason()));
+  public void fillNative(final Profile jObject, final DxfgProfile nObject) {
+    super.fillNative(jObject, nObject);
+    nObject.setDescription(this.stringMapper.toNative(jObject.getDescription()));
+    nObject.setStatusReason(this.stringMapper.toNative(jObject.getStatusReason()));
     nObject.setHaltStartTime(jObject.getHaltStartTime());
     nObject.setHaltEndTime(jObject.getHaltEndTime());
     nObject.setHighLimitPrice(jObject.getHighLimitPrice());
@@ -40,24 +41,24 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgProfile nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgProfile nObject) {
+    super.cleanNative(nObject);
     this.stringMapper.release(nObject.getDescription());
     this.stringMapper.release(nObject.getStatusReason());
   }
 
   @Override
-  public Profile toJavaObject(final DxfgProfile nObject) {
+  public Profile toJava(final DxfgProfile nObject) {
     final Profile jObject = new Profile();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgProfile nObject, final Profile jObject) {
-    super.fillJavaObject(nObject, jObject);
-    jObject.setDescription(this.stringMapper.toJavaObject(nObject.getDescription()));
-    jObject.setStatusReason(this.stringMapper.toJavaObject(nObject.getStatusReason()));
+  public void fillJava(final DxfgProfile nObject, final Profile jObject) {
+    super.fillJava(nObject, jObject);
+    jObject.setDescription(this.stringMapper.toJava(nObject.getDescription()));
+    jObject.setStatusReason(this.stringMapper.toJava(nObject.getStatusReason()));
     jObject.setHaltStartTime(nObject.getHaltStartTime());
     jObject.setHaltEndTime(nObject.getHaltEndTime());
     jObject.setHighLimitPrice(nObject.getHighLimitPrice());

@@ -1,5 +1,6 @@
 package com.dxfeed.event.market;
 
+import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgUnderlying;
 import com.dxfeed.event.option.Underlying;
@@ -23,8 +24,8 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  public void fillNativeObject(final Underlying jObject, final DxfgUnderlying nObject) {
-    super.fillNativeObject(jObject, nObject);
+  public void fillNative(final Underlying jObject, final DxfgUnderlying nObject) {
+    super.fillNative(jObject, nObject);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setVolatility(jObject.getVolatility());
@@ -35,20 +36,20 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  protected void cleanNativeObject(final DxfgUnderlying nObject) {
-    super.cleanNativeObject(nObject);
+  public void cleanNative(final DxfgUnderlying nObject) {
+    super.cleanNative(nObject);
   }
 
   @Override
-  public Underlying toJavaObject(final DxfgUnderlying nObject) {
+  public Underlying toJava(final DxfgUnderlying nObject) {
     final Underlying jObject = new Underlying();
-    fillJavaObject(nObject, jObject);
+    this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJavaObject(final DxfgUnderlying nObject, final Underlying jObject) {
-    super.fillJavaObject(nObject, jObject);
+  public void fillJava(final DxfgUnderlying nObject, final Underlying jObject) {
+    super.fillJava(nObject, jObject);
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setIndex(nObject.getIndex());
     jObject.setVolatility(nObject.getVolatility());

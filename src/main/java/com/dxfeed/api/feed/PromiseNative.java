@@ -3,11 +3,14 @@ package com.dxfeed.api.feed;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
 import static com.dxfeed.api.NativeUtils.MAPPER_EXCEPTION;
+import static com.dxfeed.api.NativeUtils.MAPPER_EXECUTOR;
+import static com.dxfeed.api.NativeUtils.MAPPER_FEED;
+import static com.dxfeed.api.NativeUtils.MAPPER_INDEXED_EVENT_SOURCE;
+import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLER;
+import static com.dxfeed.api.NativeUtils.MAPPER_PROMISE;
 import static com.dxfeed.api.NativeUtils.MAPPER_PROMISES;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOLS;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
-import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.events.DxfgEventClazz;
@@ -25,10 +28,10 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
+import com.dxfeed.promise.Promise;
 import com.dxfeed.promise.PromiseHandler;
 import com.dxfeed.promise.Promises;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -43,16 +46,16 @@ public class PromiseNative {
       name = "dxfg_DXFeed_getLastEventPromise",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<? extends LastingEvent<?>> dxfg_DXFeed_getLastEventPromise(
+  public static DxfgPromise dxfg_DXFeed_getLastEventPromise(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventClazz dxfgClazz,
       final DxfgSymbol dxfgSymbol
   ) {
-    return newJavaObjectHandler(
-        toJava(feed).getLastEventPromise(
+    return MAPPER_PROMISE.toNative(
+        MAPPER_FEED.toJava(feed).getLastEventPromise(
             (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol)
+            MAPPER_SYMBOL.toJava(dxfgSymbol)
         )
     );
   }
@@ -67,7 +70,7 @@ public class PromiseNative {
       final DxfgEventClazz dxfgClazz,
       final DxfgSymbolList dxfgSymbols
   ) {
-    final var eventsPromises = toJava(feed).getLastEventsPromises(
+    final var eventsPromises = MAPPER_FEED.toJava(feed).getLastEventsPromises(
         (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
         MAPPER_SYMBOLS.toJavaList(dxfgSymbols)
     );
@@ -78,18 +81,18 @@ public class PromiseNative {
       name = "dxfg_DXFeed_getIndexedEventsPromise",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<List<? extends IndexedEvent<?>>> dxfg_DXFeed_getIndexedEventsPromise(
+  public static DxfgPromise dxfg_DXFeed_getIndexedEventsPromise(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventClazz dxfgClazz,
       final DxfgSymbol dxfgSymbol,
       final DxfgIndexedEventSource source
   ) {
-    return newJavaObjectHandler(
-        toJava(feed).getIndexedEventsPromise(
+    return MAPPER_PROMISE.toNative(
+        MAPPER_FEED.toJava(feed).getIndexedEventsPromise(
             (Class<? extends IndexedEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
-            toJava(source)
+            MAPPER_SYMBOL.toJava(dxfgSymbol),
+            MAPPER_INDEXED_EVENT_SOURCE.toJava(source)
         )
     );
   }
@@ -98,7 +101,7 @@ public class PromiseNative {
       name = "dxfg_DXFeed_getTimeSeriesPromise",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<List<? extends TimeSeriesEvent<?>>> dxfg_DXFeed_getTimeSeriesPromise(
+  public static DxfgPromise dxfg_DXFeed_getTimeSeriesPromise(
       final IsolateThread ignoredThread,
       final DxfgFeed feed,
       final DxfgEventClazz dxfgClazz,
@@ -106,10 +109,10 @@ public class PromiseNative {
       final long fromTime,
       final long toTime
   ) {
-    return newJavaObjectHandler(
-        toJava(feed).getTimeSeriesPromise(
+    return MAPPER_PROMISE.toNative(
+        MAPPER_FEED.toJava(feed).getTimeSeriesPromise(
             (Class<? extends TimeSeriesEvent<?>>) dxfgClazz.clazz,
-            MAPPER_SYMBOL.toJavaObject(dxfgSymbol),
+            MAPPER_SYMBOL.toJava(dxfgSymbol),
             fromTime,
             toTime
         )
@@ -120,11 +123,13 @@ public class PromiseNative {
       name = "dxfg_Promises_allOf",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<Void> dxfg_Promises_allOf(
+  public static DxfgPromise dxfg_Promises_allOf(
       final IsolateThread ignoredThread,
       final DxfgPromiseList dxfgPromiseList
   ) {
-    return newJavaObjectHandler(Promises.allOf(MAPPER_PROMISES.toJavaList(dxfgPromiseList)));
+    return MAPPER_PROMISE.toNative(
+        Promises.allOf(MAPPER_PROMISES.toJavaList(dxfgPromiseList))
+    );
   }
 
   @CEntryPoint(
@@ -133,9 +138,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_isDone(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return toJava(dxfgPromise).isDone() ? 1 : 0;
+    return MAPPER_PROMISE.toJava(dxfgPromise).isDone() ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -144,9 +149,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_hasResult(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return toJava(dxfgPromise).hasResult() ? 1 : 0;
+    return MAPPER_PROMISE.toJava(dxfgPromise).hasResult() ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -155,9 +160,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_hasException(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return toJava(dxfgPromise).hasException() ? 1 : 0;
+    return MAPPER_PROMISE.toJava(dxfgPromise).hasException() ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -166,9 +171,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_isCancelled(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return toJava(dxfgPromise).isCancelled() ? 1 : 0;
+    return MAPPER_PROMISE.toJava(dxfgPromise).isCancelled() ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -177,9 +182,11 @@ public class PromiseNative {
   )
   public static DxfgEventType dxfg_Promise_EventType_getResult(
       final IsolateThread ignoredThread,
-      final DxfgPromise<? extends EventType<?>> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return MAPPER_EVENT.toNativeObject(toJava(dxfgPromise).getResult());
+    return MAPPER_EVENT.toNative(
+        (EventType<?>) MAPPER_PROMISE.toJava(dxfgPromise).getResult()
+    );
   }
 
   @CEntryPoint(
@@ -188,9 +195,11 @@ public class PromiseNative {
   )
   public static DxfgEventTypeList dxfg_Promise_List_EventType_getResult(
       final IsolateThread ignoredThread,
-      final DxfgPromise<List<EventType<?>>> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return MAPPER_EVENTS.toNativeList(toJava(dxfgPromise).getResult());
+    return MAPPER_EVENTS.toNativeList(
+        (Collection<? extends EventType<?>>) MAPPER_PROMISE.toJava(dxfgPromise).getResult()
+    );
   }
 
   @CEntryPoint(
@@ -199,9 +208,9 @@ public class PromiseNative {
   )
   public static DxfgException dxfg_Promise_getException(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    return MAPPER_EXCEPTION.toNativeObject(toJava(dxfgPromise).getException());
+    return MAPPER_EXCEPTION.toNative(MAPPER_PROMISE.toJava(dxfgPromise).getException());
   }
 
   @CEntryPoint(
@@ -210,9 +219,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_await(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    toJava(dxfgPromise).await();
+    MAPPER_PROMISE.toJava(dxfgPromise).await();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -222,10 +231,10 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_await(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final int timeoutInMilliseconds
   ) {
-    toJava(dxfgPromise).await(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+    MAPPER_PROMISE.toJava(dxfgPromise).await(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -235,10 +244,11 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_awaitWithoutException(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final int timeoutInMilliseconds
   ) {
-    toJava(dxfgPromise).awaitWithoutException(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+    MAPPER_PROMISE.toJava(dxfgPromise)
+        .awaitWithoutException(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -248,9 +258,9 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_cancel(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise
+      final DxfgPromise dxfgPromise
   ) {
-    toJava(dxfgPromise).cancel();
+    MAPPER_PROMISE.toJava(dxfgPromise).cancel();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -260,10 +270,11 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_List_EventType_complete(
       final IsolateThread ignoredThread,
-      final DxfgPromise<Collection<EventType<?>>> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgEventTypeList dxfgEventTypeList
   ) {
-    toJava(dxfgPromise).complete(MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
+    ((Promise<Collection<EventType<?>>>) MAPPER_PROMISE.toJava(dxfgPromise))
+        .complete(MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -273,10 +284,11 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_EventType_complete(
       final IsolateThread ignoredThread,
-      final DxfgPromise<EventType<?>> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgEventType dxfgEventType
   ) {
-    toJava(dxfgPromise).complete(MAPPER_EVENT.toJavaObject(dxfgEventType));
+    ((Promise<EventType<?>>) MAPPER_PROMISE.toJava(dxfgPromise))
+        .complete(MAPPER_EVENT.toJava(dxfgEventType));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -286,10 +298,11 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_completeExceptionally(
       final IsolateThread ignoredThread,
-      final DxfgPromise<EventType<?>> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgException dxfgException
   ) {
-    toJava(dxfgPromise).completeExceptionally(MAPPER_EXCEPTION.toJavaObject(dxfgException));
+    MAPPER_PROMISE.toJava(dxfgPromise)
+        .completeExceptionally(MAPPER_EXCEPTION.toJava(dxfgException));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -299,11 +312,11 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_whenDone(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgPromiseHandlerFunction dxfgPromiseHandlerFunction,
       final VoidPointer userData
   ) {
-    toJava(dxfgPromise).whenDone(
+    MAPPER_PROMISE.toJava(dxfgPromise).whenDone(
         (PromiseHandler<Object>) promise -> dxfgPromiseHandlerFunction.invoke(
             CurrentIsolate.getCurrentThread(),
             dxfgPromise,
@@ -319,18 +332,18 @@ public class PromiseNative {
   )
   public static int dxfg_Promise_whenDoneAsync(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgPromiseHandlerFunction dxfgPromiseHandlerFunction,
       final VoidPointer userData,
       final DxfgExecuter dxfgExecuter
   ) {
-    toJava(dxfgPromise).whenDoneAsync(
+    MAPPER_PROMISE.toJava(dxfgPromise).whenDoneAsync(
         (PromiseHandler<Object>) promise -> dxfgPromiseHandlerFunction.invoke(
             CurrentIsolate.getCurrentThread(),
             dxfgPromise,
             userData
         ),
-        toJava(dxfgExecuter)
+        MAPPER_EXECUTOR.toJava(dxfgExecuter)
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -339,13 +352,15 @@ public class PromiseNative {
       name = "dxfg_Promise_completed",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<?> dxfg_Promise_completed(
+  public static DxfgPromise dxfg_Promise_completed(
       final IsolateThread ignoredThread,
-      final DxfgPromise<?> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final JavaObjectHandler<?> javaObjectHandler
   ) {
-    return newJavaObjectHandler(
-        toJava(dxfgPromise).completed(toJava(javaObjectHandler))
+    return MAPPER_PROMISE.toNative(
+        MAPPER_PROMISE.toJava(dxfgPromise).completed(
+            MAPPER_JAVA_OBJECT_HANDLER.toJava((JavaObjectHandler<Object>) javaObjectHandler)
+        )
     );
   }
 
@@ -353,13 +368,13 @@ public class PromiseNative {
       name = "dxfg_Promise_failed",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgPromise<?> dxfg_Promise_failed(
+  public static DxfgPromise dxfg_Promise_failed(
       final IsolateThread ignoredThread,
-      final DxfgPromise<EventType<?>> dxfgPromise,
+      final DxfgPromise dxfgPromise,
       final DxfgException dxfgException
   ) {
-    return newJavaObjectHandler(
-        toJava(dxfgPromise).completed(MAPPER_EXCEPTION.toJavaObject(dxfgException))
+    return MAPPER_PROMISE.toNative(
+        MAPPER_PROMISE.toJava(dxfgPromise).completed(MAPPER_EXCEPTION.toJava(dxfgException))
     );
   }
 }

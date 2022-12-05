@@ -1,9 +1,12 @@
 package com.dxfeed.api.endpoint;
 
-import static com.dxfeed.api.NativeUtils.MAPPER_ENEVET_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT;
+import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER;
+import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
+import static com.dxfeed.api.NativeUtils.MAPPER_EXECUTOR;
+import static com.dxfeed.api.NativeUtils.MAPPER_FEED;
+import static com.dxfeed.api.NativeUtils.MAPPER_PUBLISHER;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
-import static com.dxfeed.api.NativeUtils.newJavaObjectHandler;
-import static com.dxfeed.api.NativeUtils.toJava;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.DXEndpoint;
@@ -14,7 +17,6 @@ import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.javac.DxfgExecuter;
 import com.dxfeed.api.publisher.DxfgPublisher;
-import java.beans.PropertyChangeListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +37,7 @@ public final class EndpointNative {
   public static DxfgEndpoint dxfg_DXEndpoint_getInstance(
       final IsolateThread ignoredThread
   ) {
-    return newJavaObjectHandler(DXEndpoint.getInstance());
+    return MAPPER_ENDPOINT.toNative(DXEndpoint.getInstance());
   }
 
   @CEntryPoint(
@@ -46,7 +48,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpointRole dxfgEndpointRole
   ) {
-    return newJavaObjectHandler(DXEndpoint.create(dxfgEndpointRole.qdRole));
+    return MAPPER_ENDPOINT.toNative(DXEndpoint.create(dxfgEndpointRole.qdRole));
   }
 
   @CEntryPoint(
@@ -56,7 +58,7 @@ public final class EndpointNative {
   public static DxfgEndpoint dxfg_DXEndpoint_create(
       final IsolateThread ignoredThread
   ) {
-    return newJavaObjectHandler(DXEndpoint.create());
+    return MAPPER_ENDPOINT.toNative(DXEndpoint.create());
   }
 
   @CEntryPoint(
@@ -67,7 +69,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpointRole dxfgEndpointRole
   ) {
-    return newJavaObjectHandler(DXEndpoint.create(dxfgEndpointRole.qdRole));
+    return MAPPER_ENDPOINT.toNative(DXEndpoint.create(dxfgEndpointRole.qdRole));
   }
 
   @CEntryPoint(
@@ -78,7 +80,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJava(dxfgEndpoint).close();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).close();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -90,7 +92,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    toJava(dxfgEndpoint).closeAndAwaitTermination();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).closeAndAwaitTermination();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -102,7 +104,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return DxfgEndpointRole.of(toJava(dxfgEndpoint).getRole()).getCValue();
+    return DxfgEndpointRole.of(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getRole()).getCValue();
   }
 
   @CEntryPoint(
@@ -114,7 +116,7 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer user
   ) {
-    toJava(dxfgEndpoint).user(MAPPER_STRING.toJavaObject(user));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).user(MAPPER_STRING.toJava(user));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -127,7 +129,7 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer password
   ) {
-    toJava(dxfgEndpoint).password(MAPPER_STRING.toJavaObject(password));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).password(MAPPER_STRING.toJava(password));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -140,7 +142,7 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer address
   ) {
-    toJava(dxfgEndpoint).connect(MAPPER_STRING.toJavaObject(address));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).connect(MAPPER_STRING.toJava(address));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -152,7 +154,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJava(dxfgEndpoint).reconnect();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).reconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -164,7 +166,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJava(dxfgEndpoint).disconnect();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).disconnect();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -176,7 +178,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    toJava(dxfgEndpoint).disconnectAndClear();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).disconnectAndClear();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -188,7 +190,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    toJava(dxfgEndpoint).awaitProcessed();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).awaitProcessed();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -200,7 +202,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) throws InterruptedException {
-    toJava(dxfgEndpoint).awaitNotConnected();
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).awaitNotConnected();
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -212,7 +214,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return DxfgEndpointState.of(toJava(dxfgEndpoint).getState()).getCValue();
+    return DxfgEndpointState.of(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getState()).getCValue();
   }
 
   @CEntryPoint(
@@ -224,12 +226,14 @@ public final class EndpointNative {
       final DxfgEndpointStateChangeListenerFunction userFunc,
       final VoidPointer userData
   ) {
-    return newJavaObjectHandler((PropertyChangeListener) changeEvent -> userFunc.invoke(
-        CurrentIsolate.getCurrentThread(),
-        DxfgEndpointState.of((State) changeEvent.getOldValue()),
-        DxfgEndpointState.of((State) changeEvent.getNewValue()),
-        userData
-    ));
+    return MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toNative(
+        changeEvent -> userFunc.invoke(
+            CurrentIsolate.getCurrentThread(),
+            DxfgEndpointState.of((State) changeEvent.getOldValue()),
+            DxfgEndpointState.of((State) changeEvent.getNewValue()),
+            userData
+        )
+    );
   }
 
   @CEntryPoint(
@@ -241,7 +245,8 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgEndpointStateChangeListener listener
   ) {
-    toJava(dxfgEndpoint).addStateChangeListener(toJava(listener));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+        .addStateChangeListener(MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -254,7 +259,8 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgEndpointStateChangeListener listener
   ) {
-    toJava(dxfgEndpoint).removeStateChangeListener(toJava(listener));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+        .removeStateChangeListener(MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -266,7 +272,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return newJavaObjectHandler(toJava(dxfgEndpoint).getFeed());
+    return MAPPER_FEED.toNative(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getFeed());
   }
 
   @CEntryPoint(
@@ -277,7 +283,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return newJavaObjectHandler(toJava(dxfgEndpoint).getPublisher());
+    return MAPPER_PUBLISHER.toNative(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getPublisher());
   }
 
   @CEntryPoint(
@@ -289,10 +295,10 @@ public final class EndpointNative {
       final int nThreads,
       final CCharPointer name
   ) {
-    return newJavaObjectHandler(
+    return MAPPER_EXECUTOR.toNative(
         Executors.newFixedThreadPool(
             nThreads,
-            new PoolThreadFactory(MAPPER_STRING.toJavaObject(name))
+            new PoolThreadFactory(MAPPER_STRING.toJava(name))
         )
     );
   }
@@ -306,7 +312,7 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final DxfgExecuter dxfgExecuter
   ) {
-    toJava(dxfgEndpoint).executor(toJava(dxfgExecuter));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).executor(MAPPER_EXECUTOR.toJava(dxfgExecuter));
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -318,7 +324,7 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return MAPPER_ENEVET_TYPES.toNativeList(toJava(dxfgEndpoint).getEventTypes());
+    return MAPPER_EVENT_TYPES.toNativeList(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getEventTypes());
   }
 
   private static class PoolThreadFactory implements ThreadFactory {
