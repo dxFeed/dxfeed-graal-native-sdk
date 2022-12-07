@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgQuote;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -43,7 +43,7 @@ public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
   }
 
   @Override
-  public Quote toJava(final DxfgQuote nObject) {
+  protected Quote doToJava(final DxfgQuote nObject) {
     final Quote jObject = new Quote();
     this.fillJava(nObject, jObject);
     return jObject;

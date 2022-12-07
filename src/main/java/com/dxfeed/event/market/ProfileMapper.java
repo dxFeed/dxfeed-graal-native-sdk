@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgProfile;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -48,7 +48,7 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  public Profile toJava(final DxfgProfile nObject) {
+  protected Profile doToJava(final DxfgProfile nObject) {
     final Profile jObject = new Profile();
     this.fillJava(nObject, jObject);
     return jObject;

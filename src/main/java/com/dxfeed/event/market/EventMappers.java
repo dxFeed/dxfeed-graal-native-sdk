@@ -19,7 +19,7 @@ import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_TRADE;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_TRADE_ETH;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_UNDERLYING;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.event.EventType;
@@ -137,10 +137,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public EventType<?> toJava(final DxfgEventType nObject) {
-    if (nObject.isNull()) {
-      return null;
-    }
+  protected EventType<?> doToJava(final DxfgEventType nObject) {
     final DxfgEventClazz key = DxfgEventClazz.fromCValue(nObject.getClazz());
     return this.mapperByDxfgEventType.get(key).toJavaObjectWithCast(nObject);
   }

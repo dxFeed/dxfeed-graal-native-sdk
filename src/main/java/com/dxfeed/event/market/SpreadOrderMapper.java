@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSpreadOrder;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -39,7 +39,7 @@ public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpre
   }
 
   @Override
-  public SpreadOrder toJava(final DxfgSpreadOrder nObject) {
+  protected SpreadOrder doToJava(final DxfgSpreadOrder nObject) {
     final SpreadOrder jObject = new SpreadOrder();
     this.fillJava(nObject, jObject);
     return jObject;

@@ -1,6 +1,5 @@
 package com.dxfeed.api.maper;
 
-import com.dxfeed.api.Mapper;
 import com.dxfeed.api.exception.DxfgException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -45,7 +44,7 @@ public class ExceptionMapper extends Mapper<Throwable, DxfgException> {
   }
 
   @Override
-  public Throwable toJava(final DxfgException nObject) {
+  protected Throwable doToJava(final DxfgException nObject) {
     throw new IllegalStateException();
   }
 

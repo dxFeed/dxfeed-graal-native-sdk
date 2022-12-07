@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgUnderlying;
 import com.dxfeed.event.option.Underlying;
@@ -41,7 +41,7 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  public Underlying toJava(final DxfgUnderlying nObject) {
+  protected Underlying doToJava(final DxfgUnderlying nObject) {
     final Underlying jObject = new Underlying();
     this.fillJava(nObject, jObject);
     return jObject;

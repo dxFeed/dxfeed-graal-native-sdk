@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgOrderBase;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -31,7 +31,7 @@ public class OrderBaseMapper extends OrderAbstractMapper<OrderBase, DxfgOrderBas
   }
 
   @Override
-  public OrderBase toJava(final DxfgOrderBase nObject) {
+  protected OrderBase doToJava(final DxfgOrderBase nObject) {
     final OrderBase jObject = new OrderBase();
     this.fillJava(nObject, jObject);
     return jObject;

@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgConfiguration;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.event.misc.Configuration;
@@ -41,7 +41,7 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
   }
 
   @Override
-  public Configuration toJava(final DxfgConfiguration nObject) {
+  protected Configuration doToJava(final DxfgConfiguration nObject) {
     final Configuration jObject = new Configuration();
     fillJava(nObject, jObject);
     return jObject;

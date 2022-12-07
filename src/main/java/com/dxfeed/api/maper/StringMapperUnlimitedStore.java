@@ -1,6 +1,5 @@
 package com.dxfeed.api.maper;
 
-import com.dxfeed.api.Mapper;
 import com.oracle.svm.core.SubstrateUtil;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -46,10 +45,7 @@ public class StringMapperUnlimitedStore extends Mapper<String, CCharPointer> {
   }
 
   @Override
-  public String toJava(final CCharPointer nObject) {
-    if (nObject.isNull()) {
-      return null;
-    }
+  protected String doToJava(final CCharPointer nObject) {
     return CTypeConversion.toJavaString(
         nObject,
         SubstrateUtil.strlen(nObject),

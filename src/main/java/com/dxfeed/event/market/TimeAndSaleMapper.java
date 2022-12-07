@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTimeAndSale;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -54,7 +54,7 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
   }
 
   @Override
-  public TimeAndSale toJava(final DxfgTimeAndSale nObject) {
+  protected TimeAndSale doToJava(final DxfgTimeAndSale nObject) {
     final TimeAndSale jObject = new TimeAndSale();
     this.fillJava(nObject, jObject);
     return jObject;

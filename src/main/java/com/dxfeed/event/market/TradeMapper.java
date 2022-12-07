@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTrade;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -31,7 +31,7 @@ public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
   }
 
   @Override
-  public Trade toJava(final DxfgTrade nObject) {
+  protected Trade doToJava(final DxfgTrade nObject) {
     final Trade jObject = new Trade();
     this.fillJava(nObject, jObject);
     return jObject;

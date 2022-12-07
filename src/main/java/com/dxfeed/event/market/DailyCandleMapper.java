@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgDailyCandle;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.symbol.DxfgSymbol;
@@ -22,7 +22,7 @@ public class DailyCandleMapper extends CandleMapper<DailyCandle, DxfgDailyCandle
   }
 
   @Override
-  public DailyCandle toJava(final DxfgDailyCandle nObject) {
+  protected DailyCandle doToJava(final DxfgDailyCandle nObject) {
     final DailyCandle jObject = new DailyCandle();
     fillJava(nObject, jObject);
     return jObject;

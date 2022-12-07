@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSummary;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -43,7 +43,7 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  public Summary toJava(final DxfgSummary nObject) {
+  protected Summary doToJava(final DxfgSummary nObject) {
     final Summary jObject = new Summary();
     this.fillJava(nObject, jObject);
     return jObject;

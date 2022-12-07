@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTheoPrice;
 import com.dxfeed.event.option.TheoPrice;
@@ -42,7 +42,7 @@ public class TheoPriceMapper extends MarketEventMapper<TheoPrice, DxfgTheoPrice>
   }
 
   @Override
-  public TheoPrice toJava(final DxfgTheoPrice nObject) {
+  protected TheoPrice doToJava(final DxfgTheoPrice nObject) {
     final TheoPrice jObject = new TheoPrice();
     this.fillJava(nObject, jObject);
     return jObject;

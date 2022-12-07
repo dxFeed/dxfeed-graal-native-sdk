@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgEventTypePointer;

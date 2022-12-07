@@ -1,6 +1,6 @@
 package com.dxfeed.api.symbol;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
 import com.dxfeed.api.osub.TimeSeriesSubscriptionSymbol;
 import com.dxfeed.api.osub.WildcardSymbol;
@@ -98,10 +98,7 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
   }
 
   @Override
-  public Object toJava(final DxfgSymbol nObject) {
-    if (nObject.isNull()) {
-      return null;
-    }
+  protected Object doToJava(final DxfgSymbol nObject) {
     switch (DxfgSymbolType.fromCValue(nObject.getType())) {
       case STRING:
         return this.stringMapper.toJava(((DxfgStringSymbol) nObject).getSymbol());

@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgCandle;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.symbol.DxfgCandleSymbol;
@@ -53,7 +53,7 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
   }
 
   @Override
-  public T toJava(final V nObject) {
+  protected T doToJava(final V nObject) {
     final T jObject = (T) new Candle();
     fillJava(nObject, jObject);
     return jObject;

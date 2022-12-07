@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgTradeETH;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -31,7 +31,7 @@ public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
   }
 
   @Override
-  public TradeETH toJava(final DxfgTradeETH nObject) {
+  protected TradeETH doToJava(final DxfgTradeETH nObject) {
     final TradeETH jObject = new TradeETH();
     this.fillJava(nObject, jObject);
     return jObject;

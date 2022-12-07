@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgMessage;
 import com.dxfeed.event.misc.Message;
@@ -38,7 +38,7 @@ public class MessageMapper extends EventMapper<Message, DxfgMessage> {
   }
 
   @Override
-  public Message toJava(final DxfgMessage nObject) {
+  protected Message doToJava(final DxfgMessage nObject) {
     final Message jObject = new Message();
     fillJava(nObject, jObject);
     return jObject;

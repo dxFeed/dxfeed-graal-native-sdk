@@ -1,6 +1,6 @@
 package com.dxfeed.api.source;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.market.OrderSource;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -45,7 +45,7 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
   }
 
   @Override
-  public IndexedEventSource toJava(final DxfgIndexedEventSource nObject) {
+  protected IndexedEventSource doToJava(final DxfgIndexedEventSource nObject) {
     switch (DxfgIndexedEventSourceType.fromCValue(nObject.getType())) {
       case INDEXED_EVENT_SOURCE:
         return new IndexedEventSource(

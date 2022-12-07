@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgGreeks;
 import com.dxfeed.event.option.Greeks;
@@ -43,7 +43,7 @@ public class GreeksMapper extends MarketEventMapper<Greeks, DxfgGreeks> {
   }
 
   @Override
-  public Greeks toJava(final DxfgGreeks nObject) {
+  protected Greeks doToJava(final DxfgGreeks nObject) {
     final Greeks jObject = new Greeks();
     fillJava(nObject, jObject);
     return jObject;

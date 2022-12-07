@@ -1,6 +1,6 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.Mapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgSeries;
 import com.dxfeed.event.option.Series;
@@ -45,7 +45,7 @@ public class SeriesMapper extends MarketEventMapper<Series, DxfgSeries> {
   }
 
   @Override
-  public Series toJava(final DxfgSeries nObject) {
+  protected Series doToJava(final DxfgSeries nObject) {
     final Series jObject = new Series();
     this.fillJava(nObject, jObject);
     return jObject;

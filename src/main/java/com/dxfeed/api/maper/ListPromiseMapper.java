@@ -2,7 +2,6 @@ package com.dxfeed.api.maper;
 
 import static com.dxfeed.api.NativeUtils.MAPPER_PROMISE;
 
-import com.dxfeed.api.Mapper;
 import com.dxfeed.api.feed.DxfgPromise;
 import com.dxfeed.api.feed.DxfgPromiseList;
 import com.dxfeed.api.feed.DxfgPromisePointer;

@@ -1,6 +1,5 @@
 package com.dxfeed.api.maper;
 
-import com.dxfeed.api.Mapper;
 import com.dxfeed.api.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -31,7 +30,7 @@ public class JavaObjectHandlerMapper<T, V extends JavaObjectHandler<T>> extends 
   }
 
   @Override
-  public T toJava(final V nObject) {
+  protected T doToJava(final V nObject) {
     return ObjectHandles.getGlobal().get(nObject.getJavaObjectHandler());
   }
 

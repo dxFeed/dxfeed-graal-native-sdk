@@ -1,6 +1,5 @@
 package com.dxfeed.api.maper;
 
-import com.dxfeed.api.Mapper;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerPointer;
 import com.dxfeed.api.javac.JavaObjectHandler;

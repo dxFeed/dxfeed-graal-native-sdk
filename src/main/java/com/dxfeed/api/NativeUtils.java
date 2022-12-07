@@ -31,6 +31,7 @@ import com.dxfeed.api.maper.JavaObjectHandlerMapper;
 import com.dxfeed.api.maper.ListJavaObjectHandlerMapper;
 import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.api.maper.ListPromiseMapper;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.maper.ObservableSubscriptionChangeListenerMapper;
 import com.dxfeed.api.maper.ObservableSubscriptionMapper;
 import com.dxfeed.api.maper.PromiseMapper;
