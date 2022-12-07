@@ -3,39 +3,54 @@
   "includes":[
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.connector.codec.CodecFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataScheme\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.HistorySubscriptionFilter\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.ng.RecordMappingFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.MessageConnectorFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.rmi.task.RMILoadBalancerFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.dxfeed.api.DXEndpoint$Builder\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"
+    },
+    {
+      "pattern":".*\\.xml$"
+    },
+    {
+      "pattern":".*\\.xsd$"
+    },
+    {
+      "pattern":".*\\.properties$"
+    },
+    {
+      "pattern":".*\\.dat$"
+    },
+    {
+      "pattern":".*\\.MF$"
     }
   ]},
   "bundles":[]
