@@ -37,7 +37,7 @@ public class JavaObjectHandlerMapper<T, V extends JavaObjectHandler<T>> extends 
 
   @Override
   public void fillJava(final V nObject, final T jObject) {
-    throw new IllegalStateException();
+    throw new IllegalStateException("The Java object does not support setters.");
   }
 
   protected int getSizeJavaObjectHandler() {

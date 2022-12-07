@@ -16,14 +16,14 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 import com.dxfeed.api.events.DxfgEventClazz;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
-import com.dxfeed.api.events.DxfgIndexedEventSource;
-import com.dxfeed.api.events.DxfgSymbol;
-import com.dxfeed.api.events.DxfgSymbolList;
 import com.dxfeed.api.exception.DxfgException;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.javac.DxfgExecuter;
 import com.dxfeed.api.javac.JavaObjectHandler;
+import com.dxfeed.api.source.DxfgIndexedEventSource;
+import com.dxfeed.api.symbol.DxfgSymbol;
+import com.dxfeed.api.symbol.DxfgSymbolList;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.LastingEvent;

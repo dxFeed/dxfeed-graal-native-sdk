@@ -13,6 +13,10 @@ import static org.graalvm.nativeimage.c.type.CTypeConversion.toJavaString;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.osub.WildcardSymbol;
+import com.dxfeed.api.source.DxfgIndexedEventSource;
+import com.dxfeed.api.symbol.DxfgSymbol;
+import com.dxfeed.api.symbol.DxfgSymbolList;
+import com.dxfeed.api.symbol.DxfgSymbolType;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
 import com.dxfeed.event.market.EventMappers;
@@ -135,6 +139,18 @@ public class EventsNative {
             ? IndexedEventSource.DEFAULT
             : OrderSource.valueOf(toJavaString(source))
     );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_IndexedEventSource_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_IndexedEventSource_release(
+      final IsolateThread ignoredThread,
+      final DxfgIndexedEventSource source
+  ) {
+    MAPPER_INDEXED_EVENT_SOURCE.release(source);
+    return EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(

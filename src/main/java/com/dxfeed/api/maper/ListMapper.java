@@ -1,4 +1,4 @@
-package com.dxfeed.event.market;
+package com.dxfeed.api.maper;
 
 import com.dxfeed.api.javac.CList;
 import com.dxfeed.api.javac.CPointerOnPointer;

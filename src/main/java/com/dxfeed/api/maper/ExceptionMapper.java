@@ -51,6 +51,6 @@ public class ExceptionMapper extends Mapper<Throwable, DxfgException> {
 
   @Override
   public void fillJava(final DxfgException nObject, final Throwable jObject) {
-    throw new IllegalStateException();
+    throw new IllegalStateException("The Java object does not support setters.");
   }
 }

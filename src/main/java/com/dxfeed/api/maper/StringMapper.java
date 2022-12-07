@@ -51,6 +51,6 @@ public class StringMapper extends Mapper<String, CCharPointer> {
 
   @Override
   public void fillJava(final CCharPointer nObject, final String jObject) {
-    throw new IllegalStateException();
+    throw new IllegalStateException("The Java object does not support setters.");
   }
 }

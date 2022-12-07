@@ -1,4 +1,4 @@
-package com.dxfeed.api.events;
+package com.dxfeed.api.symbol;
 
 import com.dxfeed.api.javac.CPointerOnPointer;
 import org.graalvm.nativeimage.c.CContext;

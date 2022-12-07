@@ -10,11 +10,7 @@ import com.dxfeed.api.events.DxfgEventClazzPointer;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgEventTypePointer;
-import com.dxfeed.api.events.DxfgIndexedEventSource;
 import com.dxfeed.api.events.DxfgObservableSubscriptionChangeListener;
-import com.dxfeed.api.events.DxfgSymbol;
-import com.dxfeed.api.events.DxfgSymbolList;
-import com.dxfeed.api.events.DxfgSymbolPointer;
 import com.dxfeed.api.exception.DxfgException;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.feed.DxfgPromise;
@@ -31,9 +27,10 @@ import com.dxfeed.api.maper.ExceptionMapper;
 import com.dxfeed.api.maper.ExecutorMapper;
 import com.dxfeed.api.maper.FeedEventListenerMapper;
 import com.dxfeed.api.maper.FeedMapper;
-import com.dxfeed.api.maper.IndexedEventSourceMapper;
 import com.dxfeed.api.maper.JavaObjectHandlerMapper;
 import com.dxfeed.api.maper.ListJavaObjectHandlerMapper;
+import com.dxfeed.api.maper.ListMapper;
+import com.dxfeed.api.maper.ListPromiseMapper;
 import com.dxfeed.api.maper.ObservableSubscriptionChangeListenerMapper;
 import com.dxfeed.api.maper.ObservableSubscriptionMapper;
 import com.dxfeed.api.maper.PromiseMapper;
@@ -47,27 +44,27 @@ import com.dxfeed.api.osub.ObservableSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.api.publisher.DxfgObservableSubscription;
 import com.dxfeed.api.publisher.DxfgPublisher;
+import com.dxfeed.api.source.DxfgIndexedEventSource;
+import com.dxfeed.api.source.IndexedEventSourceMapper;
 import com.dxfeed.api.subscription.DxfgFeedEventListener;
 import com.dxfeed.api.subscription.DxfgSubscription;
 import com.dxfeed.api.subscription.DxfgTimeSeriesSubscription;
+import com.dxfeed.api.symbol.DxfgSymbol;
+import com.dxfeed.api.symbol.DxfgSymbolList;
+import com.dxfeed.api.symbol.DxfgSymbolPointer;
+import com.dxfeed.api.symbol.ListSymbolMapper;
+import com.dxfeed.api.symbol.SymbolMapper;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.market.AnalyticOrderMapper;
-import com.dxfeed.event.market.CandleExchangeMapper;
 import com.dxfeed.event.market.CandleMapper;
-import com.dxfeed.event.market.CandlePeriodMapper;
-import com.dxfeed.event.market.CandlePriceLevelMapper;
-import com.dxfeed.event.market.CandleSymbolMapper;
 import com.dxfeed.event.market.ConfigurationMapper;
 import com.dxfeed.event.market.DailyCandleMapper;
 import com.dxfeed.event.market.EventMappers;
 import com.dxfeed.event.market.GreeksMapper;
 import com.dxfeed.event.market.ListEventMapper;
 import com.dxfeed.event.market.ListEventTypeMapper;
-import com.dxfeed.event.market.ListMapper;
-import com.dxfeed.event.market.ListPromiseMapper;
-import com.dxfeed.event.market.ListSymbolMapper;
 import com.dxfeed.event.market.MessageMapper;
 import com.dxfeed.event.market.OrderBaseMapper;
 import com.dxfeed.event.market.OrderMapper;
@@ -76,7 +73,6 @@ import com.dxfeed.event.market.QuoteMapper;
 import com.dxfeed.event.market.SeriesMapper;
 import com.dxfeed.event.market.SpreadOrderMapper;
 import com.dxfeed.event.market.SummaryMapper;
-import com.dxfeed.event.market.SymbolMapper;
 import com.dxfeed.event.market.TheoPriceMapper;
 import com.dxfeed.event.market.TimeAndSaleMapper;
 import com.dxfeed.event.market.TradeETHMapper;
@@ -124,13 +120,11 @@ public final class NativeUtils {
     MAPPER_STRING_UNLIMITED_STORE = new StringMapperUnlimitedStore();
     MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(3000);
     SingletonScheduledExecutorService.start(
-        () -> ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp(), 1000);
-    final CandleSymbolMapper candleSymbolMapper = new CandleSymbolMapper(
-        MAPPER_STRING_UNLIMITED_STORE,
-        new CandlePeriodMapper(MAPPER_STRING_CACHE_STORE),
-        new CandleExchangeMapper(),
-        new CandlePriceLevelMapper()
+        () -> ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp(),
+        1000
     );
+    MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING_UNLIMITED_STORE);
+    MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_INDEXED_EVENT_SOURCE);
     MAPPER_EVENT = new EventMappers(
         MAPPER_STRING_UNLIMITED_STORE,
         new QuoteMapper(MAPPER_STRING_UNLIMITED_STORE),
@@ -149,11 +143,10 @@ public final class NativeUtils {
         new GreeksMapper(MAPPER_STRING_UNLIMITED_STORE),
         new SummaryMapper(MAPPER_STRING_UNLIMITED_STORE),
         new ProfileMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new DailyCandleMapper(candleSymbolMapper),
-        new CandleMapper(candleSymbolMapper)
+        new DailyCandleMapper(MAPPER_SYMBOL),
+        new CandleMapper<>(MAPPER_SYMBOL)
     );
     MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
-    MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING_UNLIMITED_STORE);
     MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
     MAPPER_EVENT_TYPES = new ListEventTypeMapper();
     MAPPER_EXECUTOR = new ExecutorMapper();
@@ -168,7 +161,6 @@ public final class NativeUtils {
     MAPPER_TIME_SERIES_SUBSCRIPTION = new TimeSeriesSubscriptionMapper();
     MAPPER_JAVA_OBJECT_HANDLER = new JavaObjectHandlerMapper<>();
     MAPPER_JAVA_OBJECT_HANDLERS = new ListJavaObjectHandlerMapper(MAPPER_JAVA_OBJECT_HANDLER);
-    MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper();
     MAPPER_FEED = new FeedMapper();
     MAPPER_FEED_EVENT_LISTENER = new FeedEventListenerMapper();
     MAPPER_PROMISES = new ListPromiseMapper(MAPPER_PROMISE);

@@ -1,5 +1,6 @@
 package com.dxfeed.api.events;
 
+import com.dxfeed.api.symbol.DxfgSymbolList;
 import com.oracle.svm.core.c.CTypedef;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;

@@ -12,25 +12,59 @@ extern "C" {
 
 #include "dxfg_javac.h"
 
+typedef enum dxfg_indexed_event_source_type_t {
+    INDEXED_EVENT_SOURCE = 0,
+    ORDER_SOURCE
+} dxfg_indexed_event_source_type_t;
+
+typedef struct dxfg_indexed_event_source_t {
+    dxfg_indexed_event_source_type_t type;
+    int32_t id;
+    const char *name;
+} dxfg_indexed_event_source_t;
+
 typedef enum dxfg_symbol_type_t {
     STRING = 0,
     CANDLE,
-    WILDCARD
+    WILDCARD,
+    INDEXED_EVENT_SUBSCRIPTION,
+    TIME_SERIES_SUBSCRIPTION
 } dxfg_symbol_type_t;
 
 typedef struct dxfg_symbol_t {
-    dxfg_symbol_type_t symbol_type;
-    const char *symbol;
+    dxfg_symbol_type_t type;
 } dxfg_symbol_t;
+
+typedef struct dxfg_string_symbol_t {
+    dxfg_symbol_t supper;
+    const char *symbol;
+} dxfg_string_symbol_t;
+
+typedef struct dxfg_wildcard_symbol_t {
+    dxfg_symbol_t supper;
+} dxfg_wildcard_symbol_t;
+
+typedef struct dxfg_candle_symbol_t {
+    dxfg_symbol_t supper;
+    const char *symbol;
+} dxfg_candle_symbol_t;
+
+typedef struct dxfg_indexed_event_subscription_symbol_t {
+    dxfg_symbol_t supper;
+    dxfg_symbol_t *symbol;
+    dxfg_indexed_event_source_t* source;
+} dxfg_indexed_event_subscription_symbol_t;
+
+typedef struct dxfg_time_series_subscription_symbol_t {
+    dxfg_symbol_t supper;
+    dxfg_symbol_t *symbol;
+    int64_t from_time;
+} dxfg_time_series_subscription_symbol_t;
 
 typedef struct dxfg_symbol_list {
     int32_t size;
     dxfg_symbol_t **elements;
 } dxfg_symbol_list;
-
-typedef struct dxfg_indexed_event_source {
-    dxfg_java_object_handler handler;
-} dxfg_indexed_event_source;
 
 /**
  * In the Java implementation, all events are lined up in a hierarchy
@@ -61,32 +95,6 @@ typedef enum dxfg_event_clazz_t {
 } dxfg_event_clazz_t;
 
 /**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleExchange.html">Javadoc</a>
- */
-typedef struct dxfg_candle_exchange_t {
-    int16_t exchange_code;
-} dxfg_candle_exchange_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandlePrice.html">Javadoc</a>
- */
-typedef enum dxfg_candle_price_t {
-    LAST = 0,
-    BID,
-    ASK,
-    MARK,
-    SETTLEMENT,
-} dxfg_candle_price_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleSession.html">Javadoc</a>
- */
-typedef enum dxfg_candle_session_t {
-    ANY,
-    REGULAR,
-} dxfg_candle_session_t;
-
-/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleType.html">Javadoc</a>
  */
 typedef enum dxfg_candle_type_t {
@@ -104,46 +112,6 @@ typedef enum dxfg_candle_type_t {
     PRICE_MOMENTUM,
     PRICE_RENKO,
 } dxfg_candle_type_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandlePeriod.html">Javadoc</a>
- */
-typedef struct dxfg_candle_period_t {
-    int64_t period_interval_millis;
-    double value;
-    dxfg_candle_type_t type;
-    const char *string;
-} dxfg_candle_period_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleAlignment.html">Javadoc</a>
- */
-typedef enum dxfg_candle_alignment_t {
-    MIDNIGHT,
-    SESSION,
-} dxfg_candle_alignment_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandlePriceLevel.html">Javadoc</a>
- */
-typedef struct dxfg_candle_price_level_t {
-    double value;
-} dxfg_candle_price_level_t;
-
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleSymbol.html">Javadoc</a>
- */
-typedef struct dxfg_candle_symbol_t {
-    const char *symbol;
-    // the following transient fields
-    const char *base_symbol;
-    dxfg_candle_exchange_t *exchange;
-    dxfg_candle_price_t price;
-    dxfg_candle_session_t session;
-    dxfg_candle_period_t *period;
-    dxfg_candle_alignment_t alignment;
-    dxfg_candle_price_level_t *price_level;
-} dxfg_candle_symbol_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/EventType.html">Javadoc</a>
@@ -489,9 +457,9 @@ int32_t                     dxfg_EventType_release(graal_isolatethread_t *thread
 int32_t                     dxfg_CList_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_list* eventTypes);// free the memory occupied by the с data structure (list and all events)
 int32_t                     dxfg_CList_EventClazz_release(graal_isolatethread_t *thread, dxfg_event_clazz_list_t* eventClazzes);// free the memory occupied by the с data structure (list and all int-pointer)
 int32_t                     dxfg_CList_symbol_release(graal_isolatethread_t *thread, dxfg_symbol_list*);// free the memory occupied by the с data structure (list and all int-pointer)
-dxfg_indexed_event_source*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
-dxfg_indexed_event_source*  dxfg_IndexedEventSource_new(graal_isolatethread_t *thread, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
-
+dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
+dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t *thread, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t* source);
 
 typedef struct dxfg_observable_subscription_change_listener_t {
     dxfg_java_object_handler handler;

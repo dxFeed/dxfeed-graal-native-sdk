@@ -4,7 +4,6 @@ import com.dxfeed.api.Mapper;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerPointer;
 import com.dxfeed.api.javac.JavaObjectHandler;
-import com.dxfeed.event.market.ListMapper;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListJavaObjectHandlerMapper

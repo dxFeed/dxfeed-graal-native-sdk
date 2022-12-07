@@ -106,8 +106,8 @@ void printEvent(const dxfg_event_type_t *pEvent) {
         );
     } else if (pEvent->clazz == DXFG_EVENT_ORDER) {
         auto *event = (dxfg_order_t *)pEvent;
-        dxfg_indexed_event_source* source = dxfg_IndexedEvent_getSource(thread, &event->order_base.market_event.event_type);
-        dxfg_JavaObjectHandler_release(thread, &source->handler);
+        dxfg_indexed_event_source_t* source = dxfg_IndexedEvent_getSource(thread, &event->order_base.market_event.event_type);
+        dxfg_IndexedEventSource_release(thread, source);
         printf(
             "C: ORDER{order_base.count=%lld, market_maker=%s}\n",
             event->order_base.count,
@@ -194,20 +194,16 @@ void printEvent(const dxfg_event_type_t *pEvent) {
     } else if (pEvent->clazz == DXFG_EVENT_CANDLE) {
         auto *event = (dxfg_candle_t *)pEvent;
         printf(
-            "C: CANDLE{symbol=%s, base_symbol=%s, exchange_code=%d, index=%lld, ask_volume=%E}\n",
+            "C: CANDLE{symbol=%s, index=%lld, ask_volume=%E}\n",
             event->event_symbol->symbol,
-            event->event_symbol->base_symbol,
-            event->event_symbol->exchange->exchange_code,
             event->index,
             event->ask_volume
         );
     } else if (pEvent->clazz == DXFG_EVENT_DAILY_CANDLE) {
         auto *event = (dxfg_daily_candle_t *)pEvent;
         printf(
-            "C: DAILY_CANDLE{symbol=%s, base_symbol=%s, exchange_code=%d, index=%lld, ask_volume=%E}\n",
+            "C: DAILY_CANDLE{symbol=%s, index=%lld, ask_volume=%E}\n",
             event->candle.event_symbol->symbol,
-            event->candle.event_symbol->base_symbol,
-            event->candle.event_symbol->exchange->exchange_code,
             event->candle.index,
             event->candle.ask_volume
         );
@@ -332,15 +328,15 @@ int main(int argc, char *argv[]) {
 //    subscriptionQuote = subTaS->subscriptionQuote;
 
 
-    dxfg_symbol_t symbol;
-    symbol.symbol_type = CANDLE;
-    symbol.symbol = "AAPL";
-    dxfg_promise_event_t* candlePromise = dxfg_DXFeed_getLastEventPromise(thread, feed, DXFG_EVENT_CANDLE, &symbol);
+    dxfg_candle_symbol_t candleSymbol;
+    candleSymbol.supper.type = CANDLE;
+    candleSymbol.symbol = "AAPL";
+    dxfg_promise_event_t* candlePromise = dxfg_DXFeed_getLastEventPromise(thread, feed, DXFG_EVENT_CANDLE, &candleSymbol.supper);
     dxfg_Promise_whenDone(thread, reinterpret_cast<dxfg_promise_t *>(candlePromise), &c_promise_func, nullptr);
 
 //    dxfg_quote_t* quote = nullptr;
-//    dxfg_symbol_t symbol1;
-//    symbol1.symbol_type = STRING;
+//    dxfg_candle_symbol_t symbol1;
+//    symbol1.supper.type = STRING;
 //    symbol1.symbol = "AAPL";
 //    dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbol1, (dxfg_event_type_t**)&quote);
 
@@ -350,10 +346,10 @@ int main(int argc, char *argv[]) {
     size_t size = symbols.size();
     dxfg_symbol_t** symbols2 = (dxfg_symbol_t**) malloc(sizeof(dxfg_symbol_t*) * size);
     for (int i = 0; i < size; ++i) {
-        dxfg_symbol_t symbol1;
-        symbol1.symbol_type = STRING;
+        dxfg_string_symbol_t symbol1;
+        symbol1.supper.type = STRING;
         symbol1.symbol = symbols[i].c_str();
-        symbols2[i] = &symbol1;
+        symbols2[i] = &symbol1.supper;
     }
     dxfg_symbol_list symbolList;
     symbolList.size = 3;
@@ -364,7 +360,10 @@ int main(int argc, char *argv[]) {
     if (!all) {
         print_exception(thread);
     }
-    dxfg_Promise_awaitWithoutException(thread, all, 30000);
+    int e = dxfg_Promise_awaitWithoutException(thread, all, 30000);
+    if (e != 1) {
+        print_exception(thread);
+    }
     if (dxfg_Promise_hasResult(thread, all) == 1) {
         for (int i = 0; i < size; ++i) {
             dxfg_event_type_t* event = dxfg_Promise_EventType_getResult(thread, reinterpret_cast<dxfg_promise_event_t *>(promises->list.elements[i]));
@@ -378,9 +377,9 @@ int main(int argc, char *argv[]) {
 
 //    dxfg_symbol_t candleSymbol;
 //    candleSymbol.symbol_type = CANDLE;
-//    candleSymbol.symbol = "IBM";
+//    candleSymbol.candleSymbol = "IBM";
 //    dxfg_promise_t candlePromise;
-//    dxfg_indexed_event_source* source = dxfg_IndexedEventSource_new(thread, nullptr);
+//    dxfg_indexed_event_source_t* source = dxfg_IndexedEventSource_new(thread, nullptr);
 //    dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_CANDLE,
 //                                         &candleSymbol, source, &candlePromise);
 //    dxfg_JavaObjectHandler_release(thread, source);
@@ -403,12 +402,12 @@ int main(int argc, char *argv[]) {
 
 
 
-    dxfg_symbol_t seriesSymbol;
-    seriesSymbol.symbol_type = STRING;
+    dxfg_string_symbol_t seriesSymbol;
+    seriesSymbol.supper.type = STRING;
     seriesSymbol.symbol = "IBM";
-    dxfg_indexed_event_source* seriesSource = dxfg_IndexedEventSource_new(thread, nullptr);
-    dxfg_promise_events_t* seriesPromise = dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_SERIES,&seriesSymbol, seriesSource);
-    dxfg_JavaObjectHandler_release(thread, &seriesSource->handler);
+    dxfg_indexed_event_source_t* seriesSource = dxfg_IndexedEventSource_new(thread, nullptr);
+    dxfg_promise_events_t* seriesPromise = dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_SERIES,&seriesSymbol.supper, seriesSource);
+    dxfg_IndexedEventSource_release(thread, seriesSource);
     dxfg_Promise_awaitWithoutException(thread, &seriesPromise->base, 30000);
     int hasResultSeries = dxfg_Promise_hasResult(thread, &seriesPromise->base);
     int hasExceptionSeries = dxfg_Promise_hasException(thread, &seriesPromise->base);

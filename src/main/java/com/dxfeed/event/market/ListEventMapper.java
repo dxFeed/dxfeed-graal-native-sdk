@@ -4,6 +4,7 @@ import com.dxfeed.api.Mapper;
 import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgEventTypePointer;
+import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.event.EventType;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 

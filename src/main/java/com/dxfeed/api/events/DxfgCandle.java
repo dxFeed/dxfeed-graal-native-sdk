@@ -1,5 +1,6 @@
 package com.dxfeed.api.events;
 
+import com.dxfeed.api.symbol.DxfgCandleSymbol;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;

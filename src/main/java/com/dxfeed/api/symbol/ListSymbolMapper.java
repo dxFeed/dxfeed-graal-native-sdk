@@ -1,9 +1,7 @@
-package com.dxfeed.event.market;
+package com.dxfeed.api.symbol;
 
 import com.dxfeed.api.Mapper;
-import com.dxfeed.api.events.DxfgSymbol;
-import com.dxfeed.api.events.DxfgSymbolList;
-import com.dxfeed.api.events.DxfgSymbolPointer;
+import com.dxfeed.api.maper.ListMapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 

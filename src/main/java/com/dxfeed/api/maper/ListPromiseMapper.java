@@ -1,4 +1,4 @@
-package com.dxfeed.event.market;
+package com.dxfeed.api.maper;
 
 import static com.dxfeed.api.NativeUtils.MAPPER_PROMISE;
 
