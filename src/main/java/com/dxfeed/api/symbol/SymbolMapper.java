@@ -50,6 +50,7 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
 
   @Override
   public void fillNative(final Object jObject, final DxfgSymbol nObject) {
+    cleanNative(nObject);
     if (jObject instanceof String) {
       final DxfgStringSymbol dxfgStringSymbol = (DxfgStringSymbol) nObject;
       final String stringSymbol = (String) jObject;

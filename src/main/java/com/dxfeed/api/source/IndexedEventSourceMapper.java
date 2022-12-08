@@ -30,6 +30,7 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
 
   @Override
   public void fillNative(final IndexedEventSource jObject, final DxfgIndexedEventSource nObject) {
+    cleanNative(nObject);
     if (jObject instanceof OrderSource) {
       nObject.setType(DxfgIndexedEventSourceType.ORDER_SOURCE.getCValue());
     } else {

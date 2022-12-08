@@ -15,7 +15,7 @@ public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMar
 
   @Override
   public void fillNative(final T jObject, final V nObject) {
-//    cleanNativeObject(nObject);
+    cleanNative(nObject);
     nObject.setEventSymbol(this.stringMapper.toNative(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
   }
