@@ -18,6 +18,20 @@ jenv enable-plugin maven
 
 https://www.graalvm.org/22.1/reference-manual/native-image/
 
+linux
+
+```shell
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-linux-amd64-22.1.0.tar.gz
+tar -xzvf graalvm-ce-java11-linux-amd64-22.1.0.tar.gz
+sudo mv graalvm-ce-java11-22.1.0 /opt/jdks/
+java -version
+#openjdk version "11.0.15" 2022-04-19
+#OpenJDK Runtime Environment GraalVM CE 22.1.0 (build 11.0.15+10-jvmci-22.1-b06)
+#OpenJDK 64-Bit Server VM GraalVM CE 22.1.0 (build 11.0.15+10-jvmci-22.1-b06, mixed mode)
+/opt/jdks/graalvm-ce-java11-22.1.0/Contents/Home/bin/gu install native-image
+```
+
+macos
 
 ```shell
 cd ~/Downloads
@@ -37,10 +51,10 @@ xcode-select --install
 
 # Settings Inetllij Idea
 
- * File | Project structure | SDKs - add JDK graalvm-11  
- * File | Project structure | Project / SDK - choose graalvm-11  
- * Preferences | Build, Execution, Deployment | Build Tools | Maven | Importing | JDK for importer - choose graalvm-11  
- * Preferences | Build, Execution, Deployment | Build Tools | Maven | Runner | JRE - choose graalvm-11  
+ * File | Project structure | SDKs - add JDK graalvm-11
+ * File | Project structure | Project / SDK - choose graalvm-11
+ * Preferences | Build, Execution, Deployment | Build Tools | Maven | Importing | JDK for importer - choose graalvm-11
+ * Preferences | Build, Execution, Deployment | Build Tools | Maven | Runner | JRE - choose graalvm-11
 
 ```shell
 jenv shell graalvm64-11.0.15
