@@ -1,197 +1,313 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--SPDX-License-Identifier: MPL-2.0-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.devexperts.qd</groupId>
-    <artifactId>dxfeed-graal-native-api</artifactId>
-    <version>1.0.0</version>
+  <groupId>com.devexperts.qd</groupId>
+  <artifactId>dxfeed-graal-native-api</artifactId>
+  <version>0.2.13-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <graalvm.version>22.1.0</graalvm.version>
-        <native.image.path>native-image</native.image.path>
-        <native.image.name>DxFeedGraalNativeApi</native.image.name>
-        <final.native.image.name>${native.image.name}</final.native.image.name>
-        <set-rpath.skip>true</set-rpath.skip>
-    </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>qds</artifactId>
+      <version>3.313</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.mdd</groupId>
+      <artifactId>auther-api</artifactId>
+      <version>442</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.devexperts.qd</groupId>
+          <artifactId>qds-monitoring</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.devexperts.qd</groupId>
-            <artifactId>qds</artifactId>
-            <version>3.313</version>
-        </dependency>
-        <dependency>
-            <groupId>com.devexperts.mdd</groupId>
-            <artifactId>auther-api</artifactId>
-            <version>442</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.devexperts.qd</groupId>
-                    <artifactId>qds-monitoring</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>graal-sdk</artifactId>
+      <version>${graalvm.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+      <version>${graalvm.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.nativeimage</groupId>
-            <artifactId>svm</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <organization>
+    <name>Devexperts</name>
+    <url>http://www.devexperts.com</url>
+  </organization>
 
-    <repositories>
-        <repository>
-            <id>qd</id>
-            <name>Devexperts open JFrog artifactory</name>
-            <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>qd</id>
+      <name>Devexperts open JFrog artifactory</name>
+      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
+    </repository>
+  </repositories>
 
-    <profiles>
-        <profile>
-            <id>mac</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <set-rpath.skip>false</set-rpath.skip>
-                <final.native.image.name>lib${native.image.name}</final.native.image.name>
-            </properties>
-        </profile>
-        <profile>
-            <id>linux</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                    <name>Linux</name>
-                </os>
-            </activation>
-            <properties>
-                <final.native.image.name>lib${native.image.name}</final.native.image.name>
-            </properties>
-        </profile>
-    </profiles>
+  <ciManagement>
+    <system>TeamCity</system>
+    <url>https://dxcity.in.devexperts.com/buildConfiguration/Eugenics_DxfeedGraalNativeApi_Build</url>
+  </ciManagement>
 
-    <build>
-        <extensions>
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.7.0</version>
-            </extension>
-        </extensions>
-        <plugins>
-            <plugin>
-                <groupId>org.graalvm.nativeimage</groupId>
-                <artifactId>native-image-maven-plugin</artifactId>
-                <version>21.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>native-image</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <skip>false</skip>
-                    <imageName>${final.native.image.name}</imageName>
-                    <buildArgs>
-                        <!-- NativeImage options links: -->
-                        <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
-                        <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
-                        <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
-                        <buildArg>--enable-url-protocols=http,https</buildArg>
-                        <buildArg>-H:+SharedLibrary</buildArg>
-                        <buildArg>-H:Name=${final.native.image.name}</buildArg>
-                        <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
-                        <buildArg>-H:Path=${native.image.path}</buildArg>
-                        <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
-                        <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl</buildArg>
-                    </buildArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>set-rpath</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <skip>${set-rpath.skip}</skip>
-                            <executable>install_name_tool</executable>
-                            <arguments>
-                                <argument>-id</argument>
-                                <argument>@rpath/${final.native.image.name}.dylib</argument>
-                                <argument>
-                                    ${project.build.directory}/${native.image.path}/${final.native.image.name}.dylib
-                                </argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.4.2</version>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                            <archive>
-                                <manifest>
-                                    <addClasspath>true</addClasspath>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>make-assembly-not-attached</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <attach>false</attach>
-                            <descriptors>
-                                <descriptor>src/assembly/assembly-dir.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://jira.in.devexperts.com/browse/EN</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git
+    </connection>
+    <tag>HEAD</tag>
+    <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-api.git</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>mdd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/mdd</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>mdd-snapshot</id>
+      <url>https://maven.in.devexperts.com/content/repositories/mdd-snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <graalvm.version>22.1.0</graalvm.version>
+    <native.image.path>native-image</native.image.path>
+    <native.image.name>DxFeedGraalNativeApi</native.image.name>
+    <final.native.image.name>${native.image.name}</final.native.image.name>
+    <set-rpath.skip>true</set-rpath.skip>
+
+    <deploy.host.mount>/Volumes/mdd/DXFG</deploy.host.mount>
+    <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+    <project.version.suffix>-${maven.build.timestamp}</project.version.suffix>
+    <deploy.dir>${deploy.host.mount}/Snapshot</deploy.dir>
+    <deploy.suffix>-${project.version}${project.version.suffix}</deploy.suffix>
+    <skipDeploy>false</skipDeploy>
+    <install.dir>./target/install</install.dir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <set-rpath.skip>false</set-rpath.skip>
+        <final.native.image.name>lib${native.image.name}</final.native.image.name>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <final.native.image.name>lib${native.image.name}</final.native.image.name>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <deploy.host.mount>\\jazz.in.devexperts.com\mdd\DXFG</deploy.host.mount>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <project.version.suffix />
+        <deploy.dir>${deploy.host.mount}/Release/${project.version}</deploy.dir>
+        <deploy.suffix />
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.0</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.graalvm.nativeimage</groupId>
+        <artifactId>native-image-maven-plugin</artifactId>
+        <version>21.2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>native-image</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>false</skip>
+          <imageName>${final.native.image.name}</imageName>
+          <buildArgs>
+            <!-- NativeImage options links: -->
+            <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
+            <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
+            <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
+            <buildArg>--enable-url-protocols=http,https</buildArg>
+            <buildArg>-H:+SharedLibrary</buildArg>
+            <buildArg>-H:Name=${final.native.image.name}</buildArg>
+            <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
+            <buildArg>-H:Path=${native.image.path}</buildArg>
+            <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
+            <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl</buildArg>
+          </buildArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>set-rpath</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${set-rpath.skip}</skip>
+              <executable>install_name_tool</executable>
+              <arguments>
+                <argument>-id</argument>
+                <argument>@rpath/${final.native.image.name}.dylib</argument>
+                <argument>
+                  ${project.build.directory}/${native.image.path}/${final.native.image.name}.dylib
+                </argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.4.2</version>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.name}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/assembly.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <!-- Create version file -->
+            <configuration>
+              <target unless="${skipDeploy}">
+                <echo file="${project.build.directory}/${project.name}-version.inc" message="build.number=${project.version}${project.version.suffix}" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>create-version-file</id>
+            <phase>prepare-package</phase>
+          </execution>
+          <execution>
+            <!-- Copy artifact to local install.dir during install -->
+            <id>install-artifact-file</id>
+            <phase>install</phase>
+
+            <configuration>
+              <target unless="${skipDeploy}">
+                <mkdir dir="${install.dir}" />
+                <!-- Delete previous files from install dir -->
+                <delete failonerror="false">
+                  <fileset dir="${install.dir}" includes="${project.name}-${os.arch}-${os.detected.name}.zip" />
+                </delete>
+                <copy file="${project.build.directory}/${project.name}-${os.arch}-${os.detected.name}.zip" todir="${install.dir}" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <!-- During deploy phase upload artifact from local install.dir to deploy.dir -->
+            <id>deploy-artifact-file</id>
+            <phase>deploy</phase>
+
+            <configuration>
+              <target unless="${skipDeploy}">
+                <mkdir dir="${deploy.dir}" />
+                <!-- Delete previous snapshots (keep releases!) -->
+                <delete failonerror="false">
+                  <fileset dir="${deploy.dir}">
+                    <filename regex="^${final.native.image.name}-[0-9.]+-SNAPSHOT-.*[.]zip" />
+                  </fileset>
+                </delete>
+
+                <copy file="${install.dir}/${project.name}-${os.arch}-${os.detected.name}.zip" tofile="${deploy.dir}/${project.name}-${os.arch}-${os.detected.name}${deploy.suffix}.zip" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M7</version>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+          <releaseProfiles>release</releaseProfiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
