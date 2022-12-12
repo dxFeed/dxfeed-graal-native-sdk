@@ -3,9 +3,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.devexperts.qd</groupId>
-  <artifactId>dxfeed-graal-native-api</artifactId>
-  <version>0.2.13-SNAPSHOT</version>
+  <groupId>com.dxfeed</groupId>
+  <artifactId>graal-native-api</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
@@ -71,14 +71,10 @@
 
   <distributionManagement>
     <repository>
-      <id>mdd</id>
-      <url>https://maven.in.devexperts.com/content/repositories/mdd</url>
+      <id>jfrog</id>
+      <name>dxfeed-artifactory-primary-1-releases</name>
+      <url>https://dxfeed.jfrog.io/artifactory/maven-open</url>
     </repository>
-
-    <snapshotRepository>
-      <id>mdd-snapshot</id>
-      <url>https://maven.in.devexperts.com/content/repositories/mdd-snapshot</url>
-    </snapshotRepository>
   </distributionManagement>
 
   <properties>
@@ -91,14 +87,10 @@
     <native.image.name>DxFeedGraalNativeApi</native.image.name>
     <final.native.image.name>${native.image.name}</final.native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
-
-    <deploy.host.mount>/Volumes/mdd/DXFG</deploy.host.mount>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
-    <project.version.suffix>-${maven.build.timestamp}</project.version.suffix>
-    <deploy.dir>${deploy.host.mount}/Snapshot</deploy.dir>
-    <deploy.suffix>-${project.version}${project.version.suffix}</deploy.suffix>
-    <skipDeploy>false</skipDeploy>
     <install.dir>./target/install</install.dir>
+    <deploy.dir />
+    <artifact.name>${project.name}-${os.arch}-${os.detected.name}.zip</artifact.name>
   </properties>
 
   <profiles>
@@ -112,6 +104,7 @@
       <properties>
         <set-rpath.skip>false</set-rpath.skip>
         <final.native.image.name>lib${native.image.name}</final.native.image.name>
+        <deploy.dir>/Volumes/mdd/DXFG/Release/${project.version}</deploy.dir>
       </properties>
     </profile>
     <profile>
@@ -123,6 +116,7 @@
       </activation>
       <properties>
         <final.native.image.name>lib${native.image.name}</final.native.image.name>
+        <deploy.dir>/Volumes/mdd/DXFG/Release/${project.version}</deploy.dir>
       </properties>
     </profile>
     <profile>
@@ -133,15 +127,7 @@
         </os>
       </activation>
       <properties>
-        <deploy.host.mount>\\jazz.in.devexperts.com\mdd\DXFG</deploy.host.mount>
-      </properties>
-    </profile>
-    <profile>
-      <id>release</id>
-      <properties>
-        <project.version.suffix />
-        <deploy.dir>${deploy.host.mount}/Release/${project.version}</deploy.dir>
-        <deploy.suffix />
+        <deploy.dir>\\jazz.in.devexperts.com\mdd\DXFG\Release\${project.version}</deploy.dir>
       </properties>
     </profile>
   </profiles>
@@ -243,54 +229,31 @@
         <version>3.0.0</version>
         <executions>
           <execution>
-            <!-- Create version file -->
-            <configuration>
-              <target unless="${skipDeploy}">
-                <echo file="${project.build.directory}/${project.name}-version.inc" message="build.number=${project.version}${project.version.suffix}" />
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>create-version-file</id>
-            <phase>prepare-package</phase>
-          </execution>
-          <execution>
             <!-- Copy artifact to local install.dir during install -->
             <id>install-artifact-file</id>
             <phase>install</phase>
-
             <configuration>
-              <target unless="${skipDeploy}">
+              <target>
                 <mkdir dir="${install.dir}" />
                 <!-- Delete previous files from install dir -->
                 <delete failonerror="false">
-                  <fileset dir="${install.dir}" includes="${project.name}-${os.arch}-${os.detected.name}.zip" />
+                  <fileset dir="${install.dir}" includes="${artifact.name}" />
                 </delete>
-                <copy file="${project.build.directory}/${project.name}-${os.arch}-${os.detected.name}.zip" todir="${install.dir}" />
+                <copy file="${project.build.directory}/${artifact.name}" todir="${install.dir}" />
               </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
-
           <execution>
             <!-- During deploy phase upload artifact from local install.dir to deploy.dir -->
             <id>deploy-artifact-file</id>
             <phase>deploy</phase>
-
             <configuration>
-              <target unless="${skipDeploy}">
+              <target>
                 <mkdir dir="${deploy.dir}" />
-                <!-- Delete previous snapshots (keep releases!) -->
-                <delete failonerror="false">
-                  <fileset dir="${deploy.dir}">
-                    <filename regex="^${final.native.image.name}-[0-9.]+-SNAPSHOT-.*[.]zip" />
-                  </fileset>
-                </delete>
-
-                <copy file="${install.dir}/${project.name}-${os.arch}-${os.detected.name}.zip" tofile="${deploy.dir}/${project.name}-${os.arch}-${os.detected.name}${deploy.suffix}.zip" />
+                <copy file="${install.dir}/${artifact.name}" tofile="${deploy.dir}/${artifact.name}" />
               </target>
             </configuration>
             <goals>
@@ -305,7 +268,6 @@
         <version>3.0.0-M7</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
-          <releaseProfiles>release</releaseProfiles>
         </configuration>
       </plugin>
     </plugins>
