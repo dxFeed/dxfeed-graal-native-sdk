@@ -5,7 +5,7 @@
 
   <groupId>com.dxfeed</groupId>
   <artifactId>graal-native-api</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
@@ -65,7 +65,7 @@
   <scm>
     <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git
     </connection>
-    <tag>v0.0.1</tag>
+    <tag>HEAD</tag>
     <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-api.git</url>
   </scm>
 
