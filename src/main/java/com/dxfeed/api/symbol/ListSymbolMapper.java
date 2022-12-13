@@ -38,11 +38,6 @@ public class ListSymbolMapper extends
   }
 
   @Override
-  protected int getSizeElementInCList() {
-    return SizeOf.get(DxfgSymbol.class);
-  }
-
-  @Override
   protected int getSizeCList() {
     return SizeOf.get(DxfgSymbolList.class);
   }

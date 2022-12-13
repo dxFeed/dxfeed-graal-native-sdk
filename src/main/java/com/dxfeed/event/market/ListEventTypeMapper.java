@@ -30,11 +30,6 @@ public class ListEventTypeMapper extends
   }
 
   @Override
-  protected int getSizeElementInCList() {
-    return SizeOf.get(CIntPointer.class);
-  }
-
-  @Override
   protected int getSizeCList() {
     return SizeOf.get(DxfgEventClazzList.class);
   }

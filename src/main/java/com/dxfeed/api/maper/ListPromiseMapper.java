@@ -33,11 +33,6 @@ public class ListPromiseMapper
   }
 
   @Override
-  protected int getSizeElementInCList() {
-    return SizeOf.get(DxfgPromise.class);
-  }
-
-  @Override
   protected int getSizeCList() {
     return SizeOf.get(DxfgPromiseList.class);
   }

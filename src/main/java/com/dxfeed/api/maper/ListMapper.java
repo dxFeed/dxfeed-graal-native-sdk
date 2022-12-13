@@ -16,13 +16,15 @@ public abstract class ListMapper<
     L extends CList<P>
     > {
 
+  private static final int SIZE_OF_C_POINTER = 8;
+
   public L toNativeList(final Collection<? extends J> jList) {
     final L dxfgEventTypeList = UnmanagedMemory.calloc(getSizeCList());
     if (jList == null || jList.isEmpty()) {
       dxfgEventTypeList.setSize(0);
       dxfgEventTypeList.setElements(WordFactory.nullPointer());
     } else {
-      final P nativeEvents = UnmanagedMemory.calloc(getSizeElementInCList() * jList.size());
+      final P nativeEvents = UnmanagedMemory.calloc(SIZE_OF_C_POINTER * jList.size());
       int i = 0;
       for (final J jObject : jList) {
         nativeEvents.addressOf(i++).write(toNative(jObject));
@@ -65,8 +67,6 @@ public abstract class ListMapper<
   protected abstract T toNative(final J jObject);
 
   protected abstract void releaseNative(final T nObject);
-
-  protected abstract int getSizeElementInCList();
 
   protected abstract int getSizeCList();
 }

@@ -32,11 +32,6 @@ public class ListJavaObjectHandlerMapper
   }
 
   @Override
-  protected int getSizeElementInCList() {
-    return SizeOf.get(JavaObjectHandler.class);
-  }
-
-  @Override
   protected int getSizeCList() {
     return SizeOf.get(DxfgJavaObjectHandlerList.class);
   }
