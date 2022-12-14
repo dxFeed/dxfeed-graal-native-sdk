@@ -31,5 +31,13 @@
       </excludes>
       <outputDirectory/>
     </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/docs</directory>
+      <includes>
+        <include>changelog.txt</include>
+        <include>${project.name}-version.inc</include>
+      </includes>
+      <outputDirectory>docs</outputDirectory>
+    </fileSet>
   </fileSets>
 </assembly>

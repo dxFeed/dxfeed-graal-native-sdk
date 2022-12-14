@@ -229,6 +229,19 @@
         <version>3.0.0</version>
         <executions>
           <execution>
+            <!-- Create version file -->
+            <configuration>
+              <target>
+                <echo file="${project.build.directory}/docs/${project.name}-version.inc" message="build.number=${project.version}-${maven.build.timestamp}" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>create-version-file</id>
+            <phase>prepare-package</phase>
+          </execution>
+          <execution>
             <!-- Copy artifact to local install.dir during install -->
             <id>install-artifact-file</id>
             <phase>install</phase>
@@ -238,6 +251,9 @@
                 <!-- Delete previous files from install dir -->
                 <delete failonerror="false">
                   <fileset dir="${install.dir}" includes="${artifact.name}" />
+                </delete>
+                <delete failonerror="false">
+                  <fileset dir="${project.build.directory}" includes="${project.name}-${project.version}.jar" />
                 </delete>
                 <copy file="${project.build.directory}/${artifact.name}" todir="${install.dir}" />
               </target>
@@ -268,7 +284,40 @@
         <version>3.0.0-M7</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
+          <scmShallowClone>false</scmShallowClone>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>se.bjurr.gitchangelog</groupId>
+        <artifactId>git-changelog-maven-plugin</artifactId>
+        <version>1.95.4</version>
+        <configuration>
+          <file>${project.build.directory}/docs/changelog.txt</file>
+          <ignoreCommitsIfMessageMatches>^\[maven-release-plugin\].*</ignoreCommitsIfMessageMatches>
+          <ignoreCommitsOlderThan>2022-12-12 23:59:59</ignoreCommitsOlderThan>
+          <templateContent>
+            <![CDATA[
+# Changelog
+{{#tags}}
+## {{name}}
+ {{#issues}}
+  {{#commits}}
+    * {{{message}}}
+  {{/commits}}
+ {{/issues}}
+{{/tags}}
+]]>
+          </templateContent>
+        </configuration>
+        <executions>
+          <execution>
+            <id>GenerateGitChangelog</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>git-changelog</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
