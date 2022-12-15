@@ -95,6 +95,17 @@
 
   <profiles>
     <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <final.native.image.name>lib${native.image.name}</final.native.image.name>
+      </properties>
+    </profile>
+    <profile>
       <id>mac</id>
       <activation>
         <os>
@@ -104,30 +115,6 @@
       <properties>
         <set-rpath.skip>false</set-rpath.skip>
         <final.native.image.name>lib${native.image.name}</final.native.image.name>
-        <deploy.dir>/Volumes/mdd/DXFG/Release/${project.version}</deploy.dir>
-      </properties>
-    </profile>
-    <profile>
-      <id>linux</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <final.native.image.name>lib${native.image.name}</final.native.image.name>
-        <deploy.dir>/Volumes/mdd/DXFG/Release/${project.version}</deploy.dir>
-      </properties>
-    </profile>
-    <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <deploy.dir>\\jazz.in.devexperts.com\mdd\DXFG\Release\${project.version}</deploy.dir>
       </properties>
     </profile>
   </profiles>
@@ -245,7 +232,6 @@
             <configuration>
               <target>
                 <mkdir dir="${install.dir}" />
-                <!-- Delete previous files from install dir -->
                 <delete failonerror="false">
                   <fileset dir="${install.dir}" includes="${artifact.name}" />
                 </delete>
@@ -266,6 +252,9 @@
             <configuration>
               <target>
                 <mkdir dir="${deploy.dir}" />
+                <delete failonerror="false">
+                  <fileset dir="${deploy.dir}" includes="${artifact.name}" />
+                </delete>
                 <copy file="${install.dir}/${artifact.name}" tofile="${deploy.dir}/${artifact.name}" />
               </target>
             </configuration>

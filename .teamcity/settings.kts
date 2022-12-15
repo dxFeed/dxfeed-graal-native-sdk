@@ -1,7 +1,9 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildSteps.maven
+import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.triggers.VcsTrigger
-import jetbrains.buildServer.configs.kotlin.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.triggers.finishBuildTrigger
+import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -29,57 +31,171 @@ version = "2022.10"
 
 project {
 
-    buildType(CreateRelease)
-    buildType(DeployRelease)
+    vcsRoot(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+
+    buildType(DeployWindows)
+    buildType(BuildMajorMinorPatch)
+    buildType(AutomaticDeploymentOfTheOsxArtifact)
+    buildType(BuildPatch)
 }
 
-object CreateRelease : BuildType({
-    name = "create a release (set the version in the property before running the build)"
+object AutomaticDeploymentOfTheOsxArtifact : BuildType({
+    name = "deployment osx"
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.PROMPT)
-        text("env.RELEASE_VERSION", "", allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
-        root(DslContext.settingsRoot)
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
     }
 
     steps {
         script {
-            name = "prepare"
-            scriptContent = """
-                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-                cd dxfeed-graal-native-api
-                C:\ENV\apache-maven-3.8.6\bin\mvn --batch-mode -DreleaseVersion=%env.RELEASE_VERSION% release:clean release:prepare
-            """.trimIndent()
+            name = "git checkout latest tag"
+            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
         }
-        script {
-            name = "release"
-            scriptContent = """
-                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-                cd dxfeed-graal-native-api
-                C:\ENV\apache-maven-3.8.6\bin\mvn -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% release:perform
-            """.trimIndent()
+        maven {
+            name = "deploy"
+            goals = "deploy"
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home"
         }
     }
 
     triggers {
-        vcs {
-            enabled = false
-            quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_DEFAULT
-            branchFilter = "+:<default>"
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatch.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildPatch.id}"
+            successfulOnly = true
         }
     }
 
     requirements {
-        equals("system.agent.name", "winAgent4450")
+        equals("system.agent.name", "macbuilder10")
     }
 })
 
-object DeployRelease : BuildType({
-    name = "create a release (automatically increase the version of the path)"
+object BuildMajorMinorPatch : BuildType({
+    name = "build MAJOR.MINOR.PATCH"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        text("env.RELEASE_VERSION", "", allowEmpty = false)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        maven {
+            name = "release:prepare"
+            goals = "release:clean release:prepare"
+            runnerArgs = "--batch-mode -DreleaseVersion=%env.RELEASE_VERSION%"
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            userSettingsPath = "settings-agent.xml"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+        }
+        maven {
+            name = "release:perform"
+            goals = "release:perform"
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            userSettingsPath = "settings-agent.xml"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_DeployRelease"
+            successfulOnly = true
+
+            enforceCleanCheckout = true
+        }
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_CreateRelease"
+            successfulOnly = true
+
+            enforceCleanCheckout = true
+        }
+    }
+
+    requirements {
+        equals("system.agent.name", "dxAgent1707-1")
+    }
+})
+
+object BuildPatch : BuildType({
+    name = "build PATCH"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        maven {
+            name = "release:prepare"
+            goals = "release:clean release:prepare"
+            runnerArgs = "-B"
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            userSettingsPath = "settings-agent.xml"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+        }
+        maven {
+            name = "release:perform"
+            goals = "release:perform"
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            userSettingsPath = "settings-agent.xml"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_DeployRelease"
+            successfulOnly = true
+
+            enforceCleanCheckout = true
+        }
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_CreateRelease"
+            successfulOnly = true
+
+            enforceCleanCheckout = true
+        }
+    }
+
+    requirements {
+        equals("system.agent.name", "dxAgent1707-1")
+    }
+})
+
+object DeployWindows : BuildType({
+    name = "deploy windows"
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -91,33 +207,49 @@ object DeployRelease : BuildType({
     }
 
     steps {
-        script {
-            name = "prepare"
-            scriptContent = """
-                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-                cd dxfeed-graal-native-api
-                C:\ENV\apache-maven-3.8.6\bin\mvn -B release:clean release:prepare
-            """.trimIndent()
+        powerShell {
+            name = "checkout latest tag"
+            scriptMode = script {
+                content = """
+                    ${'$'}tag = git describe --abbrev=0
+                    git checkout ${'$'}tag
+                """.trimIndent()
+            }
         }
         script {
-            name = "release"
+            name = "deploy"
             scriptContent = """
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-                cd dxfeed-graal-native-api
-                C:\ENV\apache-maven-3.8.6\bin\mvn -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% release:perform
+                C:\ENV\apache-maven-3.8.6\bin\mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
             """.trimIndent()
         }
     }
 
     triggers {
-        vcs {
-            enabled = false
-            quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_DEFAULT
-            branchFilter = "+:<default>"
+        finishBuildTrigger {
+            buildType = "${BuildPatch.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatch.id}"
+            successfulOnly = true
         }
     }
 
     requirements {
         equals("system.agent.name", "winAgent4450")
     }
+})
+
+object SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags : GitVcsRoot({
+    name = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git#refs/heads/main tags"
+    url = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git"
+    branch = "refs/heads/main"
+    branchSpec = "+:refs/tags/*"
+    useTagsAsBranches = true
+    authMethod = uploadedKey {
+        userName = "git"
+        uploadedKey = "dxcity for GIT"
+    }
+    param("secure:password", "")
 })
