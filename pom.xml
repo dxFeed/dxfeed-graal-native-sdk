@@ -297,11 +297,9 @@
 # Changelog
 {{#tags}}
 ## {{name}}
- {{#issues}}
   {{#commits}}
     * {{{message}}}
   {{/commits}}
- {{/issues}}
 {{/tags}}
 ]]>
           </templateContent>

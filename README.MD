@@ -1,3 +1,8 @@
+# We use
+
+https://www.conventionalcommits.org/en/v1.0.0/
+https://semver.org/
+
 # Installation GraalVM JDK 11 with native-image
 
 [graalvm-ce-builds](https://github.com/graalvm/graalvm-ce-builds/releases)
