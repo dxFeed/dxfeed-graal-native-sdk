@@ -2,21 +2,6 @@
 
 winAgent4450 host: winbuilder4450.in.devexperts.com
 
- * maven https://maven.apache.org/install.html
-   * https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.zip
-   * "C:\Users\dxcity\.m2\settings.xml" add
-```xml
-<settings>
-  <servers>
-    <server>
-      <id>jfrog</id>
-      <username>${jfrog.user}</username>
-      <password>${jfrog.password}</password>
-    </server>
-  </servers>
-</settings>
-```
-
  * https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311
    * GraalVM https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-windows-amd64-22.1.0.zip and remove from PATH "C:\Program Files (x86)\Common Files\Oracle\Java\javapath"
    * GraalVM native-image
