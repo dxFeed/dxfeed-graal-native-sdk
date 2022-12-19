@@ -33,6 +33,7 @@ project {
 
     vcsRoot(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
 
+    buildType(BuildNuget)
     buildType(DeployWindows)
     buildType(BuildMajorMinorPatch)
     buildType(AutomaticDeploymentOfTheOsxArtifact)
@@ -40,7 +41,7 @@ project {
 }
 
 object AutomaticDeploymentOfTheOsxArtifact : BuildType({
-    name = "deployment osx"
+    name = "deploy osx"
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -84,7 +85,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
 })
 
 object BuildMajorMinorPatch : BuildType({
-    name = "build MAJOR.MINOR.PATCH"
+    name = "build MAJOR.MINOR.PATCH and deploy linux"
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -139,8 +140,80 @@ object BuildMajorMinorPatch : BuildType({
     }
 })
 
+object BuildNuget : BuildType({
+    name = "deploy nuget"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:63c46b2c-dbf0-4220-9c2e-70fa89bd9b74", display = ParameterDisplay.HIDDEN)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "sleep"
+            scriptContent = "sleep 15s"
+        }
+        script {
+            name = "download artifacts"
+            scriptContent = """
+                VERSION=${'$'}(git describe --abbrev=0)
+                VERSION=${'$'}{VERSION#"v"}
+                
+                PATH_TO_SAVE=NuGet/runtimes/linux-x64/native
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-linux.zip\!/libDxFeedGraalNativeApi.so
+                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
+                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                
+                PATH_TO_SAVE=NuGet/runtimes/osx-arm64/native
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-aarch64-osx.zip\!/libDxFeedGraalNativeApi.dylib
+                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
+                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                
+                PATH_TO_SAVE=NuGet/runtimes/osx-x64/native
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-x86_64-osx.zip\!/libDxFeedGraalNativeApi.dylib
+                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
+                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                
+                PATH_TO_SAVE=NuGet/runtimes/win-x64/native
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-windows.zip\!/DxFeedGraalNativeApi.dll
+                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
+                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-windows.zip\!/sunmscapi.dll
+                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
+                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+            """.trimIndent()
+        }
+        script {
+            name = "nuget pack"
+            scriptContent = """
+                VERSION=${'$'}(git describe --abbrev=0)
+                VERSION=${'$'}{VERSION#"v"}
+                echo ${'$'}VERSION
+                nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
+                jf rt upload DxFeed.Graal.Native.${'$'}VERSION.nupkg nuget-open/com/dxfeed/graal-native/${'$'}VERSION/DxFeed.Graal.Native.${'$'}VERSION.nupkg --url https://dxfeed.jfrog.io/artifactory --access-token %env.JFROG_PASSWORD%
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${AutomaticDeploymentOfTheOsxArtifact.id}"
+
+            enforceCleanCheckout = true
+        }
+    }
+
+    requirements {
+        equals("system.agent.name", "dxAgent1707-1")
+    }
+})
+
 object BuildPatch : BuildType({
-    name = "build PATCH"
+    name = "build PATCH and deploy linux"
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)

@@ -20,6 +20,23 @@ tar -xzvf graalvm-ce-java11-linux-amd64-22.1.0.tar.gz
 sudo mv graalvm-ce-java11-22.1.0 /opt/jdks/
 /opt/jdks/graalvm-ce-java11-22.1.0/bin/gu install native-image
 export JAVA_HOME=/opt/jdks/graalvm-ce-java11-22.1.0
+sudo apt install nuget -y
+sudo apt-get install mono-complete -y
+sudo nuget update -self
+wget -qO - https://releases.jfrog.io/artifactory/jfrog-gpg-public/jfrog_public_gpg.key | sudo apt-key add -
+echo "deb https://releases.jfrog.io/artifactory/jfrog-debs xenial contrib" | sudo tee -a /etc/apt/sources.list;
+apt update;
+apt install -y jfrog-cli-v2-jf;
+jf config add Artifactory --artifactory-url=https://dxfeed.jfrog.io/artifactory
+JFrog Platform URL: https://dxfeed.jfrog.io
+JFrog Artifactory URL: https://dxfeed.jfrog.io/artifactory
+JFrog access token:
+14:28:27 [🟠Warn] couldn't extract payload from Access Token
+The provided access token is not a valid JWT, probably a reference token.
+Some package managers only support basic authentication which requires also a username.
+If you plan to work with one of those package managers, please provide a username.
+JFrog username (optional):
+Is the Artifactory reverse proxy configured to accept a client certificate? (y/n) [n]? n
 ```
 
 # Preparing the OSX agent
