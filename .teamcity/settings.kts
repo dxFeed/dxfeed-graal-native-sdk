@@ -70,12 +70,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatch.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildPatch.id}"
-            successfulOnly = true
+            buildType = "${DeployWindows.id}"
         }
     }
 
@@ -154,10 +149,6 @@ object BuildNuget : BuildType({
 
     steps {
         script {
-            name = "sleep"
-            scriptContent = "sleep 3m"
-        }
-        script {
             name = "download artifacts"
             scriptContent = """
                 VERSION=${'$'}(git describe --abbrev=0)
@@ -195,6 +186,7 @@ object BuildNuget : BuildType({
                 echo ${'$'}VERSION
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
                 jf rt upload DxFeed.Graal.Native.${'$'}VERSION.nupkg nuget-open/com/dxfeed/graal-native/${'$'}VERSION/DxFeed.Graal.Native.${'$'}VERSION.nupkg --url https://dxfeed.jfrog.io/artifactory --access-token %env.JFROG_PASSWORD%
+                cp DxFeed.Graal.Native.${'$'}VERSION.nupkg /mnt/projects/mdd/DXFG/Release/${'$'}VERSION/DxFeed.Graal.Native.${'$'}VERSION.nupkg
             """.trimIndent()
         }
     }
