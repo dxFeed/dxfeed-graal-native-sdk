@@ -155,7 +155,7 @@ object BuildNuget : BuildType({
     steps {
         script {
             name = "sleep"
-            scriptContent = "sleep 15s"
+            scriptContent = "sleep 3m"
         }
         script {
             name = "download artifacts"
