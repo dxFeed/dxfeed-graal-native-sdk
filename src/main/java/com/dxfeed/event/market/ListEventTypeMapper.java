@@ -19,7 +19,7 @@ public class ListEventTypeMapper extends
 
   @Override
   protected CIntPointer toNative(final Class<? extends EventType<?>> jObject) {
-    final CIntPointer cIntPointer = UnmanagedMemory.calloc(SizeOf.get(CIntPointer.class));
+    final CIntPointer cIntPointer = UnmanagedMemory.calloc(SIZE_OF_C_POINTER);
     cIntPointer.write(DxfgEventClazz.of(jObject).getCValue());
     return cIntPointer;
   }

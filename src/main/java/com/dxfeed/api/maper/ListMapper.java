@@ -18,7 +18,7 @@ public abstract class ListMapper<
 
   //https://github.com/graalvm/graal-jvmci-8/blob/master/jvmci/jdk.vm.ci.code/src/jdk/vm/ci/code/TargetDescription.java
   //ConfigurationValues.getTarget().arch.getWordSize() or ConfigurationValues.getTarget().wordSize;
-  private static final int SIZE_OF_C_POINTER = 8;
+  protected static final int SIZE_OF_C_POINTER = 8;
 
   public L toNativeList(final Collection<? extends J> jList) {
     final L dxfgEventTypeList = UnmanagedMemory.calloc(getSizeCList());
