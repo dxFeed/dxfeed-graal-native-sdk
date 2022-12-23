@@ -35,6 +35,7 @@ project {
 
     buildType(BuildNuget)
     buildType(DeployWindows)
+    buildType(TestBuildOsx)
     buildType(BuildMajorMinorPatch)
     buildType(AutomaticDeploymentOfTheOsxArtifact)
     buildType(BuildPatch)
@@ -179,7 +180,7 @@ object BuildNuget : BuildType({
             """.trimIndent()
         }
         script {
-            name = "nuget pack"
+            name = "nuget pack and deploy"
             scriptContent = """
                 VERSION=${'$'}(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
@@ -303,6 +304,52 @@ object DeployWindows : BuildType({
 
     requirements {
         equals("system.agent.name", "winAgent4450")
+    }
+})
+
+object TestBuildOsx : BuildType({
+    name = "test build osx"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        maven {
+            name = "package"
+            enabled = false
+            goals = "package"
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            mavenVersion = custom {
+                path = "%teamcity.tool.maven.3.8.4%"
+            }
+            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home"
+        }
+        script {
+            name = "package (1)"
+            scriptContent = """
+                export JAVA_HOME=`/usr/libexec/java_home -a arm64`
+                echo ${'$'}JAVA_HOME
+                mvn -version
+                file ${'$'}JAVA_HOME/bin/java
+                mvn package
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${DeployWindows.id}"
+        }
+    }
+
+    requirements {
+        equals("system.agent.name", "macbuilder10")
     }
 })
 
