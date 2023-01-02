@@ -60,6 +60,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
         }
         maven {
             name = "deploy"
+            enabled = false
             goals = "deploy"
             runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
             mavenVersion = custom {
@@ -67,11 +68,25 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             }
             jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home"
         }
+        script {
+            name = "deploy (1)"
+            scriptContent = """
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
+                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home
+                arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+            """.trimIndent()
+        }
     }
 
     triggers {
         finishBuildTrigger {
-            buildType = "${DeployWindows.id}"
+            buildType = "${BuildPatch.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatch.id}"
+            successfulOnly = true
         }
     }
 
@@ -113,21 +128,6 @@ object BuildMajorMinorPatch : BuildType({
             }
             userSettingsPath = "settings-agent.xml"
             jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
-        }
-    }
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_DeployRelease"
-            successfulOnly = true
-
-            enforceCleanCheckout = true
-        }
-        finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_CreateRelease"
-            successfulOnly = true
-
-            enforceCleanCheckout = true
         }
     }
 
@@ -195,6 +195,7 @@ object BuildNuget : BuildType({
     triggers {
         finishBuildTrigger {
             buildType = "${AutomaticDeploymentOfTheOsxArtifact.id}"
+            successfulOnly = true
 
             enforceCleanCheckout = true
         }
@@ -237,21 +238,6 @@ object BuildPatch : BuildType({
             }
             userSettingsPath = "settings-agent.xml"
             jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
-        }
-    }
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_DeployRelease"
-            successfulOnly = true
-
-            enforceCleanCheckout = true
-        }
-        finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_CreateRelease"
-            successfulOnly = true
-
-            enforceCleanCheckout = true
         }
     }
 
@@ -333,11 +319,25 @@ object TestBuildOsx : BuildType({
         script {
             name = "package (1)"
             scriptContent = """
+                arch -arm64 bash
+                arch
                 export JAVA_HOME=`/usr/libexec/java_home -a arm64`
                 echo ${'$'}JAVA_HOME
                 mvn -version
                 file ${'$'}JAVA_HOME/bin/java
-                mvn package
+                /usr/bin/cc -v
+                arch -arm64 uname -m
+                arch -arm64 id -un
+                xcode-select --print-path
+                
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
+                echo ${'$'}JAVA_HOME
+                arch -arm64 mvn -version
+                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% package
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home
+                echo ${'$'}JAVA_HOME
+                arch -x86_64 mvn -version
+                arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% package
             """.trimIndent()
         }
     }
