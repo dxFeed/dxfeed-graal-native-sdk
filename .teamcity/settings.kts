@@ -72,9 +72,10 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             name = "deploy (1)"
             scriptContent = """
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
-                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home
-                arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
         }
     }
@@ -329,7 +330,8 @@ object TestBuildOsx : BuildType({
                 arch -arm64 uname -m
                 arch -arm64 id -un
                 xcode-select --print-path
-                
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
+                arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true package
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
                 echo ${'$'}JAVA_HOME
                 arch -arm64 mvn -version
@@ -339,12 +341,6 @@ object TestBuildOsx : BuildType({
                 arch -x86_64 mvn -version
                 arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% package
             """.trimIndent()
-        }
-    }
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "${DeployWindows.id}"
         }
     }
 
