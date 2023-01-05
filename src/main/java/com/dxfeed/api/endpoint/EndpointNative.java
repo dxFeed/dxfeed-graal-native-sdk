@@ -17,9 +17,6 @@ import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.javac.DxfgExecuter;
 import com.dxfeed.api.publisher.DxfgPublisher;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -287,23 +284,6 @@ public final class EndpointNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Executors_newFixedThreadPool",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgExecuter dxfg_Executors_newFixedThreadPool(
-      final IsolateThread ignoredThread,
-      final int nThreads,
-      final CCharPointer name
-  ) {
-    return MAPPER_EXECUTOR.toNative(
-        Executors.newFixedThreadPool(
-            nThreads,
-            new PoolThreadFactory(MAPPER_STRING.toJava(name))
-        )
-    );
-  }
-
-  @CEntryPoint(
       name = "dxfg_DXEndpoint_executor",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
@@ -325,29 +305,5 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint
   ) {
     return MAPPER_EVENT_TYPES.toNativeList(MAPPER_ENDPOINT.toJava(dxfgEndpoint).getEventTypes());
-  }
-
-  private static class PoolThreadFactory implements ThreadFactory {
-
-    private final String name;
-    private final AtomicInteger index = new AtomicInteger();
-    private final ThreadGroup group;
-
-    {
-      final SecurityManager s = System.getSecurityManager();
-      group = (s != null) ? s.getThreadGroup() :
-          Thread.currentThread().getThreadGroup();
-    }
-
-    PoolThreadFactory(final String name) {
-      this.name = name;
-    }
-
-    @Override
-    public Thread newThread(final Runnable r) {
-      final Thread thread = new Thread(group, r, name + "-" + index.incrementAndGet());
-      thread.setDaemon(true);
-      return thread;
-    }
   }
 }

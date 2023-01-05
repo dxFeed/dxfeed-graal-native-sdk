@@ -35,10 +35,18 @@ typedef struct dxfg_executor_t {
 } dxfg_executor_t;
 
 // free the memory occupied by the с data structure and release the reference to the java object
-int dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler*);
+int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler*);
 
 // free the memory occupied by the с data structure (list and all elements) and release the reference to the java object for all elements
-int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list*);
+int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list*);
+
+int32_t dxfg_String_release(graal_isolatethread_t *thread, const char* string);
+
+// read the "Threads and locks" sections at https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html
+dxfg_executor_t*  dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread, int nThreads, const char* nameThreads);
+dxfg_executor_t*  dxfg_Executors_newScheduledThreadPool(graal_isolatethread_t *thread, int nThreads, const char* nameThreads);
+dxfg_executor_t*  dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethread_t *thread);
+int32_t           dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal_isolatethread_t *thread, dxfg_executor_t *executor);
 
 /** @} */ // end of Javac
 

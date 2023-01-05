@@ -11,6 +11,9 @@ import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.api.events.DxfgEventTypeList;
 import com.dxfeed.api.events.DxfgEventTypePointer;
 import com.dxfeed.api.events.DxfgObservableSubscriptionChangeListener;
+import com.dxfeed.api.events.DxfgOrder;
+import com.dxfeed.api.events.DxfgOrderList;
+import com.dxfeed.api.events.DxfgOrderPointer;
 import com.dxfeed.api.exception.DxfgException;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.feed.DxfgPromise;
@@ -32,8 +35,12 @@ import com.dxfeed.api.maper.ListJavaObjectHandlerMapper;
 import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.api.maper.ListPromiseMapper;
 import com.dxfeed.api.maper.Mapper;
+import com.dxfeed.api.maper.ObservableListModelListenerMapper;
+import com.dxfeed.api.maper.ObservableListModelOrderMapper;
 import com.dxfeed.api.maper.ObservableSubscriptionChangeListenerMapper;
 import com.dxfeed.api.maper.ObservableSubscriptionMapper;
+import com.dxfeed.api.maper.OrderBookModelListenerMapper;
+import com.dxfeed.api.maper.OrderBookModelMapper;
 import com.dxfeed.api.maper.PromiseMapper;
 import com.dxfeed.api.maper.PublisherMapper;
 import com.dxfeed.api.maper.StringMapper;
@@ -41,6 +48,10 @@ import com.dxfeed.api.maper.StringMapperCacheStore;
 import com.dxfeed.api.maper.StringMapperUnlimitedStore;
 import com.dxfeed.api.maper.SubscriptionMapper;
 import com.dxfeed.api.maper.TimeSeriesSubscriptionMapper;
+import com.dxfeed.api.model.DxfgObservableListModelListener;
+import com.dxfeed.api.model.DxfgObservableListModelOrder;
+import com.dxfeed.api.model.DxfgOrderBookModel;
+import com.dxfeed.api.model.DxfgOrderBookModelListener;
 import com.dxfeed.api.osub.ObservableSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.api.publisher.DxfgObservableSubscription;
@@ -66,7 +77,9 @@ import com.dxfeed.event.market.EventMappers;
 import com.dxfeed.event.market.GreeksMapper;
 import com.dxfeed.event.market.ListEventMapper;
 import com.dxfeed.event.market.ListEventTypeMapper;
+import com.dxfeed.event.market.ListOrderMapper;
 import com.dxfeed.event.market.MessageMapper;
+import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderBaseMapper;
 import com.dxfeed.event.market.OrderMapper;
 import com.dxfeed.event.market.ProfileMapper;
@@ -79,6 +92,10 @@ import com.dxfeed.event.market.TimeAndSaleMapper;
 import com.dxfeed.event.market.TradeETHMapper;
 import com.dxfeed.event.market.TradeMapper;
 import com.dxfeed.event.market.UnderlyingMapper;
+import com.dxfeed.model.ObservableListModel;
+import com.dxfeed.model.ObservableListModelListener;
+import com.dxfeed.model.market.OrderBookModel;
+import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.promise.Promise;
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.Executor;
@@ -92,6 +109,7 @@ public final class NativeUtils {
   public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
   public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
+  public static final ListMapper<Order, DxfgOrder, DxfgOrderPointer, DxfgOrderList> MAPPER_ORDERS;
   public static final Mapper<String, CCharPointer> MAPPER_STRING;
   public static final Mapper<String, CCharPointer> MAPPER_STRING_UNLIMITED_STORE;
   public static final Mapper<String, CCharPointer> MAPPER_STRING_CACHE_STORE;
@@ -104,6 +122,10 @@ public final class NativeUtils {
   public static final Mapper<Promise<?>, DxfgPromise> MAPPER_PROMISE;
   public static final Mapper<DXPublisher, DxfgPublisher> MAPPER_PUBLISHER;
   public static final Mapper<PropertyChangeListener, DxfgEndpointStateChangeListener> MAPPER_ENDPOINT_STATE_CHANGE_LISTENER;
+  public static final Mapper<OrderBookModel, DxfgOrderBookModel> MAPPER_ORDER_BOOK_MODEL;
+  public static final Mapper<ObservableListModel<Order>, DxfgObservableListModelOrder> MAPPER_OBSERVABLE_LIST_MODEL_ORDER;
+  public static final Mapper<OrderBookModelListener, DxfgOrderBookModelListener> MAPPER_ORDER_BOOK_MODEL_LISTENER;
+  public static final Mapper<ObservableListModelListener<Order>, DxfgObservableListModelListener> MAPPER_OBSERVABLE_LIST_MODEL_LISTENER;
   public static final Mapper<ObservableSubscription<? extends EventType<?>>, DxfgObservableSubscription> MAPPER_OBSERVABLE_SUBSCRIPTION;
   public static final Mapper<ObservableSubscriptionChangeListener, DxfgObservableSubscriptionChangeListener> MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER;
   public static final Mapper<DXFeedSubscription<EventType<?>>, DxfgSubscription<DXFeedSubscription<EventType<?>>>> MAPPER_SUBSCRIPTION;
@@ -126,13 +148,15 @@ public final class NativeUtils {
     );
     MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING_UNLIMITED_STORE);
     MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_INDEXED_EVENT_SOURCE);
+    final OrderMapper orderMapper = new OrderMapper(MAPPER_STRING_UNLIMITED_STORE,
+        MAPPER_STRING_CACHE_STORE);
     MAPPER_EVENT = new EventMappers(
         MAPPER_STRING_UNLIMITED_STORE,
         new QuoteMapper(MAPPER_STRING_UNLIMITED_STORE),
         new SeriesMapper(MAPPER_STRING_UNLIMITED_STORE),
         new TimeAndSaleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
         new SpreadOrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new OrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
+        orderMapper,
         new AnalyticOrderMapper(MAPPER_STRING_UNLIMITED_STORE),
         new MessageMapper(MAPPER_STRING),
         new OrderBaseMapper(MAPPER_STRING_UNLIMITED_STORE),
@@ -148,6 +172,7 @@ public final class NativeUtils {
         new CandleMapper<>(MAPPER_SYMBOL)
     );
     MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
+    MAPPER_ORDERS = new ListOrderMapper(orderMapper);
     MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
     MAPPER_EVENT_TYPES = new ListEventTypeMapper();
     MAPPER_EXECUTOR = new ExecutorMapper();
@@ -156,6 +181,10 @@ public final class NativeUtils {
     MAPPER_PROMISE = new PromiseMapper();
     MAPPER_PUBLISHER = new PublisherMapper();
     MAPPER_ENDPOINT_STATE_CHANGE_LISTENER = new EndpointStateChangeListenerMapper();
+    MAPPER_ORDER_BOOK_MODEL = new OrderBookModelMapper();
+    MAPPER_OBSERVABLE_LIST_MODEL_ORDER = new ObservableListModelOrderMapper();
+    MAPPER_ORDER_BOOK_MODEL_LISTENER = new OrderBookModelListenerMapper();
+    MAPPER_OBSERVABLE_LIST_MODEL_LISTENER = new ObservableListModelListenerMapper();
     MAPPER_OBSERVABLE_SUBSCRIPTION = new ObservableSubscriptionMapper();
     MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER = new ObservableSubscriptionChangeListenerMapper();
     MAPPER_SUBSCRIPTION = new SubscriptionMapper<>();

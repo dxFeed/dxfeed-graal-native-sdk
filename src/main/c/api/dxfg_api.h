@@ -17,6 +17,7 @@ extern "C" {
 #include "dxfg_javac.h"
 #include "graal_isolate.h"
 #include "graal_isolate_dynamic.h"
+#include "dxfg_order_book_model.h"
 
 #ifdef __cplusplus
 }

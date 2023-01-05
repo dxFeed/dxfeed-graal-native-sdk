@@ -121,8 +121,6 @@ dxfg_event_clazz_list_t*        dxfg_DXEndpoint_getEventTypes(graal_isolatethrea
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t *thread, dxfg_endpoint_state_change_listener_func user_func, void *user_data);
 
-dxfg_executor_t* dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread, int nThreads, const char* nameThreads);
-
 /** @} */ // end of Endpoint
 
 #ifdef __cplusplus

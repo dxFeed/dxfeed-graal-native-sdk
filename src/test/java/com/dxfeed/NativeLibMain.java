@@ -2,6 +2,7 @@
 package com.dxfeed;
 
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.event.IndexedEventSource;
@@ -16,6 +17,9 @@ import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
+import com.dxfeed.model.market.OrderBookModel;
+import com.dxfeed.model.market.OrderBookModelFilter;
+import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.promise.Promise;
 import java.util.Arrays;
 import java.util.List;
@@ -83,5 +87,28 @@ public class NativeLibMain {
     subscription3.addSymbols("AAPL");
     Thread.sleep(1000);
     dxEndpoint3.close();
+
+    final DXEndpoint dxEndpoint4 = DXEndpoint.newBuilder().build();
+    dxEndpoint4.connect("demo.dxfeed.com:7300");
+    DXFeed feed = dxEndpoint4.getFeed();
+    OrderBookModel model = new OrderBookModel();
+    model.setFilter(OrderBookModelFilter.ALL);
+    model.setSymbol("AAPL");
+    model.addListener(new OrderBookModelListener() {
+      public void modelChanged(OrderBookModelListener.Change change) {
+        System.out.println("Buy orders:");
+        for (Order order : model.getBuyOrders()) {
+          System.out.println(order);
+        }
+        System.out.println("Sell orders:");
+        for (Order order : model.getSellOrders()) {
+          System.out.println(order);
+        }
+        System.out.println();
+      }
+    });
+    model.attach(feed);
+    Thread.sleep(1000);
+    dxEndpoint4.close();
   }
 }
