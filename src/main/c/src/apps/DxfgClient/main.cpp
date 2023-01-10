@@ -235,21 +235,21 @@ void c_promise_func(graal_isolatethread_t *thread, dxfg_promise_t *promise, void
 
 void c_listener_func(graal_isolatethread_t *thread, dxfg_order_book_model_t* model, void *user_data) {
     printf("Buy orders:\n");
-    dxfg_observable_list_model_order_t* buyObservableListOrders = dxfg_OrderBookModel_getBuyOrders(thread, model);
-    dxfg_order_list_t* buyOrders = dxfg_ObservableListModelOrder_toArray(thread, buyObservableListOrders);
+    dxfg_observable_list_model_t* buyObservableListOrders = dxfg_OrderBookModel_getBuyOrders(thread, model);
+    dxfg_event_type_list* buyOrders = dxfg_ObservableListModel_toArray(thread, buyObservableListOrders);
     for (int i = 0; i < buyOrders->size; ++i) {
         printEvent(reinterpret_cast<dxfg_event_type_t *>(buyOrders->elements[0]));
     }
-    dxfg_CList_Order_release(thread, buyOrders);
+    dxfg_CList_EventType_release(thread, buyOrders);
     dxfg_JavaObjectHandler_release(thread, &buyObservableListOrders->handler);
 
     printf("Sell orders:\n");
-    dxfg_observable_list_model_order_t* sellObservableListOrders = dxfg_OrderBookModel_getSellOrders(thread, model);
-    dxfg_order_list_t* sellOrders = dxfg_ObservableListModelOrder_toArray(thread, sellObservableListOrders);
+    dxfg_observable_list_model_t* sellObservableListOrders = dxfg_OrderBookModel_getSellOrders(thread, model);
+    dxfg_event_type_list* sellOrders = dxfg_ObservableListModel_toArray(thread, sellObservableListOrders);
     for (int i = 0; i < sellOrders->size; ++i) {
         printEvent(reinterpret_cast<dxfg_event_type_t *>(sellOrders->elements[0]));
     }
-    dxfg_CList_Order_release(thread, sellOrders);
+    dxfg_CList_EventType_release(thread, sellOrders);
     dxfg_JavaObjectHandler_release(thread, &sellObservableListOrders->handler);
 
     printf("\n");
@@ -257,12 +257,12 @@ void c_listener_func(graal_isolatethread_t *thread, dxfg_order_book_model_t* mod
     dxfg_JavaObjectHandler_release(thread, &model->handler);
 }
 
-void c_orders_listener_func(graal_isolatethread_t *thread, dxfg_order_list_t* orders, void *user_data) {
-    printf("orders:\n");
+void c_observable_list_listener_func(graal_isolatethread_t *thread, dxfg_event_type_list* orders, void *user_data) {
+    printf("c_observable_list_listener_func:\n");
     for (int i = 0; i < orders->size; ++i) {
         printEvent(reinterpret_cast<dxfg_event_type_t *>(orders->elements[0]));
     }
-    dxfg_CList_Order_release(thread, orders);
+    dxfg_CList_EventType_release(thread, orders);
 }
 
 void print_exception(graal_isolatethread_t *thread) {
@@ -315,13 +315,10 @@ int main(int argc, char *argv[]) {
 
     dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
     dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
-    dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
+//    dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
+//    free(stateListener);
+    dxfg_DXEndpoint_connect(thread, endpoint, address.c_str());
 
-    // Connects to an address.
-    int res = dxfg_DXEndpoint_connect(thread, endpoint, address.c_str());
-    if (res != 0) {
-        print_exception(thread);
-    }
 
     dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
     for (int i = 0; i < event_clazz_list->size; ++i) {
@@ -340,19 +337,29 @@ int main(int argc, char *argv[]) {
         printf("C: get_state = %d\n", state);
     }
 
-    dxfg_order_book_model_t* order_book_model = dxfg_OrderBookModel_new(thread);
-    dxfg_OrderBookModel_setFilter(thread, order_book_model, ALL);
-    dxfg_OrderBookModel_setSymbol(thread, order_book_model, "AAPL");
-    dxfg_observable_list_model_order_t* buyOrders = dxfg_OrderBookModel_getBuyOrders(thread, order_book_model);
-    dxfg_observable_list_model_listener_order_t *buyOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_orders_listener_func, nullptr);
-    dxfg_ObservableListModelOrder_addListener(thread, buyOrders, buyOrdersListener);
-    dxfg_observable_list_model_order_t* sellOrders = dxfg_OrderBookModel_getSellOrders(thread, order_book_model);
-    dxfg_observable_list_model_listener_order_t *sellOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_orders_listener_func, nullptr);
-    dxfg_ObservableListModelOrder_addListener(thread, sellOrders, sellOrdersListener);
-    dxfg_order_book_model_listener_t* listener = dxfg_OrderBookModelListener_new(thread, &c_listener_func, nullptr);
-    dxfg_OrderBookModel_addListener(thread, order_book_model, listener);
-    dxfg_OrderBookModel_attach(thread, order_book_model, feed);
+//    dxfg_order_book_model_t* order_book_model = dxfg_OrderBookModel_new(thread);
+//    dxfg_OrderBookModel_setFilter(thread, order_book_model, ALL);
+//    dxfg_OrderBookModel_setSymbol(thread, order_book_model, "AAPL");
+//    dxfg_observable_list_model_t* buyOrders = dxfg_OrderBookModel_getBuyOrders(thread, order_book_model);
+//    dxfg_observable_list_model_listener_t *buyOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+//    dxfg_ObservableListModel_addListener(thread, buyOrders, buyOrdersListener);
+//    dxfg_observable_list_model_t* sellOrders = dxfg_OrderBookModel_getSellOrders(thread, order_book_model);
+//    dxfg_observable_list_model_listener_t *sellOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+//    dxfg_ObservableListModel_addListener(thread, sellOrders, sellOrdersListener);
+//    dxfg_order_book_model_listener_t* listener = dxfg_OrderBookModelListener_new(thread, &c_listener_func, nullptr);
+//    dxfg_OrderBookModel_addListener(thread, order_book_model, listener);
+//    dxfg_OrderBookModel_attach(thread, order_book_model, feed);
 
+    dxfg_indexed_event_model_t* indexed_event_model = dxfg_IndexedEventModel_new(thread, DXFG_EVENT_TIME_AND_SALE);
+    dxfg_IndexedEventModel_setSizeLimit(thread, indexed_event_model, 30);
+    dxfg_IndexedEventModel_attach(thread, indexed_event_model, feed);
+    dxfg_observable_list_model_t* observable_list_model = dxfg_IndexedEventModel_getEventsList(thread, indexed_event_model);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_IndexedEventModel_setSymbol(thread, indexed_event_model, &symbolAAPL.supper);
+    dxfg_observable_list_model_listener_t *observable_list_model_listener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+    dxfg_ObservableListModel_addListener(thread, observable_list_model, observable_list_model_listener);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeedSubscription_new(thread, DXFG_EVENT_QUOTE);
     dxfg_DXFeed_attachSubscription(thread, feed, subscriptionQuote);
     dxfg_DXFeedSubscription_addEventListener(
@@ -503,11 +510,11 @@ int main(int argc, char *argv[]) {
 
     std::cin.get();
 
-    res = dxfg_DXEndpoint_closeAndAwaitTermination(thread, endpoint);
+    int32_t res = dxfg_DXEndpoint_closeAndAwaitTermination(thread, endpoint);
     if (res != 0) {
         print_exception(thread);
     }
     dxfg_JavaObjectHandler_release(thread, &executor->handler);
-    dxfg_JavaObjectHandler_release(thread, &order_book_model->handler);
+//    dxfg_JavaObjectHandler_release(thread, &order_book_model->handler);
 //    dxfg_JavaObjectHandler_release(thread, &listener->handler);
 }

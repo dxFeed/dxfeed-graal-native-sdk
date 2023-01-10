@@ -1,6 +1,6 @@
 package com.dxfeed.api.model;
 
-import com.dxfeed.api.events.DxfgOrderList;
+import com.dxfeed.api.events.DxfgEventTypeList;
 import com.oracle.svm.core.c.CTypedef;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -15,7 +15,7 @@ public interface DxfgObservableListModelListenerFunction extends CFunctionPointe
   @InvokeCFunctionPointer
   void invoke(
       final IsolateThread thread,
-      final DxfgOrderList dxfgOrderList,
+      final DxfgEventTypeList dxfgOrderList,
       final VoidPointer userData
   );
 }

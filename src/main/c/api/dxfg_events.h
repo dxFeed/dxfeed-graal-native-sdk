@@ -445,11 +445,6 @@ typedef struct dxfg_event_type_list {
     dxfg_event_type_t **elements;
 } dxfg_event_type_list;
 
-typedef struct dxfg_order_list_t {
-    int32_t size;
-    dxfg_order_t **elements;
-} dxfg_order_list_t;
-
 typedef struct dxfg_event_clazz_list_t {
     int32_t size;
     dxfg_event_clazz_t **elements;
@@ -460,7 +455,6 @@ int32_t                     dxfg_Symbol_release(graal_isolatethread_t *thread, d
 dxfg_event_type_t*          dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
 int32_t                     dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
 int32_t                     dxfg_CList_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_list* eventTypes);// free the memory occupied by the с data structure (list and all events)
-int32_t                     dxfg_CList_Order_release(graal_isolatethread_t *thread, dxfg_order_list_t* orders);// free the memory occupied by the с data structure (list and all events)
 int32_t                     dxfg_CList_EventClazz_release(graal_isolatethread_t *thread, dxfg_event_clazz_list_t* eventClazzes);// free the memory occupied by the с data structure (list and all int-pointer)
 int32_t                     dxfg_CList_symbol_release(graal_isolatethread_t *thread, dxfg_symbol_list*);// free the memory occupied by the с data structure (list and all int-pointer)
 dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);

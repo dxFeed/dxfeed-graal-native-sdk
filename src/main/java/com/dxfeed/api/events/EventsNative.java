@@ -4,7 +4,6 @@ import static com.dxfeed.api.NativeUtils.MAPPER_EVENT;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
 import static com.dxfeed.api.NativeUtils.MAPPER_INDEXED_EVENT_SOURCE;
-import static com.dxfeed.api.NativeUtils.MAPPER_ORDERS;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOLS;
@@ -100,18 +99,6 @@ public class EventsNative {
       final DxfgEventTypeList nEvents
   ) {
     MAPPER_EVENTS.release(nEvents);
-    return EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_CList_Order_release",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_CList_Order_release(
-      final IsolateThread ignoredThread,
-      final DxfgOrderList nOrders
-  ) {
-    MAPPER_ORDERS.release(nOrders);
     return EXECUTE_SUCCESSFULLY;
   }
 

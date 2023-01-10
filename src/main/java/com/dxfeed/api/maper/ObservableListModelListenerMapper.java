@@ -1,12 +1,12 @@
 package com.dxfeed.api.maper;
 
 import com.dxfeed.api.model.DxfgObservableListModelListener;
-import com.dxfeed.event.market.Order;
+import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.model.ObservableListModelListener;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ObservableListModelListenerMapper
-    extends JavaObjectHandlerMapper<ObservableListModelListener<Order>, DxfgObservableListModelListener> {
+    extends JavaObjectHandlerMapper<ObservableListModelListener<? super IndexedEvent<?>>, DxfgObservableListModelListener> {
 
   @Override
   protected int getSizeJavaObjectHandler() {
