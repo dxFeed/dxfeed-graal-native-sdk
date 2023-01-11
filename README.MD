@@ -35,9 +35,8 @@ $JAVA_HOME/bin/java -Dtoken=<TOKEN> -agentlib:native-image-agent=config-output-d
 
 We use [teamcity](https://dxcity.in.devexperts.com/project/Eugenics_DxfeedGraalNativeApi).
 
-1. Run the "build PATCH" configuration to release a version of PATCH or "build MAJOR.MINOR.PATCH" (set env.RELEASE_VERSION in run parameters) to release a version of MAJOR or MINOR.
-1. The "deployment osx", "deployment windows", "deploy nuget" builds will start automatically, after which you can see the new artifacts in [artifactory](https://dxfeed.jfrog.io/ui/repos/tree/General/maven-open/com/dxfeed/graal-native-api). You can also see them in Jazz at the path: /Projects/mdd/DXFG/Release/.
-1. Additionally, you can build an artifact for another platform on your computer by checkout to the corresponding TAG and running mvn deploy before build "deploy nuget" (or run "deploy nuget" after).
+1. Run the "build PATCH and deploy linux" configuration to release a version of PATCH or "build MAJOR.MINOR.PATCH and deploy linux" (set env.RELEASE_VERSION in run parameters) to release a version of MAJOR or MINOR. A linux version of the artifact will also be deployed.
+1. The "deploy osx", "deploy windows", "deploy nuget" builds will start automatically, after which you can see the new artifacts in [artifactory](https://dxfeed.jfrog.io/ui/repos/tree/General/maven-open/com/dxfeed/graal-native-api). You can also see them in Jazz at the path: /Projects/mdd/DXFG/Release/. The "deploy osx" configuration builds and deploys artifacts under amd, arm architecture osx and arm under IOS.
 
 # IOS
 
