@@ -5,6 +5,7 @@ import com.dxfeed.api.javac.CPointerOnPointer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.WordFactory;
@@ -37,11 +38,11 @@ public abstract class ListMapper<
     return dxfgEventTypeList;
   }
 
-  public Collection<J> toJavaList(final L nList) {
+  public List<J> toJavaList(final L nList) {
     if (nList.isNull() || nList.getSize() == 0) {
       return Collections.emptyList();
     }
-    final Collection<J> jList = new ArrayList<>(nList.getSize());
+    final List<J> jList = new ArrayList<>(nList.getSize());
     for (int i = 0; i < nList.getSize(); ++i) {
       jList.add(toJava(nList.getElements().addressOf(i).read()));
     }

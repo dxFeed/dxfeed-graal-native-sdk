@@ -654,11 +654,16 @@ public class EventModelNative {
       final VoidPointer userData
   ) {
     return MAPPER_ORDER_BOOK_MODEL_LISTENER.toNative(
-        change -> userFunc.invoke(
-            CurrentIsolate.getCurrentThread(),
-            MAPPER_ORDER_BOOK_MODEL.toNative(change.getSource()),
-            userData
-        )
+        change -> {
+          final DxfgOrderBookModel orderBookModel = MAPPER_ORDER_BOOK_MODEL.toNative(
+              change.getSource());
+          userFunc.invoke(
+              CurrentIsolate.getCurrentThread(),
+              orderBookModel,
+              userData
+          );
+          MAPPER_ORDER_BOOK_MODEL.release(orderBookModel);
+        }
     );
   }
 
@@ -673,11 +678,13 @@ public class EventModelNative {
   ) {
     return MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toNative(
         change -> {
+          final DxfgEventTypeList dxfgOrderList = MAPPER_EVENTS.toNativeList(change.getSource());
           userFunc.invoke(
               CurrentIsolate.getCurrentThread(),
-              MAPPER_EVENTS.toNativeList(change.getSource()),
+              dxfgOrderList,
               userData
           );
+          MAPPER_EVENTS.release(dxfgOrderList);
         }
     );
   }

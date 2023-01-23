@@ -1,0 +1,205 @@
+package com.dxfeed.api.ipf;
+
+import com.dxfeed.api.javac.DxfgCharPointerList;
+import org.graalvm.nativeimage.c.CContext;
+import org.graalvm.nativeimage.c.struct.CField;
+import org.graalvm.nativeimage.c.struct.CStruct;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.word.PointerBase;
+
+@CContext(Directives.class)
+@CStruct("dxfg_instrument_profile_t")
+public interface DxfgInstrumentProfile extends PointerBase {
+
+  @CField("type")
+  CCharPointer getType();
+
+  @CField("type")
+  void setType(CCharPointer value);
+
+  @CField("symbol")
+  CCharPointer getSymbol();
+
+  @CField("symbol")
+  void setSymbol(CCharPointer value);
+
+  @CField("description")
+  CCharPointer getDescription();
+
+  @CField("description")
+  void setDescription(CCharPointer value);
+
+  @CField("localSymbol")
+  CCharPointer getLocalSymbol();
+
+  @CField("localSymbol")
+  void setLocalSymbol(CCharPointer value);
+
+  @CField("localDescription")
+  CCharPointer getLocalDescription();
+
+  @CField("localDescription")
+  void setLocalDescription(CCharPointer value);
+
+  @CField("country")
+  CCharPointer getCountry();
+
+  @CField("country")
+  void setCountry(CCharPointer value);
+
+  @CField("opol")
+  CCharPointer getOpol();
+
+  @CField("opol")
+  void setOpol(CCharPointer value);
+
+  @CField("exchangeData")
+  CCharPointer getExchangeData();
+
+  @CField("exchangeData")
+  void setExchangeData(CCharPointer value);
+
+  @CField("exchanges")
+  CCharPointer getExchanges();
+
+  @CField("exchanges")
+  void setExchanges(CCharPointer value);
+
+  @CField("currency")
+  CCharPointer getCurrency();
+
+  @CField("currency")
+  void setCurrency(CCharPointer value);
+
+  @CField("baseCurrency")
+  CCharPointer getBaseCurrency();
+
+  @CField("baseCurrency")
+  void setBaseCurrency(CCharPointer value);
+
+  @CField("cfi")
+  CCharPointer getCfi();
+
+  @CField("cfi")
+  void setCfi(CCharPointer value);
+
+  @CField("isin")
+  CCharPointer getIsin();
+
+  @CField("isin")
+  void setIsin(CCharPointer value);
+
+  @CField("sedol")
+  CCharPointer getSedol();
+
+  @CField("sedol")
+  void setSedol(CCharPointer value);
+
+  @CField("cusip")
+  CCharPointer getCusip();
+
+  @CField("cusip")
+  void setCusip(CCharPointer value);
+
+  @CField("icb")
+  int getIcb();
+
+  @CField("icb")
+  void setIcb(int value);
+
+  @CField("sic")
+  int getSic();
+
+  @CField("sic")
+  void setSic(int value);
+
+  @CField("multiplier")
+  double getMultiplier();
+
+  @CField("multiplier")
+  void setMultiplier(double value);
+
+  @CField("product")
+  CCharPointer getProduct();
+
+  @CField("product")
+  void setProduct(CCharPointer value);
+
+  @CField("underlying")
+  CCharPointer getUnderlying();
+
+  @CField("underlying")
+  void setUnderlying(CCharPointer value);
+
+  @CField("spc")
+  double getSpc();
+
+  @CField("spc")
+  void setSpc(double value);
+
+  @CField("additionalUnderlyings")
+  CCharPointer getAdditionalUnderlyings();
+
+  @CField("additionalUnderlyings")
+  void setAdditionalUnderlyings(CCharPointer value);
+
+  @CField("mmy")
+  CCharPointer getMmy();
+
+  @CField("mmy")
+  void setMmy(CCharPointer value);
+
+  @CField("expiration")
+  int getExpiration();
+
+  @CField("expiration")
+  void setExpiration(int value);
+
+  @CField("lastTrade")
+  int getLastTrade();
+
+  @CField("lastTrade")
+  void setLastTrade(int value);
+
+  @CField("strike")
+  double getStrike();
+
+  @CField("strike")
+  void setStrike(double value);
+
+  @CField("optionType")
+  CCharPointer getOptionType();
+
+  @CField("optionType")
+  void setOptionType(CCharPointer value);
+
+  @CField("expirationStyle")
+  CCharPointer getExpirationStyle();
+
+  @CField("expirationStyle")
+  void setExpirationStyle(CCharPointer value);
+
+  @CField("settlementStyle")
+  CCharPointer getSettlementStyle();
+
+  @CField("settlementStyle")
+  void setSettlementStyle(CCharPointer value);
+
+  @CField("priceIncrements")
+  CCharPointer getPriceIncrements();
+
+  @CField("priceIncrements")
+  void setPriceIncrements(CCharPointer value);
+
+  @CField("tradingHours")
+  CCharPointer getTradingHours();
+
+  @CField("tradingHours")
+  void setTradingHours(CCharPointer value);
+
+  @CField("customFields")
+  DxfgCharPointerList getCustomFields();
+
+  @CField("customFields")
+  void setCustomFields(DxfgCharPointerList value);
+}

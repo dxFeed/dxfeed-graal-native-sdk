@@ -339,20 +339,24 @@ public class SubscriptionNative {
 
           @Override
           public void symbolsAdded(final Set<?> symbols) {
+            final DxfgSymbolList dxfgSymbolList = MAPPER_SYMBOLS.toNativeList(symbols);
             functionSymbolsAdded.invoke(
                 CurrentIsolate.getCurrentThread(),
-                MAPPER_SYMBOLS.toNativeList(symbols),
+                dxfgSymbolList,
                 userData
             );
+            MAPPER_SYMBOLS.release(dxfgSymbolList);
           }
 
           @Override
           public void symbolsRemoved(final Set<?> symbols) {
+            final DxfgSymbolList dxfgSymbolList = MAPPER_SYMBOLS.toNativeList(symbols);
             functionSymbolsRemoved.invoke(
                 CurrentIsolate.getCurrentThread(),
-                MAPPER_SYMBOLS.toNativeList(symbols),
+                dxfgSymbolList,
                 userData
             );
+            MAPPER_SYMBOLS.release(dxfgSymbolList);
           }
 
           @Override

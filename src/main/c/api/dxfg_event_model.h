@@ -53,7 +53,7 @@ typedef struct dxfg_observable_list_model_listener_t {
     dxfg_java_object_handler handler;
 } dxfg_observable_list_model_listener_t;
 
-typedef void (*dxfg_observable_list_model_listener_function)(graal_isolatethread_t *thread, dxfg_event_type_list* orders, void *user_data); // use dxfg_CList_EventType_release to release the allocated memory for model
+typedef void (*dxfg_observable_list_model_listener_function)(graal_isolatethread_t *thread, dxfg_event_type_list* orders, void *user_data);
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/model/market/OrderBookModelListener.html">Javadoc</a>
@@ -62,7 +62,7 @@ typedef struct dxfg_order_book_model_listener_t {
     dxfg_java_object_handler handler;
 } dxfg_order_book_model_listener_t;
 
-typedef void (*dxfg_order_book_model_listener_function)(graal_isolatethread_t *thread, dxfg_order_book_model_t* model, void *user_data); // use dxfg_JavaObjectHandler_release to release the allocated memory for model
+typedef void (*dxfg_order_book_model_listener_function)(graal_isolatethread_t *thread, dxfg_order_book_model_t* model, void *user_data);
 
 dxfg_order_book_model_t*          dxfg_OrderBookModel_new(graal_isolatethread_t *thread);
 dxfg_indexed_event_model_t*       dxfg_IndexedEventModel_new(graal_isolatethread_t *thread, dxfg_event_clazz_t clazz);

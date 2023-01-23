@@ -18,6 +18,7 @@ extern "C" {
 #include "graal_isolate.h"
 #include "graal_isolate_dynamic.h"
 #include "dxfg_event_model.h"
+#include "dxfg_ipf.h"
 
 #ifdef __cplusplus
 }

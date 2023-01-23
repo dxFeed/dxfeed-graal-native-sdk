@@ -1,6 +1,7 @@
 package com.dxfeed.api.javac;
 
 import static com.dxfeed.api.NativeUtils.MAPPER_EXECUTOR;
+import static com.dxfeed.api.NativeUtils.MAPPER_INPUT_STREAM;
 import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLER;
 import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLERS;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
@@ -8,6 +9,7 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
+import java.io.ByteArrayInputStream;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -17,6 +19,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.word.Pointer;
 
 @CContext(Directives.class)
 public class JavacNative {
@@ -112,6 +115,22 @@ public class JavacNative {
     ((ExecutorBaseOnConcurrentLinkedQueue) MAPPER_EXECUTOR.toJava(
         executor)).processAllPendingTasks();
     return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_ByteArrayInputStream_new",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgInputStream dxfg_ByteArrayInputStream_new(
+      final IsolateThread ignoredThread,
+      final CCharPointer dxfgBytes,
+      final int size
+  ) {
+    final byte[] bytes = new byte[size];
+    for (int i = 0; i < bytes.length; i++) {
+      bytes[i] = ((Pointer) dxfgBytes).readByte(i);
+    }
+    return MAPPER_INPUT_STREAM.toNative(new ByteArrayInputStream(bytes));
   }
 
   private static class ExecutorBaseOnConcurrentLinkedQueue implements Executor {
