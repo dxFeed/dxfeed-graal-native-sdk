@@ -208,6 +208,7 @@
             <buildArg>--enable-url-protocols=http,https</buildArg>
             <buildArg>-H:+SharedLibrary</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
+            <buildArg>-Dproject.path=${project.basedir}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
             <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
