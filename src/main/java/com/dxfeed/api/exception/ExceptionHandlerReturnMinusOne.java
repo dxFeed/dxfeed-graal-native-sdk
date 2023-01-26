@@ -1,7 +1,7 @@
 package com.dxfeed.api.exception;
 
-import com.oracle.svm.core.annotate.Uninterruptible;
-import com.oracle.svm.jni.JNIThreadLocalPendingException;
+import com.oracle.svm.core.Uninterruptible;
+import com.oracle.svm.core.jni.JNIThreadLocalPendingException;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
 public class ExceptionHandlerReturnMinusOne implements CEntryPoint.ExceptionHandler {

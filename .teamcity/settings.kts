@@ -71,10 +71,10 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
         script {
             name = "deploy (1)"
             scriptContent = """
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home
                 arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
                 arch -arm64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home
                 arch -x86_64 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
         }
@@ -118,7 +118,7 @@ object BuildMajorMinorPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
         }
         maven {
             name = "release:perform"
@@ -128,7 +128,7 @@ object BuildMajorMinorPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
         }
     }
 
@@ -228,7 +228,7 @@ object BuildPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
         }
         maven {
             name = "release:perform"
@@ -238,7 +238,7 @@ object BuildPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.1.0"
+            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
         }
     }
 
@@ -273,6 +273,7 @@ object DeployWindows : BuildType({
             name = "deploy"
             scriptContent = """
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+                set JAVA_HOME=C:\Release\graalvm-ce-java11-22.3.1
                 C:\ENV\apache-maven-3.8.6\bin\mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
             """.trimIndent()
         }

@@ -3,7 +3,7 @@
 winAgent4450 host: winbuilder4450.in.devexperts.com
 
  * https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311
-   * GraalVM https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-windows-amd64-22.1.0.zip and remove from PATH "C:\Program Files (x86)\Common Files\Oracle\Java\javapath"
+   * GraalVM https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-windows-amd64-22.3.1.zip and remove from PATH "C:\Program Files (x86)\Common Files\Oracle\Java\javapath"
    * GraalVM native-image
    * Visual Studio Build Tools
    * Windows 10 SDK
@@ -15,11 +15,11 @@ additional info https://www.graalvm.org/22.1/docs/getting-started/windows/
 dxAgent1707-1 host: dxbuilder1707.in.devexperts.com
 
 ```shell
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-linux-amd64-22.1.0.tar.gz
-tar -xzvf graalvm-ce-java11-linux-amd64-22.1.0.tar.gz
-sudo mv graalvm-ce-java11-22.1.0 /opt/jdks/
-/opt/jdks/graalvm-ce-java11-22.1.0/bin/gu install native-image
-export JAVA_HOME=/opt/jdks/graalvm-ce-java11-22.1.0
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
+tar -xzvf graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
+sudo mv graalvm-ce-java11-22.3.1 /opt/jdks/
+/opt/jdks/graalvm-ce-java11-22.3.1/bin/gu install native-image
+export JAVA_HOME=/opt/jdks/graalvm-ce-java11-22.3.1
 sudo apt install nuget -y
 sudo apt-get install mono-complete -y
 sudo nuget update -self
@@ -44,11 +44,11 @@ Is the Artifactory reverse proxy configured to accept a client certificate? (y/n
 macbuilder10 host: macbuilder10.in.devexperts.com
 
 ```shell
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-darwin-amd64-22.1.0.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.1.0.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-amd64-22.1.0.tar.gz
-sudo mv graalvm-ce-java11-22.1.0 /Library/Java/JavaVirtualMachines/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home/bin/gu install native-image
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+tar -xzvf graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home/bin/gu install native-image
 export JAVA_HOME=$(/usr/libexec/java_home -v "11.0.15")
 xcode-select --install
 ```
@@ -56,11 +56,11 @@ xcode-select --install
 # Preparing the OSX M1
 
 ```shell
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.1.0/graalvm-ce-java11-darwin-aarch64-22.1.0.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-aarch64-22.1.0.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-aarch64-22.1.0.tar.gz
-sudo mv graalvm-ce-java11-22.1.0 /Library/Java/JavaVirtualMachines/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home/bin/gu install native-image
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+tar -xzvf graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home/bin/gu install native-image
 export JAVA_HOME=$(/usr/libexec/java_home -v "11.0.15")
 xcode-select --install
 ```

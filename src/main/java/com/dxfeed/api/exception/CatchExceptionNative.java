@@ -2,7 +2,7 @@ package com.dxfeed.api.exception;
 
 import static com.dxfeed.api.NativeUtils.MAPPER_EXCEPTION;
 
-import com.oracle.svm.jni.JNIThreadLocalPendingException;
+import com.oracle.svm.core.jni.JNIThreadLocalPendingException;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
