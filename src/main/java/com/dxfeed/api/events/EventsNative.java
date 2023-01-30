@@ -8,7 +8,6 @@ import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOL;
 import static com.dxfeed.api.NativeUtils.MAPPER_SYMBOLS;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-import static org.graalvm.nativeimage.c.type.CTypeConversion.toJavaString;
 
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
@@ -137,7 +136,7 @@ public class EventsNative {
     return MAPPER_INDEXED_EVENT_SOURCE.toNative(
         source.isNull()
             ? IndexedEventSource.DEFAULT
-            : OrderSource.valueOf(toJavaString(source))
+            : OrderSource.valueOf(MAPPER_STRING.toJava(source))
     );
   }
 
