@@ -404,7 +404,7 @@ int main(int argc, char *argv[]) {
         symbols2[i] = &symbol1.supper;
     }
     dxfg_symbol_list symbolList;
-    symbolList.size = 3;
+    symbolList.size = size;
     symbolList.elements = symbols2;
 //    dxfg_promise_event_t *promises[size];
     dxfg_promise_list* promises = dxfg_DXFeed_getLastEventsPromises(thread, feed, DXFG_EVENT_QUOTE, &symbolList);

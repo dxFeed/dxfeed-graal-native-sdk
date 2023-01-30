@@ -14,10 +14,10 @@
 {
   "name":"com.devexperts.connector.proto.ApplicationConnectionFactory",
   "methods":[
+    {"name":"getChunkPool","parameterTypes":[] },
     {"name":"getName","parameterTypes":[] },
     {"name":"setName","parameterTypes":["java.lang.String"] }
-  ],
-  "queriedMethods":[{"name":"getChunkPool","parameterTypes":[] }]
+  ]
 },
 {
   "name":"com.devexperts.logging.Log4j2Logging"
@@ -40,13 +40,20 @@
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
-  "methods":[{"name":"setFilter","parameterTypes":["java.lang.String"] }],
-  "queriedMethods":[{"name":"getFilter","parameterTypes":[] }]
+  "methods":[
+    {"name":"getFilter","parameterTypes":[] },
+    {"name":"setFilter","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
   "queryAllPublicMethods":true,
   "methods":[
+    {"name":"getAuth","parameterTypes":[] },
+    {"name":"getHeartbeatPeriod","parameterTypes":[] },
+    {"name":"getHeartbeatTimeout","parameterTypes":[] },
+    {"name":"getInitialHeartbeatPeriod","parameterTypes":[] },
+    {"name":"getLogin","parameterTypes":[] },
     {"name":"getPassword","parameterTypes":[] },
     {"name":"getUser","parameterTypes":[] },
     {"name":"setLogin","parameterTypes":["java.lang.String"] },
@@ -111,7 +118,12 @@
 },
 {
   "name":"com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory",
-  "queryAllPublicMethods":true
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"getAdvertise","parameterTypes":[] },
+    {"name":"getServices","parameterTypes":[] },
+    {"name":"getWeight","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",

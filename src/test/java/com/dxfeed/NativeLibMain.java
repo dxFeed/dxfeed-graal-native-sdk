@@ -56,7 +56,7 @@ public class NativeLibMain {
     subscription1.addEventListener(System.out::println);
     subscription1.addSymbols(
         Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
-            "BTC/USDT:CXBINA"));
+            "BTC/USDT:CXBINA", "/BTCUSDT:CXBINA"));
     Thread.sleep(1000);
     dxEndpoint1.close();
 

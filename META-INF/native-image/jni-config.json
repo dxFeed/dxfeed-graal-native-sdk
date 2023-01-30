@@ -4,13 +4,6 @@
   "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
 },
 {
-  "name":"java.lang.ClassLoader",
-  "methods":[
-    {"name":"getPlatformClassLoader","parameterTypes":[] },
-    {"name":"loadClass","parameterTypes":["java.lang.String"] }
-  ]
-},
-{
   "name":"java.lang.InternalError",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -27,13 +20,6 @@
     {"name":"getProperty","parameterTypes":["java.lang.String"] },
     {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }
   ]
-},
-{
-  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
-},
-{
-  "name":"org.graalvm.jniutils.JNIExceptionWrapperEntryPoints",
-  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]
 },
 {
   "name":"sun.instrument.InstrumentationImpl",
