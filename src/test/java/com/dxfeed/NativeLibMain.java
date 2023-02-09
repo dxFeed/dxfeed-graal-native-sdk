@@ -5,6 +5,7 @@ import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
+import com.dxfeed.api.DXPublisher;
 import com.dxfeed.api.maper.InstrumentProfileMapper;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.TimeSeriesEvent;
@@ -40,77 +41,76 @@ import java.util.stream.StreamSupport;
 
 public class NativeLibMain {
 
-  /**
-   * The function name must be converted to run_main in native library.
-   */
   public static void main(final String[] args) throws InterruptedException, IOException {
+
+    dxEndpointWriteToTape();
 
     liveIpf();
 
-    final DXEndpoint dxEndpointInstance = DXEndpoint.getInstance();
-    dxEndpointInstance.connect("demo.dxfeed.com:7300");
-    final DXFeedSubscription<Order> subscription = dxEndpointInstance.getFeed()
-        .createSubscription(Order.class);
-    subscription.addEventListener(System.out::println);
-    subscription.addSymbols("AAPL");
-    final Promise<List<Series>> aapl = dxEndpointInstance.getFeed()
-        .getIndexedEventsPromise(Series.class, "AAPL", IndexedEventSource.DEFAULT);
-    aapl.awaitWithoutException(30, TimeUnit.SECONDS);
-    final List<Series> result = aapl.getResult();
-    final Throwable exception = aapl.getException();
-    dxEndpointInstance.close();
+    dxEndpointInstance();
 
-    final String token = System.getProperty("token");
-    final DXEndpoint dxEndpoint1 = DXEndpoint.newBuilder()
-        .withRole(DXEndpoint.Role.FEED)
-        .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
-    final DXFeedSubscription<MarketEvent> subscription1 = dxEndpoint1.getFeed()
-        .createSubscription(Quote.class, TimeAndSale.class);
-    dxEndpoint1.connect("lessona.dxfeed.com:7905[login=entitle:" + token + "]");
-    subscription1.addEventListener(System.out::println);
-    subscription1.addSymbols(
-        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
-            "BTC/USDT:CXBINA", "/BTCUSDT:CXBINA"));
-    Thread.sleep(1000);
-    dxEndpoint1.close();
+    dxEndpointAuther();
 
-    final DXEndpoint dxEndpoint2 = DXEndpoint.newBuilder()
-        .withRole(DXEndpoint.Role.FEED)
-        .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
-    dxEndpoint2.connect("demo.dxfeed.com:7300");
-    DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> subscription2 = dxEndpoint2.getFeed()
-        .createTimeSeriesSubscription(TimeAndSale.class, TheoPrice.class, Underlying.class,
-            Candle.class,
-            Greeks.class, DailyCandle.class);
-    subscription2.setFromTime(0);
-    subscription2.addEventListener(System.out::println);
-    subscription2.addSymbols(
-        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
-            "BTC/USDT:CXBINA"));
-    Thread.sleep(1000);
-    dxEndpoint2.close();
+    dxEndpointTimeSeriesSubscription();
 
-    final DXEndpoint dxEndpoint3 = DXEndpoint.newBuilder()
-        .withRole(DXEndpoint.Role.FEED)
-        .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
-    dxEndpoint3.connect("tape.csv[format=csv,readAs=ticker_data,cycle,speed=max]");
-    final var subscription3 = dxEndpoint3.getFeed().createSubscription(Quote.class);
-    subscription3.addEventListener(System.out::println);
-    subscription3.addSymbols("AAPL");
-    Thread.sleep(1000);
-    dxEndpoint3.close();
+    dxEndpointReadFromTape();
 
-    final DXEndpoint dxEndpoint4 = DXEndpoint.newBuilder().build();
-    dxEndpoint4.connect("demo.dxfeed.com:7300");
-    DXFeed feed = dxEndpoint4.getFeed();
+    dxEndpointOrderBookModel();
+  }
+
+  private static void dxEndpointWriteToTape() throws InterruptedException {
+    publishQuotes(
+        DXEndpoint.newBuilder()
+            .withProperty(DXEndpoint.DXFEED_WILDCARD_ENABLE_PROPERTY, "true")
+            .withRole(DXEndpoint.Role.PUBLISHER)
+            .build()
+            .connect("tape:WriteTapeFile.text.txt[format=text]")
+    );
+    publishQuotes(
+        DXEndpoint.newBuilder()
+            .withProperty(DXEndpoint.DXFEED_WILDCARD_ENABLE_PROPERTY, "true")
+            .withRole(DXEndpoint.Role.PUBLISHER)
+            .build()
+            .connect("tape:WriteTapeFile.binary.txt[format=binary]")
+    );
+    publishQuotes(
+        DXEndpoint.newBuilder()
+            .withProperty(DXEndpoint.DXFEED_WILDCARD_ENABLE_PROPERTY, "true")
+            .withRole(DXEndpoint.Role.PUBLISHER)
+            .build()
+            .connect("tape:WriteTapeFile.csv.txt[format=csv]")
+    );
+    publishQuotes(
+        DXEndpoint.newBuilder()
+            .withProperty(DXEndpoint.DXFEED_WILDCARD_ENABLE_PROPERTY, "true")
+            .withRole(DXEndpoint.Role.PUBLISHER)
+            .build()
+            .connect("tape:WriteTapeFile.opt.txt[opt=hs]")
+    );
+  }
+
+  private static void publishQuotes(final DXEndpoint endpointText) throws InterruptedException {
+    DXPublisher pub = endpointText.getPublisher();
+    Quote quote1 = new Quote("TEST1");
+    quote1.setBidPrice(10.1);
+    quote1.setAskPrice(10.2);
+    Quote quote2 = new Quote("TEST2");
+    quote2.setBidPrice(17.1);
+    quote2.setAskPrice(17.2);
+    pub.publishEvents(Arrays.asList(quote1, quote2));
+    endpointText.awaitProcessed();
+    endpointText.closeAndAwaitTermination();
+  }
+
+  private static void dxEndpointOrderBookModel() throws InterruptedException {
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder().build();
+    dxEndpoint.connect("demo.dxfeed.com:7300");
+    DXFeed feed = dxEndpoint.getFeed();
     OrderBookModel model = new OrderBookModel();
     model.setFilter(OrderBookModelFilter.ALL);
     model.setSymbol("AAPL");
     model.addListener(new OrderBookModelListener() {
-      public void modelChanged(OrderBookModelListener.Change change) {
+      public void modelChanged(Change change) {
         System.out.println("Buy orders:");
         for (Order order : model.getBuyOrders()) {
           System.out.println(order);
@@ -124,7 +124,76 @@ public class NativeLibMain {
     });
     model.attach(feed);
     Thread.sleep(1000);
-    dxEndpoint4.close();
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointReadFromTape() throws InterruptedException {
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+        .withRole(DXEndpoint.Role.FEED)
+        .withProperties(System.getProperties())
+        .build().user("demo").password("demo");
+    dxEndpoint.connect("tape.csv[format=csv,readAs=ticker_data,cycle,speed=max]");
+    final var subscription3 = dxEndpoint.getFeed().createSubscription(Quote.class);
+    subscription3.addEventListener(System.out::println);
+    subscription3.addSymbols("AAPL");
+    Thread.sleep(1000);
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointTimeSeriesSubscription() throws InterruptedException {
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+        .withRole(DXEndpoint.Role.FEED)
+        .withProperties(System.getProperties())
+        .build().user("demo").password("demo");
+    dxEndpoint.connect("demo.dxfeed.com:7300");
+    DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> subscription2 = dxEndpoint.getFeed()
+        .createTimeSeriesSubscription(
+            TimeAndSale.class,
+            TheoPrice.class,
+            Underlying.class,
+            Candle.class,
+            Greeks.class,
+            DailyCandle.class
+        );
+    subscription2.setFromTime(0);
+    subscription2.addEventListener(System.out::println);
+    subscription2.addSymbols(
+        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
+            "BTC/USDT:CXBINA"));
+    Thread.sleep(1000);
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointAuther() throws InterruptedException {
+    final String token = System.getProperty("token");
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+        .withRole(DXEndpoint.Role.FEED)
+        .withProperties(System.getProperties())
+        .build().user("demo").password("demo");
+    final DXFeedSubscription<MarketEvent> subscription1 = dxEndpoint.getFeed()
+        .createSubscription(Quote.class, TimeAndSale.class);
+    dxEndpoint.connect("lessona.dxfeed.com:7905[login=entitle:" + token + "]");
+    subscription1.addEventListener(System.out::println);
+    subscription1.addSymbols(
+        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
+            "BTC/USDT:CXBINA", "/BTCUSDT:CXBINA"));
+    Thread.sleep(1000);
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointInstance() {
+    final DXEndpoint dxEndpoint = DXEndpoint.getInstance();
+    dxEndpoint.connect("demo.dxfeed.com:7300");
+    final DXFeedSubscription<Order> subscription = dxEndpoint.getFeed()
+        .createSubscription(Order.class);
+    subscription.addEventListener(System.out::println);
+    subscription.addSymbols("AAPL");
+    final Promise<List<Series>> aapl = dxEndpoint.getFeed()
+        .getIndexedEventsPromise(Series.class, "AAPL", IndexedEventSource.DEFAULT);
+    aapl.awaitWithoutException(30, TimeUnit.SECONDS);
+    final List<Series> result = aapl.getResult();
+    final Throwable exception = aapl.getException();
+    dxEndpoint.close();
   }
 
   public static void liveIpf() throws InterruptedException, IOException {

@@ -47,6 +47,17 @@
   "methods":[{"name":"getInstance","parameterTypes":[] }]
 },
 {
+  "name":"com.devexperts.qd.qtp.AgentAdapter$Factory",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"getAggregationPeriod","parameterTypes":[] },
+    {"name":"getChannels","parameterTypes":[] },
+    {"name":"getSubscriptionExecutor","parameterTypes":[] },
+    {"name":"getSubscriptionKeepAlive","parameterTypes":[] },
+    {"name":"getSubscriptionThreads","parameterTypes":[] }
+  ]
+},
+{
   "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
   "queryAllPublicMethods":true,
   "methods":[{"name":"getFieldReplacer","parameterTypes":[] }]
@@ -105,8 +116,20 @@
   "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"com.devexperts.qd.qtp.file.TapeConnector",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
+    {"name":"setOpt","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
   "name":"com.devexperts.qd.qtp.file.TapeConnectorFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.TapeConnectorMBean",
+  "queryAllPublicMethods":true
 },
 {
   "name":"com.devexperts.qd.qtp.nio.NioConnectorFactory",
