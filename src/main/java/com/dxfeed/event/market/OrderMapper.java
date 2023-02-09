@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class OrderMapper extends OrderAbstractMapper<Order, DxfgOrder> {
+public class OrderMapper<T extends Order, V extends DxfgOrder> extends OrderAbstractMapper<T, V> {
 
   private final Mapper<String, CCharPointer> stringMapper;
 
@@ -20,32 +20,33 @@ public class OrderMapper extends OrderAbstractMapper<Order, DxfgOrder> {
   }
 
   @Override
-  public DxfgOrder createNativeObject() {
-    final DxfgOrder nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrder.class));
+  public V createNativeObject() {
+    final V nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrder.class));
     nObject.setClazz(DxfgEventClazz.DXFG_EVENT_ORDER.getCValue());
     return nObject;
   }
 
   @Override
-  public void fillNative(final Order jObject, final DxfgOrder nObject) {
+  public void fillNative(final T jObject, final V nObject) {
     super.fillNative(jObject, nObject);
     nObject.setMarketMaker(this.stringMapper.toNative(jObject.getMarketMaker()));
   }
 
   @Override
-  public void cleanNative(final DxfgOrder nObject) {
+  public void cleanNative(final V nObject) {
     super.cleanNative(nObject);
+    this.stringMapper.release(nObject.getMarketMaker());
   }
 
   @Override
-  protected Order doToJava(final DxfgOrder nObject) {
-    final Order jObject = new Order();
+  protected T doToJava(final V nObject) {
+    final T jObject = (T) new Order();
     this.fillJava(nObject, jObject);
     return jObject;
   }
 
   @Override
-  public void fillJava(final DxfgOrder nObject, final Order jObject) {
+  public void fillJava(final V nObject, final T jObject) {
     super.fillJava(nObject, jObject);
     jObject.setMarketMaker(this.stringMapper.toJava(nObject.getMarketMaker()));
   }

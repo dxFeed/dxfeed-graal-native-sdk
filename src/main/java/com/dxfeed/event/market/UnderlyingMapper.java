@@ -29,6 +29,7 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setVolatility(jObject.getVolatility());
+    nObject.setFrontVolatility(jObject.getFrontVolatility());
     nObject.setBackVolatility(jObject.getBackVolatility());
     nObject.setCallVolume(jObject.getCallVolume());
     nObject.setPutVolume(jObject.getPutVolume());
@@ -53,6 +54,7 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
     jObject.setEventFlags(nObject.getEventFlags());
     jObject.setIndex(nObject.getIndex());
     jObject.setVolatility(nObject.getVolatility());
+    jObject.setFrontVolatility(nObject.getFrontVolatility());
     jObject.setBackVolatility(nObject.getBackVolatility());
     jObject.setCallVolume(nObject.getCallVolume());
     jObject.setPutVolume(nObject.getPutVolume());

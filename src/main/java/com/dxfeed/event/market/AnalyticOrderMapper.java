@@ -7,10 +7,13 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class AnalyticOrderMapper extends OrderAbstractMapper<AnalyticOrder, DxfgAnalyticOrder> {
+public class AnalyticOrderMapper extends OrderMapper<AnalyticOrder, DxfgAnalyticOrder> {
 
-  public AnalyticOrderMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
-    super(stringMapperForMarketEvent);
+  public AnalyticOrderMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
+      final Mapper<String, CCharPointer> stringMapper
+  ) {
+    super(stringMapperForMarketEvent, stringMapper);
   }
 
   @Override
@@ -27,11 +30,6 @@ public class AnalyticOrderMapper extends OrderAbstractMapper<AnalyticOrder, Dxfg
     nObject.setIcebergHiddenSize(jObject.getIcebergHiddenSize());
     nObject.setIcebergExecutedSize(jObject.getIcebergExecutedSize());
     nObject.setIcebergFlags(jObject.getIcebergFlags());
-  }
-
-  @Override
-  public void cleanNative(final DxfgAnalyticOrder nObject) {
-    super.cleanNative(nObject);
   }
 
   @Override

@@ -201,16 +201,14 @@ public final class NativeUtils {
     );
     MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING_UNLIMITED_STORE);
     MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_INDEXED_EVENT_SOURCE);
-    final OrderMapper orderMapper = new OrderMapper(MAPPER_STRING_UNLIMITED_STORE,
-        MAPPER_STRING_CACHE_STORE);
     MAPPER_EVENT = new EventMappers(
         MAPPER_STRING_UNLIMITED_STORE,
         new QuoteMapper(MAPPER_STRING_UNLIMITED_STORE),
         new SeriesMapper(MAPPER_STRING_UNLIMITED_STORE),
         new TimeAndSaleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
         new SpreadOrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        orderMapper,
-        new AnalyticOrderMapper(MAPPER_STRING_UNLIMITED_STORE),
+        new OrderMapper<>(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
+        new AnalyticOrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
         new MessageMapper(MAPPER_STRING),
         new OrderBaseMapper(MAPPER_STRING_UNLIMITED_STORE),
         new ConfigurationMapper(MAPPER_STRING),

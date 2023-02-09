@@ -404,7 +404,7 @@ typedef struct dxfg_order_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html">Javadoc</a>
  */
 typedef struct dxfg_analytic_order_t {
-    dxfg_order_base_t order_base;
+    dxfg_order_t order_base;
     double iceberg_peak_size;
     double iceberg_hidden_size;
     double iceberg_executed_size;

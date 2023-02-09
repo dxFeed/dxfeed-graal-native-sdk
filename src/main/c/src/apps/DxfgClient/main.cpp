@@ -120,7 +120,7 @@ void printEvent(const dxfg_event_type_t *pEvent) {
         auto *event = (dxfg_analytic_order_t *)pEvent;
         printf(
             "C: ANALYTIC_ORDER{order_base.count=%lld, iceberg_peak_size=%f}\n",
-            event->order_base.count,
+            event->order_base.order_base.count,
             event->iceberg_peak_size
         );
     } else if (pEvent->clazz == DXFG_EVENT_MESSAGE) {
@@ -337,7 +337,7 @@ void readerIpf(graal_isolatethread_t *thread) {
 }
 
 void finalizeListener(graal_isolatethread_t *thread) {
-    printf("C: dxEndpoint BEGIN\n");
+    printf("C: finalizeListener BEGIN\n");
 
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
     dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
@@ -363,7 +363,38 @@ void finalizeListener(graal_isolatethread_t *thread) {
     std::cin.get();
     dxfg_gc(thread);
     std::cin.get();
-    printf("C: dxEndpoint END\n");
+    printf("C: finalizeListener END\n");
+}
+
+void dxEndpointSubscription(graal_isolatethread_t *thread) {
+    printf("C: dxEndpointSubscription BEGIN\n");
+
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
+    dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener, finalize, nullptr);
+
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
+
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
+
+    std::cin.get();
+
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    printf("C: dxEndpointSubscription END\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -380,7 +411,8 @@ int main(int argc, char *argv[]) {
 
 //    liveIpf(thread);
 //    readerIpf(thread);
-    finalizeListener(thread);
+//    finalizeListener(thread);
+    dxEndpointSubscription(thread);
 
     // Sets system properties.
 //    for (const auto &property : properties) {

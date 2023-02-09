@@ -6,7 +6,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_analytic_order_t")
-public interface DxfgAnalyticOrder extends DxfgOrderBase {
+public interface DxfgAnalyticOrder extends DxfgOrder {
 
   @CField("iceberg_peak_size")
   double getIcebergPeakSize();
