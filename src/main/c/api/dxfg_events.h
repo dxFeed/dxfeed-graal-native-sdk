@@ -232,8 +232,8 @@ typedef struct dxfg_candle_t {
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
     dxfg_candle_symbol_t *event_symbol;
-    int32_t event_flags;
     int64_t event_time;
+    int32_t event_flags;
     int64_t index;
     int64_t count;
     double open;
