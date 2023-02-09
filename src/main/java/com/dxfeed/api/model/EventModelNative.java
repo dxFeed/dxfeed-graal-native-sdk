@@ -1,5 +1,6 @@
 package com.dxfeed.api.model;
 
+import static com.dxfeed.api.NativeUtils.FINALIZER;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
 import static com.dxfeed.api.NativeUtils.MAPPER_EXECUTOR;
 import static com.dxfeed.api.NativeUtils.MAPPER_FEED;
@@ -20,6 +21,7 @@ import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.javac.DxfgExecuter;
+import com.dxfeed.api.javac.DxfgFinalizeFunction;
 import com.dxfeed.api.symbol.DxfgSymbol;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.TimeSeriesEvent;
@@ -580,10 +582,15 @@ public class EventModelNative {
   public static int dxfg_ObservableListModel_addListener(
       final IsolateThread ignoreThread,
       final DxfgObservableListModel dxfgObservableListModel,
-      final DxfgObservableListModelListener dxfgObservableListModelListener
+      final DxfgObservableListModelListener dxfgObservableListModelListener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
     MAPPER_OBSERVABLE_LIST_MODEL.toJava(dxfgObservableListModel).addListener(
-        MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener)
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -623,10 +630,16 @@ public class EventModelNative {
   public static int dxfg_OrderBookModel_addListener(
       final IsolateThread ignoreThread,
       final DxfgOrderBookModel dxfgOrderBookModel,
-      final DxfgOrderBookModelListener dxfgOrderBookModelListener
+      final DxfgOrderBookModelListener dxfgOrderBookModelListener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
-    MAPPER_ORDER_BOOK_MODEL.toJava(dxfgOrderBookModel)
-        .addListener(MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener));
+    MAPPER_ORDER_BOOK_MODEL.toJava(dxfgOrderBookModel).addListener(
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 

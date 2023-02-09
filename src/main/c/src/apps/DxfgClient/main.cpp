@@ -296,6 +296,10 @@ void stateChangeListener(graal_isolatethread_t *thread,
     printf("C: IPF stateChangeListener %d -> %d\n", old_state, new_state);
 }
 
+void finalize(graal_isolatethread_t *thread, void *userData) {
+    printf("C: finalize\n");
+}
+
 void liveIpf(graal_isolatethread_t *thread) {
     printf("C: liveIpf BEGIN\n");
     dxfg_ipf_collector_t* collector = dxfg_InstrumentProfileCollector_new(thread);
@@ -305,9 +309,9 @@ void liveIpf(graal_isolatethread_t *thread) {
         collector
     );
     dxfg_ipf_update_listener_t* listener = dxfg_InstrumentProfileUpdateListener_new(thread, &updateListener, nullptr);
-    dxfg_InstrumentProfileCollector_addUpdateListener(thread, collector, listener);
+    dxfg_InstrumentProfileCollector_addUpdateListener(thread, collector, listener, finalize, nullptr);
     dxfg_ipf_connection_state_change_listener_t* listenerState = dxfg_IpfPropertyChangeListener_new(thread, &stateChangeListener, nullptr);
-    dxfg_InstrumentProfileConnection_addStateChangeListener(thread, connection, listenerState);
+    dxfg_InstrumentProfileConnection_addStateChangeListener(thread, connection, listenerState, finalize, nullptr);
     dxfg_InstrumentProfileConnection_start(thread, connection);
     dxfg_InstrumentProfileConnection_waitUntilCompleted(thread, connection, 30000);
     dxfg_InstrumentProfileConnection_close(thread, connection);
@@ -332,6 +336,36 @@ void readerIpf(graal_isolatethread_t *thread) {
     printf("C: readerIpf END\n");
 }
 
+void finalizeListener(graal_isolatethread_t *thread) {
+    printf("C: dxEndpoint BEGIN\n");
+
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
+    dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener, finalize, nullptr);
+
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
+
+    dxfg_DXEndpoint_close(thread, endpoint);
+
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+
+    dxfg_gc(thread);
+    std::cin.get();
+    dxfg_gc(thread);
+    std::cin.get();
+    printf("C: dxEndpoint END\n");
+}
+
 int main(int argc, char *argv[]) {
     // Parses input args.
     parseArgs(argc, argv);
@@ -345,7 +379,8 @@ int main(int argc, char *argv[]) {
     }
 
 //    liveIpf(thread);
-    readerIpf(thread);
+//    readerIpf(thread);
+    finalizeListener(thread);
 
     // Sets system properties.
 //    for (const auto &property : properties) {

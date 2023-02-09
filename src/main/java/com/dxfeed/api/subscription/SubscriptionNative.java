@@ -1,5 +1,6 @@
 package com.dxfeed.api.subscription;
 
+import static com.dxfeed.api.NativeUtils.FINALIZER;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENTS;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
 import static com.dxfeed.api.NativeUtils.MAPPER_EXECUTOR;
@@ -23,6 +24,7 @@ import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.javac.DxfgExecuter;
+import com.dxfeed.api.javac.DxfgFinalizeFunction;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.api.symbol.DxfgSymbol;
 import com.dxfeed.api.symbol.DxfgSymbolList;
@@ -166,10 +168,16 @@ public class SubscriptionNative {
   public static int dxfg_DXFeedSubscription_addEventListener(
       final IsolateThread ignoreThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeedEventListener dxfgFeedEventListener
+      final DxfgFeedEventListener dxfgFeedEventListener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
-    MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
-        .addEventListener(MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener));
+    MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addEventListener(
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 
@@ -377,10 +385,15 @@ public class SubscriptionNative {
   public static int dxfg_DXFeedSubscription_addChangeListener(
       final IsolateThread ignoreThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
+      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
     MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addChangeListener(
-        MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
     );
     return EXECUTE_SUCCESSFULLY;
   }

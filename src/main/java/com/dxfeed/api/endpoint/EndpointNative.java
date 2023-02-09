@@ -1,5 +1,6 @@
 package com.dxfeed.api.endpoint;
 
+import static com.dxfeed.api.NativeUtils.FINALIZER;
 import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT;
 import static com.dxfeed.api.NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER;
 import static com.dxfeed.api.NativeUtils.MAPPER_EVENT_TYPES;
@@ -16,6 +17,7 @@ import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.api.feed.DxfgFeed;
 import com.dxfeed.api.javac.DxfgExecuter;
+import com.dxfeed.api.javac.DxfgFinalizeFunction;
 import com.dxfeed.api.publisher.DxfgPublisher;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -240,10 +242,16 @@ public final class EndpointNative {
   public static int dxfg_DXEndpoint_addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointStateChangeListener listener
+      final DxfgEndpointStateChangeListener listener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
-    MAPPER_ENDPOINT.toJava(dxfgEndpoint)
-        .addStateChangeListener(MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener));
+    MAPPER_ENDPOINT.toJava(dxfgEndpoint).addStateChangeListener(
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
+    );
     return EXECUTE_SUCCESSFULLY;
   }
 

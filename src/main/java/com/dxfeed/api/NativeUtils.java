@@ -128,7 +128,12 @@ import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.promise.Promise;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -137,6 +142,7 @@ import org.graalvm.nativeimage.c.type.CIntPointer;
 
 public final class NativeUtils {
 
+  public static final Finalizer FINALIZER = new Finalizer();
   public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
   public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
@@ -186,7 +192,11 @@ public final class NativeUtils {
     MAPPER_STRING_UNLIMITED_STORE = new StringMapperUnlimitedStore();
     MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(3000);
     SingletonScheduledExecutorService.start(
-        () -> ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp(),
+        "clean cache & finalize native",
+        () -> {
+          ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp();
+          FINALIZER.finalizeResources();
+        },
         1000
     );
     MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING_UNLIMITED_STORE);
@@ -248,20 +258,58 @@ public final class NativeUtils {
     MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER = new IpfConnectionStateChangeListenerMapper();
     MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER = new InstrumentProfileUpdateListenerMapper();
   }
+
+  public static class Finalizer {
+
+    public final Set<Reference<Object>> holder = ConcurrentHashMap.newKeySet();
+    private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
+
+    public <T> T wrapObjectWithFinalizer(final T object, final Runnable finalizer) {
+      holder.add(new FinalizerReference(object, queue, finalizer));
+      return object;
+    }
+
+    private void finalizeResources() {
+      Reference<?> reference;
+      while ((reference = queue.poll()) != null) {
+        ((FinalizerReference) reference).finalizeResources();
+        holder.remove(reference);
+      }
+    }
+
+
+    private static class FinalizerReference extends PhantomReference<Object> {
+
+      private final Runnable finalize;
+
+      public FinalizerReference(
+          final Object referent,
+          final ReferenceQueue<Object> q,
+          final Runnable finalize
+      ) {
+        super(referent, q);
+        this.finalize = finalize;
+      }
+
+      public void finalizeResources() {
+        this.finalize.run();
+      }
+    }
+  }
 }
 
 class SingletonScheduledExecutorService {
 
   private static volatile ScheduledExecutorService instance;
 
-  public static void start(final Runnable task, final int periodInMs) {
+  public static void start(final String name, final Runnable task, final int periodInMs) {
     if (instance == null) {
       synchronized (SingletonScheduledExecutorService.class) {
         if (instance == null) {
           instance = Executors.newScheduledThreadPool(1, runnable -> {
             final Thread thread = new Thread(runnable);
             thread.setDaemon(true);
-            thread.setName("clean cache");
+            thread.setName(name);
             return thread;
           });
           instance.scheduleAtFixedRate(task, periodInMs, periodInMs, MILLISECONDS);

@@ -1,5 +1,6 @@
 package com.dxfeed.api.ipf;
 
+import static com.dxfeed.api.NativeUtils.FINALIZER;
 import static com.dxfeed.api.NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR;
 import static com.dxfeed.api.NativeUtils.MAPPER_INSTRUMENT_PROFILE_CONNECTION;
 import static com.dxfeed.api.NativeUtils.MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER;
@@ -9,6 +10,7 @@ import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.api.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.api.javac.DxfgFinalizeFunction;
 import com.dxfeed.ipf.live.InstrumentProfileConnection;
 import java.util.concurrent.TimeUnit;
 import org.graalvm.nativeimage.CurrentIsolate;
@@ -140,10 +142,15 @@ public class InstrumentProfileConnectionNative {
   public static int dxfg_InstrumentProfileConnection_addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileConnection connection,
-      final DxfgIpfConnectionStateChangeListener listener
+      final DxfgIpfConnectionStateChangeListener listener,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
   ) {
     MAPPER_INSTRUMENT_PROFILE_CONNECTION.toJava(connection).addStateChangeListener(
-        MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toJava(listener)
+        FINALIZER.wrapObjectWithFinalizer(
+            MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toJava(listener),
+            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        )
     );
     return EXECUTE_SUCCESSFULLY;
   }

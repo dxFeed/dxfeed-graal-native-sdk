@@ -118,6 +118,15 @@ public class JavacNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_gc",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_gc(final IsolateThread ignoredThread) {
+    System.gc();
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_ByteArrayInputStream_new",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )

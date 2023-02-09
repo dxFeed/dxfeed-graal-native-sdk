@@ -43,6 +43,8 @@ typedef struct dxfg_input_stream_t {
     dxfg_java_object_handler handler;
 } dxfg_input_stream_t;
 
+typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user_data);
+
 // free the memory occupied by the с data structure and release the reference to the java object
 int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler*);
 
@@ -58,6 +60,8 @@ dxfg_executor_t*  dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethre
 int32_t           dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal_isolatethread_t *thread, dxfg_executor_t *executor);
 
 dxfg_input_stream_t*   dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thread, const char* bytes, int32_t size);
+
+int32_t           dxfg_gc(graal_isolatethread_t *thread); // only for testing
 
 /** @} */ // end of Javac
 
