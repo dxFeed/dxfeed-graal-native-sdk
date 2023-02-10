@@ -87,6 +87,15 @@ void printEvent(const dxfg_event_type_t *pEvent) {
             event->index,
             event->volatility
         );
+    } else if (pEvent->clazz == DXFG_EVENT_OPTION_SALE) {
+        auto *event = (dxfg_option_sale_t *)pEvent;
+        printf(
+            "C: OPTION_SALE{event_symbol=%s, index=%lld, volatility=%f, option_symbol=%s}\n",
+            event->market_event.event_symbol,
+            event->index,
+            event->volatility,
+            event->option_symbol
+        );
     } else if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
         auto *time_and_sale = (dxfg_time_and_sale_t *)pEvent;
         printf(

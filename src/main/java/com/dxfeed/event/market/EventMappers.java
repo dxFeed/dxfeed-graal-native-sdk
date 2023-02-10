@@ -6,6 +6,7 @@ import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_CONFIGURATION;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_DAILY_CANDLE;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_GREEKS;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_MESSAGE;
+import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_OPTION_SALE;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_ORDER;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_ORDER_BASE;
 import static com.dxfeed.api.events.DxfgEventClazz.DXFG_EVENT_PROFILE;
@@ -47,6 +48,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
       final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final QuoteMapper quoteMapper,
       final SeriesMapper seriesMapper,
+      final OptionSaleMapper optionSaleMapper,
       final TimeAndSaleMapper timeAndSaleMapper,
       final SpreadOrderMapper spreadOrderMapper,
       final OrderMapper orderMapper,
@@ -68,6 +70,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByClass = new HashMap<>();
     this.mapperByClass.put(Quote.class, quoteMapper);
     this.mapperByClass.put(Series.class, seriesMapper);
+    this.mapperByClass.put(OptionSale.class, optionSaleMapper);
     this.mapperByClass.put(TimeAndSale.class, timeAndSaleMapper);
     this.mapperByClass.put(SpreadOrder.class, spreadOrderMapper);
     this.mapperByClass.put(AnalyticOrder.class, analyticOrderMapper);
@@ -87,6 +90,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByDxfgEventType = new EnumMap<>(DxfgEventClazz.class);
     this.mapperByDxfgEventType.put(DXFG_EVENT_QUOTE, quoteMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_SERIES, seriesMapper);
+    this.mapperByDxfgEventType.put(DXFG_EVENT_OPTION_SALE, optionSaleMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_TIME_AND_SALE, timeAndSaleMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_SPREAD_ORDER, spreadOrderMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_ORDER, orderMapper);

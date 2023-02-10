@@ -57,6 +57,48 @@ public interface DxfgProfile extends DxfgMarketEvent {
   @CField("low_52_week_price")
   void setLow52WeekPrice(double value);
 
+  @CField("beta")
+  double getBeta();
+
+  @CField("beta")
+  void setBeta(double value);
+
+  @CField("earnings_per_share")
+  double getEarningsPerShare();
+
+  @CField("earnings_per_share")
+  void setEarningsPerShare(double value);
+
+  @CField("dividend_frequency")
+  double getDividendFrequency();
+
+  @CField("dividend_frequency")
+  void setDividendFrequency(double value);
+
+  @CField("ex_dividend_amount")
+  double getExDividendAmount();
+
+  @CField("ex_dividend_amount")
+  void setExDividendAmount(double value);
+
+  @CField("ex_dividend_day_id")
+  int getExDividendDayId();
+
+  @CField("ex_dividend_day_id")
+  void setExDividendDayId(int value);
+
+  @CField("shares")
+  double getShares();
+
+  @CField("shares")
+  void setShares(double value);
+
+  @CField("free_float")
+  double getFreeFloat();
+
+  @CField("free_float")
+  void setFreeFloat(double value);
+
   @CField("flags")
   int getFlags();
 

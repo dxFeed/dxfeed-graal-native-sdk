@@ -4,6 +4,7 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.event.market.AnalyticOrder;
+import com.dxfeed.event.market.OptionSale;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderBase;
 import com.dxfeed.event.market.Profile;
@@ -48,6 +49,7 @@ public enum DxfgEventClazz {
   DXFG_EVENT_ANALYTIC_ORDER(AnalyticOrder.class),// INDEXED -> ORDER_BASE -> ORDER
   DXFG_EVENT_SPREAD_ORDER(SpreadOrder.class),    // INDEXED -> ORDER_BASE
   DXFG_EVENT_SERIES(Series.class),               // INDEXED
+  DXFG_EVENT_OPTION_SALE(OptionSale.class),      // INDEXED
   ;
   private static final Map<Class<? extends EventType<?>>, DxfgEventClazz> map = new HashMap<>();
 
@@ -71,6 +73,7 @@ public enum DxfgEventClazz {
     map.put(AnalyticOrder.class, DXFG_EVENT_ANALYTIC_ORDER);
     map.put(SpreadOrder.class, DXFG_EVENT_SPREAD_ORDER);
     map.put(Series.class, DXFG_EVENT_SERIES);
+    map.put(OptionSale.class, DXFG_EVENT_OPTION_SALE);
   }
 
   public final Class<? extends EventType<?>> clazz;

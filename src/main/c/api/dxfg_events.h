@@ -92,6 +92,7 @@ typedef enum dxfg_event_clazz_t {
     DXFG_EVENT_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
     DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
     DXFG_EVENT_SERIES,         // INDEXED
+    DXFG_EVENT_OPTION_SALE,    // INDEXED
 } dxfg_event_clazz_t;
 
 /**
@@ -165,6 +166,13 @@ typedef struct dxfg_profile_t {
     double low_limit_price;
     double high_52_week_price;
     double low_52_week_price;
+    double beta;
+    double earnings_per_share;
+    double dividend_frequency;
+    double ex_dividend_amount;
+    int32_t ex_dividend_day_id;
+    double shares;
+    double free_float;
     int32_t flags;
 } dxfg_profile_t;
 
@@ -345,6 +353,30 @@ typedef struct dxfg_time_and_sale_t {
     const char *buyer;
     const char *seller;
 } dxfg_time_and_sale_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html">Javadoc</a>
+ */
+typedef struct dxfg_option_sale_t {
+    dxfg_market_event_t market_event;
+    //    dxfg_indexed_event_t indexed_event;
+    int32_t event_flags;
+
+    int64_t index;
+    int64_t time_sequence;
+    int32_t time_nano_part;
+    int16_t exchange_code;
+    double price;
+    double size;
+    double bid_price;
+    double ask_price;
+    const char *exchange_sale_conditions;
+    int32_t flags;
+    double underlying_price;
+    double volatility;
+    double delta;
+    const char *option_symbol;
+} dxfg_option_sale_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a>

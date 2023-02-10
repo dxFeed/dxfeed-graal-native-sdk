@@ -37,6 +37,13 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
     nObject.setLowLimitPrice(jObject.getLowLimitPrice());
     nObject.setHigh52WeekPrice(jObject.getHigh52WeekPrice());
     nObject.setLow52WeekPrice(jObject.getLow52WeekPrice());
+    nObject.setBeta(jObject.getBeta());
+    nObject.setEarningsPerShare(jObject.getEarningsPerShare());
+    nObject.setDividendFrequency(jObject.getDividendFrequency());
+    nObject.setExDividendAmount(jObject.getExDividendAmount());
+    nObject.setExDividendDayId(jObject.getExDividendDayId());
+    nObject.setShares(jObject.getShares());
+    nObject.setFreeFloat(jObject.getFreeFloat());
     nObject.setFlags(jObject.getFlags());
   }
 
@@ -65,6 +72,13 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
     jObject.setLowLimitPrice(nObject.getLowLimitPrice());
     jObject.setHigh52WeekPrice(nObject.getHigh52WeekPrice());
     jObject.setLow52WeekPrice(nObject.getLow52WeekPrice());
+    jObject.setBeta(nObject.getBeta());
+    jObject.setEarningsPerShare(nObject.getEarningsPerShare());
+    jObject.setDividendFrequency(nObject.getDividendFrequency());
+    jObject.setExDividendAmount(nObject.getExDividendAmount());
+    jObject.setExDividendDayId(nObject.getExDividendDayId());
+    jObject.setShares(nObject.getShares());
+    jObject.setFreeFloat(nObject.getFreeFloat());
     jObject.setFlags(nObject.getFlags());
   }
 }

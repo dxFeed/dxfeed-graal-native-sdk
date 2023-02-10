@@ -10,6 +10,7 @@ const std::string CommandLineParser::propertyPattern_ = "-D";
 const std::unordered_map<std::string, dxfg_event_clazz_t> CommandLineParser::eventTypesMap_ = {
     {"Quote", DXFG_EVENT_QUOTE},
     {"Series", DXFG_EVENT_SERIES},
+    {"OptionSale", DXFG_EVENT_OPTION_SALE},
     {"TimeAndSale", DXFG_EVENT_TIME_AND_SALE},
     {"SpreadOrder", DXFG_EVENT_SPREAD_ORDER},
     {"Order", DXFG_EVENT_ORDER},
