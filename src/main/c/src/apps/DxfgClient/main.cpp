@@ -198,7 +198,7 @@ void printEvent(const dxfg_event_type_t *pEvent) {
         auto *event = (dxfg_candle_t *)pEvent;
         printf(
             "C: CANDLE{symbol=%s, index=%lld, ask_volume=%E}\n",
-            event->event_symbol->symbol,
+            event->event_symbol,
             event->index,
             event->ask_volume
         );
@@ -206,7 +206,7 @@ void printEvent(const dxfg_event_type_t *pEvent) {
         auto *event = (dxfg_daily_candle_t *)pEvent;
         printf(
             "C: DAILY_CANDLE{symbol=%s, index=%lld, ask_volume=%E}\n",
-            event->candle.event_symbol->symbol,
+            event->candle.event_symbol,
             event->candle.index,
             event->candle.ask_volume
         );

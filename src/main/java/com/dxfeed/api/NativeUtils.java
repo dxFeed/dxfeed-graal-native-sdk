@@ -219,8 +219,8 @@ public final class NativeUtils {
         new GreeksMapper(MAPPER_STRING_UNLIMITED_STORE),
         new SummaryMapper(MAPPER_STRING_UNLIMITED_STORE),
         new ProfileMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new DailyCandleMapper(MAPPER_SYMBOL),
-        new CandleMapper<>(MAPPER_SYMBOL)
+        new DailyCandleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_SYMBOL),
+        new CandleMapper<>(MAPPER_STRING_UNLIMITED_STORE, MAPPER_SYMBOL)
     );
     MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
     MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);

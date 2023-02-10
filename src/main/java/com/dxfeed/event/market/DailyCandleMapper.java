@@ -7,11 +7,15 @@ import com.dxfeed.api.symbol.DxfgSymbol;
 import com.dxfeed.event.candle.DailyCandle;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class DailyCandleMapper extends CandleMapper<DailyCandle, DxfgDailyCandle> {
 
-  public DailyCandleMapper(final Mapper<Object, DxfgSymbol> symbolMapper) {
-    super(symbolMapper);
+  public DailyCandleMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
+      final Mapper<Object, DxfgSymbol> symbolMapper
+  ) {
+    super(stringMapperForMarketEvent, symbolMapper);
   }
 
   @Override

@@ -1,21 +1,26 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgCandle;
 import com.dxfeed.api.events.DxfgEventClazz;
-import com.dxfeed.api.symbol.DxfgCandleSymbol;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.symbol.DxfgSymbol;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.CandleSymbol;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventMapper<T, V> {
 
+  protected final Mapper<String, CCharPointer> stringMapper;
   protected final Mapper<Object, DxfgSymbol> symbolMapper;
 
-  public CandleMapper(final Mapper<Object, DxfgSymbol> symbolMapper) {
+  public CandleMapper(
+      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
+      final Mapper<Object, DxfgSymbol> symbolMapper
+  ) {
     this.symbolMapper = symbolMapper;
+    this.stringMapper = stringMapperForMarketEvent;
   }
 
   @Override
@@ -42,14 +47,12 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
     nObject.setAskVolume(jObject.getAskVolumeAsDouble());
     nObject.setImpVolatility(jObject.getImpVolatility());
     nObject.setOpenInterest(jObject.getOpenInterestAsDouble());
-    nObject.setCandleSymbol(
-        (DxfgCandleSymbol) this.symbolMapper.toNative(jObject.getEventSymbol())
-    );
+    nObject.setSymbol(this.stringMapper.toNative(jObject.getEventSymbol().toString()));
   }
 
   @Override
   public void cleanNative(final V nObject) {
-    this.symbolMapper.release(nObject.getCandleSymbol());
+    this.stringMapper.release(nObject.getSymbol());
   }
 
   @Override
@@ -75,15 +78,13 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
     jObject.setAskVolumeAsDouble(nObject.getAskVolume());
     jObject.setImpVolatility(nObject.getImpVolatility());
     jObject.setOpenInterestAsDouble(nObject.getOpenInterest());
-    jObject.setEventSymbol((CandleSymbol) this.symbolMapper.toJava(nObject.getCandleSymbol()));
+    jObject.setEventSymbol(CandleSymbol.valueOf(this.stringMapper.toJava(nObject.getSymbol())));
   }
 
   @Override
   public V createNativeObject(final String symbol) {
     final V nObject = createNativeObject();
-    nObject.setCandleSymbol(
-        (DxfgCandleSymbol) this.symbolMapper.toNative(CandleSymbol.valueOf(symbol))
-    );
+    nObject.setSymbol(this.stringMapper.toNative(symbol));
     return nObject;
   }
 }

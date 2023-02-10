@@ -95,25 +95,6 @@ typedef enum dxfg_event_clazz_t {
 } dxfg_event_clazz_t;
 
 /**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleType.html">Javadoc</a>
- */
-typedef enum dxfg_candle_type_t {
-    TICK,
-    SECOND,
-    MINUTE,
-    HOUR,
-    DAY,
-    WEEK,
-    MONTH,
-    OPTEXP,
-    YEAR,
-    VOLUME,
-    PRICE,
-    PRICE_MOMENTUM,
-    PRICE_RENKO,
-} dxfg_candle_type_t;
-
-/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/EventType.html">Javadoc</a>
  */
 typedef struct dxfg_event_type_t {
@@ -231,7 +212,7 @@ typedef struct dxfg_candle_t {
     dxfg_event_type_t event_type;
     //    dxfg_time_series_event_t time_series_event;
     //    dxfg_lasting_event_t lasting_event;
-    dxfg_candle_symbol_t *event_symbol;
+    const char *event_symbol;
     int64_t event_time;
     int32_t event_flags;
     int64_t index;
