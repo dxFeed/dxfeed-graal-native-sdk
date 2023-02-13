@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
@@ -199,6 +200,18 @@ object BuildNuget : BuildType({
             successfulOnly = true
 
             enforceCleanCheckout = true
+        }
+    }
+
+    features {
+        notifications {
+            notifierSettings = slackNotifier {
+                connection = "PROJECT_EXT_137"
+                sendTo = "U03LVMM8XJN"
+                messageFormat = simpleMessageFormat()
+            }
+            buildFailed = true
+            buildFinishedSuccessfully = true
         }
     }
 
