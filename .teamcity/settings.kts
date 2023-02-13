@@ -207,10 +207,12 @@ object BuildNuget : BuildType({
         notifications {
             notifierSettings = slackNotifier {
                 connection = "PROJECT_EXT_137"
-                sendTo = "U03LVMM8XJN"
-                messageFormat = simpleMessageFormat()
+                sendTo = "#graal-api"
+                messageFormat = verboseMessageFormat {
+                    addChanges = true
+                    maximumNumberOfChanges = 10
+                }
             }
-            buildFailed = true
             buildFinishedSuccessfully = true
         }
     }
