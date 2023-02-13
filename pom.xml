@@ -10,17 +10,23 @@
   <dependencies>
     <dependency>
       <groupId>com.devexperts.qd</groupId>
-      <artifactId>qds</artifactId>
+      <artifactId>qds-tools</artifactId>
       <version>3.316</version>
-    </dependency>
-    <dependency>
-      <groupId>com.devexperts.mdd</groupId>
-      <artifactId>auther-api</artifactId>
-      <version>442</version>
       <exclusions>
         <exclusion>
           <groupId>com.devexperts.qd</groupId>
           <artifactId>qds-monitoring</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.mdd</groupId>
+      <artifactId>auther-api</artifactId>
+      <version>451</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.devexperts.qd</groupId>
+          <artifactId>qds-tools</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
