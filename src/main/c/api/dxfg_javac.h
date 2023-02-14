@@ -62,6 +62,7 @@ int32_t           dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTask
 dxfg_input_stream_t*   dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thread, const char* bytes, int32_t size);
 
 int32_t           dxfg_gc(graal_isolatethread_t *thread); // only for testing
+dxfg_java_object_handler*  dxfg_throw_exception(graal_isolatethread_t *thread); // only for testing
 
 /** @} */ // end of Javac
 

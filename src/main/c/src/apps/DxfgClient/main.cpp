@@ -5,6 +5,7 @@
 #include <DxfgEventFormatter/TimeAndSaleFormatter.hpp>
 #include <dxfg_api.h>
 #include <iostream>
+#include <unistd.h>
 
 using namespace dxfg;
 
@@ -16,6 +17,7 @@ static std::vector<dxfg_event_clazz_t> eventTypes{};
 static std::vector<std::string> symbols{};
 static bool isQuiteMode = false;
 
+void printException(graal_isolatethread_t *thread);
 static void printUsage() {
     // clang-format off
     std::cout << "usage: DxfgClient <properties> <address> <types> <symbols> <options>" << std::endl;
@@ -206,10 +208,12 @@ void printEvent(const dxfg_event_type_t *pEvent) {
     } else if (pEvent->clazz == DXFG_EVENT_CANDLE) {
         auto *event = (dxfg_candle_t *)pEvent;
         printf(
-            "C: CANDLE{symbol=%s, index=%lld, ask_volume=%E}\n",
+            "C: CANDLE{symbol=%s, index=%lld, ask_volume=%E, volume=%f, event_time=%lld}\n",
             event->event_symbol,
             event->index,
-            event->ask_volume
+            event->ask_volume,
+            event->volume,
+            event->event_time
         );
     } else if (pEvent->clazz == DXFG_EVENT_DAILY_CANDLE) {
         auto *event = (dxfg_daily_candle_t *)pEvent;
@@ -226,7 +230,6 @@ void printEvent(const dxfg_event_type_t *pEvent) {
         );
     }
 }
-
 
 void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *user_data) {
     for (int i = 0; i < events->size; ++i) {
@@ -262,8 +265,6 @@ void c_listener_func(graal_isolatethread_t *thread, dxfg_order_book_model_t* mod
     dxfg_JavaObjectHandler_release(thread, &sellObservableListOrders->handler);
 
     printf("\n");
-
-    dxfg_JavaObjectHandler_release(thread, &model->handler);
 }
 
 void c_observable_list_listener_func(graal_isolatethread_t *thread, dxfg_event_type_list* orders, void *user_data) {
@@ -271,7 +272,6 @@ void c_observable_list_listener_func(graal_isolatethread_t *thread, dxfg_event_t
     for (int i = 0; i < orders->size; ++i) {
         printEvent(reinterpret_cast<dxfg_event_type_t *>(orders->elements[0]));
     }
-    dxfg_CList_EventType_release(thread, orders);
 }
 
 void print_exception(graal_isolatethread_t *thread) {
@@ -347,307 +347,340 @@ void readerIpf(graal_isolatethread_t *thread) {
 
 void finalizeListener(graal_isolatethread_t *thread) {
     printf("C: finalizeListener BEGIN\n");
-
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
     dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
     dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener, finalize, nullptr);
-
     dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
-
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
-
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
     dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
-
+    printf("C: get_state = %d\n", dxfg_DXEndpoint_getState(thread, endpoint));
     dxfg_DXEndpoint_close(thread, endpoint);
-
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
     dxfg_JavaObjectHandler_release(thread, &feed->handler);
     dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
     dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
-
     dxfg_gc(thread);
-    std::cin.get();
+    usleep(2000000);
     dxfg_gc(thread);
-    std::cin.get();
+    usleep(2000000);
     printf("C: finalizeListener END\n");
 }
 
-void dxEndpointSubscription(graal_isolatethread_t *thread) {
-    printf("C: dxEndpointSubscription BEGIN\n");
-
+void executorBaseOnConcurrentLinkedQueue(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
-    dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener, finalize, nullptr);
-
+    dxfg_executor_t* executor = dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(thread);
+    dxfg_DXEndpoint_executor(thread, endpoint, executor);
     dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
-
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
-
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
     dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
-
     dxfg_string_symbol_t symbolAAPL;
     symbolAAPL.supper.type = STRING;
     symbolAAPL.symbol = "AAPL";
     dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
-
-    std::cin.get();
-
+    usleep(2000000);
+    dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(thread, executor);
+    usleep(2000000);
+    dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(thread, executor);
+    usleep(2000000);
+    dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(thread, executor);
+    usleep(2000000);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
     dxfg_JavaObjectHandler_release(thread, &feed->handler);
-    dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    dxfg_JavaObjectHandler_release(thread, &executor->handler);
+}
+
+void dxEndpointSubscription(graal_isolatethread_t *thread) {
+    printf("C: dxEndpointSubscription BEGIN\n");
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
+    int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_QUOTE);
+    int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_CANDLE);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
     dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
     printf("C: dxEndpointSubscription END\n");
 }
 
-int main(int argc, char *argv[]) {
-    // Parses input args.
-    parseArgs(argc, argv);
+void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
+    printf("C: dxEndpointTimeSeriesSubscription BEGIN\n");
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
+    dxfg_time_series_subscription_t* subscriptionTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
+    dxfg_CList_EventClazz_release(thread, event_clazz_list);
+    dxfg_DXFeedTimeSeriesSubscription_setFromTime(thread, subscriptionTaS, 0);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread, &subscriptionTaS->sub, listener, finalize, nullptr);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, &subscriptionTaS->sub, &symbolAAPL.supper);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionTaS->sub.handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    printf("C: dxEndpointTimeSeriesSubscription END\n");
+}
 
-    // Creates a graal isolate.
-    auto graal_result = graal_create_isolate(nullptr, &isolate, &thread);
-    if (graal_result != 0) {
-        std::cerr << "Can't create graal isolate!"
-                  << "Error code: " << graal_result << std::endl;
-        exit(graal_result);
+void systemProperties(graal_isolatethread_t *thread) {
+    const char *propertyName = "property-name";
+    const char *string = dxfg_system_get_property(thread, propertyName);
+    printf("\"%s\" must not be equal to \"property-value\"\n", string);
+    dxfg_String_release(thread, string);
+    dxfg_system_set_property(thread, "property-name", "property-value");
+    const char *value = dxfg_system_get_property(thread, propertyName);
+    printf("\"%s\" must be equal to \"property-value\"\n", value);
+    dxfg_String_release(thread, value);
+}
+
+void exception(graal_isolatethread_t *thread) {
+    dxfg_java_object_handler* object = dxfg_throw_exception(thread);
+    if (!object) {
+        printException(thread);
     }
+    dxfg_JavaObjectHandler_release(thread, object);
+}
+void printException(graal_isolatethread_t *thread) {
+    dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
+    if (exception) {
+        printf("C: %s\n", exception->stackTrace);
+    }
+    dxfg_Exception_release(thread, exception);
+}
 
-//    liveIpf(thread);
-//    readerIpf(thread);
-//    finalizeListener(thread);
+void orderBookModel(graal_isolatethread_t *thread) {
+    dxfg_order_book_model_t* order_book_model = dxfg_OrderBookModel_new(thread);
+    dxfg_OrderBookModel_setFilter(thread, order_book_model, ALL);
+    dxfg_OrderBookModel_setSymbol(thread, order_book_model, "AAPL");
+    dxfg_observable_list_model_t* buyOrders = dxfg_OrderBookModel_getBuyOrders(thread, order_book_model);
+    dxfg_observable_list_model_listener_t *buyOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+    dxfg_ObservableListModel_addListener(thread, buyOrders, buyOrdersListener, &finalize, nullptr);
+    dxfg_observable_list_model_t* sellOrders = dxfg_OrderBookModel_getSellOrders(thread, order_book_model);
+    dxfg_observable_list_model_listener_t *sellOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+    dxfg_ObservableListModel_addListener(thread, sellOrders, sellOrdersListener, &finalize, nullptr);
+    dxfg_order_book_model_listener_t* listener = dxfg_OrderBookModelListener_new(thread, &c_listener_func, nullptr);
+    dxfg_OrderBookModel_addListener(thread, order_book_model, listener, &finalize, nullptr);
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_OrderBookModel_attach(thread, order_book_model, feed);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &order_book_model->handler);
+    dxfg_JavaObjectHandler_release(thread, &buyOrders->handler);
+    dxfg_JavaObjectHandler_release(thread, &buyOrdersListener->handler);
+    dxfg_JavaObjectHandler_release(thread, &sellOrders->handler);
+    dxfg_JavaObjectHandler_release(thread, &sellOrdersListener->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void indexedEventModel(graal_isolatethread_t *thread) {
+    dxfg_indexed_event_model_t* indexed_event_model = dxfg_IndexedEventModel_new(thread, DXFG_EVENT_TIME_AND_SALE);
+    dxfg_IndexedEventModel_setSizeLimit(thread, indexed_event_model, 30);
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_IndexedEventModel_attach(thread, indexed_event_model, feed);
+    dxfg_observable_list_model_t* observable_list_model = dxfg_IndexedEventModel_getEventsList(thread, indexed_event_model);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_IndexedEventModel_setSymbol(thread, indexed_event_model, &symbolAAPL.supper);
+    dxfg_observable_list_model_listener_t *observable_list_model_listener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
+    dxfg_ObservableListModel_addListener(thread, observable_list_model, observable_list_model_listener, &finalize, nullptr);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &indexed_event_model->handler);
+    dxfg_JavaObjectHandler_release(thread, &observable_list_model->handler);
+    dxfg_JavaObjectHandler_release(thread, &observable_list_model_listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void promise(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_candle_symbol_t candleSymbol;
+    candleSymbol.supper.type = CANDLE;
+    candleSymbol.symbol = "AAPL";
+    dxfg_promise_event_t* candlePromise = dxfg_DXFeed_getLastEventPromise(thread, feed, DXFG_EVENT_CANDLE, &candleSymbol.supper);
+    dxfg_Promise_whenDone(thread, reinterpret_cast<dxfg_promise_t *>(candlePromise), &c_promise_func, nullptr);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &candlePromise->handler.handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void lastEventIfSubscribed(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_candle_symbol_t symbol;
+    symbol.supper.type = STRING;
+    symbol.symbol = "AAPL";
+    dxfg_event_type_t* event = dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE,reinterpret_cast<dxfg_symbol_t *>(&symbol));
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbol.supper);
+    event = dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE,reinterpret_cast<dxfg_symbol_t *>(&symbol));
+    printEvent(event);
+    dxfg_EventType_release(thread, event);
+    usleep(2000000);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void promisesAllOf(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    size_t size = symbols.size();
+    dxfg_symbol_list symbolList;
+    symbolList.size = size;
+    symbolList.elements = (dxfg_symbol_t**) malloc(sizeof(dxfg_symbol_t*) * size);
+    for (int i = 0; i < size; i++) {
+        dxfg_string_symbol_t* symbol1 = new dxfg_string_symbol_t;
+        symbol1->supper.type = STRING;
+        symbol1->symbol = symbols[i].c_str();
+        symbolList.elements[i] = &symbol1->supper;
+    }
+    dxfg_promise_list* promises = dxfg_DXFeed_getLastEventsPromises(thread, feed, DXFG_EVENT_QUOTE, &symbolList);
+    dxfg_promise_t* all = dxfg_Promises_allOf(thread, promises);
+    dxfg_Promise_awaitWithoutException(thread, all, 30000);
+    if (dxfg_Promise_hasResult(thread, all) == 1) {
+        for (int i = 0; i < size; ++i) {
+            dxfg_event_type_t* event = dxfg_Promise_EventType_getResult(thread, reinterpret_cast<dxfg_promise_event_t *>(promises->list.elements[i]));
+            printEvent(event);
+            dxfg_EventType_release(thread, event);
+        }
+    }
+    dxfg_DXEndpoint_close(thread, endpoint);
+    for (int i = 0; i < size; i++) {
+        free(symbolList.elements[i]);
+    }
+    free(symbolList.elements);
+    dxfg_JavaObjectHandler_release(thread, &all->handler);
+    dxfg_CList_JavaObjectHandler_release(thread, &promises->list);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void indexedEventsPromise(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_string_symbol_t symbol;
+    symbol.supper.type = STRING;
+    symbol.symbol = "IBM";
+    dxfg_indexed_event_source_t* source = dxfg_IndexedEventSource_new(thread, nullptr);
+    dxfg_promise_events_t* eventsPromise = dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_SERIES, &symbol.supper, source);
+    dxfg_IndexedEventSource_release(thread, source);
+    dxfg_Promise_awaitWithoutException(thread, &eventsPromise->base, 30000);
+    int hasResult = dxfg_Promise_hasResult(thread, &eventsPromise->base);
+    int hasException = dxfg_Promise_hasException(thread, &eventsPromise->base);
+    if (hasException == -1) {
+        printException(thread);
+    } else if (hasException == 1) {
+        dxfg_exception_t* exception = dxfg_Promise_getException(thread, &eventsPromise->base);
+        if (exception) {
+            printf("C: %s\n", exception->stackTrace);
+            dxfg_Exception_release(thread, exception);
+        }
+    } else {
+        dxfg_event_type_list* events = dxfg_Promise_List_EventType_getResult(thread, eventsPromise);
+        c_print(thread, events, nullptr);
+        dxfg_CList_EventType_release(thread, events);
+    }
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &eventsPromise->base.handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+void getLastEvent(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_candle_symbol_t symbol;
+    symbol.supper.type = CANDLE;
+    symbol.symbol = "AAPL";
+    dxfg_subscription_t* subscription= dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_CANDLE);
+    dxfg_DXFeedSubscription_setSymbol(thread, subscription, &symbol.supper);
+    dxfg_candle_t* candle = (dxfg_candle_t*) dxfg_EventType_new(thread, symbol.symbol, DXFG_EVENT_CANDLE);
+    dxfg_DXFeed_getLastEvent(thread, feed, &candle->event_type);
+    printEvent(&candle->event_type);
+    dxfg_event_type_list event_type_list;
+    event_type_list.size = 2;
+    event_type_list.elements = (dxfg_event_type_t**) malloc(sizeof(dxfg_event_type_t*) * 2);
+    event_type_list.elements[0] = (dxfg_event_type_t*) dxfg_EventType_new(thread, "AAPL", DXFG_EVENT_CANDLE);
+    event_type_list.elements[1] = (dxfg_event_type_t*) dxfg_EventType_new(thread, "IBM", DXFG_EVENT_CANDLE);
+    printEvent(event_type_list.elements[0]);
+    printEvent(event_type_list.elements[1]);
+    usleep(2000000);
+    dxfg_DXFeed_getLastEvent(thread, feed, &candle->event_type);
+    printEvent(&candle->event_type);
+    dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
+    printEvent(event_type_list.elements[0]);
+    printEvent(event_type_list.elements[1]);
+    usleep(2000000);
+    dxfg_DXFeed_getLastEvent(thread, feed, &candle->event_type);
+    printEvent(&candle->event_type);
+    dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
+    printEvent(event_type_list.elements[0]);
+    printEvent(event_type_list.elements[1]);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_EventType_release(thread, &candle->event_type);
+    dxfg_JavaObjectHandler_release(thread, &subscription->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
+int main(int argc, char *argv[]) {
+    parseArgs(argc, argv);
+    if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
+        print_exception(thread);
+        exit(-1);
+    }
+    liveIpf(thread);
+    readerIpf(thread);
+    finalizeListener(thread);
+    executorBaseOnConcurrentLinkedQueue(thread);
     dxEndpointSubscription(thread);
-
-    // Sets system properties.
-//    for (const auto &property : properties) {
-//        if (dxfg_system_set_property(thread, property.first.c_str(), property.second.c_str()) != 0) {
-//            std::cout << "Can't set property: [" << property.first << ":" << property.second << "]" << std::endl;
-//        }
-//    }
-//
-//    const char* d = dxfg_system_get_property(thread, "dsds");
-//    if (!d) {
-//        print_exception(thread);
-//    }
-//
-//
-//    // Creates an endpoint object.
-//    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-//    if (endpoint == nullptr) {
-//        print_exception(thread);
-//    }
-//
-//
-//    dxfg_executor_t* executor = dxfg_Executors_newFixedThreadPool(thread, 2, "thread-processing-events");
-//    dxfg_DXEndpoint_executor(thread, endpoint, executor);
-//
-//    dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
-//    dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
-////    dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
-////    free(stateListener);
-//    dxfg_DXEndpoint_connect(thread, endpoint, address.c_str());
-//
-//
-//    dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
-//    for (int i = 0; i < event_clazz_list->size; ++i) {
-//        printf("%d \n", *event_clazz_list->elements[i]);
-//    }
-//
-//    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
-//    if (feed) {
-//        print_exception(thread);
-//    }
-//
-//    int state = dxfg_DXEndpoint_getState(thread, endpoint);
-//    if (state == -1) {
-//        print_exception(thread);
-//    } else {
-//        printf("C: get_state = %d\n", state);
-//    }
-//
-////    dxfg_order_book_model_t* order_book_model = dxfg_OrderBookModel_new(thread);
-////    dxfg_OrderBookModel_setFilter(thread, order_book_model, ALL);
-////    dxfg_OrderBookModel_setSymbol(thread, order_book_model, "AAPL");
-////    dxfg_observable_list_model_t* buyOrders = dxfg_OrderBookModel_getBuyOrders(thread, order_book_model);
-////    dxfg_observable_list_model_listener_t *buyOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
-////    dxfg_ObservableListModel_addListener(thread, buyOrders, buyOrdersListener);
-////    dxfg_observable_list_model_t* sellOrders = dxfg_OrderBookModel_getSellOrders(thread, order_book_model);
-////    dxfg_observable_list_model_listener_t *sellOrdersListener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
-////    dxfg_ObservableListModel_addListener(thread, sellOrders, sellOrdersListener);
-////    dxfg_order_book_model_listener_t* listener = dxfg_OrderBookModelListener_new(thread, &c_listener_func, nullptr);
-////    dxfg_OrderBookModel_addListener(thread, order_book_model, listener);
-////    dxfg_OrderBookModel_attach(thread, order_book_model, feed);
-//
-//    dxfg_indexed_event_model_t* indexed_event_model = dxfg_IndexedEventModel_new(thread, DXFG_EVENT_TIME_AND_SALE);
-//    dxfg_IndexedEventModel_setSizeLimit(thread, indexed_event_model, 30);
-//    dxfg_IndexedEventModel_attach(thread, indexed_event_model, feed);
-//    dxfg_observable_list_model_t* observable_list_model = dxfg_IndexedEventModel_getEventsList(thread, indexed_event_model);
-//    dxfg_string_symbol_t symbolAAPL;
-//    symbolAAPL.supper.type = STRING;
-//    symbolAAPL.symbol = "AAPL";
-//    dxfg_IndexedEventModel_setSymbol(thread, indexed_event_model, &symbolAAPL.supper);
-//    dxfg_observable_list_model_listener_t *observable_list_model_listener = dxfg_ObservableListModelListener_new(thread, &c_observable_list_listener_func, nullptr);
-//    dxfg_ObservableListModel_addListener(thread, observable_list_model, observable_list_model_listener);
-//    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeedSubscription_new(thread, DXFG_EVENT_QUOTE);
-//    dxfg_DXFeed_attachSubscription(thread, feed, subscriptionQuote);
-//    dxfg_DXFeedSubscription_addEventListener(
-//        thread,
-//        subscriptionQuote,
-//        dxfg_DXFeedEventListener_new(thread, &c_print, nullptr)
-//    );
-//    for (const auto &symbol : symbols) {
-//        dxfg_symbol_t* symbol1 = dxfg_Symbol_new(thread, symbol.c_str(), STRING);
-//        dxfg_DXFeedSubscription_addSymbol(thread, subscriptionQuote, symbol1);
-//        dxfg_Symbol_release(thread, symbol1);
-//    }
-//
-//    int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_QUOTE);
-//    int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_CANDLE);
-//
-//    dxfg_time_series_subscription_t* subTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
-//    dxfg_CList_EventClazz_release(thread, event_clazz_list);
-//    dxfg_DXFeedTimeSeriesSubscription_setFromTime(thread, subTaS, 0);
-////    subscriptionQuote = subTaS->subscriptionQuote;
-//
-//
-//    dxfg_candle_symbol_t candleSymbol;
-//    candleSymbol.supper.type = CANDLE;
-//    candleSymbol.symbol = "AAPL";
-//    dxfg_promise_event_t* candlePromise = dxfg_DXFeed_getLastEventPromise(thread, feed, DXFG_EVENT_CANDLE, &candleSymbol.supper);
-//    dxfg_Promise_whenDone(thread, reinterpret_cast<dxfg_promise_t *>(candlePromise), &c_promise_func, nullptr);
-//
-////    dxfg_quote_t* quote = nullptr;
-////    dxfg_candle_symbol_t symbol1;
-////    symbol1.supper.type = STRING;
-////    symbol1.symbol = "AAPL";
-////    dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbol1, (dxfg_event_type_t**)&quote);
-//
-//
-//    size_t size = symbols.size();
-//    dxfg_symbol_t** symbols2 = (dxfg_symbol_t**) malloc(sizeof(dxfg_symbol_t*) * size);
-//    for (int i = 0; i < size; ++i) {
-//        dxfg_string_symbol_t symbol1;
-//        symbol1.supper.type = STRING;
-//        symbol1.symbol = symbols[i].c_str();
-//        symbols2[i] = &symbol1.supper;
-//    }
-//    dxfg_symbol_list symbolList;
-//    symbolList.size = size;
-//    symbolList.elements = symbols2;
-////    dxfg_promise_event_t *promises[size];
-//    dxfg_promise_list* promises = dxfg_DXFeed_getLastEventsPromises(thread, feed, DXFG_EVENT_QUOTE, &symbolList);
-//    dxfg_promise_t* all = dxfg_Promises_allOf(thread, promises);
-//    if (!all) {
-//        print_exception(thread);
-//    }
-//    int e = dxfg_Promise_awaitWithoutException(thread, all, 30000);
-//    if (e != 1) {
-//        print_exception(thread);
-//    }
-//    if (dxfg_Promise_hasResult(thread, all) == 1) {
-//        for (int i = 0; i < size; ++i) {
-//            dxfg_event_type_t* event = dxfg_Promise_EventType_getResult(thread, reinterpret_cast<dxfg_promise_event_t *>(promises->list.elements[i]));
-//            printEvent(event);
-//            dxfg_EventType_release(thread, event);
-//        }
-//    }
-//    dxfg_CList_JavaObjectHandler_release(thread, &promises->list);
-//    dxfg_JavaObjectHandler_release(thread, &all->handler);
-//
-//
-////    dxfg_symbol_t candleSymbol;
-////    candleSymbol.symbol_type = CANDLE;
-////    candleSymbol.candleSymbol = "IBM";
-////    dxfg_promise_t candlePromise;
-////    dxfg_indexed_event_source_t* source = dxfg_IndexedEventSource_new(thread, nullptr);
-////    dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_CANDLE,
-////                                         &candleSymbol, source, &candlePromise);
-////    dxfg_JavaObjectHandler_release(thread, source);
-////    dxfg_Promise_awaitWithoutException(thread, &candlePromise, 30000);
-////    int hasResult = dxfg_Promise_hasResult(thread, &candlePromise);
-////    int hasException = dxfg_Promise_hasException(thread, &candlePromise);
-////    if (hasException == 1) {
-////        dxfg_exception_t* exception = dxfg_Promise_getException(thread, &candlePromise);
-////        if (exception) {
-////            printf("C: %s\n", exception->stackTrace);
-////            dxfg_Exception_release(thread, exception);
-////        }
-////    } else {
-////        dxfg_event_type_t* candleEvent = dxfg_Promise_getResult(thread, &candlePromise);
-////        printEvent(candleEvent);
-////        dxfg_EventType_release(thread, candleEvent);
-////    }
-////    dxfg_JavaObjectHandler_release(thread, &candlePromise); TODO clear base (not holder)
-//
-//
-//
-//
-//    dxfg_string_symbol_t seriesSymbol;
-//    seriesSymbol.supper.type = STRING;
-//    seriesSymbol.symbol = "IBM";
-//    dxfg_indexed_event_source_t* seriesSource = dxfg_IndexedEventSource_new(thread, nullptr);
-//    dxfg_promise_events_t* seriesPromise = dxfg_DXFeed_getIndexedEventsPromise(thread, feed, DXFG_EVENT_SERIES,&seriesSymbol.supper, seriesSource);
-//    dxfg_IndexedEventSource_release(thread, seriesSource);
-//    dxfg_Promise_awaitWithoutException(thread, &seriesPromise->base, 30000);
-//    int hasResultSeries = dxfg_Promise_hasResult(thread, &seriesPromise->base);
-//    int hasExceptionSeries = dxfg_Promise_hasException(thread, &seriesPromise->base);
-//    if (hasExceptionSeries == 1) {
-//        dxfg_exception_t* exception = dxfg_Promise_getException(thread, &seriesPromise->base);
-//        if (exception) {
-//            printf("C: %s\n", exception->stackTrace);
-//            dxfg_Exception_release(thread, exception);
-//        }
-//    } else {
-//        dxfg_event_type_list* seriesEvent = dxfg_Promise_List_EventType_getResult(thread, seriesPromise);
-//        for (int i = 0; i < seriesEvent->size; ++i) {
-//            printEvent(reinterpret_cast<dxfg_event_type_t *>(seriesEvent->elements[0]));
-//        }
-//        dxfg_CList_EventType_release(thread, seriesEvent);
-//    }
-//
-//
-////        dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbol1, (dxfg_event_type_t**)&quote);
-//
-//
-//    dxfg_event_type_list event_type_list;
-//    event_type_list.size = 2;
-//    event_type_list.elements = (dxfg_event_type_t**) malloc(sizeof(dxfg_event_type_t*) * 2);
-//    event_type_list.elements[0] = (dxfg_event_type_t*) dxfg_EventType_new(thread, "AAPL", DXFG_EVENT_CANDLE);
-//    event_type_list.elements[1] = (dxfg_event_type_t*) dxfg_EventType_new(thread, "IBM", DXFG_EVENT_CANDLE);
-//    printEvent(event_type_list.elements[0]);
-//    printEvent(event_type_list.elements[1]);
-//    dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
-//    printEvent(event_type_list.elements[0]);
-//    printEvent(event_type_list.elements[1]);
-//    dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
-//    printEvent(event_type_list.elements[0]);
-//    printEvent(event_type_list.elements[1]);
-//    dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
-//    printEvent(event_type_list.elements[0]);
-//    printEvent(event_type_list.elements[1]);
-//
-//
-//    dxfg_candle_t* q = (dxfg_candle_t*) dxfg_EventType_new(thread, "AAPL", DXFG_EVENT_CANDLE);
-//    dxfg_DXFeed_getLastEvent(thread, feed, &q->event_type);
-//    printEvent(&q->event_type);
-//    dxfg_DXFeed_getLastEvent(thread, feed, &q->event_type);
-//    printEvent(&q->event_type);
-//    dxfg_DXFeed_getLastEvent(thread, feed, &q->event_type);
-//    printEvent(&q->event_type);
-//    dxfg_EventType_release(thread, &q->event_type);
-
-    std::cin.get();
-
-//    int32_t res = dxfg_DXEndpoint_closeAndAwaitTermination(thread, endpoint);
-//    if (res != 0) {
-//        print_exception(thread);
-//    }
-//    dxfg_JavaObjectHandler_release(thread, &executor->handler);
-//    dxfg_JavaObjectHandler_release(thread, &order_book_model->handler);
-//    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxEndpointTimeSeriesSubscription(thread);
+    systemProperties(thread);
+    exception(thread);
+    orderBookModel(thread);
+    indexedEventModel(thread);
+    promise(thread);
+    lastEventIfSubscribed(thread);
+    promisesAllOf(thread);
+    indexedEventsPromise(thread);
+    getLastEvent(thread);
 }

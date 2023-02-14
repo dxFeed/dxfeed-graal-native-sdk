@@ -70,11 +70,12 @@ public class PromiseNative {
       final DxfgEventClazz dxfgClazz,
       final DxfgSymbolList dxfgSymbols
   ) {
-    final var eventsPromises = MAPPER_FEED.toJava(feed).getLastEventsPromises(
-        (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
-        MAPPER_SYMBOLS.toJavaList(dxfgSymbols)
+    return MAPPER_PROMISES.toNativeList(
+        MAPPER_FEED.toJava(feed).getLastEventsPromises(
+            (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
+            MAPPER_SYMBOLS.toJavaList(dxfgSymbols)
+        )
     );
-    return MAPPER_PROMISES.toNativeList(eventsPromises);
   }
 
   @CEntryPoint(

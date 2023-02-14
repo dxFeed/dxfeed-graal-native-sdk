@@ -43,7 +43,7 @@ public abstract class ListMapper<
       return Collections.emptyList();
     }
     final List<J> jList = new ArrayList<>(nList.getSize());
-    for (int i = 0; i < nList.getSize(); ++i) {
+    for (int i = 0; i < nList.getSize(); i++) {
       jList.add(toJava(nList.getElements().addressOf(i).read()));
     }
     return jList;
