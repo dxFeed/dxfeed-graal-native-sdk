@@ -462,6 +462,7 @@ void exception(graal_isolatethread_t *thread) {
     }
     dxfg_JavaObjectHandler_release(thread, object);
 }
+
 void printException(graal_isolatethread_t *thread) {
     dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
     if (exception) {
@@ -487,6 +488,7 @@ void orderBookModel(graal_isolatethread_t *thread) {
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_OrderBookModel_attach(thread, order_book_model, feed);
     usleep(2000000);
+    dxfg_OrderBookModel_close(thread, order_book_model);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &order_book_model->handler);
     dxfg_JavaObjectHandler_release(thread, &buyOrders->handler);
@@ -662,6 +664,35 @@ void getLastEvent(graal_isolatethread_t *thread) {
     dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
 }
 
+void schedule(graal_isolatethread_t *thread) {
+    dxfg_system_set_property(thread, "com.dxfeed.schedule.download", "auto");
+
+    dxfg_instrument_profile_reader_t* reader = dxfg_InstrumentProfileReader_new(thread);
+    dxfg_instrument_profile_list* profiles = dxfg_InstrumentProfileReader_readFromFile(
+        thread, reader, "../../../../../ipf.txt"
+    );
+    for (int i = 0; i < profiles->size; ++i) {
+        dxfg_instrument_profile_t *profile = profiles->elements[i];
+        dxfg_schedule_t* schedule = dxfg_Schedule_getInstance(thread, profile);
+        const char* name = dxfg_Schedule_getName(thread, schedule);
+        printf("C: schedule %s\n", name);
+        dxfg_String_release(thread, name);
+        dxfg_JavaObjectHandler_release(thread, &schedule->handler);
+        dxfg_string_list* venues = dxfg_Schedule_getTradingVenues(thread, profile);
+        for (int j = 0; j < venues->size; ++j) {
+            dxfg_schedule_t* schedule2 = dxfg_Schedule_getInstance3(thread, profile, venues->elements[j]);
+            const char* name = dxfg_Schedule_getName(thread, schedule2);
+            printf("C: schedule %s\n", name);
+            dxfg_String_release(thread, name);
+            dxfg_JavaObjectHandler_release(thread, &schedule2->handler);
+        }
+        dxfg_CList_String_release(thread, venues);
+        printf("C: schedule %s\n", profiles->elements[i]->symbol);
+    }
+    dxfg_CList_InstrumentProfile_release(thread, profiles);
+    dxfg_JavaObjectHandler_release(thread, &reader->handler);
+}
+
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
     if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
@@ -683,4 +714,5 @@ int main(int argc, char *argv[]) {
     promisesAllOf(thread);
     indexedEventsPromise(thread);
     getLastEvent(thread);
+    schedule(thread);
 }

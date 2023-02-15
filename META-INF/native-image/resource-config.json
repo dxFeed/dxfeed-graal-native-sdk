@@ -35,7 +35,7 @@
       "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
     },
     {
-      "pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"
+      "pattern":"\\Qcom/dxfeed/schedule/schedule.properties\\E"
     },
     {
       "pattern":".*\\.xml$"

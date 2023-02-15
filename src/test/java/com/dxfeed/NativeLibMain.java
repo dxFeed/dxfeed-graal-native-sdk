@@ -30,6 +30,11 @@ import com.dxfeed.model.market.OrderBookModel;
 import com.dxfeed.model.market.OrderBookModelFilter;
 import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.promise.Promise;
+import com.dxfeed.schedule.Day;
+import com.dxfeed.schedule.DayFilter;
+import com.dxfeed.schedule.Schedule;
+import com.dxfeed.schedule.Session;
+import com.dxfeed.schedule.SessionFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +48,7 @@ import java.util.stream.StreamSupport;
 
 public class NativeLibMain {
 
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) throws Exception {
     tapeFile();
     dxEndpointWriteToTape();
     liveIpf();
@@ -52,6 +57,7 @@ public class NativeLibMain {
     dxEndpointTimeSeriesSubscription();
     dxEndpointReadFromTape();
     dxEndpointOrderBookModel();
+    schedule();
   }
 
   public static void tapeFile() throws InterruptedException {
@@ -298,5 +304,56 @@ public class NativeLibMain {
     } finally {
       connection.close();
     }
+  }
+
+  public static void schedule() throws Exception {
+    System.setProperty("com.dxfeed.schedule.download", "auto");
+    InstrumentProfile profile = null;
+    for (final InstrumentProfile prfl : new InstrumentProfileReader().readFromFile(
+        "ipf.txt")) {
+      profile = prfl;
+      Schedule.getInstance(prfl);
+      for (final String venue : Schedule.getTradingVenues(prfl))
+        Schedule.getInstance(prfl, venue);
+    }
+    final long time = System.currentTimeMillis();
+    printNext5Holidays(profile, time);
+    printCurrentSession(profile, time);
+    printNextTradingSession(profile, time);
+    printNearestTradingSession(profile, time);
+  }
+
+  private static void printNext5Holidays(InstrumentProfile profile, long time) {
+    Schedule schedule = Schedule.getInstance(profile);
+    Day day = schedule.getDayByTime(time);
+    String output = "5 next holidays for " + profile.getSymbol() + ":";
+    for (int i = 0; i < 5; i++) {
+      day = day.findNextDay(DayFilter.HOLIDAY);
+      if (day != null)
+        output = output + " " + day.getYearMonthDay();
+      else
+        break;
+    }
+    System.out.println(output);
+  }
+
+  private static void printCurrentSession(InstrumentProfile profile, long time) {
+    Schedule schedule = Schedule.getInstance(profile);
+    Session session = schedule.getSessionByTime(time);
+    System.out.println("Current session for " + profile.getSymbol() + ": " + session + " in " + session.getDay());
+  }
+
+  private static void printNextTradingSession(InstrumentProfile profile, long time) {
+    Schedule schedule = Schedule.getInstance(profile);
+    Session session = schedule.getSessionByTime(time);
+    if (!session.isTrading())
+      session = session.getNextSession(SessionFilter.TRADING);
+    System.out.println("Next trading session for " + profile.getSymbol() +  ": " + session + " in " + session.getDay());
+  }
+
+  private static void printNearestTradingSession(InstrumentProfile profile, long time) {
+    Schedule schedule = Schedule.getInstance(profile);
+    Session session = schedule.getNearestSessionByTime(time, SessionFilter.TRADING);
+    System.out.println("Nearest trading session for " + profile.getSymbol() + ": " + session + " in " + session.getDay());
   }
 }

@@ -19,6 +19,7 @@ extern "C" {
 #include "graal_isolate_dynamic.h"
 #include "dxfg_event_model.h"
 #include "dxfg_ipf.h"
+#include "dxfg_schedule.h"
 
 #ifdef __cplusplus
 }

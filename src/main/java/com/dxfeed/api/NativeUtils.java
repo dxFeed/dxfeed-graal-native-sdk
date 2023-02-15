@@ -32,6 +32,8 @@ import com.dxfeed.api.javac.DxfgInputStream;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.api.javac.DxfgJavaObjectHandlerPointer;
 import com.dxfeed.api.javac.JavaObjectHandler;
+import com.dxfeed.api.maper.DayFilterMapper;
+import com.dxfeed.api.maper.DayMapper;
 import com.dxfeed.api.maper.EndpointBuilderMapper;
 import com.dxfeed.api.maper.EndpointMapper;
 import com.dxfeed.api.maper.EndpointStateChangeListenerMapper;
@@ -53,6 +55,7 @@ import com.dxfeed.api.maper.ListInstrumentProfileMapper;
 import com.dxfeed.api.maper.ListJavaObjectHandlerMapper;
 import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.api.maper.ListPromiseMapper;
+import com.dxfeed.api.maper.ListSessionMapper;
 import com.dxfeed.api.maper.ListStringsMapper;
 import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.maper.ObservableListModelListenerMapper;
@@ -63,6 +66,9 @@ import com.dxfeed.api.maper.OrderBookModelListenerMapper;
 import com.dxfeed.api.maper.OrderBookModelMapper;
 import com.dxfeed.api.maper.PromiseMapper;
 import com.dxfeed.api.maper.PublisherMapper;
+import com.dxfeed.api.maper.ScheduleMapper;
+import com.dxfeed.api.maper.SessionFilterMapper;
+import com.dxfeed.api.maper.SessionMapper;
 import com.dxfeed.api.maper.StringMapper;
 import com.dxfeed.api.maper.StringMapperCacheStore;
 import com.dxfeed.api.maper.StringMapperUnlimitedStore;
@@ -79,6 +85,13 @@ import com.dxfeed.api.osub.ObservableSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.api.publisher.DxfgObservableSubscription;
 import com.dxfeed.api.publisher.DxfgPublisher;
+import com.dxfeed.api.schedule.DxfgDay;
+import com.dxfeed.api.schedule.DxfgDayFilter;
+import com.dxfeed.api.schedule.DxfgSchedule;
+import com.dxfeed.api.schedule.DxfgSession;
+import com.dxfeed.api.schedule.DxfgSessionFilter;
+import com.dxfeed.api.schedule.DxfgSessionList;
+import com.dxfeed.api.schedule.DxfgSessionPointer;
 import com.dxfeed.api.source.DxfgIndexedEventSource;
 import com.dxfeed.api.source.IndexedEventSourceMapper;
 import com.dxfeed.api.subscription.DxfgFeedEventListener;
@@ -127,6 +140,11 @@ import com.dxfeed.model.TimeSeriesEventModel;
 import com.dxfeed.model.market.OrderBookModel;
 import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.promise.Promise;
+import com.dxfeed.schedule.Day;
+import com.dxfeed.schedule.DayFilter;
+import com.dxfeed.schedule.Schedule;
+import com.dxfeed.schedule.Session;
+import com.dxfeed.schedule.SessionFilter;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.lang.ref.PhantomReference;
@@ -185,6 +203,12 @@ public final class NativeUtils {
   public static final Mapper<InstrumentProfileReader, DxfgInstrumentProfileReader> MAPPER_INSTRUMENT_PROFILE_READER;
   public static final Mapper<PropertyChangeListener, DxfgIpfConnectionStateChangeListener> MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER;
   public static final Mapper<InstrumentProfileUpdateListener, DxfgInstrumentProfileUpdateListener> MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER;
+  public static final Mapper<Session, DxfgSession> MAPPER_SESSION;
+  public static final ListMapper<Session, DxfgSession, DxfgSessionPointer, DxfgSessionList> MAPPER_SESSIONS;
+  public static final Mapper<Day, DxfgDay> MAPPER_DAY;
+  public static final Mapper<SessionFilter, DxfgSessionFilter> MAPPER_SESSION_FILTER;
+  public static final Mapper<DayFilter, DxfgDayFilter> MAPPER_DAY_FILTER;
+  public static final Mapper<Schedule, DxfgSchedule> MAPPER_SCHEDULE;
 
   static {
     MAPPER_EXCEPTION = new ExceptionMapper(new StringMapper());
@@ -257,6 +281,12 @@ public final class NativeUtils {
     MAPPER_INSTRUMENT_PROFILE_READER = new InstrumentProfileReaderMapper();
     MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER = new IpfConnectionStateChangeListenerMapper();
     MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER = new InstrumentProfileUpdateListenerMapper();
+    MAPPER_SESSION = new SessionMapper();
+    MAPPER_SESSIONS = new ListSessionMapper(MAPPER_SESSION);
+    MAPPER_DAY = new DayMapper();
+    MAPPER_SESSION_FILTER = new SessionFilterMapper();
+    MAPPER_DAY_FILTER = new DayFilterMapper();
+    MAPPER_SCHEDULE = new ScheduleMapper();
   }
 
   public static class Finalizer {

@@ -5,6 +5,7 @@ import static com.dxfeed.api.NativeUtils.MAPPER_INPUT_STREAM;
 import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLER;
 import static com.dxfeed.api.NativeUtils.MAPPER_JAVA_OBJECT_HANDLERS;
 import static com.dxfeed.api.NativeUtils.MAPPER_STRING;
+import static com.dxfeed.api.NativeUtils.MAPPER_STRINGS;
 import static com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
 import com.dxfeed.api.exception.ExceptionHandlerReturnMinusOne;
@@ -57,6 +58,18 @@ public class JavacNative {
       final CCharPointer string
   ) {
     MAPPER_STRING.release(string);
+    return EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_CList_String_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_CList_String_release(
+      final IsolateThread ignoreThread,
+      final DxfgCharPointerList strings
+  ) {
+    MAPPER_STRINGS.release(strings);
     return EXECUTE_SUCCESSFULLY;
   }
 
