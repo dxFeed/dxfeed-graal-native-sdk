@@ -3,6 +3,9 @@
   "name":"[B"
 },
 {
+  "name":"[Lcom.dxfeed.api.impl.DXFeedImpl$EventProcessor;"
+},
+{
   "name":"[Ljava.lang.String;"
 },
 {
@@ -120,7 +123,8 @@
   "queryAllPublicMethods":true,
   "methods":[
     {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
-    {"name":"setOpt","parameterTypes":["java.lang.String"] }
+    {"name":"setOpt","parameterTypes":["java.lang.String"] },
+    {"name":"setSaveAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }
   ]
 },
 {
@@ -160,6 +164,10 @@
     {"name":"getServices","parameterTypes":[] },
     {"name":"getWeight","parameterTypes":[] }
   ]
+},
+{
+  "name":"com.dxfeed.api.impl.DXEndpointImpl$1",
+  "queryAllPublicMethods":true
 },
 {
   "name":"com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",
