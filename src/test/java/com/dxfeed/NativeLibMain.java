@@ -35,6 +35,10 @@ import com.dxfeed.schedule.DayFilter;
 import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,12 +53,17 @@ import java.util.stream.StreamSupport;
 public class NativeLibMain {
 
   public static void main(final String[] args) throws Exception {
+    final ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+    objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+    objectMapper.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
+
     tapeFile();
     dxEndpointWriteToTape();
-    liveIpf();
-    dxEndpointInstance();
-    dxEndpointAuther();
-    dxEndpointTimeSeriesSubscription();
+    liveIpf(objectMapper);
+    dxEndpointInstance(objectMapper);
+    dxEndpointAuther(objectMapper);
+    dxEndpointTimeSeriesSubscription(objectMapper);
     dxEndpointReadFromTape();
     dxEndpointOrderBookModel();
     schedule();
@@ -191,7 +200,7 @@ public class NativeLibMain {
     dxEndpoint.close();
   }
 
-  private static void dxEndpointTimeSeriesSubscription() throws InterruptedException {
+  private static void dxEndpointTimeSeriesSubscription(final ObjectMapper objectMapper) throws InterruptedException {
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
@@ -207,7 +216,7 @@ public class NativeLibMain {
             DailyCandle.class
         );
     subscription2.setFromTime(0);
-    subscription2.addEventListener(System.out::println);
+    subscription2.addEventListener(events -> print(events, objectMapper));
     subscription2.addSymbols(
         Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
             "BTC/USDT:CXBINA"));
@@ -215,7 +224,7 @@ public class NativeLibMain {
     dxEndpoint.close();
   }
 
-  private static void dxEndpointAuther() throws InterruptedException {
+  private static void dxEndpointAuther(final ObjectMapper objectMapper) throws InterruptedException {
     final String token = System.getProperty("token");
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
@@ -224,7 +233,7 @@ public class NativeLibMain {
     final DXFeedSubscription<MarketEvent> subscription1 = dxEndpoint.getFeed()
         .createSubscription(Quote.class, TimeAndSale.class);
     dxEndpoint.connect("lessona.dxfeed.com:7905[login=entitle:" + token + "]");
-    subscription1.addEventListener(System.out::println);
+    subscription1.addEventListener(events -> print(events, objectMapper));
     subscription1.addSymbols(
         Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
             "BTC/USDT:CXBINA", "/BTCUSDT:CXBINA"));
@@ -232,12 +241,12 @@ public class NativeLibMain {
     dxEndpoint.close();
   }
 
-  private static void dxEndpointInstance() {
+  private static void dxEndpointInstance(final ObjectMapper objectMapper) {
     final DXEndpoint dxEndpoint = DXEndpoint.getInstance();
     dxEndpoint.connect("demo.dxfeed.com:7300");
     final DXFeedSubscription<Order> subscription = dxEndpoint.getFeed()
         .createSubscription(Order.class);
-    subscription.addEventListener(System.out::println);
+    subscription.addEventListener(events -> print(events, objectMapper));
     subscription.addSymbols("AAPL");
     final Promise<List<Series>> aapl = dxEndpoint.getFeed()
         .getIndexedEventsPromise(Series.class, "AAPL", IndexedEventSource.DEFAULT);
@@ -247,7 +256,23 @@ public class NativeLibMain {
     dxEndpoint.close();
   }
 
-  public static void liveIpf() throws InterruptedException, IOException {
+  private static void print(final List<? extends EventType<?>> events, final ObjectMapper objectMapper) {
+    for (final EventType<?> event : events) {
+      printObject(objectMapper, event);
+    }
+  }
+
+  private static void printObject(final ObjectMapper objectMapper, final Object event) {
+    try {
+      final String content = objectMapper.writeValueAsString(event);
+      System.out.println(content);
+      System.out.println(objectMapper.readValue(content, event.getClass()));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static void liveIpf(final ObjectMapper objectMapper) throws InterruptedException, IOException {
     final InstrumentProfile instrumentProfile1 = new InstrumentProfile();
     final String[] customFields = InstrumentProfileMapper.getCustomFields(instrumentProfile1);
     InstrumentProfileMapper.setCustomFields(instrumentProfile1, customFields);
@@ -261,9 +286,7 @@ public class NativeLibMain {
     InstrumentProfileConnection connection = InstrumentProfileConnection.createConnection("https://demo:demo@tools.dxfeed.com/ipf", collector);
     // Update period can be used to re-read IPF files, not needed for services supporting IPF "live-update"
     connection.setUpdatePeriod(5_000L);
-    connection.addStateChangeListener(event -> {
-      System.out.println("Connection state: " + event.getNewValue());
-    });
+    connection.addStateChangeListener(event -> System.out.println("Connection state: " + event.getNewValue()));
     connection.start();
     // We can wait until we get first full snapshot of instrument profiles
     connection.waitUntilCompleted(10, TimeUnit.SECONDS);
@@ -273,12 +296,14 @@ public class NativeLibMain {
 
     // It is possible to add listener after connection is started - updates will not be missed in this case
     collector.addUpdateListener(instruments -> {
+
       System.out.println("\nInstrument Profiles:");
       // We can observe REMOVED elements - need to add necessary filtering
       // See javadoc for InstrumentProfileCollector for more details
 
       // (1) We can either process instrument profile updates manually
       instruments.forEachRemaining(profile -> {
+        printObject(objectMapper, profile);
         if (InstrumentProfileType.REMOVED.name().equals(profile.getType())) {
           // Profile was removed - remove it from our data model
           profiles.remove(profile.getSymbol());

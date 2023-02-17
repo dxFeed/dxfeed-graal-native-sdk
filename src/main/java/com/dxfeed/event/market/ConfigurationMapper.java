@@ -1,14 +1,30 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.api.events.DxfgConfiguration;
 import com.dxfeed.api.events.DxfgEventClazz;
+import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.event.misc.Configuration;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfiguration> {
+
+  private final static Logger logger = Logger.getLogger(
+      ConfigurationMapper.class.getCanonicalName());
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  static {
+    OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+    OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+    OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
+  }
 
   protected final Mapper<String, CCharPointer> stringMapper;
 
@@ -31,7 +47,13 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
     nObject.setEventSymbol(stringMapper.toNative(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
     nObject.setVersion(jObject.getVersion());
-    nObject.setAttachment(stringMapper.toNative(jObject.getAttachment().toString()));
+    try {
+      nObject.setAttachment(
+          this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(jObject.getAttachment()))
+      );
+    } catch (final JsonProcessingException e) {
+      logger.log(Level.WARNING, e.getMessage(), e);
+    }
   }
 
   @Override
@@ -52,7 +74,19 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
     jObject.setEventSymbol(stringMapper.toJava(nObject.getEventSymbol()));
     jObject.setEventTime(nObject.getEventTime());
     jObject.setVersion(nObject.getVersion());
-    jObject.setAttachment(stringMapper.toJava(nObject.getAttachment())); //TODO
+    final String content = this.stringMapper.toJava(nObject.getAttachment());
+    if (content == null) {
+      jObject.setAttachment(null);
+    } else {
+      final Object attachment = jObject.getAttachment();
+      if (attachment != null) {
+        try {
+          jObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
+        } catch (final JsonProcessingException e) {
+          logger.log(Level.WARNING, e.getMessage(), e);
+        }
+      }
+    }
   }
 
   @Override

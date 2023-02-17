@@ -6,6 +6,9 @@
   "name":"[Lcom.dxfeed.api.impl.DXFeedImpl$EventProcessor;"
 },
 {
+  "name":"[Lcom.dxfeed.event.candle.CandleSymbolAttribute;"
+},
+{
   "name":"[Ljava.lang.String;"
 },
 {
@@ -14,6 +17,10 @@
 {
   "name":"apple.security.AppleProvider",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"char",
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"com.devexperts.connector.codec.delayed.DelayedCodecFactory",
@@ -186,11 +193,69 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.dxfeed.event.EventType",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"com.dxfeed.event.IndexedEvent",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"com.dxfeed.event.LastingEvent",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"com.dxfeed.event.TimeSeriesEvent",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"com.dxfeed.event.candle.Candle",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
   "name":"com.dxfeed.event.candle.CandleFactoryImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.dxfeed.event.candle.CandleSymbol",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"com.dxfeed.event.candle.DailyCandle",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.market.MarketEvent",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
   "name":"com.dxfeed.event.market.MarketFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.market.Order",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.market.OrderBase",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"com.dxfeed.event.market.TimeAndSale",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -202,11 +267,29 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.dxfeed.event.option.Underlying",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.dxfeed.ipf.InstrumentProfile",
-  "fields":[{"name":"customFields"}]
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.ipf.filter.IPFFilterFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -224,6 +307,18 @@
 {
   "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"double",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.io.Serializable",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.Comparable",
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.lang.String"
