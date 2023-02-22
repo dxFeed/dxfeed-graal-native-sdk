@@ -145,15 +145,17 @@ public class InstrumentProfileCollectorNative {
   public static int dxfg_InstrumentProfileCollector_addUpdateListener(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
-      final DxfgInstrumentProfileUpdateListener dxfgInstrumentProfileUpdateListener,
+      final DxfgInstrumentProfileUpdateListener dxfgListener,
       final DxfgFinalizeFunction finalizeFunction,
       final VoidPointer userData
   ) {
     MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).addUpdateListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgInstrumentProfileUpdateListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }

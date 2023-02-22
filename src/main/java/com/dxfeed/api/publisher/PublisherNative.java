@@ -110,10 +110,12 @@ public class PublisherNative {
       final VoidPointer userData
   ) {
     MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).addChangeListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }

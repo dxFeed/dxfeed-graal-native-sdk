@@ -587,10 +587,12 @@ public class EventModelNative {
       final VoidPointer userData
   ) {
     MAPPER_OBSERVABLE_LIST_MODEL.toJava(dxfgObservableListModel).addListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -635,10 +637,12 @@ public class EventModelNative {
       final VoidPointer userData
   ) {
     MAPPER_ORDER_BOOK_MODEL.toJava(dxfgOrderBookModel).addListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }

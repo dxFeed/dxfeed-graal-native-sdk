@@ -247,10 +247,12 @@ public final class EndpointNative {
       final VoidPointer userData
   ) {
     MAPPER_ENDPOINT.toJava(dxfgEndpoint).addStateChangeListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }

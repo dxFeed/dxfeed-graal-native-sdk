@@ -173,10 +173,12 @@ public class SubscriptionNative {
       final VoidPointer userData
   ) {
     MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addEventListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }
@@ -390,10 +392,12 @@ public class SubscriptionNative {
       final VoidPointer userData
   ) {
     MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addChangeListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }

@@ -147,10 +147,12 @@ public class InstrumentProfileConnectionNative {
       final VoidPointer userData
   ) {
     MAPPER_INSTRUMENT_PROFILE_CONNECTION.toJava(connection).addStateChangeListener(
-        FINALIZER.wrapObjectWithFinalizer(
-            MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toJava(listener),
-            () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-        )
+        finalizeFunction.isNull()
+            ? MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toJava(listener)
+            : FINALIZER.wrapObjectWithFinalizer(
+                MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toJava(listener),
+                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+            )
     );
     return EXECUTE_SUCCESSFULLY;
   }
