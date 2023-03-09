@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_SUBSCRIPTION_H_
-#define DXFEED_GRAAL_NATIVE_API_SUBSCRIPTION_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
+#define DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,4 +73,4 @@ int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_iso
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_SUBSCRIPTION_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_

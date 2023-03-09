@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_EVENT_MODEL_H_
-#define DXFEED_GRAAL_NATIVE_API_EVENT_MODEL_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_
+#define DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,4 +133,4 @@ dxfg_event_type_list*                         dxfg_ObservableListModel_toArray(g
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_EVENT_MODEL_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_

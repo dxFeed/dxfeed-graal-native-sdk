@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_H_
-#define DXFEED_GRAAL_NATIVE_API_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_H_
+#define DXFEED_GRAAL_NATIVE_SDK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,4 +25,4 @@ extern "C" {
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_H_

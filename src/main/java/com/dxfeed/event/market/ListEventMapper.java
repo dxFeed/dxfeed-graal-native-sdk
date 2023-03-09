@@ -1,11 +1,11 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
-import com.dxfeed.api.events.DxfgEventType;
-import com.dxfeed.api.events.DxfgEventTypeList;
-import com.dxfeed.api.events.DxfgEventTypePointer;
-import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.event.EventType;
+import com.dxfeed.sdk.events.DxfgEventType;
+import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypePointer;
+import com.dxfeed.sdk.maper.ListMapper;
+import com.dxfeed.sdk.maper.Mapper;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListEventMapper extends

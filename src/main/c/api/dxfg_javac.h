@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_JAVAC_H_
-#define DXFEED_GRAAL_NATIVE_API_JAVAC_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
+#define DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,7 +71,7 @@ dxfg_java_object_handler*  dxfg_throw_exception(graal_isolatethread_t *thread); 
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_JAVAC_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
 
 
 

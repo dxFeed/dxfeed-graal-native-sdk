@@ -1,11 +1,11 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgCandle;
-import com.dxfeed.api.events.DxfgEventClazz;
-import com.dxfeed.api.maper.Mapper;
-import com.dxfeed.api.symbol.DxfgSymbol;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.CandleSymbol;
+import com.dxfeed.sdk.events.DxfgCandle;
+import com.dxfeed.sdk.events.DxfgEventClazz;
+import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;

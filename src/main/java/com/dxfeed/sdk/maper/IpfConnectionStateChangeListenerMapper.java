@@ -1,0 +1,14 @@
+package com.dxfeed.sdk.maper;
+
+import com.dxfeed.sdk.ipf.DxfgIpfConnectionStateChangeListener;
+import java.beans.PropertyChangeListener;
+import org.graalvm.nativeimage.c.struct.SizeOf;
+
+public class IpfConnectionStateChangeListenerMapper
+    extends JavaObjectHandlerMapper<PropertyChangeListener, DxfgIpfConnectionStateChangeListener> {
+
+  @Override
+  protected int getSizeJavaObjectHandler() {
+    return SizeOf.get(DxfgIpfConnectionStateChangeListener.class);
+  }
+}

@@ -34,8 +34,8 @@ if (NOT GIT_SHA1)
 endif ()
 
 # Meta information about the project
-set(META_PROJECT_NAME "dxfeed-graal-native-api-samples")
-set(META_PROJECT_DESCRIPTION "Samples for dxfeed-graal-native-api")
+set(META_PROJECT_NAME "dxfeed-graal-native-sdk-samples")
+set(META_PROJECT_DESCRIPTION "Samples for dxfeed-graal-native-sdk")
 set(META_AUTHOR_ORGANIZATION "Devexperts LLC")
 set(META_VERSION_MAJOR "1")
 set(META_VERSION_MINOR "0")
@@ -169,9 +169,9 @@ FetchContent_MakeAvailable(date)
 # Set compile options
 include(cmake/CompileOptions.cmake)
 
-# Add local build DxFeedGraalNativeApi
+# Add local build DxFeedGraalNativeSdk
 set(GRAAL_CUSTOM_BIN_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../../target/native-image/)
-add_subdirectory(api)
+add_subdirectory(sdk)
 
 # Add sources directory
 add_subdirectory(extern)

@@ -1,7 +1,7 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
-import com.dxfeed.api.events.DxfgMarketEvent;
+import com.dxfeed.sdk.events.DxfgMarketEvent;
+import com.dxfeed.sdk.maper.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMarketEvent>

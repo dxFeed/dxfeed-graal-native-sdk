@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_CATCH_EXCEPTION_H_
-#define DXFEED_GRAAL_NATIVE_API_CATCH_EXCEPTION_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_
+#define DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +12,10 @@ extern "C" {
 
 #include "graal_isolate.h"
 
+/**
+ * @brief The Exception.
+ * <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html">Javadoc</a>
+ */
 typedef struct dxfg_exception_t {
     const char *className;
     const char *message;
@@ -25,4 +29,4 @@ void dxfg_Exception_release(graal_isolatethread_t *thread, dxfg_exception_t *exc
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_CATCH_EXCEPTION_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_

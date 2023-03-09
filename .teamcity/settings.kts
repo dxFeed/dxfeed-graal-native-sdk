@@ -42,6 +42,41 @@ project {
     buildType(BuildPatch)
 }
 
+object SyncGitHubWithMain : BuildType({
+    name = "Sync GitHub with 'main'"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        script {
+            scriptContent = "git push --follow-tags git@github.com:dxFeed/dxfeed-graal-native-sdk.git main"
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_BuildPatch"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "Eugenics_DxfeedGraalNativeApi_BuildMajorMinorPatch"
+            successfulOnly = true
+        }
+    }
+
+    features {
+        sshAgent {
+            teamcitySshKey = "id_ed25519"
+        }
+    }
+
+    requirements {
+        equals("system.agent.name", "dxAgent5919-1")
+    }
+}))
+
 object AutomaticDeploymentOfTheOsxArtifact : BuildType({
     name = "deploy osx"
 
@@ -67,16 +102,16 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             mavenVersion = custom {
                 path = "%teamcity.tool.maven.3.8.4%"
             }
-            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home"
+            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home"
         }
         script {
             name = "deploy (1)"
             scriptContent = """
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home
-                arch -arm64 /Users/dxcity/apache-maven-3.8.7/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
-                arch -arm64 /Users/dxcity/apache-maven-3.8.7/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
+                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home
-                arch -x86_64 /Users/dxcity/apache-maven-3.8.7/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
         }
     }
@@ -93,7 +128,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "macbuilder10")
+        equals("system.agent.name", "macbuilder22")
     }
 })
 
@@ -134,7 +169,7 @@ object BuildMajorMinorPatch : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent1707-1")
+        equals("system.agent.name", "dxAgent5919-1")
     }
 })
 
@@ -156,27 +191,27 @@ object BuildNuget : BuildType({
             scriptContent = """
                 VERSION=${'$'}(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
-                
+
                 PATH_TO_SAVE=NuGet/runtimes/linux-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-linux.zip\!/libDxFeedGraalNativeApi.so
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-linux.zip\!/libDxFeedGraalNativeSdk.so
                 STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
                 if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
-                
+
                 PATH_TO_SAVE=NuGet/runtimes/osx-arm64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-aarch64-osx.zip\!/libDxFeedGraalNativeApi.dylib
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-aarch64-osx.zip\!/libDxFeedGraalNativeSdk.dylib
                 STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
                 if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
-                
+
                 PATH_TO_SAVE=NuGet/runtimes/osx-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-x86_64-osx.zip\!/libDxFeedGraalNativeApi.dylib
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-x86_64-osx.zip\!/libDxFeedGraalNativeSdk.dylib
                 STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
                 if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
-                
+
                 PATH_TO_SAVE=NuGet/runtimes/win-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-windows.zip\!/DxFeedGraalNativeApi.dll
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-windows.zip\!/DxFeedGraalNativeSdk.dll
                 STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
                 if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-api/${'$'}VERSION/graal-native-api-${'$'}VERSION-amd64-windows.zip\!/sunmscapi.dll
+                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-windows.zip\!/sunmscapi.dll
                 STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
                 if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
             """.trimIndent()
@@ -218,7 +253,7 @@ object BuildNuget : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent1707-1")
+        equals("system.agent.name", "dxAgent5919-1")
     }
 })
 
@@ -258,7 +293,7 @@ object BuildPatch : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent1707-1")
+        equals("system.agent.name", "dxAgent5919-1")
     }
 })
 
@@ -361,13 +396,13 @@ object TestBuildOsx : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "macbuilder10")
+        equals("system.agent.name", "macbuilder22")
     }
 })
 
 object SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags : GitVcsRoot({
-    name = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git#refs/heads/main tags"
-    url = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git"
+    name = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git#refs/heads/main tags"
+    url = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git"
     branch = "refs/heads/main"
     branchSpec = "+:refs/tags/*"
     useTagsAsBranches = true

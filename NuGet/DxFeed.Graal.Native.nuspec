@@ -3,13 +3,13 @@
     <metadata>
         <id>DxFeed.Graal.Native</id>
         <version>0.0.6</version>
-        <authors>dxFeed API</authors>
+        <authors>dxFeed SDK</authors>
         <license type="expression">MPL-2.0</license>
         <licenseUrl>https://licenses.nuget.org/MPL-2.0</licenseUrl>
         <icon>docs/images/favicon.png</icon>
         <copyright>Copyright © 2022 Devexperts LLC</copyright>
         <tags>api, market data, dxfeed, graalvm</tags>
-        <description>The wrapper over dxFeed Java API implementation with using GraalVM (native-image).</description>
+        <description>The wrapper over dxFeed Java SDK implementation with using GraalVM (native-image).</description>
         <contentFiles>
             <files include="runtimes/**" buildAction="None" copyToOutput="true"/>
         </contentFiles>

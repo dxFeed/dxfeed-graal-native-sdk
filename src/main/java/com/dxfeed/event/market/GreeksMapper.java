@@ -1,9 +1,9 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
-import com.dxfeed.api.events.DxfgEventClazz;
-import com.dxfeed.api.events.DxfgGreeks;
 import com.dxfeed.event.option.Greeks;
+import com.dxfeed.sdk.events.DxfgEventClazz;
+import com.dxfeed.sdk.events.DxfgGreeks;
+import com.dxfeed.sdk.maper.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;

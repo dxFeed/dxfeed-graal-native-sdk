@@ -1,8 +1,8 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.maper.Mapper;
-import com.dxfeed.api.events.DxfgEventType;
 import com.dxfeed.event.EventType;
+import com.dxfeed.sdk.events.DxfgEventType;
+import com.dxfeed.sdk.maper.Mapper;
 import org.graalvm.word.WordFactory;
 
 public abstract class EventMapper<V extends EventType<?>, T extends DxfgEventType>

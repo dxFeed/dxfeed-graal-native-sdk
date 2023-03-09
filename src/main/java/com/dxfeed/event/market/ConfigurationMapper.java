@@ -1,9 +1,9 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgConfiguration;
-import com.dxfeed.api.events.DxfgEventClazz;
-import com.dxfeed.api.maper.Mapper;
 import com.dxfeed.event.misc.Configuration;
+import com.dxfeed.sdk.events.DxfgConfiguration;
+import com.dxfeed.sdk.events.DxfgEventClazz;
+import com.dxfeed.sdk.maper.Mapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
-#define DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
+#define DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,4 +127,4 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_

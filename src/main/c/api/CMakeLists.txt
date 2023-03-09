@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Target
-set(target DxFeedGraalNativeApi)
+set(target DxFeedGraalNativeSdk)
 
 # Set project
 project(${target})

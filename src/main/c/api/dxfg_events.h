@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_EVENTS_H_
-#define DXFEED_GRAAL_NATIVE_API_EVENTS_H_
+#ifndef DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_
+#define DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -493,4 +493,4 @@ dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChang
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_EVENTS_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_

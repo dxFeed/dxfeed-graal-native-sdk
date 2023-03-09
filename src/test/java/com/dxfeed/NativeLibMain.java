@@ -6,7 +6,7 @@ import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.DXPublisher;
-import com.dxfeed.api.maper.InstrumentProfileMapper;
+import com.dxfeed.sdk.maper.InstrumentProfileMapper;
 import com.dxfeed.api.osub.WildcardSymbol;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEventSource;

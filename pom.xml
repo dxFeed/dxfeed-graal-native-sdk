@@ -4,29 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.dxfeed</groupId>
-  <artifactId>graal-native-api</artifactId>
+  <artifactId>graal-native-sdk</artifactId>
   <version>0.4.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
-      <groupId>com.devexperts.qd</groupId>
-      <artifactId>qds-tools</artifactId>
-      <version>3.316</version>
+      <groupId>com.devexperts.mdd</groupId>
+      <artifactId>auther-api</artifactId>
+      <version>455</version>
       <exclusions>
         <exclusion>
           <groupId>com.devexperts.qd</groupId>
           <artifactId>qds-monitoring</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.devexperts.mdd</groupId>
-      <artifactId>auther-api</artifactId>
-      <version>451</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.devexperts.qd</groupId>
-          <artifactId>qds-tools</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -57,8 +46,11 @@
 
   <repositories>
     <repository>
-      <id>qd</id>
-      <name>Devexperts open JFrog artifactory</name>
+      <id>mdd</id>
+      <url>https://nexus.in.devexperts.com/repository/mdd/</url>
+    </repository>
+    <repository>
+      <id>jfrog</id>
       <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
     </repository>
   </repositories>
@@ -74,16 +66,15 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-api.git
+    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git
     </connection>
     <tag>HEAD</tag>
-    <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-api.git</url>
+    <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-sdk.git</url>
   </scm>
 
   <distributionManagement>
     <repository>
       <id>jfrog</id>
-      <name>dxfeed-artifactory-primary-1-releases</name>
       <url>https://dxfeed.jfrog.io/artifactory/maven-open</url>
     </repository>
   </distributionManagement>
@@ -95,7 +86,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <graalvm.version>22.3.1</graalvm.version>
     <native.image.path>native-image</native.image.path>
-    <native.image.name>libDxFeedGraalNativeApi</native.image.name>
+    <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <install.dir>./target/install</install.dir>
@@ -126,7 +117,7 @@
         </os>
       </activation>
       <properties>
-        <native.image.name>DxFeedGraalNativeApi</native.image.name>
+        <native.image.name>DxFeedGraalNativeSdk</native.image.name>
       </properties>
     </profile>
     <profile>
@@ -214,7 +205,6 @@
         <configuration>
           <skip>false</skip>
           <imageName>${native.image.name}</imageName>
-<!--          <mainClass>com.dxfeed.Receiver</mainClass>-->
           <buildArgs>
             <!-- NativeImage options links: -->
             <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
@@ -230,10 +220,6 @@
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
             <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-<!--            <buildArg>&#45;&#45;pgo-instrument</buildArg>-->
-<!--            -XX:ProfilesDumpFile=default.iprof-->
-<!--            <buildArg>&#45;&#45;pgo=${project.basedir}/default.iprof</buildArg>-->
-<!--            <buildArg>&#45;&#45;gc=G1</buildArg>-->
           </buildArgs>
         </configuration>
       </plugin>
@@ -335,7 +321,7 @@
             <phase>prepare-package</phase>
           </execution>
           <execution>
-            <!-- Copy artifact to local install.dir during install -->
+            <!-- Copy artifact to locally install.dir during install -->
             <id>install-artifact-file</id>
             <phase>install</phase>
             <configuration>
@@ -379,7 +365,7 @@
         <version>3.0.0-M7</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
-          <scmShallowClone>false</scmShallowClone>
+          <scmShallowClone>false</scmShallowClone> <!--it should use git to create a change log (see git-changelog-maven-plugin)-->
         </configuration>
       </plugin>
       <plugin>

@@ -1,10 +1,10 @@
 package com.dxfeed.event.market;
 
-import com.dxfeed.api.events.DxfgEventClazz;
-import com.dxfeed.api.events.DxfgEventClazzList;
-import com.dxfeed.api.events.DxfgEventClazzPointer;
-import com.dxfeed.api.maper.ListMapper;
 import com.dxfeed.event.EventType;
+import com.dxfeed.sdk.events.DxfgEventClazz;
+import com.dxfeed.sdk.events.DxfgEventClazzList;
+import com.dxfeed.sdk.events.DxfgEventClazzPointer;
+import com.dxfeed.sdk.maper.ListMapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CIntPointer;

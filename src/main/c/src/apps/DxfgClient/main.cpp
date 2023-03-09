@@ -235,7 +235,6 @@ void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *
     for (int i = 0; i < events->size; ++i) {
         printEvent(events->elements[i]);
     }
-
 }
 
 void c_promise_func(graal_isolatethread_t *thread, dxfg_promise_t *promise, void *user_data) {
