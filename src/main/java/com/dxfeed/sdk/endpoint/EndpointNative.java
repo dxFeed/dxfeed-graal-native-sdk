@@ -8,7 +8,6 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecuter;
-import com.dxfeed.sdk.javac.DxfgFinalizeFunction;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -233,17 +232,10 @@ public final class EndpointNative {
   public static int dxfg_DXEndpoint_addStateChangeListener(
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint,
-      final DxfgEndpointStateChangeListener listener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgEndpointStateChangeListener listener
   ) {
     NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).addStateChangeListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

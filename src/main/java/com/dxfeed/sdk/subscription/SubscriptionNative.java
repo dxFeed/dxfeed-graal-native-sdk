@@ -15,7 +15,6 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecuter;
-import com.dxfeed.sdk.javac.DxfgFinalizeFunction;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import java.util.Set;
@@ -157,17 +156,10 @@ public class SubscriptionNative {
   public static int dxfg_DXFeedSubscription_addEventListener(
       final IsolateThread ignoreThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeedEventListener dxfgFeedEventListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgFeedEventListener dxfgFeedEventListener
   ) {
     NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addEventListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
@@ -376,17 +368,10 @@ public class SubscriptionNative {
   public static int dxfg_DXFeedSubscription_addChangeListener(
       final IsolateThread ignoreThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
   ) {
     NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addChangeListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

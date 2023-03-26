@@ -6,7 +6,6 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgExecuter;
-import com.dxfeed.sdk.javac.DxfgFinalizeFunction;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import java.util.HashSet;
@@ -135,17 +134,10 @@ public class InstrumentProfileCollectorNative {
   public static int dxfg_InstrumentProfileCollector_addUpdateListener(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
-      final DxfgInstrumentProfileUpdateListener dxfgListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgInstrumentProfileUpdateListener dxfgListener
   ) {
     NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).addUpdateListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgListener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toJava(dxfgListener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

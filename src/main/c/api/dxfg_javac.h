@@ -45,11 +45,13 @@ typedef struct dxfg_input_stream_t {
 
 typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user_data);
 
+int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_handler* handler, dxfg_finalize_function finalize, void *user_data);
+
 // free the memory occupied by the с data structure and release the reference to the java object
-int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler*);
+int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler* handler);
 
 // free the memory occupied by the с data structure (list and all elements) and release the reference to the java object for all elements
-int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list*);
+int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list* list);
 
 int32_t dxfg_String_release(graal_isolatethread_t *thread, const char* string);
 int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list* string);

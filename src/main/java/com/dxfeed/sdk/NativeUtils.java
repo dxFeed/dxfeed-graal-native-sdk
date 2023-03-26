@@ -226,8 +226,12 @@ public final class NativeUtils {
     SingletonScheduledExecutorService.start(
         "clean cache & finalize native",
         () -> {
-          ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp();
-          FINALIZER.finalizeResources();
+          try {
+            ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp();
+            FINALIZER.finalizeResources();
+          } catch (final Throwable throwable) {
+            throwable.printStackTrace();
+          }
         },
         1000
     );
@@ -298,12 +302,11 @@ public final class NativeUtils {
 
   public static class Finalizer {
 
-    public final Set<Reference<Object>> holder = ConcurrentHashMap.newKeySet();
+    private final Set<Reference<Object>> holder = ConcurrentHashMap.newKeySet();
     private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
-    public <T> T wrapObjectWithFinalizer(final T object, final Runnable finalizer) {
+    public void createFinalizer(final Object object, final Runnable finalizer) {
       holder.add(new FinalizerReference(object, queue, finalizer));
-      return object;
     }
 
     private void finalizeResources() {

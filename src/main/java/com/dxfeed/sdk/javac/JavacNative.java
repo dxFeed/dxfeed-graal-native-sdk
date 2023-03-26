@@ -9,10 +9,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.Pointer;
 
 @CContext(Directives.class)
@@ -154,6 +156,23 @@ public class JavacNative {
       bytes[i] = ((Pointer) dxfgBytes).readByte(i);
     }
     return NativeUtils.MAPPER_INPUT_STREAM.toNative(new ByteArrayInputStream(bytes));
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Object_finalize",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Object_finalize(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> dxfgObjectHandler,
+      final DxfgFinalizeFunction finalizeFunction,
+      final VoidPointer userData
+  ) {
+    NativeUtils.FINALIZER.createFinalizer(
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler),
+        () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+    );
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
   private static class ExecutorBaseOnConcurrentLinkedQueue implements Executor {

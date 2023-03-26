@@ -43,7 +43,7 @@ dxfg_observable_subscription_t*     dxfg_DXPublisher_getSubscription(graal_isola
 int32_t                    dxfg_ObservableSubscription_isClosed(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
 dxfg_event_clazz_list_t*   dxfg_ObservableSubscription_getEventTypes(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
 int32_t                    dxfg_ObservableSubscription_containsEventType(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_event_clazz_t eventClazz);
-int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener, dxfg_finalize_function finalize, void *user_data);
+int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 int32_t                    dxfg_ObservableSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 
 /** @} */ // end of Publisher

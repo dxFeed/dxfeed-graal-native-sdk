@@ -128,7 +128,7 @@ int64_t                                       dxfg_InstrumentProfileConnection_g
 int32_t                                       dxfg_InstrumentProfileConnection_start(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 int32_t                                       dxfg_InstrumentProfileConnection_close(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 dxfg_ipf_connection_state_change_listener_t*  dxfg_IpfPropertyChangeListener_new(graal_isolatethread_t *thread, dxfg_ipf_connection_state_change_listener_func user_func, void *user_data);
-int32_t                                       dxfg_InstrumentProfileConnection_addStateChangeListener(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, dxfg_ipf_connection_state_change_listener_t *listener, dxfg_finalize_function finalize, void *user_data);
+int32_t                                       dxfg_InstrumentProfileConnection_addStateChangeListener(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, dxfg_ipf_connection_state_change_listener_t *listener);
 int32_t                                       dxfg_InstrumentProfileConnection_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, dxfg_ipf_connection_state_change_listener_t *listener);
 int32_t                                       dxfg_InstrumentProfileConnection_waitUntilCompleted(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, int64_t timeoutInMs);
 
@@ -142,7 +142,7 @@ int32_t                                       dxfg_InstrumentProfileCollector_re
 dxfg_iterable_ip_t*                           dxfg_InstrumentProfileCollector_view(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector);
 dxfg_executor_t*                              dxfg_InstrumentProfileCollector_getExecutor(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector);
 int32_t                                       dxfg_InstrumentProfileCollector_setExecutor(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_executor_t *executor);
-int32_t                                       dxfg_InstrumentProfileCollector_addUpdateListener(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_ipf_update_listener_t* listener, dxfg_finalize_function finalize, void *user_data);
+int32_t                                       dxfg_InstrumentProfileCollector_addUpdateListener(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_ipf_update_listener_t* listener);
 int32_t                                       dxfg_InstrumentProfileCollector_removeUpdateListener(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_ipf_update_listener_t* listener);
 
 int32_t                                       dxfg_Iterable_InstrumentProfile_hasNext(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip);

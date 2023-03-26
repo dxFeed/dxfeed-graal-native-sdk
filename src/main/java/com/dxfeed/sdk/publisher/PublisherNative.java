@@ -1,6 +1,5 @@
 package com.dxfeed.sdk.publisher;
 
-import static com.dxfeed.sdk.NativeUtils.FINALIZER;
 import static com.dxfeed.sdk.NativeUtils.MAPPER_EVENTS;
 import static com.dxfeed.sdk.NativeUtils.MAPPER_EVENT_TYPES;
 import static com.dxfeed.sdk.NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION;
@@ -15,12 +14,9 @@ import com.dxfeed.sdk.events.DxfgEventTypeList;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.sdk.javac.DxfgFinalizeFunction;
-import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
-import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
 public class PublisherNative {
@@ -105,17 +101,10 @@ public class PublisherNative {
   public static int dxfg_ObservableSubscription_addChangeListener(
       final IsolateThread ignoreThread,
       final DxfgObservableSubscription dxfgObservableSubscription,
-      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
   ) {
     MAPPER_OBSERVABLE_SUBSCRIPTION.toJava(dxfgObservableSubscription).addChangeListener(
-        finalizeFunction.isNull()
-            ? MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
-            : FINALIZER.wrapObjectWithFinalizer(
-                MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
     );
     return EXECUTE_SUCCESSFULLY;
   }

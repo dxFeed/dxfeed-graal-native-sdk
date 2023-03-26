@@ -13,7 +13,6 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecuter;
-import com.dxfeed.sdk.javac.DxfgFinalizeFunction;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -568,17 +567,10 @@ public class EventModelNative {
   public static int dxfg_ObservableListModel_addListener(
       final IsolateThread ignoreThread,
       final DxfgObservableListModel dxfgObservableListModel,
-      final DxfgObservableListModelListener dxfgObservableListModelListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgObservableListModelListener dxfgObservableListModelListener
   ) {
     NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL.toJava(dxfgObservableListModel).addListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toJava(dxfgObservableListModelListener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
@@ -618,17 +610,10 @@ public class EventModelNative {
   public static int dxfg_OrderBookModel_addListener(
       final IsolateThread ignoreThread,
       final DxfgOrderBookModel dxfgOrderBookModel,
-      final DxfgOrderBookModelListener dxfgOrderBookModelListener,
-      final DxfgFinalizeFunction finalizeFunction,
-      final VoidPointer userData
+      final DxfgOrderBookModelListener dxfgOrderBookModelListener
   ) {
     NativeUtils.MAPPER_ORDER_BOOK_MODEL.toJava(dxfgOrderBookModel).addListener(
-        finalizeFunction.isNull()
-            ? NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener)
-            : NativeUtils.FINALIZER.wrapObjectWithFinalizer(
-                NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener),
-                () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
-            )
+        NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toJava(dxfgOrderBookModelListener)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
