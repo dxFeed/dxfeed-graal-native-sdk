@@ -359,6 +359,7 @@ void finalizeListener(graal_isolatethread_t *thread) {
     dxfg_Object_finalize(thread, listener, finalize, nullptr);
     dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener);
     printf("C: get_state = %d\n", dxfg_DXEndpoint_getState(thread, endpoint));
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
@@ -393,6 +394,7 @@ void executorBaseOnConcurrentLinkedQueue(graal_isolatethread_t *thread) {
     usleep(2000000);
     dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(thread, executor);
     usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
@@ -417,6 +419,7 @@ void dxEndpointSubscription(graal_isolatethread_t *thread) {
     int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_QUOTE);
     int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionQuote, DXFG_EVENT_CANDLE);
     usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
@@ -442,6 +445,7 @@ void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
     symbolAAPL.symbol = "AAPL";
     dxfg_DXFeedSubscription_setSymbol(thread, &subscriptionTaS->sub, &symbolAAPL.supper);
     usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionTaS);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionTaS->sub.handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
@@ -525,6 +529,7 @@ void indexedEventModel(graal_isolatethread_t *thread) {
     dxfg_Object_finalize(thread, observable_list_model_listener, &finalize, nullptr);
     dxfg_ObservableListModel_addListener(thread, observable_list_model, observable_list_model_listener);
     usleep(2000000);
+    dxfg_IndexedEventModel_close(thread, indexed_event_model);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &indexed_event_model->handler);
     dxfg_JavaObjectHandler_release(thread, &observable_list_model->handler);
@@ -563,6 +568,7 @@ void lastEventIfSubscribed(graal_isolatethread_t *thread) {
     printEvent(event);
     dxfg_EventType_release(thread, event);
     usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &feed->handler);
@@ -667,6 +673,7 @@ void getLastEvent(graal_isolatethread_t *thread) {
     dxfg_DXFeed_getLastEvents(thread, feed, &event_type_list);
     printEvent(event_type_list.elements[0]);
     printEvent(event_type_list.elements[1]);
+    dxfg_DXFeedSubscription_close(thread, subscription);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_EventType_release(thread, &candle->event_type);
     dxfg_JavaObjectHandler_release(thread, &subscription->handler);

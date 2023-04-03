@@ -89,6 +89,7 @@ reserved for exceptions in both int and long types.
     symbolAAPL.symbol = "AAPL";
     dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
     usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
     dxfg_DXEndpoint_close(thread, endpoint);
     dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
