@@ -354,11 +354,11 @@ We use [teamcity](https://dxcity.in.devexperts.com/project/Eugenics_DxfeedGraalN
    version of MAJOR or MINOR. A linux version of the artifact will also be deployed.
 2. The "deploy osx", "deploy windows", "deploy nuget" builds will start automatically, after which
    you can see the new artifacts
-   in [artifactory](https://dxfeed.jfrog.io/ui/repos/tree/General/maven-open/com/dxfeed/graal-native-sdk).
+   in [artifactory](https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/).
    The "deploy osx"
    configuration builds and deploys artifacts under amd, arm architecture osx and arm under IOS.
 
-#### Deploy IOS
+#### Deploy iOS
 
 ```shell
 mvn -DmacIos=true deploy
@@ -367,7 +367,7 @@ mvn -DmacIos=true deploy
 ## Support
 
 Our support team on
-our [customer portal](https://jira.in.devexperts.com/servicedesk/customer/portal/1/create/122) is
+our [customer portal](https://jira.in.devexperts.com/servicedesk/customer/portal/1) is
 ready to answer any questions and help with the transition.
 
 ## License
