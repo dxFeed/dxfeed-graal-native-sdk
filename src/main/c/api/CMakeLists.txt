@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MPL-2.0
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.21)
 
 # Target
 set(target DxFeedGraalNativeSdk)
@@ -22,6 +22,7 @@ if (DEFINED GRAAL_CUSTOM_BIN_LOCATION)
     set(bin_location ${GRAAL_CUSTOM_BIN_LOCATION})
 endif ()
 
+option(GRAAL_NATIVE_SDK_INSTALL "Prepare install" ON)
 
 #
 # Create target
@@ -66,8 +67,10 @@ set_target_properties(${target}
         IMPORTED_NO_SONAME "TRUE"
         )
 
-# Deployment
-install(IMPORTED_RUNTIME_ARTIFACTS ${target}
-        RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
-        LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
-        )
+if (GRAAL_NATIVE_SDK_INSTALL)
+    # Deployment
+    install(IMPORTED_RUNTIME_ARTIFACTS ${target}
+            RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
+            LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
+            )
+endif ()
