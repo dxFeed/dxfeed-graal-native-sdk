@@ -73,7 +73,7 @@ object SyncGitHubWithMain : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent5919-1")
+        equals("system.agent.name", "dxfeedAgent5919-1")
     }
 }))
 
@@ -169,7 +169,7 @@ object BuildMajorMinorPatch : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent5919-1")
+        equals("system.agent.name", "dxfeedAgent5919-1")
     }
 })
 
@@ -253,7 +253,7 @@ object BuildNuget : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent5919-1")
+        equals("system.agent.name", "dxfeedAgent5919-1")
     }
 })
 
@@ -293,7 +293,7 @@ object BuildPatch : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxAgent5919-1")
+        equals("system.agent.name", "dxfeedAgent5919-1")
     }
 })
 

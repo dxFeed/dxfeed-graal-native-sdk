@@ -12,7 +12,7 @@ additional info https://www.graalvm.org/22.1/docs/getting-started/windows/
 
 # Preparing the Linux agent
 
-dxAgent5919-1 dxbuilder5919.in.devexperts.com
+dxfeedAgent5919-1 dxfeedbuilder5919.in.devexperts.com
 
 ```shell
 cd ~
@@ -29,7 +29,7 @@ sudo nuget update -self
 wget -qO - https://releases.jfrog.io/artifactory/jfrog-gpg-public/jfrog_public_gpg.key | sudo apt-key add -
 echo "deb https://releases.jfrog.io/artifactory/jfrog-debs xenial contrib" | sudo tee -a /etc/apt/sources.list;
 sudo apt update;
-apt install -y jfrog-cli-v2-jf;
+sudo apt install -y jfrog-cli-v2-jf;
 jf config add Artifactory --artifactory-url=https://dxfeed.jfrog.io/artifactory
 #JFrog Platform URL: https://dxfeed.jfrog.io
 #JFrog Artifactory URL: https://dxfeed.jfrog.io/artifactory
