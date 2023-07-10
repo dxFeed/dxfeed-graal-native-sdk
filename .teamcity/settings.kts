@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
+import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
@@ -75,7 +76,7 @@ object SyncGitHubWithMain : BuildType({
     requirements {
         equals("system.agent.name", "dxfeedAgent5919-1")
     }
-}))
+})
 
 object AutomaticDeploymentOfTheOsxArtifact : BuildType({
     name = "deploy osx"
