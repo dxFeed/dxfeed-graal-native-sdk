@@ -174,7 +174,7 @@
                 <buildArg>-Dsvm.targetArch=arm64</buildArg>
                 <buildArg>-Dsvm.platform=org.graalvm.nativeimage.Platform$IOS_AARCH64</buildArg>
 
-                <buildArg>-g</buildArg>
+                <!-- <buildArg>-g</buildArg> -->
               </buildArgs>
             </configuration>
           </plugin>
