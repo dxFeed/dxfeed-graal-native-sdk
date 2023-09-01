@@ -112,6 +112,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
                 arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
                 arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home
+                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIosSimulator=true deploy
                 arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
         }

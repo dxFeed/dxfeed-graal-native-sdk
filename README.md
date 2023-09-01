@@ -360,8 +360,50 @@ We use [teamcity](https://dxcity.in.devexperts.com/project/Eugenics_DxfeedGraalN
 
 #### Deploy iOS
 
+##### Install JDKs
+
 ```shell
+cd ~
+# xcode command line tools
+xcode-select --install
+#ARCH64
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+tar -xzvf graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
+sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install native-image
+#IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install llvm-toolchain
+ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-arm64
+#AMD64
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+tar -xzvf graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install native-image
+#IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install llvm-toolchain
+ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-amd64
+```
+
+##### iOS
+
+```shell
+mvn clean
+jenv shell graalvm-ce-java11-22.3.1-arm64
 mvn -DmacIos=true deploy
+```
+
+##### iOS simulator
+
+For the simulator we need to support both amd64 and arm64 platforms. a-files are generated as fat-files for both platforms. To get an o-file also fat (for both platforms) we first build a regular iOS artifact and save the resulting o-file. Then we build o-file for amd64 and glue them with lipo utilities. In the final archive for the simulator we put a- and o-files as fat for both platforms.
+
+```shell
+mvn clean
+jenv shell graalvm-ce-java11-22.3.1-arm64
+mvn -DmacIos=true package
+jenv shell graalvm-ce-java11-22.3.1-amd64
+arch -x86_64 mvn -DmacIosSimulator=true deploy
 ```
 
 ## Support
@@ -369,6 +411,53 @@ mvn -DmacIos=true deploy
 Our support team on
 our [customer portal](https://jira.in.devexperts.com/servicedesk/customer/portal/1) is
 ready to answer any questions and help with the transition.
+
+## how to build jdk & svm a-files
+
+```shell
+cd ~
+curl -LO https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-22.3-b13/labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
+curl -LO https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-22.3-b13/labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
+sudo xattr -rd com.apple.quarantine labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
+sudo xattr -rd com.apple.quarantine labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
+tar -xzvf labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
+mv labsjdk-ce-11.0.18-jvmci-22.3-b13 labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
+tar -xzvf labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
+mv labsjdk-ce-11.0.18-jvmci-22.3-b13 labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64
+sudo mv labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64 /Library/Java/JavaVirtualMachines/
+sudo mv labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64 /Library/Java/JavaVirtualMachines/
+ln -s /Library/Java/JavaVirtualMachines/labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64/Contents/Home ~/.jenv/versions/labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
+ln -s /Library/Java/JavaVirtualMachines/labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64/Contents/Home ~/.jenv/versions/labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64
+jenv shell labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
+java -version
+git clone https://github.com/dxFeed/labs-openjdk-11.git
+cd labs-openjdk-11
+git checkout -b jvmci/22.3-b13-fix-sun-management origin/release/jvmci/22.3-b13-fix-sun-management
+git remote add oracle https://github.com/graalvm/labs-openjdk-11.git
+git fetch oracle
+arch -x86_64 python3 build_labsjdk.py --jvmci-version 22.3-b13 --configure-option=--disable-warnings-as-errors
+xcodebuild -sdk iphoneos -arch arm64 -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
+xcodebuild -sdk iphonesimulator -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
+lipo -info xcode/jdk-arm64-ios-r.a
+#Non-fat file: xcode/jdk-arm64-ios-r.a is architecture: arm64
+lipo -info xcode/jdk-arm64-ios-simulator-r.a
+#Architectures in the fat file: xcode/jdk-arm64-ios-simulator-r.a are: arm64 x86_64
+ln -s ~/labs-openjdk-11/java_home ~/.jenv/versions/labs-openjdk-11_graal_amd64
+jenv shell labs-openjdk-11_graal_amd64
+cd ~
+git clone https://github.com/dxFeed/graal.git
+cd graal
+git checkout -b release/graal-vm/22.3.1 origin/release/graal-vm/22.3.1
+cd substratevm
+arch -x86_64 mx build
+mkdir xcode
+xcodebuild -sdk iphoneos -arch arm64 -project graal-svm-ios.xcodeproj -scheme graal-svm-arm64-release
+xcodebuild -sdk iphonesimulator -arch arm64 -project graal-svm-ios.xcodeproj -scheme graal-svm-arm64-release
+arch -x86_64 xcodebuild -sdk iphonesimulator -arch x86_64 -project graal-svm-ios.xcodeproj -scheme graal-svm-x86-64-release
+lipo -create xcode/graal-svm-arm64-ios-simulator-r.a xcode/graal-svm-x86-64-ios-simulator-r.a -output xcode/graal-svm-x86-64-ios-simulator-r-f.a
+lipo -info xcode/graal-svm-x86-64-ios-simulator-r-f.a
+#Architectures in the fat file: xcode/graal-svm-x86-64-ios-simulator-r-f.a are: x86_64 arm64
+```
 
 ## License
 

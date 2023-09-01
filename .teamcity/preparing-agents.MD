@@ -64,10 +64,13 @@ sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-ja
 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install native-image
 #IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install llvm-toolchain
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
+#ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-arm64
 #AMD64
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
 sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
 tar -xzvf graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home/bin/gu install native-image
+sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install native-image
+/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install llvm-toolchain
+#ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-amd64
 ```

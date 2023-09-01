@@ -95,6 +95,7 @@
     <artifact.name>${project.name}-${arch.name}.zip</artifact.name>
     <macIos>false</macIos>
     <notMacIos>true</notMacIos>
+    <notIosSimulator>true</notIosSimulator>
   </properties>
 
   <profiles>
@@ -119,6 +120,67 @@
       <properties>
         <native.image.name>DxFeedGraalNativeSdk</native.image.name>
       </properties>
+    </profile>
+    <profile>
+      <id>iosSimulator</id>
+      <activation>
+        <property>
+          <name>macIosSimulator</name>
+        </property>
+      </activation>
+      <properties>
+        <set-rpath.skip>true</set-rpath.skip>
+        <arch.name>ios-simulator</arch.name>
+        <notIosSimulator>false</notIosSimulator>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.graalvm.nativeimage</groupId>
+            <artifactId>native-image-maven-plugin</artifactId>
+            <version>21.2.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>native-image</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <skip>false</skip>
+              <imageName>${native.image.name}</imageName>
+              <buildArgs>
+                <!-- NativeImage options links: -->
+                <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
+                <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
+                <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
+                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>-H:+SharedLibrary</buildArg>
+                <buildArg>-H:Name=${native.image.name}</buildArg>
+                <buildArg>-Dproject.path=${project.basedir}</buildArg>
+                <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
+                <buildArg>-H:Path=${native.image.path}</buildArg>
+                <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
+                <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
+                <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
+                <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+
+
+                <buildArg>--native-image-info</buildArg>
+                <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
+                <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
+                <buildArg>-H:PageSize=16384</buildArg>
+                <buildArg>-Dsvm.targetName=iOS</buildArg>
+                <buildArg>-Dsvm.targetArch=x86_64</buildArg>
+                <buildArg>-Dsvm.platform=org.graalvm.nativeimage.Platform$IOS_AMD64</buildArg>
+
+                <!-- <buildArg>-g</buildArg> -->
+              </buildArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>ios</id>
@@ -263,6 +325,12 @@
             <configuration>
               <skip>${notMacIos}</skip>
               <target>
+                <copy todir="${project.build.directory}/arm64">
+                  <fileset dir="${project.build.directory}/tmp_IOS">
+                    <include name="**/*.o" />
+                  </fileset>
+                  <mapper type="flatten" />
+                </copy>
                 <copy todir="${project.build.directory}/${native.image.path}">
                   <fileset dir="${project.build.directory}/tmp_IOS">
                     <include name="**/*.o" />
@@ -271,10 +339,56 @@
                 </copy>
                 <copy todir="${project.build.directory}/${native.image.path}">
                   <fileset dir="${project.basedir}/jre-ios">
-                    <include name="**/*.a" />
+                    <include name="**/*-arm64-ios-r.a" />
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
+                <delete failonerror="false">
+                  <fileset dir="${project.build.directory}/tmp_IOS">
+                    <include name="**/*.o" />
+                  </fileset>
+                </delete>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-ios-simulator-lib</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${notIosSimulator}</skip>
+              <target>
+                <copy todir="${project.build.directory}/amd64">
+                  <fileset dir="${project.build.directory}/tmp_IOS">
+                    <include name="**/*.o" />
+                  </fileset>
+                  <mapper type="flatten" />
+                </copy>
+                <copy todir="${project.build.directory}/${native.image.path}">
+                  <fileset dir="${project.basedir}/jre-ios">
+                    <include name="**/*-ios-simulator-r.a" />
+                  </fileset>
+                  <mapper type="flatten" />
+                </copy>
+                <delete failonerror="false">
+                  <fileset dir="${project.build.directory}/${native.image.path}">
+                    <include name="**/*-arm64-ios-r.a" />
+                  </fileset>
+                </delete>
+                <exec executable="lipo" failonerror="true">
+                  <arg value="-create" />
+                  <arg value="${project.build.directory}/arm64/libDxFeedGraalNativeSdk.o" />
+                  <arg value="${project.build.directory}/amd64/libDxFeedGraalNativeSdk.o" />
+                  <arg value="-output" />
+                  <arg value="${project.build.directory}/${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                </exec>
+                <delete failonerror="false">
+                  <fileset dir="${project.build.directory}">
+                    <include name="**/*aarch64-ios.zip" />
+                  </fileset>
+                </delete>
               </target>
             </configuration>
           </execution>
