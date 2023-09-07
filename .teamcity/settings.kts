@@ -41,13 +41,14 @@ project {
     buildType(BuildMajorMinorPatch)
     buildType(AutomaticDeploymentOfTheOsxArtifact)
     buildType(BuildPatch)
+    buildType(SyncGitHubWithMain)
 }
 
 object SyncGitHubWithMain : BuildType({
     name = "Sync GitHub with 'main'"
 
     vcs {
-        root(DslContext.settingsRoot)
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
     }
 
     steps {
@@ -58,11 +59,11 @@ object SyncGitHubWithMain : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_BuildPatch"
+            buildType = "${BuildPatch.id}"
             successfulOnly = true
         }
         finishBuildTrigger {
-            buildType = "Eugenics_DxfeedGraalNativeApi_BuildMajorMinorPatch"
+            buildType = "${BuildMajorMinorPatch.id}"
             successfulOnly = true
         }
     }
