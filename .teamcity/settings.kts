@@ -234,7 +234,7 @@ object BuildNuget : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${AutomaticDeploymentOfTheOsxArtifact.id}"
+            buildType = "${DeployWindows.id}"
             successfulOnly = true
 
             enforceCleanCheckout = true
@@ -334,11 +334,7 @@ object DeployWindows : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildPatch.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatch.id}"
+            buildType = "${AutomaticDeploymentOfTheOsxArtifact.id}"
             successfulOnly = true
         }
     }
