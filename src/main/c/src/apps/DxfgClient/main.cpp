@@ -316,6 +316,7 @@ void liveIpf(graal_isolatethread_t *thread) {
         "https://demo:demo@tools.dxfeed.com/ipf",
         collector
     );
+    printf("C: InstrumentProfileCollector state %d\n", dxfg_InstrumentProfileConnection_getState(thread, connection));
     dxfg_ipf_update_listener_t* listener = dxfg_InstrumentProfileUpdateListener_new(thread, &updateListener, nullptr);
     dxfg_Object_finalize(thread, reinterpret_cast<dxfg_java_object_handler *>(listener), finalize, nullptr);
     dxfg_InstrumentProfileCollector_addUpdateListener(thread, collector, listener);
@@ -323,8 +324,11 @@ void liveIpf(graal_isolatethread_t *thread) {
     dxfg_Object_finalize(thread, reinterpret_cast<dxfg_java_object_handler *>(listenerState), finalize, nullptr);
     dxfg_InstrumentProfileConnection_addStateChangeListener(thread, connection, listenerState);
     dxfg_InstrumentProfileConnection_start(thread, connection);
+    printf("C: InstrumentProfileCollector state %d\n", dxfg_InstrumentProfileConnection_getState(thread, connection));
     dxfg_InstrumentProfileConnection_waitUntilCompleted(thread, connection, 30000);
+    printf("C: InstrumentProfileCollector state %d\n", dxfg_InstrumentProfileConnection_getState(thread, connection));
     dxfg_InstrumentProfileConnection_close(thread, connection);
+    printf("C: InstrumentProfileCollector state %d\n", dxfg_InstrumentProfileConnection_getState(thread, connection));
     dxfg_JavaObjectHandler_release(thread, &collector->handler);
     dxfg_JavaObjectHandler_release(thread, &connection->handler);
     dxfg_JavaObjectHandler_release(thread, &listener->handler);
