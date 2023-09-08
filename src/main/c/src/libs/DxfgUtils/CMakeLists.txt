@@ -101,7 +101,7 @@ target_link_libraries(${target}
 
         PUBLIC
         ${DEFAULT_LIBRARIES}
-        DxFeedGraalNativeApi
+        DxFeedGraalNativeSdk
         date::date
 
         INTERFACE

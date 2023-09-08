@@ -82,7 +82,7 @@ target_include_directories(${target}
 target_link_libraries(${target}
         PRIVATE
         ${DEFAULT_LIBRARIES}
-        DxFeedGraalNativeApi
+        DxFeedGraalNativeSdk
         DxfgUtils
         DxfgEventFormatter
         )
@@ -136,5 +136,5 @@ install(TARGETS ${target}
 # Copy shared library to output directory
 add_custom_command(TARGET ${target} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:DxFeedGraalNativeApi> $<TARGET_FILE_DIR:${target}>
+        $<TARGET_FILE:DxFeedGraalNativeSdk> $<TARGET_FILE_DIR:${target}>
         )

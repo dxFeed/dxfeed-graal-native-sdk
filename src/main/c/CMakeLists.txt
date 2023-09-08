@@ -171,7 +171,7 @@ include(cmake/CompileOptions.cmake)
 
 # Add local build DxFeedGraalNativeSdk
 set(GRAAL_CUSTOM_BIN_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../../target/native-image/)
-add_subdirectory(sdk)
+add_subdirectory(api)
 
 # Add sources directory
 add_subdirectory(extern)
