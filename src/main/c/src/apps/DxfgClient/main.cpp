@@ -714,6 +714,22 @@ void schedule(graal_isolatethread_t *thread) {
     dxfg_JavaObjectHandler_release(thread, &reader->handler);
 }
 
+void schedule2(graal_isolatethread_t *thread) {
+    dxfg_system_set_property(thread, "com.dxfeed.schedule.download", "auto");
+    dxfg_schedule_t* schedule = dxfg_Schedule_getInstance2(thread, "(tz=GMT;de=2300;0=)");
+    dxfg_day_t* day = dxfg_Schedule_getDayById(thread, schedule, 42);
+    int32_t dayId = dxfg_Day_getDayId(thread, day);
+    printf("C: dayId %d should be 42\n", dayId);
+    const char* timeZoneGetId = dxfg_Schedule_getTimeZone_getID(thread, schedule);
+    printf("C: timeZoneGetId = %s\n", timeZoneGetId);
+    const char* name = dxfg_Schedule_getName(thread, schedule);
+    printf("C: schedule %s\n", name);
+    dxfg_String_release(thread, name);
+    dxfg_String_release(thread, timeZoneGetId);
+    dxfg_JavaObjectHandler_release(thread, &day->handler);
+    dxfg_JavaObjectHandler_release(thread, &schedule->handler);
+}
+
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
     if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
@@ -736,4 +752,5 @@ int main(int argc, char *argv[]) {
     indexedEventsPromise(thread);
     getLastEvent(thread);
     schedule(thread);
+    schedule2(thread);
 }

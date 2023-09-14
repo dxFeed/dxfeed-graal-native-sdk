@@ -98,6 +98,7 @@ dxfg_session_t*       dxfg_Schedule_getNearestSessionByTime(graal_isolatethread_
 dxfg_session_t*       dxfg_Schedule_findNearestSessionByTime(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int64_t time, dxfg_session_filter_t* filter);
 const char*           dxfg_Schedule_getName(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
 const char*           dxfg_Schedule_getTimeZone(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
+const char*           dxfg_Schedule_getTimeZone_getID(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
 
 
 dxfg_day_t*           dxfg_Session_getDay(graal_isolatethread_t *thread, dxfg_session_t* session);

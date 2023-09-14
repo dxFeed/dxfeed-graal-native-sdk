@@ -11,13 +11,14 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.javac.DxfgCharPointerList;
-import java.io.IOException;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.Pointer;
+
+import java.io.IOException;
 
 @CContext(Directives.class)
 public class ScheduleNative {
@@ -278,6 +279,18 @@ public class ScheduleNative {
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
         NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getTimeZone().getDisplayName());
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Schedule_getTimeZone_getID",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_Schedule_getTimeZone_getID(
+      final IsolateThread ignoredThread,
+      final DxfgSchedule dxfgSchedule
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getTimeZone().getID());
   }
 
   @CEntryPoint(
