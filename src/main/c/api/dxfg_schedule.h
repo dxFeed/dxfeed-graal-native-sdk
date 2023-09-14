@@ -33,9 +33,6 @@ typedef enum dxfg_session_type_t {
  */
 typedef struct dxfg_session_t {
     dxfg_java_object_handler handler;
-    dxfg_session_type_t type;
-    int64_t startTime;
-    int64_t endTime;
 } dxfg_session_t;
 
 typedef struct dxfg_session_list {
@@ -45,14 +42,6 @@ typedef struct dxfg_session_list {
 
 typedef struct dxfg_day_t {
     dxfg_java_object_handler handler;
-    int32_t dayId;
-    int32_t yearMonthDay;
-    int32_t holiday;
-    int32_t shortDay;
-    int64_t resetTime;
-    int32_t trading;
-    int64_t startTime;
-    int64_t endTime;
 } dxfg_day_t;
 
 typedef int32_t (*dxfg_session_filter_function)(graal_isolatethread_t *thread, dxfg_session_t *session);
