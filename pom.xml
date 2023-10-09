@@ -11,20 +11,38 @@
     <dependency>
       <groupId>com.devexperts.mdd</groupId>
       <artifactId>auther-api</artifactId>
-      <version>455</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.devexperts.qd</groupId>
-          <artifactId>qds-monitoring</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>472</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>dxlink-websocket</artifactId>
+      <version>3.325</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.14.2</version>
+      <version>2.13.3</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling</artifactId>
+      <version>2.0.14.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.0</version>
+    </dependency>
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
@@ -46,12 +64,12 @@
 
   <repositories>
     <repository>
-      <id>mdd</id>
-      <url>https://nexus.in.devexperts.com/repository/mdd/</url>
-    </repository>
-    <repository>
       <id>jfrog</id>
       <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
+    </repository>
+    <repository>
+      <id>mdd</id>
+      <url>https://nexus.in.devexperts.com/repository/mdd/</url>
     </repository>
   </repositories>
 
@@ -164,8 +182,8 @@
                 <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-
+                <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
 
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
@@ -225,8 +243,8 @@
                 <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-
+                <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
 
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
@@ -283,7 +301,8 @@
             <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-            <buildArg>--initialize-at-build-time=sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+            <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+            <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
           </buildArgs>
         </configuration>
       </plugin>

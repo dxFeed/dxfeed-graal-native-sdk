@@ -432,6 +432,32 @@ void dxEndpointSubscription(graal_isolatethread_t *thread) {
     printf("C: dxEndpointSubscription END\n");
 }
 
+void dxEndpointMonitoring(graal_isolatethread_t *thread) {
+    printf("C: dxEndpointMonitoring BEGIN\n");
+    dxfg_endpoint_builder_t* builder = dxfg_DXEndpoint_newBuilder(thread);
+    dxfg_DXEndpoint_Builder_withProperty(thread, builder, "monitoring.stat", "1s");
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_Builder_build(thread, builder);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_Object_finalize(thread, reinterpret_cast<dxfg_java_object_handler *>(listener), finalize, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
+    usleep(5000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    dxfg_JavaObjectHandler_release(thread, &builder->handler);
+    printf("C: dxEndpointMonitoring END\n");
+}
+
 void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
     printf("C: dxEndpointTimeSeriesSubscription BEGIN\n");
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
@@ -741,6 +767,7 @@ int main(int argc, char *argv[]) {
     finalizeListener(thread);
     executorBaseOnConcurrentLinkedQueue(thread);
     dxEndpointSubscription(thread);
+    dxEndpointMonitoring(thread);
     dxEndpointTimeSeriesSubscription(thread);
     systemProperties(thread);
     exception(thread);

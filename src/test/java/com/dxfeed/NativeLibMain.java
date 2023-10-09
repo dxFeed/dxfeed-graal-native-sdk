@@ -6,7 +6,6 @@ import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.DXPublisher;
-import com.dxfeed.sdk.maper.InstrumentProfileMapper;
 import com.dxfeed.api.osub.WildcardSymbol;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEventSource;
@@ -14,9 +13,17 @@ import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.event.market.MarketEvent;
+import com.dxfeed.event.market.OptionSale;
 import com.dxfeed.event.market.Order;
+import com.dxfeed.event.market.Profile;
 import com.dxfeed.event.market.Quote;
+import com.dxfeed.event.market.SpreadOrder;
+import com.dxfeed.event.market.Summary;
 import com.dxfeed.event.market.TimeAndSale;
+import com.dxfeed.event.market.Trade;
+import com.dxfeed.event.market.TradeETH;
+import com.dxfeed.event.misc.Configuration;
+import com.dxfeed.event.misc.Message;
 import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
@@ -35,10 +42,12 @@ import com.dxfeed.schedule.DayFilter;
 import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
+import com.dxfeed.sdk.maper.InstrumentProfileMapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,6 +67,8 @@ public class NativeLibMain {
     objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
     objectMapper.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
 
+    dxLink();
+    dxEndpointMonitoring();
     tapeFile();
     dxEndpointWriteToTape();
     liveIpf(objectMapper);
@@ -67,6 +78,7 @@ public class NativeLibMain {
     dxEndpointReadFromTape();
     dxEndpointOrderBookModel();
     schedule();
+    System.exit(1);
   }
 
   public static void tapeFile() throws InterruptedException {
@@ -200,13 +212,16 @@ public class NativeLibMain {
     dxEndpoint.close();
   }
 
-  private static void dxEndpointTimeSeriesSubscription(final ObjectMapper objectMapper) throws InterruptedException {
+  private static void dxLink() throws InterruptedException {
+    System.setProperty("dxfeed.experimental.dxlink.enable", "true");
+    System.setProperty("scheme", "ext:resource:dxlink.xml");
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
-    dxEndpoint.connect("demo.dxfeed.com:7300");
-    DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> subscription2 = dxEndpoint.getFeed()
+        .build();
+    dxEndpoint.connect("dxlink:wss://demo.dxfeed.com/dxlink-ws");
+
+    DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> tsSubscription = dxEndpoint.getFeed()
         .createTimeSeriesSubscription(
             TimeAndSale.class,
             TheoPrice.class,
@@ -215,9 +230,79 @@ public class NativeLibMain {
             Greeks.class,
             DailyCandle.class
         );
-    subscription2.setFromTime(0);
-    subscription2.addEventListener(events -> print(events, objectMapper));
-    subscription2.addSymbols(
+    tsSubscription.setFromTime(0);
+    tsSubscription.addEventListener(events -> events.forEach(System.out::println));
+    tsSubscription.addSymbols(
+        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
+            "BTC/USDT:CXBINA"));
+
+    final DXFeedSubscription<EventType<?>> subscription = dxEndpoint.getFeed().createSubscription(
+        Candle.class,
+        DailyCandle.class,
+        Configuration.class,
+        Greeks.class,
+        OptionSale.class,
+        Order.class,
+        SpreadOrder.class,
+        Profile.class,
+        Quote.class,
+        Series.class,
+        Summary.class,
+        TheoPrice.class,
+        TimeAndSale.class,
+        Trade.class,
+        TradeETH.class,
+        Underlying.class,
+        Message.class
+    );
+    subscription.addEventListener(events -> events.forEach(System.out::println));
+    subscription.addSymbols(
+        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
+            "BTC/USDT:CXBINA"));
+
+    Thread.sleep(7000);
+
+    tsSubscription.close();
+    subscription.close();
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointMonitoring() throws InterruptedException {
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+        .withRole(DXEndpoint.Role.FEED)
+        .withProperties(System.getProperties())
+        .withProperty("monitoring.stat", "1")
+        .build().user("demo").password("demo");
+    dxEndpoint.connect("demo.dxfeed.com:7300");
+    final DXFeedSubscription<Quote> subscription = dxEndpoint.getFeed().createSubscription(Quote.class);
+    subscription.addEventListener(events -> {
+    });
+    subscription.addSymbols(
+        Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
+            "BTC/USDT:CXBINA"));
+    Thread.sleep(7000);
+    subscription.close();
+    dxEndpoint.close();
+  }
+
+  private static void dxEndpointTimeSeriesSubscription(final ObjectMapper objectMapper) throws InterruptedException {
+    final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
+        .withRole(DXEndpoint.Role.FEED)
+        .withProperties(System.getProperties())
+        .build().user("demo").password("demo");
+    dxEndpoint.connect("demo.dxfeed.com:7300");
+    DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> subscription = dxEndpoint.getFeed()
+        .createTimeSeriesSubscription(
+            TimeAndSale.class,
+            TheoPrice.class,
+            Underlying.class,
+            Candle.class,
+            Greeks.class,
+            DailyCandle.class
+        );
+    subscription.setFromTime(0);
+    subscription.addEventListener(events -> print(events, objectMapper));
+    subscription.addSymbols(
         Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
             "BTC/USDT:CXBINA"));
     Thread.sleep(1000);

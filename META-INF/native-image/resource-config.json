@@ -5,6 +5,12 @@
       "pattern":"\\QMETA-INF/services/com.devexperts.connector.codec.CodecFactory\\E"
     },
     {
+      "pattern":"\\QMETA-INF/services/com.devexperts.mars.common.MARSPlugin$Factory\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataSchemeFactory\\E"
+    },
+    {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataScheme\\E"
     },
     {
@@ -14,11 +20,17 @@
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
     },
     {
+      "pattern":"\\QMETA-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.ng.RecordMappingFactory\\E"
     },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.MessageConnectorFactory\\E"
     },
+    {
+      "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.QDEndpoint$Builder\\E"
+    }, 
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
     },
@@ -53,5 +65,8 @@
       "pattern":".*\\.MF$"
     }
   ]},
-  "bundles":[]
+  "bundles":[{
+      "name":"com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
+      "locales":[""]
+    }]
 }
