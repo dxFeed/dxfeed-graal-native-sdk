@@ -42,6 +42,7 @@ import com.dxfeed.schedule.DayFilter;
 import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
+import com.dxfeed.scheme.impl.DefaultEmbeddedTypes;
 import com.dxfeed.sdk.maper.InstrumentProfileMapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -67,6 +68,7 @@ public class NativeLibMain {
     objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
     objectMapper.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
 
+    System.out.println(new DefaultEmbeddedTypes().getSerialType("wide_decimal"));
     dxLink();
     dxEndpointMonitoring();
     tapeFile();

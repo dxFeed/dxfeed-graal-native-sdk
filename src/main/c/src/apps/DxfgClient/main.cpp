@@ -407,6 +407,32 @@ void executorBaseOnConcurrentLinkedQueue(graal_isolatethread_t *thread) {
     dxfg_JavaObjectHandler_release(thread, &executor->handler);
 }
 
+void dxLink(graal_isolatethread_t *thread) {
+    printf("C: dxLink BEGIN\n");
+    dxfg_system_set_property(thread, "dxfeed.experimental.dxlink.enable", "true");
+    dxfg_system_set_property(thread, "scheme", "ext:resource:dxlink.xml");
+    print_exception(thread);
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    print_exception(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "dxlink:wss://demo.dxfeed.com/dxlink-ws");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
+    usleep(2000000);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    printf("C: dxLink END\n");
+}
+
 void dxEndpointSubscription(graal_isolatethread_t *thread) {
     printf("C: dxEndpointSubscription BEGIN\n");
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
@@ -780,4 +806,5 @@ int main(int argc, char *argv[]) {
     getLastEvent(thread);
     schedule(thread);
     schedule2(thread);
+    dxLink(thread);
 }
