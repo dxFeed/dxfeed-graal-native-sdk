@@ -29,21 +29,6 @@
       <version>2.13.3</version>
     </dependency>
     <dependency>
-      <groupId>org.lz4</groupId>
-      <artifactId>lz4-java</artifactId>
-      <version>1.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.marshalling</groupId>
-      <artifactId>jboss-marshalling</artifactId>
-      <version>2.0.14.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-      <version>3.25.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
       <version>${graalvm.version}</version>
@@ -103,7 +88,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <graalvm.version>22.3.1</graalvm.version>
-    <native.image.path>native-image</native.image.path>
+    <native.image.path>${project.build.directory}/native-image</native.image.path>
     <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
@@ -154,39 +139,41 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.graalvm.nativeimage</groupId>
-            <artifactId>native-image-maven-plugin</artifactId>
-            <version>21.2.0</version>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>0.9.28</version>
+            <extensions>true</extensions>
             <executions>
               <execution>
+                <id>build-native</id>
                 <goals>
-                  <goal>native-image</goal>
+                  <goal>compile-no-fork</goal>
                 </goals>
                 <phase>package</phase>
               </execution>
             </executions>
             <configuration>
+              <metadataRepository>
+                <enabled>true</enabled>
+              </metadataRepository>
               <skip>false</skip>
               <imageName>${native.image.name}</imageName>
+              <sharedLibrary>true</sharedLibrary>
               <buildArgs>
                 <!-- NativeImage options links: -->
                 <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
                 <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
                 <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
                 <buildArg>--enable-url-protocols=http,https</buildArg>
-                <buildArg>-H:+SharedLibrary</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
-                <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-                <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
-
+                <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
                 <buildArg>--native-image-info</buildArg>
-                <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
+                <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
                 <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
                 <buildArg>-H:PageSize=16384</buildArg>
                 <buildArg>-Dsvm.targetName=iOS</buildArg>
@@ -215,18 +202,23 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.graalvm.nativeimage</groupId>
-            <artifactId>native-image-maven-plugin</artifactId>
-            <version>21.2.0</version>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>0.9.28</version>
+            <extensions>true</extensions>
             <executions>
               <execution>
+                <id>build-native</id>
                 <goals>
-                  <goal>native-image</goal>
+                  <goal>compile-no-fork</goal>
                 </goals>
                 <phase>package</phase>
               </execution>
             </executions>
             <configuration>
+              <metadataRepository>
+                <enabled>true</enabled>
+              </metadataRepository>
               <skip>false</skip>
               <imageName>${native.image.name}</imageName>
               <buildArgs>
@@ -235,19 +227,16 @@
                 <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
                 <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
                 <buildArg>--enable-url-protocols=http,https</buildArg>
-                <buildArg>-H:+SharedLibrary</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
-                <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-                <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
+                <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
 
                 <buildArg>--native-image-info</buildArg>
-                <buildArg>-H:TempDirectory=tmp_IOS</buildArg>
+                <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
                 <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
                 <buildArg>-H:PageSize=16384</buildArg>
                 <buildArg>-Dsvm.targetName=iOS</buildArg>
@@ -273,36 +262,39 @@
     </extensions>
     <plugins>
       <plugin>
-        <groupId>org.graalvm.nativeimage</groupId>
-        <artifactId>native-image-maven-plugin</artifactId>
-        <version>21.2.0</version>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <version>0.9.28</version>
+        <extensions>true</extensions>
         <executions>
           <execution>
+            <id>build-native</id>
             <goals>
-              <goal>native-image</goal>
+              <goal>compile-no-fork</goal>
             </goals>
             <phase>package</phase>
           </execution>
         </executions>
         <configuration>
+          <metadataRepository>
+            <enabled>true</enabled>
+          </metadataRepository>
           <skip>false</skip>
           <imageName>${native.image.name}</imageName>
+          <sharedLibrary>true</sharedLibrary>
           <buildArgs>
             <!-- NativeImage options links: -->
             <!-- 1. https://www.graalvm.org/22.1/reference-manual/native-image/Options/ -->
             <!-- 2. https://chriswhocodes.com/graalvm_native_image_ce_jdk11_options.html -->
             <!-- 3. Unofficial: https://gist.github.com/happylynx/ce642816411ee5c98f04fedd80f4c417 -->
             <buildArg>--enable-url-protocols=http,https</buildArg>
-            <buildArg>-H:+SharedLibrary</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
-            <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/META-INF/native-image/</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-            <buildArg>--initialize-at-build-time=org.slf4j.simple.SimpleLogger,io.netty.util.internal.logging.Slf4JLoggerFactory,io.netty.channel.MultithreadEventLoopGroup,io.netty.util.internal.logging.InternalLoggerFactory,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
-            <buildArg>--initialize-at-run-time=io.netty.channel.DefaultFileRegion,io.netty.channel.epoll.Native,io.netty.channel.epoll.Epoll,io.netty.channel.epoll.EpollEventLoop,io.netty.channel.epoll.EpollEventArray,io.netty.channel.kqueue.KQueue,io.netty.channel.kqueue.KQueueEventLoop,io.netty.channel.kqueue.KQueueEventArray,io.netty.channel.kqueue.Native,io.netty.channel.unix.Limits,io.netty.channel.unix.Errors,io.netty.channel.unix.IovArray,io.netty.handler.ssl.BouncyCastleAlpnSslUtils,io.netty.incubator.codec.quic.InsecureQuicTokenHandler,io.netty.incubator.codec.quic.SecureRandomQuicConnectionIdGenerator</buildArg>
+            <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
           </buildArgs>
         </configuration>
       </plugin>
@@ -324,7 +316,7 @@
                 <argument>-id</argument>
                 <argument>@rpath/${native.image.name}.dylib</argument>
                 <argument>
-                  ${project.build.directory}/${native.image.path}/${native.image.name}.dylib
+                  ${native.image.path}/${native.image.name}.dylib
                 </argument>
               </arguments>
             </configuration>
@@ -350,13 +342,13 @@
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
-                <copy todir="${project.build.directory}/${native.image.path}">
+                <copy todir="${native.image.path}">
                   <fileset dir="${project.build.directory}/tmp_IOS">
                     <include name="**/*.o" />
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
-                <copy todir="${project.build.directory}/${native.image.path}">
+                <copy todir="${native.image.path}">
                   <fileset dir="${project.basedir}/jre-ios">
                     <include name="**/*-arm64-ios-r.a" />
                   </fileset>
@@ -385,14 +377,14 @@
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
-                <copy todir="${project.build.directory}/${native.image.path}">
+                <copy todir="${native.image.path}">
                   <fileset dir="${project.basedir}/jre-ios">
                     <include name="**/*-ios-simulator-r.a" />
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
                 <delete failonerror="false">
-                  <fileset dir="${project.build.directory}/${native.image.path}">
+                  <fileset dir="${native.image.path}">
                     <include name="**/*-arm64-ios-r.a" />
                   </fileset>
                 </delete>
@@ -401,7 +393,7 @@
                   <arg value="${project.build.directory}/arm64/libDxFeedGraalNativeSdk.o" />
                   <arg value="${project.build.directory}/amd64/libDxFeedGraalNativeSdk.o" />
                   <arg value="-output" />
-                  <arg value="${project.build.directory}/${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                  <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
                 </exec>
                 <delete failonerror="false">
                   <fileset dir="${project.build.directory}">

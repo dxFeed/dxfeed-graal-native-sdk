@@ -9,7 +9,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/${native.image.path}</directory>
+      <directory>${native.image.path}</directory>
       <includes>
         <include>*.dylib</include>
         <include>*.dll</include>
@@ -26,7 +26,7 @@
       <outputDirectory/>
     </fileSet>
     <fileSet>
-      <directory>${project.build.directory}/${native.image.path}/reports</directory>
+      <directory>${native.image.path}/reports</directory>
       <includes>
         <include>*.txt</include>
       </includes>
