@@ -1,7 +1,7 @@
 package com.dxfeed.sdk;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
+import com.devexperts.util.TimeFormat;
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXEndpoint.Builder;
 import com.dxfeed.api.DXFeed;
@@ -83,6 +83,9 @@ import com.dxfeed.sdk.javac.DxfgExecuter;
 import com.dxfeed.sdk.javac.DxfgInputStream;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerPointer;
+import com.dxfeed.sdk.javac.DxfgTimeFormat;
+import com.dxfeed.sdk.javac.DxfgTimePeriod;
+import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.maper.DayFilterMapper;
 import com.dxfeed.sdk.maper.DayMapper;
@@ -125,8 +128,11 @@ import com.dxfeed.sdk.maper.StringMapper;
 import com.dxfeed.sdk.maper.StringMapperCacheStore;
 import com.dxfeed.sdk.maper.StringMapperUnlimitedStore;
 import com.dxfeed.sdk.maper.SubscriptionMapper;
+import com.dxfeed.sdk.maper.TimeFormatMapper;
+import com.dxfeed.sdk.maper.TimePeriodMapper;
 import com.dxfeed.sdk.maper.TimeSeriesEventModelMapper;
 import com.dxfeed.sdk.maper.TimeSeriesSubscriptionMapper;
+import com.dxfeed.sdk.maper.TimeZoneMapper;
 import com.dxfeed.sdk.model.DxfgIndexedEventModel;
 import com.dxfeed.sdk.model.DxfgObservableListModel;
 import com.dxfeed.sdk.model.DxfgObservableListModelListener;
@@ -152,6 +158,9 @@ import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
 import com.dxfeed.sdk.symbol.ListSymbolMapper;
 import com.dxfeed.sdk.symbol.SymbolMapper;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CIntPointer;
+
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.lang.ref.PhantomReference;
@@ -159,12 +168,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CIntPointer;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public final class NativeUtils {
 
@@ -180,6 +190,9 @@ public final class NativeUtils {
   public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
   public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;
   public static final Mapper<Executor, DxfgExecuter> MAPPER_EXECUTOR;
+  public static final Mapper<TimePeriod, DxfgTimePeriod> MAPPER_TIME_PERIOD;
+  public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
+  public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
   public static final Mapper<InputStream, DxfgInputStream> MAPPER_INPUT_STREAM;
   public static final Mapper<Builder, DxfgEndpointBuilder> MAPPER_ENDPOINT_BUILDER;
   public static final Mapper<DXEndpoint, DxfgEndpoint> MAPPER_ENDPOINT;
@@ -263,6 +276,9 @@ public final class NativeUtils {
     MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
     MAPPER_EVENT_TYPES = new ListEventTypeMapper();
     MAPPER_EXECUTOR = new ExecutorMapper();
+    MAPPER_TIME_FORMAT = new TimeFormatMapper();
+    MAPPER_TIME_PERIOD = new TimePeriodMapper();
+    MAPPER_TIME_ZONE = new TimeZoneMapper();
     MAPPER_INPUT_STREAM = new InputStreamMapper();
     MAPPER_ENDPOINT_BUILDER = new EndpointBuilderMapper();
     MAPPER_ENDPOINT = new EndpointMapper();

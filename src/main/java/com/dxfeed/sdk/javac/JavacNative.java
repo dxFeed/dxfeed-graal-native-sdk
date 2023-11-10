@@ -1,14 +1,12 @@
 package com.dxfeed.sdk.javac;
 
+import com.devexperts.util.TimeFormat;
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusMinInteger;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
+import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import java.io.ByteArrayInputStream;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -17,8 +15,429 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.Pointer;
 
+import java.io.ByteArrayInputStream;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @CContext(Directives.class)
 public class JavacNative {
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getTimeZone",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeZone dxfg_TimeZone_getTimeZone(
+      final IsolateThread ignoredThread,
+      final CCharPointer ID
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toNative(
+        TimeZone.getTimeZone(
+            NativeUtils.MAPPER_STRING.toJava(ID)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getDefault",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeZone dxfg_TimeZone_getDefault(
+      final IsolateThread ignoredThread
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toNative(
+        TimeZone.getDefault()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getID",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_TimeZone_getID(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getID()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getDisplayName",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_TimeZone_getDisplayName(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getDisplayName()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getDisplayName2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_TimeZone_getDisplayName2(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final int daylight,
+      final int style
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getDisplayName(daylight == 1, style)
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getDSTSavings",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_getDSTSavings(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getDSTSavings();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_useDaylightTime",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_useDaylightTime(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).useDaylightTime() ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_observesDaylightTime",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_observesDaylightTime(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).observesDaylightTime() ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getOffset",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_getOffset(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final long date
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getOffset(date);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getOffset2",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_getOffset2(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final int era,
+      final int year,
+      final int month,
+      final int day,
+      final int dayOfWeek,
+      final int milliseconds
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getOffset(era, year, month, day, dayOfWeek, milliseconds);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_getRawOffset",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_getRawOffset(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getRawOffset();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_hasSameRules",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_hasSameRules(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final DxfgTimeZone other
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone)
+        .hasSameRules(NativeUtils.MAPPER_TIME_ZONE.toJava(other)) ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_inDaylightTime",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_inDaylightTime(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final long date
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).inDaylightTime(new Date(date)) ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_setID",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_setID(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final CCharPointer ID
+  ) {
+    NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).setID(NativeUtils.MAPPER_STRING.toJava(ID));
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeZone_setRawOffset",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimeZone_setRawOffset(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone,
+      final int offsetMillis
+  ) {
+    NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).setRawOffset(offsetMillis);
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_ZERO",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimePeriod dxfg_TimePeriod_ZERO(final IsolateThread ignoredThread) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toNative(TimePeriod.ZERO);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_UNLIMITED",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimePeriod dxfg_TimePeriod_UNLIMITED(final IsolateThread ignoredThread) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toNative(TimePeriod.UNLIMITED);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_valueOf",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimePeriod dxfg_TimePeriod_valueOf(
+      final IsolateThread ignoredThread,
+      final long value
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toNative(TimePeriod.valueOf(value));
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_valueOf2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimePeriod dxfg_TimePeriod_valueOf2(
+      final IsolateThread ignoredThread,
+      final CCharPointer value
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toNative(
+        TimePeriod.valueOf(NativeUtils.MAPPER_STRING.toJava(value))
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_getTime",
+      exceptionHandler = ExceptionHandlerReturnMinusOneLong.class
+  )
+  public static long dxfg_TimePeriod_getTime(
+      final IsolateThread ignoredThread,
+      final DxfgTimePeriod dxfgTimePeriod
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getTime();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_getSeconds",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_TimePeriod_getSeconds(
+      final IsolateThread ignoredThread,
+      final DxfgTimePeriod dxfgTimePeriod
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getSeconds();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimePeriod_getNanos",
+      exceptionHandler = ExceptionHandlerReturnMinusOneLong.class
+  )
+  public static long dxfg_TimePeriod_getNanos(
+      final IsolateThread ignoredThread,
+      final DxfgTimePeriod dxfgTimePeriod
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getNanos();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_DEFAULT",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_DEFAULT(final IsolateThread ignoredThread) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(TimeFormat.DEFAULT);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_GMT",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_GMT(final IsolateThread ignoredThread) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(TimeFormat.GMT);
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_getInstance",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_getInstance(
+      final IsolateThread ignoredThread,
+      final DxfgTimeZone dxfgTimeZone
+  ) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(
+        TimeFormat.getInstance(NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone))
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_withTimeZone",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_withTimeZone(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat
+  ) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(
+        NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).withTimeZone()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_withMillis",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_withMillis(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat
+  ) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(
+        NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).withMillis()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_asFullIso",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeFormat dxfg_TimeFormat_asFullIso(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat
+  ) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toNative(
+        NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).asFullIso()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_parse",
+      exceptionHandler = ExceptionHandlerReturnMinusOneLong.class
+  )
+  public static long dxfg_TimeFormat_parse(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat,
+      final CCharPointer value
+  ) {
+    return NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).parse(
+        NativeUtils.MAPPER_STRING.toJava(value)
+    ).getTime();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_format",
+      exceptionHandler = ExceptionHandlerReturnMinusOneLong.class
+  )
+  public static CCharPointer dxfg_TimeFormat_format(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat,
+      final long time
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).format(time)
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_TimeFormat_getTimeZone",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimeZone dxfg_TimeFormat_getTimeZone(
+      final IsolateThread ignoredThread,
+      final DxfgTimeFormat dxfgTimeFormat
+  ) {
+    return NativeUtils.MAPPER_TIME_ZONE.toNative(
+        NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).getTimeZone()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Object_toString",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_Object_toString(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> dxfgObjectHandler
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler).toString()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Object_equals",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_Object_equals(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> dxfgObjectHandler,
+      final JavaObjectHandler<Object> dxfgOther
+  ) {
+    return NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler).equals(
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgOther)
+    ) ? 1 : 0;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Object_hashCode",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_Object_hashCode(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> dxfgObjectHandler
+  ) {
+    return NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler).hashCode();
+  }
 
   @CEntryPoint(
       name = "dxfg_JavaObjectHandler_release",
