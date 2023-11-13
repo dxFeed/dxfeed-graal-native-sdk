@@ -13,7 +13,7 @@ extern "C" {
 #include "graal_isolate.h"
 #include "dxfg_ipf.h"
 
-/** @defgroup Javac
+/** @defgroup Schedule
  *  @{
  */
 
@@ -149,7 +149,7 @@ const char*           dxfg_Day_toString(graal_isolatethread_t *thread, dxfg_day_
 int32_t               dxfg_Day_release(graal_isolatethread_t *thread, dxfg_day_t* day);
 int32_t               dxfg_Session_release(graal_isolatethread_t *thread, dxfg_session_t* session);
 
-/** @} */ // end of Javac
+/** @} */ // end of Schedule
 
 #ifdef __cplusplus
 }

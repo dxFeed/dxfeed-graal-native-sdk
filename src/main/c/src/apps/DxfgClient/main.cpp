@@ -788,6 +788,8 @@ int main(int argc, char *argv[]) {
         print_exception(thread);
         exit(-1);
     }
+    dxfg_string_list* symbols = dxfg_Tools_parseSymbols(thread, "Quote,Trade");
+    dxfg_CList_String_release(thread, symbols);
     liveIpf(thread);
     readerIpf(thread);
     finalizeListener(thread);

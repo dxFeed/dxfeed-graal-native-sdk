@@ -93,7 +93,7 @@ int32_t                     dxfg_TimeZone_observesDaylightTime(graal_isolatethre
 int32_t                     dxfg_TimeZone_getOffset(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, int64_t date);
 int32_t                     dxfg_TimeZone_getOffset2(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, int32_t era, int32_t year, int32_t month, int32_t day, int32_t dayOfWeek, int32_t milliseconds);
 int32_t                     dxfg_TimeZone_getRawOffset(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone);
-int32_t                     dxfg_TimeZone_hasSameRules(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone), dxfg_time_zone_t* other);
+int32_t                     dxfg_TimeZone_hasSameRules(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, dxfg_time_zone_t* other);
 int32_t                     dxfg_TimeZone_inDaylightTime(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, int64_t date);
 int32_t                     dxfg_TimeZone_setID(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, const char* ID);
 int32_t                     dxfg_TimeZone_setRawOffset(graal_isolatethread_t *thread, dxfg_time_zone_t* timeZone, int32_t offsetMillis);
