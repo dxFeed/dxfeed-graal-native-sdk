@@ -181,8 +181,7 @@ public class InstrumentProfileConnectionNative {
       final DxfgInstrumentProfileConnection connection,
       final long timeoutInMs
   ) {
-    NativeUtils.MAPPER_INSTRUMENT_PROFILE_CONNECTION.toJava(connection)
-        .waitUntilCompleted(timeoutInMs, TimeUnit.MILLISECONDS);
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    return NativeUtils.MAPPER_INSTRUMENT_PROFILE_CONNECTION.toJava(connection)
+        .waitUntilCompleted(timeoutInMs, TimeUnit.MILLISECONDS) ? 1 : 0;
   }
 }
