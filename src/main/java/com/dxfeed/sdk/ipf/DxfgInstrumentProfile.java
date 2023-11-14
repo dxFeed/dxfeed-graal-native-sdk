@@ -29,16 +29,16 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("description")
   void setDescription(CCharPointer value);
 
-  @CField("localSymbol")
+  @CField("local_symbol")
   CCharPointer getLocalSymbol();
 
-  @CField("localSymbol")
+  @CField("local_symbol")
   void setLocalSymbol(CCharPointer value);
 
-  @CField("localDescription")
+  @CField("local_description")
   CCharPointer getLocalDescription();
 
-  @CField("localDescription")
+  @CField("local_description")
   void setLocalDescription(CCharPointer value);
 
   @CField("country")
@@ -53,10 +53,10 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("opol")
   void setOpol(CCharPointer value);
 
-  @CField("exchangeData")
+  @CField("exchange_data")
   CCharPointer getExchangeData();
 
-  @CField("exchangeData")
+  @CField("exchange_data")
   void setExchangeData(CCharPointer value);
 
   @CField("exchanges")
@@ -71,10 +71,10 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("currency")
   void setCurrency(CCharPointer value);
 
-  @CField("baseCurrency")
+  @CField("base_currency")
   CCharPointer getBaseCurrency();
 
-  @CField("baseCurrency")
+  @CField("base_currency")
   void setBaseCurrency(CCharPointer value);
 
   @CField("cfi")
@@ -137,10 +137,10 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("spc")
   void setSpc(double value);
 
-  @CField("additionalUnderlyings")
+  @CField("additional_underlyings")
   CCharPointer getAdditionalUnderlyings();
 
-  @CField("additionalUnderlyings")
+  @CField("additional_underlyings")
   void setAdditionalUnderlyings(CCharPointer value);
 
   @CField("mmy")
@@ -155,10 +155,10 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("expiration")
   void setExpiration(int value);
 
-  @CField("lastTrade")
+  @CField("last_trade")
   int getLastTrade();
 
-  @CField("lastTrade")
+  @CField("last_trade")
   void setLastTrade(int value);
 
   @CField("strike")
@@ -167,39 +167,39 @@ public interface DxfgInstrumentProfile extends PointerBase {
   @CField("strike")
   void setStrike(double value);
 
-  @CField("optionType")
+  @CField("option_type")
   CCharPointer getOptionType();
 
-  @CField("optionType")
+  @CField("option_type")
   void setOptionType(CCharPointer value);
 
-  @CField("expirationStyle")
+  @CField("expiration_style")
   CCharPointer getExpirationStyle();
 
-  @CField("expirationStyle")
+  @CField("expiration_style")
   void setExpirationStyle(CCharPointer value);
 
-  @CField("settlementStyle")
+  @CField("settlement_style")
   CCharPointer getSettlementStyle();
 
-  @CField("settlementStyle")
+  @CField("settlement_style")
   void setSettlementStyle(CCharPointer value);
 
-  @CField("priceIncrements")
+  @CField("price_increments")
   CCharPointer getPriceIncrements();
 
-  @CField("priceIncrements")
+  @CField("price_increments")
   void setPriceIncrements(CCharPointer value);
 
-  @CField("tradingHours")
+  @CField("trading_hours")
   CCharPointer getTradingHours();
 
-  @CField("tradingHours")
+  @CField("trading_hours")
   void setTradingHours(CCharPointer value);
 
-  @CField("customFields")
+  @CField("custom_fields")
   DxfgCharPointerList getCustomFields();
 
-  @CField("customFields")
+  @CField("custom_fields")
   void setCustomFields(DxfgCharPointerList value);
 }

@@ -69,14 +69,14 @@ typedef struct dxfg_instrument_profile_t {
     const char *type;
     const char *symbol;
     const char *description;
-    const char *localSymbol;
-    const char *localDescription;
+    const char *local_symbol;
+    const char *local_description;
     const char *country;
     const char *opol;
-    const char *exchangeData;
+    const char *exchange_data;
     const char *exchanges;
     const char *currency;
-    const char *baseCurrency;
+    const char *base_currency;
     const char *cfi;
     const char *isin;
     const char *sedol;
@@ -87,17 +87,17 @@ typedef struct dxfg_instrument_profile_t {
     const char *product;
     const char *underlying;
     double spc;
-    const char *additionalUnderlyings;
+    const char *additional_underlyings;
     const char *mmy;
     int32_t expiration;
-    int32_t lastTrade;
+    int32_t last_trade;
     double strike;
-    const char *optionType;
-    const char *expirationStyle;
-    const char *settlementStyle;
-    const char *priceIncrements;
-    const char *tradingHours;
-    dxfg_string_list *customFields;
+    const char *option_type;
+    const char *expiration_style;
+    const char *settlement_style;
+    const char *price_increments;
+    const char *trading_hours;
+    dxfg_string_list *custom_fields;
 } dxfg_instrument_profile_t;
 
 typedef struct dxfg_instrument_profile_list {
