@@ -1,16 +1,18 @@
 package com.dxfeed.sdk.qds;
 
+import static com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+
 import com.devexperts.qd.QDFactory;
 import com.devexperts.qd.tools.Tools;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import java.util.Arrays;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
-
-import java.util.Arrays;
 
 @CContext(Directives.class)
 public class QdsNative {
@@ -29,5 +31,17 @@ public class QdsNative {
             Tools.parseSymbols(NativeUtils.MAPPER_STRING.toJava(symbolList), QDFactory.getDefaultScheme())
         )
     );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Tools_main",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Tools_main(
+      final IsolateThread ignoredThread,
+      final DxfgCharPointerList dxfgCharPointerList
+  ) {
+    Tools.main(NativeUtils.MAPPER_STRINGS.toJavaList(dxfgCharPointerList).toArray(new String[0]));
+    return EXECUTE_SUCCESSFULLY;
   }
 }

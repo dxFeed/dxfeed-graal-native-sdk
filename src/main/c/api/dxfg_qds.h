@@ -16,7 +16,8 @@ extern "C" {
 /** @defgroup Qds
  *  @{
  */
-dxfg_string_list*  dxfg_Tools_parseSymbols(graal_isolatethread_t *thread, const char* symbolList);
+dxfg_string_list*   dxfg_Tools_parseSymbols(graal_isolatethread_t *thread, const char* symbolList);
+int32_t             dxfg_Tools_main(graal_isolatethread_t *thread, dxfg_string_list* args);
 /** @} */ // end of QDS
 
 #ifdef __cplusplus

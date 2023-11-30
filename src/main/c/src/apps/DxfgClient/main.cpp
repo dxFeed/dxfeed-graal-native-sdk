@@ -799,6 +799,11 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
     get_exception(thread); // to init com.dxfeed.sdk.NativeUtils
+    const char *data[] = {"Connect", "demo.dxfeed.com:7300", "Quote", "AAPL"};
+    dxfg_string_list args;
+    args.size = 4;
+    args.elements = data;
+    dxfg_Tools_main(thread, &args);
     dxfg_string_list* symbols = dxfg_Tools_parseSymbols(thread, "Quote,Trade");
     dxfg_CList_String_release(thread, symbols);
     liveIpf(thread);
