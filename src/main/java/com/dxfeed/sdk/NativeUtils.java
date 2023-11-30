@@ -133,7 +133,6 @@ import com.dxfeed.sdk.maper.SessionFilterMapper;
 import com.dxfeed.sdk.maper.SessionMapper;
 import com.dxfeed.sdk.maper.StringMapper;
 import com.dxfeed.sdk.maper.StringMapperCacheStore;
-import com.dxfeed.sdk.maper.StringMapperUnlimitedStore;
 import com.dxfeed.sdk.maper.SubscriptionMapper;
 import com.dxfeed.sdk.maper.TimeFormatMapper;
 import com.dxfeed.sdk.maper.TimePeriodMapper;
@@ -189,7 +188,6 @@ public final class NativeUtils {
   public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
   public static final Mapper<String, CCharPointer> MAPPER_STRING;
-  public static final Mapper<String, CCharPointer> MAPPER_STRING_UNLIMITED_STORE;
   public static final Mapper<String, CCharPointer> MAPPER_STRING_CACHE_STORE;
   public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCharPointerList> MAPPER_STRINGS;
   public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
@@ -242,7 +240,6 @@ public final class NativeUtils {
     MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
     MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
     MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
-    MAPPER_STRING_UNLIMITED_STORE = new StringMapperUnlimitedStore();
     MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(3000);
     SingletonScheduledExecutorService.start(
         "clean cache & finalize native",
@@ -256,29 +253,29 @@ public final class NativeUtils {
         },
         1000
     );
-    MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING_UNLIMITED_STORE);
-    MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_INDEXED_EVENT_SOURCE);
+    MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING);
+    MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING, MAPPER_INDEXED_EVENT_SOURCE);
     MAPPER_EVENT = new EventMappers(
-        MAPPER_STRING_UNLIMITED_STORE,
-        new QuoteMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new SeriesMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new OptionSaleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new TimeAndSaleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new SpreadOrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new OrderMapper<>(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new AnalyticOrderMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
+        MAPPER_STRING,
+        new QuoteMapper(MAPPER_STRING),
+        new SeriesMapper(MAPPER_STRING),
+        new OptionSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new TimeAndSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new SpreadOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new OrderMapper<>(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new AnalyticOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new MessageMapper(MAPPER_STRING),
-        new OrderBaseMapper(MAPPER_STRING_UNLIMITED_STORE),
+        new OrderBaseMapper(MAPPER_STRING),
         new ConfigurationMapper(MAPPER_STRING),
-        new TradeMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new TradeETHMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new TheoPriceMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new UnderlyingMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new GreeksMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new SummaryMapper(MAPPER_STRING_UNLIMITED_STORE),
-        new ProfileMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_STRING_CACHE_STORE),
-        new DailyCandleMapper(MAPPER_STRING_UNLIMITED_STORE, MAPPER_SYMBOL),
-        new CandleMapper<>(MAPPER_STRING_UNLIMITED_STORE, MAPPER_SYMBOL)
+        new TradeMapper(MAPPER_STRING),
+        new TradeETHMapper(MAPPER_STRING),
+        new TheoPriceMapper(MAPPER_STRING),
+        new UnderlyingMapper(MAPPER_STRING),
+        new GreeksMapper(MAPPER_STRING),
+        new SummaryMapper(MAPPER_STRING),
+        new ProfileMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
+        new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL)
     );
     MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
     MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
