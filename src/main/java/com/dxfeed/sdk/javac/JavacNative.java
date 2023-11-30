@@ -14,6 +14,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.Pointer;
+import org.graalvm.word.WordFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
@@ -26,6 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @CContext(Directives.class)
 public class JavacNative {
+
+  private static final int DEEP_RECURSION_TO_THROW_EXCEPTION = 5;
 
   @CEntryPoint(
       name = "dxfg_TimeZone_getTimeZone",
@@ -558,7 +561,15 @@ public class JavacNative {
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
   public static JavaObjectHandler<?> dxfg_throw_exception(final IsolateThread ignoredThread) {
-    throw new RuntimeException();
+    recursion(DEEP_RECURSION_TO_THROW_EXCEPTION);
+    return WordFactory.nullPointer();
+  }
+
+  private static void recursion(int i) {
+    if (i < 0) {
+      throw new RuntimeException("recursion", new RuntimeException("cause"));
+    }
+    recursion(--i);
   }
 
   @CEntryPoint(

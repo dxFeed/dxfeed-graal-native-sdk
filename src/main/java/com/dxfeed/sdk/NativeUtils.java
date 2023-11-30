@@ -1,5 +1,7 @@
 package com.dxfeed.sdk;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
@@ -64,6 +66,9 @@ import com.dxfeed.sdk.events.DxfgEventTypeList;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
 import com.dxfeed.sdk.exception.DxfgException;
+import com.dxfeed.sdk.exception.DxfgStackTraceElement;
+import com.dxfeed.sdk.exception.DxfgStackTraceElementList;
+import com.dxfeed.sdk.exception.DxfgStackTraceElementPointer;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.feed.DxfgPromise;
 import com.dxfeed.sdk.feed.DxfgPromiseList;
@@ -89,6 +94,7 @@ import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.maper.DayFilterMapper;
 import com.dxfeed.sdk.maper.DayMapper;
+import com.dxfeed.sdk.maper.DxfgStackTraceElementMapper;
 import com.dxfeed.sdk.maper.EndpointBuilderMapper;
 import com.dxfeed.sdk.maper.EndpointMapper;
 import com.dxfeed.sdk.maper.EndpointStateChangeListenerMapper;
@@ -111,6 +117,7 @@ import com.dxfeed.sdk.maper.ListJavaObjectHandlerMapper;
 import com.dxfeed.sdk.maper.ListMapper;
 import com.dxfeed.sdk.maper.ListPromiseMapper;
 import com.dxfeed.sdk.maper.ListSessionMapper;
+import com.dxfeed.sdk.maper.ListStackTraceElementMapper;
 import com.dxfeed.sdk.maper.ListStringsMapper;
 import com.dxfeed.sdk.maper.Mapper;
 import com.dxfeed.sdk.maper.ObservableListModelListenerMapper;
@@ -158,9 +165,6 @@ import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
 import com.dxfeed.sdk.symbol.ListSymbolMapper;
 import com.dxfeed.sdk.symbol.SymbolMapper;
-import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CIntPointer;
-
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.lang.ref.PhantomReference;
@@ -173,12 +177,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CIntPointer;
 
 public final class NativeUtils {
 
   public static final Finalizer FINALIZER = new Finalizer();
+  public static final Mapper<StackTraceElement, DxfgStackTraceElement> MAPPER_STACK_TRACE_ELEMENT;
+  public static final ListMapper<StackTraceElement, DxfgStackTraceElement, DxfgStackTraceElementPointer, DxfgStackTraceElementList> MAPPER_STACK_TRACE_ELEMENTS;
   public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
   public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
@@ -231,8 +237,10 @@ public final class NativeUtils {
   public static final Mapper<Schedule, DxfgSchedule> MAPPER_SCHEDULE;
 
   static {
-    MAPPER_EXCEPTION = new ExceptionMapper(new StringMapper());
     MAPPER_STRING = new StringMapper();
+    MAPPER_STACK_TRACE_ELEMENT = new DxfgStackTraceElementMapper(MAPPER_STRING);
+    MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
+    MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
     MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
     MAPPER_STRING_UNLIMITED_STORE = new StringMapperUnlimitedStore();
     MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(3000);

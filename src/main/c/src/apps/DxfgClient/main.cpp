@@ -17,7 +17,6 @@ static std::vector<dxfg_event_clazz_t> eventTypes{};
 static std::vector<std::string> symbols{};
 static bool isQuiteMode = false;
 
-void printException(graal_isolatethread_t *thread);
 static void printUsage() {
     // clang-format off
     std::cout << "usage: DxfgClient <properties> <address> <types> <symbols> <options>" << std::endl;
@@ -63,6 +62,31 @@ static void parseArgs(int argc, char *argv[]) {
         std::exit(-1);
     }
 }
+
+void print_exception(dxfg_exception_t* exception) {
+    if (exception) {
+        printf("C: exception %s %s\n",exception->class_name,exception->message);
+        printf("C: PrintStackTrace %s\n",exception->print_stack_trace);
+        for (int i = 0; i < exception->stack_trace->size; ++i) {
+            dxfg_stack_trace_element_t *pStackTraceElement = exception->stack_trace->elements[i];
+            printf("C: %s %d %s\n",
+                   pStackTraceElement->class_name,
+                   pStackTraceElement->line_number,
+                   pStackTraceElement->method_name
+                   );
+        }
+        if (exception->cause) {
+            print_exception(exception->cause);
+        }
+    }
+}
+
+void get_exception(graal_isolatethread_t *thread) {
+    dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
+    print_exception(exception);
+    dxfg_Exception_release(thread, exception);
+}
+
 void printEvent(const dxfg_event_type_t *pEvent) {
     if (pEvent->clazz == DXFG_EVENT_QUOTE) {
         auto *quote = (dxfg_quote_t *)pEvent;
@@ -273,14 +297,6 @@ void c_observable_list_listener_func(graal_isolatethread_t *thread, dxfg_event_t
     }
 }
 
-void print_exception(graal_isolatethread_t *thread) {
-    dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
-    if (exception) {
-        printf("C: %s\n", exception->stackTrace);
-        dxfg_Exception_release(thread, exception);
-    }
-}
-
 void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
                                     dxfg_endpoint_state_t new_state, void *user_data) {
     printf("C: state %d -> %d\n", old_state, new_state);
@@ -290,7 +306,7 @@ void updateListener(graal_isolatethread_t *thread, dxfg_iterable_ip_t *profiles,
     while (dxfg_Iterable_InstrumentProfile_hasNext(thread, profiles) == 1) {
         dxfg_instrument_profile_t* profile = dxfg_Iterable_InstrumentProfile_next(thread, profiles);
         if (!profile) {
-            print_exception(thread);
+            get_exception(thread);
         }
         printf("C: profile %s\n", profile->symbol);
         dxfg_InstrumentProfile_release(thread, profile);
@@ -411,9 +427,9 @@ void dxLink(graal_isolatethread_t *thread) {
     printf("C: dxLink BEGIN\n");
     dxfg_system_set_property(thread, "dxfeed.experimental.dxlink.enable", "true");
     dxfg_system_set_property(thread, "scheme", "ext:resource:dxlink.xml");
-    print_exception(thread);
+    get_exception(thread);
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    print_exception(thread);
+    get_exception(thread);
     dxfg_DXEndpoint_connect(thread, endpoint, "dxlink:wss://demo.dxfeed.com/dxlink-ws");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
@@ -524,17 +540,9 @@ void systemProperties(graal_isolatethread_t *thread) {
 void exception(graal_isolatethread_t *thread) {
     dxfg_java_object_handler* object = dxfg_throw_exception(thread);
     if (!object) {
-        printException(thread);
+        get_exception(thread);
     }
     dxfg_JavaObjectHandler_release(thread, object);
-}
-
-void printException(graal_isolatethread_t *thread) {
-    dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
-    if (exception) {
-        printf("C: %s\n", exception->stackTrace);
-    }
-    dxfg_Exception_release(thread, exception);
 }
 
 void orderBookModel(graal_isolatethread_t *thread) {
@@ -680,13 +688,15 @@ void indexedEventsPromise(graal_isolatethread_t *thread) {
     int hasResult = dxfg_Promise_hasResult(thread, &eventsPromise->base);
     int hasException = dxfg_Promise_hasException(thread, &eventsPromise->base);
     if (hasException == -1) {
-        printException(thread);
+        get_exception(thread);
     } else if (hasException == 1) {
         dxfg_exception_t* exception = dxfg_Promise_getException(thread, &eventsPromise->base);
         if (exception) {
-            printf("C: %s\n", exception->stackTrace);
-            dxfg_Exception_release(thread, exception);
+            for (int i = 0; i < exception->stack_trace->size; ++i) {
+                printf("C: %s\n", exception->stack_trace->elements[i]->class_name);
+            }
         }
+        dxfg_Exception_release(thread, exception);
     } else {
         dxfg_event_type_list* events = dxfg_Promise_List_EventType_getResult(thread, eventsPromise);
         c_print(thread, events, nullptr);
@@ -785,9 +795,10 @@ void schedule2(graal_isolatethread_t *thread) {
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
     if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
-        print_exception(thread);
+        get_exception(thread);
         exit(-1);
     }
+    get_exception(thread); // to init com.dxfeed.sdk.NativeUtils
     dxfg_string_list* symbols = dxfg_Tools_parseSymbols(thread, "Quote,Trade");
     dxfg_CList_String_release(thread, symbols);
     liveIpf(thread);

@@ -10,10 +10,10 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_exception_t")
 public interface DxfgException extends PointerBase {
 
-  @CField("className")
+  @CField("class_name")
   CCharPointer getClassName();
 
-  @CField("className")
+  @CField("class_name")
   void setClassName(CCharPointer className);
 
   @CField("message")
@@ -22,9 +22,21 @@ public interface DxfgException extends PointerBase {
   @CField("message")
   void setMessage(CCharPointer message);
 
-  @CField("stackTrace")
-  CCharPointer getStackTrace();
+  @CField("print_stack_trace")
+  CCharPointer getPrintStackTrace();
 
-  @CField("stackTrace")
-  void setStackTrace(CCharPointer stackTrace);
+  @CField("print_stack_trace")
+  void setPrintStackTrace(CCharPointer stackTrace);
+
+  @CField("stack_trace")
+  DxfgStackTraceElementList getStackTrace();
+
+  @CField("stack_trace")
+  void setStackTrace(DxfgStackTraceElementList stackTrace);
+
+  @CField("cause")
+  DxfgException getCause();
+
+  @CField("cause")
+  void setCause(DxfgException cause);
 }
