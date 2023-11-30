@@ -6,7 +6,7 @@
     },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.mars.common.MARSPlugin$Factory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataSchemeFactory\\E"
     },
@@ -20,8 +20,11 @@
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
     },
     {
+      "pattern":"\\QMETA-INF/services/com.devexperts.qd.dxlink.websocket.transport.DxLinkLoginHandlerFactory\\E"
+    },
+    {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.ng.RecordMappingFactory\\E"
     },
@@ -30,7 +33,7 @@
     },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.QDEndpoint$Builder\\E"
-    }, 
+    },
     {
       "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
     },

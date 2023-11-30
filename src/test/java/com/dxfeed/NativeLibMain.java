@@ -221,7 +221,7 @@ public class NativeLibMain {
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
         .build();
-    dxEndpoint.connect("dxlink:wss://demo.dxfeed.com/dxlink-ws");
+    dxEndpoint.connect("dxlink:wss://demo.dxfeed.com/dxlink-ws[login=dxlink:token]");
 
     DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> tsSubscription = dxEndpoint.getFeed()
         .createTimeSeriesSubscription(
