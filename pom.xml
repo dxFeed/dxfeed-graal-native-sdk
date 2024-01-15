@@ -11,12 +11,17 @@
     <dependency>
       <groupId>com.devexperts.mdd</groupId>
       <artifactId>auther-api</artifactId>
-      <version>472</version>
+      <version>476</version>
     </dependency>
     <dependency>
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxlink-websocket</artifactId>
-      <version>3.325</version>
+      <version>3.327</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>dxfeed-ondemand</artifactId>
+      <version>3.327</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>

@@ -702,6 +702,31 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.dxfeed.ondemand.impl.OnDemandServiceImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.ondemand.impl.connector.OnDemandConnector",
+  "queryAllPublicMethods":true,
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.dxfeed.ondemand.impl.connector.OnDemandConnectorFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.ondemand.impl.connector.OnDemandConnectorMBean",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"getCacheLimit","parameterTypes":[] },
+    {"name":"getFileCacheLimit","parameterTypes":[] },
+    {"name":"getFileCachePath","parameterTypes":[] },
+    {"name":"getSpeed","parameterTypes":[] },
+    {"name":"getTickPeriod","parameterTypes":[] },
+    {"name":"getTime","parameterTypes":[] }
+  ]
+},
+{
   "name":"com.dxfeed.event.option.Series",
   "queryAllPublicMethods":true
 },
@@ -807,6 +832,9 @@
 {
   "name":"com.sun.management.internal.OperatingSystemImpl",
   "queryAllPublicConstructors":true
+},
+{
+  "name":"java.beans.PropertyVetoException"
 },
 {
   "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",

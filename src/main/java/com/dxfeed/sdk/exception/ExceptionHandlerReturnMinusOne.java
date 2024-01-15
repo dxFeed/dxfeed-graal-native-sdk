@@ -9,6 +9,7 @@ public class ExceptionHandlerReturnMinusOne implements CEntryPoint.ExceptionHand
   public static final int EXECUTE_SUCCESSFULLY = 0;
   public static final int EXECUTE_FAIL = -1;
   public static final int EXECUTE_FAIL_MIN = Integer.MIN_VALUE;
+  public static final double EXECUTE_FAIL_NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
 
   @Uninterruptible(reason = "exception handler")
   static int handle(final Throwable throwable) {

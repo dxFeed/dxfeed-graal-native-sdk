@@ -50,6 +50,9 @@
       "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
     },
     {
+      "pattern":"\\QMETA-INF/services/com.dxfeed.ondemand.OnDemandService\\E"
+    },
+    {
       "pattern":"\\Qcom/dxfeed/schedule/schedule.properties\\E"
     },
     {

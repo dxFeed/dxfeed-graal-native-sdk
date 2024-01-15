@@ -79,7 +79,7 @@ reserved for exceptions in both int and long types.
 
 ```
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);

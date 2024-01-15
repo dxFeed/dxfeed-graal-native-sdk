@@ -2,7 +2,7 @@
   <configuration default="false" name="NativeLibMain" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.dxfeed.NativeLibMain" />
     <module name="graal-native-sdk" />
-    <option name="VM_PARAMETERS" value="-agentlib:native-image-agent=config-output-dir=META-INF/native-image -Dtoken=" />
+    <option name="VM_PARAMETERS" value="-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image -Dtoken=" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.dxfeed.*" />

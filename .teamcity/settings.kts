@@ -84,7 +84,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -140,7 +140,7 @@ object BuildMajorMinorPatch : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
         text("env.RELEASE_VERSION", "", allowEmpty = false)
     }
 
@@ -265,7 +265,7 @@ object BuildPatch : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -305,7 +305,7 @@ object DeployWindows : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -349,7 +349,7 @@ object TestBuildOsx : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:dfbcc5d5-7f92-4eac-8b5d-f8ac38019c50", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {

@@ -178,7 +178,7 @@ public class NativeLibMain {
 
   private static void dxEndpointOrderBookModel() throws InterruptedException {
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder().build();
-    dxEndpoint.connect("demo.dxfeed.com:7300");
+    dxEndpoint.connect("********");
     DXFeed feed = dxEndpoint.getFeed();
     OrderBookModel model = new OrderBookModel();
     model.setFilter(OrderBookModelFilter.ALL);
@@ -205,7 +205,7 @@ public class NativeLibMain {
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
+        .build().user("********").password("********");
     dxEndpoint.connect("tape.csv[format=csv,readAs=ticker_data,cycle,speed=max]");
     final var subscription3 = dxEndpoint.getFeed().createSubscription(Quote.class);
     subscription3.addEventListener(System.out::println);
@@ -221,7 +221,7 @@ public class NativeLibMain {
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
         .build();
-    dxEndpoint.connect("dxlink:wss://demo.dxfeed.com/dxlink-ws[login=dxlink:token]");
+    dxEndpoint.connect("dxlink:wss://********/dxlink-ws[login=dxlink:token]");
 
     DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> tsSubscription = dxEndpoint.getFeed()
         .createTimeSeriesSubscription(
@@ -274,8 +274,8 @@ public class NativeLibMain {
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
         .withProperty("monitoring.stat", "1")
-        .build().user("demo").password("demo");
-    dxEndpoint.connect("demo.dxfeed.com:7300");
+        .build().user("********").password("********");
+    dxEndpoint.connect("********");
     final DXFeedSubscription<Quote> subscription = dxEndpoint.getFeed().createSubscription(Quote.class);
     subscription.addEventListener(events -> {
     });
@@ -291,8 +291,8 @@ public class NativeLibMain {
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
-    dxEndpoint.connect("demo.dxfeed.com:7300");
+        .build().user("********").password("********");
+    dxEndpoint.connect("********");
     DXFeedTimeSeriesSubscription<TimeSeriesEvent<?>> subscription = dxEndpoint.getFeed()
         .createTimeSeriesSubscription(
             TimeAndSale.class,
@@ -316,10 +316,10 @@ public class NativeLibMain {
     final DXEndpoint dxEndpoint = DXEndpoint.newBuilder()
         .withRole(DXEndpoint.Role.FEED)
         .withProperties(System.getProperties())
-        .build().user("demo").password("demo");
+        .build().user("********").password("********");
     final DXFeedSubscription<MarketEvent> subscription1 = dxEndpoint.getFeed()
         .createSubscription(Quote.class, TimeAndSale.class);
-    dxEndpoint.connect("lessona.dxfeed.com:7905[login=entitle:" + token + "]");
+    dxEndpoint.connect("********[login=entitle:" + token + "]");
     subscription1.addEventListener(events -> print(events, objectMapper));
     subscription1.addSymbols(
         Arrays.asList("AAPL", "MSFT", "AMZN", "YHOO", "IBM", "SPX", "ETH/USD:GDAX", "EUR/USD",
@@ -330,7 +330,7 @@ public class NativeLibMain {
 
   private static void dxEndpointInstance(final ObjectMapper objectMapper) {
     final DXEndpoint dxEndpoint = DXEndpoint.getInstance();
-    dxEndpoint.connect("demo.dxfeed.com:7300");
+    dxEndpoint.connect("********");
     final DXFeedSubscription<Order> subscription = dxEndpoint.getFeed()
         .createSubscription(Order.class);
     subscription.addEventListener(events -> print(events, objectMapper));
@@ -370,7 +370,7 @@ public class NativeLibMain {
     }
 
     InstrumentProfileCollector collector = new InstrumentProfileCollector();
-    InstrumentProfileConnection connection = InstrumentProfileConnection.createConnection("https://demo:demo@tools.dxfeed.com/ipf", collector);
+    InstrumentProfileConnection connection = InstrumentProfileConnection.createConnection("https://********/ipf", collector);
     // Update period can be used to re-read IPF files, not needed for services supporting IPF "live-update"
     connection.setUpdatePeriod(5_000L);
     connection.addStateChangeListener(event -> System.out.println("Connection state: " + event.getNewValue()));

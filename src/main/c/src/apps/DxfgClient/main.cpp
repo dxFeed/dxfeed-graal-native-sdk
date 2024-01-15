@@ -31,8 +31,8 @@ static void printUsage() {
     std::cout << "options:" << std::endl;
     std::cout << "       -q           is quiet mode, event printing disabled." << std::endl;
     std::cout << "examples:" << std::endl;
-    std::cout << "       DxfgClient demo.dxfeed.com:7300 Quote,TimeAndSale AAPL,IBM,/BTCUSD:CXBINA" << std::endl;
-    std::cout << "       DxfgClient -Ddxfeed.aggregationPeriod=1s demo.dxfeed.com:7300 Quote,TimeAndSale AAPL,IBM,/BTCUSD:CXBINA" << std::endl;
+    std::cout << "       DxfgClient ******** Quote,TimeAndSale AAPL,IBM,/BTCUSD:CXBINA" << std::endl;
+    std::cout << "       DxfgClient -Ddxfeed.aggregationPeriod=1s ******** Quote,TimeAndSale AAPL,IBM,/BTCUSD:CXBINA" << std::endl;
     // clang-format on
 }
 
@@ -329,7 +329,7 @@ void liveIpf(graal_isolatethread_t *thread) {
     dxfg_ipf_collector_t* collector = dxfg_InstrumentProfileCollector_new(thread);
     dxfg_ipf_connection_t* connection = dxfg_InstrumentProfileConnection_createConnection(
         thread,
-        "https://demo:demo@tools.dxfeed.com/ipf",
+        "https://********/ipf",
         collector
     );
     printf("C: InstrumentProfileCollector state %d\n", dxfg_InstrumentProfileConnection_getState(thread, connection));
@@ -372,7 +372,7 @@ void finalizeListener(graal_isolatethread_t *thread) {
     dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
     dxfg_Object_finalize(thread, reinterpret_cast<dxfg_java_object_handler *>(stateListener), finalize, nullptr);
     dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
@@ -397,7 +397,7 @@ void executorBaseOnConcurrentLinkedQueue(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
     dxfg_executor_t* executor = dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(thread);
     dxfg_DXEndpoint_executor(thread, endpoint, executor);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
@@ -430,7 +430,7 @@ void dxLink(graal_isolatethread_t *thread) {
     get_exception(thread);
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
     get_exception(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "dxlink:wss://demo.dxfeed.com/dxlink-ws");
+    dxfg_DXEndpoint_connect(thread, endpoint, "dxlink:wss://********/dxlink-ws");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
@@ -449,10 +449,38 @@ void dxLink(graal_isolatethread_t *thread) {
     printf("C: dxLink END\n");
 }
 
+void onDemandService(graal_isolatethread_t *thread) {
+    printf("C: onDemandService BEGIN\n");
+    dxfg_on_demand_service_t* service = dxfg_OnDemandService_getInstance(thread);
+    dxfg_endpoint_t* endpoint = dxfg_OnDemandService_getEndpoint(thread, service);
+    dxfg_DXEndpoint_user(thread, endpoint, "********");
+    dxfg_DXEndpoint_password(thread, endpoint, "********");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener);
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = "AAPL";
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
+    // 1273171668000 - 2010-05-06 14:47:48.000 EST
+    dxfg_OnDemandService_replay(thread, service, 1273171668000);
+    usleep(2000000);
+    dxfg_DXEndpoint_closeAndAwaitTermination(thread, endpoint);
+    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    dxfg_JavaObjectHandler_release(thread, &service->handler);
+    printf("C: onDemandService END\n");
+}
+
 void dxEndpointSubscription(graal_isolatethread_t *thread) {
     printf("C: dxEndpointSubscription BEGIN\n");
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
@@ -479,7 +507,7 @@ void dxEndpointMonitoring(graal_isolatethread_t *thread) {
     dxfg_endpoint_builder_t* builder = dxfg_DXEndpoint_newBuilder(thread);
     dxfg_DXEndpoint_Builder_withProperty(thread, builder, "monitoring.stat", "1s");
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_Builder_build(thread, builder);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
     dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
@@ -503,7 +531,7 @@ void dxEndpointMonitoring(graal_isolatethread_t *thread) {
 void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
     printf("C: dxEndpointTimeSeriesSubscription BEGIN\n");
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
     dxfg_time_series_subscription_t* subscriptionTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
@@ -561,7 +589,7 @@ void orderBookModel(graal_isolatethread_t *thread) {
     dxfg_Object_finalize(thread, reinterpret_cast<dxfg_java_object_handler *>(listener), &finalize, nullptr);
     dxfg_OrderBookModel_addListener(thread, order_book_model, listener);
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_OrderBookModel_attach(thread, order_book_model, feed);
     usleep(2000000);
@@ -581,7 +609,7 @@ void indexedEventModel(graal_isolatethread_t *thread) {
     dxfg_indexed_event_model_t* indexed_event_model = dxfg_IndexedEventModel_new(thread, DXFG_EVENT_TIME_AND_SALE);
     dxfg_IndexedEventModel_setSizeLimit(thread, indexed_event_model, 30);
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_IndexedEventModel_attach(thread, indexed_event_model, feed);
     dxfg_observable_list_model_t* observable_list_model = dxfg_IndexedEventModel_getEventsList(thread, indexed_event_model);
@@ -604,7 +632,7 @@ void indexedEventModel(graal_isolatethread_t *thread) {
 
 void promise(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_candle_symbol_t candleSymbol;
     candleSymbol.supper.type = CANDLE;
@@ -620,7 +648,7 @@ void promise(graal_isolatethread_t *thread) {
 
 void lastEventIfSubscribed(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_candle_symbol_t symbol;
     symbol.supper.type = STRING;
@@ -641,7 +669,7 @@ void lastEventIfSubscribed(graal_isolatethread_t *thread) {
 
 void promisesAllOf(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     size_t size = symbols.size();
     dxfg_symbol_list symbolList;
@@ -676,7 +704,7 @@ void promisesAllOf(graal_isolatethread_t *thread) {
 
 void indexedEventsPromise(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_string_symbol_t symbol;
     symbol.supper.type = STRING;
@@ -710,7 +738,7 @@ void indexedEventsPromise(graal_isolatethread_t *thread) {
 
 void getLastEvent(graal_isolatethread_t *thread) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_DXEndpoint_connect(thread, endpoint, "********");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
     dxfg_candle_symbol_t symbol;
     symbol.supper.type = CANDLE;
@@ -799,7 +827,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
     get_exception(thread); // to init com.dxfeed.sdk.NativeUtils
-    const char *data[] = {"Connect", "demo.dxfeed.com:7300", "Quote", "AAPL"};
+    const char *data[] = {"Connect", "********", "Quote", "AAPL"};
     dxfg_string_list args;
     args.size = 4;
     args.elements = data;
@@ -825,4 +853,5 @@ int main(int argc, char *argv[]) {
     schedule(thread);
     schedule2(thread);
     dxLink(thread);
+    onDemandService(thread);
 }
