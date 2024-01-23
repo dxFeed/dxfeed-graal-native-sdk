@@ -181,7 +181,7 @@ object BuildNuget : BuildType({
 
     params {
         text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:16401ff9-f8e0-4c26-b367-e828c39a01c3", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {

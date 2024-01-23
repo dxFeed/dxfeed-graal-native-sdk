@@ -15,6 +15,7 @@ additional info https://www.graalvm.org/22.1/docs/getting-started/windows/
 dxfeedAgent5919-1 dxfeedbuilder5919.in.devexperts.com
 
 ```shell
+sudo -i -u dxcity
 cd ~
 curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
 tar -xzvf graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
@@ -31,14 +32,11 @@ echo "deb https://releases.jfrog.io/artifactory/jfrog-debs xenial contrib" | sud
 sudo apt update;
 sudo apt install -y jfrog-cli-v2-jf;
 jf config add Artifactory --artifactory-url=https://dxfeed.jfrog.io/artifactory
+#confirm
 #JFrog Platform URL: https://dxfeed.jfrog.io
-#JFrog Artifactory URL: https://dxfeed.jfrog.io/artifactory
-#JFrog access token:
-#14:28:27 [🟠Warn] couldn't extract payload from Access Token
-#The provided access token is not a valid JWT, probably a reference token.
-#Some package managers only support basic authentication which requires also a username.
-#If you plan to work with one of those package managers, please provide a username.
-#JFrog username (optional):
+#confirm
+#JFrog username: <username>
+#JFrog password or API key: <api_key>
 #Is the Artifactory reverse proxy configured to accept a client certificate? (y/n) [n]? n
 ```
 
