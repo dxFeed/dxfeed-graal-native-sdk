@@ -371,7 +371,9 @@
     {"name":"getHost","parameterTypes":[] },
     {"name":"getPort","parameterTypes":[] },
     {"name":"getProxyHost","parameterTypes":[] },
-    {"name":"getProxyPort","parameterTypes":[] }
+    {"name":"getProxyPort","parameterTypes":[] },
+    {"name":"getStripe","parameterTypes":[] },
+    {"name":"getCurrentAddresses","parameterTypes":[] }
   ]
 },
 {
