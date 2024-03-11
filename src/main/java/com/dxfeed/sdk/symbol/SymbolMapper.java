@@ -33,14 +33,19 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
     final DxfgSymbol nObject;
     if (jObject instanceof String) {
       nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgStringSymbol.class));
+      nObject.setType(DxfgSymbolType.STRING.getCValue());
     } else if (jObject instanceof CandleSymbol) {
       nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandleSymbol.class));
+      nObject.setType(DxfgSymbolType.CANDLE.getCValue());
     } else if (jObject instanceof TimeSeriesSubscriptionSymbol) {
       nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeSeriesSubscriptionSymbol.class));
+      nObject.setType(DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.getCValue());
     } else if (jObject instanceof IndexedEventSubscriptionSymbol) {
       nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgIndexedEventSubscriptionSymbol.class));
+      nObject.setType(DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.getCValue());
     } else if (jObject instanceof WildcardSymbol) {
       nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgWildcardSymbol.class));
+      nObject.setType(DxfgSymbolType.WILDCARD.getCValue());
     } else {
       throw new IllegalStateException();
     }

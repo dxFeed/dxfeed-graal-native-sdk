@@ -51,6 +51,7 @@ public class InstrumentProfileMapper extends Mapper<InstrumentProfile, DxfgInstr
 
   @Override
   public void fillNative(final InstrumentProfile jObject, final DxfgInstrumentProfile nObject) {
+    cleanNative(nObject);
     nObject.setType(NativeUtils.MAPPER_STRING.toNative(jObject.getType()));
     nObject.setSymbol(NativeUtils.MAPPER_STRING.toNative(jObject.getSymbol()));
     nObject.setDescription(NativeUtils.MAPPER_STRING.toNative(jObject.getDescription()));
