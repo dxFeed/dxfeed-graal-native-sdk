@@ -15,6 +15,7 @@ const std::unordered_map<std::string, dxfg_event_clazz_t> CommandLineParser::eve
     {"SpreadOrder", DXFG_EVENT_SPREAD_ORDER},
     {"Order", DXFG_EVENT_ORDER},
     {"AnalyticOrder", DXFG_EVENT_ANALYTIC_ORDER},
+    {"OtcMarketsOrder", DXFG_EVENT_OTC_MARKETS_ORDER},
     {"Message", DXFG_EVENT_MESSAGE},
     {"OrderBase", DXFG_EVENT_ORDER_BASE},
     {"Configuration", DXFG_EVENT_CONFIGURATION},

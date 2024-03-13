@@ -90,6 +90,7 @@ typedef enum dxfg_event_clazz_t {
     DXFG_EVENT_ORDER_BASE,     // INDEXED
     DXFG_EVENT_ORDER,          // INDEXED -> ORDER_BASE
     DXFG_EVENT_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_OTC_MARKETS_ORDER, // INDEXED -> ORDER_BASE -> ORDER
     DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
     DXFG_EVENT_SERIES,         // INDEXED
     DXFG_EVENT_OPTION_SALE,    // INDEXED
@@ -423,6 +424,15 @@ typedef struct dxfg_analytic_order_t {
     double iceberg_executed_size;
     int32_t iceberg_flags;
 } dxfg_analytic_order_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OtcMarketsOrder.html">Javadoc</a>
+ */
+typedef struct dxfg_otc_markets_order_t {
+    dxfg_order_t order_base;
+    int32_t quote_access_payment;
+    int32_t otc_markets_flags;
+} dxfg_otc_markets_order_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html">Javadoc</a>

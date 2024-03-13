@@ -7,6 +7,7 @@ import com.dxfeed.event.market.AnalyticOrder;
 import com.dxfeed.event.market.OptionSale;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderBase;
+import com.dxfeed.event.market.OtcMarketsOrder;
 import com.dxfeed.event.market.Profile;
 import com.dxfeed.event.market.Quote;
 import com.dxfeed.event.market.SpreadOrder;
@@ -47,6 +48,7 @@ public enum DxfgEventClazz {
   DXFG_EVENT_ORDER_BASE(OrderBase.class),        // INDEXED
   DXFG_EVENT_ORDER(Order.class),                 // INDEXED -> ORDER_BASE
   DXFG_EVENT_ANALYTIC_ORDER(AnalyticOrder.class),// INDEXED -> ORDER_BASE -> ORDER
+  DXFG_EVENT_OTC_MARKETS_ORDER(OtcMarketsOrder.class),// INDEXED -> ORDER_BASE -> ORDER
   DXFG_EVENT_SPREAD_ORDER(SpreadOrder.class),    // INDEXED -> ORDER_BASE
   DXFG_EVENT_SERIES(Series.class),               // INDEXED
   DXFG_EVENT_OPTION_SALE(OptionSale.class),      // INDEXED
@@ -71,6 +73,7 @@ public enum DxfgEventClazz {
     map.put(OrderBase.class, DXFG_EVENT_ORDER_BASE);
     map.put(Order.class, DXFG_EVENT_ORDER);
     map.put(AnalyticOrder.class, DXFG_EVENT_ANALYTIC_ORDER);
+    map.put(OtcMarketsOrder.class, DXFG_EVENT_OTC_MARKETS_ORDER);
     map.put(SpreadOrder.class, DXFG_EVENT_SPREAD_ORDER);
     map.put(Series.class, DXFG_EVENT_SERIES);
     map.put(OptionSale.class, DXFG_EVENT_OPTION_SALE);

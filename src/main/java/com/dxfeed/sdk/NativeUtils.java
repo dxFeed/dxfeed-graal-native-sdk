@@ -29,6 +29,7 @@ import com.dxfeed.event.market.MessageMapper;
 import com.dxfeed.event.market.OptionSaleMapper;
 import com.dxfeed.event.market.OrderBaseMapper;
 import com.dxfeed.event.market.OrderMapper;
+import com.dxfeed.event.market.OtcMarketsOrderMapper;
 import com.dxfeed.event.market.ProfileMapper;
 import com.dxfeed.event.market.QuoteMapper;
 import com.dxfeed.event.market.SeriesMapper;
@@ -268,6 +269,7 @@ public final class NativeUtils {
         new SpreadOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new OrderMapper<>(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new AnalyticOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new OtcMarketsOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new MessageMapper(MAPPER_STRING),
         new OrderBaseMapper(MAPPER_STRING),
         new ConfigurationMapper(MAPPER_STRING),

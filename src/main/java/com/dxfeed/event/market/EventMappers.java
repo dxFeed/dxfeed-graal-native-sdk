@@ -9,6 +9,7 @@ import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_MESSAGE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_OPTION_SALE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_ORDER;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_ORDER_BASE;
+import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_OTC_MARKETS_ORDER;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_PROFILE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_QUOTE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_SERIES;
@@ -53,6 +54,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
       final SpreadOrderMapper spreadOrderMapper,
       final OrderMapper orderMapper,
       final AnalyticOrderMapper analyticOrderMapper,
+      final OtcMarketsOrderMapper otcMarketsOrderMapper,
       final MessageMapper messageMapper,
       final OrderBaseMapper orderBaseMapper,
       final ConfigurationMapper configurationMapper,
@@ -74,6 +76,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByClass.put(TimeAndSale.class, timeAndSaleMapper);
     this.mapperByClass.put(SpreadOrder.class, spreadOrderMapper);
     this.mapperByClass.put(AnalyticOrder.class, analyticOrderMapper);
+    this.mapperByClass.put(OtcMarketsOrder.class, otcMarketsOrderMapper);
     this.mapperByClass.put(Message.class, messageMapper);
     this.mapperByClass.put(Order.class, orderMapper);
     this.mapperByClass.put(OrderBase.class, orderBaseMapper);
@@ -95,6 +98,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByDxfgEventType.put(DXFG_EVENT_SPREAD_ORDER, spreadOrderMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_ORDER, orderMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_ANALYTIC_ORDER, analyticOrderMapper);
+    this.mapperByDxfgEventType.put(DXFG_EVENT_OTC_MARKETS_ORDER, otcMarketsOrderMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_MESSAGE, messageMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_ORDER_BASE, orderBaseMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_CONFIGURATION, configurationMapper);

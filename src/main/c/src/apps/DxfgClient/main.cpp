@@ -158,6 +158,13 @@ void printEvent(const dxfg_event_type_t *pEvent) {
             event->order_base.order_base.count,
             event->iceberg_peak_size
         );
+    } else if (pEvent->clazz == DXFG_EVENT_OTC_MARKETS_ORDER) {
+        auto *event = (dxfg_otc_markets_order_t *)pEvent;
+        printf(
+            "C: OTC_MARKETS_ORDER{order_base.count=%lld, quote_access_payment=%d}\n",
+            event->order_base.order_base.count,
+            event->quote_access_payment
+        );
     } else if (pEvent->clazz == DXFG_EVENT_MESSAGE) {
         auto *event = (dxfg_message_t *)pEvent;
         printf(
