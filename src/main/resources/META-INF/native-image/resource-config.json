@@ -69,6 +69,9 @@
     },
     {
       "pattern":".*\\.MF$"
+    },
+    {
+      "pattern":".*\\.txt$"
     }
   ]},
   "bundles":[{
