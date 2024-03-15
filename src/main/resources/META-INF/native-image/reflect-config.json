@@ -349,6 +349,7 @@
     {"name":"getSplit","parameterTypes":[] },
     {"name":"getStorageSize","parameterTypes":[] },
     {"name":"getStorageTime","parameterTypes":[] },
+    {"name":"getTmpDir","parameterTypes":[] },
     {"name":"getTime","parameterTypes":[] }
   ]
 },
