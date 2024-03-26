@@ -19,7 +19,7 @@ public class OtcMarketsOrderMapper extends OrderMapper<OtcMarketsOrder, DxfgOtcM
   @Override
   public DxfgOtcMarketsOrder createNativeObject() {
     final DxfgOtcMarketsOrder nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOtcMarketsOrder.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_ANALYTIC_ORDER.getCValue());
+    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_OTC_MARKETS_ORDER.getCValue());
     return nObject;
   }
 
