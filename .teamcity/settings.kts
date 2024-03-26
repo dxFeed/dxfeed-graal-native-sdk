@@ -340,7 +340,7 @@ object DeployWindows : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "winAgent4450")
+        equals("system.agent.name", "winAgent5168")
     }
 })
 
