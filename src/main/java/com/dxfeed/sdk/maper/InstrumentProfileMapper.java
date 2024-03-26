@@ -43,7 +43,7 @@ public class InstrumentProfileMapper extends Mapper<InstrumentProfile, DxfgInstr
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
-    final DxfgInstrumentProfile nObject = UnmanagedMemory.malloc(
+    final DxfgInstrumentProfile nObject = UnmanagedMemory.calloc(
         SizeOf.get(DxfgInstrumentProfile.class));
     fillNative(jObject, nObject);
     return nObject;
