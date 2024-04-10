@@ -1,34 +1,34 @@
-## Create and publish GraalVM docker image for building project
+# Table of Contents
 
-```shell
-# docker login dxfeed-docker.jfrog.io
-docker build --build-arg GRAALVM_VERSION="<version>" -t graalvm:<os>-<arch>-<version> -f .\.teamcity\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
-```
+- [Building on Windows](#building-on-windows)
+  * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent)
+  * [How to install docker on Windows](#how-to-install-docker-on-windows)
+- [Building on Linux](#building-on-linux)
+  * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-1)
+- [Building on macOS](#building-on-macos)
+  * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-2)
+  * [Preparing the macOS agent](#preparing-the-macos-agent)
+- [Creating and Publishing GraalVM Docker Image for Project Build](#creating-and-publishing-graalvm-docker-image-for-project-build)
+- [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 
-# Build on Windows
+# Building on Windows
 
-On windows, this project is built in the docker. The `graalvm-win-x64.Dockerfile` is used to build
-the docker image. Documentation and examples of how to run the image can be found in the
-corresponding Dockerfile.
+This project is built using Docker on Windows. The `graalvm-win-x64.Dockerfile` is utilized for
+constructing the Docker image. Detailed documentation and usage examples for running the image are
+available in the corresponding Dockerfile.
 
+## Requirements for a TeamCity Agent:
 
-### Requirements for a TeamCity agent:
+- The `docker` must be installed on the agent to containerize Windows environments.
+- The `dxcity` user should have permissions to run Docker containers without admin privileges.
+- Establish `TeamCity Connections` to the Docker Registry
+  at https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/.
 
-* docker must be installed on agent (to containerize windows, not linux)
-* `dxcity` user should be able to run docker containers without admin privileges
-* `dxcity` user user must have r/w access to https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/
-  (`docker login dxfeed-docker.jfrog.io`)
-
-### The following agents are currently in use:
-
-* winAgent5168 host: winbuilder5168.in.devexperts.com
-
-### How to install docker on Windows
+## How to install docker on Windows
 
 * The agent must support Hyper-V (might have to enable virtualization in BIOS or something else).
-* If the agent is running in a hypervisor, nested-virtualization must be enabled and the processor
-  must have the "valid" name.
+* If the agent is running in a hypervisor, nested-virtualization must be enabled and the
+  virtualization type must be set to `host` (not `KVM`, `QEMU`, `EPIC`, etc.)
 * It may be necessary to temporarily disable the security policy before running next
   script `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 * Run this
@@ -57,30 +57,31 @@ corresponding Dockerfile.
   dockerd.exe --register-service
   Start-Service docker
   ```
-* Reboot.
+* Delete `credsStore` line from `C:\Users\dxcity\.docker\config.json`
+* Reboot
 
-# Build on Linux
+# Building on Linux
 
-On linux, this project is built in the docker. The `graalvm-linux-x64.Dockerfile` is used to build
-the docker image. Documentation and examples of how to run the image can be found in the
-corresponding Dockerfile.
+This project is built using Docker on Linux. The `graalvm-linux-x64.Dockerfile` is utilized for
+constructing the Docker image. Detailed documentation and usage examples for running the image are
+available in the corresponding Dockerfile.
 
-### Requirements for a TeamCity agent:
+## Requirements for a TeamCity Agent:
 
-* docker must be installed on agent
-* `dxcity` user should be able to run containers without sudo
-* `dxcity` user user must have r/w access to https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/
-  (`docker login dxfeed-docker.jfrog.io`)
+- The `docker` must be installed on the agent.
+- The `dxcity` user should be capable of running containers without sudo.
+- Establish `TeamCity Connections` to the Docker Registry
+  at https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/.
 
-# Build on macOS
+# Building on macOS
 
-On macOS, this project is built in the host system.
+The project is built directly on the macOS host system.
 
-### Requirements for a TeamCity agent:
+## Requirements for a TeamCity Agent:
 
-* The agent must have an Apple Silicon processor.
+* The agent must be equipped with an Apple Silicon processor.
 
-### Preparing the OSX M1 agent
+## Preparing the macOS agent
 
 ```shell
 cd ~
@@ -103,11 +104,33 @@ tar -xzvf graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
 sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64
 ```
 
-### The following agents are currently in use:
+## The following agents are currently in use:
 
 * macbuilder22 macbuilder22.in.devexperts.com
 
-# Creating and publishing NuGet package
+# Creating and Publishing GraalVM Docker Image for Project Build
+
+```shell
+# Authenticate with the Docker Registry
+docker login dxfeed-docker.jfrog.io
+# Build and push the Docker image
+docker build --build-arg GRAALVM_VERSION="<version>" -t graalvm:<os>-<arch>-<version> -f .\.teamcity\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
+```
+
+Example build Windows docker image:
+```shell
+docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-22.0.1 -f graalvm-win-x64.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-22.0.1
+```
+
+Example build Linux docker image:
+```shell
+docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1 -f graalvm-linux-x64.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1
+```
+
+# Creating and Publishing NuGet Package
 
 The `nuget.Dockerfile` is used to build the docker image to create and publish NuGet packages.
 Documentation and examples of how to run the image can be found in the corresponding Dockerfile.

@@ -9,9 +9,11 @@
 # BUILD
 #
 # How to build an image:
-# docker build -t <name:tag> -f <Dockerfile> .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t <name:tag> -f <Dockerfile> .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.0" -t <name:tag> -f <Dockerfile> .
+# docker build -m 8GB -t <name:tag> -f <Dockerfile> .
+#
+# For example:
+# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f graalvm-win-x64.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t graalvm:win-x64-jdk-22.0.1 -f graalvm-win-x64.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #

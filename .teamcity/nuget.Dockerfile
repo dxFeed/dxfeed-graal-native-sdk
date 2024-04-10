@@ -44,6 +44,7 @@ FROM mono:6
 ARG NUGET_VERSION=latest
 RUN download_url="https://dist.nuget.org/win-x86-commandline/${NUGET_VERSION}/nuget.exe"; \
     install_path="/usr/lib/nuget/nuget.exe"; \
+    apt-get update && apt-get upgrade && apt-get install git -y && \
     curl -SL --create-dirs --output "${install_path}" "${download_url}" && \
     chmod +x "${install_path}"
 

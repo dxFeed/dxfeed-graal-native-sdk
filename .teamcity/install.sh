@@ -99,6 +99,7 @@ vs_build_tools() {
     fi
 
     local -r vs_buildtools="vs_buildtools.exe"
+    # shellcheck disable=SC2064
     trap "rm -rf ${vs_buildtools}" EXIT
 
     local -r download_url="${base_url}/${version}/release/${vs_buildtools}"

@@ -10,8 +10,10 @@
 #
 # How to build an image:
 # docker build -t <name:tag> -f <Dockerfile> .
-# docker build --build-arg GRAALVM_VERSION="java11-22.3.1" -t <name:tag> -f <Dockerfile> .
-# docker build --build-arg GRAALVM_VERSION="jdk-22.0.0" -t <name:tag> -f <Dockerfile> .
+#
+# For example:
+# docker build --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:linux-x64-java11-22.3.1 -f graalvm-linux-x64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="jdk-22.0.1" -t graalvm:linux-x64-jdk-22.0.1 -f graalvm-linux-x64.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #
@@ -46,7 +48,7 @@ RUN yum update -y oraclelinux-release-el7 && \
     yum-config-manager --enable ol7_developer && \
     yum-config-manager --enable ol7_developer_EPEL && \
     yum-config-manager --enable ol7_optional_latest && \
-    yum install -y bzip2-devel bsdtar ed gcc gcc-c++ gcc-gfortran grep gzip file fontconfig less libcurl-devel make openssl openssl-devel readline-devel tar vi which xz-devel zlib-devel && \
+    yum install -y bzip2-devel bsdtar ed gcc gcc-c++ gcc-gfortran git grep gzip file fontconfig less libcurl-devel make openssl openssl-devel readline-devel tar vi which xz-devel zlib-devel && \
     yum install -y glibc-static libcxx libcxx-devel libstdc++-static zlib-static && \
     rm -rf /var/cache/yum
 
