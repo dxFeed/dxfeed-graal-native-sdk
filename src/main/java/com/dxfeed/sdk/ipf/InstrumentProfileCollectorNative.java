@@ -1,6 +1,8 @@
 package com.dxfeed.sdk.ipf;
 
+import com.dxfeed.ipf.InstrumentProfile;
 import com.dxfeed.ipf.live.InstrumentProfileCollector;
+import com.dxfeed.ipf.live.InstrumentProfileUpdateListener;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
@@ -9,6 +11,7 @@ import com.dxfeed.sdk.javac.DxfgExecuter;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import java.util.HashSet;
+import java.util.Iterator;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -191,15 +194,18 @@ public class InstrumentProfileCollectorNative {
       final VoidPointer userData
   ) {
     return NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toNative(
-        instruments -> {
-          final DxfgIterableInstrumentProfile iterator
-              = NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toNative(instruments);
-          dxfgFunction.invoke(
-              CurrentIsolate.getCurrentThread(),
-              iterator,
-              userData
-          );
-          NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.release(iterator);
+        new InstrumentProfileUpdateListener() {
+          @Override
+          public void instrumentProfilesUpdated(final Iterator<InstrumentProfile> instruments) {
+            final DxfgIterableInstrumentProfile iterator
+                = NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toNative(instruments);
+            dxfgFunction.invoke(
+                CurrentIsolate.getCurrentThread(),
+                iterator,
+                userData
+            );
+            NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.release(iterator);
+          }
         });
   }
 

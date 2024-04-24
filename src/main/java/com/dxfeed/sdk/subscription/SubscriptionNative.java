@@ -1,5 +1,6 @@
 package com.dxfeed.sdk.subscription;
 
+import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
@@ -17,6 +18,7 @@ import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecuter;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
+import java.util.List;
 import java.util.Set;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -138,14 +140,17 @@ public class SubscriptionNative {
       final DxfgFeedEventListenerFunction dxfgFeedEventListenerFunction,
       final VoidPointer userData
   ) {
-    return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(events -> {
-      final DxfgEventTypeList dxfgEventTypeList = NativeUtils.MAPPER_EVENTS.toNativeList(events);
-      dxfgFeedEventListenerFunction.invoke(
-          CurrentIsolate.getCurrentThread(),
-          dxfgEventTypeList,
-          userData
-      );
-      NativeUtils.MAPPER_EVENTS.release(dxfgEventTypeList);
+    return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new DXFeedEventListener<EventType<?>>() {
+      @Override
+      public void eventsReceived(final List<EventType<?>> events) {
+        final DxfgEventTypeList dxfgEventTypeList = NativeUtils.MAPPER_EVENTS.toNativeList(events);
+        dxfgFeedEventListenerFunction.invoke(
+            CurrentIsolate.getCurrentThread(),
+            dxfgEventTypeList,
+            userData
+        );
+        NativeUtils.MAPPER_EVENTS.release(dxfgEventTypeList);
+      }
     });
   }
 

@@ -15,6 +15,8 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 @CContext(Directives.class)
 public final class EndpointNative {
@@ -216,12 +218,17 @@ public final class EndpointNative {
       final VoidPointer userData
   ) {
     return NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toNative(
-        changeEvent -> userFunc.invoke(
-            CurrentIsolate.getCurrentThread(),
-            DxfgEndpointState.of((State) changeEvent.getOldValue()),
-            DxfgEndpointState.of((State) changeEvent.getNewValue()),
-            userData
-        )
+        new PropertyChangeListener() {
+          @Override
+          public void propertyChange(final PropertyChangeEvent changeEvent) {
+            userFunc.invoke(
+                CurrentIsolate.getCurrentThread(),
+                DxfgEndpointState.of((State) changeEvent.getOldValue()),
+                DxfgEndpointState.of((State) changeEvent.getNewValue()),
+                userData
+            );
+          }
+        }
     );
   }
 

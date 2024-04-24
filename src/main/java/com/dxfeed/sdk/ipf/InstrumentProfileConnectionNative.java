@@ -5,14 +5,15 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.concurrent.TimeUnit;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
-
-import java.util.concurrent.TimeUnit;
 
 @CContext(Directives.class)
 public class InstrumentProfileConnectionNative {
@@ -129,16 +130,21 @@ public class InstrumentProfileConnectionNative {
       final VoidPointer userData
   ) {
     return NativeUtils.MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toNative(
-        changeEvent -> function.invoke(
-            CurrentIsolate.getCurrentThread(),
-            DxfgInstrumentProfileConnectionState.of(
-                (InstrumentProfileConnection.State) changeEvent.getOldValue()
-            ),
-            DxfgInstrumentProfileConnectionState.of(
-                (InstrumentProfileConnection.State) changeEvent.getNewValue()
-            ),
-            userData
-        )
+        new PropertyChangeListener() {
+          @Override
+          public void propertyChange(final PropertyChangeEvent changeEvent) {
+            function.invoke(
+                CurrentIsolate.getCurrentThread(),
+                DxfgInstrumentProfileConnectionState.of(
+                    (InstrumentProfileConnection.State) changeEvent.getOldValue()
+                ),
+                DxfgInstrumentProfileConnectionState.of(
+                    (InstrumentProfileConnection.State) changeEvent.getNewValue()
+                ),
+                userData
+            );
+          }
+        }
     );
   }
 

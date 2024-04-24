@@ -306,11 +306,16 @@ public class PromiseNative {
       final VoidPointer userData
   ) {
     NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise).whenDone(
-        (PromiseHandler<Object>) promise -> dxfgPromiseHandlerFunction.invoke(
-            CurrentIsolate.getCurrentThread(),
-            dxfgPromise,
-            userData
-        )
+        new PromiseHandler<Object>() {
+          @Override
+          public void promiseDone(final Promise<?> promise) {
+            dxfgPromiseHandlerFunction.invoke(
+                CurrentIsolate.getCurrentThread(),
+                dxfgPromise,
+                userData
+            );
+          }
+        }
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
@@ -327,11 +332,16 @@ public class PromiseNative {
       final DxfgExecuter dxfgExecuter
   ) {
     NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise).whenDoneAsync(
-        (PromiseHandler<Object>) promise -> dxfgPromiseHandlerFunction.invoke(
-            CurrentIsolate.getCurrentThread(),
-            dxfgPromise,
-            userData
-        ),
+        new PromiseHandler<Object>() {
+          @Override
+          public void promiseDone(final Promise<?> promise) {
+            dxfgPromiseHandlerFunction.invoke(
+                CurrentIsolate.getCurrentThread(),
+                dxfgPromise,
+                userData
+            );
+          }
+        },
         NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;

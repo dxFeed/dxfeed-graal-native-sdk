@@ -1,5 +1,227 @@
-Subject: [PATCH] Add XCode project to build JDK for iOS and iOS-simulator
+Subject: [PATCH] Add_XCode_project_to_build_JDK_for_iOS_and_iOS-simulator_JDK22
 ---
+Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme
+new file mode 100644
+--- /dev/null	(date 1713872584418)
++++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme	(date 1713872584418)
+@@ -0,0 +1,67 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<Scheme
++   LastUpgradeVersion = "1240"
++   version = "1.3">
++   <BuildAction
++      parallelizeBuildables = "YES"
++      buildImplicitDependencies = "YES">
++      <BuildActionEntries>
++         <BuildActionEntry
++            buildForTesting = "YES"
++            buildForRunning = "YES"
++            buildForProfiling = "YES"
++            buildForArchiving = "YES"
++            buildForAnalyzing = "YES">
++            <BuildableReference
++               BuildableIdentifier = "primary"
++               BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
++               BuildableName = "graal-svm-arm64-ios-r.a"
++               BlueprintName = "graal-svm-arm64"
++               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
++            </BuildableReference>
++         </BuildActionEntry>
++      </BuildActionEntries>
++   </BuildAction>
++   <TestAction
++      buildConfiguration = "Debug"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      shouldUseLaunchSchemeArgsEnv = "YES">
++      <Testables>
++      </Testables>
++   </TestAction>
++   <LaunchAction
++      buildConfiguration = "Debug"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      launchStyle = "0"
++      useCustomWorkingDirectory = "NO"
++      ignoresPersistentStateOnLaunch = "NO"
++      debugDocumentVersioning = "YES"
++      debugServiceExtension = "internal"
++      allowLocationSimulation = "YES">
++   </LaunchAction>
++   <ProfileAction
++      buildConfiguration = "Debug"
++      shouldUseLaunchSchemeArgsEnv = "YES"
++      savedToolIdentifier = ""
++      useCustomWorkingDirectory = "NO"
++      debugDocumentVersioning = "YES">
++      <MacroExpansion>
++         <BuildableReference
++            BuildableIdentifier = "primary"
++            BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
++            BuildableName = "graal-svm-arm64-ios-r.a"
++            BlueprintName = "graal-svm-arm64"
++            ReferencedContainer = "container:graal-svm-ios.xcodeproj">
++         </BuildableReference>
++      </MacroExpansion>
++   </ProfileAction>
++   <AnalyzeAction
++      buildConfiguration = "Debug">
++   </AnalyzeAction>
++   <ArchiveAction
++      buildConfiguration = "Debug"
++      revealArchiveInOrganizer = "YES">
++   </ArchiveAction>
++</Scheme>
+Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme
+new file mode 100644
+--- /dev/null	(date 1713872584418)
++++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme	(date 1713872584418)
+@@ -0,0 +1,58 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<Scheme
++   LastUpgradeVersion = "1240"
++   version = "1.3">
++   <BuildAction
++      parallelizeBuildables = "YES"
++      buildImplicitDependencies = "YES">
++      <BuildActionEntries>
++         <BuildActionEntry
++            buildForTesting = "YES"
++            buildForRunning = "YES"
++            buildForProfiling = "YES"
++            buildForArchiving = "YES"
++            buildForAnalyzing = "YES">
++            <BuildableReference
++               BuildableIdentifier = "primary"
++               BlueprintIdentifier = "5AA1B37F2631B558000D6B3D"
++               BuildableName = "graal-svm-x86-64-ios-r.a"
++               BlueprintName = "graal-svm-x86-64"
++               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
++            </BuildableReference>
++         </BuildActionEntry>
++      </BuildActionEntries>
++   </BuildAction>
++   <TestAction
++      buildConfiguration = "Debug"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      shouldUseLaunchSchemeArgsEnv = "YES">
++      <Testables>
++      </Testables>
++   </TestAction>
++   <LaunchAction
++      buildConfiguration = "Debug"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      launchStyle = "0"
++      useCustomWorkingDirectory = "NO"
++      ignoresPersistentStateOnLaunch = "NO"
++      debugDocumentVersioning = "YES"
++      debugServiceExtension = "internal"
++      allowLocationSimulation = "YES">
++   </LaunchAction>
++   <ProfileAction
++      buildConfiguration = "Debug"
++      shouldUseLaunchSchemeArgsEnv = "YES"
++      savedToolIdentifier = ""
++      useCustomWorkingDirectory = "NO"
++      debugDocumentVersioning = "YES">
++   </ProfileAction>
++   <AnalyzeAction
++      buildConfiguration = "Debug">
++   </AnalyzeAction>
++   <ArchiveAction
++      buildConfiguration = "Debug"
++      revealArchiveInOrganizer = "YES">
++   </ArchiveAction>
++</Scheme>
+Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme
+new file mode 100644
+--- /dev/null	(date 1713872584418)
++++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme	(date 1713872584418)
+@@ -0,0 +1,67 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<Scheme
++   LastUpgradeVersion = "1240"
++   version = "1.3">
++   <BuildAction
++      parallelizeBuildables = "YES"
++      buildImplicitDependencies = "YES">
++      <BuildActionEntries>
++         <BuildActionEntry
++            buildForTesting = "YES"
++            buildForRunning = "YES"
++            buildForProfiling = "YES"
++            buildForArchiving = "YES"
++            buildForAnalyzing = "YES">
++            <BuildableReference
++               BuildableIdentifier = "primary"
++               BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
++               BuildableName = "graal-svm-arm64-ios-r.a"
++               BlueprintName = "graal-svm-arm64"
++               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
++            </BuildableReference>
++         </BuildActionEntry>
++      </BuildActionEntries>
++   </BuildAction>
++   <TestAction
++      buildConfiguration = "Release"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      shouldUseLaunchSchemeArgsEnv = "YES">
++      <Testables>
++      </Testables>
++   </TestAction>
++   <LaunchAction
++      buildConfiguration = "Release"
++      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
++      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
++      launchStyle = "0"
++      useCustomWorkingDirectory = "NO"
++      ignoresPersistentStateOnLaunch = "NO"
++      debugDocumentVersioning = "YES"
++      debugServiceExtension = "internal"
++      allowLocationSimulation = "YES">
++   </LaunchAction>
++   <ProfileAction
++      buildConfiguration = "Release"
++      shouldUseLaunchSchemeArgsEnv = "YES"
++      savedToolIdentifier = ""
++      useCustomWorkingDirectory = "NO"
++      debugDocumentVersioning = "YES">
++      <MacroExpansion>
++         <BuildableReference
++            BuildableIdentifier = "primary"
++            BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
++            BuildableName = "graal-svm-arm64-ios-r.a"
++            BlueprintName = "graal-svm-arm64"
++            ReferencedContainer = "container:graal-svm-ios.xcodeproj">
++         </BuildableReference>
++      </MacroExpansion>
++   </ProfileAction>
++   <AnalyzeAction
++      buildConfiguration = "Release">
++   </AnalyzeAction>
++   <ArchiveAction
++      buildConfiguration = "Release"
++      revealArchiveInOrganizer = "YES">
++   </ArchiveAction>
++</Scheme>
 Index: substratevm/graal-svm-ios.xcodeproj/project.pbxproj
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -7,9 +229,9 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 diff --git a/substratevm/graal-svm-ios.xcodeproj/project.pbxproj b/substratevm/graal-svm-ios.xcodeproj/project.pbxproj
 new file mode 100644
---- /dev/null	(date 1694080673339)
-+++ b/substratevm/graal-svm-ios.xcodeproj/project.pbxproj	(date 1694080673339)
-@@ -0,0 +1,478 @@
+--- /dev/null	(date 1713942474616)
++++ b/substratevm/graal-svm-ios.xcodeproj/project.pbxproj	(date 1713942474616)
+@@ -0,0 +1,484 @@
 +// !$*UTF8*$!
 +{
 +	archiveVersion = 1;
@@ -19,6 +241,10 @@ new file mode 100644
 +	objects = {
 +
 +/* Begin PBXBuildFile section */
++		2598F3552BD7D8AA00350C33 /* JvmFuncsFallbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = 2598F3542BD7D8AA00350C33 /* JvmFuncsFallbacks.c */; };
++		2598F3562BD7D8AA00350C33 /* JvmFuncsFallbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = 2598F3542BD7D8AA00350C33 /* JvmFuncsFallbacks.c */; };
++		2598F35B2BD8E74A00350C33 /* varargs_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 2598F35A2BD8E74A00350C33 /* varargs_helper.c */; };
++		2598F35C2BD8E74A00350C33 /* varargs_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 2598F35A2BD8E74A00350C33 /* varargs_helper.c */; };
 +		5A3DA626263708290069AF3E /* cpuid.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DA625263708290069AF3E /* cpuid.c */; };
 +		5A3DA63C26382A580069AF3E /* cpuid.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DA625263708290069AF3E /* cpuid.c */; };
 +		5A7FF99E261CAED300129BCA /* foundation.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF99D261CAED300129BCA /* foundation.c */; settings = {COMPILER_FLAGS = "-x objective-c"; }; };
@@ -31,12 +257,10 @@ new file mode 100644
 +		5AA1B3812631B558000D6B3D /* timeZone.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A3261CAF0200129BCA /* timeZone.c */; };
 +		5AA1B3822631B558000D6B3D /* foundation.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF99D261CAED300129BCA /* foundation.c */; settings = {COMPILER_FLAGS = "-x objective-c"; }; };
 +		5AA1B3832631B558000D6B3D /* macrosAsFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A7261CAF0200129BCA /* macrosAsFunctions.c */; };
-+		5AA1B3842631B558000D6B3D /* JvmFuncsFallbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = 5AF08FC0261CB42A002B6026 /* JvmFuncsFallbacks.c */; };
 +		5AA1B3852631B558000D6B3D /* getEnviron.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A4261CAF0200129BCA /* getEnviron.c */; };
 +		5AA1B3862631B558000D6B3D /* JvmFuncs.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A0261CAEE100129BCA /* JvmFuncs.c */; };
 +		5AA1B3872631B558000D6B3D /* cSunMiscSignal.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A5261CAF0200129BCA /* cSunMiscSignal.c */; };
 +		5AA1B3882631B558000D6B3D /* codeSynchronization.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A7FF9A6261CAF0200129BCA /* codeSynchronization.c */; };
-+		5AF08FC1261CB42A002B6026 /* JvmFuncsFallbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = 5AF08FC0261CB42A002B6026 /* JvmFuncsFallbacks.c */; };
 +/* End PBXBuildFile section */
 +
 +/* Begin PBXCopyFilesBuildPhase section */
@@ -61,6 +285,8 @@ new file mode 100644
 +/* End PBXCopyFilesBuildPhase section */
 +
 +/* Begin PBXFileReference section */
++		2598F3542BD7D8AA00350C33 /* JvmFuncsFallbacks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = JvmFuncsFallbacks.c; path = "mxbuild/jdk22/svm-jvmfuncs-fallback-builder/gensrc/JvmFuncsFallbacks.c"; sourceTree = "<group>"; };
++		2598F35A2BD8E74A00350C33 /* varargs_helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = varargs_helper.c; path = src/com.oracle.svm.native.libchelper/src/varargs_helper.c; sourceTree = "<group>"; };
 +		5A3DA625263708290069AF3E /* cpuid.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = cpuid.c; path = src/com.oracle.svm.native.libchelper/src/cpuid.c; sourceTree = "<group>"; };
 +		5A7FF98F261CAE7500129BCA /* graal-svm-arm64-ios-d.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "graal-svm-arm64-ios-d.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 +		5A7FF99D261CAED300129BCA /* foundation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = foundation.c; path = src/com.oracle.svm.native.darwin/src/foundation.c; sourceTree = "<group>"; };
@@ -71,7 +297,6 @@ new file mode 100644
 +		5A7FF9A6261CAF0200129BCA /* codeSynchronization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = codeSynchronization.c; path = src/com.oracle.svm.native.libchelper/src/codeSynchronization.c; sourceTree = "<group>"; };
 +		5A7FF9A7261CAF0200129BCA /* macrosAsFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macrosAsFunctions.c; path = src/com.oracle.svm.native.libchelper/src/macrosAsFunctions.c; sourceTree = "<group>"; };
 +		5AA1B38E2631B558000D6B3D /* graal-svm-x86-64-ios-d.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "graal-svm-x86-64-ios-d.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-+		5AF08FC0261CB42A002B6026 /* JvmFuncsFallbacks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = JvmFuncsFallbacks.c; path = "mxbuild/jdk11/svm-jvmfuncs-fallback-builder/src_gen/JvmFuncsFallbacks.c"; sourceTree = "<group>"; };
 +		5AF88C2F266780E0009C75C8 /* aarch64cpufeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aarch64cpufeatures.h; path = src/com.oracle.svm.native.libchelper/include/aarch64cpufeatures.h; sourceTree = "<group>"; };
 +		5AF88C32266780FC009C75C8 /* amd64cpufeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = amd64cpufeatures.h; path = src/com.oracle.svm.native.libchelper/include/amd64cpufeatures.h; sourceTree = "<group>"; };
 +/* End PBXFileReference section */
@@ -100,7 +325,7 @@ new file mode 100644
 +				5AF88C32266780FC009C75C8 /* amd64cpufeatures.h */,
 +				5AF88C2F266780E0009C75C8 /* aarch64cpufeatures.h */,
 +				5A3DA625263708290069AF3E /* cpuid.c */,
-+				5AF08FC0261CB42A002B6026 /* JvmFuncsFallbacks.c */,
++				2598F3542BD7D8AA00350C33 /* JvmFuncsFallbacks.c */,
 +				5A7FF9A6261CAF0200129BCA /* codeSynchronization.c */,
 +				5A7FF9A5261CAF0200129BCA /* cSunMiscSignal.c */,
 +				5A7FF9A4261CAF0200129BCA /* getEnviron.c */,
@@ -108,6 +333,7 @@ new file mode 100644
 +				5A7FF9A3261CAF0200129BCA /* timeZone.c */,
 +				5A7FF9A0261CAEE100129BCA /* JvmFuncs.c */,
 +				5A7FF99D261CAED300129BCA /* foundation.c */,
++				2598F35A2BD8E74A00350C33 /* varargs_helper.c */,
 +				5A7FF990261CAE7500129BCA /* Products */,
 +			);
 +			sourceTree = "<group>";
@@ -199,9 +425,10 @@ new file mode 100644
 +				5A7FF9A8261CAF0200129BCA /* timeZone.c in Sources */,
 +				5A7FF99E261CAED300129BCA /* foundation.c in Sources */,
 +				5A7FF9AC261CAF0200129BCA /* macrosAsFunctions.c in Sources */,
-+				5AF08FC1261CB42A002B6026 /* JvmFuncsFallbacks.c in Sources */,
 +				5A7FF9A9261CAF0200129BCA /* getEnviron.c in Sources */,
 +				5A7FF9A1261CAEE100129BCA /* JvmFuncs.c in Sources */,
++				2598F35B2BD8E74A00350C33 /* varargs_helper.c in Sources */,
++				2598F3552BD7D8AA00350C33 /* JvmFuncsFallbacks.c in Sources */,
 +				5A7FF9AA261CAF0200129BCA /* cSunMiscSignal.c in Sources */,
 +				5A7FF9AB261CAF0200129BCA /* codeSynchronization.c in Sources */,
 +			);
@@ -215,9 +442,10 @@ new file mode 100644
 +				5AA1B3812631B558000D6B3D /* timeZone.c in Sources */,
 +				5AA1B3822631B558000D6B3D /* foundation.c in Sources */,
 +				5AA1B3832631B558000D6B3D /* macrosAsFunctions.c in Sources */,
-+				5AA1B3842631B558000D6B3D /* JvmFuncsFallbacks.c in Sources */,
 +				5AA1B3852631B558000D6B3D /* getEnviron.c in Sources */,
 +				5AA1B3862631B558000D6B3D /* JvmFuncs.c in Sources */,
++				2598F35C2BD8E74A00350C33 /* varargs_helper.c in Sources */,
++				2598F3562BD7D8AA00350C33 /* JvmFuncsFallbacks.c in Sources */,
 +				5AA1B3872631B558000D6B3D /* cSunMiscSignal.c in Sources */,
 +				5AA1B3882631B558000D6B3D /* codeSynchronization.c in Sources */,
 +			);
@@ -488,151 +716,6 @@ new file mode 100644
 +	};
 +	rootObject = 5A7FF987261CAE7500129BCA /* Project object */;
 +}
-Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme
-new file mode 100644
---- /dev/null	(date 1694080673341)
-+++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-debug.xcscheme	(date 1694080673341)
-@@ -0,0 +1,67 @@
-+<?xml version="1.0" encoding="UTF-8"?>
-+<Scheme
-+   LastUpgradeVersion = "1240"
-+   version = "1.3">
-+   <BuildAction
-+      parallelizeBuildables = "YES"
-+      buildImplicitDependencies = "YES">
-+      <BuildActionEntries>
-+         <BuildActionEntry
-+            buildForTesting = "YES"
-+            buildForRunning = "YES"
-+            buildForProfiling = "YES"
-+            buildForArchiving = "YES"
-+            buildForAnalyzing = "YES">
-+            <BuildableReference
-+               BuildableIdentifier = "primary"
-+               BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
-+               BuildableName = "graal-svm-arm64-ios-r.a"
-+               BlueprintName = "graal-svm-arm64"
-+               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
-+            </BuildableReference>
-+         </BuildActionEntry>
-+      </BuildActionEntries>
-+   </BuildAction>
-+   <TestAction
-+      buildConfiguration = "Debug"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      shouldUseLaunchSchemeArgsEnv = "YES">
-+      <Testables>
-+      </Testables>
-+   </TestAction>
-+   <LaunchAction
-+      buildConfiguration = "Debug"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      launchStyle = "0"
-+      useCustomWorkingDirectory = "NO"
-+      ignoresPersistentStateOnLaunch = "NO"
-+      debugDocumentVersioning = "YES"
-+      debugServiceExtension = "internal"
-+      allowLocationSimulation = "YES">
-+   </LaunchAction>
-+   <ProfileAction
-+      buildConfiguration = "Debug"
-+      shouldUseLaunchSchemeArgsEnv = "YES"
-+      savedToolIdentifier = ""
-+      useCustomWorkingDirectory = "NO"
-+      debugDocumentVersioning = "YES">
-+      <MacroExpansion>
-+         <BuildableReference
-+            BuildableIdentifier = "primary"
-+            BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
-+            BuildableName = "graal-svm-arm64-ios-r.a"
-+            BlueprintName = "graal-svm-arm64"
-+            ReferencedContainer = "container:graal-svm-ios.xcodeproj">
-+         </BuildableReference>
-+      </MacroExpansion>
-+   </ProfileAction>
-+   <AnalyzeAction
-+      buildConfiguration = "Debug">
-+   </AnalyzeAction>
-+   <ArchiveAction
-+      buildConfiguration = "Debug"
-+      revealArchiveInOrganizer = "YES">
-+   </ArchiveAction>
-+</Scheme>
-Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme
-new file mode 100644
---- /dev/null	(date 1694080673342)
-+++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-debug.xcscheme	(date 1694080673342)
-@@ -0,0 +1,58 @@
-+<?xml version="1.0" encoding="UTF-8"?>
-+<Scheme
-+   LastUpgradeVersion = "1240"
-+   version = "1.3">
-+   <BuildAction
-+      parallelizeBuildables = "YES"
-+      buildImplicitDependencies = "YES">
-+      <BuildActionEntries>
-+         <BuildActionEntry
-+            buildForTesting = "YES"
-+            buildForRunning = "YES"
-+            buildForProfiling = "YES"
-+            buildForArchiving = "YES"
-+            buildForAnalyzing = "YES">
-+            <BuildableReference
-+               BuildableIdentifier = "primary"
-+               BlueprintIdentifier = "5AA1B37F2631B558000D6B3D"
-+               BuildableName = "graal-svm-x86-64-ios-r.a"
-+               BlueprintName = "graal-svm-x86-64"
-+               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
-+            </BuildableReference>
-+         </BuildActionEntry>
-+      </BuildActionEntries>
-+   </BuildAction>
-+   <TestAction
-+      buildConfiguration = "Debug"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      shouldUseLaunchSchemeArgsEnv = "YES">
-+      <Testables>
-+      </Testables>
-+   </TestAction>
-+   <LaunchAction
-+      buildConfiguration = "Debug"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      launchStyle = "0"
-+      useCustomWorkingDirectory = "NO"
-+      ignoresPersistentStateOnLaunch = "NO"
-+      debugDocumentVersioning = "YES"
-+      debugServiceExtension = "internal"
-+      allowLocationSimulation = "YES">
-+   </LaunchAction>
-+   <ProfileAction
-+      buildConfiguration = "Debug"
-+      shouldUseLaunchSchemeArgsEnv = "YES"
-+      savedToolIdentifier = ""
-+      useCustomWorkingDirectory = "NO"
-+      debugDocumentVersioning = "YES">
-+   </ProfileAction>
-+   <AnalyzeAction
-+      buildConfiguration = "Debug">
-+   </AnalyzeAction>
-+   <ArchiveAction
-+      buildConfiguration = "Debug"
-+      revealArchiveInOrganizer = "YES">
-+   </ArchiveAction>
-+</Scheme>
 Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-release.xcscheme
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -640,8 +723,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-release.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-release.xcscheme
 new file mode 100644
---- /dev/null	(date 1694080673342)
-+++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-release.xcscheme	(date 1694080673342)
+--- /dev/null	(date 1713872584418)
++++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-x86-64-release.xcscheme	(date 1713872584418)
 @@ -0,0 +1,67 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<Scheme
@@ -698,83 +781,6 @@ new file mode 100644
 +            BlueprintIdentifier = "5AA1B37F2631B558000D6B3D"
 +            BuildableName = "graal-svm-x86-64-ios-r.a"
 +            BlueprintName = "graal-svm-x86-64"
-+            ReferencedContainer = "container:graal-svm-ios.xcodeproj">
-+         </BuildableReference>
-+      </MacroExpansion>
-+   </ProfileAction>
-+   <AnalyzeAction
-+      buildConfiguration = "Release">
-+   </AnalyzeAction>
-+   <ArchiveAction
-+      buildConfiguration = "Release"
-+      revealArchiveInOrganizer = "YES">
-+   </ArchiveAction>
-+</Scheme>
-Index: substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme
-new file mode 100644
---- /dev/null	(date 1694080673341)
-+++ b/substratevm/graal-svm-ios.xcodeproj/xcshareddata/xcschemes/graal-svm-arm64-release.xcscheme	(date 1694080673341)
-@@ -0,0 +1,67 @@
-+<?xml version="1.0" encoding="UTF-8"?>
-+<Scheme
-+   LastUpgradeVersion = "1240"
-+   version = "1.3">
-+   <BuildAction
-+      parallelizeBuildables = "YES"
-+      buildImplicitDependencies = "YES">
-+      <BuildActionEntries>
-+         <BuildActionEntry
-+            buildForTesting = "YES"
-+            buildForRunning = "YES"
-+            buildForProfiling = "YES"
-+            buildForArchiving = "YES"
-+            buildForAnalyzing = "YES">
-+            <BuildableReference
-+               BuildableIdentifier = "primary"
-+               BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
-+               BuildableName = "graal-svm-arm64-ios-r.a"
-+               BlueprintName = "graal-svm-arm64"
-+               ReferencedContainer = "container:graal-svm-ios.xcodeproj">
-+            </BuildableReference>
-+         </BuildActionEntry>
-+      </BuildActionEntries>
-+   </BuildAction>
-+   <TestAction
-+      buildConfiguration = "Release"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      shouldUseLaunchSchemeArgsEnv = "YES">
-+      <Testables>
-+      </Testables>
-+   </TestAction>
-+   <LaunchAction
-+      buildConfiguration = "Release"
-+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-+      launchStyle = "0"
-+      useCustomWorkingDirectory = "NO"
-+      ignoresPersistentStateOnLaunch = "NO"
-+      debugDocumentVersioning = "YES"
-+      debugServiceExtension = "internal"
-+      allowLocationSimulation = "YES">
-+   </LaunchAction>
-+   <ProfileAction
-+      buildConfiguration = "Release"
-+      shouldUseLaunchSchemeArgsEnv = "YES"
-+      savedToolIdentifier = ""
-+      useCustomWorkingDirectory = "NO"
-+      debugDocumentVersioning = "YES">
-+      <MacroExpansion>
-+         <BuildableReference
-+            BuildableIdentifier = "primary"
-+            BlueprintIdentifier = "5A7FF98E261CAE7500129BCA"
-+            BuildableName = "graal-svm-arm64-ios-r.a"
-+            BlueprintName = "graal-svm-arm64"
 +            ReferencedContainer = "container:graal-svm-ios.xcodeproj">
 +         </BuildableReference>
 +      </MacroExpansion>

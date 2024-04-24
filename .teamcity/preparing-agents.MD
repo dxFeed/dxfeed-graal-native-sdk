@@ -3,12 +3,11 @@
 winAgent5168 host: winbuilder5168.in.devexperts.com
 
  * https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311
-   * GraalVM https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-windows-amd64-22.3.1.zip and remove from PATH "C:\Program Files (x86)\Common Files\Oracle\Java\javapath"
-   * GraalVM native-image
+   * GraalVM https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_windows-x64_bin.zip and remove from PATH "C:\Program Files (x86)\Common Files\Oracle\Java\javapath"
    * Visual Studio Build Tools
    * Windows 10 SDK
 
-additional info https://www.graalvm.org/22.1/docs/getting-started/windows/
+additional info https://www.graalvm.org/latest/docs/getting-started/windows/
 
 # Preparing the Linux agent
 
@@ -17,11 +16,10 @@ dxfeedAgent5919-1 dxfeedbuilder5919.in.devexperts.com
 ```shell
 sudo -i -u dxcity
 cd ~
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
-tar -xzvf graalvm-ce-java11-linux-amd64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /opt/jdks/
-/opt/jdks/graalvm-ce-java11-22.3.1/bin/gu install native-image
-#export JAVA_HOME=/opt/jdks/graalvm-ce-java11-22.3.1
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_linux-x64_bin.tar.gz
+tar -xzvf graalvm-community-jdk-22.0.1_linux-x64_bin.tar.gz
+sudo mv graalvm-community-openjdk-22.0.1+8.1 /opt/jdks/
+#export JAVA_HOME=/opt/jdks/graalvm-community-openjdk-22.0.1+8.1
 sudo apt install nuget -y
 #ok
 sudo apt-get install mono-complete -y
@@ -53,22 +51,14 @@ sudo -i -u dxcity
 curl -LO https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
 sudo xattr -rd com.apple.quarantine apache-maven-3.8.8-bin.tar.gz
 tar -xzvf apache-maven-3.8.8-bin.tar.gz
-# disabling SIP to copy the artifact to the share using the script https://teamcity-support.jetbrains.com/hc/en-us/community/posts/360010834480-Mac-build-agent-unable-to-access-external-drive-Operation-not-permitted-error
 #ARCH64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install native-image
-#IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install llvm-toolchain
-#ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-arm64
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
+tar -xzvf graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
+sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1
 #AMD64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install native-image
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install llvm-toolchain
-#ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-amd64
+curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
+sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
+tar -xzvf graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
+sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64
 ```

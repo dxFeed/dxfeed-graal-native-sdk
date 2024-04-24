@@ -445,7 +445,13 @@
 },
 {
   "name":"com.dxfeed.event.EventType",
-  "queryAllDeclaredMethods":true
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"setEventSymbol","parameterTypes":["java.lang.String"] },
+    {"name":"setEventTime","parameterTypes":["long"] }
+  ]
 },
 {
   "name":"com.dxfeed.event.IndexedEvent",

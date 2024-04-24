@@ -7,15 +7,6 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusMinInteger;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import org.graalvm.nativeimage.CurrentIsolate;
-import org.graalvm.nativeimage.IsolateThread;
-import org.graalvm.nativeimage.c.CContext;
-import org.graalvm.nativeimage.c.function.CEntryPoint;
-import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.VoidPointer;
-import org.graalvm.word.Pointer;
-import org.graalvm.word.WordFactory;
-
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.TimeZone;
@@ -24,6 +15,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.graalvm.nativeimage.CurrentIsolate;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.CContext;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
+import org.graalvm.word.Pointer;
+import org.graalvm.word.WordFactory;
 
 @CContext(Directives.class)
 public class JavacNative {
@@ -600,7 +599,12 @@ public class JavacNative {
   ) {
     NativeUtils.FINALIZER.createFinalizer(
         NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler),
-        () -> finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData)
+        new Runnable() {
+          @Override
+          public void run() {
+            finalizeFunction.invoke(CurrentIsolate.getCurrentThread(), userData);
+          }
+        }
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

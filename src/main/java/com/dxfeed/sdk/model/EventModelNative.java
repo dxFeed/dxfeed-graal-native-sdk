@@ -3,9 +3,11 @@ package com.dxfeed.sdk.model;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.model.IndexedEventModel;
+import com.dxfeed.model.ObservableListModelListener;
 import com.dxfeed.model.TimeSeriesEventModel;
 import com.dxfeed.model.market.OrderBookModel;
 import com.dxfeed.model.market.OrderBookModelFilter;
+import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventTypeList;
@@ -642,15 +644,18 @@ public class EventModelNative {
       final VoidPointer userData
   ) {
     return NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toNative(
-        change -> {
-          final DxfgOrderBookModel orderBookModel = NativeUtils.MAPPER_ORDER_BOOK_MODEL.toNative(
-              change.getSource());
-          userFunc.invoke(
-              CurrentIsolate.getCurrentThread(),
-              orderBookModel,
-              userData
-          );
-          NativeUtils.MAPPER_ORDER_BOOK_MODEL.release(orderBookModel);
+        new OrderBookModelListener() {
+          @Override
+          public void modelChanged(final Change change) {
+            final DxfgOrderBookModel orderBookModel = NativeUtils.MAPPER_ORDER_BOOK_MODEL.toNative(
+                change.getSource());
+            userFunc.invoke(
+                CurrentIsolate.getCurrentThread(),
+                orderBookModel,
+                userData
+            );
+            NativeUtils.MAPPER_ORDER_BOOK_MODEL.release(orderBookModel);
+          }
         }
     );
   }
@@ -665,14 +670,18 @@ public class EventModelNative {
       final VoidPointer userData
   ) {
     return NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toNative(
-        change -> {
-          final DxfgEventTypeList dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(change.getSource());
-          userFunc.invoke(
-              CurrentIsolate.getCurrentThread(),
-              dxfgOrderList,
-              userData
-          );
-          NativeUtils.MAPPER_EVENTS.release(dxfgOrderList);
+        new ObservableListModelListener<IndexedEvent<?>>() {
+          @Override
+          public void modelChanged(final Change<? extends IndexedEvent<?>> change) {
+            final DxfgEventTypeList dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(
+                change.getSource());
+            userFunc.invoke(
+                CurrentIsolate.getCurrentThread(),
+                dxfgOrderList,
+                userData
+            );
+            NativeUtils.MAPPER_EVENTS.release(dxfgOrderList);
+          }
         }
     );
   }

@@ -104,15 +104,15 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             mavenVersion = custom {
                 path = "%teamcity.tool.maven.3.8.4%"
             }
-            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home"
+            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1/Contents/Home"
         }
         script {
             name = "deploy (1)"
             scriptContent = """
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1/Contents/Home
                 arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
                 arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1/Contents/Home
+                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64/Contents/Home
                 arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIosSimulator=true deploy
                 arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
@@ -157,7 +157,7 @@ object BuildMajorMinorPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
+            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
         }
         maven {
             name = "release:perform"
@@ -167,7 +167,7 @@ object BuildMajorMinorPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
+            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
         }
     }
 
@@ -281,7 +281,7 @@ object BuildPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
+            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
         }
         maven {
             name = "release:perform"
@@ -291,7 +291,7 @@ object BuildPatch : BuildType({
                 path = "%teamcity.tool.maven.3.8.4%"
             }
             userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-ce-java11-22.3.1"
+            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
         }
     }
 
@@ -326,7 +326,7 @@ object DeployWindows : BuildType({
             name = "deploy"
             scriptContent = """
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-                set JAVA_HOME=C:\Release\graalvm-ce-java11-22.3.1
+                set JAVA_HOME=C:\Release\graalvm-community-openjdk-22.0.1+8.1
                 C:\ENV\apache-maven-3.8.6\bin\mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
             """.trimIndent()
         }
@@ -341,61 +341,6 @@ object DeployWindows : BuildType({
 
     requirements {
         equals("system.agent.name", "winAgent5168")
-    }
-})
-
-object TestBuildOsx : BuildType({
-    name = "test build osx"
-
-    params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
-    }
-
-    vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
-    }
-
-    steps {
-        maven {
-            name = "package"
-            enabled = false
-            goals = "package"
-            runnerArgs = """--settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
-            mavenVersion = custom {
-                path = "%teamcity.tool.maven.3.8.4%"
-            }
-            jdkHome = "/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home"
-        }
-        script {
-            name = "package (1)"
-            scriptContent = """
-                arch -arm64 bash
-                arch
-                export JAVA_HOME=`/usr/libexec/java_home -a arm64`
-                echo ${'$'}JAVA_HOME
-                mvn -version
-                file ${'$'}JAVA_HOME/bin/java
-                /usr/bin/cc -v
-                arch -arm64 uname -m
-                arch -arm64 id -un
-                xcode-select --print-path
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
-                arch -arm64 mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true package
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0-arm64/Contents/Home
-                echo ${'$'}JAVA_HOME
-                arch -arm64 mvn -version
-                arch -arm64 mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% package
-                export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.1.0/Contents/Home
-                echo ${'$'}JAVA_HOME
-                arch -x86_64 mvn -version
-                arch -x86_64 mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% package
-            """.trimIndent()
-        }
-    }
-
-    requirements {
-        equals("system.agent.name", "macbuilder22")
     }
 })
 

@@ -7,21 +7,37 @@
   <artifactId>graal-native-sdk</artifactId>
   <version>1.1.11-SNAPSHOT</version>
 
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <graalvm.version>24.0.1</graalvm.version>
+    <native.image.path>${project.build.directory}/native-image</native.image.path>
+    <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
+    <set-rpath.skip>true</set-rpath.skip>
+    <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+    <install.dir>./target/install</install.dir>
+    <deploy.dir />
+    <arch.name>${os.arch}-${os.detected.name}</arch.name>
+    <artifact.name>${project.name}-${arch.name}.zip</artifact.name>
+    <macIos>false</macIos>
+    <notMacIos>true</notMacIos>
+    <notIosSimulator>true</notIosSimulator>
+    <auther-api.version>476</auther-api.version>
+    <qd.version>3.327</qd.version>
+  </properties>
+
   <dependencies>
-    <dependency>
-      <groupId>com.devexperts.mdd</groupId>
-      <artifactId>auther-api</artifactId>
-      <version>476</version>
-    </dependency>
     <dependency>
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxlink-websocket</artifactId>
-      <version>3.327</version>
+      <version>${qd.version}</version>
     </dependency>
     <dependency>
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxfeed-ondemand</artifactId>
-      <version>3.327</version>
+      <version>${qd.version}</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
@@ -87,25 +103,6 @@
     </repository>
   </distributionManagement>
 
-  <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <graalvm.version>22.3.1</graalvm.version>
-    <native.image.path>${project.build.directory}/native-image</native.image.path>
-    <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
-    <set-rpath.skip>true</set-rpath.skip>
-    <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
-    <install.dir>./target/install</install.dir>
-    <deploy.dir />
-    <arch.name>${os.arch}-${os.detected.name}</arch.name>
-    <artifact.name>${project.name}-${arch.name}.zip</artifact.name>
-    <macIos>false</macIos>
-    <notMacIos>true</notMacIos>
-    <notIosSimulator>true</notIosSimulator>
-  </properties>
-
   <profiles>
     <profile>
       <id>mac</id>
@@ -117,6 +114,28 @@
       <properties>
         <set-rpath.skip>false</set-rpath.skip>
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>com.devexperts.mdd</groupId>
+          <artifactId>auther-api</artifactId>
+          <version>${auther-api.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.devexperts.mdd</groupId>
+          <artifactId>auther-api</artifactId>
+          <version>${auther-api.version}</version>
+        </dependency>
+      </dependencies>
     </profile>
     <profile>
       <id>windows</id>
@@ -128,6 +147,13 @@
       <properties>
         <native.image.name>DxFeedGraalNativeSdk</native.image.name>
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>com.devexperts.mdd</groupId>
+          <artifactId>auther-api</artifactId>
+          <version>${auther-api.version}</version>
+        </dependency>
+      </dependencies>
     </profile>
     <profile>
       <id>iosSimulator</id>
@@ -141,6 +167,19 @@
         <arch.name>ios-simulator</arch.name>
         <notIosSimulator>false</notIosSimulator>
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>com.devexperts.mdd</groupId>
+          <artifactId>auther-api</artifactId>
+          <version>${auther-api.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>com.devexperts.qd</groupId>
+              <artifactId>qds-monitoring</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -172,12 +211,11 @@
                 <buildArg>--enable-url-protocols=http,https</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
-                <buildArg>-H:+IncludeAllTimeZones</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
                 <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
@@ -205,6 +243,19 @@
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>com.devexperts.mdd</groupId>
+          <artifactId>auther-api</artifactId>
+          <version>${auther-api.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>com.devexperts.qd</groupId>
+              <artifactId>qds-monitoring</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -235,12 +286,11 @@
                 <buildArg>--enable-url-protocols=http,https</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
-                <buildArg>-H:+IncludeAllTimeZones</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
 
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
@@ -297,12 +347,11 @@
             <buildArg>--enable-url-protocols=http,https</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
-            <buildArg>-H:+IncludeAllTimeZones</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
             <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-            <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+            <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
           </buildArgs>
         </configuration>
       </plugin>
