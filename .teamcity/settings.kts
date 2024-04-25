@@ -100,7 +100,7 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             name = "deploy"
             enabled = false
             goals = "deploy"
-            runnerArgs = """--settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT%  -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
             mavenVersion = custom {
                 path = "%teamcity.tool.maven.3.8.4%"
             }
@@ -110,11 +110,11 @@ object AutomaticDeploymentOfTheOsxArtifact : BuildType({
             name = "deploy (1)"
             scriptContent = """
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1/Contents/Home
-                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
-                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
+                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -arm64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
                 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64/Contents/Home
-                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIosSimulator=true deploy
-                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIosSimulator=true deploy
+                arch -x86_64 /Users/dxcity/apache-maven-3.8.8/bin/mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
             """.trimIndent()
         }
     }
@@ -162,7 +162,7 @@ object BuildMajorMinorPatch : BuildType({
         maven {
             name = "release:perform"
             goals = "release:perform"
-            runnerArgs = """--settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
             mavenVersion = custom {
                 path = "%teamcity.tool.maven.3.8.4%"
             }
@@ -286,7 +286,7 @@ object BuildPatch : BuildType({
         maven {
             name = "release:perform"
             goals = "release:perform"
-            runnerArgs = """--settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
+            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
             mavenVersion = custom {
                 path = "%teamcity.tool.maven.3.8.4%"
             }
@@ -327,7 +327,7 @@ object DeployWindows : BuildType({
             scriptContent = """
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
                 set JAVA_HOME=C:\Release\graalvm-community-openjdk-22.0.1+8.1
-                C:\ENV\apache-maven-3.8.6\bin\mvn --settings ".teamcity/settings.xml" -Dartifact.folder=%env.PROJECTSMNT% -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                C:\ENV\apache-maven-3.8.6\bin\mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
             """.trimIndent()
         }
     }

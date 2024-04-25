@@ -6,39 +6,4 @@
       <password>${jfrog.password}</password>
     </server>
   </servers>
-  <profiles>
-    <profile>
-      <id>linux-agent</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <deploy.dir>${artifact.folder}/mdd/DXFG/Release/${project.version}</deploy.dir>
-      </properties>
-    </profile>
-    <profile>
-      <id>mac-agent</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <properties>
-        <deploy.dir>${artifact.folder}/mdd/DXFG/Release/${project.version}</deploy.dir>
-      </properties>
-    </profile>
-    <profile>
-      <id>windows-agent</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <deploy.dir>${artifact.folder}\mdd\DXFG\Release\${project.version}</deploy.dir>
-      </properties>
-    </profile>
-  </profiles>
 </settings>
