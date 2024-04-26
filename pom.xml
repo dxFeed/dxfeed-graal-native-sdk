@@ -83,7 +83,8 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git
+    <connection>
+      scm:git:https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-sdk.git
     </connection>
     <tag>HEAD</tag>
     <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-sdk.git</url>
