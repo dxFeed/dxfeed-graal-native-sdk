@@ -125,30 +125,42 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 
     steps {
-        maven {
-            name = "release:prepare"
-            goals = "release:clean release:prepare"
-            runnerArgs = "--batch-mode -DreleaseVersion=%env.RELEASE_VERSION%"
-            mavenVersion = custom {
-                path = "%teamcity.tool.maven.3.8.4%"
-            }
-            userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
+        script {
+            name = "release:prepare in docker"
+            id = "release_prepare_in_docker"
+            scriptContent = """
+                    git config --global user.name %dxcity.login%
+                    git config --global user.email %dxcity.login%@bots.devexperts.com
+                    mvn release:clean release:prepare --batch-mode -DreleaseVersion=%env.RELEASE_VERSION%  -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket%
+                """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "-m 8GB"
         }
-        maven {
-            name = "release:perform"
-            goals = "release:perform"
-            runnerArgs = """--settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD%"""
-            mavenVersion = custom {
-                path = "%teamcity.tool.maven.3.8.4%"
+        script {
+            name = "release:perform in docker"
+            id = "release_perform_in_docker"
+            scriptContent = """
+                    git config --global user.name %dxcity.login%
+                    git config --global user.email %dxcity.login%@bots.devexperts.com
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
+                """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "-m 8GB"
+        }
+    }
+
+    features {
+        dockerSupport {
+            loginToRegistry = on {
+                dockerRegistryId = "PROJECT_EXT_153"
             }
-            userSettingsPath = "settings-agent.xml"
-            jdkHome = "/opt/jdks/graalvm-community-openjdk-22.0.1+8.1"
         }
     }
 
     requirements {
-        equals("system.agent.name", "dxfeedAgent5919-1")
+        equals("teamcity.agent.jvm.os.name", "Linux")
     }
 })
 
