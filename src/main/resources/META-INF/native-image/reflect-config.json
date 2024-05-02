@@ -294,7 +294,9 @@
     {"name":"setCycle","parameterTypes":["boolean"] },
     {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
     {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] },
-    {"name":"setSpeed","parameterTypes":["double"] }
+    {"name":"setSpeed","parameterTypes":["double"] },
+    {"name":"getDelayed","parameterTypes":[] },
+    {"name":"getDelayActual","parameterTypes":[] }
   ]
 },
 {
