@@ -317,31 +317,32 @@ object DeployNuget : BuildType({
         script {
             name = "download artifacts"
             scriptContent = """
-                VERSION=${'$'}(git describe --abbrev=0)
-                VERSION=${'$'}{VERSION#"v"}
+                download_file() {
+                  version=${'$'}1
+                  path_to_save=${'$'}2
+                  file_name=${'$'}3
+                  os=${'$'}4
+                  platform=${'$'}5
+                  extension="zip"
 
-                PATH_TO_SAVE=NuGet/runtimes/linux-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-linux.zip\!/libDxFeedGraalNativeSdk.so
-                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
-                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                  base_url="https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk"
+                  file_path="${'$'}{version}/graal-native-sdk-${'$'}{version}-${'$'}{platform}-${'$'}{os}.${'$'}{extension}"
+                  url="${'$'}{base_url}/${'$'}{file_path}!/${'$'}{file_name}"
 
-                PATH_TO_SAVE=NuGet/runtimes/osx-arm64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-aarch64-osx.zip\!/libDxFeedGraalNativeSdk.dylib
-                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
-                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                  mkdir -p "${'$'}path_to_save"
+                  if ! (cd "${'$'}path_to_save" && curl -LO -f "${'$'}url"); then
+                    echo "Failed to download: ${'$'}url"
+                    exit 1
+                  fi
+                }
 
-                PATH_TO_SAVE=NuGet/runtimes/osx-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-x86_64-osx.zip\!/libDxFeedGraalNativeSdk.dylib
-                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
-                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                version=${'$'}(git describe --abbrev=0)
+                version=${'$'}{version#"v"}
 
-                PATH_TO_SAVE=NuGet/runtimes/win-x64/native
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-windows.zip\!/DxFeedGraalNativeSdk.dll
-                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
-                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
-                LINK=https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/${'$'}VERSION/graal-native-sdk-${'$'}VERSION-amd64-windows.zip\!/sunmscapi.dll
-                STATUS=${'$'}(curl -o /dev/null -s -w "%{http_code}\n" ${'$'}LINK)
-                if [ ${'$'}STATUS -eq 200 ]; then (cd ${'$'}PATH_TO_SAVE && curl -LO "${'$'}LINK"); else rm -R ${'$'}PATH_TO_SAVE; fi
+                download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
+                download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
+                download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
+                download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
             """.trimIndent()
         }
         script {
