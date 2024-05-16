@@ -743,7 +743,23 @@
 },
 {
   "name":"com.dxfeed.event.option.TheoPrice",
-  "queryAllPublicMethods":true
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] },
+    {"name":"setEventFlags","parameterTypes":["int"] },
+    {"name":"setIndex","parameterTypes":["long"] },
+    {"name":"setTime","parameterTypes":["long"] },
+    {"name":"setSequence","parameterTypes":["int"] },
+    {"name":"setPrice","parameterTypes":["double"] },
+    {"name":"setUnderlyingPrice","parameterTypes":["double"] },
+    {"name":"setDelta","parameterTypes":["double"] },
+    {"name":"setGamma","parameterTypes":["double"] },
+    {"name":"setDividend","parameterTypes":["double"] },
+    {"name":"setInterest","parameterTypes":["double"] }
+  ]
 },
 {
   "name":"com.dxfeed.event.option.Underlying",
