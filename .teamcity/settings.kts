@@ -195,7 +195,7 @@ object SyncGitHubWithMain : BuildType({
     }
 
     requirements {
-        equals("system.agent.name", "dxfeedAgent5919-1")
+        equals("teamcity.agent.jvm.os.name", "Linux")
     }
 })
 
