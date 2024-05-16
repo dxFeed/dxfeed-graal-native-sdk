@@ -40,9 +40,9 @@ graalvm() {
     # Prior to 2023, GraalVM release numbering was based on the calendar year (and java version),
     # for example, java11-22.3.1, java17-22.3.1.
     if [[ "${version}" =~ ^java ]]; then
-        release_tag="$(echo "${version}" | grep -oP '\d+\.\d+\.\d+$')"
+        release_tag="$(perl -pe '$_ = $1 if /(\d+\.\d+\.\d+)$/o' <<< "${version}")"
         version_tag="vm-${release_tag}"
-        distribution_tag="graalvm-ce-java$(echo "${version}" | grep -oP 'java\K\d+')"
+        distribution_tag="graalvm-ce-java$(perl -pe '$_ = $1 if /java(\d+)/o' <<< "${version}")"
         case "$platform_os" in
             "linux") os_tag="-linux" ;;
             "osx") os_tag="-darwin" ;;
@@ -79,8 +79,7 @@ graalvm() {
 
     # gu does not exist in GraalVM versions above 22.3.3
     # and native-image installation is not required.
-    cd "${install_path}/bin"
-    local -r gu=$(find . -maxdepth 1 -name "gu*" -print -quit)
+    local -r gu=$(find ${install_path} -name "gu*" -print -quit)
     if [ -n "${gu}" ]; then
         "${gu}" install native-image
     fi

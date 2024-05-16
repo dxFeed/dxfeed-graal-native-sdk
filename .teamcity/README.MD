@@ -7,7 +7,6 @@
   * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-1)
 - [Building on macOS](#building-on-macos)
   * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-2)
-  * [Preparing the macOS agent](#preparing-the-macos-agent)
 - [Creating and Publishing GraalVM Docker Image for Project Build](#creating-and-publishing-graalvm-docker-image-for-project-build)
 - [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 
@@ -80,33 +79,8 @@ The project is built directly on the macOS host system.
 ## Requirements for a TeamCity Agent:
 
 * The agent must be equipped with an Apple Silicon processor.
-
-## Preparing the macOS agent
-
-```shell
-cd ~
-# xcode command line tools
-xcode-select --install
-# maven
-sudo -i -u dxcity
-curl -LO https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
-sudo xattr -rd com.apple.quarantine apache-maven-3.8.8-bin.tar.gz
-tar -xzvf apache-maven-3.8.8-bin.tar.gz
-#ARCH64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-tar -xzvf graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1
-#AMD64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-tar -xzvf graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64
-```
-
-## The following agents are currently in use:
-
-* macbuilder22 macbuilder22.in.devexperts.com
+* Rosetta 2 must be installed on the agent (`softwareupdate --install-rosetta`).
+* Xcode Command Line Tools must be installed on the agent (`xcode-select --install`).
 
 # Creating and Publishing GraalVM Docker Image for Project Build
 
