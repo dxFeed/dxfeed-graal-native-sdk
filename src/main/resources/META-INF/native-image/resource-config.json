@@ -1,81 +1,89 @@
 {
   "resources":{
-  "includes":[
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.connector.codec.CodecFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.mars.common.MARSPlugin$Factory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataSchemeFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataScheme\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.HistorySubscriptionFilter\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.dxlink.websocket.transport.DxLinkLoginHandlerFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.ng.RecordMappingFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.MessageConnectorFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.QDEndpoint$Builder\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.devexperts.rmi.task.RMILoadBalancerFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.dxfeed.api.DXEndpoint$Builder\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
-    },
-    {
-      "pattern":"\\QMETA-INF/services/com.dxfeed.ondemand.OnDemandService\\E"
-    },
-    {
-      "pattern":"\\Qcom/dxfeed/schedule/schedule.properties\\E"
-    },
-    {
-      "pattern":".*\\.xml$"
-    },
-    {
-      "pattern":".*\\.xsd$"
-    },
-    {
-      "pattern":".*\\.properties$"
-    },
-    {
-      "pattern":".*\\.dat$"
-    },
-    {
-      "pattern":".*\\.MF$"
-    },
-    {
-      "pattern":".*\\.txt$"
-    }
-  ]},
+  "includes":[{
+    "pattern":".*\\.MF$"
+  }, {
+    "pattern":".*\\.dat$"
+  }, {
+    "pattern":".*\\.properties$"
+  }, {
+    "pattern":".*\\.txt$"
+  }, {
+    "pattern":".*\\.xml$"
+  }, {
+    "pattern":".*\\.xsd$"
+  }, {
+    "pattern":"\\Q/META-INF/SerialClassBlacklist.txt\\E"
+  }, {
+    "pattern":"\\Q/META-INF/SerialClassWhitelist.txt\\E"
+  }, {
+    "pattern":"\\QMETA-INF/logformatter.properties\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.connector.codec.CodecFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.mars.common.MARSPlugin$Factory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataSchemeFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.DataScheme\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.HistorySubscriptionFilter\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDErrorHandler\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.dxlink.websocket.transport.DxLinkLoginHandlerFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.ng.RecordMappingFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.MessageConnectorFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.QDEndpoint$Builder\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.rmi.security.RMISecurityController\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.rmi.security.SecurityController\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.rmi.task.RMILoadBalancerFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.dxfeed.api.DXEndpoint$Builder\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.dxfeed.ondemand.OnDemandService\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+  }, {
+    "pattern":"\\Qcom/dxfeed/schedule/schedule.properties\\E"
+  }, {
+    "pattern":"\\Qdxfeed.properties\\E"
+  }, {
+    "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+  }, {
+    "pattern":"jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
+  }]},
   "bundles":[{
-      "name":"com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
-      "locales":[""]
-    }]
+    "name":"com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
+    "locales":["und"]
+  }, {
+    "name":"sun.text.resources.cldr.FormatData",
+    "locales":["en", "en-US", "und"]
+  }, {
+    "name":"sun.util.resources.cldr.CalendarData",
+    "locales":["und"]
+  }, {
+    "name":"sun.util.resources.cldr.TimeZoneNames",
+    "locales":["en", "en-US", "und"]
+  }]
 }

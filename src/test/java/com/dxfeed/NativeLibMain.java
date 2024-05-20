@@ -2,6 +2,7 @@
 package com.dxfeed;
 
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.api.DXEndpoint.Role;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
@@ -50,6 +51,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -80,6 +83,7 @@ public class NativeLibMain {
     dxEndpointReadFromTape();
     dxEndpointOrderBookModel();
     schedule();
+    reflectAllMethodsForMarketEvents();
     System.exit(1);
   }
 
@@ -467,5 +471,28 @@ public class NativeLibMain {
     Schedule schedule = Schedule.getInstance(profile);
     Session session = schedule.getNearestSessionByTime(time, SessionFilter.TRADING);
     System.out.println("Nearest trading session for " + profile.getSymbol() + ": " + session + " in " + session.getDay());
+  }
+
+  private static void reflectAllMethodsForMarketEvents() {
+    Set<Class<? extends EventType<?>>> types = DXEndpoint.create(Role.STREAM_FEED).getEventTypes();
+    for (Class<? extends EventType<?>> type : types) {
+      List<Method> methods = getDeclaredMethods(type);
+      for (Method method : methods) {
+        try {
+          method.invoke(type.getConstructor().newInstance());
+        } catch (ReflectiveOperationException | IllegalArgumentException ignored) {
+        }
+        System.out.println(method);
+      }
+    }
+  }
+
+  private static List<Method> getDeclaredMethods(Class<?> clazz) {
+    List<Method> methods = new ArrayList<>();
+    while (clazz != null && clazz != Object.class) {
+      methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+      clazz = clazz.getSuperclass();
+    }
+    return methods;
   }
 }

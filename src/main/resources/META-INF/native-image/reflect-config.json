@@ -52,23 +52,19 @@
 },
 {
   "name":"com.devexperts.connector.codec.delayed.DelayedCodecFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.connector.codec.shaped.ShapedCodecFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.connector.codec.ssl.SSLCodecFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.connector.proto.ApplicationConnectionFactory",
-  "methods":[
-    {"name":"getChunkPool","parameterTypes":[] },
-    {"name":"getName","parameterTypes":[] },
-    {"name":"setName","parameterTypes":["java.lang.String"] }
-  ]
+  "methods":[{"name":"getChunkPool","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"setName","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.logging.Log4j2Logging"
@@ -82,28 +78,12 @@
 },
 {
   "name":"com.devexperts.mars.jvm.JVMSelfMonitoring$PluginFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.mars.jvm.JVMSelfMonitoringMXBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"forceGarbageCollection","parameterTypes":[] },
-    {"name":"getCpuUsage","parameterTypes":[] },
-    {"name":"getHeapSize","parameterTypes":[] },
-    {"name":"getHeapUsage","parameterTypes":[] },
-    {"name":"getNonHeapSize","parameterTypes":[] },
-    {"name":"getNonHeapUsage","parameterTypes":[] },
-    {"name":"getThreadCount","parameterTypes":[] },
-    {"name":"getThreadDeadlockedCount","parameterTypes":[] },
-    {"name":"getThreadDumpsCount","parameterTypes":[] },
-    {"name":"getThreadDumpsFile","parameterTypes":[] },
-    {"name":"getThreadDumpsPeriod","parameterTypes":[] },
-    {"name":"getThreadDumpsScheduledAt","parameterTypes":[] },
-    {"name":"getTimeZone","parameterTypes":[] },
-    {"name":"getUptime","parameterTypes":[] },
-    {"name":"makeThreadDumps","parameterTypes":["int","java.lang.String","java.lang.String","java.lang.String"] }
-  ]
+  "methods":[{"name":"forceGarbageCollection","parameterTypes":[] }, {"name":"getCpuUsage","parameterTypes":[] }, {"name":"getHeapSize","parameterTypes":[] }, {"name":"getHeapUsage","parameterTypes":[] }, {"name":"getNonHeapSize","parameterTypes":[] }, {"name":"getNonHeapUsage","parameterTypes":[] }, {"name":"getThreadCount","parameterTypes":[] }, {"name":"getThreadDeadlockedCount","parameterTypes":[] }, {"name":"getThreadDumpsCount","parameterTypes":[] }, {"name":"getThreadDumpsFile","parameterTypes":[] }, {"name":"getThreadDumpsPeriod","parameterTypes":[] }, {"name":"getThreadDumpsScheduledAt","parameterTypes":[] }, {"name":"getTimeZone","parameterTypes":[] }, {"name":"getUptime","parameterTypes":[] }, {"name":"makeThreadDumps","parameterTypes":["int","java.lang.String","java.lang.String","java.lang.String"] }]
 },
 {
   "name":"com.devexperts.mdd.auth.entitle.EntitleLoginHandlerFactory",
@@ -116,13 +96,7 @@
 {
   "name":"com.devexperts.qd.dxlink.websocket.application.DxLinkWebSocketApplicationConnectionFactory",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getHeartbeatPeriod","parameterTypes":[] },
-    {"name":"getHeartbeatTimeout","parameterTypes":[] },
-    {"name":"getInitialHeartbeatPeriod","parameterTypes":[] },
-    {"name":"getLogin","parameterTypes":[] },
-    {"name":"setLogin","parameterTypes":["java.lang.String"] }
-  ]
+  "methods":[{"name":"getApplicationVersion","parameterTypes":[] }, {"name":"getHeartbeatPeriod","parameterTypes":[] }, {"name":"getHeartbeatTimeout","parameterTypes":[] }, {"name":"getInitialHeartbeatPeriod","parameterTypes":[] }, {"name":"getLogin","parameterTypes":[] }, {"name":"setLogin","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnector",
@@ -130,13 +104,18 @@
   "queryAllPublicConstructors":true
 },
 {
+  "name":"com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorBeanInfo"
+},
+{
+  "name":"com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorCustomizer"
+},
+{
   "name":"com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getAddress","parameterTypes":[] },
-    {"name":"getProxyHost","parameterTypes":[] },
-    {"name":"getProxyPort","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getAddress","parameterTypes":[] }, {"name":"getProxyHost","parameterTypes":[] }, {"name":"getProxyPort","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorMXBean"
 },
 {
   "name":"com.devexperts.qd.dxlink.websocket.transport.TokenDxLinkLoginHandlerFactory",
@@ -146,44 +125,25 @@
   "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$1"
 },
 {
+  "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$CloseListener",
+  "queryAllPublicMethods":true
+},
+{
   "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$WebSocketChannelInboundHandler",
-  "methods":[
-    {"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] },
-    {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] },
-    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }
-  ]
+  "methods":[{"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }]
+},
+{
+  "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketWriter",
+  "fields":[{"name":"state"}]
 },
 {
   "name":"com.devexperts.qd.impl.matrix.management.impl.CollectorMXBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"dumpCollectorsToFile","parameterTypes":["java.lang.String"] },
-    {"name":"dumpSubscriptionToFile","parameterTypes":["java.lang.String"] },
-    {"name":"getAgentBufferSizeDefault","parameterTypes":[] },
-    {"name":"getAllLockOperations","parameterTypes":[] },
-    {"name":"getBufferOverflowLogInterval","parameterTypes":[] },
-    {"name":"getCollectorCount","parameterTypes":[] },
-    {"name":"getContract","parameterTypes":[] },
-    {"name":"getCounters","parameterTypes":[] },
-    {"name":"getDistributionBucket","parameterTypes":[] },
-    {"name":"getFatalError","parameterTypes":[] },
-    {"name":"getInterleave","parameterTypes":[] },
-    {"name":"getLockWaitLogInterval","parameterTypes":[] },
-    {"name":"getMaxDistributionSpins","parameterTypes":[] },
-    {"name":"getSubscriptionBucket","parameterTypes":[] },
-    {"name":"getUseLockCounters","parameterTypes":[] },
-    {"name":"getUseLockPriority","parameterTypes":[] },
-    {"name":"reportCounters","parameterTypes":["java.lang.String","java.lang.Integer"] },
-    {"name":"reportData","parameterTypes":["java.lang.String","java.lang.String","boolean","java.lang.String"] },
-    {"name":"reportSubscription","parameterTypes":["java.lang.String","java.lang.String","java.lang.String"] },
-    {"name":"resetCounters","parameterTypes":[] },
-    {"name":"resetToDefaults","parameterTypes":[] },
-    {"name":"verifyCollectors","parameterTypes":[] }
-  ]
+  "methods":[{"name":"dumpCollectorsToFile","parameterTypes":["java.lang.String"] }, {"name":"dumpSubscriptionToFile","parameterTypes":["java.lang.String"] }, {"name":"getAgentBufferSizeDefault","parameterTypes":[] }, {"name":"getAllLockOperations","parameterTypes":[] }, {"name":"getBufferOverflowLogInterval","parameterTypes":[] }, {"name":"getCollectorCount","parameterTypes":[] }, {"name":"getContract","parameterTypes":[] }, {"name":"getCounters","parameterTypes":[] }, {"name":"getDistributionBucket","parameterTypes":[] }, {"name":"getFatalError","parameterTypes":[] }, {"name":"getInterleave","parameterTypes":[] }, {"name":"getLockWaitLogInterval","parameterTypes":[] }, {"name":"getMaxDistributionSpins","parameterTypes":[] }, {"name":"getSubscriptionBucket","parameterTypes":[] }, {"name":"getUseLockCounters","parameterTypes":[] }, {"name":"getUseLockPriority","parameterTypes":[] }, {"name":"reportCounters","parameterTypes":["java.lang.String","java.lang.Integer"] }, {"name":"reportData","parameterTypes":["java.lang.String","java.lang.String","boolean","java.lang.String"] }, {"name":"reportSubscription","parameterTypes":["java.lang.String","java.lang.String","java.lang.String"] }, {"name":"resetCounters","parameterTypes":[] }, {"name":"resetToDefaults","parameterTypes":[] }, {"name":"verifyCollectors","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.impl.matrix.management.impl.CollectorManagementFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplAnyContract",
@@ -199,22 +159,22 @@
 },
 {
   "name":"com.devexperts.qd.monitoring.MonitoredQDEndpoint$BuilderImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.AbstractMessageConnector",
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.devexperts.qd.qtp.AbstractMessageConnectorBeanInfo"
+},
+{
+  "name":"com.devexperts.qd.qtp.AbstractMessageConnectorCustomizer"
+},
+{
   "name":"com.devexperts.qd.qtp.AgentAdapter$Factory",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getAggregationPeriod","parameterTypes":[] },
-    {"name":"getChannels","parameterTypes":[] },
-    {"name":"getSubscriptionExecutor","parameterTypes":[] },
-    {"name":"getSubscriptionKeepAlive","parameterTypes":[] },
-    {"name":"getSubscriptionThreads","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getAggregationPeriod","parameterTypes":[] }, {"name":"getChannels","parameterTypes":[] }, {"name":"getSubscriptionExecutor","parameterTypes":[] }, {"name":"getSubscriptionKeepAlive","parameterTypes":[] }, {"name":"getSubscriptionThreads","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
@@ -223,60 +183,29 @@
 },
 {
   "name":"com.devexperts.qd.qtp.DxLinkWebSocketConnectorFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
-  "methods":[
-    {"name":"getFilter","parameterTypes":[] },
-    {"name":"setFilter","parameterTypes":["java.lang.String"] }
-  ]
+  "methods":[{"name":"getFilter","parameterTypes":[] }, {"name":"setFilter","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getAuth","parameterTypes":[] },
-    {"name":"getHeartbeatPeriod","parameterTypes":[] },
-    {"name":"getHeartbeatTimeout","parameterTypes":[] },
-    {"name":"getInitialHeartbeatPeriod","parameterTypes":[] },
-    {"name":"getLogin","parameterTypes":[] },
-    {"name":"getPassword","parameterTypes":[] },
-    {"name":"getUser","parameterTypes":[] },
-    {"name":"setLogin","parameterTypes":["java.lang.String"] },
-    {"name":"setPassword","parameterTypes":["java.lang.String"] },
-    {"name":"setUser","parameterTypes":["java.lang.String"] }
-  ]
+  "methods":[{"name":"getAuth","parameterTypes":[] }, {"name":"getHeartbeatPeriod","parameterTypes":[] }, {"name":"getHeartbeatTimeout","parameterTypes":[] }, {"name":"getInitialHeartbeatPeriod","parameterTypes":[] }, {"name":"getLogin","parameterTypes":[] }, {"name":"getPassword","parameterTypes":[] }, {"name":"getUser","parameterTypes":[] }, {"name":"setLogin","parameterTypes":["java.lang.String"] }, {"name":"setPassword","parameterTypes":["java.lang.String"] }, {"name":"setUser","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageAdapterMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"close","parameterTypes":[] },
-    {"name":"isAlive","parameterTypes":[] }
-  ]
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"isAlive","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.MessageConnector",
+  "queryAllPublicMethods":true
 },
 {
   "name":"com.devexperts.qd.qtp.MessageConnectorMBean",
-  "methods":[
-    {"name":"getAddress","parameterTypes":[] },
-    {"name":"getConnectionCount","parameterTypes":[] },
-    {"name":"getEndpointStats","parameterTypes":[] },
-    {"name":"getFieldReplacer","parameterTypes":[] },
-    {"name":"getName","parameterTypes":[] },
-    {"name":"getPassword","parameterTypes":[] },
-    {"name":"getReconnectDelay","parameterTypes":[] },
-    {"name":"getState","parameterTypes":[] },
-    {"name":"getThreadPriority","parameterTypes":[] },
-    {"name":"getUser","parameterTypes":[] },
-    {"name":"isActive","parameterTypes":[] },
-    {"name":"reconnect","parameterTypes":[] },
-    {"name":"resetEndpointStats","parameterTypes":[] },
-    {"name":"restart","parameterTypes":[] },
-    {"name":"retrieveCompleteEndpointStats","parameterTypes":[] },
-    {"name":"start","parameterTypes":[] },
-    {"name":"stop","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getAddress","parameterTypes":[] }, {"name":"getConnectionCount","parameterTypes":[] }, {"name":"getEndpointStats","parameterTypes":[] }, {"name":"getFieldReplacer","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"getPassword","parameterTypes":[] }, {"name":"getReconnectDelay","parameterTypes":[] }, {"name":"getState","parameterTypes":[] }, {"name":"getThreadPriority","parameterTypes":[] }, {"name":"getUser","parameterTypes":[] }, {"name":"isActive","parameterTypes":[] }, {"name":"reconnect","parameterTypes":[] }, {"name":"resetEndpointStats","parameterTypes":[] }, {"name":"restart","parameterTypes":[] }, {"name":"retrieveCompleteEndpointStats","parameterTypes":[] }, {"name":"start","parameterTypes":[] }, {"name":"stop","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.MessageType",
@@ -290,37 +219,16 @@
   "name":"com.devexperts.qd.qtp.file.FileConnector",
   "queryAllPublicMethods":true,
   "queryAllPublicConstructors":true,
-  "methods":[
-    {"name":"setCycle","parameterTypes":["boolean"] },
-    {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
-    {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] },
-    {"name":"setSpeed","parameterTypes":["double"] },
-    {"name":"getDelayed","parameterTypes":[] },
-    {"name":"getDelayActual","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getDelayActual","parameterTypes":[] }, {"name":"getDelayed","parameterTypes":[] }, {"name":"setCycle","parameterTypes":["boolean"] }, {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] }, {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }, {"name":"setSpeed","parameterTypes":["double"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getCompression","parameterTypes":[] },
-    {"name":"getDelayActual","parameterTypes":[] },
-    {"name":"getDelayed","parameterTypes":[] },
-    {"name":"getFormat","parameterTypes":[] },
-    {"name":"getReadAs","parameterTypes":[] },
-    {"name":"getResyncOn","parameterTypes":[] },
-    {"name":"getSpeed","parameterTypes":[] },
-    {"name":"getStart","parameterTypes":[] },
-    {"name":"getStop","parameterTypes":[] },
-    {"name":"getTime","parameterTypes":[] },
-    {"name":"isCycle","parameterTypes":[] },
-    {"name":"isIgnoreTime","parameterTypes":[] },
-    {"name":"isSchemeKnown","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getCompression","parameterTypes":[] }, {"name":"getDelayActual","parameterTypes":[] }, {"name":"getDelayed","parameterTypes":[] }, {"name":"getFormat","parameterTypes":[] }, {"name":"getReadAs","parameterTypes":[] }, {"name":"getResyncOn","parameterTypes":[] }, {"name":"getSpeed","parameterTypes":[] }, {"name":"getStart","parameterTypes":[] }, {"name":"getStop","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"isCycle","parameterTypes":[] }, {"name":"isIgnoreTime","parameterTypes":[] }, {"name":"isSchemeKnown","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileFormat",
@@ -330,34 +238,20 @@
   "name":"com.devexperts.qd.qtp.file.TapeConnector",
   "queryAllPublicMethods":true,
   "queryAllPublicConstructors":true,
-  "methods":[
-    {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] },
-    {"name":"setOpt","parameterTypes":["java.lang.String"] },
-    {"name":"setSaveAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }
-  ]
+  "methods":[{"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] }, {"name":"setOpt","parameterTypes":["java.lang.String"] }, {"name":"setSaveAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.TapeConnectorFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.TapeConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getCompression","parameterTypes":[] },
-    {"name":"getFormat","parameterTypes":[] },
-    {"name":"getOpt","parameterTypes":[] },
-    {"name":"getSaveAs","parameterTypes":[] },
-    {"name":"getSplit","parameterTypes":[] },
-    {"name":"getStorageSize","parameterTypes":[] },
-    {"name":"getStorageTime","parameterTypes":[] },
-    {"name":"getTmpDir","parameterTypes":[] },
-    {"name":"getTime","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getCompression","parameterTypes":[] }, {"name":"getFormat","parameterTypes":[] }, {"name":"getOpt","parameterTypes":[] }, {"name":"getSaveAs","parameterTypes":[] }, {"name":"getSplit","parameterTypes":[] }, {"name":"getStorageSize","parameterTypes":[] }, {"name":"getStorageTime","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTmpDir","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.nio.NioConnectorFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.socket.ClientSocketConnector",
@@ -367,17 +261,7 @@
 {
   "name":"com.devexperts.qd.qtp.socket.ClientSocketConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getConnectOrder","parameterTypes":[] },
-    {"name":"getCurrentHost","parameterTypes":[] },
-    {"name":"getCurrentPort","parameterTypes":[] },
-    {"name":"getHost","parameterTypes":[] },
-    {"name":"getPort","parameterTypes":[] },
-    {"name":"getProxyHost","parameterTypes":[] },
-    {"name":"getProxyPort","parameterTypes":[] },
-    {"name":"getStripe","parameterTypes":[] },
-    {"name":"getCurrentAddresses","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getConnectOrder","parameterTypes":[] }, {"name":"getCurrentAddresses","parameterTypes":[] }, {"name":"getCurrentHost","parameterTypes":[] }, {"name":"getCurrentPort","parameterTypes":[] }, {"name":"getHost","parameterTypes":[] }, {"name":"getPort","parameterTypes":[] }, {"name":"getProxyHost","parameterTypes":[] }, {"name":"getProxyPort","parameterTypes":[] }, {"name":"getStripe","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.spi.QDFilterFactory",
@@ -390,36 +274,24 @@
 },
 {
   "name":"com.devexperts.qd.tools.TimeSyncTracker$PluginFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.tools.TimeSyncTrackerMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"dumpPeers","parameterTypes":["boolean"] },
-    {"name":"getMedianDelta","parameterTypes":[] },
-    {"name":"getPeerCount","parameterTypes":[] },
-    {"name":"getPeerDeltas","parameterTypes":[] },
-    {"name":"getPeerDeviations","parameterTypes":[] },
-    {"name":"getPeerIds","parameterTypes":[] },
-    {"name":"isActive","parameterTypes":[] },
-    {"name":"sendRequest","parameterTypes":["boolean"] },
-    {"name":"start","parameterTypes":[] },
-    {"name":"stop","parameterTypes":[] }
-  ]
+  "methods":[{"name":"dumpPeers","parameterTypes":["boolean"] }, {"name":"getMedianDelta","parameterTypes":[] }, {"name":"getPeerCount","parameterTypes":[] }, {"name":"getPeerDeltas","parameterTypes":[] }, {"name":"getPeerDeviations","parameterTypes":[] }, {"name":"getPeerIds","parameterTypes":[] }, {"name":"isActive","parameterTypes":[] }, {"name":"sendRequest","parameterTypes":["boolean"] }, {"name":"start","parameterTypes":[] }, {"name":"stop","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.tools.TimeSyncTrackerMXBean"
 },
 {
   "name":"com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getAdvertise","parameterTypes":[] },
-    {"name":"getServices","parameterTypes":[] },
-    {"name":"getWeight","parameterTypes":[] }
-  ]
+  "methods":[{"name":"getAdvertise","parameterTypes":[] }, {"name":"getServices","parameterTypes":[] }, {"name":"getWeight","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.rmi.impl.RMIMessageAdapter",
@@ -431,7 +303,7 @@
 },
 {
   "name":"com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.api.impl.DXFeedScheme",
@@ -443,17 +315,14 @@
 },
 {
   "name":"com.dxfeed.api.impl.HistorySubscriptionFilterImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.EventType",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setEventSymbol","parameterTypes":["java.lang.String"] },
-    {"name":"setEventTime","parameterTypes":["long"] }
-  ]
+  "methods":[{"name":"setEventSymbol","parameterTypes":["java.lang.String"] }, {"name":"setEventTime","parameterTypes":["long"] }]
 },
 {
   "name":"com.dxfeed.event.IndexedEvent",
@@ -471,32 +340,13 @@
   "name":"com.dxfeed.event.candle.Candle",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] },
-    {"name":"setAskVolumeAsDouble","parameterTypes":["double"] },
-    {"name":"setBidVolumeAsDouble","parameterTypes":["double"] },
-    {"name":"setClose","parameterTypes":["double"] },
-    {"name":"setCount","parameterTypes":["long"] },
-    {"name":"setEventFlags","parameterTypes":["int"] },
-    {"name":"setEventSymbol","parameterTypes":["com.dxfeed.event.candle.CandleSymbol"] },
-    {"name":"setEventTime","parameterTypes":["long"] },
-    {"name":"setHigh","parameterTypes":["double"] },
-    {"name":"setImpVolatility","parameterTypes":["double"] },
-    {"name":"setIndex","parameterTypes":["long"] },
-    {"name":"setLow","parameterTypes":["double"] },
-    {"name":"setOpen","parameterTypes":["double"] },
-    {"name":"setOpenInterestAsDouble","parameterTypes":["double"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setVWAP","parameterTypes":["double"] },
-    {"name":"setVolumeAsDouble","parameterTypes":["double"] }
-  ]
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"baseFieldsToString","parameterTypes":[] }, {"name":"getAskVolume","parameterTypes":[] }, {"name":"getAskVolumeAsDouble","parameterTypes":[] }, {"name":"getBidVolume","parameterTypes":[] }, {"name":"getBidVolumeAsDouble","parameterTypes":[] }, {"name":"getClose","parameterTypes":[] }, {"name":"getCount","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getEventSymbol","parameterTypes":[] }, {"name":"getEventTime","parameterTypes":[] }, {"name":"getHigh","parameterTypes":[] }, {"name":"getImpVolatility","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getLow","parameterTypes":[] }, {"name":"getOpen","parameterTypes":[] }, {"name":"getOpenInterest","parameterTypes":[] }, {"name":"getOpenInterestAsDouble","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getVWAP","parameterTypes":[] }, {"name":"getVolume","parameterTypes":[] }, {"name":"getVolumeAsDouble","parameterTypes":[] }, {"name":"setAskVolume","parameterTypes":["long"] }, {"name":"setAskVolumeAsDouble","parameterTypes":["double"] }, {"name":"setBidVolume","parameterTypes":["long"] }, {"name":"setBidVolumeAsDouble","parameterTypes":["double"] }, {"name":"setClose","parameterTypes":["double"] }, {"name":"setCount","parameterTypes":["long"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setEventId","parameterTypes":["long"] }, {"name":"setEventSymbol","parameterTypes":["com.dxfeed.event.candle.CandleSymbol"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.Object"] }, {"name":"setEventTime","parameterTypes":["long"] }, {"name":"setHigh","parameterTypes":["double"] }, {"name":"setImpVolatility","parameterTypes":["double"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setLow","parameterTypes":["double"] }, {"name":"setOpen","parameterTypes":["double"] }, {"name":"setOpenInterest","parameterTypes":["long"] }, {"name":"setOpenInterestAsDouble","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setVWAP","parameterTypes":["double"] }, {"name":"setVolume","parameterTypes":["long"] }, {"name":"setVolumeAsDouble","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.candle.CandleFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.candle.CandleSymbol",
@@ -510,29 +360,30 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.AnalyticOrder",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"fieldsToString","parameterTypes":["java.lang.StringBuilder"] }, {"name":"getIcebergExecutedSize","parameterTypes":[] }, {"name":"getIcebergFlags","parameterTypes":[] }, {"name":"getIcebergHiddenSize","parameterTypes":[] }, {"name":"getIcebergPeakSize","parameterTypes":[] }, {"name":"getIcebergType","parameterTypes":[] }, {"name":"setIcebergExecutedSize","parameterTypes":["double"] }, {"name":"setIcebergFlags","parameterTypes":["int"] }, {"name":"setIcebergHiddenSize","parameterTypes":["double"] }, {"name":"setIcebergPeakSize","parameterTypes":["double"] }, {"name":"setIcebergType","parameterTypes":["com.dxfeed.event.market.IcebergType"] }]
 },
 {
   "name":"com.dxfeed.event.market.MarketEvent",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setEventSymbol","parameterTypes":["java.lang.String"] },
-    {"name":"setEventTime","parameterTypes":["long"] }
-  ]
+  "methods":[{"name":"getEventSymbol","parameterTypes":[] }, {"name":"getEventTime","parameterTypes":[] }, {"name":"setEventSymbol","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.String"] }, {"name":"setEventTime","parameterTypes":["long"] }]
 },
 {
   "name":"com.dxfeed.event.market.MarketFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.OptionSale",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAggressorSide","parameterTypes":[] }, {"name":"getAskPrice","parameterTypes":[] }, {"name":"getBidPrice","parameterTypes":[] }, {"name":"getDelta","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getExchangeCode","parameterTypes":[] }, {"name":"getExchangeSaleConditions","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getOptionSymbol","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSize","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeNanoPart","parameterTypes":[] }, {"name":"getTimeNanos","parameterTypes":[] }, {"name":"getTimeSequence","parameterTypes":[] }, {"name":"getTradeThroughExempt","parameterTypes":[] }, {"name":"getType","parameterTypes":[] }, {"name":"getUnderlyingPrice","parameterTypes":[] }, {"name":"getVolatility","parameterTypes":[] }, {"name":"isCancel","parameterTypes":[] }, {"name":"isCorrection","parameterTypes":[] }, {"name":"isExtendedTradingHours","parameterTypes":[] }, {"name":"isNew","parameterTypes":[] }, {"name":"isSpreadLeg","parameterTypes":[] }, {"name":"isValidTick","parameterTypes":[] }, {"name":"setAggressorSide","parameterTypes":["com.dxfeed.event.market.Side"] }, {"name":"setAskPrice","parameterTypes":["double"] }, {"name":"setBidPrice","parameterTypes":["double"] }, {"name":"setDelta","parameterTypes":["double"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setExchangeCode","parameterTypes":["char"] }, {"name":"setExchangeSaleConditions","parameterTypes":["java.lang.String"] }, {"name":"setExtendedTradingHours","parameterTypes":["boolean"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setOptionSymbol","parameterTypes":["java.lang.String"] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setSize","parameterTypes":["double"] }, {"name":"setSpreadLeg","parameterTypes":["boolean"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setTimeNanoPart","parameterTypes":["int"] }, {"name":"setTimeNanos","parameterTypes":["long"] }, {"name":"setTimeSequence","parameterTypes":["long"] }, {"name":"setTradeThroughExempt","parameterTypes":["char"] }, {"name":"setType","parameterTypes":["com.dxfeed.event.market.TimeAndSaleType"] }, {"name":"setUnderlyingPrice","parameterTypes":["double"] }, {"name":"setValidTick","parameterTypes":["boolean"] }, {"name":"setVolatility","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.Order",
@@ -540,102 +391,44 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] },
-    {"name":"setMarketMaker","parameterTypes":["java.lang.String"] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"fieldsToString","parameterTypes":["java.lang.StringBuilder"] }, {"name":"getMarketMaker","parameterTypes":[] }, {"name":"setMarketMaker","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.dxfeed.event.market.OrderBase",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setAction","parameterTypes":["com.dxfeed.event.market.OrderAction"] },
-    {"name":"setActionTime","parameterTypes":["long"] },
-    {"name":"setAuxOrderId","parameterTypes":["long"] },
-    {"name":"setCount","parameterTypes":["long"] },
-    {"name":"setEventFlags","parameterTypes":["int"] },
-    {"name":"setExchangeCode","parameterTypes":["char"] },
-    {"name":"setExecutedSize","parameterTypes":["double"] },
-    {"name":"setIndex","parameterTypes":["long"] },
-    {"name":"setOrderId","parameterTypes":["long"] },
-    {"name":"setOrderSide","parameterTypes":["com.dxfeed.event.market.Side"] },
-    {"name":"setPrice","parameterTypes":["double"] },
-    {"name":"setScope","parameterTypes":["com.dxfeed.event.market.Scope"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setSizeAsDouble","parameterTypes":["double"] },
-    {"name":"setSource","parameterTypes":["com.dxfeed.event.market.OrderSource"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setTimeNanoPart","parameterTypes":["int"] },
-    {"name":"setTradeId","parameterTypes":["long"] },
-    {"name":"setTradePrice","parameterTypes":["double"] },
-    {"name":"setTradeSize","parameterTypes":["double"] }
-  ]
+  "methods":[{"name":"fieldsToString","parameterTypes":["java.lang.StringBuilder"] }, {"name":"getAction","parameterTypes":[] }, {"name":"getActionTime","parameterTypes":[] }, {"name":"getAuxOrderId","parameterTypes":[] }, {"name":"getCount","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getExchangeCode","parameterTypes":[] }, {"name":"getExecutedSize","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getLevel","parameterTypes":[] }, {"name":"getOrderId","parameterTypes":[] }, {"name":"getOrderSide","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getScope","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSide","parameterTypes":[] }, {"name":"getSize","parameterTypes":[] }, {"name":"getSizeAsDouble","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeNanoPart","parameterTypes":[] }, {"name":"getTimeNanos","parameterTypes":[] }, {"name":"getTimeSequence","parameterTypes":[] }, {"name":"getTradeId","parameterTypes":[] }, {"name":"getTradePrice","parameterTypes":[] }, {"name":"getTradeSize","parameterTypes":[] }, {"name":"hasSize","parameterTypes":[] }, {"name":"setAction","parameterTypes":["com.dxfeed.event.market.OrderAction"] }, {"name":"setActionTime","parameterTypes":["long"] }, {"name":"setAuxOrderId","parameterTypes":["long"] }, {"name":"setCount","parameterTypes":["long"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setExchangeCode","parameterTypes":["char"] }, {"name":"setExecutedSize","parameterTypes":["double"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setLevel","parameterTypes":["int"] }, {"name":"setOrderId","parameterTypes":["long"] }, {"name":"setOrderSide","parameterTypes":["com.dxfeed.event.market.Side"] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setScope","parameterTypes":["com.dxfeed.event.market.Scope"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setSide","parameterTypes":["int"] }, {"name":"setSize","parameterTypes":["long"] }, {"name":"setSizeAsDouble","parameterTypes":["double"] }, {"name":"setSource","parameterTypes":["com.dxfeed.event.market.OrderSource"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setTimeNanoPart","parameterTypes":["int"] }, {"name":"setTimeNanos","parameterTypes":["long"] }, {"name":"setTimeSequence","parameterTypes":["long"] }, {"name":"setTradeId","parameterTypes":["long"] }, {"name":"setTradePrice","parameterTypes":["double"] }, {"name":"setTradeSize","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.OtcMarketsOrder",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"fieldsToString","parameterTypes":["java.lang.StringBuilder"] }, {"name":"getOtcMarketsFlags","parameterTypes":[] }, {"name":"getOtcMarketsPriceType","parameterTypes":[] }, {"name":"getQuoteAccessPayment","parameterTypes":[] }, {"name":"isAutoExecution","parameterTypes":[] }, {"name":"isNmsConditional","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"isSaturated","parameterTypes":[] }, {"name":"isUnsolicited","parameterTypes":[] }, {"name":"setAutoExecution","parameterTypes":["boolean"] }, {"name":"setNmsConditional","parameterTypes":["boolean"] }, {"name":"setOpen","parameterTypes":["boolean"] }, {"name":"setOtcMarketsFlags","parameterTypes":["int"] }, {"name":"setOtcMarketsPriceType","parameterTypes":["com.dxfeed.event.market.OtcMarketsPriceType"] }, {"name":"setQuoteAccessPayment","parameterTypes":["int"] }, {"name":"setSaturated","parameterTypes":["boolean"] }, {"name":"setUnsolicited","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.dxfeed.event.market.Profile",
+  "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setBeta","parameterTypes":["double"] },
-    {"name":"setDescription","parameterTypes":["java.lang.String"] },
-    {"name":"setDividendFrequency","parameterTypes":["double"] },
-    {"name":"setEarningsPerShare","parameterTypes":["double"] },
-    {"name":"setExDividendAmount","parameterTypes":["double"] },
-    {"name":"setExDividendDayId","parameterTypes":["int"] },
-    {"name":"setFreeFloat","parameterTypes":["double"] },
-    {"name":"setHaltEndTime","parameterTypes":["long"] },
-    {"name":"setHaltStartTime","parameterTypes":["long"] },
-    {"name":"setHigh52WeekPrice","parameterTypes":["double"] },
-    {"name":"setHighLimitPrice","parameterTypes":["double"] },
-    {"name":"setLow52WeekPrice","parameterTypes":["double"] },
-    {"name":"setLowLimitPrice","parameterTypes":["double"] },
-    {"name":"setShares","parameterTypes":["double"] },
-    {"name":"setShortSaleRestriction","parameterTypes":["com.dxfeed.event.market.ShortSaleRestriction"] },
-    {"name":"setStatusReason","parameterTypes":["java.lang.String"] },
-    {"name":"setTradingStatus","parameterTypes":["com.dxfeed.event.market.TradingStatus"] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"baseFieldsToString","parameterTypes":[] }, {"name":"getBeta","parameterTypes":[] }, {"name":"getDescription","parameterTypes":[] }, {"name":"getDividendFrequency","parameterTypes":[] }, {"name":"getEarningsPerShare","parameterTypes":[] }, {"name":"getExDividendAmount","parameterTypes":[] }, {"name":"getExDividendDayId","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getFreeFloat","parameterTypes":[] }, {"name":"getHaltEndTime","parameterTypes":[] }, {"name":"getHaltStartTime","parameterTypes":[] }, {"name":"getHigh52WeekPrice","parameterTypes":[] }, {"name":"getHighLimitPrice","parameterTypes":[] }, {"name":"getLow52WeekPrice","parameterTypes":[] }, {"name":"getLowLimitPrice","parameterTypes":[] }, {"name":"getShares","parameterTypes":[] }, {"name":"getShortSaleRestriction","parameterTypes":[] }, {"name":"getStatusReason","parameterTypes":[] }, {"name":"getTradingStatus","parameterTypes":[] }, {"name":"isShortSaleRestricted","parameterTypes":[] }, {"name":"isTradingHalted","parameterTypes":[] }, {"name":"setBeta","parameterTypes":["double"] }, {"name":"setDescription","parameterTypes":["java.lang.String"] }, {"name":"setDividendFrequency","parameterTypes":["double"] }, {"name":"setEarningsPerShare","parameterTypes":["double"] }, {"name":"setExDividendAmount","parameterTypes":["double"] }, {"name":"setExDividendDayId","parameterTypes":["int"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setFreeFloat","parameterTypes":["double"] }, {"name":"setHaltEndTime","parameterTypes":["long"] }, {"name":"setHaltStartTime","parameterTypes":["long"] }, {"name":"setHigh52WeekPrice","parameterTypes":["double"] }, {"name":"setHighLimitPrice","parameterTypes":["double"] }, {"name":"setLow52WeekPrice","parameterTypes":["double"] }, {"name":"setLowLimitPrice","parameterTypes":["double"] }, {"name":"setShares","parameterTypes":["double"] }, {"name":"setShortSaleRestricted","parameterTypes":["boolean"] }, {"name":"setShortSaleRestriction","parameterTypes":["com.dxfeed.event.market.ShortSaleRestriction"] }, {"name":"setStatusReason","parameterTypes":["java.lang.String"] }, {"name":"setTradingHalted","parameterTypes":["boolean"] }, {"name":"setTradingStatus","parameterTypes":["com.dxfeed.event.market.TradingStatus"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.Quote",
+  "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setAskExchangeCode","parameterTypes":["char"] },
-    {"name":"setAskPrice","parameterTypes":["double"] },
-    {"name":"setAskSizeAsDouble","parameterTypes":["double"] },
-    {"name":"setAskTime","parameterTypes":["long"] },
-    {"name":"setBidExchangeCode","parameterTypes":["char"] },
-    {"name":"setBidPrice","parameterTypes":["double"] },
-    {"name":"setBidSizeAsDouble","parameterTypes":["double"] },
-    {"name":"setBidTime","parameterTypes":["long"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setTimeNanoPart","parameterTypes":["int"] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAskExchangeCode","parameterTypes":[] }, {"name":"getAskPrice","parameterTypes":[] }, {"name":"getAskSize","parameterTypes":[] }, {"name":"getAskSizeAsDouble","parameterTypes":[] }, {"name":"getAskTime","parameterTypes":[] }, {"name":"getBidExchangeCode","parameterTypes":[] }, {"name":"getBidPrice","parameterTypes":[] }, {"name":"getBidSize","parameterTypes":[] }, {"name":"getBidSizeAsDouble","parameterTypes":[] }, {"name":"getBidTime","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeMillisSequence","parameterTypes":[] }, {"name":"getTimeNanoPart","parameterTypes":[] }, {"name":"getTimeNanos","parameterTypes":[] }, {"name":"recomputeTimeMillisPart","parameterTypes":[] }, {"name":"setAskExchangeCode","parameterTypes":["char"] }, {"name":"setAskPrice","parameterTypes":["double"] }, {"name":"setAskSize","parameterTypes":["long"] }, {"name":"setAskSizeAsDouble","parameterTypes":["double"] }, {"name":"setAskTime","parameterTypes":["long"] }, {"name":"setBidExchangeCode","parameterTypes":["char"] }, {"name":"setBidPrice","parameterTypes":["double"] }, {"name":"setBidSize","parameterTypes":["long"] }, {"name":"setBidSizeAsDouble","parameterTypes":["double"] }, {"name":"setBidTime","parameterTypes":["long"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTimeMillisSequence","parameterTypes":["int"] }, {"name":"setTimeNanoPart","parameterTypes":["int"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.SpreadOrder",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"fieldsToString","parameterTypes":["java.lang.StringBuilder"] }, {"name":"getSpreadSymbol","parameterTypes":[] }, {"name":"setSpreadSymbol","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.dxfeed.event.market.Summary",
+  "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setDayClosePrice","parameterTypes":["double"] },
-    {"name":"setDayClosePriceType","parameterTypes":["com.dxfeed.event.market.PriceType"] },
-    {"name":"setDayHighPrice","parameterTypes":["double"] },
-    {"name":"setDayId","parameterTypes":["int"] },
-    {"name":"setDayLowPrice","parameterTypes":["double"] },
-    {"name":"setDayOpenPrice","parameterTypes":["double"] },
-    {"name":"setOpenInterest","parameterTypes":["long"] },
-    {"name":"setPrevDayClosePrice","parameterTypes":["double"] },
-    {"name":"setPrevDayClosePriceType","parameterTypes":["com.dxfeed.event.market.PriceType"] },
-    {"name":"setPrevDayId","parameterTypes":["int"] },
-    {"name":"setPrevDayVolume","parameterTypes":["double"] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getDayClosePrice","parameterTypes":[] }, {"name":"getDayClosePriceType","parameterTypes":[] }, {"name":"getDayHighPrice","parameterTypes":[] }, {"name":"getDayId","parameterTypes":[] }, {"name":"getDayLowPrice","parameterTypes":[] }, {"name":"getDayOpenPrice","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getOpenInterest","parameterTypes":[] }, {"name":"getPrevDayClosePrice","parameterTypes":[] }, {"name":"getPrevDayClosePriceType","parameterTypes":[] }, {"name":"getPrevDayId","parameterTypes":[] }, {"name":"getPrevDayVolume","parameterTypes":[] }, {"name":"setDayClosePrice","parameterTypes":["double"] }, {"name":"setDayClosePriceType","parameterTypes":["com.dxfeed.event.market.PriceType"] }, {"name":"setDayHighPrice","parameterTypes":["double"] }, {"name":"setDayId","parameterTypes":["int"] }, {"name":"setDayLowPrice","parameterTypes":["double"] }, {"name":"setDayOpenPrice","parameterTypes":["double"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setOpenInterest","parameterTypes":["long"] }, {"name":"setPrevDayClosePrice","parameterTypes":["double"] }, {"name":"setPrevDayClosePriceType","parameterTypes":["com.dxfeed.event.market.PriceType"] }, {"name":"setPrevDayId","parameterTypes":["int"] }, {"name":"setPrevDayVolume","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.TimeAndSale",
@@ -643,73 +436,83 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] },
-    {"name":"setAggressorSide","parameterTypes":["com.dxfeed.event.market.Side"] },
-    {"name":"setAskPrice","parameterTypes":["double"] },
-    {"name":"setBidPrice","parameterTypes":["double"] },
-    {"name":"setBuyer","parameterTypes":["java.lang.String"] },
-    {"name":"setEventFlags","parameterTypes":["int"] },
-    {"name":"setExchangeCode","parameterTypes":["char"] },
-    {"name":"setExchangeSaleConditions","parameterTypes":["java.lang.String"] },
-    {"name":"setExtendedTradingHours","parameterTypes":["boolean"] },
-    {"name":"setIndex","parameterTypes":["long"] },
-    {"name":"setPrice","parameterTypes":["double"] },
-    {"name":"setSeller","parameterTypes":["java.lang.String"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setSizeAsDouble","parameterTypes":["double"] },
-    {"name":"setSpreadLeg","parameterTypes":["boolean"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setTimeNanoPart","parameterTypes":["int"] },
-    {"name":"setTradeThroughExempt","parameterTypes":["char"] },
-    {"name":"setType","parameterTypes":["com.dxfeed.event.market.TimeAndSaleType"] },
-    {"name":"setValidTick","parameterTypes":["boolean"] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAggressorSide","parameterTypes":[] }, {"name":"getAskPrice","parameterTypes":[] }, {"name":"getBidPrice","parameterTypes":[] }, {"name":"getBuyer","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getExchangeCode","parameterTypes":[] }, {"name":"getExchangeSaleConditions","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getSeller","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSize","parameterTypes":[] }, {"name":"getSizeAsDouble","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeNanoPart","parameterTypes":[] }, {"name":"getTimeNanos","parameterTypes":[] }, {"name":"getTradeThroughExempt","parameterTypes":[] }, {"name":"getType","parameterTypes":[] }, {"name":"isCancel","parameterTypes":[] }, {"name":"isCorrection","parameterTypes":[] }, {"name":"isExtendedTradingHours","parameterTypes":[] }, {"name":"isNew","parameterTypes":[] }, {"name":"isSpreadLeg","parameterTypes":[] }, {"name":"isValidTick","parameterTypes":[] }, {"name":"setAggressorSide","parameterTypes":["com.dxfeed.event.market.Side"] }, {"name":"setAskPrice","parameterTypes":["double"] }, {"name":"setBidPrice","parameterTypes":["double"] }, {"name":"setBuyer","parameterTypes":["java.lang.String"] }, {"name":"setCancel","parameterTypes":[] }, {"name":"setCorrection","parameterTypes":[] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setEventId","parameterTypes":["long"] }, {"name":"setExchangeCode","parameterTypes":["char"] }, {"name":"setExchangeSaleConditions","parameterTypes":["java.lang.String"] }, {"name":"setExtendedTradingHours","parameterTypes":["boolean"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setNew","parameterTypes":[] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setSeller","parameterTypes":["java.lang.String"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setSize","parameterTypes":["long"] }, {"name":"setSizeAsDouble","parameterTypes":["double"] }, {"name":"setSpreadLeg","parameterTypes":["boolean"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setTimeNanoPart","parameterTypes":["int"] }, {"name":"setTimeNanos","parameterTypes":["long"] }, {"name":"setTradeThroughExempt","parameterTypes":["char"] }, {"name":"setType","parameterTypes":["com.dxfeed.event.market.TimeAndSaleType"] }, {"name":"setValidTick","parameterTypes":["boolean"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.Trade",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.TradeBase",
+  "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"setChange","parameterTypes":["double"] },
-    {"name":"setDayId","parameterTypes":["int"] },
-    {"name":"setDayTurnover","parameterTypes":["double"] },
-    {"name":"setDayVolumeAsDouble","parameterTypes":["double"] },
-    {"name":"setExchangeCode","parameterTypes":["char"] },
-    {"name":"setExtendedTradingHours","parameterTypes":["boolean"] },
-    {"name":"setPrice","parameterTypes":["double"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setSizeAsDouble","parameterTypes":["double"] },
-    {"name":"setTickDirection","parameterTypes":["com.dxfeed.event.market.Direction"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setTimeNanoPart","parameterTypes":["int"] }
-  ]
+  "methods":[{"name":"baseFieldsToString","parameterTypes":[] }, {"name":"getChange","parameterTypes":[] }, {"name":"getDayId","parameterTypes":[] }, {"name":"getDayTurnover","parameterTypes":[] }, {"name":"getDayVolume","parameterTypes":[] }, {"name":"getDayVolumeAsDouble","parameterTypes":[] }, {"name":"getExchangeCode","parameterTypes":[] }, {"name":"getFlags","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSize","parameterTypes":[] }, {"name":"getSizeAsDouble","parameterTypes":[] }, {"name":"getTickDirection","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeNanoPart","parameterTypes":[] }, {"name":"getTimeNanos","parameterTypes":[] }, {"name":"getTimeSequence","parameterTypes":[] }, {"name":"isExtendedTradingHours","parameterTypes":[] }, {"name":"setChange","parameterTypes":["double"] }, {"name":"setDayId","parameterTypes":["int"] }, {"name":"setDayTurnover","parameterTypes":["double"] }, {"name":"setDayVolume","parameterTypes":["long"] }, {"name":"setDayVolumeAsDouble","parameterTypes":["double"] }, {"name":"setExchangeCode","parameterTypes":["char"] }, {"name":"setExtendedTradingHours","parameterTypes":["boolean"] }, {"name":"setFlags","parameterTypes":["int"] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setSize","parameterTypes":["long"] }, {"name":"setSizeAsDouble","parameterTypes":["double"] }, {"name":"setTickDirection","parameterTypes":["com.dxfeed.event.market.Direction"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setTimeNanoPart","parameterTypes":["int"] }, {"name":"setTimeNanos","parameterTypes":["long"] }, {"name":"setTimeSequence","parameterTypes":["long"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.market.TradeETH",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"isETH","parameterTypes":[] }, {"name":"setETH","parameterTypes":["boolean"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.misc.Configuration",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":["java.lang.ClassLoader"] }, {"name":"getEventSymbol","parameterTypes":[] }, {"name":"getEventTime","parameterTypes":[] }, {"name":"getMarshalledAttachment","parameterTypes":[] }, {"name":"getVersion","parameterTypes":[] }, {"name":"readObject","parameterTypes":["java.io.ObjectInputStream"] }, {"name":"setAttachment","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.String"] }, {"name":"setEventTime","parameterTypes":["long"] }, {"name":"setMarshalledAttachment","parameterTypes":["com.devexperts.io.Marshalled"] }, {"name":"setVersion","parameterTypes":["int"] }, {"name":"toString","parameterTypes":[] }, {"name":"writeObject","parameterTypes":["java.io.ObjectOutputStream"] }]
 },
 {
   "name":"com.dxfeed.event.misc.Message",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":["java.lang.ClassLoader"] }, {"name":"getEventSymbol","parameterTypes":[] }, {"name":"getEventTime","parameterTypes":[] }, {"name":"getMarshalledAttachment","parameterTypes":[] }, {"name":"readObject","parameterTypes":["java.io.ObjectInputStream"] }, {"name":"setAttachment","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.String"] }, {"name":"setEventTime","parameterTypes":["long"] }, {"name":"setMarshalledAttachment","parameterTypes":["com.devexperts.io.Marshalled"] }, {"name":"toString","parameterTypes":[] }, {"name":"writeObject","parameterTypes":["java.io.ObjectOutputStream"] }]
 },
 {
   "name":"com.dxfeed.event.misc.MiscFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.option.Greeks",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getDelta","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getGamma","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getRho","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTheta","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getVega","parameterTypes":[] }, {"name":"getVolatility","parameterTypes":[] }, {"name":"setDelta","parameterTypes":["double"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setGamma","parameterTypes":["double"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setRho","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTheta","parameterTypes":["double"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setVega","parameterTypes":["double"] }, {"name":"setVolatility","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.event.option.OptionFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.option.Series",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getCallVolume","parameterTypes":[] }, {"name":"getDividend","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getExpiration","parameterTypes":[] }, {"name":"getForwardPrice","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getInterest","parameterTypes":[] }, {"name":"getOptionVolume","parameterTypes":[] }, {"name":"getPutCallRatio","parameterTypes":[] }, {"name":"getPutVolume","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTimeSequence","parameterTypes":[] }, {"name":"getVolatility","parameterTypes":[] }, {"name":"setCallVolume","parameterTypes":["double"] }, {"name":"setDividend","parameterTypes":["double"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setExpiration","parameterTypes":["int"] }, {"name":"setForwardPrice","parameterTypes":["double"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setInterest","parameterTypes":["double"] }, {"name":"setPutCallRatio","parameterTypes":["double"] }, {"name":"setPutVolume","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setTimeSequence","parameterTypes":["long"] }, {"name":"setVolatility","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.option.TheoPrice",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getDelta","parameterTypes":[] }, {"name":"getDividend","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getGamma","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getInterest","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getUnderlyingPrice","parameterTypes":[] }, {"name":"setDelta","parameterTypes":["double"] }, {"name":"setDividend","parameterTypes":["double"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setGamma","parameterTypes":["double"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setInterest","parameterTypes":["double"] }, {"name":"setPrice","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setUnderlyingPrice","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.event.option.Underlying",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"baseFieldsToString","parameterTypes":[] }, {"name":"getBackVolatility","parameterTypes":[] }, {"name":"getCallVolume","parameterTypes":[] }, {"name":"getEventFlags","parameterTypes":[] }, {"name":"getFrontVolatility","parameterTypes":[] }, {"name":"getIndex","parameterTypes":[] }, {"name":"getOptionVolume","parameterTypes":[] }, {"name":"getPutCallRatio","parameterTypes":[] }, {"name":"getPutVolume","parameterTypes":[] }, {"name":"getSequence","parameterTypes":[] }, {"name":"getSource","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getVolatility","parameterTypes":[] }, {"name":"setBackVolatility","parameterTypes":["double"] }, {"name":"setCallVolume","parameterTypes":["double"] }, {"name":"setEventFlags","parameterTypes":["int"] }, {"name":"setFrontVolatility","parameterTypes":["double"] }, {"name":"setIndex","parameterTypes":["long"] }, {"name":"setPutCallRatio","parameterTypes":["double"] }, {"name":"setPutVolume","parameterTypes":["double"] }, {"name":"setSequence","parameterTypes":["int"] }, {"name":"setTime","parameterTypes":["long"] }, {"name":"setVolatility","parameterTypes":["double"] }, {"name":"toString","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.ipf.InstrumentProfile",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.dxfeed.ipf.filter.IPFFilterFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -723,74 +526,12 @@
 },
 {
   "name":"com.dxfeed.ondemand.impl.connector.OnDemandConnectorFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.ondemand.impl.connector.OnDemandConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getCacheLimit","parameterTypes":[] },
-    {"name":"getFileCacheLimit","parameterTypes":[] },
-    {"name":"getFileCachePath","parameterTypes":[] },
-    {"name":"getSpeed","parameterTypes":[] },
-    {"name":"getTickPeriod","parameterTypes":[] },
-    {"name":"getTime","parameterTypes":[] }
-  ]
-},
-{
-  "name":"com.dxfeed.event.option.Series",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.dxfeed.event.option.TheoPrice",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllPublicMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] },
-    {"name":"setEventFlags","parameterTypes":["int"] },
-    {"name":"setIndex","parameterTypes":["long"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setPrice","parameterTypes":["double"] },
-    {"name":"setUnderlyingPrice","parameterTypes":["double"] },
-    {"name":"setDelta","parameterTypes":["double"] },
-    {"name":"setGamma","parameterTypes":["double"] },
-    {"name":"setDividend","parameterTypes":["double"] },
-    {"name":"setInterest","parameterTypes":["double"] }
-  ]
-},
-{
-  "name":"com.dxfeed.event.option.Underlying",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllPublicMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] },
-    {"name":"setBackVolatility","parameterTypes":["double"] },
-    {"name":"setCallVolume","parameterTypes":["double"] },
-    {"name":"setEventFlags","parameterTypes":["int"] },
-    {"name":"setFrontVolatility","parameterTypes":["double"] },
-    {"name":"setIndex","parameterTypes":["long"] },
-    {"name":"setPutCallRatio","parameterTypes":["double"] },
-    {"name":"setPutVolume","parameterTypes":["double"] },
-    {"name":"setSequence","parameterTypes":["int"] },
-    {"name":"setTime","parameterTypes":["long"] },
-    {"name":"setVolatility","parameterTypes":["double"] }
-  ]
-},
-{
-  "name":"com.dxfeed.ipf.InstrumentProfile",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.dxfeed.ipf.filter.IPFFilterFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"getCacheLimit","parameterTypes":[] }, {"name":"getFileCacheLimit","parameterTypes":[] }, {"name":"getFileCachePath","parameterTypes":[] }, {"name":"getSpeed","parameterTypes":[] }, {"name":"getTickPeriod","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.scheme.impl.DXSchemeFactory",
@@ -833,6 +574,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.sun.management.OperatingSystemMXBean",
+  "queryAllPublicMethods":true
+},
+{
   "name":"com.sun.management.ThreadMXBean",
   "queryAllPublicMethods":true
 },
@@ -861,9 +606,6 @@
   "queryAllPublicConstructors":true
 },
 {
-  "name":"java.beans.PropertyVetoException"
-},
-{
   "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -878,6 +620,13 @@
 {
   "name":"double",
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"io.netty.util.concurrent.DefaultPromise",
+  "fields":[{"name":"result"}]
+},
+{
+  "name":"java.beans.PropertyVetoException"
 },
 {
   "name":"java.io.Serializable",
@@ -924,11 +673,14 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"java.lang.ObjectBeanInfo"
+},
+{
+  "name":"java.lang.ObjectCustomizer"
+},
+{
   "name":"java.lang.ProcessHandle",
-  "methods":[
-    {"name":"current","parameterTypes":[] },
-    {"name":"pid","parameterTypes":[] }
-  ]
+  "methods":[{"name":"current","parameterTypes":[] }, {"name":"pid","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Short",
@@ -939,7 +691,12 @@
   "queryAllPublicMethods":true
 },
 {
-  "name":"java.lang.String"
+  "name":"java.lang.String",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Thread",
+  "fields":[{"name":"threadLocalRandomProbe"}]
 },
 {
   "name":"java.lang.Void",
@@ -992,12 +749,7 @@
 {
   "name":"java.lang.management.PlatformLoggingMXBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getLoggerLevel","parameterTypes":["java.lang.String"] },
-    {"name":"getLoggerNames","parameterTypes":[] },
-    {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] },
-    {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }
-  ]
+  "methods":[{"name":"getLoggerLevel","parameterTypes":["java.lang.String"] }, {"name":"getLoggerNames","parameterTypes":[] }, {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] }, {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }]
 },
 {
   "name":"java.lang.management.RuntimeMXBean",
@@ -1016,7 +768,7 @@
 },
 {
   "name":"java.nio.Bits",
-  "fields":[{"name":"UNALIGNED"}]
+  "fields":[{"name":"MAX_MEMORY"}, {"name":"UNALIGNED"}]
 },
 {
   "name":"java.nio.Buffer",
@@ -1028,7 +780,7 @@
 },
 {
   "name":"java.nio.DirectByteBuffer",
-  "methods":[{"name":"<init>","parameterTypes":["long","int"] }]
+  "methods":[{"name":"<init>","parameterTypes":["long","int"] }, {"name":"<init>","parameterTypes":["long","long"] }]
 },
 {
   "name":"java.security.AlgorithmParametersSpi"
@@ -1056,6 +808,18 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
 },
 {
+  "name":"java.util.concurrent.atomic.AtomicBoolean",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicReference",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"java.util.concurrent.atomic.Striped64",
+  "fields":[{"name":"base"}, {"name":"cellsBusy"}]
+},
+{
   "name":"java.util.logging.LogManager",
   "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
 },
@@ -1074,6 +838,10 @@
 },
 {
   "name":"javax.management.ObjectName"
+},
+{
+  "name":"javax.management.StandardEmitterMBean",
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }]
 },
 {
   "name":"javax.management.openmbean.CompositeData"
@@ -1107,7 +875,8 @@
 },
 {
   "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
-  "queryAllPublicConstructors":true
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }, {"name":"getNotificationInfo","parameterTypes":[] }]
 },
 {
   "name":"jdk.management.jfr.RecordingInfo",
@@ -1152,13 +921,11 @@
 {
   "name":"sun.misc.Unsafe",
   "fields":[{"name":"theUnsafe"}],
-  "methods":[
-    {"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] },
-    {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] },
-    {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] },
-    {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] },
-    {"name":"storeFence","parameterTypes":[] }
-  ]
+  "methods":[{"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] }, {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }, {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }, {"name":"storeFence","parameterTypes":[] }]
+},
+{
+  "name":"sun.reflect.misc.Trampoline",
+  "methods":[{"name":"invoke","parameterTypes":["java.lang.reflect.Method","java.lang.Object","java.lang.Object[]"] }]
 },
 {
   "name":"sun.security.pkcs12.PKCS12KeyStore",
@@ -1167,6 +934,10 @@
 {
   "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DRBG",
+  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
 },
 {
   "name":"sun.security.provider.DSA$SHA224withDSA",
