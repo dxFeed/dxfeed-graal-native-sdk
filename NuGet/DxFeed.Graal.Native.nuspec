@@ -2,16 +2,24 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>DxFeed.Graal.Native</id>
-        <version>0.0.6</version>
-        <authors>dxFeed SDK</authors>
+        <version>$version$</version>
+        <description>The wrapper over dxFeed Java SDK implementation with using GraalVM (native-image).</description>
+        <authors>dxFeed API Team</authors>
+        <copyright>Copyright © 2022 Devexperts LLC</copyright>
         <license type="expression">MPL-2.0</license>
         <licenseUrl>https://licenses.nuget.org/MPL-2.0</licenseUrl>
         <icon>docs/images/favicon.png</icon>
-        <copyright>Copyright © 2022 Devexperts LLC</copyright>
         <tags>api, market data, dxfeed, graalvm</tags>
-        <description>The wrapper over dxFeed Java SDK implementation with using GraalVM (native-image).</description>
-        <contentFiles>
-            <files include="runtimes/**" buildAction="None" copyToOutput="true"/>
-        </contentFiles>
+        <dependencies>
+            <group targetFramework="netstandard2.0" />
+        </dependencies>
     </metadata>
+    <files>
+        <file src="docs/images/favicon.png" target="docs/images/favicon.png" />
+        <file src="runtimes/**"  target="runtimes"/>
+        <file src="buildTransitive/net461/DxFeed.Graal.Native.targets" target="buildTransitive/net461/DxFeed.Graal.Native.targets" />
+        <file src="build/net461/DxFeed.Graal.Native.targets" target="build/net461/DxFeed.Graal.Native.targets" />
+        <file src="build/net461/DxFeed.Graal.Native.props" target="build/net461/DxFeed.Graal.Native.props" />
+        <file src="lib/netstandard2.0/_._" target="lib/netstandard2.0/_._" />
+    </files>
 </package>

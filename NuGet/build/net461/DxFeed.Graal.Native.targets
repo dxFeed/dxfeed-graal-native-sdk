@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup>
+        <!-- Ensure this targets file is only imported once -->
+        <DxFeedGraalNativeTargetsImported Condition="'$(DxFeedGraalNativeTargetsImported)' == ''">true</DxFeedGraalNativeTargetsImported>
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)..\..\buildTransitive\net461\DxFeed.Graal.Native.targets" Condition="'$(DxFeedGraalNativeTargetsImported)' == ''" />
+</Project>

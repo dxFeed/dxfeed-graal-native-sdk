@@ -1,0 +1,3 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\buildTransitive\net461\DxFeed.Graal.Native.targets" Condition="'$(DxFeedGraalNativeTargetsImported)' == ''" />
+</Project>

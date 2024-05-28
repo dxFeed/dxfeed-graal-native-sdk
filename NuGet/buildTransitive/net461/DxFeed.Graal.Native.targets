@@ -1,0 +1,10 @@
+<Project>
+    <ItemGroup>
+        <NativeLibs Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\DxFeedGraalNativeSdk.dll" />
+    </ItemGroup>
+
+    <Target Name="CopyNativeLibs" AfterTargets="Build">
+        <Message Importance="high" Text="Copying dxFeed native libs to $(OutputPath)" />
+        <Copy SourceFiles="@(NativeLibs)" DestinationFolder="$(OutputPath)" />
+    </Target>
+</Project>
