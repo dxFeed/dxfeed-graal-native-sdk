@@ -13,6 +13,7 @@ import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.javac.DxfgCharPointerList;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -811,6 +812,19 @@ public class ScheduleNative {
       final DxfgSession dxfgSession
   ) {
     NativeUtils.MAPPER_SESSION.release(dxfgSession);
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_SessionList_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_SessionList_release(
+      final IsolateThread ignoredThread,
+      final DxfgSessionList dxfgSession
+  ) {
+    UnmanagedMemory.free(dxfgSession.getElements());
+    UnmanagedMemory.free(dxfgSession);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 }
