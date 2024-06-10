@@ -336,7 +336,7 @@ public class EventModelNative {
 
   @CEntryPoint(
       name = "dxfg_OrderBookModel_getSymbol",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
   public static CCharPointer dxfg_OrderBookModel_getSymbol(
       final IsolateThread ignoreThread,
