@@ -821,10 +821,10 @@ public class ScheduleNative {
   )
   public static int dxfg_SessionList_release(
       final IsolateThread ignoredThread,
-      final DxfgSessionList dxfgSession
+      final DxfgSessionList dxfgSessions
   ) {
-    UnmanagedMemory.free(dxfgSession.getElements());
-    UnmanagedMemory.free(dxfgSession);
+    UnmanagedMemory.free(dxfgSessions.getElements());
+    UnmanagedMemory.free(dxfgSessions);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 }
