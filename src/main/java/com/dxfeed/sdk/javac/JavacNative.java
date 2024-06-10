@@ -378,7 +378,7 @@ public class JavacNative {
 
   @CEntryPoint(
       name = "dxfg_TimeFormat_format",
-      exceptionHandler = ExceptionHandlerReturnMinusOneLong.class
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
   public static CCharPointer dxfg_TimeFormat_format(
       final IsolateThread ignoredThread,
