@@ -148,7 +148,7 @@ const char*           dxfg_Day_toString(graal_isolatethread_t *thread, dxfg_day_
 
 int32_t               dxfg_Day_release(graal_isolatethread_t *thread, dxfg_day_t* day);
 int32_t               dxfg_Session_release(graal_isolatethread_t *thread, dxfg_session_t* session);
-int32_t               dxfg_SessionList_release(graal_isolatethread_t *thread, dxfg_session_list* sessions);
+int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *thread, dxfg_session_list* sessions); // release only the struct dxfg_session_list and keep the elements
 
 /** @} */ // end of Schedule
 

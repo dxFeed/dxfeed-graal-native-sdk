@@ -816,13 +816,14 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_SessionList_release",
+      name = "dxfg_SessionList_wrapper_release",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_SessionList_release(
+  public static int dxfg_SessionList_wrapper_release(
       final IsolateThread ignoredThread,
       final DxfgSessionList dxfgSessions
   ) {
+    // release only the struct dxfg_session_list and keep the elements
     UnmanagedMemory.free(dxfgSessions.getElements());
     UnmanagedMemory.free(dxfgSessions);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
