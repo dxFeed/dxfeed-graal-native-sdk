@@ -22,7 +22,7 @@
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
     <auther-api.version>476</auther-api.version>
-    <qd.version>3.327</qd.version>
+    <qd.version>3.333</qd.version>
   </properties>
 
   <dependencies>
