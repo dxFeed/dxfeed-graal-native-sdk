@@ -16,6 +16,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecuter;
+import com.dxfeed.sdk.javac.DxfgTimePeriod;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import java.util.List;
@@ -316,6 +317,60 @@ public class SubscriptionNative {
       final DxfgExecuter dxfgExecuter
   ) {
     NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter));
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeedSubscription_getAggregationPeriod",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgTimePeriod dxfg_DXFeedSubscription_getAggregationPeriod(
+      final IsolateThread ignoredThread,
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+  ) {
+    return NativeUtils.MAPPER_TIME_PERIOD.toNative(
+      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriod()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeedSubscription_setAggregationPeriod",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeedSubscription_setAggregationPeriod(
+      final IsolateThread ignoredThread,
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+      final DxfgTimePeriod dxfgTimePeriod
+  ) {
+      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setAggregationPeriod(
+          NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod)
+      );
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeedSubscription_getEventsBatchLimit",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeedSubscription_getEventsBatchLimit(
+      final IsolateThread ignoredThread,
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+  ) {
+    return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getEventsBatchLimit();
+  }
+
+  @CEntryPoint(
+      name = "dxfg_DXFeedSubscription_setEventsBatchLimit",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_DXFeedSubscription_setEventsBatchLimit(
+      final IsolateThread ignoredThread,
+      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+      final int eventsBatchLimit
+  ) {
+      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setEventsBatchLimit(
+          eventsBatchLimit
+      );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
