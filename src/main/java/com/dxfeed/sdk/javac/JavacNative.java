@@ -1,5 +1,6 @@
 package com.dxfeed.sdk.javac;
 
+import com.devexperts.auth.AuthToken;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.sdk.NativeUtils;
@@ -400,6 +401,175 @@ public class JavacNative {
   ) {
     return NativeUtils.MAPPER_TIME_ZONE.toNative(
         NativeUtils.MAPPER_TIME_FORMAT.toJava(dxfgTimeFormat).getTimeZone()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_valueOf",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_valueOf(
+      final IsolateThread ignoredThread,
+      final CCharPointer value
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.valueOf(
+            NativeUtils.MAPPER_STRING.toJava(value)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createBasicToken",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createBasicToken(
+      final IsolateThread ignoredThread,
+      final CCharPointer userPassword
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createBasicToken(
+            NativeUtils.MAPPER_STRING.toJava(userPassword)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createBasicToken2",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createBasicToken2(
+      final IsolateThread ignoredThread,
+      final CCharPointer user,
+      final CCharPointer password
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createBasicToken(
+            NativeUtils.MAPPER_STRING.toJava(user), NativeUtils.MAPPER_STRING.toJava(password)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createBasicTokenOrNull",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createBasicTokenOrNull(
+      final IsolateThread ignoredThread,
+      final CCharPointer user,
+      final CCharPointer password
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createBasicTokenOrNull(
+            NativeUtils.MAPPER_STRING.toJava(user), NativeUtils.MAPPER_STRING.toJava(password)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createBearerToken",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createBearerToken(
+      final IsolateThread ignoredThread,
+      final CCharPointer token
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createBearerToken(NativeUtils.MAPPER_STRING.toJava(token))
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createBearerTokenOrNull",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createBearerTokenOrNull(
+      final IsolateThread ignoredThread,
+      final CCharPointer token
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createBearerTokenOrNull(NativeUtils.MAPPER_STRING.toJava(token))
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_createCustomToken",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgAuthToken dxfg_AuthToken_createCustomToken(
+      final IsolateThread ignoredThread,
+      final CCharPointer scheme,
+      final CCharPointer value
+  ) {
+    return NativeUtils.MAPPER_AUTH_TOKEN.toNative(
+        AuthToken.createCustomToken(
+            NativeUtils.MAPPER_STRING.toJava(scheme), NativeUtils.MAPPER_STRING.toJava(value)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_getHttpAuthorization",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_AuthToken_getHttpAuthorization(
+      final IsolateThread ignoredThread,
+      final DxfgAuthToken token
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getHttpAuthorization()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_getUser",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_AuthToken_getUser(
+      final IsolateThread ignoredThread,
+      final DxfgAuthToken token
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getUser()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_getPassword",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_AuthToken_getPassword(
+      final IsolateThread ignoredThread,
+      final DxfgAuthToken token
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getPassword()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_getScheme",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_AuthToken_getScheme(
+      final IsolateThread ignoredThread,
+      final DxfgAuthToken token
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getScheme()
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_AuthToken_getValue",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static CCharPointer dxfg_AuthToken_getValue(
+      final IsolateThread ignoredThread,
+      final DxfgAuthToken token
+  ) {
+    return NativeUtils.MAPPER_STRING.toNative(
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getValue()
     );
   }
 

@@ -5,6 +5,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.javac.DxfgAuthToken;
 import com.dxfeed.sdk.javac.DxfgInputStream;
 import java.io.IOException;
 import org.graalvm.nativeimage.IsolateThread;
@@ -79,6 +80,24 @@ public class InstrumentProfileReaderNative {
             NativeUtils.MAPPER_STRING.toJava(address),
             NativeUtils.MAPPER_STRING.toJava(user),
             NativeUtils.MAPPER_STRING.toJava(password)
+        )
+    );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_readFromFile3",
+      exceptionHandler = ExceptionHandlerReturnNullWord.class
+  )
+  public static DxfgInstrumentProfileList dxfg_InstrumentProfileReader_readFromFile3(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      final CCharPointer address,
+      final DxfgAuthToken token
+  ) throws IOException {
+    return NativeUtils.MAPPER_INSTRUMENT_PROFILES.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader).readFromFile(
+            NativeUtils.MAPPER_STRING.toJava(address),
+            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token)
         )
     );
   }

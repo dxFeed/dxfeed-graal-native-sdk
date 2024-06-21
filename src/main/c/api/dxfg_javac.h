@@ -55,6 +55,10 @@ typedef struct dxfg_time_zone_t {
     dxfg_java_object_handler handler;
 } dxfg_time_zone_t;
 
+typedef struct dxfg_auth_token_t {
+    dxfg_java_object_handler handler;
+} dxfg_auth_token_t;
+
 typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user_data);
 
 int32_t                     dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_handler* handler, dxfg_finalize_function finalize, void *user_data);
@@ -113,6 +117,18 @@ dxfg_time_format_t*         dxfg_TimeFormat_asFullIso(graal_isolatethread_t *thr
 int64_t                     dxfg_TimeFormat_parse(graal_isolatethread_t *thread, dxfg_time_format_t* timeFormat, const char* value);
 const char*                 dxfg_TimeFormat_format(graal_isolatethread_t *thread, dxfg_time_format_t* timeFormat, int64_t value);
 dxfg_time_zone_t*           dxfg_TimeFormat_getTimeZone(graal_isolatethread_t *thread, dxfg_time_format_t* timeFormat);
+dxfg_auth_token_t*           dxfg_AuthToken_valueOf(graal_isolatethread_t *thread, const char* string);
+dxfg_auth_token_t*           dxfg_AuthToken_createBasicToken(graal_isolatethread_t *thread, const char* userPassword);
+dxfg_auth_token_t*           dxfg_AuthToken_createBasicToken2(graal_isolatethread_t *thread, const char* user, const char* password);
+dxfg_auth_token_t*           dxfg_AuthToken_createBasicTokenOrNull(graal_isolatethread_t *thread, const char* user, const char* password);
+dxfg_auth_token_t*           dxfg_AuthToken_createBearerToken(graal_isolatethread_t *thread, const char* token);
+dxfg_auth_token_t*           dxfg_AuthToken_createBearerTokenOrNull(graal_isolatethread_t *thread, const char* token);
+dxfg_auth_token_t*           dxfg_AuthToken_createCustomToken(graal_isolatethread_t *thread, const char* scheme, const char* value);
+const char*                  dxfg_AuthToken_getHttpAuthorization(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                  dxfg_AuthToken_getUser(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                  dxfg_AuthToken_getPassword(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                  dxfg_AuthToken_getScheme(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                  dxfg_AuthToken_getValue(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
 
 /** @} */ // end of Javac
 

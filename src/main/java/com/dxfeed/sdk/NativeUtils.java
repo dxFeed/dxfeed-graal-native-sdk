@@ -2,6 +2,7 @@ package com.dxfeed.sdk;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import com.devexperts.auth.AuthToken;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
@@ -84,6 +85,7 @@ import com.dxfeed.sdk.ipf.DxfgInstrumentProfileReader;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileUpdateListener;
 import com.dxfeed.sdk.ipf.DxfgIpfConnectionStateChangeListener;
 import com.dxfeed.sdk.ipf.DxfgIterableInstrumentProfile;
+import com.dxfeed.sdk.javac.DxfgAuthToken;
 import com.dxfeed.sdk.javac.DxfgCharPointerList;
 import com.dxfeed.sdk.javac.DxfgCharPointerPointer;
 import com.dxfeed.sdk.javac.DxfgExecuter;
@@ -94,6 +96,7 @@ import com.dxfeed.sdk.javac.DxfgTimeFormat;
 import com.dxfeed.sdk.javac.DxfgTimePeriod;
 import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import com.dxfeed.sdk.maper.AuthTokenMapper;
 import com.dxfeed.sdk.maper.DayFilterMapper;
 import com.dxfeed.sdk.maper.DayMapper;
 import com.dxfeed.sdk.maper.DxfgStackTraceElementMapper;
@@ -201,6 +204,7 @@ public final class NativeUtils {
   public static final Mapper<TimePeriod, DxfgTimePeriod> MAPPER_TIME_PERIOD;
   public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
   public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
+  public static final Mapper<AuthToken, DxfgAuthToken> MAPPER_AUTH_TOKEN;
   public static final Mapper<InputStream, DxfgInputStream> MAPPER_INPUT_STREAM;
   public static final Mapper<Builder, DxfgEndpointBuilder> MAPPER_ENDPOINT_BUILDER;
   public static final Mapper<DXEndpoint, DxfgEndpoint> MAPPER_ENDPOINT;
@@ -290,6 +294,7 @@ public final class NativeUtils {
     MAPPER_TIME_FORMAT = new TimeFormatMapper();
     MAPPER_TIME_PERIOD = new TimePeriodMapper();
     MAPPER_TIME_ZONE = new TimeZoneMapper();
+    MAPPER_AUTH_TOKEN = new AuthTokenMapper();
     MAPPER_INPUT_STREAM = new InputStreamMapper();
     MAPPER_ENDPOINT_BUILDER = new EndpointBuilderMapper();
     MAPPER_ENDPOINT = new EndpointMapper();
