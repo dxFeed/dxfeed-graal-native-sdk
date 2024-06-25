@@ -87,7 +87,7 @@
 },
 {
   "name":"com.devexperts.mdd.auth.entitle.EntitleLoginHandlerFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.SerialFieldType",
@@ -119,7 +119,7 @@
 },
 {
   "name":"com.devexperts.qd.dxlink.websocket.transport.TokenDxLinkLoginHandlerFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$1"
@@ -154,12 +154,25 @@
   "queryAllPublicConstructors":true
 },
 {
+  "name":"com.devexperts.qd.kit.SymbolStriperFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
+},
+{
   "name":"com.devexperts.qd.logger.LoggedQDFactory",
   "methods":[{"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.monitoring.MonitoredQDEndpoint$BuilderImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.monitoring.MonitoringEndpoint",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.devexperts.qd.monitoring.MonitoringEndpointMXBean",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"isLogStripedConnectors","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.AbstractMessageConnector",
@@ -175,6 +188,10 @@
   "name":"com.devexperts.qd.qtp.AgentAdapter$Factory",
   "queryAllPublicMethods":true,
   "methods":[{"name":"getAggregationPeriod","parameterTypes":[] }, {"name":"getChannels","parameterTypes":[] }, {"name":"getSubscriptionExecutor","parameterTypes":[] }, {"name":"getSubscriptionKeepAlive","parameterTypes":[] }, {"name":"getSubscriptionThreads","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.AgentChannel",
+  "fields":[{"name":"dataAvailableState"}]
 },
 {
   "name":"com.devexperts.qd.qtp.DistributorAdapter$Factory",
@@ -213,13 +230,19 @@
 },
 {
   "name":"com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileConnector",
   "queryAllPublicMethods":true,
   "queryAllPublicConstructors":true,
   "methods":[{"name":"getDelayActual","parameterTypes":[] }, {"name":"getDelayed","parameterTypes":[] }, {"name":"setCycle","parameterTypes":["boolean"] }, {"name":"setFormat","parameterTypes":["com.devexperts.qd.qtp.file.FileFormat"] }, {"name":"setReadAs","parameterTypes":["com.devexperts.qd.qtp.MessageType"] }, {"name":"setSpeed","parameterTypes":["double"] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.FileConnectorBeanInfo"
+},
+{
+  "name":"com.devexperts.qd.qtp.file.FileConnectorCustomizer"
 },
 {
   "name":"com.devexperts.qd.qtp.file.FileConnectorFactory",
@@ -231,8 +254,15 @@
   "methods":[{"name":"getCompression","parameterTypes":[] }, {"name":"getDelayActual","parameterTypes":[] }, {"name":"getDelayed","parameterTypes":[] }, {"name":"getFormat","parameterTypes":[] }, {"name":"getReadAs","parameterTypes":[] }, {"name":"getResyncOn","parameterTypes":[] }, {"name":"getSpeed","parameterTypes":[] }, {"name":"getStart","parameterTypes":[] }, {"name":"getStop","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"isCycle","parameterTypes":[] }, {"name":"isIgnoreTime","parameterTypes":[] }, {"name":"isSchemeKnown","parameterTypes":[] }]
 },
 {
+  "name":"com.devexperts.qd.qtp.file.FileConnectorMXBean"
+},
+{
   "name":"com.devexperts.qd.qtp.file.FileFormat",
   "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.file.FileReaderParams",
+  "queryAllPublicMethods":true
 },
 {
   "name":"com.devexperts.qd.qtp.file.TapeConnector",
@@ -250,18 +280,33 @@
   "methods":[{"name":"getCompression","parameterTypes":[] }, {"name":"getFormat","parameterTypes":[] }, {"name":"getOpt","parameterTypes":[] }, {"name":"getSaveAs","parameterTypes":[] }, {"name":"getSplit","parameterTypes":[] }, {"name":"getStorageSize","parameterTypes":[] }, {"name":"getStorageTime","parameterTypes":[] }, {"name":"getTime","parameterTypes":[] }, {"name":"getTmpDir","parameterTypes":[] }]
 },
 {
+  "name":"com.devexperts.qd.qtp.file.TapeConnectorMXBean"
+},
+{
   "name":"com.devexperts.qd.qtp.nio.NioConnectorFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.devexperts.qd.qtp.socket.ClientSocketConnector",
   "queryAllPublicMethods":true,
-  "queryAllPublicConstructors":true
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"setConnectOrder","parameterTypes":["com.devexperts.qd.qtp.socket.ConnectOrder"] }, {"name":"setRestoreTime","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.devexperts.qd.qtp.socket.ClientSocketConnectorMBean",
   "queryAllPublicMethods":true,
-  "methods":[{"name":"getConnectOrder","parameterTypes":[] }, {"name":"getCurrentAddresses","parameterTypes":[] }, {"name":"getCurrentHost","parameterTypes":[] }, {"name":"getCurrentPort","parameterTypes":[] }, {"name":"getHost","parameterTypes":[] }, {"name":"getPort","parameterTypes":[] }, {"name":"getProxyHost","parameterTypes":[] }, {"name":"getProxyPort","parameterTypes":[] }, {"name":"getStripe","parameterTypes":[] }]
+  "methods":[{"name":"getConnectOrder","parameterTypes":[] }, {"name":"getCurrentAddresses","parameterTypes":[] }, {"name":"getCurrentHost","parameterTypes":[] }, {"name":"getCurrentPort","parameterTypes":[] }, {"name":"getHost","parameterTypes":[] }, {"name":"getPort","parameterTypes":[] }, {"name":"getProxyHost","parameterTypes":[] }, {"name":"getProxyPort","parameterTypes":[] }, {"name":"getRestoreTime","parameterTypes":[] }, {"name":"getStripe","parameterTypes":[] }, {"name":"restoreGracefully","parameterTypes":["java.lang.String"] }, {"name":"restoreNow","parameterTypes":[] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.socket.ClientSocketConnectorMXBean"
+},
+{
+  "name":"com.devexperts.qd.qtp.socket.ConnectOrder",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.devexperts.qd.qtp.socket.SocketWriter",
+  "fields":[{"name":"state"}]
 },
 {
   "name":"com.devexperts.qd.spi.QDFilterFactory",
@@ -311,7 +356,7 @@
 },
 {
   "name":"com.dxfeed.api.impl.FilterFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.api.impl.HistorySubscriptionFilterImpl",
@@ -513,7 +558,7 @@
 },
 {
   "name":"com.dxfeed.ipf.filter.IPFFilterFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.dxfeed.ondemand.impl.OnDemandServiceImpl",
@@ -535,7 +580,7 @@
 },
 {
   "name":"com.dxfeed.scheme.impl.DXSchemeFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
 {
   "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
@@ -550,7 +595,27 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.crypto.provider.ARCFOURCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESedeCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.crypto.provider.DHParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {

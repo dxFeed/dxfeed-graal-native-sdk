@@ -21,7 +21,8 @@
     <macIos>false</macIos>
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
-    <auther-api.version>476</auther-api.version>
+    <!-- qd version and auther-api version must be compatible -->
+    <auther-api.version>488</auther-api.version>
     <qd.version>3.333</qd.version>
   </properties>
 

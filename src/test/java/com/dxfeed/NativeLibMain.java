@@ -84,6 +84,7 @@ public class NativeLibMain {
     dxEndpointOrderBookModel();
     schedule();
     reflectAllMethodsForMarketEvents();
+    connectionOrderAndRestoreTime();
     System.exit(1);
   }
 
@@ -471,6 +472,10 @@ public class NativeLibMain {
     Schedule schedule = Schedule.getInstance(profile);
     Session session = schedule.getNearestSessionByTime(time, SessionFilter.TRADING);
     System.out.println("Nearest trading session for " + profile.getSymbol() + ": " + session + " in " + session.getDay());
+  }
+
+  private static void connectionOrderAndRestoreTime() {
+    DXEndpoint.create().connect("(********,********[connectOrder=priority,restoreTime=00:00])");
   }
 
   private static void reflectAllMethodsForMarketEvents() {

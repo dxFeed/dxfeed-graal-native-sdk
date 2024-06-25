@@ -33,6 +33,8 @@
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.QDFactory\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.SubscriptionFilterFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.dxlink.websocket.transport.DxLinkLoginHandlerFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory\\E"
@@ -45,7 +47,13 @@
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.ChannelShapersFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.spi.QDFilterFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.spi.SymbolStriperFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.rmi.security.RMISecurityController\\E"
   }, {
@@ -65,9 +73,9 @@
   }, {
     "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
   }, {
-    "pattern":"\\Qcom/dxfeed/schedule/schedule.properties\\E"
+    "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
   }, {
-    "pattern":"\\Qdxfeed.properties\\E"
+    "pattern":"\\QMETA-INF/services/javax.xml.parsers.DocumentBuilderFactory\\E"
   }, {
     "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
   }, {
