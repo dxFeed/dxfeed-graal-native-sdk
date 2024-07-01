@@ -511,8 +511,8 @@ object Util {
 }
 
 object SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags : GitVcsRoot({
-    name = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git#refs/heads/main tags"
-    url = "ssh://git@stash.in.devexperts.com:7999/en/dxfeed-graal-native-sdk.git"
+    name = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git#refs/heads/main tags"
+    url = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git"
     branch = "refs/heads/main"
     branchSpec = "+:refs/tags/*"
     useTagsAsBranches = true
