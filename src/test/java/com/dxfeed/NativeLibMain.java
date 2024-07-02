@@ -365,10 +365,6 @@ public class NativeLibMain {
   }
 
   public static void liveIpf(final ObjectMapper objectMapper) throws InterruptedException, IOException {
-    final InstrumentProfile instrumentProfile1 = new InstrumentProfile();
-    final String[] customFields = InstrumentProfileMapper.getCustomFields(instrumentProfile1);
-    InstrumentProfileMapper.setCustomFields(instrumentProfile1, customFields);
-
     for (final InstrumentProfile instrumentProfile : new InstrumentProfileReader().readFromFile(
         "ipf.txt")) {
       System.out.println(instrumentProfile);

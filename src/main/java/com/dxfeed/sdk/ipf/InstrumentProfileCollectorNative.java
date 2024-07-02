@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.VoidPointer;
@@ -210,14 +211,16 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_InstrumentProfile_release",
+      name = "dxfg_CList_InstrumentProfile_wrapper_release",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfile_release(
+  public static int dxfg_CList_InstrumentProfile_wrapper_release(
       final IsolateThread ignoredThread,
-      final DxfgInstrumentProfile dxfgInstrumentProfile
+      final DxfgInstrumentProfileList dxfgInstrumentProfileList
   ) {
-    NativeUtils.MAPPER_INSTRUMENT_PROFILE.release(dxfgInstrumentProfile);
+    // release only the struct dxfg_instrument_profile_list and keep the elements
+    UnmanagedMemory.free(dxfgInstrumentProfileList.getElements());
+    UnmanagedMemory.free(dxfgInstrumentProfileList);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 

@@ -612,6 +612,19 @@ public class JavacNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_Comparable_compareTo",
+      exceptionHandler = ExceptionHandlerReturnMinusMinInteger.class
+  )
+  public static int dxfg_Comparable_compareTo(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> objectHandler,
+      final JavaObjectHandler<Object> otherHandler
+  ) {
+    return ((Comparable)NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(objectHandler))
+        .compareTo(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(otherHandler));
+  }
+
+  @CEntryPoint(
       name = "dxfg_JavaObjectHandler_release",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
