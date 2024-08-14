@@ -15,7 +15,7 @@ import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSym
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
-import com.dxfeed.sdk.javac.DxfgExecuter;
+import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.javac.DxfgTimePeriod;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
@@ -300,7 +300,7 @@ public class SubscriptionNative {
       name = "dxfg_DXFeedSubscription_getExecutor",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_DXFeedSubscription_getExecutor(
+  public static DxfgExecutor dxfg_DXFeedSubscription_getExecutor(
       final IsolateThread ignoredThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
   ) {
@@ -314,9 +314,10 @@ public class SubscriptionNative {
   public static int dxfg_DXFeedSubscription_setExecutor(
       final IsolateThread ignoredThread,
       final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter));
+    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(
+        dxfgExecutor));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 

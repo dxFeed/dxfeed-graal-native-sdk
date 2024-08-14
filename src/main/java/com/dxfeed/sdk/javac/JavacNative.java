@@ -676,7 +676,7 @@ public class JavacNative {
       name = "dxfg_Executors_newFixedThreadPool",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_Executors_newFixedThreadPool(
+  public static DxfgExecutor dxfg_Executors_newFixedThreadPool(
       final IsolateThread ignoredThread,
       final int nThreads,
       final CCharPointer name
@@ -693,7 +693,7 @@ public class JavacNative {
       name = "dxfg_Executors_newScheduledThreadPool",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_Executors_newScheduledThreadPool(
+  public static DxfgExecutor dxfg_Executors_newScheduledThreadPool(
       final IsolateThread ignoredThread,
       final int nThreads,
       final CCharPointer name
@@ -710,7 +710,7 @@ public class JavacNative {
       name = "dxfg_ExecutorBaseOnConcurrentLinkedQueue_new",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(
+  public static DxfgExecutor dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(
       final IsolateThread ignoredThread
   ) {
     return NativeUtils.MAPPER_EXECUTOR.toNative(new ExecutorBaseOnConcurrentLinkedQueue());
@@ -722,7 +722,7 @@ public class JavacNative {
   )
   public static int dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(
       final IsolateThread ignoredThread,
-      final DxfgExecuter executor
+      final DxfgExecutor executor
   ) {
     ((ExecutorBaseOnConcurrentLinkedQueue) NativeUtils.MAPPER_EXECUTOR.toJava(
         executor)).processAllPendingTasks();

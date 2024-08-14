@@ -6,6 +6,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_executor_t")
-public interface DxfgExecuter extends JavaObjectHandler<Executor> {
+public interface DxfgExecutor extends JavaObjectHandler<Executor> {
 
 }

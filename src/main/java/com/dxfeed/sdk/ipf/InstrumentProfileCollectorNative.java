@@ -7,7 +7,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.sdk.javac.DxfgExecuter;
+import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import java.util.HashSet;
@@ -107,7 +107,7 @@ public class InstrumentProfileCollectorNative {
       name = "dxfg_InstrumentProfileCollector_getExecutor",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_InstrumentProfileCollector_getExecutor(
+  public static DxfgExecutor dxfg_InstrumentProfileCollector_getExecutor(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector
   ) {
@@ -123,10 +123,10 @@ public class InstrumentProfileCollectorNative {
   public static int dxfg_InstrumentProfileCollector_setExecutor(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
     NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).setExecutor(
-        NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter)
+        NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecutor)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

@@ -315,7 +315,7 @@ void updateListener(graal_isolatethread_t *thread, dxfg_iterable_ip_t *profiles,
         if (!profile) {
             get_exception(thread);
         }
-        printf("C: profile %s\n", profile->symbol);
+        printf("C: profile %s\n", dxfg_InstrumentProfile_getSymbol(thread, profile));
         dxfg_InstrumentProfile_release(thread, profile);
     }
 }
@@ -366,7 +366,7 @@ void readerIpf(graal_isolatethread_t *thread) {
         thread, reader, "../../../../../ipf.txt"
     );
     for (int i = 0; i < profiles->size; ++i) {
-        printf("C: profile %s\n", profiles->elements[i]->symbol);
+        printf("C: profile %s\n", dxfg_InstrumentProfile_getSymbol(thread, profiles->elements[i]));
     }
     dxfg_CList_InstrumentProfile_release(thread, profiles);
     dxfg_JavaObjectHandler_release(thread, &reader->handler);
@@ -805,7 +805,7 @@ void schedule(graal_isolatethread_t *thread) {
             dxfg_JavaObjectHandler_release(thread, &schedule2->handler);
         }
         dxfg_CList_String_release(thread, venues);
-        printf("C: schedule %s\n", profiles->elements[i]->symbol);
+        printf("C: schedule %s\n", dxfg_InstrumentProfile_getSymbol(thread, profiles->elements[i]));
     }
     dxfg_CList_InstrumentProfile_release(thread, profiles);
     dxfg_JavaObjectHandler_release(thread, &reader->handler);
@@ -827,6 +827,53 @@ void schedule2(graal_isolatethread_t *thread) {
     dxfg_JavaObjectHandler_release(thread, &schedule->handler);
 }
 
+void c_tx_model_listener_func(graal_isolatethread_t* thread, dxfg_indexed_event_source_t* arg0, dxfg_event_type_list* arg1, int32_t arg2, void* user_data) {
+    printf("c_tx_model_listener_func:\n");
+    for (int i = 0; i < arg1->size; ++i) {
+        printEvent(reinterpret_cast<dxfg_event_type_t *>(arg1->elements[i]));
+    }
+}
+
+void txIndexedEventModel(graal_isolatethread_t *thread) {
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_string_symbol_t symbol;
+    symbol.supper.type = STRING;
+    symbol.symbol = "IBM";
+
+    dxfg_indexed_tx_model_builder_t* builder = dxfg_IndexedTxModel_newBuilder(thread, DXFG_EVENT_ORDER);
+    dxfg_IndexedTxModel_Builder_withBatchProcessing(thread, builder, 1);
+    dxfg_IndexedTxModel_Builder_withSnapshotProcessing(thread, builder, 1);
+    dxfg_IndexedTxModel_Builder_withFeed(thread, builder, feed);
+    dxfg_IndexedTxModel_Builder_withSymbol(thread, builder, &symbol.supper);
+    dxfg_tx_model_listener_t* listener = dxfg_TxModelListener_new(thread, c_tx_model_listener_func, nullptr);
+    dxfg_IndexedTxModel_Builder_withListener(thread, builder, listener);
+    dxfg_indexed_tx_model_t* model = dxfg_IndexedTxModel_Builder_build(thread, builder);
+    usleep(2000000);
+
+    dxfg_indexed_event_source_list sourceList;
+    sourceList.size = 1;
+    sourceList.elements = (dxfg_indexed_event_source_t**) malloc(sizeof(dxfg_indexed_event_source_t*) * 1);
+    for (int i = 0; i < sourceList.size; i++) {
+        dxfg_indexed_event_source_t pSource;
+        pSource.id = 6579576;
+        pSource.name = "dex";
+        pSource.type = INDEXED_EVENT_SOURCE;
+        sourceList.elements[i] = &pSource;
+    }
+
+    dxfg_IndexedTxModel_setSources(thread, model, &sourceList);
+    usleep(2000000);
+    dxfg_IndexedTxModel_close(thread, model);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &builder->handler);
+    dxfg_JavaObjectHandler_release(thread, &model->handler);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+}
+
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
     if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
@@ -834,6 +881,8 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
     get_exception(thread); // to init com.dxfeed.sdk.NativeUtils
+
+    txIndexedEventModel(thread);
     const char *data[] = {"Connect", "********", "Quote", "AAPL"};
     dxfg_string_list args;
     args.size = 4;

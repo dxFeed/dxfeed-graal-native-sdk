@@ -14,7 +14,7 @@ import com.dxfeed.sdk.events.DxfgEventTypeList;
 import com.dxfeed.sdk.exception.DxfgException;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.sdk.javac.DxfgExecuter;
+import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
@@ -329,7 +329,7 @@ public class PromiseNative {
       final DxfgPromise dxfgPromise,
       final DxfgPromiseHandlerFunction dxfgPromiseHandlerFunction,
       final VoidPointer userData,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
     NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise).whenDoneAsync(
         new PromiseHandler<Object>() {
@@ -342,7 +342,7 @@ public class PromiseNative {
             );
           }
         },
-        NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter)
+        NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecutor)
     );
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

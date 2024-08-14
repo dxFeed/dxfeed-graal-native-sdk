@@ -23,6 +23,11 @@ typedef struct dxfg_indexed_event_source_t {
     const char *name;
 } dxfg_indexed_event_source_t;
 
+typedef struct dxfg_indexed_event_source_list {
+    int32_t size;
+    dxfg_indexed_event_source_t **elements;
+} dxfg_indexed_event_source_list;
+
 typedef enum dxfg_symbol_type_t {
     STRING = 0,
     CANDLE,

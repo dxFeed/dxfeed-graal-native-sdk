@@ -14,7 +14,7 @@ import com.dxfeed.sdk.events.DxfgEventTypeList;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
-import com.dxfeed.sdk.javac.DxfgExecuter;
+import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -180,7 +180,7 @@ public class EventModelNative {
       name = "dxfg_OrderBookModel_getExecutor",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_OrderBookModel_getExecutor(
+  public static DxfgExecutor dxfg_OrderBookModel_getExecutor(
       final IsolateThread ignoredThread,
       final DxfgOrderBookModel dxfgOrderBookModel
   ) {
@@ -193,7 +193,7 @@ public class EventModelNative {
       name = "dxfg_IndexedEventModel_getExecutor",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_IndexedEventModel_getExecutor(
+  public static DxfgExecutor dxfg_IndexedEventModel_getExecutor(
       final IsolateThread ignoredThread,
       final DxfgIndexedEventModel dxfgIndexedEventModel
   ) {
@@ -206,7 +206,7 @@ public class EventModelNative {
       name = "dxfg_TimeSeriesEventModel_getExecutor",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgExecuter dxfg_TimeSeriesEventModel_getExecutor(
+  public static DxfgExecutor dxfg_TimeSeriesEventModel_getExecutor(
       final IsolateThread ignoredThread,
       final DxfgTimeSeriesEventModel dxfgTimeSeriesEventModel
   ) {
@@ -222,10 +222,10 @@ public class EventModelNative {
   public static int dxfg_OrderBookModel_setExecutor(
       final IsolateThread ignoredThread,
       final DxfgOrderBookModel dxfgOrderBookModel,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
     NativeUtils.MAPPER_ORDER_BOOK_MODEL.toJava(dxfgOrderBookModel)
-        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter));
+        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecutor));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -236,10 +236,10 @@ public class EventModelNative {
   public static int dxfg_IndexedEventModel_setExecutor(
       final IsolateThread ignoredThread,
       final DxfgIndexedEventModel dxfgIndexedEventModel,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
     NativeUtils.MAPPER_INDEXED_EVENT_MODEL.toJava(dxfgIndexedEventModel)
-        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter));
+        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecutor));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -250,10 +250,10 @@ public class EventModelNative {
   public static int dxfg_TimeSeriesEventModel_setExecutor(
       final IsolateThread ignoredThread,
       final DxfgTimeSeriesEventModel dxfgTimeSeriesEventModel,
-      final DxfgExecuter dxfgExecuter
+      final DxfgExecutor dxfgExecutor
   ) {
     NativeUtils.MAPPER_TIME_SERIES_EVENT_MODEL.toJava(dxfgTimeSeriesEventModel)
-        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecuter));
+        .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(dxfgExecutor));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
