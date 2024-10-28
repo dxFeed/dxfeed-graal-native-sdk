@@ -162,6 +162,90 @@
           <version>${auther-api.version}</version>
         </dependency>
       </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+              <execution>
+                <id>parse-version</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>parse-version</goal>
+                </goals>
+                <configuration>
+                  <propertyPrefix>parsedVersion</propertyPrefix>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <id>build-version-res</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>compile</phase>
+                <configuration>
+                  <executable>rc.exe</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <arguments>
+                    <argument>-DDXFSDK_VERSION=${project.version}</argument>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argument>-DDXFSDK_MAJOR_VERSION=${parsedVersion.majorVersion}</argument>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argument>-DDXFSDK_MINOR_VERSION=${parsedVersion.minorVersion}</argument>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argument>-DDXFSDK_PATCH_VERSION=${parsedVersion.incrementalVersion}</argument>
+                    <argument>version.rc</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>0.9.28</version>
+            <extensions>true</extensions>
+            <executions>
+              <execution>
+                <id>build-native</id>
+                <goals>
+                  <goal>compile-no-fork</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <metadataRepository>
+                <enabled>true</enabled>
+              </metadataRepository>
+              <skip>false</skip>
+              <imageName>${native.image.name}</imageName>
+              <sharedLibrary>true</sharedLibrary>
+              <buildArgs>
+                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>-H:Name=${native.image.name}</buildArg>
+                <buildArg>-Dproject.path=${project.basedir}</buildArg>
+                <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
+                <buildArg>-H:Path=${native.image.path}</buildArg>
+                <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
+                <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
+                <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>-march=compatibility</buildArg>
+                <buildArg>-H:NativeLinkerOption=version.res</buildArg>
+              </buildArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>iosSimulator</id>

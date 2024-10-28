@@ -41,3 +41,6 @@ fabric.properties
 
 # C project
 /src/main/c/.idea/**
+
+# Resources
+version.res
