@@ -25,7 +25,7 @@
     <auther-api.version>488</auther-api.version>
     <qd.version>3.333</qd.version>
     <dxfeed.api.experimental.model.version>1.1</dxfeed.api.experimental.model.version>
-    <nativebridge.version>0.1</nativebridge.version>
+    <nativebridge.version>0.2</nativebridge.version>
   </properties>
 
   <dependencies>
