@@ -1,3 +1,4 @@
+// Copyright (c) 2024 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 #ifndef DXFEED_GRAAL_NATIVE_SDK_H_
@@ -6,6 +7,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "dxfg_common.h"
 
 #include "dxfg_catch_exception.h"
 #include "dxfg_endpoint.h"
@@ -22,6 +25,7 @@ extern "C" {
 #include "dxfg_ipf.h"
 #include "dxfg_ondemand.h"
 #include "dxfg_schedule.h"
+#include "dxfg_glossary.h"
 
 #ifdef __cplusplus
 }

@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgOtcMarketsOrder;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,8 +24,8 @@ public class OtcMarketsOrderMapper extends OrderMapper<OtcMarketsOrder, DxfgOtcM
   }
 
   @Override
-  public void fillNative(final OtcMarketsOrder jObject, final DxfgOtcMarketsOrder nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final OtcMarketsOrder jObject, final DxfgOtcMarketsOrder nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setQuoteAccessPayment(jObject.getQuoteAccessPayment());
     nObject.setOtcMarketsFlags(jObject.getOtcMarketsFlags());
   }

@@ -1,8 +1,12 @@
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.devexperts.auth.AuthToken;
+import com.devexperts.util.SystemProperties;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
@@ -42,6 +46,9 @@ import com.dxfeed.event.market.TimeAndSaleMapper;
 import com.dxfeed.event.market.TradeETHMapper;
 import com.dxfeed.event.market.TradeMapper;
 import com.dxfeed.event.market.UnderlyingMapper;
+import com.dxfeed.glossary.AdditionalUnderlyings;
+import com.dxfeed.glossary.CFI;
+import com.dxfeed.glossary.PriceIncrements;
 import com.dxfeed.ipf.InstrumentProfile;
 import com.dxfeed.ipf.InstrumentProfileReader;
 import com.dxfeed.ipf.live.InstrumentProfileCollector;
@@ -79,6 +86,16 @@ import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.feed.DxfgPromise;
 import com.dxfeed.sdk.feed.DxfgPromiseList;
 import com.dxfeed.sdk.feed.DxfgPromisePointer;
+import com.dxfeed.sdk.glossary.DxfgAdditionalUnderlyingsHandle;
+import com.dxfeed.sdk.glossary.DxfgCFIAttributeHandle;
+import com.dxfeed.sdk.glossary.DxfgCFIHandle;
+import com.dxfeed.sdk.glossary.DxfgCFIValueHandle;
+import com.dxfeed.sdk.glossary.DxfgPriceIncrementsHandle;
+import com.dxfeed.sdk.glossary.mappers.AdditionalUnderlyingsMapper;
+import com.dxfeed.sdk.glossary.mappers.CFIAttributeMapper;
+import com.dxfeed.sdk.glossary.mappers.CFIMapper;
+import com.dxfeed.sdk.glossary.mappers.CFIValueMapper;
+import com.dxfeed.sdk.glossary.mappers.PriceIncrementsMapper;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileCollector;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileConnection;
@@ -99,55 +116,55 @@ import com.dxfeed.sdk.javac.DxfgTimeFormat;
 import com.dxfeed.sdk.javac.DxfgTimePeriod;
 import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
-import com.dxfeed.sdk.maper.AuthTokenMapper;
-import com.dxfeed.sdk.maper.DayFilterMapper;
-import com.dxfeed.sdk.maper.DayMapper;
-import com.dxfeed.sdk.maper.DxfgStackTraceElementMapper;
-import com.dxfeed.sdk.maper.EndpointBuilderMapper;
-import com.dxfeed.sdk.maper.EndpointMapper;
-import com.dxfeed.sdk.maper.EndpointStateChangeListenerMapper;
-import com.dxfeed.sdk.maper.ExceptionMapper;
-import com.dxfeed.sdk.maper.ExecutorMapper;
-import com.dxfeed.sdk.maper.FeedEventListenerMapper;
-import com.dxfeed.sdk.maper.FeedMapper;
-import com.dxfeed.sdk.maper.IndexedEventModelMapper;
-import com.dxfeed.sdk.maper.InputStreamMapper;
-import com.dxfeed.sdk.maper.InstrumentProfileCollectorMapper;
-import com.dxfeed.sdk.maper.InstrumentProfileConnectionMapper;
-import com.dxfeed.sdk.maper.InstrumentProfileMapper;
-import com.dxfeed.sdk.maper.InstrumentProfileReaderMapper;
-import com.dxfeed.sdk.maper.InstrumentProfileUpdateListenerMapper;
-import com.dxfeed.sdk.maper.IpfConnectionStateChangeListenerMapper;
-import com.dxfeed.sdk.maper.IterableInstrumentProfileMapper;
-import com.dxfeed.sdk.maper.JavaObjectHandlerMapper;
-import com.dxfeed.sdk.maper.ListInstrumentProfileMapper;
-import com.dxfeed.sdk.maper.ListJavaObjectHandlerMapper;
-import com.dxfeed.sdk.maper.ListMapper;
-import com.dxfeed.sdk.maper.ListPromiseMapper;
-import com.dxfeed.sdk.maper.ListSessionMapper;
-import com.dxfeed.sdk.maper.ListStackTraceElementMapper;
-import com.dxfeed.sdk.maper.ListStringsMapper;
-import com.dxfeed.sdk.maper.Mapper;
-import com.dxfeed.sdk.maper.ObservableListModelListenerMapper;
-import com.dxfeed.sdk.maper.ObservableListModelMapper;
-import com.dxfeed.sdk.maper.ObservableSubscriptionChangeListenerMapper;
-import com.dxfeed.sdk.maper.ObservableSubscriptionMapper;
-import com.dxfeed.sdk.maper.OnDemandServiceMapper;
-import com.dxfeed.sdk.maper.OrderBookModelListenerMapper;
-import com.dxfeed.sdk.maper.OrderBookModelMapper;
-import com.dxfeed.sdk.maper.PromiseMapper;
-import com.dxfeed.sdk.maper.PublisherMapper;
-import com.dxfeed.sdk.maper.ScheduleMapper;
-import com.dxfeed.sdk.maper.SessionFilterMapper;
-import com.dxfeed.sdk.maper.SessionMapper;
-import com.dxfeed.sdk.maper.StringMapper;
-import com.dxfeed.sdk.maper.StringMapperCacheStore;
-import com.dxfeed.sdk.maper.SubscriptionMapper;
-import com.dxfeed.sdk.maper.TimeFormatMapper;
-import com.dxfeed.sdk.maper.TimePeriodMapper;
-import com.dxfeed.sdk.maper.TimeSeriesEventModelMapper;
-import com.dxfeed.sdk.maper.TimeSeriesSubscriptionMapper;
-import com.dxfeed.sdk.maper.TimeZoneMapper;
+import com.dxfeed.sdk.mappers.AuthTokenMapper;
+import com.dxfeed.sdk.mappers.DayFilterMapper;
+import com.dxfeed.sdk.mappers.DayMapper;
+import com.dxfeed.sdk.mappers.DxfgStackTraceElementMapper;
+import com.dxfeed.sdk.mappers.EndpointBuilderMapper;
+import com.dxfeed.sdk.mappers.EndpointMapper;
+import com.dxfeed.sdk.mappers.EndpointStateChangeListenerMapper;
+import com.dxfeed.sdk.mappers.ExceptionMapper;
+import com.dxfeed.sdk.mappers.ExecutorMapper;
+import com.dxfeed.sdk.mappers.FeedEventListenerMapper;
+import com.dxfeed.sdk.mappers.FeedMapper;
+import com.dxfeed.sdk.mappers.IndexedEventModelMapper;
+import com.dxfeed.sdk.mappers.InputStreamMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileCollectorMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileConnectionMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileReaderMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileUpdateListenerMapper;
+import com.dxfeed.sdk.mappers.IpfConnectionStateChangeListenerMapper;
+import com.dxfeed.sdk.mappers.IterableInstrumentProfileMapper;
+import com.dxfeed.sdk.mappers.JavaObjectHandlerMapper;
+import com.dxfeed.sdk.mappers.ListInstrumentProfileMapper;
+import com.dxfeed.sdk.mappers.ListJavaObjectHandlerMapper;
+import com.dxfeed.sdk.mappers.ListMapper;
+import com.dxfeed.sdk.mappers.ListPromiseMapper;
+import com.dxfeed.sdk.mappers.ListSessionMapper;
+import com.dxfeed.sdk.mappers.ListStackTraceElementMapper;
+import com.dxfeed.sdk.mappers.ListStringsMapper;
+import com.dxfeed.sdk.mappers.Mapper;
+import com.dxfeed.sdk.mappers.ObservableListModelListenerMapper;
+import com.dxfeed.sdk.mappers.ObservableListModelMapper;
+import com.dxfeed.sdk.mappers.ObservableSubscriptionChangeListenerMapper;
+import com.dxfeed.sdk.mappers.ObservableSubscriptionMapper;
+import com.dxfeed.sdk.mappers.OnDemandServiceMapper;
+import com.dxfeed.sdk.mappers.OrderBookModelListenerMapper;
+import com.dxfeed.sdk.mappers.OrderBookModelMapper;
+import com.dxfeed.sdk.mappers.PromiseMapper;
+import com.dxfeed.sdk.mappers.PublisherMapper;
+import com.dxfeed.sdk.mappers.ScheduleMapper;
+import com.dxfeed.sdk.mappers.SessionFilterMapper;
+import com.dxfeed.sdk.mappers.SessionMapper;
+import com.dxfeed.sdk.mappers.StringMapper;
+import com.dxfeed.sdk.mappers.StringMapperCacheStore;
+import com.dxfeed.sdk.mappers.SubscriptionMapper;
+import com.dxfeed.sdk.mappers.TimeFormatMapper;
+import com.dxfeed.sdk.mappers.TimePeriodMapper;
+import com.dxfeed.sdk.mappers.TimeSeriesEventModelMapper;
+import com.dxfeed.sdk.mappers.TimeSeriesSubscriptionMapper;
+import com.dxfeed.sdk.mappers.TimeZoneMapper;
 import com.dxfeed.sdk.model.DxfgIndexedEventModel;
 import com.dxfeed.sdk.model.DxfgObservableListModel;
 import com.dxfeed.sdk.model.DxfgObservableListModelListener;
@@ -190,6 +207,9 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CIntPointer;
 
 public final class NativeUtils {
+
+  public static final String STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS_PROPERTY = "dxFeedGraalNativeSdk.stringMapperCacheStore.expireAfterLastDeleteInMs";
+  public static final int DEFAULT_STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS = 3000;
 
   public static final Finalizer FINALIZER = new Finalizer();
   public static final Mapper<StackTraceElement, DxfgStackTraceElement> MAPPER_STACK_TRACE_ELEMENT;
@@ -246,6 +266,12 @@ public final class NativeUtils {
   public static final Mapper<SessionFilter, DxfgSessionFilter> MAPPER_SESSION_FILTER;
   public static final Mapper<DayFilter, DxfgDayFilter> MAPPER_DAY_FILTER;
   public static final Mapper<Schedule, DxfgSchedule> MAPPER_SCHEDULE;
+  public static final Mapper<AdditionalUnderlyings, DxfgAdditionalUnderlyingsHandle> MAPPER_ADDITIONAL_UNDERLYINGS;
+  public static final Mapper<CFI, DxfgCFIHandle> MAPPER_CFI;
+  public static final Mapper<CFI.Attribute, DxfgCFIAttributeHandle> MAPPER_CFI_ATTRIBUTE;
+  public static final Mapper<CFI.Value, DxfgCFIValueHandle> MAPPER_CFI_VALUE;
+  public static final Mapper<PriceIncrements, DxfgPriceIncrementsHandle> MAPPER_PRICE_INCREMENTS;
+
 
   static {
     MAPPER_STRING = new StringMapper();
@@ -253,7 +279,10 @@ public final class NativeUtils {
     MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
     MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
     MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
-    MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(3000);
+    MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(
+        SystemProperties.getIntProperty(
+            STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS_PROPERTY,
+            DEFAULT_STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS));
     SingletonScheduledExecutorService.start(
         "clean cache & finalize native",
         () -> {
@@ -336,6 +365,11 @@ public final class NativeUtils {
     MAPPER_SESSION_FILTER = new SessionFilterMapper();
     MAPPER_DAY_FILTER = new DayFilterMapper();
     MAPPER_SCHEDULE = new ScheduleMapper();
+    MAPPER_ADDITIONAL_UNDERLYINGS = new AdditionalUnderlyingsMapper();
+    MAPPER_CFI = new CFIMapper();
+    MAPPER_CFI_ATTRIBUTE = new CFIAttributeMapper();
+    MAPPER_CFI_VALUE = new CFIValueMapper();
+    MAPPER_PRICE_INCREMENTS = new PriceIncrementsMapper();
   }
 
   public static class Finalizer {

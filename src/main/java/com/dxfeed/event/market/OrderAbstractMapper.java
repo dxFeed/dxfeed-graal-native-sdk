@@ -1,7 +1,7 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgOrderBase;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrderBase>
@@ -14,8 +14,8 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
   }
 
   @Override
-  public void fillNative(final V jObject, final T nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final V jObject, final T nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());

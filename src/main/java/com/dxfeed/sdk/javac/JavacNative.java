@@ -4,10 +4,12 @@ import com.devexperts.auth.AuthToken;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusMinInteger;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.mappers.JavaObjectHandlerMapper;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.TimeZone;
@@ -21,6 +23,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.Pointer;
 import org.graalvm.word.WordFactory;
@@ -157,7 +160,8 @@ public class JavacNative {
       final int dayOfWeek,
       final int milliseconds
   ) {
-    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone).getOffset(era, year, month, day, dayOfWeek, milliseconds);
+    return NativeUtils.MAPPER_TIME_ZONE.toJava(dxfgTimeZone)
+        .getOffset(era, year, month, day, dayOfWeek, milliseconds);
   }
 
   @CEntryPoint(
@@ -517,7 +521,7 @@ public class JavacNative {
       final DxfgAuthToken token
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getHttpAuthorization()
+        NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getHttpAuthorization()
     );
   }
 
@@ -530,7 +534,7 @@ public class JavacNative {
       final DxfgAuthToken token
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getUser()
+        NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getUser()
     );
   }
 
@@ -543,7 +547,7 @@ public class JavacNative {
       final DxfgAuthToken token
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getPassword()
+        NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getPassword()
     );
   }
 
@@ -556,7 +560,7 @@ public class JavacNative {
       final DxfgAuthToken token
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getScheme()
+        NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getScheme()
     );
   }
 
@@ -569,7 +573,7 @@ public class JavacNative {
       final DxfgAuthToken token
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getValue()
+        NativeUtils.MAPPER_AUTH_TOKEN.toJava(token).getValue()
     );
   }
 
@@ -620,7 +624,7 @@ public class JavacNative {
       final JavaObjectHandler<Object> objectHandler,
       final JavaObjectHandler<Object> otherHandler
   ) {
-    return ((Comparable)NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(objectHandler))
+    return ((Comparable) NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(objectHandler))
         .compareTo(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(otherHandler));
   }
 
@@ -633,6 +637,42 @@ public class JavacNative {
       final JavaObjectHandler<Object> javaObjectHandler
   ) {
     NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.release(javaObjectHandler);
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_JavaObjectHandler_clone",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_JavaObjectHandler_clone(
+      final IsolateThread ignoredThread,
+      final JavaObjectHandler<Object> javaObjectHandler,
+      @DxfgOut final DxfgJavaObjectHandlerPointer javaObjectHandlerClone
+  ) {
+    if (javaObjectHandlerClone.isNull()) {
+      throw new IllegalArgumentException("The `javaObjectHandlerClone` pointer is null");
+    }
+
+    var object = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(javaObjectHandler);
+    javaObjectHandlerClone.write(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toNative(object));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_JavaObjectHandler_array_release",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_JavaObjectHandler_array_release(
+      final IsolateThread ignoredThread,
+      @CConst final JavaObjectHandler<Object> handlersArray,
+      int size
+  ) {
+    var mapper = (JavaObjectHandlerMapper<Object, JavaObjectHandler<Object>>) NativeUtils
+        .MAPPER_JAVA_OBJECT_HANDLER;
+
+    mapper.releaseNativeArray(handlersArray, size);
+
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 

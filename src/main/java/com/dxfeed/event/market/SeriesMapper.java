@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.option.Series;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgSeries;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,8 +24,8 @@ public class SeriesMapper extends MarketEventMapper<Series, DxfgSeries> {
   }
 
   @Override
-  public void fillNative(final Series jObject, final DxfgSeries nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final Series jObject, final DxfgSeries nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());

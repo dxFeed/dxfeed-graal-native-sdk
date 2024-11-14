@@ -1,7 +1,7 @@
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgTradeBase;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBase>
@@ -14,8 +14,8 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
   }
 
   @Override
-  public void fillNative(final V jObject, final T nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final V jObject, final T nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setTimeSequence(jObject.getTimeSequence());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
     nObject.setExchangeCode(jObject.getExchangeCode());

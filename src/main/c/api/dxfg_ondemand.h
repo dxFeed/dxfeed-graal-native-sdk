@@ -1,4 +1,10 @@
+// Copyright (c) 2024 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
+
+/**
+ * @file
+ * @brief dxFeed Graal Native SDK OnDemand functions and types declarations
+ */
 
 #ifndef DXFEED_GRAAL_NATIVE_SDK_ONDEMAND_H_
 #define DXFEED_GRAAL_NATIVE_SDK_ONDEMAND_H_
@@ -10,11 +16,13 @@ extern "C" {
 #    include <stdint.h>
 #endif
 
+#include "dxfg_common.h"
+
 #include "graal_isolate.h"
 #include "dxfg_endpoint.h"
 #include "dxfg_javac.h"
 
-/** @defgroup ONDEMAND
+/** @defgroup OnDemand
  *  @{
  */
 
@@ -46,7 +54,7 @@ int32_t                           dxfg_OnDemandService_stopAndResume(graal_isola
 int32_t                           dxfg_OnDemandService_stopAndClear(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 int32_t                           dxfg_OnDemandService_setSpeed(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service, double speed);
 
-/** @} */ // end of ONDEMAND
+/** @} */ // end of OnDemand
 
 #ifdef __cplusplus
 }

@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.option.Underlying;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgUnderlying;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,8 +24,8 @@ public class UnderlyingMapper extends MarketEventMapper<Underlying, DxfgUnderlyi
   }
 
   @Override
-  public void fillNative(final Underlying jObject, final DxfgUnderlying nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final Underlying jObject, final DxfgUnderlying nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setVolatility(jObject.getVolatility());

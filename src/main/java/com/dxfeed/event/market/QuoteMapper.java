@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgQuote;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -23,8 +23,8 @@ public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
   }
 
   @Override
-  public void fillNative(final Quote jObject, final DxfgQuote nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final Quote jObject, final DxfgQuote nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setTimeMillisSequence(jObject.getTimeMillisSequence());
     nObject.setTimeNanoPart(jObject.getTimeNanoPart());
     nObject.setBidTime(jObject.getBidTime());

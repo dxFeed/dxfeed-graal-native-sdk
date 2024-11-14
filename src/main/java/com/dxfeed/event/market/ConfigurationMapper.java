@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.sdk.events.DxfgConfiguration;
 import com.dxfeed.sdk.events.DxfgEventClazz;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,9 +41,12 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
 
   @Override
   public final void fillNative(
-      final Configuration jObject, final DxfgConfiguration nObject
+      final Configuration jObject, final DxfgConfiguration nObject, boolean clean
   ) {
-    cleanNative(nObject);
+    if (clean) {
+      cleanNative(nObject);
+    }
+    
     nObject.setEventSymbol(stringMapper.toNative(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
     nObject.setVersion(jObject.getVersion());

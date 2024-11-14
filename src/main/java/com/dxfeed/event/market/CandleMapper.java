@@ -4,7 +4,7 @@ import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.CandleSymbol;
 import com.dxfeed.sdk.events.DxfgCandle;
 import com.dxfeed.sdk.events.DxfgEventClazz;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
@@ -31,8 +31,11 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
   }
 
   @Override
-  public void fillNative(final T jObject, final V nObject) {
-    cleanNative(nObject);
+  public void fillNative(final T jObject, final V nObject, boolean clean) {
+    if (clean) {
+      cleanNative(nObject);
+    }
+
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setEventTime(jObject.getEventTime());
     nObject.setIndex(jObject.getIndex());

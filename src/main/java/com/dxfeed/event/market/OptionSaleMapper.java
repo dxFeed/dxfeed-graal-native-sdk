@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgOptionSale;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -27,8 +27,8 @@ public class OptionSaleMapper extends MarketEventMapper<OptionSale, DxfgOptionSa
   }
 
   @Override
-  public void fillNative(final OptionSale jObject, final DxfgOptionSale nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final OptionSale jObject, final DxfgOptionSale nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setTimeSequence(jObject.getTimeSequence());

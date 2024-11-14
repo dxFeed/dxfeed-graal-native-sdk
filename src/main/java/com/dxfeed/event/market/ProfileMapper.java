@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgProfile;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -27,8 +27,8 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   }
 
   @Override
-  public void fillNative(final Profile jObject, final DxfgProfile nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final Profile jObject, final DxfgProfile nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setDescription(this.stringMapper.toNative(jObject.getDescription()));
     nObject.setStatusReason(this.stringMapper.toNative(jObject.getStatusReason()));
     nObject.setHaltStartTime(jObject.getHaltStartTime());

@@ -48,5 +48,12 @@
       </includes>
       <outputDirectory>docs</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <includes>
+        <include>LICENSE</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
   </fileSets>
 </assembly>

@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.word.WordFactory;
 
 public abstract class EventMapper<V extends EventType<?>, T extends DxfgEventType>
@@ -13,7 +13,7 @@ public abstract class EventMapper<V extends EventType<?>, T extends DxfgEventTyp
       return WordFactory.nullPointer();
     }
     final T nObject = createNativeObject();
-    fillNative(jObject, nObject);
+    fillNative(jObject, nObject, true);
     return nObject;
   }
 
@@ -28,7 +28,7 @@ public abstract class EventMapper<V extends EventType<?>, T extends DxfgEventTyp
   }
 
   public void fillNativeObjectWithCast(final EventType<?> jEvent, final DxfgEventType nEvent) {
-    fillNative((V) jEvent, (T) nEvent);
+    fillNative((V) jEvent, (T) nEvent, true);
   }
 
   public void cleanNativeObjectWithCast(final DxfgEventType nEvent) {

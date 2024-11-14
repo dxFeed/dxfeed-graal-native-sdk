@@ -44,3 +44,4 @@ fabric.properties
 
 # Resources
 version.res
+/reports/**/*.txt

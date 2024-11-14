@@ -1,4 +1,10 @@
+// Copyright (c) 2024 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
+
+/**
+ * @file
+ * @brief dxFeed Graal Native SDK Subscription functions and types declarations
+ */
 
 #ifndef DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
 #define DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
@@ -9,6 +15,8 @@ extern "C" {
 #else
 #    include <stdint.h>
 #endif
+
+#include "dxfg_common.h"
 
 #include "graal_isolate.h"
 #include "dxfg_events.h"

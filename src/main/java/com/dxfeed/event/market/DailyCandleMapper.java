@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.sdk.events.DxfgDailyCandle;
 import com.dxfeed.sdk.events.DxfgEventClazz;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;

@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgAnalyticOrder;
 import com.dxfeed.sdk.events.DxfgEventClazz;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,8 +24,8 @@ public class AnalyticOrderMapper extends OrderMapper<AnalyticOrder, DxfgAnalytic
   }
 
   @Override
-  public void fillNative(final AnalyticOrder jObject, final DxfgAnalyticOrder nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final AnalyticOrder jObject, final DxfgAnalyticOrder nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setIcebergPeakSize(jObject.getIcebergPeakSize());
     nObject.setIcebergHiddenSize(jObject.getIcebergHiddenSize());
     nObject.setIcebergExecutedSize(jObject.getIcebergExecutedSize());

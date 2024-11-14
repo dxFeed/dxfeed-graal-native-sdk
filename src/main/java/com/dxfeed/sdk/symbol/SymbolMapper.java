@@ -5,7 +5,7 @@ import com.dxfeed.api.osub.TimeSeriesSubscriptionSymbol;
 import com.dxfeed.api.osub.WildcardSymbol;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
@@ -49,13 +49,18 @@ public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
     } else {
       throw new IllegalStateException();
     }
-    fillNative(jObject, nObject);
+
+    fillNative(jObject, nObject, false);
+
     return nObject;
   }
 
   @Override
-  public void fillNative(final Object jObject, final DxfgSymbol nObject) {
-    cleanNative(nObject);
+  public void fillNative(final Object jObject, final DxfgSymbol nObject, boolean clean) {
+    if (clean) {
+      cleanNative(nObject);
+    }
+
     if (jObject instanceof String) {
       final DxfgStringSymbol dxfgStringSymbol = (DxfgStringSymbol) nObject;
       final String stringSymbol = (String) jObject;

@@ -2,7 +2,7 @@ package com.dxfeed.sdk.source;
 
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.market.OrderSource;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -21,16 +21,22 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
     if (jObject == null) {
       return WordFactory.nullPointer();
     }
+
     final DxfgIndexedEventSource nObject = UnmanagedMemory.calloc(
         SizeOf.get(DxfgIndexedEventSource.class)
     );
-    fillNative(jObject, nObject);
+
+    fillNative(jObject, nObject, false);
+
     return nObject;
   }
 
   @Override
-  public void fillNative(final IndexedEventSource jObject, final DxfgIndexedEventSource nObject) {
-    cleanNative(nObject);
+  public void fillNative(final IndexedEventSource jObject, final DxfgIndexedEventSource nObject, boolean clean) {
+    if (clean) {
+      cleanNative(nObject);
+    }
+
     if (jObject instanceof OrderSource) {
       nObject.setType(DxfgIndexedEventSourceType.ORDER_SOURCE.getCValue());
     } else {

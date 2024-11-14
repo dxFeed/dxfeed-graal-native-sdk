@@ -44,7 +44,6 @@ import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
 import com.dxfeed.scheme.impl.DefaultEmbeddedTypes;
-import com.dxfeed.sdk.maper.InstrumentProfileMapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;

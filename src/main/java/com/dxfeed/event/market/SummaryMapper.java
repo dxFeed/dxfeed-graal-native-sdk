@@ -2,7 +2,7 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgSummary;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -23,8 +23,8 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
   }
 
   @Override
-  public void fillNative(final Summary jObject, final DxfgSummary nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final Summary jObject, final DxfgSummary nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setDayId(jObject.getDayId());
     nObject.setDayOpenPrice(jObject.getDayOpenPrice());
     nObject.setDayHighPrice(jObject.getDayHighPrice());

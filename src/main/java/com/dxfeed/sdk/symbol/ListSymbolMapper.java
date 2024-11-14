@@ -1,7 +1,7 @@
 package com.dxfeed.sdk.symbol;
 
-import com.dxfeed.sdk.maper.ListMapper;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.ListMapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 

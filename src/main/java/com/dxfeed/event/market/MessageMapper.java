@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.misc.Message;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgMessage;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,8 +33,11 @@ public class MessageMapper extends EventMapper<Message, DxfgMessage> {
   }
 
   @Override
-  public final void fillNative(final Message jObject, final DxfgMessage nObject) {
-    cleanNative(nObject);
+  public final void fillNative(final Message jObject, final DxfgMessage nObject, boolean clean) {
+    if (clean) {
+      cleanNative(nObject);
+    }
+
     nObject.setEventSymbol(this.stringMapper.toNative(jObject.getEventSymbol()));
     nObject.setEventTime(jObject.getEventTime());
     try {

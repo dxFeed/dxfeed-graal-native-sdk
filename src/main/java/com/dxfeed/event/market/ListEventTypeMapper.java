@@ -4,7 +4,7 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.events.DxfgEventClazzPointer;
-import com.dxfeed.sdk.maper.ListMapper;
+import com.dxfeed.sdk.mappers.ListMapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CIntPointer;

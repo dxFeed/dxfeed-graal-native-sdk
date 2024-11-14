@@ -4,8 +4,8 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgEventType;
 import com.dxfeed.sdk.events.DxfgEventTypeList;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;
-import com.dxfeed.sdk.maper.ListMapper;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.ListMapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListEventMapper extends

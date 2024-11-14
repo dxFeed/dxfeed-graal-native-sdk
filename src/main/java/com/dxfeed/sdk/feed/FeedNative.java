@@ -219,7 +219,7 @@ public class FeedNative {
   ) {
     final LastingEvent<?> jEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nEvent);
     NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
-    NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent);
+    NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent, true);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -236,7 +236,7 @@ public class FeedNative {
       final DxfgEventType nEvent = nEvents.getElements().addressOf(i).read();
       final LastingEvent<?> jEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nEvent);
       NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
-      NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent);
+      NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent, true);
     }
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

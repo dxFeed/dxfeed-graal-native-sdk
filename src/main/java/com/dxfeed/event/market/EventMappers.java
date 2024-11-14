@@ -32,7 +32,7 @@ import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,7 +131,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
   }
 
   @Override
-  public void fillNative(final EventType<?> jObject, final DxfgEventType nObject) {
+  public void fillNative(final EventType<?> jObject, final DxfgEventType nObject, boolean clean) {
     this.mapperByClass.get(jObject.getClass()).fillNativeObjectWithCast(jObject, nObject);
   }
 

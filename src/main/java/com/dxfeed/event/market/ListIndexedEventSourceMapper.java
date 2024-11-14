@@ -3,8 +3,8 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourcePointer;
-import com.dxfeed.sdk.maper.ListMapper;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.ListMapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 

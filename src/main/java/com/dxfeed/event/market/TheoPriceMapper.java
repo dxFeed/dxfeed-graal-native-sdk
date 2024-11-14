@@ -3,7 +3,7 @@ package com.dxfeed.event.market;
 import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgTheoPrice;
-import com.dxfeed.sdk.maper.Mapper;
+import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -24,8 +24,8 @@ public class TheoPriceMapper extends MarketEventMapper<TheoPrice, DxfgTheoPrice>
   }
 
   @Override
-  public void fillNative(final TheoPrice jObject, final DxfgTheoPrice nObject) {
-    super.fillNative(jObject, nObject);
+  public void fillNative(final TheoPrice jObject, final DxfgTheoPrice nObject, boolean clean) {
+    super.fillNative(jObject, nObject, clean);
     nObject.setEventFlags(jObject.getEventFlags());
     nObject.setIndex(jObject.getIndex());
     nObject.setPrice(jObject.getPrice());
