@@ -45,12 +45,15 @@ graalvm() {
         distribution_tag="graalvm-ce-java$(perl -pe '$_ = $1 if /java(\d+)/o' <<< "${version}")"
         case "$platform_os" in
             "linux") os_tag="-linux" ;;
+            "macos") os_tag="-darwin" ;;
             "osx") os_tag="-darwin" ;;
             "win") os_tag="-windows"; file_extension="zip";  ;;
         esac
         case "$platform_arch" in
             "x64") arch_tag="-amd64" ;;
+            "amd64") arch_tag="-amd64" ;;
             "arm64") arch_tag="-aarch64" ;;
+            "aarch64") arch_tag="-aarch64" ;;
         esac
         suffix="-${release_tag}.${file_extension}"
     elif [[ "${version}" =~ ^jdk- ]]; then
@@ -63,7 +66,9 @@ graalvm() {
         esac
         case "$platform_arch" in
             "x64") arch_tag="-x64" ;;
+            "amd64") arch_tag="-x64" ;;
             "arm64") arch_tag="-aarch64" ;;
+            "aarch64") arch_tag="-aarch64" ;;
         esac
         suffix="_bin.${file_extension}"
     else
