@@ -61,6 +61,7 @@ project {
     buildType(BuildForWindows)
     buildType(BuildForMacOSAndIOS)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
+    buildType(BuildForLinuxAarch64)
 }
 
 object BuildPatchAndDeployLinux : BuildType({
@@ -448,6 +449,38 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
                 docker rmi -f ${'$'}(docker images -aq)
                 docker logout
             """.trimIndent()
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
+object BuildForLinuxAarch64 : BuildType({
+    name = "Build for Linux Aarch64"
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                mvn clean package
+            """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m 8GB"
+        }
+    }
+
+    features {
+        dockerSupport {
+            loginToRegistry = on {
+                dockerRegistryId = "PROJECT_EXT_153"
+            }
         }
     }
 
