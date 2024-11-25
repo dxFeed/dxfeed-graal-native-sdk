@@ -40,6 +40,7 @@
 # Use Oracle Linux 7 (binary compatible with RHEL 7) for glibc 2.17.
 FROM oraclelinux:7-slim
 
+ARG GRAALVM_VERSION="java11-22.3.1"
 ARG TARGETPLATFORM="linux-x64"
 
 # Update and install dependencies.
