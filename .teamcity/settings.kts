@@ -472,7 +472,7 @@ object BuildForLinuxAarch64 : BuildType({
             """.trimIndent()
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m 10GB"
         }
     }
 
@@ -486,6 +486,7 @@ object BuildForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
+
     }
 })
 
