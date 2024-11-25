@@ -468,7 +468,7 @@ object BuildForLinuxAarch64 : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn clean package
+                mvn clean package -e
             """.trimIndent()
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
