@@ -60,6 +60,7 @@ project {
     buildType(BuildForLinux)
     buildType(BuildForWindows)
     buildType(BuildForMacOSAndIOS)
+    buildType(BuildAndPushDockerImageForLinuxAarch64)
 }
 
 object BuildPatchAndDeployLinux : BuildType({
@@ -417,6 +418,35 @@ object BuildForLinux : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Linux")
+    }
+})
+
+object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
+    name = "Build and push a docker image for Linux Aarch64"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                docker login dxfeed-docker.jfrog.io -p %env.JFROG_USER% -u %env.JFROG_PASSWORD%
+                docker build --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" --build-arg TARGETPLATFORM="linux-aarch64" -t graalvm:linux-aarch64-%env.GRAALVM_VERSION% -f .\.teamcity\graalvm-linux-x64.Dockerfile .\.teamcity\
+                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%
+                docker logout
+            """.trimIndent()
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
     }
 })
 
