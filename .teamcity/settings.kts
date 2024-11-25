@@ -438,7 +438,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
             name = "Build"
             scriptContent = """
                 docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
-                docker build -t graalvm:linux-aarch64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" --build-arg TARGETPLATFORM="linux-aarch64" -f .\.teamcity\graalvm-linux-x64.Dockerfile .\.teamcity\
+                docker build -t graalvm:linux-aarch64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f .teamcity/graalvm-linux-aarch64.Dockerfile .teamcity/
                 docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%
                 docker logout
             """.trimIndent()
