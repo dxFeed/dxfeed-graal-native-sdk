@@ -464,15 +464,21 @@ object BuildForLinuxAarch64 : BuildType({
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
     }
 
+    params {
+        param("env.DOCKER_MEMORY_SIZE", "8G")
+    }
+
     steps {
         script {
             name = "Build"
             scriptContent = """
                 mvn clean package
             """.trimIndent()
+            formatStderrAsError = true
+
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 4G"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
