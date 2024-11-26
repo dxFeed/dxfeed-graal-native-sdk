@@ -465,7 +465,7 @@ object BuildForLinuxAarch64 : BuildType({
     }
 
     params {
-        param("env.DOCKER_MEMORY_SIZE", "8G")
+        param("env.DOCKER_MEMORY_SIZE", "4G")
     }
 
     steps {
