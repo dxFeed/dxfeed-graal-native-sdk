@@ -472,7 +472,7 @@
               --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
             </buildArg>
             <buildArg>-march=compatibility</buildArg>
-            <arg>-J-Xmx500m</arg>
+            <!--<arg>-J-Xmx500m</arg>-->
           </buildArgs>
         </configuration>
       </plugin>
