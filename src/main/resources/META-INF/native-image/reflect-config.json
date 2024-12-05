@@ -73,6 +73,10 @@
   "name":"com.devexperts.logging.Log4jLogging"
 },
 {
+  "name":"com.devexperts.logging.InterceptableLogging",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.devexperts.mars.jvm.JVMSelfMonitoring",
   "queryAllPublicConstructors":true
 },

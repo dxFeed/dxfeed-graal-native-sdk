@@ -6,6 +6,7 @@ package com.dxfeed.sdk;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.devexperts.auth.AuthToken;
+import com.devexperts.logging.InterceptableLoggingListener;
 import com.devexperts.util.SystemProperties;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
@@ -116,6 +117,8 @@ import com.dxfeed.sdk.javac.DxfgTimeFormat;
 import com.dxfeed.sdk.javac.DxfgTimePeriod;
 import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import com.dxfeed.sdk.logging.DxfgInterceptableLoggingListenerHandle;
+import com.dxfeed.sdk.logging.InterceptableLoggingListenerMapper;
 import com.dxfeed.sdk.mappers.AuthTokenMapper;
 import com.dxfeed.sdk.mappers.DayFilterMapper;
 import com.dxfeed.sdk.mappers.DayMapper;
@@ -271,6 +274,7 @@ public final class NativeUtils {
   public static final Mapper<CFI.Attribute, DxfgCFIAttributeHandle> MAPPER_CFI_ATTRIBUTE;
   public static final Mapper<CFI.Value, DxfgCFIValueHandle> MAPPER_CFI_VALUE;
   public static final Mapper<PriceIncrements, DxfgPriceIncrementsHandle> MAPPER_PRICE_INCREMENTS;
+  public static final Mapper<InterceptableLoggingListener, DxfgInterceptableLoggingListenerHandle> MAPPER_INTERCEPTABLE_LOGGING_LISTENER;
 
 
   static {
@@ -370,6 +374,7 @@ public final class NativeUtils {
     MAPPER_CFI_ATTRIBUTE = new CFIAttributeMapper();
     MAPPER_CFI_VALUE = new CFIValueMapper();
     MAPPER_PRICE_INCREMENTS = new PriceIncrementsMapper();
+    MAPPER_INTERCEPTABLE_LOGGING_LISTENER = new InterceptableLoggingListenerMapper();
   }
 
   public static class Finalizer {

@@ -125,7 +125,17 @@ int32_t                         dxfg_DXEndpoint_removeStateChangeListener(graal_
 dxfg_feed_t*                    dxfg_DXEndpoint_getFeed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 dxfg_publisher_t*               dxfg_DXEndpoint_getPublisher(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 int32_t                         dxfg_DXEndpoint_executor(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_executor_t *executor);
-dxfg_event_clazz_list_t*        dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+
+/**
+ * Returns a set of all event types supported by this endpoint and the current version of the dxFeed Native Graal SDK
+ * (all other event types will be filtered out).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @return A set of supported event types.
+ * Use dxfg_CList_EventClazz_release() to free the list's handle.
+ */
+dxfg_event_clazz_list_t *dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t *thread, dxfg_endpoint_state_change_listener_func user_func, void *user_data);
 

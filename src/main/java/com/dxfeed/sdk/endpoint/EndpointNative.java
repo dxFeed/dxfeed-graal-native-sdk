@@ -3,20 +3,22 @@ package com.dxfeed.sdk.endpoint;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXEndpoint.State;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.stream.Collectors;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 @CContext(Directives.class)
 public final class EndpointNative {
@@ -95,7 +97,8 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return DxfgEndpointRole.of(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getRole()).getCValue();
+    return DxfgEndpointRole.of(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getRole())
+        .getCValue();
   }
 
   @CEntryPoint(
@@ -120,7 +123,8 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer password
   ) {
-    NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).password(NativeUtils.MAPPER_STRING.toJava(password));
+    NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+        .password(NativeUtils.MAPPER_STRING.toJava(password));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -133,7 +137,8 @@ public final class EndpointNative {
       final DxfgEndpoint dxfgEndpoint,
       final CCharPointer address
   ) {
-    NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).connect(NativeUtils.MAPPER_STRING.toJava(address));
+    NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+        .connect(NativeUtils.MAPPER_STRING.toJava(address));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -205,7 +210,8 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return DxfgEndpointState.of(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getState()).getCValue();
+    return DxfgEndpointState.of(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getState())
+        .getCValue();
   }
 
   @CEntryPoint(
@@ -257,7 +263,8 @@ public final class EndpointNative {
       final DxfgEndpointStateChangeListener listener
   ) {
     NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint)
-        .removeStateChangeListener(NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener));
+        .removeStateChangeListener(
+            NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toJava(listener));
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -269,7 +276,8 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return NativeUtils.MAPPER_FEED.toNative(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getFeed());
+    return NativeUtils.MAPPER_FEED.toNative(
+        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getFeed());
   }
 
   @CEntryPoint(
@@ -280,7 +288,8 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return NativeUtils.MAPPER_PUBLISHER.toNative(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getPublisher());
+    return NativeUtils.MAPPER_PUBLISHER.toNative(
+        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getPublisher());
   }
 
   @CEntryPoint(
@@ -305,6 +314,9 @@ public final class EndpointNative {
       final IsolateThread ignoredThread,
       final DxfgEndpoint dxfgEndpoint
   ) {
-    return NativeUtils.MAPPER_EVENT_TYPES.toNativeList(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getEventTypes());
+    return NativeUtils.MAPPER_EVENT_TYPES.toNativeList(
+        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getEventTypes().stream()
+            .filter(c -> DxfgEventClazz.of(c) != null)
+            .collect(Collectors.toSet()));
   }
 }

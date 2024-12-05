@@ -26,6 +26,7 @@ extern "C" {
 #include "dxfg_ondemand.h"
 #include "dxfg_schedule.h"
 #include "dxfg_glossary.h"
+#include "dxfg_logging.h"
 
 #ifdef __cplusplus
 }
