@@ -53,6 +53,7 @@ project {
 
     buildType(BuildPatchAndDeployLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
+    // buildType(DeployForLinuxAarch64)
     buildType(DeployWindows)
     buildType(DeployMacOsAndIOS)
     buildType(DeployNuget)
@@ -169,6 +170,62 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 })
 
+object DeployForLinuxAarch64 : BuildType({
+    name = "Deploy for Linux Aarch64"
+
+    params {
+        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "4G")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Checkout Latest Tag"
+            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
+        }
+
+        script {
+            name = "Deploy"
+            scriptContent = """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+            """.trimIndent()
+            formatStderrAsError = true
+
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${BuildPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+    }
+
+    features {
+        dockerSupport {
+            loginToRegistry = on {
+                dockerRegistryId = "PROJECT_EXT_153"
+            }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
 object DeployWindows : BuildType({
     name = "Deploy Windows"
 
@@ -201,8 +258,13 @@ object DeployWindows : BuildType({
             dockerRunParameters = "--rm -m 4GB"
         }
     }
+    //DeployForLinuxAarch64
 
     triggers {
+//        finishBuildTrigger {
+//            buildType = "${DeployForLinuxAarch64.id}"
+//            successfulOnly = true
+//        }
         finishBuildTrigger {
             buildType = "${BuildPatchAndDeployLinux.id}"
             successfulOnly = true
@@ -307,6 +369,7 @@ object DeployNuget : BuildType({
                 version=${'$'}{version#"v"}
 
                 download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
+                # download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
                 download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
                 download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
                 download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
