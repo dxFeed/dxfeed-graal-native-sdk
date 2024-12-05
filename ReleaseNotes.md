@@ -1,3 +1,6 @@
+## v2.1.0
+
+* The TeamCity settings were prepared to support build on linux-aarch64.
 * Fixed the `dxfg_DXEndpoint_getEventTypes` function for unknown event types.
 * Added `BuildForLinuxAarch64` build step to allow to check project build on `linux-aarch64`.
 * Added `BuildAndPushDockerImageForLinuxAarch64` build step to allow to create `linux-aarch64` docker images.
