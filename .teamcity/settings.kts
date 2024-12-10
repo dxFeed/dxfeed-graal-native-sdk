@@ -223,7 +223,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        equals("teamcity.agent.hostname", "macbuilder20")
+        contains("teamcity.agent.hostname", "macbuilder20")
     }
 })
 
@@ -556,7 +556,7 @@ object BuildForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        equals("teamcity.agent.hostname", "macbuilder20")
+        contains("teamcity.agent.hostname", "macbuilder20")
     }
 })
 
