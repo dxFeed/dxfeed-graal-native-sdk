@@ -53,7 +53,7 @@ project {
 
     buildType(BuildPatchAndDeployLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
-    // buildType(DeployForLinuxAarch64)
+    buildType(DeployForLinuxAarch64)
     buildType(DeployWindows)
     buildType(DeployMacOsAndIOS)
     buildType(DeployNuget)
