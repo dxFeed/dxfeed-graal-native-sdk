@@ -223,6 +223,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        equals("teamcity.agent.hostname", "macbuilder20")
     }
 })
 
@@ -261,18 +262,18 @@ object DeployWindows : BuildType({
     //DeployForLinuxAarch64
 
     triggers {
+        finishBuildTrigger {
+            buildType = "${DeployForLinuxAarch64.id}"
+            successfulOnly = true
+        }
 //        finishBuildTrigger {
-//            buildType = "${DeployForLinuxAarch64.id}"
+//            buildType = "${BuildPatchAndDeployLinux.id}"
 //            successfulOnly = true
 //        }
-        finishBuildTrigger {
-            buildType = "${BuildPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
+//        finishBuildTrigger {
+//            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+//            successfulOnly = true
+//        }
     }
 
     features {
@@ -369,7 +370,7 @@ object DeployNuget : BuildType({
                 version=${'$'}{version#"v"}
 
                 download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
-                # download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
+                download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
                 download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
                 download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
                 download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
@@ -555,7 +556,7 @@ object BuildForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-
+        equals("teamcity.agent.hostname", "macbuilder20")
     }
 })
 
