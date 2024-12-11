@@ -38,9 +38,6 @@ public class InterceptableLogging extends DefaultLogging {
     try {
       var logLevel = System.getProperty(propertyName, defaultValue);
 
-      System.err.println("NAME: " + propertyName + ", VALUE: " + defaultValue);
-      System.err.println("LOG LEVEL: " + logLevel);
-
       if (logLevel.equalsIgnoreCase("ERROR") || logLevel.equalsIgnoreCase("ERR")) {
         return Level.SEVERE;
       }
