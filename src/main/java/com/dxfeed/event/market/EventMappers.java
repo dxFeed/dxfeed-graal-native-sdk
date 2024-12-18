@@ -15,6 +15,7 @@ import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_QUOTE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_SERIES;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_SPREAD_ORDER;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_SUMMARY;
+import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_TEXT_MESSAGE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_THEO_PRICE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_TRADE;
@@ -26,6 +27,7 @@ import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
+import com.dxfeed.event.misc.TextMessage;
 import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
@@ -66,9 +68,11 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
       final SummaryMapper summaryMapper,
       final ProfileMapper profileMapper,
       final DailyCandleMapper dailyCandleMapper,
-      final CandleMapper candleMapper
+      final CandleMapper candleMapper,
+      final TextMessageMapper textMessageMapper
   ) {
     this.stringMapperForMarketEvent = stringMapperForMarketEvent;
+
     this.mapperByClass = new HashMap<>();
     this.mapperByClass.put(Quote.class, quoteMapper);
     this.mapperByClass.put(Series.class, seriesMapper);
@@ -90,6 +94,8 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByClass.put(Profile.class, profileMapper);
     this.mapperByClass.put(DailyCandle.class, dailyCandleMapper);
     this.mapperByClass.put(Candle.class, candleMapper);
+    this.mapperByClass.put(TextMessage.class, textMessageMapper);
+
     this.mapperByDxfgEventType = new EnumMap<>(DxfgEventClazz.class);
     this.mapperByDxfgEventType.put(DXFG_EVENT_QUOTE, quoteMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_SERIES, seriesMapper);
@@ -111,6 +117,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByDxfgEventType.put(DXFG_EVENT_PROFILE, profileMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_DAILY_CANDLE, dailyCandleMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_CANDLE, candleMapper);
+    this.mapperByDxfgEventType.put(DXFG_EVENT_TEXT_MESSAGE, textMessageMapper);
   }
 
   @Override

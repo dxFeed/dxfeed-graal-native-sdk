@@ -17,6 +17,7 @@ import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeETH;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
+import com.dxfeed.event.misc.TextMessage;
 import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
@@ -52,6 +53,7 @@ public enum DxfgEventClazz {
   DXFG_EVENT_SPREAD_ORDER(SpreadOrder.class),    // INDEXED -> ORDER_BASE
   DXFG_EVENT_SERIES(Series.class),               // INDEXED
   DXFG_EVENT_OPTION_SALE(OptionSale.class),      // INDEXED
+  DXFG_EVENT_TEXT_MESSAGE(TextMessage.class),    //
   ;
   private static final Map<Class<? extends EventType<?>>, DxfgEventClazz> map = new HashMap<>();
 
@@ -77,6 +79,7 @@ public enum DxfgEventClazz {
     map.put(SpreadOrder.class, DXFG_EVENT_SPREAD_ORDER);
     map.put(Series.class, DXFG_EVENT_SERIES);
     map.put(OptionSale.class, DXFG_EVENT_OPTION_SALE);
+    map.put(TextMessage.class, DXFG_EVENT_TEXT_MESSAGE);
   }
 
   public final Class<? extends EventType<?>> clazz;

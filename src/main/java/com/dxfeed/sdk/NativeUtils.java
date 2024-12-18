@@ -42,6 +42,7 @@ import com.dxfeed.event.market.QuoteMapper;
 import com.dxfeed.event.market.SeriesMapper;
 import com.dxfeed.event.market.SpreadOrderMapper;
 import com.dxfeed.event.market.SummaryMapper;
+import com.dxfeed.event.market.TextMessageMapper;
 import com.dxfeed.event.market.TheoPriceMapper;
 import com.dxfeed.event.market.TimeAndSaleMapper;
 import com.dxfeed.event.market.TradeETHMapper;
@@ -322,7 +323,8 @@ public final class NativeUtils {
         new SummaryMapper(MAPPER_STRING),
         new ProfileMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
-        new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL)
+        new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL),
+        new TextMessageMapper(MAPPER_STRING)
     );
     MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
     MAPPER_INDEXED_EVENT_SOURCES = new ListIndexedEventSourceMapper(MAPPER_INDEXED_EVENT_SOURCE);

@@ -107,6 +107,7 @@ typedef enum dxfg_event_clazz_t {
     DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
     DXFG_EVENT_SERIES,         // INDEXED
     DXFG_EVENT_OPTION_SALE,    // INDEXED
+    DXFG_EVENT_TEXT_MESSAGE,   //
 } dxfg_event_clazz_t;
 
 /**
@@ -475,6 +476,17 @@ typedef struct dxfg_series_t {
     double dividend;
     double interest;
 } dxfg_series_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextMessage.html">Javadoc</a>
+ */
+typedef struct dxfg_text_message_t {
+    dxfg_event_type_t event_type;
+    const char *event_symbol;
+    int64_t event_time;
+    int64_t time_sequence;
+    const char *text;
+} dxfg_text_message_t;
 
 typedef struct dxfg_event_type_list {
     int32_t size;

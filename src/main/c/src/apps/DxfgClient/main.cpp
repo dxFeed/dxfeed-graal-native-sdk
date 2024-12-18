@@ -225,6 +225,12 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
                option_sale->market_event.event_symbol, option_sale->index, option_sale->volatility,
                option_sale->option_symbol);
     } break;
+    case DXFG_EVENT_TEXT_MESSAGE: {
+        auto *text_message = (dxfg_text_message_t *)event;
+
+        printf("  TEXT_MESSAGE{event_symbol=%s, event_time=%" PRId64 ", time_sequence=%" PRId64 ", text=%s}\n",
+               text_message->event_symbol, text_message->event_time, text_message->time_sequence, text_message->text);
+    } break;
 
     default:
         printf("  %u{}\n", event->clazz);

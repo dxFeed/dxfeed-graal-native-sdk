@@ -1,3 +1,10 @@
+## v2.2.0
+
+* **\[MDAPI-222]\[Graal]** Implement TextMessage event
+    * Added `DxfgTextMessage` interface (`dxfg_text_message_t` struct), mappers, etc.
+    * Added `DXFG_EVENT_TEXT_MESSAGE` enum value.
+    * Improved the `DxfgClient` tool.
+
 ## v2.1.0
 
 * The TeamCity settings were prepared to support build on linux-aarch64.
