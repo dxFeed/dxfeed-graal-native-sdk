@@ -518,6 +518,27 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":[] }, {"name":"getAttachment","parameterTypes":["java.lang.ClassLoader"] }, {"name":"getEventSymbol","parameterTypes":[] }, {"name":"getEventTime","parameterTypes":[] }, {"name":"getMarshalledAttachment","parameterTypes":[] }, {"name":"readObject","parameterTypes":["java.io.ObjectInputStream"] }, {"name":"setAttachment","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.Object"] }, {"name":"setEventSymbol","parameterTypes":["java.lang.String"] }, {"name":"setEventTime","parameterTypes":["long"] }, {"name":"setMarshalledAttachment","parameterTypes":["com.devexperts.io.Marshalled"] }, {"name":"toString","parameterTypes":[] }, {"name":"writeObject","parameterTypes":["java.io.ObjectOutputStream"] }]
 },
 {
+  "name":"com.dxfeed.event.misc.TextMessage",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] },
+    {"name":"getEventSymbol","parameterTypes":[] },
+    {"name":"getEventTime","parameterTypes":[] },
+    {"name":"getTimeSequence","parameterTypes":[] },
+    {"name":"getTime","parameterTypes":[] },
+    {"name":"getSequence","parameterTypes":[] },
+    {"name":"getText","parameterTypes":[] },
+    {"name":"setEventSymbol","parameterTypes":["java.lang.String"] },
+    {"name":"setEventTime","parameterTypes":["long"] },
+    {"name":"setTimeSequence","parameterTypes":["long"] },
+    {"name":"setTime","parameterTypes":["long"] },
+    {"name":"setSequence","parameterTypes":["int"] },
+    {"name":"setText","parameterTypes":["java.lang.String"] },
+    {"name":"toString","parameterTypes":[] }
+    ]
+},
+{
   "name":"com.dxfeed.event.misc.MiscFactoryImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
