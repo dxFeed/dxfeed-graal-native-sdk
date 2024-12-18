@@ -1,6 +1,5 @@
 package com.dxfeed.event.market;
 
-import com.devexperts.logging.Logging;
 import com.dxfeed.event.misc.TextMessage;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgTextMessage;
@@ -11,7 +10,6 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class TextMessageMapper extends EventMapper<TextMessage, DxfgTextMessage> {
 
-  private final static Logging log = Logging.getLogging(TextMessageMapper.class.getCanonicalName());
   protected final Mapper<String, CCharPointer> stringMapper;
 
   public TextMessageMapper(
