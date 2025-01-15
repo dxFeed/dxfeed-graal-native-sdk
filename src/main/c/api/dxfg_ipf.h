@@ -211,6 +211,52 @@ int32_t                                       dxfg_InstrumentProfile_setDateFiel
 dxfg_string_list*                             dxfg_InstrumentProfile_getNonEmptyCustomFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 int32_t                                       dxfg_InstrumentProfile_release(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 
+typedef struct dxfg_instrument_profile_custom_fields_t {
+    dxfg_java_object_handler handler;
+} dxfg_instrument_profile_custom_fields_t;
+
+typedef struct dxfg_instrument_profile2_t {
+  char* type;
+  char* symbol;
+  char* description;
+  char* local_symbol;
+  char* local_description;
+  char* country;
+  char* opol;
+  char* exchange_data;
+  char* exchanges;
+  char* currency;
+  char* base_currency;
+  char* cfi;
+  char* isin;
+  char* sedol;
+  char* cusip;
+  int32_t icb;
+  int32_t sic;
+  double multiplier;
+  char* product;
+  char* underlying;
+  double spc;
+  char* additional_underlyings;
+  char* mmy;
+  int32_t expiration;
+  int32_t last_trade;
+  double strike;
+  char* option_type;
+  char* expiration_style;
+  char* settlement_style;
+  char* price_increments;
+  char* trading_hours;
+  dxfg_instrument_profile_custom_fields_t* instrument_profile_custom_fields;
+  int32_t instrument_profile_custom_fields_hash;
+} dxfg_instrument_profile2_t;
+
+
+int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, double number, char** result);
+int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, double* number);
+int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, char** result);
+int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, int32_t* date);
+
 /** @} */ // end of InstrumentProfile
 
 #ifdef __cplusplus

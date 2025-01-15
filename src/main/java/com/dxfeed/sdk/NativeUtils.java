@@ -53,6 +53,7 @@ import com.dxfeed.glossary.AdditionalUnderlyings;
 import com.dxfeed.glossary.CFI;
 import com.dxfeed.glossary.PriceIncrements;
 import com.dxfeed.ipf.InstrumentProfile;
+import com.dxfeed.ipf.InstrumentProfileCustomFields;
 import com.dxfeed.ipf.InstrumentProfileReader;
 import com.dxfeed.ipf.live.InstrumentProfileCollector;
 import com.dxfeed.ipf.live.InstrumentProfileConnection;
@@ -100,8 +101,10 @@ import com.dxfeed.sdk.glossary.mappers.CFIMapper;
 import com.dxfeed.sdk.glossary.mappers.CFIValueMapper;
 import com.dxfeed.sdk.glossary.mappers.PriceIncrementsMapper;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2Pointer;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileCollector;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileConnection;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfileCustomFieldsHandle;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileList;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfilePointer;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileReader;
@@ -134,8 +137,10 @@ import com.dxfeed.sdk.mappers.FeedEventListenerMapper;
 import com.dxfeed.sdk.mappers.FeedMapper;
 import com.dxfeed.sdk.mappers.IndexedEventModelMapper;
 import com.dxfeed.sdk.mappers.InputStreamMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfile2Mapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileCollectorMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileConnectionMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfileCustomFieldsMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileReaderMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileUpdateListenerMapper;
@@ -277,6 +282,9 @@ public final class NativeUtils {
   public static final Mapper<CFI.Value, DxfgCFIValueHandle> MAPPER_CFI_VALUE;
   public static final Mapper<PriceIncrements, DxfgPriceIncrementsHandle> MAPPER_PRICE_INCREMENTS;
   public static final Mapper<InterceptableLoggingListener, DxfgInterceptableLoggingListenerHandle> MAPPER_INTERCEPTABLE_LOGGING_LISTENER;
+  public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
+  public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
+  public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2_CACHED;
 
 
   static {
@@ -379,6 +387,9 @@ public final class NativeUtils {
     MAPPER_CFI_VALUE = new CFIValueMapper();
     MAPPER_PRICE_INCREMENTS = new PriceIncrementsMapper();
     MAPPER_INTERCEPTABLE_LOGGING_LISTENER = new InterceptableLoggingListenerMapper();
+    MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
+    MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
+    MAPPER_INSTRUMENT_PROFILE_2_CACHED = new InstrumentProfile2Mapper(MAPPER_STRING_CACHE_STORE);
   }
 
   public static class Finalizer {

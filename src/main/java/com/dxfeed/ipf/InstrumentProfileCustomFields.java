@@ -3,6 +3,7 @@ package com.dxfeed.ipf;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
+/// A class for storing custom profile fields and working with them.
 public class InstrumentProfileCustomFields {
 
   private static final Field CUSTOM_FIELDS_FIELD_INFO;
@@ -18,7 +19,12 @@ public class InstrumentProfileCustomFields {
 
   private String[] customFields;
 
-  InstrumentProfileCustomFields(InstrumentProfile profile) {
+  /**
+   * Creates an instance using the profile's custom fields.
+   *
+   * @param profile The source profile.
+   */
+  public InstrumentProfileCustomFields(InstrumentProfile profile) {
     try {
       customFields = (String[]) CUSTOM_FIELDS_FIELD_INFO.get(profile);
     } catch (final IllegalAccessException e) {
@@ -26,11 +32,21 @@ public class InstrumentProfileCustomFields {
     }
   }
 
-  InstrumentProfileCustomFields(String[] customFields) {
+  /**
+   * Creates an instance using the profile's custom fields.
+   *
+   * @param customFields The profile's custom fields array of pairs.
+   */
+  public InstrumentProfileCustomFields(String[] customFields) {
     this.customFields = customFields;
   }
 
-  void assignTo(InstrumentProfile profile) {
+  /**
+   * Assigns the current custom fields to profile.
+   *
+   * @param profile The destination profile.
+   */
+  public void assignTo(InstrumentProfile profile) {
     try {
       CUSTOM_FIELDS_FIELD_INFO.set(profile, customFields);
     } catch (final IllegalAccessException e) {
@@ -179,6 +195,13 @@ public class InstrumentProfileCustomFields {
     }
 
     return true;
+  }
+
+  /**
+   * @return {@code true} if the custom fields are null or empty.
+   */
+  public boolean areNullEmpty() {
+    return customFields == null || customFields.length == 0;
   }
 
   @Override

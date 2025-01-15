@@ -8,7 +8,7 @@ import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_instrument_profile2_t")
-public interface DxfgInstrumentProfile2 extends PointerBase {
+public interface DxfgInstrumentProfile2Pointer extends PointerBase {
 
   @CField("type")
   CCharPointer getType();
@@ -195,4 +195,16 @@ public interface DxfgInstrumentProfile2 extends PointerBase {
 
   @CField("trading_hours")
   void setTradingHours(CCharPointer value);
+
+  @CField("instrument_profile_custom_fields")
+  DxfgInstrumentProfileCustomFieldsHandle getInstrumentProfileCustomFields();
+
+  @CField("instrument_profile_custom_fields")
+  void setInstrumentProfileCustomFields(DxfgInstrumentProfileCustomFieldsHandle value);
+
+  @CField("instrument_profile_custom_fields_hash")
+  int getInstrumentProfileCustomFieldsHash();
+
+  @CField("instrument_profile_custom_fields_hash")
+  void setInstrumentProfileCustomFieldsHash(int value);
 }
