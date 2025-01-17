@@ -9,6 +9,8 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointerPointer;
+import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
@@ -38,6 +40,23 @@ public class CommonNative {
   public static int dxfgFree(final IsolateThread ignoredThread,
       final VoidPointer pointer) {
     UnmanagedMemory.free(pointer);
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_free_strings",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfgFreeStrings(final IsolateThread ignoredThread,
+      @CConst CCharPointerPointer strings, int size) {
+    if (strings.isNonNull() && size > 0) {
+      for (int i = 0; i < size; i++) {
+        NativeUtils.MAPPER_STRING.release(strings.addressOf(i).read());
+      }
+
+      UnmanagedMemory.free(strings);
+    }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

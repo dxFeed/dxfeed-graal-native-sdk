@@ -252,10 +252,22 @@ typedef struct dxfg_instrument_profile2_t {
 } dxfg_instrument_profile2_t;
 
 
-int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, double number, char** result);
-int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, double* number);
-int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, char** result);
-int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, int32_t* date);
+int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, double number, DXFG_OUT char** result);
+int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT double* number);
+int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, DXFG_OUT char** result);
+int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT int32_t* date);
+
+int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
+int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, const char** custom_fields_array,
+    int32_t size, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
+int32_t dxfg_InstrumentProfileCustomFields_getField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT char** result);
+int32_t dxfg_InstrumentProfileCustomFields_setField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, const char* value);
+int32_t dxfg_InstrumentProfileCustomFields_getNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT double* result);
+int32_t dxfg_InstrumentProfileCustomFields_setNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, double value);
+int32_t dxfg_InstrumentProfileCustomFields_getDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT int32_t* result);
+int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, int32_t value);
+// dxfg_free_strings
+int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT char*** target_field_names, DXFG_OUT int32_t* size, DXFG_OUT int32_t* updated);
 
 /** @} */ // end of InstrumentProfile
 

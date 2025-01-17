@@ -33,6 +33,13 @@ public class InstrumentProfileCustomFields {
   }
 
   /**
+   * Creates an empty instance.
+   */
+  public InstrumentProfileCustomFields() {
+    this.customFields = new String[]{};
+  }
+
+  /**
    * Creates an instance using the profile's custom fields.
    *
    * @param customFields The profile's custom fields array of pairs.
@@ -60,7 +67,7 @@ public class InstrumentProfileCustomFields {
    * @param name name of custom field.
    * @return custom field value with a specified name.
    */
-  private String getField(String name) {
+  public String getField(String name) {
     String[] customFields = this.customFields;
 
     return customFields == null ? null : ArrayMap.get(customFields, name);
@@ -72,7 +79,7 @@ public class InstrumentProfileCustomFields {
    * @param name  name of custom field.
    * @param value custom field value.
    */
-  private void setField(String name, String value) {
+  public void setField(String name, String value) {
     String[] customFields = this.customFields;
 
     if (!value.isEmpty()) {
