@@ -67,6 +67,15 @@ int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread,
  */
 int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer);
 
+/**
+ * Frees array of C-strings.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] strings The array of strings.
+ * @param[in] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t size);
 
 /** @} */ // end of Common
