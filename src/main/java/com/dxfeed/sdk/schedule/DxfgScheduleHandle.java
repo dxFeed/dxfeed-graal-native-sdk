@@ -7,6 +7,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_schedule_t")
-public interface DxfgSchedule extends JavaObjectHandler<Schedule> {
+public interface DxfgScheduleHandle extends JavaObjectHandler<Schedule> {
 
 }

@@ -40,7 +40,6 @@ public class InstrumentProfile2Mapper extends
 
     cleanNative(nativeObject);
     NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.release(nativeObject.getInstrumentProfileCustomFields());
-    UnmanagedMemory.free(nativeObject);
   }
 
   @Override

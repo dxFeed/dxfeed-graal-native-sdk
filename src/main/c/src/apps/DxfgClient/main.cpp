@@ -40,6 +40,7 @@
 #include "TxIndexedEventModelCase.hpp"
 #include "InstrumentProfileFieldCase.hpp"
 #include "InstrumentProfileCustomFieldsCase.hpp"
+#include "InstrumentProfileReaderBench.hpp"
 
 #include <cinttypes>
 
@@ -314,6 +315,7 @@ int main(int argc, char *argv[]) {
         txIndexedEventModelCase,
         instrumentProfileFieldCase,
         instrumentProfileCustomFieldsCase,
+        instrumentProfileReaderBench,
     };
 
     for (auto const &c : cases) {

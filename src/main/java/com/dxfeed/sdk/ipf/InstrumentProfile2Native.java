@@ -19,6 +19,7 @@ public class InstrumentProfile2Native {
       DxfgInstrumentProfile2Pointer instrumentProfile) {
     if (instrumentProfile.isNonNull()) {
       NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.release(instrumentProfile);
+      UnmanagedMemory.free(instrumentProfile);
     }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
@@ -32,6 +33,7 @@ public class InstrumentProfile2Native {
       DxfgInstrumentProfile2Pointer instrumentProfile) {
     if (instrumentProfile.isNonNull()) {
       NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.release(instrumentProfile);
+      UnmanagedMemory.free(instrumentProfile);
     }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;

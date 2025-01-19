@@ -6,20 +6,26 @@ import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.CCharPointerPointerPointer;
+import com.dxfeed.sdk.common.CInt32Pointer;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2Pointer;
 import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import java.io.IOException;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CCharPointerPointer;
+import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.word.Pointer;
-
-import java.io.IOException;
 
 @CContext(Directives.class)
 public class ScheduleNative {
@@ -33,7 +39,7 @@ public class ScheduleNative {
       final DxfgSessionFilterFunction dxfgSessionFilterFunction
   ) {
     return NativeUtils.MAPPER_SESSION_FILTER.toNative(
-        new SessionFilter(null, null){
+        new SessionFilter(null, null) {
           @Override
           public boolean accept(final Session session) {
             return dxfgSessionFilterFunction.invoke(
@@ -65,7 +71,7 @@ public class ScheduleNative {
       final DxfgDayFilterFunction dxfgDayFilterFunction
   ) {
     return NativeUtils.MAPPER_DAY_FILTER.toNative(
-        new DayFilter(0, null, null, null){
+        new DayFilter(0, null, null, null) {
           @Override
           public boolean accept(final Day day) {
             return dxfgDayFilterFunction.invoke(
@@ -92,20 +98,64 @@ public class ScheduleNative {
       name = "dxfg_Schedule_getInstance",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgSchedule dxfg_Schedule_getInstance(
+  public static DxfgScheduleHandle dxfg_Schedule_getInstance(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile dxfgInstrumentProfile
   ) {
+    //noinspection DataFlowIssue
     return NativeUtils.MAPPER_SCHEDULE.toNative(
         Schedule.getInstance(NativeUtils.MAPPER_INSTRUMENT_PROFILE.toJava(dxfgInstrumentProfile))
     );
   }
 
   @CEntryPoint(
+      name = "dxfg_Schedule_getInstance_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getInstance_v2(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      final @DxfgOut DxfgScheduleHandlePointer schedule
+  ) {
+    if (schedule.isNull()) {
+      throw new IllegalArgumentException("The `schedule` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
+        Schedule.getInstance(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile))
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Schedule_getInstance_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getInstance_v2_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      final @DxfgOut DxfgScheduleHandlePointer schedule
+  ) {
+    if (schedule.isNull()) {
+      throw new IllegalArgumentException("The `schedule` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
+        Schedule.getInstance(
+            NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile))
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_Schedule_getInstance2",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgSchedule dxfg_Schedule_getInstance2(
+  public static DxfgScheduleHandle dxfg_Schedule_getInstance2(
       final IsolateThread ignoredThread,
       final CCharPointer scheduleDefinition
   ) {
@@ -118,7 +168,7 @@ public class ScheduleNative {
       name = "dxfg_Schedule_getInstance3",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgSchedule dxfg_Schedule_getInstance3(
+  public static DxfgScheduleHandle dxfg_Schedule_getInstance3(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile dxfgInstrumentProfile,
       final CCharPointer venue
@@ -132,6 +182,53 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_Schedule_getInstance3_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getInstance3_v2(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      @CConst final CCharPointer venue,
+      final @DxfgOut DxfgScheduleHandlePointer schedule
+  ) {
+    if (schedule.isNull()) {
+      throw new IllegalArgumentException("The `schedule` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
+        Schedule.getInstance(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile),
+            NativeUtils.MAPPER_STRING.toJava(venue))
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Schedule_getInstance3_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getInstance3_v2_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      @CConst final CCharPointer venue,
+      final @DxfgOut DxfgScheduleHandlePointer schedule
+  ) {
+    if (schedule.isNull()) {
+      throw new IllegalArgumentException("The `schedule` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
+        Schedule.getInstance(
+            NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile),
+            NativeUtils.MAPPER_STRING.toJava(venue))
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_Schedule_getTradingVenues",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
@@ -140,8 +237,83 @@ public class ScheduleNative {
       final DxfgInstrumentProfile dxfgInstrumentProfile
   ) {
     return NativeUtils.MAPPER_STRINGS.toNativeList(
-        Schedule.getTradingVenues(NativeUtils.MAPPER_INSTRUMENT_PROFILE.toJava(dxfgInstrumentProfile))
+        Schedule.getTradingVenues(
+            NativeUtils.MAPPER_INSTRUMENT_PROFILE.toJava(dxfgInstrumentProfile))
     );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Schedule_getTradingVenues_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getTradingVenues_v2(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      @DxfgOut CCharPointerPointerPointer venues,
+      @DxfgOut final CInt32Pointer size
+  ) {
+    if (venues.isNull()) {
+      throw new IllegalArgumentException("The `venues` pointer is null");
+    }
+
+    if (size.isNull()) {
+      throw new IllegalArgumentException("The `size` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    var javaVenues = Schedule.getTradingVenues(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile));
+
+    CCharPointerPointer venuesPtr = UnmanagedMemory.calloc(
+        javaVenues.size() * SizeOf.get(CCharPointer.class));
+
+    for (int i = 0; i < javaVenues.size(); i++) {
+      var venuePtr = venuesPtr.addressOf(i);
+
+      venuePtr.write(NativeUtils.MAPPER_STRING.toNative(javaVenues.get(i)));
+    }
+
+    venues.write(venuesPtr);
+    size.write(javaVenues.size());
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Schedule_getTradingVenues_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Schedule_getTradingVenues_v2_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfile2Pointer instrumentProfile,
+      @DxfgOut CCharPointerPointerPointer venues,
+      @DxfgOut final CInt32Pointer size
+  ) {
+    if (venues.isNull()) {
+      throw new IllegalArgumentException("The `venues` pointer is null");
+    }
+
+    if (size.isNull()) {
+      throw new IllegalArgumentException("The `size` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    var javaVenues = Schedule.getTradingVenues(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile));
+
+    CCharPointerPointer venuesPtr = UnmanagedMemory.calloc(
+        javaVenues.size() * SizeOf.get(CCharPointer.class));
+
+    for (int i = 0; i < javaVenues.size(); i++) {
+      var venuePtr = venuesPtr.addressOf(i);
+
+      venuePtr.write(NativeUtils.MAPPER_STRING.toNative(javaVenues.get(i)));
+    }
+
+    venues.write(venuesPtr);
+    size.write(javaVenues.size());
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
@@ -179,10 +351,11 @@ public class ScheduleNative {
   )
   public static DxfgSession dxfg_Schedule_getSessionByTime(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final long time
   ) {
-    return NativeUtils.MAPPER_SESSION.toNative(NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getSessionByTime(time));
+    return NativeUtils.MAPPER_SESSION.toNative(
+        NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getSessionByTime(time));
   }
 
   @CEntryPoint(
@@ -191,10 +364,11 @@ public class ScheduleNative {
   )
   public static DxfgDay dxfg_Schedule_getDayByTime(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final long time
   ) {
-    return NativeUtils.MAPPER_DAY.toNative(NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getDayByTime(time));
+    return NativeUtils.MAPPER_DAY.toNative(
+        NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getDayByTime(time));
   }
 
   @CEntryPoint(
@@ -203,10 +377,11 @@ public class ScheduleNative {
   )
   public static DxfgDay dxfg_Schedule_getDayById(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final int dayId
   ) {
-    return NativeUtils.MAPPER_DAY.toNative(NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getDayById(dayId));
+    return NativeUtils.MAPPER_DAY.toNative(
+        NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getDayById(dayId));
   }
 
   @CEntryPoint(
@@ -215,7 +390,7 @@ public class ScheduleNative {
   )
   public static DxfgDay dxfg_Schedule_getDayByYearMonthDay(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final int yearMonthDay
   ) {
     return NativeUtils.MAPPER_DAY.toNative(
@@ -229,7 +404,7 @@ public class ScheduleNative {
   )
   public static DxfgSession dxfg_Schedule_getNearestSessionByTime(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final long time,
       final DxfgSessionFilter dxfgSessionFilter
   ) {
@@ -247,7 +422,7 @@ public class ScheduleNative {
   )
   public static DxfgSession dxfg_Schedule_findNearestSessionByTime(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule,
+      final DxfgScheduleHandle dxfgSchedule,
       final long time,
       final DxfgSessionFilter dxfgSessionFilter
   ) {
@@ -265,9 +440,10 @@ public class ScheduleNative {
   )
   public static CCharPointer dxfg_Schedule_getName(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule
+      final DxfgScheduleHandle dxfgSchedule
   ) {
-    return NativeUtils.MAPPER_STRING.toNative(NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getName());
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getName());
   }
 
   @CEntryPoint(
@@ -276,7 +452,7 @@ public class ScheduleNative {
   )
   public static CCharPointer dxfg_Schedule_getTimeZone(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule
+      final DxfgScheduleHandle dxfgSchedule
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
         NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getTimeZone().getDisplayName());
@@ -288,7 +464,7 @@ public class ScheduleNative {
   )
   public static CCharPointer dxfg_Schedule_getTimeZone_getID(
       final IsolateThread ignoredThread,
-      final DxfgSchedule dxfgSchedule
+      final DxfgScheduleHandle dxfgSchedule
   ) {
     return NativeUtils.MAPPER_STRING.toNative(
         NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getTimeZone().getID());
@@ -464,18 +640,20 @@ public class ScheduleNative {
       final IsolateThread ignoredThread,
       final DxfgSession dxfgSession
   ) {
-    return NativeUtils.MAPPER_STRING.toNative(NativeUtils.MAPPER_SESSION.toJava(dxfgSession).toString());
+    return NativeUtils.MAPPER_STRING.toNative(
+        NativeUtils.MAPPER_SESSION.toJava(dxfgSession).toString());
   }
 
   @CEntryPoint(
       name = "dxfg_Day_getSchedule",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgSchedule dxfg_Day_getSchedule(
+  public static DxfgScheduleHandle dxfg_Day_getSchedule(
       final IsolateThread ignoredThread,
       final DxfgDay dxfgDay
   ) {
-    return NativeUtils.MAPPER_SCHEDULE.toNative(NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSchedule());
+    return NativeUtils.MAPPER_SCHEDULE.toNative(
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSchedule());
   }
 
   @CEntryPoint(
@@ -630,7 +808,8 @@ public class ScheduleNative {
       final IsolateThread ignoredThread,
       final DxfgDay dxfgDay
   ) {
-    return NativeUtils.MAPPER_SESSIONS.toNativeList(NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSessions());
+    return NativeUtils.MAPPER_SESSIONS.toNativeList(
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSessions());
   }
 
   @CEntryPoint(
@@ -642,7 +821,8 @@ public class ScheduleNative {
       final DxfgDay dxfgDay,
       final long time
   ) {
-    return NativeUtils.MAPPER_SESSION.toNative(NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSessionByTime(time));
+    return NativeUtils.MAPPER_SESSION.toNative(
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getSessionByTime(time));
   }
 
   @CEntryPoint(
@@ -655,7 +835,8 @@ public class ScheduleNative {
       final DxfgSessionFilter dxfgSessionFilter
   ) {
     return NativeUtils.MAPPER_SESSION.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getFirstSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .getFirstSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
     );
   }
 
@@ -669,7 +850,8 @@ public class ScheduleNative {
       final DxfgSessionFilter dxfgSessionFilter
   ) {
     return NativeUtils.MAPPER_SESSION.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getLastSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .getLastSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
     );
   }
 
@@ -683,7 +865,8 @@ public class ScheduleNative {
       final DxfgSessionFilter dxfgSessionFilter
   ) {
     return NativeUtils.MAPPER_SESSION.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).findFirstSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .findFirstSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
     );
   }
 
@@ -697,7 +880,8 @@ public class ScheduleNative {
       final DxfgSessionFilter dxfgSessionFilter
   ) {
     return NativeUtils.MAPPER_SESSION.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).findLastSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .findLastSession(NativeUtils.MAPPER_SESSION_FILTER.toJava(dxfgSessionFilter))
     );
   }
 
@@ -711,7 +895,8 @@ public class ScheduleNative {
       final DxfgDayFilter dxfgDayFilter
   ) {
     return NativeUtils.MAPPER_DAY.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getPrevDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .getPrevDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
     );
   }
 
@@ -725,7 +910,8 @@ public class ScheduleNative {
       final DxfgDayFilter dxfgDayFilter
   ) {
     return NativeUtils.MAPPER_DAY.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).getNextDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .getNextDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
     );
   }
 
@@ -739,7 +925,8 @@ public class ScheduleNative {
       final DxfgDayFilter dxfgDayFilter
   ) {
     return NativeUtils.MAPPER_DAY.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).findPrevDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .findPrevDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
     );
   }
 
@@ -753,7 +940,8 @@ public class ScheduleNative {
       final DxfgDayFilter dxfgDayFilter
   ) {
     return NativeUtils.MAPPER_DAY.toNative(
-        NativeUtils.MAPPER_DAY.toJava(dxfgDay).findNextDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay)
+            .findNextDay(NativeUtils.MAPPER_DAY_FILTER.toJava(dxfgDayFilter))
     );
   }
 
@@ -777,7 +965,9 @@ public class ScheduleNative {
       final DxfgDay dxfgDay,
       final DxfgDay dxfgOtherDay
   ) {
-    return NativeUtils.MAPPER_DAY.toJava(dxfgDay).equals(NativeUtils.MAPPER_DAY.toJava(dxfgOtherDay)) ? 1 : 0;
+    return
+        NativeUtils.MAPPER_DAY.toJava(dxfgDay).equals(NativeUtils.MAPPER_DAY.toJava(dxfgOtherDay))
+            ? 1 : 0;
   }
 
   @CEntryPoint(

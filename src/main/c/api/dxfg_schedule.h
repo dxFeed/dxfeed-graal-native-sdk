@@ -158,6 +158,86 @@ int32_t               dxfg_Day_release(graal_isolatethread_t *thread, dxfg_day_t
 int32_t               dxfg_Session_release(graal_isolatethread_t *thread, dxfg_session_t* session);
 int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *thread, dxfg_session_list* sessions); // release only the struct dxfg_session_list and keep the elements
 
+/**
+ * Creates a schedule instance based on a instrument profile.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[out] schedule The new schedule instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_Schedule_getInstance_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
+
+/**
+ * Creates a schedule instance based on a instrument profile.
+ * This is a caching version of the function. All string fields of the instrument profile, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[out] schedule The new schedule instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_Schedule_getInstance_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
+
+/**
+ * Creates a schedule instance based on a instrument profile and a venue.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[in] venue The venue.
+ * @param[out] schedule The new schedule instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_Schedule_getInstance3_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, const char *venue, DXFG_OUT dxfg_schedule_t* schedule);
+
+/**
+ * Creates a schedule instance based on a instrument profile and a venue.
+ * This is a caching version of the function. All string fields of the instrument profile, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[in] venue The venue.
+ * @param[out] schedule The new schedule instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_Schedule_getInstance3_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, const char *venue, DXFG_OUT dxfg_schedule_t* schedule);
+
+/**
+ * Returns trading venues by an instrument profile.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[out] venues Returned array of venues.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_free_strings() to free the result.
+ */
+int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT char*** venues, DXFG_OUT int32_t* size);
+
+/**
+ * Returns trading venues by an instrument profile.
+ * This is a caching version of the function. All string fields of the instrument profile, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrumentProfile The instrument profile.
+ * @param[out] venues Returned array of venues.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_free_strings() to free the result.
+ */
+int32_t dxfg_Schedule_getTradingVenues_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT char*** venues, DXFG_OUT int32_t* size);
+
+
 /** @} */ // end of Schedule
 
 #ifdef __cplusplus

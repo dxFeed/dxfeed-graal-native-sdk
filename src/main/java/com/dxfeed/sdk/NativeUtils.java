@@ -186,7 +186,7 @@ import com.dxfeed.sdk.publisher.DxfgObservableSubscription;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
 import com.dxfeed.sdk.schedule.DxfgDay;
 import com.dxfeed.sdk.schedule.DxfgDayFilter;
-import com.dxfeed.sdk.schedule.DxfgSchedule;
+import com.dxfeed.sdk.schedule.DxfgScheduleHandle;
 import com.dxfeed.sdk.schedule.DxfgSession;
 import com.dxfeed.sdk.schedule.DxfgSessionFilter;
 import com.dxfeed.sdk.schedule.DxfgSessionList;
@@ -275,7 +275,7 @@ public final class NativeUtils {
   public static final Mapper<Day, DxfgDay> MAPPER_DAY;
   public static final Mapper<SessionFilter, DxfgSessionFilter> MAPPER_SESSION_FILTER;
   public static final Mapper<DayFilter, DxfgDayFilter> MAPPER_DAY_FILTER;
-  public static final Mapper<Schedule, DxfgSchedule> MAPPER_SCHEDULE;
+  public static final Mapper<Schedule, DxfgScheduleHandle> MAPPER_SCHEDULE;
   public static final Mapper<AdditionalUnderlyings, DxfgAdditionalUnderlyingsHandle> MAPPER_ADDITIONAL_UNDERLYINGS;
   public static final Mapper<CFI, DxfgCFIHandle> MAPPER_CFI;
   public static final Mapper<CFI.Attribute, DxfgCFIAttributeHandle> MAPPER_CFI_ATTRIBUTE;
