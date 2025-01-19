@@ -67,7 +67,7 @@ int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread,
  */
 int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer);
 
-int32_t dxfg_free_strings(graal_isolatethread_t *thread, const char** strings, int32_t size);
+int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t size);
 
 /** @} */ // end of Common
 

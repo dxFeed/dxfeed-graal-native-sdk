@@ -39,6 +39,7 @@
 #include "SystemPropertiesCase.hpp"
 #include "TxIndexedEventModelCase.hpp"
 #include "InstrumentProfileFieldCase.hpp"
+#include "InstrumentProfileCustomFieldsCase.hpp"
 
 #include <cinttypes>
 
@@ -312,6 +313,7 @@ int main(int argc, char *argv[]) {
         systemPropertiesCase,
         txIndexedEventModelCase,
         instrumentProfileFieldCase,
+        instrumentProfileCustomFieldsCase,
     };
 
     for (auto const &c : cases) {
