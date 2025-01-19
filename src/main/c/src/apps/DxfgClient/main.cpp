@@ -38,6 +38,7 @@
 #include "ScheduleCase.hpp"
 #include "SystemPropertiesCase.hpp"
 #include "TxIndexedEventModelCase.hpp"
+#include "InstrumentProfileFieldCase.hpp"
 
 #include <cinttypes>
 
@@ -310,6 +311,7 @@ int main(int argc, char *argv[]) {
         schedule2Case,
         systemPropertiesCase,
         txIndexedEventModelCase,
+        instrumentProfileFieldCase,
     };
 
     for (auto const &c : cases) {
@@ -333,8 +335,8 @@ int main(int argc, char *argv[]) {
                               "Shows a list of all cases.",
                               "list",
                               {},
-                              [&cases](const Command & /*self*/, graal_isolatethread_t *isolateThread,
-                                       const std::vector<std::string> &args, const dxfg::CommandsContext &context) {
+                              [&cases](const Command & /*self*/, graal_isolatethread_t */*isolateThread*/,
+                                       const std::vector<std::string> & /*args*/, const dxfg::CommandsContext &context) {
                                   for (auto const &c : cases) {
                                       std::string info{};
 
