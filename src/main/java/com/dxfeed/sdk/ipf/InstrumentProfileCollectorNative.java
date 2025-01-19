@@ -4,14 +4,17 @@ import com.dxfeed.ipf.InstrumentProfile;
 import com.dxfeed.ipf.live.InstrumentProfileCollector;
 import com.dxfeed.ipf.live.InstrumentProfileUpdateListener;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -59,6 +62,34 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2(
+      final IsolateThread ignoredThread, final DxfgInstrumentProfileCollector collector,
+      final DxfgInstrumentProfile2Pointer instrumentProfile) {
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector)
+        .updateInstrumentProfile(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached(
+      final IsolateThread ignoredThread, final DxfgInstrumentProfileCollector collector,
+      final DxfgInstrumentProfile2Pointer instrumentProfile) {
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector)
+        .updateInstrumentProfile(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
@@ -72,6 +103,72 @@ public class InstrumentProfileCollectorNative {
         NativeUtils.MAPPER_INSTRUMENT_PROFILES.toJavaList(dxfgInstrumentProfiles),
         NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
     );
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @SuppressWarnings("SameReturnValue")
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCollector collector,
+      final DxfgInstrumentProfile2Pointer instrumentProfiles,
+      int size,
+      final JavaObjectHandler<Object> generation
+  ) {
+    if (instrumentProfiles.isNull() || size <= 0) {
+      return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    var profiles = new ArrayList<InstrumentProfile>();
+
+    for (int i = 0; i < size; i++) {
+      var profileNative = instrumentProfiles.addressOf(i);
+
+      profiles.add(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(profileNative));
+    }
+
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).updateInstrumentProfiles(
+        profiles,
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
+    );
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @SuppressWarnings("SameReturnValue")
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCollector collector,
+      final DxfgInstrumentProfile2Pointer instrumentProfiles,
+      int size,
+      final JavaObjectHandler<Object> generation
+  ) {
+    if (instrumentProfiles.isNull() || size <= 0) {
+      return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    var profiles = new ArrayList<InstrumentProfile>();
+
+    for (int i = 0; i < size; i++) {
+      var profileNative = instrumentProfiles.addressOf(i);
+
+      profiles.add(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(profileNative));
+    }
+
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).updateInstrumentProfiles(
+        profiles,
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
+    );
+
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
@@ -183,6 +280,46 @@ public class InstrumentProfileCollectorNative {
     return NativeUtils.MAPPER_INSTRUMENT_PROFILE.toNative(
         NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toJava(dxfgIterableInstrumentProfile).next()
     );
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Iterable_InstrumentProfile_next_v2",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Iterable_InstrumentProfile_next_v2(
+      final IsolateThread ignoredThread,
+      final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
+      @DxfgOut DxfgInstrumentProfile2PointerPointer instrumentProfile
+  ) {
+    if (instrumentProfile.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfile` pointer is null");
+    }
+
+    instrumentProfile.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toNative(
+        NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toJava(dxfgIterableInstrumentProfile).next()
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_Iterable_InstrumentProfile_next_v2_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Iterable_InstrumentProfile_next_v2_cached(
+      final IsolateThread ignoredThread,
+      final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
+      @DxfgOut DxfgInstrumentProfile2PointerPointer instrumentProfile
+  ) {
+    if (instrumentProfile.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfile` pointer is null");
+    }
+
+    instrumentProfile.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toNative(
+        NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toJava(dxfgIterableInstrumentProfile).next()
+    ));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(

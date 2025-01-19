@@ -1,5 +1,6 @@
 package com.dxfeed.ipf;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
@@ -45,7 +46,7 @@ public class InstrumentProfileCustomFields {
    * @param customFields The profile's custom fields array of pairs.
    */
   public InstrumentProfileCustomFields(String[] customFields) {
-    this.customFields = customFields;
+    this.customFields = ArrayMapTools.rehash(customFields);
   }
 
   /**
@@ -227,5 +228,49 @@ public class InstrumentProfileCustomFields {
     }
 
     return false;
+  }
+
+  static class ArrayMapTools {
+
+    private static final int GOLDEN_RATIO = 0x9E3779B9;
+
+    private static int initialIndex(int hash, int length) {
+      return (int) ((((hash * GOLDEN_RATIO) & 0xFFFFFFFFL) * (length & ~1)) >>> 32) & ~1;
+    }
+
+    private static <T> int putImpl(T[] a, T key, T value) {
+      int index = initialIndex(key.hashCode(), a.length);
+      for (int i = a.length & ~1; (i -= 2) >= 0; ) {
+        T k = a[index];
+        if (k == null) {
+          a[index] = key;
+          a[index + 1] = value;
+          return i;
+        }
+        if (key.equals(k)) {
+          a[index + 1] = value;
+          return i;
+        }
+        if ((index -= 2) < 0) {
+          index = (a.length & ~1) - 2;
+        }
+      }
+      return -2;
+    }
+
+    static <T> T[] rehash(T[] old) {
+      //noinspection unchecked
+      T[] a = (T[]) Array.newInstance(old.getClass().getComponentType(),
+          Math.max((old.length & ~1) * 2, 4));
+      for (int i = old.length & ~1; (i -= 2) >= 0; ) {
+        T k = old[i];
+        if (k != null) {
+          if (putImpl(a, k, old[i + 1]) < 0) {
+            throw new IllegalStateException("rehash failure");
+          }
+        }
+      }
+      return a;
+    }
   }
 }

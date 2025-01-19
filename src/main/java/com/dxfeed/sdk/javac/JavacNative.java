@@ -578,6 +578,24 @@ public class JavacNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_Object_new",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_Object_new(
+      final IsolateThread ignoredThread,
+      @DxfgOut final DxfgJavaObjectHandlePointer object
+  ) {
+    if (object.isNull()) {
+      throw new IllegalArgumentException("The `object` pointer is null");
+    }
+
+    object.write(
+        (DxfgJavaObjectHandle) NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toNative(new Object()));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_Object_toString",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )

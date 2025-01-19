@@ -28,6 +28,10 @@ typedef struct dxfg_java_object_handler {
     void *java_object_handle;
 } dxfg_java_object_handler;
 
+typedef struct dxfg_java_object_t {
+    void *java_object_handle;
+} dxfg_java_object_t;
+
 typedef struct dxfg_list {
     int32_t size;
     void **elements;
@@ -340,6 +344,17 @@ int32_t dxfg_JavaObjectHandler_clone(graal_isolatethread_t *thread, dxfg_java_ob
  */
 int32_t dxfg_JavaObjectHandler_array_release(graal_isolatethread_t *thread,
                                              const dxfg_java_object_handler **handlersArray, int32_t size);
+
+/**
+ * Creates the new Java Object.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[out] object The result object.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_Object_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_java_object_handler **object);
 
 ///
 const char *dxfg_Object_toString(graal_isolatethread_t *thread, dxfg_java_object_handler *object);

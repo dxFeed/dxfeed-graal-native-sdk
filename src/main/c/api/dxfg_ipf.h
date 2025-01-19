@@ -211,10 +211,16 @@ int32_t                                       dxfg_InstrumentProfile_setDateFiel
 dxfg_string_list*                             dxfg_InstrumentProfile_getNonEmptyCustomFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 int32_t                                       dxfg_InstrumentProfile_release(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 
+/// A structure that contains a handle to custom instrument profile fields (InstrumentProfileCustomFields).
+/// Use the dxfg_JavaObjectHandler_clone() function to extend life of this handle (clone the object reference)
 typedef struct dxfg_instrument_profile_custom_fields_t {
     dxfg_java_object_handler handler;
 } dxfg_instrument_profile_custom_fields_t;
 
+/**
+ * A structure that contains the instrument profile fields, as well as a computed hash of the custom fields (InstrumentProfileCustomFields).
+ * If the custom fields pointer handle is NULL, the fields are empty. The hash will then be 0.
+ */
 typedef struct dxfg_instrument_profile2_t {
   char* type;
   char* symbol;
@@ -251,23 +257,464 @@ typedef struct dxfg_instrument_profile2_t {
   int32_t instrument_profile_custom_fields_hash;
 } dxfg_instrument_profile2_t;
 
-
+/**
+ * Formats the number according to the internal number format in QD for instrument profile fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] number The source number.
+ * @param[out] result The formatted number.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_String_release() to free the result.
+ */
 int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, double number, DXFG_OUT char** result);
-int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT double* number);
-int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, DXFG_OUT char** result);
-int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT int32_t* date);
 
+/**
+ * Parses a number according to the internal number format in QD for instrument profile fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] string The source string.
+ * @param[out] number The parsed number.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT double* number);
+
+/**
+ * Formats the date according to the internal date format in QD for instrument profile fields.
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] date The source date (the number of days since January 1, 1970, 00:00:00 GMT)
+ * @param[out] result The formatted date.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_String_release() to free the result.
+ */
+int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, DXFG_OUT char** result);
+
+/**
+ * Parses a date according to the internal date format in QD for instrument profile fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] string The source string.
+ * @param[out] date The parsed date (the number of days since January 1, 1970, 00:00:00 GMT)
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileField_parseDate(graal_isolatethread_t *thread, const char* string, DXFG_OUT int32_t* date);
+
+/**
+ * Creates a new instance of InstrumentProfileCustomFields and returns a handle to it.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[out] custom_fields The handle of the InstrumentProfileCustomFields instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
-int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, const char** custom_fields_array,
-    int32_t size, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
+
+/**
+ * Creates a new instance of InstrumentProfileCustomFields using an array of string fields (key - value, consecutive),
+ * rehashes the fields, and returns a handle to the new instance.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields_array The array string fields.
+ * @param[in] size The array's size.
+ * @param[out] custom_fields The handle of the InstrumentProfileCustomFields instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, const char** custom_fields_array, int32_t size, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
+
+/**
+ * Gets the value (or NULL) of a field by name.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[out] result The field value.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_String_release() to free the result
+ */
 int32_t dxfg_InstrumentProfileCustomFields_getField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT char** result);
+
+/**
+ * Sets the value of a field by name.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[in] value The field value.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_setField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, const char* value);
+
+/**
+ * Gets the numeric value (or 0) of a field by name or a date if the string representation looks like a date.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[out] result The numeric value of the field.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_getNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT double* result);
+
+/**
+ * Sets the numeric value of a field by name.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[in] value The field value.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_setNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, double value);
+
+/**
+ * Gets the date (the number of days since January 1, 1970, 00:00:00 GMT) value (or 0) of a field by name.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[out] result The date value of the field.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_getDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT int32_t* result);
+
+/**
+ * Sets the date value of a field by name.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[in] name The field name.
+ * @param[in] value The field value.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, int32_t value);
-// dxfg_free_strings
+
+/**
+ * Creates and populates an array of strings with field names.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[out] target_field_names The array of field names.
+ * @param[out] size The array size.
+ * @param[out] updated A flag indicating whether any names were written. May not be used (this pointer may be NULL).
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_free_strings() to free the result.
+ */
 int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT char*** target_field_names, DXFG_OUT int32_t* size, DXFG_OUT int32_t* updated);
+
+/**
+ * Updates the instrument profile inside the collector.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] collector The IPF collector handle.
+ * @param[int] instrument_profile An instrument whose fields are used to update an instrument within a collector.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Updates the instrument profile inside the collector.
+ * This is a caching version of the function. All string fields of the instrument profile, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] collector The IPF collector handle.
+ * @param[int] instrument_profile An instrument whose fields are used to update an instrument within a collector.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Updates multiple instrument profiles within a collector.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] collector The IPF collector handle.
+ * @param[in] instrument_profiles An array of instrument profiles whose fields will be used to update the instrument
+ * profiles within the collector.
+ * @param[in] size The array size.
+ * @param[in] generation An optional parameter (may be NULL) to version the instrument profile update process.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
+
+/**
+ * Updates multiple instrument profiles within a collector.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] collector The IPF collector handle.
+ * @param[in] instrument_profiles An array of instrument profiles whose fields will be used to update the instrument profiles within the collector.
+ * @param[in] size The array size.
+ * @param[in] generation An optional parameter (may be NULL) to version the instrument profile update process.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
+
+/**
+ * Returns the next instrument profile.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] iterable_ip The handle to an iterable wrapper for a list of instrument profiles.
+ * @param[out] instrument_profile The next instrument profile.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profile_free() to free the result.
+ */
+int32_t dxfg_Iterable_InstrumentProfile_next_v2(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Returns the next instrument profile.
+ * This is a caching version of the function. All string fields of the instrument profile, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] iterable_ip The handle to an iterable wrapper for a list of instrument profiles.
+ * @param[out] instrument_profile The next instrument profile.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profile_free_cached() to free the result.
+ */
+int32_t dxfg_Iterable_InstrumentProfile_next_v2_cached(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[in] user The base auth user name.
+ * @param[in] password The base auth user password.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile2_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, const char *user, const char *password, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[in] user The base auth user name.
+ * @param[in] password The base auth user password.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile2_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, const char *user, const char *password, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[in] token The token handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile3_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[in] token The token handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile3_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a input stream.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_read_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a input stream.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_read_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a input stream.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[in] address The file address (for debug purposes).
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_read2_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a input stream.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[in] address The file address (for debug purposes).
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_read2_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a compressed input stream.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readCompressed_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a compressed input stream.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] is The input stream handle.
+ * @param[out] instrument_profiles The resulting array of instrument profiles.
+ * @param[out] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profiles_array_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readCompressed_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Frees up memory occupied by instrument profile fields, releases custom fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profile The instrument profile.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profile_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Frees up memory occupied by instrument profile fields if necessary or reduces reference counters in cache, releases
+ * custom fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profile The instrument profile.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profile_free_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profile);
+
+/**
+ * Frees up memory occupied by instrument profile array fields, releases custom fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profiles The instrument profiles array.
+ * @param[in] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profiles_array_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profiles, int32_t size);
+
+/**
+ * Frees up memory occupied by instrument profile array fields if necessary or reduces reference counters in cache, releases custom fields.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profiles The instrument profiles array.
+ * @param[in] size The array size.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profiles_array_free_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profiles, int32_t size);
+
 
 /** @} */ // end of InstrumentProfile
 

@@ -6,7 +6,7 @@ import org.graalvm.nativeimage.c.struct.CPointerTo;
 
 @CContext(Directives.class)
 @CPointerTo(DxfgInstrumentProfile2Pointer.class)
-public interface DxfgInstrumentProfilePointerPointer extends
+public interface DxfgInstrumentProfile2PointerPointer extends
     CPointerPointer<DxfgInstrumentProfile2Pointer> {
 
 }

@@ -1,10 +1,12 @@
 package com.dxfeed.sdk.ipf;
 
+import com.dxfeed.sdk.common.DxfgStringToDoubleMapEntryPointer;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
+import org.graalvm.word.SignedWord;
 
 @CContext(Directives.class)
 @CStruct("dxfg_instrument_profile2_t")
@@ -207,4 +209,8 @@ public interface DxfgInstrumentProfile2Pointer extends PointerBase {
 
   @CField("instrument_profile_custom_fields_hash")
   void setInstrumentProfileCustomFieldsHash(int value);
+
+  DxfgInstrumentProfile2Pointer addressOf(int index);
+
+  DxfgInstrumentProfile2Pointer addressOf(SignedWord index);
 }

@@ -33,6 +33,17 @@ public class InstrumentProfile2Mapper extends
   }
 
   @Override
+  public void release(final DxfgInstrumentProfile2Pointer nativeObject) {
+    if (nativeObject.isNull()) {
+      return;
+    }
+
+    cleanNative(nativeObject);
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.release(nativeObject.getInstrumentProfileCustomFields());
+    UnmanagedMemory.free(nativeObject);
+  }
+
+  @Override
   public void fillNative(final InstrumentProfile javaObject,
       final DxfgInstrumentProfile2Pointer nativeObject, boolean clean) {
     if (clean) {
