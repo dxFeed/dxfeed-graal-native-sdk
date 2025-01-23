@@ -88,7 +88,7 @@ public class InstrumentProfile2Mapper extends
 
     var fields = new InstrumentProfileCustomFields(javaObject);
 
-    if (fields.areNullEmpty()) {
+    if (fields.areNullOrEmpty()) {
       nativeObject.setInstrumentProfileCustomFields(WordFactory.nullPointer());
     } else {
       nativeObject.setInstrumentProfileCustomFields(

@@ -70,6 +70,27 @@ public class InstrumentProfileCustomFieldsNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_InstrumentProfileCustomFields_new3",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCustomFields_new3(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCustomFieldsHandle source,
+      @DxfgOut final DxfgInstrumentProfileCustomFieldsHandlePointer customFields
+  ) {
+    if (customFields.isNull()) {
+      throw new IllegalArgumentException("The `customFields` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    customFields.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toNative(
+        new InstrumentProfileCustomFields(
+            NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toJava(source))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_InstrumentProfileCustomFields_getField",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )

@@ -328,6 +328,19 @@ int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DX
 int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, const char** custom_fields_array, int32_t size, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
 
 /**
+ * Creates a copy of InstrumentProfileCustomFields and returns a handle to it.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] source The handle of the source InstrumentProfileCustomFields instance.
+ * @param[out] custom_fields The handle of the InstrumentProfileCustomFields instance.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the object handle.
+ */
+int32_t dxfg_InstrumentProfileCustomFields_new3(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t * source, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
+
+
+/**
  * Gets the value (or NULL) of a field by name.
  *
  * @param[in] thread The current GraalVM Isolate's thread.

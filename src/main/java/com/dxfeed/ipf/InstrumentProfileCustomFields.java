@@ -50,6 +50,15 @@ public class InstrumentProfileCustomFields {
   }
 
   /**
+   * Creates a copy using the profile's custom fields.
+   *
+   * @param source The profile's custom fields.
+   */
+  public InstrumentProfileCustomFields(InstrumentProfileCustomFields source) {
+    this.customFields = source.areNullOrEmpty() ? null : source.customFields.clone();
+  }
+
+  /**
    * Assigns the current custom fields to profile.
    *
    * @param profile The destination profile.
@@ -208,7 +217,7 @@ public class InstrumentProfileCustomFields {
   /**
    * @return {@code true} if the custom fields are null or empty.
    */
-  public boolean areNullEmpty() {
+  public boolean areNullOrEmpty() {
     return customFields == null || customFields.length == 0;
   }
 
