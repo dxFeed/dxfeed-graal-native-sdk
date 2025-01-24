@@ -375,7 +375,7 @@ int32_t dxfg_Comparable_compareTo(graal_isolatethread_t *thread, dxfg_java_objec
 int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list *list);
 
 int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string);
-int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list *string);
+int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list *stringList);
 
 // read the "Threads and locks" sections at https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html
 dxfg_executor_t *dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread, int nThreads,

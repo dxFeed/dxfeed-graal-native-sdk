@@ -472,6 +472,8 @@
               --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
             </buildArg>
             <buildArg>-march=compatibility</buildArg>
+            <buildArg>-g</buildArg>
+            <buildArg>-H:+SourceLevelDebug</buildArg>
 <!--            <buildArg>-D</buildArg>-->
           </buildArgs>
         </configuration>

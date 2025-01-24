@@ -2,20 +2,20 @@ package com.dxfeed.sdk.ipf;
 
 import com.dxfeed.ipf.InstrumentProfileCustomFields;
 import com.dxfeed.sdk.NativeUtils;
-import com.dxfeed.sdk.common.CCharPointerPointerPointer;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
-import java.util.ArrayList;
+import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import com.dxfeed.sdk.javac.DxfgCharPointerListPointer;
 import org.graalvm.nativeimage.IsolateThread;
-import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
-import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CDoublePointer;
+
+import java.util.ArrayList;
 
 @CContext(Directives.class)
 public class InstrumentProfileCustomFieldsNative {
@@ -86,6 +86,32 @@ public class InstrumentProfileCustomFieldsNative {
     customFields.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toNative(
         new InstrumentProfileCustomFields(
             NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toJava(source))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCustomFields_new4",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCustomFields_new4(
+      final IsolateThread ignoredThread,
+      @CConst final DxfgCharPointerList customFieldsStringList,
+      @DxfgOut final DxfgInstrumentProfileCustomFieldsHandlePointer customFields
+  ) {
+    if (customFields.isNull()) {
+      throw new IllegalArgumentException("The `customFields` pointer is null");
+    }
+
+    var list = NativeUtils.MAPPER_STRINGS.toJavaList(customFieldsStringList);
+
+    if (list == null || list.isEmpty()) {
+      customFields.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toNative(
+          new InstrumentProfileCustomFields()));
+    } else {
+      customFields.write(NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toNative(
+          new InstrumentProfileCustomFields(list.toArray(new String[0]))));
+    }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
@@ -215,16 +241,11 @@ public class InstrumentProfileCustomFieldsNative {
   public static int dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCustomFieldsHandle customFields,
-      @DxfgOut final CCharPointerPointerPointer targetFieldNames,
-      @DxfgOut final CInt32Pointer size,
+      @DxfgOut final DxfgCharPointerListPointer targetFieldNames,
       @DxfgOut final CInt32Pointer updated
   ) {
     if (targetFieldNames.isNull()) {
       throw new IllegalArgumentException("The `targetFieldNames` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
     }
 
     var names = new ArrayList<String>();
@@ -233,17 +254,7 @@ public class InstrumentProfileCustomFieldsNative {
     var result = NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toJava(customFields)
         .addNonEmptyFieldNames(names);
 
-    CCharPointerPointer targetFieldNamesPtr = UnmanagedMemory.calloc(
-        names.size() * SizeOf.get(CCharPointer.class));
-
-    for (int i = 0; i < names.size(); i++) {
-      var namePtr = targetFieldNamesPtr.addressOf(i);
-
-      namePtr.write(NativeUtils.MAPPER_STRING.toNative(names.get(i)));
-    }
-
-    targetFieldNames.write(targetFieldNamesPtr);
-    size.write(names.size());
+    targetFieldNames.write(NativeUtils.MAPPER_STRINGS.toNativeList(names));
 
     if (updated.isNonNull()) {
       updated.write(result ? 1 : 0);
