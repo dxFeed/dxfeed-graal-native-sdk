@@ -5,7 +5,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNegativeInfinityDouble;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
@@ -924,7 +924,7 @@ public class InstrumentProfileNative {
       name = "dxfg_InstrumentProfile_getNonEmptyCustomFieldNames",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgCharPointerList dxfg_InstrumentProfile_getNonEmptyCustomFieldNames(
+  public static DxfgCStringListPointer dxfg_InstrumentProfile_getNonEmptyCustomFieldNames(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile ip
   ) {

@@ -112,7 +112,7 @@ import com.dxfeed.sdk.ipf.DxfgInstrumentProfileUpdateListener;
 import com.dxfeed.sdk.ipf.DxfgIpfConnectionStateChangeListener;
 import com.dxfeed.sdk.ipf.DxfgIterableInstrumentProfile;
 import com.dxfeed.sdk.javac.DxfgAuthToken;
-import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import com.dxfeed.sdk.javac.DxfgCharPointerPointer;
 import com.dxfeed.sdk.javac.DxfgExecutor;
 import com.dxfeed.sdk.javac.DxfgInputStream;
@@ -229,7 +229,7 @@ public final class NativeUtils {
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
   public static final Mapper<String, CCharPointer> MAPPER_STRING;
   public static final Mapper<String, CCharPointer> MAPPER_STRING_CACHE_STORE;
-  public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCharPointerList> MAPPER_STRINGS;
+  public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> MAPPER_STRINGS;
   public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
   public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
   public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;

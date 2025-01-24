@@ -4,7 +4,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CPointerTo;
 
 @CContext(Directives.class)
-@CPointerTo(DxfgCharPointerList.class)
-public interface DxfgCharPointerListPointer extends CPointerPointer<DxfgCharPointerList> {
+@CPointerTo(DxfgCStringListPointer.class)
+public interface DxfgCStringListPointerPointer extends CPointerPointer<DxfgCStringListPointer> {
 
 }

@@ -5,8 +5,8 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
-import com.dxfeed.sdk.javac.DxfgCharPointerList;
-import com.dxfeed.sdk.javac.DxfgCharPointerListPointer;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
+import com.dxfeed.sdk.javac.DxfgCStringListPointerPointer;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -96,7 +96,7 @@ public class InstrumentProfileCustomFieldsNative {
   )
   public static int dxfg_InstrumentProfileCustomFields_new4(
       final IsolateThread ignoredThread,
-      @CConst final DxfgCharPointerList customFieldsStringList,
+      @CConst final DxfgCStringListPointer customFieldsStringList,
       @DxfgOut final DxfgInstrumentProfileCustomFieldsHandlePointer customFields
   ) {
     if (customFields.isNull()) {
@@ -241,7 +241,7 @@ public class InstrumentProfileCustomFieldsNative {
   public static int dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCustomFieldsHandle customFields,
-      @DxfgOut final DxfgCharPointerListPointer targetFieldNames,
+      @DxfgOut final DxfgCStringListPointerPointer targetFieldNames,
       @DxfgOut final CInt32Pointer updated
   ) {
     if (targetFieldNames.isNull()) {

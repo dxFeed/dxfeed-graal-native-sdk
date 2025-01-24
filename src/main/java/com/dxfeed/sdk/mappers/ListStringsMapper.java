@@ -1,12 +1,12 @@
 package com.dxfeed.sdk.mappers;
 
-import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import com.dxfeed.sdk.javac.DxfgCharPointerPointer;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ListStringsMapper
-    extends ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCharPointerList> {
+    extends ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> {
 
   private final Mapper<String, CCharPointer> stringMapper;
 
@@ -31,6 +31,6 @@ public class ListStringsMapper
 
   @Override
   protected int getSizeCList() {
-    return SizeOf.get(DxfgCharPointerList.class);
+    return SizeOf.get(DxfgCStringListPointer.class);
   }
 }

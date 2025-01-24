@@ -14,8 +14,9 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2Pointer;
-import com.dxfeed.sdk.javac.DxfgCharPointerList;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import java.io.IOException;
+import com.dxfeed.sdk.javac.DxfgCStringListPointerPointer;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -232,7 +233,7 @@ public class ScheduleNative {
       name = "dxfg_Schedule_getTradingVenues",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
-  public static DxfgCharPointerList dxfg_Schedule_getTradingVenues(
+  public static DxfgCStringListPointer dxfg_Schedule_getTradingVenues(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile dxfgInstrumentProfile
   ) {
@@ -249,32 +250,17 @@ public class ScheduleNative {
   public static int dxfg_Schedule_getTradingVenues_v2(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
-      @DxfgOut CCharPointerPointerPointer venues,
-      @DxfgOut final CInt32Pointer size
+      @DxfgOut DxfgCStringListPointerPointer venues
   ) {
     if (venues.isNull()) {
       throw new IllegalArgumentException("The `venues` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
     }
 
     //noinspection DataFlowIssue
     var javaVenues = Schedule.getTradingVenues(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile));
 
-    CCharPointerPointer venuesPtr = UnmanagedMemory.calloc(
-        javaVenues.size() * SizeOf.get(CCharPointer.class));
-
-    for (int i = 0; i < javaVenues.size(); i++) {
-      var venuePtr = venuesPtr.addressOf(i);
-
-      venuePtr.write(NativeUtils.MAPPER_STRING.toNative(javaVenues.get(i)));
-    }
-
-    venues.write(venuesPtr);
-    size.write(javaVenues.size());
+    venues.write(NativeUtils.MAPPER_STRINGS.toNativeList(javaVenues));
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
@@ -286,32 +272,17 @@ public class ScheduleNative {
   public static int dxfg_Schedule_getTradingVenues_v2_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
-      @DxfgOut CCharPointerPointerPointer venues,
-      @DxfgOut final CInt32Pointer size
+      @DxfgOut DxfgCStringListPointerPointer venues
   ) {
     if (venues.isNull()) {
       throw new IllegalArgumentException("The `venues` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
     }
 
     //noinspection DataFlowIssue
     var javaVenues = Schedule.getTradingVenues(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile));
 
-    CCharPointerPointer venuesPtr = UnmanagedMemory.calloc(
-        javaVenues.size() * SizeOf.get(CCharPointer.class));
-
-    for (int i = 0; i < javaVenues.size(); i++) {
-      var venuePtr = venuesPtr.addressOf(i);
-
-      venuePtr.write(NativeUtils.MAPPER_STRING.toNative(javaVenues.get(i)));
-    }
-
-    venues.write(venuesPtr);
-    size.write(javaVenues.size());
+    venues.write(NativeUtils.MAPPER_STRINGS.toNativeList(javaVenues));
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

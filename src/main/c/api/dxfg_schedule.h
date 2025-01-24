@@ -215,13 +215,12 @@ int32_t dxfg_Schedule_getInstance3_v2_cached(graal_isolatethread_t *thread, dxfg
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile.
- * @param[out] venues Returned array of venues.
- * @param[out] size The array size.
+ * @param[out] venues Returned list of venues.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_free_strings() to free the result.
+ * Use dxfg_CList_String_release() to free the result.
  */
-int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT char*** venues, DXFG_OUT int32_t* size);
+int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
 
 /**
  * Returns trading venues by an instrument profile.
@@ -229,13 +228,12 @@ int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_in
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile.
- * @param[out] venues Returned array of venues.
- * @param[out] size The array size.
+ * @param[out] venues Returned list of venues.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_free_strings() to free the result.
+ * Use dxfg_CList_String_release() to free the result.
  */
-int32_t dxfg_Schedule_getTradingVenues_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT char*** venues, DXFG_OUT int32_t* size);
+int32_t dxfg_Schedule_getTradingVenues_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
 
 
 /** @} */ // end of Schedule

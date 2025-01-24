@@ -724,7 +724,7 @@ public class JavacNative {
   )
   public static int dxfg_CList_String_release(
       final IsolateThread ignoreThread,
-      final DxfgCharPointerList strings
+      final DxfgCStringListPointer strings
   ) {
     NativeUtils.MAPPER_STRINGS.release(strings);
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
