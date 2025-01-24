@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_ANALYTIC_ORDER;
@@ -5,6 +8,7 @@ import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_CANDLE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_CONFIGURATION;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_DAILY_CANDLE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_GREEKS;
+import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_MARKET_MAKER;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_MESSAGE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_OPTION_SALE;
 import static com.dxfeed.sdk.events.DxfgEventClazz.DXFG_EVENT_ORDER;
@@ -52,6 +56,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
       final QuoteMapper quoteMapper,
       final SeriesMapper seriesMapper,
       final OptionSaleMapper optionSaleMapper,
+      final MarketMakerMapper marketMakerMapper,
       final TimeAndSaleMapper timeAndSaleMapper,
       final SpreadOrderMapper spreadOrderMapper,
       final OrderMapper orderMapper,
@@ -77,6 +82,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByClass.put(Quote.class, quoteMapper);
     this.mapperByClass.put(Series.class, seriesMapper);
     this.mapperByClass.put(OptionSale.class, optionSaleMapper);
+    this.mapperByClass.put(MarketMaker.class, marketMakerMapper);
     this.mapperByClass.put(TimeAndSale.class, timeAndSaleMapper);
     this.mapperByClass.put(SpreadOrder.class, spreadOrderMapper);
     this.mapperByClass.put(AnalyticOrder.class, analyticOrderMapper);
@@ -100,6 +106,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     this.mapperByDxfgEventType.put(DXFG_EVENT_QUOTE, quoteMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_SERIES, seriesMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_OPTION_SALE, optionSaleMapper);
+    this.mapperByDxfgEventType.put(DXFG_EVENT_MARKET_MAKER, marketMakerMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_TIME_AND_SALE, timeAndSaleMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_SPREAD_ORDER, spreadOrderMapper);
     this.mapperByDxfgEventType.put(DXFG_EVENT_ORDER, orderMapper);

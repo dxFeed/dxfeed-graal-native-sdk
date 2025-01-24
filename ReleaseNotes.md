@@ -1,3 +1,10 @@
+* **\[MDAPI-130]\[GRAAL]** Add MarketMaker event
+    * Added `DxfgMarketMaker` interface (`dxfg_market_maker_t` struct), mappers, etc.
+    * Added `DXFG_EVENT_MARKET_MAKER` enum value.
+    * Improved the `DxfgClient` tool.
+    * Added reflection info for the `MarketMaker` event for dxLink.
+    * Migrated to QDS 3.338 and MDD 503
+
 ## v2.2.0
 
 * **\[MDAPI-222]\[Graal]** Implement TextMessage event

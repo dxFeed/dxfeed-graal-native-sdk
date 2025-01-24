@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgMarketEvent;
@@ -14,30 +17,32 @@ public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMar
   }
 
   @Override
-  public void fillNative(final T jObject, final V nObject, boolean clean) {
+  public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
     if (clean) {
-      cleanNative(nObject);
+      cleanNative(nativeObject);
     }
 
-    nObject.setEventSymbol(this.stringMapper.toNative(jObject.getEventSymbol()));
-    nObject.setEventTime(jObject.getEventTime());
+    nativeObject.setEventSymbol(this.stringMapper.toNative(javaObject.getEventSymbol()));
+    nativeObject.setEventTime(javaObject.getEventTime());
   }
 
   @Override
-  public void cleanNative(final V nObject) {
-    this.stringMapper.release(nObject.getEventSymbol());
+  public void cleanNative(final V nativeObject) {
+    this.stringMapper.release(nativeObject.getEventSymbol());
   }
 
   @Override
-  public void fillJava(final V nObject, final T jObject) {
-    jObject.setEventSymbol(this.stringMapper.toJava(nObject.getEventSymbol()));
-    jObject.setEventTime(nObject.getEventTime());
+  public void fillJava(final V nativeObject, final T javaObject) {
+    javaObject.setEventSymbol(this.stringMapper.toJava(nativeObject.getEventSymbol()));
+    javaObject.setEventTime(nativeObject.getEventTime());
   }
 
   @Override
   public V createNativeObject(final String symbol) {
-    final V nObject = createNativeObject();
-    nObject.setEventSymbol(this.stringMapper.toNative(symbol));
-    return nObject;
+    final V nativeObject = createNativeObject();
+
+    nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
+
+    return nativeObject;
   }
 }

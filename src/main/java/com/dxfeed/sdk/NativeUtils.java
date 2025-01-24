@@ -32,6 +32,7 @@ import com.dxfeed.event.market.GreeksMapper;
 import com.dxfeed.event.market.ListEventMapper;
 import com.dxfeed.event.market.ListEventTypeMapper;
 import com.dxfeed.event.market.ListIndexedEventSourceMapper;
+import com.dxfeed.event.market.MarketMakerMapper;
 import com.dxfeed.event.market.MessageMapper;
 import com.dxfeed.event.market.OptionSaleMapper;
 import com.dxfeed.event.market.OrderBaseMapper;
@@ -307,6 +308,7 @@ public final class NativeUtils {
         new QuoteMapper(MAPPER_STRING),
         new SeriesMapper(MAPPER_STRING),
         new OptionSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new MarketMakerMapper(MAPPER_STRING),
         new TimeAndSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new SpreadOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
         new OrderMapper<>(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),

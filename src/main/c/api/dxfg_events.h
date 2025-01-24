@@ -108,6 +108,7 @@ typedef enum dxfg_event_clazz_t {
     DXFG_EVENT_SERIES,         // INDEXED
     DXFG_EVENT_OPTION_SALE,    // INDEXED
     DXFG_EVENT_TEXT_MESSAGE,   //
+    DXFG_EVENT_MARKET_MAKER,   // INDEXED
 } dxfg_event_clazz_t;
 
 /**
@@ -392,6 +393,25 @@ typedef struct dxfg_option_sale_t {
     double delta;
     const char *option_symbol;
 } dxfg_option_sale_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketMaker.html">Javadoc</a>
+ */
+typedef struct dxfg_market_maker_t {
+    dxfg_market_event_t market_event;
+    //    dxfg_indexed_event_t indexed_event;
+    int32_t event_flags;
+
+    int64_t index;
+    int64_t bid_time;
+    double bid_price;
+    double bid_size;
+    int64_t bid_count;
+    int64_t ask_time;
+    double ask_price;
+    double ask_size;
+    int64_t ask_count;
+} dxfg_market_maker_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a>

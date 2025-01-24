@@ -1,9 +1,13 @@
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.events;
 
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.event.market.AnalyticOrder;
+import com.dxfeed.event.market.MarketMaker;
 import com.dxfeed.event.market.OptionSale;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderBase;
@@ -54,6 +58,7 @@ public enum DxfgEventClazz {
   DXFG_EVENT_SERIES(Series.class),               // INDEXED
   DXFG_EVENT_OPTION_SALE(OptionSale.class),      // INDEXED
   DXFG_EVENT_TEXT_MESSAGE(TextMessage.class),    //
+  DXFG_EVENT_MARKET_MAKER(MarketMaker.class),    // INDEXED
   ;
   private static final Map<Class<? extends EventType<?>>, DxfgEventClazz> map = new HashMap<>();
 
@@ -80,6 +85,7 @@ public enum DxfgEventClazz {
     map.put(Series.class, DXFG_EVENT_SERIES);
     map.put(OptionSale.class, DXFG_EVENT_OPTION_SALE);
     map.put(TextMessage.class, DXFG_EVENT_TEXT_MESSAGE);
+    map.put(MarketMaker.class, DXFG_EVENT_MARKET_MAKER);
   }
 
   public final Class<? extends EventType<?>> clazz;

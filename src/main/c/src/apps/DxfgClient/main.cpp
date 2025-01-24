@@ -231,6 +231,16 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
         printf("  TEXT_MESSAGE{event_symbol=%s, event_time=%" PRId64 ", time_sequence=%" PRId64 ", text=%s}\n",
                text_message->event_symbol, text_message->event_time, text_message->time_sequence, text_message->text);
     } break;
+    case DXFG_EVENT_MARKET_MAKER: {
+        auto *market_maker = (dxfg_market_maker_t *)event;
+
+        printf("  MARKET_MAKER{event_symbol=%s, index=%" PRId64 ", bid_time=%" PRId64
+               ", bid_price=%f, bid_size=%f, bid_count=%" PRId64 ", ask_time=%" PRId64
+               ", ask_price=%f, ask_size=%f, ask_count=%" PRId64 "}\n",
+               market_maker->market_event.event_symbol, market_maker->index, market_maker->bid_time,
+               market_maker->bid_price, market_maker->bid_size, market_maker->bid_count, market_maker->ask_time,
+               market_maker->ask_price, market_maker->ask_size, market_maker->ask_count);
+    } break;
 
     default:
         printf("  %u{}\n", event->clazz);
