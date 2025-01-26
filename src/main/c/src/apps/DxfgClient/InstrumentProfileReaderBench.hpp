@@ -361,7 +361,7 @@ Command instrumentProfileReaderBench{
                 std::int32_t size{};
 
                 stopWatch.start();
-                auto r = dxfg_InstrumentProfileReader_readFromFile_v2(isolateThread, reader, args[1].c_str(), &profiles,
+                auto r = dxfg_InstrumentProfileReader_readFromFile4(isolateThread, reader, args[1].c_str(), &profiles,
                                                                       &size);
                 stopWatch.stop();
 
@@ -391,7 +391,7 @@ Command instrumentProfileReaderBench{
                 std::int32_t size{};
 
                 stopWatch.start();
-                auto r = dxfg_InstrumentProfileReader_readFromFile_v2_cached(isolateThread, reader, args[1].c_str(),
+                auto r = dxfg_InstrumentProfileReader_readFromFile4_cached(isolateThread, reader, args[1].c_str(),
                                                                              &profiles, &size);
                 stopWatch.stop();
 
