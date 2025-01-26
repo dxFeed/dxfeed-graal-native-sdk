@@ -307,7 +307,7 @@ Command instrumentProfileReaderBench{
     {"ipf"},
     "",
     "ipf [<properties>] <version> <pathToIpf>",
-    {"ipf 1 ./options.ipf", "ipf 2 ./options.ipf", "ipf 2c ./options.ipf"},
+    {"ipf 1 ./options.ipf", "ipf 2 ./options.ipf", "ipf 2c ./options.ipf", "ipf 3 ./options.ipf"},
     [](const Command & /*self*/, graal_isolatethread_t *isolateThread, const std::vector<std::string> &args,
        const dxfg::CommandsContext &) {
         using namespace std::chrono_literals;
