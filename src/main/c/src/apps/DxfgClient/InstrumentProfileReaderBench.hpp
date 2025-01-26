@@ -415,6 +415,33 @@ Command instrumentProfileReaderBench{
 
                     dxfg_instrument_profiles_array_free_cached(isolateThread, profiles, size);
                 }
+            } else if (args[0] == "3") {
+                dxfg_instrument_profile2_list_t *profiles{};
+
+                stopWatch.start();
+                auto r = dxfg_InstrumentProfileReader_readFromFile7(isolateThread, reader, args[1].c_str(), &profiles);
+                stopWatch.stop();
+
+                if (r == DXFG_EXECUTE_SUCCESSFULLY) {
+                    printf("IPF loading in %lldms\n", stopWatch.elapsed().count());
+                    printf("Instrument count: %d\n", profiles->size);
+
+                    for (int t = 0; t < 15; ++t) {
+                        printf("Rehashing...\n");
+                        stopWatch.restart();
+
+                        std::size_t hash = 0;
+                        for (std::int32_t i = 0; i < profiles->size; i++) {
+                            hashCombine(hash, getHash(*profiles->elements[i]));
+                        }
+
+                        stopWatch.stop();
+                        printf("hash = %zu\n", hash);
+                        printf("elapsed = %lldms\n", stopWatch.elapsed().count());
+                    }
+
+                    dxfg_instrument_profile2_list_free(isolateThread, profiles);
+                }
             }
 
             dxfg_JavaObjectHandler_release(isolateThread, &reader->handler);
