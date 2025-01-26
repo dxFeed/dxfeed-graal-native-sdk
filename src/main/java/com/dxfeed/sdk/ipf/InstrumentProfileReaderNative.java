@@ -680,4 +680,49 @@ public class InstrumentProfileReaderNative {
 
     return fillNativeProfiles(profiles, instrumentProfiles, size, true);
   }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_read5",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_read5(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      final DxfgInputStream dxfgInputStream,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_read5_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_read5_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      final DxfgInputStream dxfgInputStream,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
 }
