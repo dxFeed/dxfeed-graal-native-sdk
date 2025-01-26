@@ -183,10 +183,10 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getInstance3_v2",
+      name = "dxfg_Schedule_getInstance5",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Schedule_getInstance3_v2(
+  public static int dxfg_Schedule_getInstance5(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
       @CConst final CCharPointer venue,
@@ -206,10 +206,10 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getInstance3_v2_cached",
+      name = "dxfg_Schedule_getInstance5_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Schedule_getInstance3_v2_cached(
+  public static int dxfg_Schedule_getInstance5_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
       @CConst final CCharPointer venue,
