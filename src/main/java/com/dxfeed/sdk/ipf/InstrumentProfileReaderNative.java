@@ -545,6 +545,54 @@ public class InstrumentProfileReaderNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_read6",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_read6(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      final DxfgInputStream dxfgInputStream,
+      @CConst final CCharPointer address,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
+                NativeUtils.MAPPER_STRING.toJava(address))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_read6_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_read6_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      final DxfgInputStream dxfgInputStream,
+      @CConst final CCharPointer address,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
+                NativeUtils.MAPPER_STRING.toJava(address))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_InstrumentProfileReader_readCompressed",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
