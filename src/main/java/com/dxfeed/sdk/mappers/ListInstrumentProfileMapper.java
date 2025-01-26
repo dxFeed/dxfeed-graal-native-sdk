@@ -32,7 +32,7 @@ public class ListInstrumentProfileMapper
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgInstrumentProfileList.class);
   }
 }

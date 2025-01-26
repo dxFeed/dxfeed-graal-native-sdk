@@ -33,7 +33,7 @@ public class ListEventMapper extends
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgEventTypeList.class);
   }
 }

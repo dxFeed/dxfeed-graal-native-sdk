@@ -257,6 +257,11 @@ typedef struct dxfg_instrument_profile2_t {
   int32_t instrument_profile_custom_fields_hash;
 } dxfg_instrument_profile2_t;
 
+typedef struct dxfg_instrument_profile2_list_t {
+    int32_t size;
+    dxfg_instrument_profile2_t **elements;
+} dxfg_instrument_profile2_list_t;
+
 /**
  * Formats the number according to the internal number format in QD for instrument profile fields.
  *
@@ -740,6 +745,26 @@ int32_t dxfg_instrument_profiles_array_free(graal_isolatethread_t *thread, dxfg_
  */
 int32_t dxfg_instrument_profiles_array_free_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profiles, int32_t size);
 
+/**
+ * Frees up memory occupied by instrument profiles list.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profiles The instrument profiles list.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profile2_list_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_list_t* instrument_profiles);
+
+/**
+ * Frees up memory occupied by instrument profiles list.
+ * Frees up memory occupied by instrument profile fields if necessary or reduces reference counters in cache.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] instrument_profiles The instrument profiles list.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_instrument_profile2_list_free_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_list_t* instrument_profiles);
 
 /** @} */ // end of InstrumentProfile
 

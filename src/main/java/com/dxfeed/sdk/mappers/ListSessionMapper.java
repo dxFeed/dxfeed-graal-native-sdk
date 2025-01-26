@@ -31,7 +31,7 @@ public class ListSessionMapper
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgSessionList.class);
   }
 }

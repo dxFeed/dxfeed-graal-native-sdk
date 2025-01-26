@@ -16,10 +16,9 @@ public class InstrumentProfile2Native {
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
   public static int dxfgInstrumentProfileFree(final IsolateThread ignoredThread,
-      DxfgInstrumentProfile2Pointer instrumentProfile) {
+                                              DxfgInstrumentProfile2Pointer instrumentProfile) {
     if (instrumentProfile.isNonNull()) {
       NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.release(instrumentProfile);
-      UnmanagedMemory.free(instrumentProfile);
     }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
@@ -30,10 +29,9 @@ public class InstrumentProfile2Native {
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
   public static int dxfgInstrumentProfileFreeCached(final IsolateThread ignoredThread,
-      DxfgInstrumentProfile2Pointer instrumentProfile) {
+                                                    DxfgInstrumentProfile2Pointer instrumentProfile) {
     if (instrumentProfile.isNonNull()) {
       NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.release(instrumentProfile);
-      UnmanagedMemory.free(instrumentProfile);
     }
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
@@ -44,10 +42,10 @@ public class InstrumentProfile2Native {
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
   public static int dxfgInstrumentProfilesArrayFree(final IsolateThread ignoredThread,
-      @CConst DxfgInstrumentProfile2Pointer instrumentProfiles, int size) {
+                                                    @CConst DxfgInstrumentProfile2Pointer instrumentProfiles, int size) {
     if (instrumentProfiles.isNonNull() && size > 0) {
       for (int i = 0; i < size; i++) {
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.release(instrumentProfiles.addressOf(i));
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.cleanNative(instrumentProfiles.addressOf(i));
       }
 
       UnmanagedMemory.free(instrumentProfiles);
@@ -61,14 +59,36 @@ public class InstrumentProfile2Native {
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
   public static int dxfgInstrumentProfilesArrayFreeCached(final IsolateThread ignoredThread,
-      @CConst DxfgInstrumentProfile2Pointer instrumentProfiles, int size) {
+                                                          @CConst DxfgInstrumentProfile2Pointer instrumentProfiles, int size) {
     if (instrumentProfiles.isNonNull() && size > 0) {
       for (int i = 0; i < size; i++) {
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.release(instrumentProfiles.addressOf(i));
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.cleanNative(instrumentProfiles.addressOf(i));
       }
 
       UnmanagedMemory.free(instrumentProfiles);
     }
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_instrument_profile2_list_free",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfgInstrumentProfile2ListFree(final IsolateThread ignoredThread,
+                                                   @CConst DxfgInstrumentProfile2ListPointer instrumentProfiles) {
+    NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.release(instrumentProfiles);
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_instrument_profile2_list_free_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfgInstrumentProfile2ListFreeCached(final IsolateThread ignoredThread,
+                                                         @CConst DxfgInstrumentProfile2ListPointer instrumentProfiles) {
+    NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.release(instrumentProfiles);
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

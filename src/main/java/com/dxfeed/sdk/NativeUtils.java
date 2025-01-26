@@ -101,7 +101,9 @@ import com.dxfeed.sdk.glossary.mappers.CFIMapper;
 import com.dxfeed.sdk.glossary.mappers.CFIValueMapper;
 import com.dxfeed.sdk.glossary.mappers.PriceIncrementsMapper;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2ListPointer;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2Pointer;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2PointerPointer;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileCollector;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileConnection;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfileCustomFieldsHandle;
@@ -137,6 +139,7 @@ import com.dxfeed.sdk.mappers.FeedEventListenerMapper;
 import com.dxfeed.sdk.mappers.FeedMapper;
 import com.dxfeed.sdk.mappers.IndexedEventModelMapper;
 import com.dxfeed.sdk.mappers.InputStreamMapper;
+import com.dxfeed.sdk.mappers.InstrumentProfile2ListMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfile2Mapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileCollectorMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfileConnectionMapper;
@@ -285,6 +288,8 @@ public final class NativeUtils {
   public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
   public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
   public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2_CACHED;
+  public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
+  public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2_CACHED;
 
 
   static {
@@ -390,6 +395,8 @@ public final class NativeUtils {
     MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
     MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
     MAPPER_INSTRUMENT_PROFILE_2_CACHED = new InstrumentProfile2Mapper(MAPPER_STRING_CACHE_STORE);
+    MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
+    MAPPER_INSTRUMENT_PROFILES_2_CACHED = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2_CACHED);
   }
 
   public static class Finalizer {

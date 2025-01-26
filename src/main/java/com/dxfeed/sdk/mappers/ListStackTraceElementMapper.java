@@ -30,7 +30,7 @@ public class ListStackTraceElementMapper
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgStackTraceElementList.class);
   }
 }

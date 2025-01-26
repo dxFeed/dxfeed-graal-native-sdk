@@ -33,16 +33,6 @@ public class InstrumentProfile2Mapper extends
   }
 
   @Override
-  public void release(final DxfgInstrumentProfile2Pointer nativeObject) {
-    if (nativeObject.isNull()) {
-      return;
-    }
-
-    cleanNative(nativeObject);
-    NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.release(nativeObject.getInstrumentProfileCustomFields());
-  }
-
-  @Override
   public void fillNative(final InstrumentProfile javaObject,
       final DxfgInstrumentProfile2Pointer nativeObject, boolean clean) {
     if (clean) {
@@ -100,6 +90,10 @@ public class InstrumentProfile2Mapper extends
 
   @Override
   public void cleanNative(final DxfgInstrumentProfile2Pointer nativeObject) {
+    if (nativeObject.isNull()) {
+      return;
+    }
+
     stringMapper.release(nativeObject.getType());
     stringMapper.release(nativeObject.getSymbol());
     stringMapper.release(nativeObject.getDescription());
@@ -124,6 +118,8 @@ public class InstrumentProfile2Mapper extends
     stringMapper.release(nativeObject.getSettlementStyle());
     stringMapper.release(nativeObject.getPriceIncrements());
     stringMapper.release(nativeObject.getTradingHours());
+
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.release(nativeObject.getInstrumentProfileCustomFields());
   }
 
   @Override

@@ -34,7 +34,7 @@ public class ListIndexedEventSourceMapper extends
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgIndexedEventSourceList.class);
   }
 }

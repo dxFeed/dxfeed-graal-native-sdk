@@ -30,7 +30,7 @@ public class ListStringsMapper
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgCStringListPointer.class);
   }
 }

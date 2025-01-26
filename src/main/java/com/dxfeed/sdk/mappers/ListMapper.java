@@ -14,65 +14,76 @@ import org.graalvm.word.PointerBase;
 import org.graalvm.word.WordFactory;
 
 public abstract class ListMapper<
-    J,
-    T extends PointerBase,
-    P extends CPointerPointer<T>,
-    L extends CList<P>
+    JavaObject,
+    NativeObject extends PointerBase,
+    NativeObjectPointer extends CPointerPointer<NativeObject>,
+    NativeList extends CList<NativeObjectPointer>
     > {
 
   //https://github.com/graalvm/graal-jvmci-8/blob/master/jvmci/jdk.vm.ci.code/src/jdk/vm/ci/code/TargetDescription.java
   //ConfigurationValues.getTarget().arch.getWordSize() or ConfigurationValues.getTarget().wordSize;
   protected static final int SIZE_OF_C_POINTER = 8;
 
-  public L toNativeList(final Collection<? extends J> jList) {
-    final L dxfgEventTypeList = UnmanagedMemory.calloc(getSizeCList());
-    if (jList == null || jList.isEmpty()) {
-      dxfgEventTypeList.setSize(0);
-      dxfgEventTypeList.setElements(WordFactory.nullPointer());
+  public NativeList toNativeList(final Collection<? extends JavaObject> javaCollection) {
+    final NativeList nativeList = UnmanagedMemory.calloc(getNativeListSize());
+
+    if (javaCollection == null || javaCollection.isEmpty()) {
+      nativeList.setSize(0);
+      nativeList.setElements(WordFactory.nullPointer());
     } else {
-      final P nativeEvents = UnmanagedMemory.calloc(SIZE_OF_C_POINTER * jList.size());
+      final NativeObjectPointer nativeListElements = UnmanagedMemory.calloc(SIZE_OF_C_POINTER * javaCollection.size());
       int i = 0;
-      for (final J jObject : jList) {
-        nativeEvents.addressOf(i++).write(toNative(jObject));
+
+      for (final JavaObject javaObject : javaCollection) {
+        nativeListElements.addressOf(i++).write(toNative(javaObject));
       }
-      dxfgEventTypeList.setSize(jList.size());
-      dxfgEventTypeList.setElements(nativeEvents);
+
+      nativeList.setSize(javaCollection.size());
+      nativeList.setElements(nativeListElements);
     }
-    return dxfgEventTypeList;
+
+    return nativeList;
   }
 
-  public List<J> toJavaList(final L nList) {
-    if (nList.isNull() || nList.getSize() == 0) {
+  public List<JavaObject> toJavaList(final NativeList nativeList) {
+    if (nativeList.isNull() || nativeList.getSize() == 0) {
       return Collections.emptyList();
     }
-    final List<J> jList = new ArrayList<>(nList.getSize());
-    for (int i = 0; i < nList.getSize(); i++) {
-      jList.add(toJava(nList.getElements().addressOf(i).read()));
+
+    final List<JavaObject> javaList = new ArrayList<>(nativeList.getSize());
+
+    for (int i = 0; i < nativeList.getSize(); i++) {
+      javaList.add(toJava(nativeList.getElements().addressOf(i).read()));
     }
-    return jList;
+
+    return javaList;
   }
 
-  public void release(final L nList) {
-    if (nList.isNull()) {
+  public void release(final NativeList nativeList) {
+    if (nativeList.isNull()) {
       return;
     }
-    if (nList.getElements().isNonNull()) {
-      for (int i = 0; i < nList.getSize(); ++i) {
-        final T nObject = nList.getElements().addressOf(i).read();
-        if (nObject.isNonNull()) {
-          releaseNative(nObject);
+
+    if (nativeList.getElements().isNonNull()) {
+      for (int i = 0; i < nativeList.getSize(); ++i) {
+        final NativeObject nativeObject = nativeList.getElements().addressOf(i).read();
+
+        if (nativeObject.isNonNull()) {
+          releaseNative(nativeObject);
         }
       }
-      UnmanagedMemory.free(nList.getElements());
+
+      UnmanagedMemory.free(nativeList.getElements());
     }
-    UnmanagedMemory.free(nList);
+
+    UnmanagedMemory.free(nativeList);
   }
 
-  protected abstract J toJava(final T nObject);
+  protected abstract JavaObject toJava(final NativeObject nativeObject);
 
-  protected abstract T toNative(final J jObject);
+  protected abstract NativeObject toNative(final JavaObject javaObject);
 
-  protected abstract void releaseNative(final T nObject);
+  protected abstract void releaseNative(final NativeObject nativeObject);
 
-  protected abstract int getSizeCList();
+  protected abstract int getNativeListSize();
 }

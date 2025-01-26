@@ -14,12 +14,12 @@ public class ListSymbolMapper extends
     this.symbolMapper = symbolMapper;
   }
 
-  public void release(final DxfgSymbolList nList) {
-    for (int i = 0; i < nList.getSize(); ++i) {
-      this.symbolMapper.release(nList.getElements().addressOf(i).read());
+  public void release(final DxfgSymbolList nativeList) {
+    for (int i = 0; i < nativeList.getSize(); ++i) {
+      this.symbolMapper.release(nativeList.getElements().addressOf(i).read());
     }
-    UnmanagedMemory.free(nList.getElements());
-    UnmanagedMemory.free(nList);
+    UnmanagedMemory.free(nativeList.getElements());
+    UnmanagedMemory.free(nativeList);
   }
 
   @Override
@@ -38,7 +38,7 @@ public class ListSymbolMapper extends
   }
 
   @Override
-  protected int getSizeCList() {
+  protected int getNativeListSize() {
     return SizeOf.get(DxfgSymbolList.class);
   }
 }
