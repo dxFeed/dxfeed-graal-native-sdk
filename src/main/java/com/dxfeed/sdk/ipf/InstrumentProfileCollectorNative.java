@@ -283,10 +283,10 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Iterable_InstrumentProfile_next_v2",
+      name = "dxfg_Iterable_InstrumentProfile_next2",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Iterable_InstrumentProfile_next_v2(
+  public static int dxfg_Iterable_InstrumentProfile_next2(
       final IsolateThread ignoredThread,
       final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
       @DxfgOut DxfgInstrumentProfile2PointerPointer instrumentProfile
@@ -303,10 +303,10 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Iterable_InstrumentProfile_next_v2_cached",
+      name = "dxfg_Iterable_InstrumentProfile_next2_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Iterable_InstrumentProfile_next_v2_cached(
+  public static int dxfg_Iterable_InstrumentProfile_next2_cached(
       final IsolateThread ignoredThread,
       final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
       @DxfgOut DxfgInstrumentProfile2PointerPointer instrumentProfile

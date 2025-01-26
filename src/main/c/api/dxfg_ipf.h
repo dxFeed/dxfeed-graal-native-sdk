@@ -505,7 +505,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached(graal_i
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profile_free() to free the result.
  */
-int32_t dxfg_Iterable_InstrumentProfile_next_v2(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
+int32_t dxfg_Iterable_InstrumentProfile_next2(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
 
 /**
  * Returns the next instrument profile.
@@ -518,7 +518,7 @@ int32_t dxfg_Iterable_InstrumentProfile_next_v2(graal_isolatethread_t *thread, d
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profile_free_cached() to free the result.
  */
-int32_t dxfg_Iterable_InstrumentProfile_next_v2_cached(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
+int32_t dxfg_Iterable_InstrumentProfile_next2_cached(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t *instrument_profile);
 
 /**
  * Reads and returns instrument profiles from a file.
