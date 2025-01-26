@@ -62,10 +62,10 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2",
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile2",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2(
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile2(
       final IsolateThread ignoredThread, final DxfgInstrumentProfileCollector collector,
       final DxfgInstrumentProfile2Pointer instrumentProfile) {
     //noinspection DataFlowIssue
@@ -76,10 +76,10 @@ public class InstrumentProfileCollectorNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached",
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfile2_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached(
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfile2_cached(
       final IsolateThread ignoredThread, final DxfgInstrumentProfileCollector collector,
       final DxfgInstrumentProfile2Pointer instrumentProfile) {
     //noinspection DataFlowIssue
@@ -108,10 +108,10 @@ public class InstrumentProfileCollectorNative {
 
   @SuppressWarnings("SameReturnValue")
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2",
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles2",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2(
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
       final DxfgInstrumentProfile2Pointer instrumentProfiles,
@@ -141,10 +141,10 @@ public class InstrumentProfileCollectorNative {
 
   @SuppressWarnings("SameReturnValue")
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached",
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached(
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
       final DxfgInstrumentProfile2Pointer instrumentProfiles,

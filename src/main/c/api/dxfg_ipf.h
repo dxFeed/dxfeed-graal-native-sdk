@@ -453,7 +453,7 @@ int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolateth
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
 
 /**
  * Updates the instrument profile inside the collector.
@@ -465,7 +465,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2(graal_isolate
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
 
 /**
  * Updates multiple instrument profiles within a collector.
@@ -479,7 +479,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile_v2_cached(graal_
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
 
 /**
  * Updates multiple instrument profiles within a collector.
@@ -493,7 +493,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2(graal_isolat
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles_v2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
+int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
 
 /**
  * Returns the next instrument profile.
