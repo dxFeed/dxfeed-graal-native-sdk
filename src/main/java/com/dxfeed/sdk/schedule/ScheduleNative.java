@@ -244,10 +244,10 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getTradingVenues_v2",
+      name = "dxfg_Schedule_getTradingVenues2",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Schedule_getTradingVenues_v2(
+  public static int dxfg_Schedule_getTradingVenues2(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
       @DxfgOut DxfgCStringListPointerPointer venues
@@ -266,10 +266,10 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getTradingVenues_v2_cached",
+      name = "dxfg_Schedule_getTradingVenues2_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_Schedule_getTradingVenues_v2_cached(
+  public static int dxfg_Schedule_getTradingVenues2_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfile2Pointer instrumentProfile,
       @DxfgOut DxfgCStringListPointerPointer venues

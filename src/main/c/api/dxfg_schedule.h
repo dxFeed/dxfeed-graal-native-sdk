@@ -220,7 +220,7 @@ int32_t dxfg_Schedule_getInstance5_cached(graal_isolatethread_t *thread, dxfg_in
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_CList_String_release() to free the result.
  */
-int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
+int32_t dxfg_Schedule_getTradingVenues2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
 
 /**
  * Returns trading venues by an instrument profile.
@@ -233,7 +233,7 @@ int32_t dxfg_Schedule_getTradingVenues_v2(graal_isolatethread_t *thread, dxfg_in
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_CList_String_release() to free the result.
  */
-int32_t dxfg_Schedule_getTradingVenues_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
+int32_t dxfg_Schedule_getTradingVenues2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
 
 
 /** @} */ // end of Schedule
