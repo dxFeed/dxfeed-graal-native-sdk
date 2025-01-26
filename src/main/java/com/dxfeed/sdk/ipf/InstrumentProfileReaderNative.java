@@ -199,6 +199,7 @@ public class InstrumentProfileReaderNative {
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
+
   @CEntryPoint(
       name = "dxfg_InstrumentProfileReader_readFromFile2",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
@@ -276,6 +277,59 @@ public class InstrumentProfileReaderNative {
             NativeUtils.MAPPER_STRING.toJava(user), NativeUtils.MAPPER_STRING.toJava(password));
 
     return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+  }
+
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_readFromFile8",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_readFromFile8(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      @CConst final CCharPointer address,
+      @CConst final CCharPointer user,
+      @CConst final CCharPointer password,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
+                NativeUtils.MAPPER_STRING.toJava(user),
+                NativeUtils.MAPPER_STRING.toJava(password))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_readFromFile8_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_readFromFile8_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      @CConst final CCharPointer address,
+      @CConst final CCharPointer user,
+      @CConst final CCharPointer password,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
+                NativeUtils.MAPPER_STRING.toJava(user),
+                NativeUtils.MAPPER_STRING.toJava(password))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }
 
   @CEntryPoint(
