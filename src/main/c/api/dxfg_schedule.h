@@ -168,7 +168,7 @@ int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *th
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
-int32_t dxfg_Schedule_getInstance_v2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
+int32_t dxfg_Schedule_getInstance4(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
 
 /**
  * Creates a schedule instance based on a instrument profile.
@@ -181,7 +181,7 @@ int32_t dxfg_Schedule_getInstance_v2(graal_isolatethread_t *thread, dxfg_instrum
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
-int32_t dxfg_Schedule_getInstance_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
+int32_t dxfg_Schedule_getInstance4_cached(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t* schedule);
 
 /**
  * Creates a schedule instance based on a instrument profile and a venue.
