@@ -408,6 +408,54 @@ public class InstrumentProfileReaderNative {
   }
 
   @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_readFromFile9",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_readFromFile9(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      @CConst final CCharPointer address,
+      final DxfgAuthToken token,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
+                NativeUtils.MAPPER_AUTH_TOKEN.toJava(token))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileReader_readFromFile9_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileReader_readFromFile9_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
+      @CConst final CCharPointer address,
+      final DxfgAuthToken token,
+      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
+  ) throws IOException {
+    if (instrumentProfiles.isNull()) {
+      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
+    }
+
+    //noinspection DataFlowIssue
+    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
+            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
+                NativeUtils.MAPPER_AUTH_TOKEN.toJava(token))));
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
       name = "dxfg_InstrumentProfileReader_resolveSourceURL",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
