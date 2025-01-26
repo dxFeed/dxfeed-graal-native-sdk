@@ -522,7 +522,6 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles3(graal_isolatet
  */
 int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles3_cached(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, const dxfg_instrument_profile2_list_t* instrument_profiles, dxfg_java_object_handler *generation);
 
-
 /**
  * Returns the next instrument profile.
  *
@@ -640,6 +639,33 @@ int32_t dxfg_InstrumentProfileReader_readFromFile6(graal_isolatethread_t *thread
  * Use dxfg_instrument_profiles_array_free_cached() to free the result.
  */
 int32_t dxfg_InstrumentProfileReader_readFromFile6_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[out] instrument_profiles The resulting list of instrument profiles.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profile2_list_free() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile7(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
+
+/**
+ * Reads and returns instrument profiles from a file.
+ * This is a caching version of the function. All string fields of the instrument profiles, except for custom fields, will be cached (in theory, no extra copies will be created).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] reader The IPF reader handle.
+ * @param[in] address The file address.
+ * @param[out] instrument_profiles The resulting list of instrument profiles.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_instrument_profile2_list_free_cached() to free the result.
+ */
+int32_t dxfg_InstrumentProfileReader_readFromFile7_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
  * Reads and returns instrument profiles from a input stream.
