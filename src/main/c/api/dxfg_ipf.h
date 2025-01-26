@@ -625,7 +625,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile6_cached(graal_isolatethread_t 
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profiles_array_free() to free the result.
  */
-int32_t dxfg_InstrumentProfileReader_read_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+int32_t dxfg_InstrumentProfileReader_read3(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
  * Reads and returns instrument profiles from a input stream.
@@ -640,7 +640,7 @@ int32_t dxfg_InstrumentProfileReader_read_v2(graal_isolatethread_t *thread, dxfg
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profiles_array_free_cached() to free the result.
  */
-int32_t dxfg_InstrumentProfileReader_read_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+int32_t dxfg_InstrumentProfileReader_read3_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
  * Reads and returns instrument profiles from a input stream.
