@@ -20,6 +20,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
@@ -114,7 +115,7 @@ public class InstrumentProfileCollectorNative {
   public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
-      final DxfgInstrumentProfile2Pointer instrumentProfiles,
+      @CConst final DxfgInstrumentProfile2Pointer instrumentProfiles,
       int size,
       final JavaObjectHandler<Object> generation
   ) {
@@ -147,7 +148,7 @@ public class InstrumentProfileCollectorNative {
   public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCollector collector,
-      final DxfgInstrumentProfile2Pointer instrumentProfiles,
+      @CConst final DxfgInstrumentProfile2Pointer instrumentProfiles,
       int size,
       final JavaObjectHandler<Object> generation
   ) {
@@ -166,6 +167,46 @@ public class InstrumentProfileCollectorNative {
     //noinspection DataFlowIssue
     NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).updateInstrumentProfiles(
         profiles,
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
+    );
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @SuppressWarnings("SameReturnValue")
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles3",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles3(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCollector collector,
+      @CConst final DxfgInstrumentProfile2ListPointer instrumentProfiles,
+      final JavaObjectHandler<Object> generation
+  ) {
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).updateInstrumentProfiles(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toJavaList(instrumentProfiles),
+        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
+    );
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @SuppressWarnings("SameReturnValue")
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCollector_updateInstrumentProfiles3_cached",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCollector_updateInstrumentProfiles3_cached(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCollector collector,
+      @CConst final DxfgInstrumentProfile2ListPointer instrumentProfiles,
+      final JavaObjectHandler<Object> generation
+  ) {
+    //noinspection DataFlowIssue
+    NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(collector).updateInstrumentProfiles(
+        NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toJavaList(instrumentProfiles),
         NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(generation)
     );
 
