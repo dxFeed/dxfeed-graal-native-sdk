@@ -418,10 +418,10 @@ public class InstrumentProfileReaderNative {
 
   @SuppressWarnings("SameReturnValue")
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readCompressed_v2",
+      name = "dxfg_InstrumentProfileReader_readCompressed2",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileReader_readCompressed_v2(
+  public static int dxfg_InstrumentProfileReader_readCompressed2(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
       final DxfgInputStream dxfgInputStream,
@@ -444,10 +444,10 @@ public class InstrumentProfileReaderNative {
 
   @SuppressWarnings("SameReturnValue")
   @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readCompressed_v2_cached",
+      name = "dxfg_InstrumentProfileReader_readCompressed2_cached",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
-  public static int dxfg_InstrumentProfileReader_readCompressed_v2_cached(
+  public static int dxfg_InstrumentProfileReader_readCompressed2_cached(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
       final DxfgInputStream dxfgInputStream,

@@ -685,7 +685,7 @@ int32_t dxfg_InstrumentProfileReader_read4_cached(graal_isolatethread_t *thread,
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profiles_array_free() to free the result.
  */
-int32_t dxfg_InstrumentProfileReader_readCompressed_v2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+int32_t dxfg_InstrumentProfileReader_readCompressed2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
  * Reads and returns instrument profiles from a compressed input stream.
@@ -700,7 +700,7 @@ int32_t dxfg_InstrumentProfileReader_readCompressed_v2(graal_isolatethread_t *th
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_instrument_profiles_array_free_cached() to free the result.
  */
-int32_t dxfg_InstrumentProfileReader_readCompressed_v2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
+int32_t dxfg_InstrumentProfileReader_readCompressed2_cached(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
  * Frees up memory occupied by instrument profile fields, releases custom fields.
