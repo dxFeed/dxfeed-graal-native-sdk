@@ -70,7 +70,7 @@ object BuildPatchAndDeployLinux : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -122,7 +122,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         text("env.RELEASE_VERSION", "", allowEmpty = false)
     }
 
@@ -175,7 +175,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "4G")
     }
 
@@ -232,7 +232,7 @@ object DeployWindows : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -294,7 +294,7 @@ object DeployMacOsAndIOS : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -336,7 +336,7 @@ object DeployNuget : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -491,7 +491,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
