@@ -1,4 +1,87 @@
-* **\[MDAPI-130]\[GRAAL]** Add MarketMaker event
+## v2.3.0
+
+* **\[MDAPI-223]\[GRAAL]** Improved InstrumentProfile
+    * Migrated to QDS 3.339 and MDD 504.
+    * Added structs:
+        * `dxfg_instrument_profile2_t` struct.
+        * `dxfg_instrument_profile_custom_fields_t` handle struct.
+        * `dxfg_instrument_profile2_list_t` struct.
+        * `dxfg_java_object_t` struct.
+    * Added functions:
+        * `dxfg_free_strings`.
+        * `dxfg_Object_new`.
+        * `dxfg_InstrumentProfileField_formatNumber`.
+        * `dxfg_InstrumentProfileField_parseNumber`.
+        * `dxfg_InstrumentProfileField_formatDate`.
+        * `dxfg_InstrumentProfileField_parseDate`.
+        * `dxfg_InstrumentProfileCustomFields_new`.
+        * `dxfg_InstrumentProfileCustomFields_new2`.
+        * `dxfg_InstrumentProfileCustomFields_new3`.
+        * `dxfg_InstrumentProfileCustomFields_new4`.
+        * `dxfg_InstrumentProfileCustomFields_getField`.
+        * `dxfg_InstrumentProfileCustomFields_setField`.
+        * `dxfg_InstrumentProfileCustomFields_getNumericField`.
+        * `dxfg_InstrumentProfileCustomFields_setNumericField`.
+        * `dxfg_InstrumentProfileCustomFields_getDateField`.
+        * `dxfg_InstrumentProfileCustomFields_setDateField`.
+        * `dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfile2`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfile2_cached`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfiles2`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfiles2_cached`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfiles3`.
+        * `dxfg_InstrumentProfileCollector_updateInstrumentProfiles3_cached`.
+        * `dxfg_Iterable_InstrumentProfile_next2`.
+        * `dxfg_Iterable_InstrumentProfile_next2_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile4`.
+        * `dxfg_InstrumentProfileReader_readFromFile4_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile5`.
+        * `dxfg_InstrumentProfileReader_readFromFile5_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile6`.
+        * `dxfg_InstrumentProfileReader_readFromFile6_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile7`.
+        * `dxfg_InstrumentProfileReader_readFromFile7_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile8`.
+        * `dxfg_InstrumentProfileReader_readFromFile8_cached`.
+        * `dxfg_InstrumentProfileReader_readFromFile9`.
+        * `dxfg_InstrumentProfileReader_readFromFile9_cached`.
+        * `dxfg_InstrumentProfileReader_read3`.
+        * `dxfg_InstrumentProfileReader_read3_cached`.
+        * `dxfg_InstrumentProfileReader_read4`.
+        * `dxfg_InstrumentProfileReader_read4_cached`.
+        * `dxfg_InstrumentProfileReader_read5`.
+        * `dxfg_InstrumentProfileReader_read5_cached`.
+        * `dxfg_InstrumentProfileReader_read6`.
+        * `dxfg_InstrumentProfileReader_read6_cached`.
+        * `dxfg_InstrumentProfileReader_readCompressed2`.
+        * `dxfg_InstrumentProfileReader_readCompressed2_cached`.
+        * `dxfg_InstrumentProfileReader_readCompressed3`.
+        * `dxfg_InstrumentProfileReader_readCompressed3_cached`.
+        * `dxfg_instrument_profile_free`.
+        * `dxfg_instrument_profile_free_cached`.
+        * `dxfg_instrument_profiles_array_free`.
+        * `dxfg_instrument_profiles_array_free_cached`.
+        * `dxfg_instrument_profile2_list_free`.
+        * `dxfg_instrument_profile2_list_free_cached`.
+        * `dxfg_Schedule_getInstance4`.
+        * `dxfg_Schedule_getInstance4_cached`.
+        * `dxfg_Schedule_getInstance5`.
+        * `dxfg_Schedule_getInstance5_cached`.
+        * `dxfg_Schedule_getTradingVenues2`.
+        * `dxfg_Schedule_getTradingVenues2_cached`.
+    * Fixed functions:
+        * `dxfg_Object_equals`.
+        * `dxfg_Object_hashCode`.
+        * `dxfg_Comparable_compareTo`.
+    * Added `DxfgClient`'s cases:
+        * `InstrumentProfileCustomFieldsCase`.
+        * `InstrumentProfileFieldCase`.
+        * `InstrumentProfileReaderBench` to run ipf loading benchmarks.
+    * All of these cached functions use an internal cache for strings when working with tool
+      profiles. You should use cached memory release functions if you use cached functions to create
+      instrument profiles. This reduces memory usage slightly when you have a large number of profiles.
+    * Please see generated docs.
+* **\[MDAPI-130]\[GRAAL]** Added MarketMaker event
     * Added `DxfgMarketMaker` interface (`dxfg_market_maker_t` struct), mappers, etc.
     * Added `DXFG_EVENT_MARKET_MAKER` enum value.
     * Improved the `DxfgClient` tool.
