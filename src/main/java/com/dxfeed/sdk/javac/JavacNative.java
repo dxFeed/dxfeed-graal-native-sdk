@@ -12,6 +12,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.mappers.JavaObjectHandlerMapper;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
@@ -617,9 +618,10 @@ public class JavacNative {
       final JavaObjectHandler<Object> dxfgObjectHandler,
       final JavaObjectHandler<Object> dxfgOther
   ) {
-    return NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler).equals(
-        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgOther)
-    ) ? 1 : 0;
+    var javaObject = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler);
+    var otherJavaObject = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgOther);
+
+    return Objects.equals(javaObject, otherJavaObject) ? 1 : 0;
   }
 
   @CEntryPoint(
@@ -630,7 +632,7 @@ public class JavacNative {
       final IsolateThread ignoredThread,
       final JavaObjectHandler<Object> dxfgObjectHandler
   ) {
-    return NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler).hashCode();
+    return Objects.hashCode(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(dxfgObjectHandler));
   }
 
   @CEntryPoint(
@@ -642,8 +644,23 @@ public class JavacNative {
       final JavaObjectHandler<Object> objectHandler,
       final JavaObjectHandler<Object> otherHandler
   ) {
-    return ((Comparable) NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(objectHandler))
-        .compareTo(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(otherHandler));
+    var javaObject = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(objectHandler);
+    var otherJavaObject = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(otherHandler);
+
+    if (javaObject == otherJavaObject) {
+      return 0;
+    }
+
+    if (javaObject == null) {
+      return -1;
+    }
+
+    if (otherJavaObject == null) {
+      return 1;
+    }
+
+    //noinspection unchecked,rawtypes
+    return ((Comparable)javaObject).compareTo(otherHandler);
   }
 
   @CEntryPoint(
