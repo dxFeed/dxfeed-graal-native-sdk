@@ -412,6 +412,7 @@ int main(int argc, char *argv[]) {
 
     std::size_t argIndex = 1;
     const auto systemProperties = CommandLineParser::parseSystemProperties(args, argIndex);
+    CommandsRegistry::COMMANDS_CONTEXT.setSystemProperties(systemProperties);
 
     for (const auto &systemPropertiesEntry : systemProperties) {
         if (dxfg_system_set_property(mainIsolateThread, systemPropertiesEntry.first.c_str(),

@@ -5,6 +5,8 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
+#include <unordered_map>
 
 namespace dxfg {
 
@@ -20,6 +22,8 @@ class CommandsContext {
     std::string defaultIpfAddress_;
     std::string defaultIpfFilePath_;
     std::vector<std::string> defaultSymbols_;
+    mutable std::mutex mutex_{};
+    std::unordered_map<std::string, std::string> systemProperties_{};
 
   public:
     CommandsContext();
@@ -53,6 +57,10 @@ class CommandsContext {
     const std::string &getDefaultSymbolsString() const &;
 
     std::string substituteDefaultValues(std::string templateString) const;
+
+    void setSystemProperties(const std::unordered_map<std::string, std::string>& properties);
+
+    std::unordered_map<std::string, std::string> getSystemProperties() const;
 };
 
 } // namespace dxfg

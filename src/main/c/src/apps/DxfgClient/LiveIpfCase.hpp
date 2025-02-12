@@ -34,6 +34,22 @@ inline void instrumentProfileUpdateListenerCallback(graal_isolatethread_t *threa
     }
 }
 
+inline void instrumentProfileUpdateListenerCallback2(graal_isolatethread_t *thread, dxfg_iterable_ip_t *profiles,
+                                                    void * /* user_data */) {
+    while (dxfg_Iterable_InstrumentProfile_hasNext(thread, profiles) == 1) {
+        dxfg_instrument_profile2_t* profile{};
+        auto result = dxfg_Iterable_InstrumentProfile_next2(thread, profiles, &profile);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(thread);
+        }
+
+        printf("  Profile %s\n", profile->symbol);
+
+        dxfg_instrument_profile_free(thread, profile);
+    }
+}
+
 inline void ipfPropertyChangeListenerCallback(graal_isolatethread_t * /* thread */,
                                               dxfg_ipf_connection_state_t old_state,
                                               dxfg_ipf_connection_state_t new_state, void * /* user_data */) {
@@ -46,7 +62,7 @@ Command liveIpfCase{
     {"li"},
     "",
     "li [<properties>] [<address>]",
-    {"li %defaultAddress%"},
+    {"li %defaultIpfAddress%", "li -DLiveIpfCase.variant=2 %defaultIpfAddress%"},
     [](const Command & /*self*/, graal_isolatethread_t *isolateThread, const std::vector<std::string> &args,
        const dxfg::CommandsContext &context) {
         puts("== LiveIpf ==");
@@ -61,8 +77,18 @@ Command liveIpfCase{
         printf("  InstrumentProfileCollector state %d\n",
                dxfg_InstrumentProfileConnection_getState(isolateThread, connection));
 
-        dxfg_ipf_update_listener_t *listener =
-            dxfg_InstrumentProfileUpdateListener_new(isolateThread, &instrumentProfileUpdateListenerCallback, nullptr);
+        dxfg_ipf_update_listener_t *listener{};
+
+        auto systemProperties = context.getSystemProperties();
+
+        if (systemProperties.count("LiveIpfCase.variant") > 0 && systemProperties.at("LiveIpfCase.variant") == "2") {
+            listener =
+                dxfg_InstrumentProfileUpdateListener_new(isolateThread, &instrumentProfileUpdateListenerCallback2, nullptr);
+
+        } else {
+            listener =
+                dxfg_InstrumentProfileUpdateListener_new(isolateThread, &instrumentProfileUpdateListenerCallback, nullptr);
+        }
 
         dxfg_Object_finalize(isolateThread, reinterpret_cast<dxfg_java_object_handler *>(listener), &finalize, nullptr);
         dxfg_InstrumentProfileCollector_addUpdateListener(isolateThread, collector, listener);

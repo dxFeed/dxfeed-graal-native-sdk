@@ -119,4 +119,16 @@ std::string CommandsContext::substituteDefaultValues(std::string templateString)
     return templateString;
 }
 
+void CommandsContext::setSystemProperties(const std::unordered_map<std::string, std::string> &properties) {
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    systemProperties_ = properties;
+}
+
+std::unordered_map<std::string, std::string> CommandsContext::getSystemProperties() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    return systemProperties_;
+}
+
 } // namespace dxfg

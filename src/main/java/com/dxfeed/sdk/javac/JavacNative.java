@@ -660,7 +660,7 @@ public class JavacNative {
     }
 
     //noinspection unchecked,rawtypes
-    return ((Comparable)javaObject).compareTo(otherHandler);
+    return ((Comparable)javaObject).compareTo(otherJavaObject);
   }
 
   @CEntryPoint(
