@@ -46,8 +46,8 @@ project {
             id = "PROJECT_EXT_153"
             name = "dxFeed jFrog Docker Registry"
             url = "https://dxfeed-docker.jfrog.io"
-            userName = "anatoly.kalin"
-            password = "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb"
+            userName = "graal"
+            password = "credentialsJSON:0de10768-dff5-49c2-8610-1ee72c8fdb09"
         }
     }
 
