@@ -46,8 +46,8 @@ project {
             id = "PROJECT_EXT_153"
             name = "dxFeed jFrog Docker Registry"
             url = "https://dxfeed-docker.jfrog.io"
-            userName = "graal"
-            password = "credentialsJSON:0de10768-dff5-49c2-8610-1ee72c8fdb09"
+            userName = "anatoly.kalin"
+            password = "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb"
         }
     }
 
@@ -69,8 +69,8 @@ object BuildPatchAndDeployLinux : BuildType({
     name = "Build PATCH and Deploy Linux"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -121,8 +121,8 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     name = "Build MAJOR.MINOR.PATCH and Deploy Linux"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
         text("env.RELEASE_VERSION", "", allowEmpty = false)
     }
 
@@ -174,8 +174,8 @@ object DeployForLinuxAarch64 : BuildType({
     name = "Deploy for Linux Aarch64"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "4G")
     }
 
@@ -231,8 +231,8 @@ object DeployWindows : BuildType({
     name = "Deploy Windows"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -293,8 +293,8 @@ object DeployMacOsAndIOS : BuildType({
     name = "Deploy macOS and iOS"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -335,8 +335,8 @@ object DeployNuget : BuildType({
     name = "Deploy NuGet"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
@@ -490,8 +490,8 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     name = "Build and push a docker image for Linux Aarch64"
 
     params {
-        text("env.JFROG_USER", "asheifler", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:086ca686-63eb-4b78-bc09-c11a44a41bcb", display = ParameterDisplay.HIDDEN)
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:96331be3-f7ca-4d05-bc55-835a414c58bb", display = ParameterDisplay.HIDDEN)
     }
 
     vcs {
