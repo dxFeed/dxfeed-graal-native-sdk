@@ -1,3 +1,9 @@
+## v2.4.0
+
+* **\[MDAPI-230]\[GRAAL]** Improved InstrumentProfileCustomFields.
+    * Added `dxfg_InstrumentProfileCustomFields_getNonEmptyNames` function.
+    * Deprecated the `dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames` function.
+
 ## v2.3.0
 
 * **\[MDAPI-223]\[GRAAL]** Improved InstrumentProfile
