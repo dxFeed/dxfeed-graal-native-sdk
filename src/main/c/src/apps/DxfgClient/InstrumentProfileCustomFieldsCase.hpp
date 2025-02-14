@@ -104,8 +104,7 @@ Command instrumentProfileCustomFieldsCase{
 
                 dxfg_string_list *fieldNames{};
 
-                r = dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(isolateThread, customFields, &fieldNames,
-                                                                             nullptr);
+                r = dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(isolateThread, customFields, &fieldNames);
 
                 if (r != DXFG_EXECUTE_SUCCESSFULLY) {
                     getException(isolateThread);
@@ -142,8 +141,8 @@ Command instrumentProfileCustomFieldsCase{
                 } else {
                     dxfg_string_list *fieldNames{};
 
-                    r = dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(isolateThread, customFields,
-                                                                                 &fieldNames, nullptr);
+                    r = dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(isolateThread, customFields,
+                                                                                 &fieldNames);
 
                     if (r != DXFG_EXECUTE_SUCCESSFULLY) {
                         getException(isolateThread);

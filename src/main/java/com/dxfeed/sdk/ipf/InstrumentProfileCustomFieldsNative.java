@@ -238,6 +238,7 @@ public class InstrumentProfileCustomFieldsNative {
       name = "dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames",
       exceptionHandler = ExceptionHandlerReturnMinusOne.class
   )
+  @Deprecated(since = "2.3.0", forRemoval = true)
   public static int dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(
       final IsolateThread ignoredThread,
       final DxfgInstrumentProfileCustomFieldsHandle customFields,
@@ -259,6 +260,30 @@ public class InstrumentProfileCustomFieldsNative {
     if (updated.isNonNull()) {
       updated.write(result ? 1 : 0);
     }
+
+    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+  }
+
+  @CEntryPoint(
+      name = "dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames",
+      exceptionHandler = ExceptionHandlerReturnMinusOne.class
+  )
+  public static int dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(
+      final IsolateThread ignoredThread,
+      final DxfgInstrumentProfileCustomFieldsHandle customFields,
+      @DxfgOut final DxfgCStringListPointerPointer targetFieldNames
+  ) {
+    if (targetFieldNames.isNull()) {
+      throw new IllegalArgumentException("The `targetFieldNames` pointer is null");
+    }
+
+    var names = new ArrayList<String>();
+
+    //noinspection DataFlowIssue
+    var result = NativeUtils.MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS.toJava(customFields)
+        .addNonEmptyFieldNames(names);
+
+    targetFieldNames.write(NativeUtils.MAPPER_STRINGS.toNativeList(names));
 
     return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
   }

@@ -439,10 +439,23 @@ int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *t
  * @param[out] target_field_names The list of field names.
  * @param[out] updated A flag indicating whether any names were written. May not be used (this pointer may be NULL).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * @deprecated Because the updated parameter is useless. Use dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames instead.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_CList_String_release() to free the result.
  */
 int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT dxfg_string_list** target_field_names, DXFG_OUT int32_t* updated);
+
+/**
+ * Creates and populates a list of strings with field names.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] custom_fields The custom fields handle.
+ * @param[out] target_field_names The list of field names.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_CList_String_release() to free the result.
+ */
+int32_t dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT dxfg_string_list** target_field_names);
 
 /**
  * Updates the instrument profile inside the collector.
