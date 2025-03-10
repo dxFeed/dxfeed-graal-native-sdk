@@ -8,9 +8,9 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
     extends MarketEventMapper<V, T> {
 
   public OrderAbstractMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent
+      final Mapper<String, CCharPointer> stringMapper
   ) {
-    super(stringMapperForMarketEvent);
+    super(stringMapper);
   }
 
   @Override

@@ -39,8 +39,8 @@ public class LoggingNative {
           public void onLog(final Level level, final long timestamp, final String threadName,
               final long threadId, final String loggerName, final String message,
               final Throwable exception, final String formattedMessage) {
-            var nativeThreadName = NativeUtils.MAPPER_STRING_CACHE_STORE.toNative(threadName);
-            var nativeLoggerName = NativeUtils.MAPPER_STRING_CACHE_STORE.toNative(loggerName);
+            var nativeThreadName = NativeUtils.MAPPER_STRING.toNative(threadName);
+            var nativeLoggerName = NativeUtils.MAPPER_STRING.toNative(loggerName);
             var nativeMessage = NativeUtils.MAPPER_STRING.toNative(message);
             var nativeException = NativeUtils.MAPPER_EXCEPTION.toNative(exception);
             var naiveFormattedMessage = NativeUtils.MAPPER_STRING.toNative(formattedMessage);
@@ -52,8 +52,8 @@ public class LoggingNative {
             NativeUtils.MAPPER_STRING.release(naiveFormattedMessage);
             NativeUtils.MAPPER_EXCEPTION.release(nativeException);
             NativeUtils.MAPPER_STRING.release(nativeMessage);
-            NativeUtils.MAPPER_STRING_CACHE_STORE.release(nativeLoggerName);
-            NativeUtils.MAPPER_STRING_CACHE_STORE.release(nativeThreadName);
+            NativeUtils.MAPPER_STRING.release(nativeLoggerName);
+            NativeUtils.MAPPER_STRING.release(nativeThreadName);
           }
         }));
 

@@ -9,14 +9,10 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAndSale> {
 
-  private final Mapper<String, CCharPointer> stringMapper;
-
   public TimeAndSaleMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    super(stringMapperForMarketEvent);
-    this.stringMapper = stringMapper;
+    super(stringMapper);
   }
 
   @Override
@@ -38,19 +34,19 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     nObject.setBidPrice(jObject.getBidPrice());
     nObject.setAskPrice(jObject.getAskPrice());
     nObject.setExchangeSaleConditions(
-        this.stringMapper.toNative(jObject.getExchangeSaleConditions())
+        stringMapper.toNative(jObject.getExchangeSaleConditions())
     );
     nObject.setFlags(jObject.getFlags());
-    nObject.setBuyer(this.stringMapper.toNative(jObject.getBuyer()));
-    nObject.setSeller(this.stringMapper.toNative(jObject.getSeller()));
+    nObject.setBuyer(stringMapper.toNative(jObject.getBuyer()));
+    nObject.setSeller(stringMapper.toNative(jObject.getSeller()));
   }
 
   @Override
   public void cleanNative(final DxfgTimeAndSale nObject) {
     super.cleanNative(nObject);
-    this.stringMapper.release(nObject.getExchangeSaleConditions());
-    this.stringMapper.release(nObject.getBuyer());
-    this.stringMapper.release(nObject.getSeller());
+    stringMapper.release(nObject.getExchangeSaleConditions());
+    stringMapper.release(nObject.getBuyer());
+    stringMapper.release(nObject.getSeller());
   }
 
   @Override
@@ -72,10 +68,10 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     jObject.setBidPrice(nObject.getBidPrice());
     jObject.setAskPrice(nObject.getAskPrice());
     jObject.setExchangeSaleConditions(
-        this.stringMapper.toJava(nObject.getExchangeSaleConditions())
+        stringMapper.toJava(nObject.getExchangeSaleConditions())
     );
     jObject.setFlags(nObject.getFlags());
-    jObject.setBuyer(this.stringMapper.toJava(nObject.getBuyer()));
-    jObject.setSeller(this.stringMapper.toJava(nObject.getSeller()));
+    jObject.setBuyer(stringMapper.toJava(nObject.getBuyer()));
+    jObject.setSeller(stringMapper.toJava(nObject.getSeller()));
   }
 }

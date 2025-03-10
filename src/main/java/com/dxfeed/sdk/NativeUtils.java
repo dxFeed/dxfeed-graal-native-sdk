@@ -7,7 +7,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.devexperts.auth.AuthToken;
 import com.devexperts.logging.InterceptableLoggingListener;
-import com.devexperts.util.SystemProperties;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
@@ -171,7 +170,6 @@ import com.dxfeed.sdk.mappers.ScheduleMapper;
 import com.dxfeed.sdk.mappers.SessionFilterMapper;
 import com.dxfeed.sdk.mappers.SessionMapper;
 import com.dxfeed.sdk.mappers.StringMapper;
-import com.dxfeed.sdk.mappers.StringMapperCacheStore;
 import com.dxfeed.sdk.mappers.SubscriptionMapper;
 import com.dxfeed.sdk.mappers.TimeFormatMapper;
 import com.dxfeed.sdk.mappers.TimePeriodMapper;
@@ -221,9 +219,6 @@ import org.graalvm.nativeimage.c.type.CIntPointer;
 
 public final class NativeUtils {
 
-  public static final String STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS_PROPERTY = "dxFeedGraalNativeSdk.stringMapperCacheStore.expireAfterLastDeleteInMs";
-  public static final int DEFAULT_STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS = 3000;
-
   public static final Finalizer FINALIZER = new Finalizer();
   public static final Mapper<StackTraceElement, DxfgStackTraceElement> MAPPER_STACK_TRACE_ELEMENT;
   public static final ListMapper<StackTraceElement, DxfgStackTraceElement, DxfgStackTraceElementPointer, DxfgStackTraceElementList> MAPPER_STACK_TRACE_ELEMENTS;
@@ -231,7 +226,6 @@ public final class NativeUtils {
   public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
   public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
   public static final Mapper<String, CCharPointer> MAPPER_STRING;
-  public static final Mapper<String, CCharPointer> MAPPER_STRING_CACHE_STORE;
   public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> MAPPER_STRINGS;
   public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
   public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
@@ -287,9 +281,7 @@ public final class NativeUtils {
   public static final Mapper<InterceptableLoggingListener, DxfgInterceptableLoggingListenerHandle> MAPPER_INTERCEPTABLE_LOGGING_LISTENER;
   public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
   public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
-  public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2_CACHED;
   public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
-  public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2_CACHED;
 
 
   static {
@@ -298,15 +290,10 @@ public final class NativeUtils {
     MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
     MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
     MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
-    MAPPER_STRING_CACHE_STORE = new StringMapperCacheStore(
-        SystemProperties.getIntProperty(
-            STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS_PROPERTY,
-            DEFAULT_STRING_MAPPER_CACHE_STORE_EXPIRE_AFTER_LAST_DELETE_IN_MS));
     SingletonScheduledExecutorService.start(
         "clean cache & finalize native",
         () -> {
           try {
-            ((StringMapperCacheStore) MAPPER_STRING_CACHE_STORE).cleanUp();
             FINALIZER.finalizeResources();
           } catch (final Throwable throwable) {
             throwable.printStackTrace();
@@ -320,13 +307,13 @@ public final class NativeUtils {
         MAPPER_STRING,
         new QuoteMapper(MAPPER_STRING),
         new SeriesMapper(MAPPER_STRING),
-        new OptionSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new OptionSaleMapper(MAPPER_STRING),
         new MarketMakerMapper(MAPPER_STRING),
-        new TimeAndSaleMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
-        new SpreadOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
-        new OrderMapper<>(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
-        new AnalyticOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
-        new OtcMarketsOrderMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new TimeAndSaleMapper(MAPPER_STRING),
+        new SpreadOrderMapper(MAPPER_STRING),
+        new OrderMapper<>(MAPPER_STRING),
+        new AnalyticOrderMapper(MAPPER_STRING),
+        new OtcMarketsOrderMapper(MAPPER_STRING),
         new MessageMapper(MAPPER_STRING),
         new OrderBaseMapper(MAPPER_STRING),
         new ConfigurationMapper(MAPPER_STRING),
@@ -336,7 +323,7 @@ public final class NativeUtils {
         new UnderlyingMapper(MAPPER_STRING),
         new GreeksMapper(MAPPER_STRING),
         new SummaryMapper(MAPPER_STRING),
-        new ProfileMapper(MAPPER_STRING, MAPPER_STRING_CACHE_STORE),
+        new ProfileMapper(MAPPER_STRING),
         new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
         new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL),
         new TextMessageMapper(MAPPER_STRING)
@@ -394,9 +381,7 @@ public final class NativeUtils {
     MAPPER_INTERCEPTABLE_LOGGING_LISTENER = new InterceptableLoggingListenerMapper();
     MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
     MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
-    MAPPER_INSTRUMENT_PROFILE_2_CACHED = new InstrumentProfile2Mapper(MAPPER_STRING_CACHE_STORE);
     MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
-    MAPPER_INSTRUMENT_PROFILES_2_CACHED = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2_CACHED);
   }
 
   public static class Finalizer {

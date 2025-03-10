@@ -9,14 +9,10 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpreadOrder> {
 
-  private final Mapper<String, CCharPointer> stringMapper;
-
   public SpreadOrderMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    super(stringMapperForMarketEvent);
-    this.stringMapper = stringMapper;
+    super(stringMapper);
   }
 
   @Override
@@ -29,13 +25,13 @@ public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpre
   @Override
   public void fillNative(final SpreadOrder jObject, final DxfgSpreadOrder nObject, boolean clean) {
     super.fillNative(jObject, nObject, clean);
-    nObject.setSpreadSymbol(this.stringMapper.toNative(jObject.getSpreadSymbol()));
+    nObject.setSpreadSymbol(stringMapper.toNative(jObject.getSpreadSymbol()));
   }
 
   @Override
   public void cleanNative(final DxfgSpreadOrder nObject) {
     super.cleanNative(nObject);
-    this.stringMapper.release(nObject.getSpreadSymbol());
+    stringMapper.release(nObject.getSpreadSymbol());
   }
 
   @Override
@@ -48,6 +44,6 @@ public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpre
   @Override
   public void fillJava(final DxfgSpreadOrder nObject, final SpreadOrder jObject) {
     super.fillJava(nObject, jObject);
-    jObject.setSpreadSymbol(this.stringMapper.toJava(nObject.getSpreadSymbol()));
+    jObject.setSpreadSymbol(stringMapper.toJava(nObject.getSpreadSymbol()));
   }
 }

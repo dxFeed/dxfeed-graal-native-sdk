@@ -10,10 +10,10 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMarketEvent>
     extends EventMapper<T, V> {
 
-  private final Mapper<String, CCharPointer> stringMapper;
+  protected final Mapper<String, CCharPointer> stringMapper;
 
-  public MarketEventMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
-    this.stringMapper = stringMapperForMarketEvent;
+  public MarketEventMapper(final Mapper<String, CCharPointer> stringMapper) {
+    this.stringMapper = stringMapper;
   }
 
   @Override

@@ -77,7 +77,7 @@ public class InstrumentProfileReaderNative {
   @SuppressWarnings("SameReturnValue")
   private static int fillNativeProfiles(List<InstrumentProfile> javaInstrumentProfiles,
       @DxfgOut final DxfgInstrumentProfile2PointerPointer nativeInstrumentProfiles,
-      @DxfgOut final CInt32Pointer size, boolean cached) {
+      @DxfgOut final CInt32Pointer size) {
     if (javaInstrumentProfiles.isEmpty()) {
       nativeInstrumentProfiles.write(WordFactory.nullPointer());
       size.write(0);
@@ -89,13 +89,8 @@ public class InstrumentProfileReaderNative {
         javaInstrumentProfiles.size() * SizeOf.get(DxfgInstrumentProfile2Pointer.class));
 
     for (int i = 0; i < javaInstrumentProfiles.size(); i++) {
-      if (cached) {
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.fillNative(javaInstrumentProfiles.get(i),
-            targetInstrumentProfiles.addressOf(i), false);
-      } else {
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.fillNative(javaInstrumentProfiles.get(i),
             targetInstrumentProfiles.addressOf(i), false);
-      }
     }
 
     nativeInstrumentProfiles.write(targetInstrumentProfiles);
@@ -127,33 +122,7 @@ public class InstrumentProfileReaderNative {
     var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
         .readFromFile(NativeUtils.MAPPER_STRING.toJava(address));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
-  }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile4_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile4_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .readFromFile(NativeUtils.MAPPER_STRING.toJava(address));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
 
   @CEntryPoint(
@@ -172,28 +141,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile7_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile7_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .readFromFile(NativeUtils.MAPPER_STRING.toJava(address))));
 
@@ -247,38 +194,8 @@ public class InstrumentProfileReaderNative {
         .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
             NativeUtils.MAPPER_STRING.toJava(user), NativeUtils.MAPPER_STRING.toJava(password));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile5_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile5_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      @CConst final CCharPointer user,
-      @CConst final CCharPointer password,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
-            NativeUtils.MAPPER_STRING.toJava(user), NativeUtils.MAPPER_STRING.toJava(password));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
-  }
-
 
   @CEntryPoint(
       name = "dxfg_InstrumentProfileReader_readFromFile8",
@@ -298,32 +215,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
-                NativeUtils.MAPPER_STRING.toJava(user),
-                NativeUtils.MAPPER_STRING.toJava(password))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile8_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile8_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      @CConst final CCharPointer user,
-      @CConst final CCharPointer password,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
                 NativeUtils.MAPPER_STRING.toJava(user),
@@ -376,35 +267,7 @@ public class InstrumentProfileReaderNative {
         .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
             NativeUtils.MAPPER_AUTH_TOKEN.toJava(token));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
-  }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile6_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile6_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      final DxfgAuthToken token,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
-            NativeUtils.MAPPER_AUTH_TOKEN.toJava(token));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
 
   @CEntryPoint(
@@ -424,30 +287,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
-                NativeUtils.MAPPER_AUTH_TOKEN.toJava(token))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readFromFile9_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readFromFile9_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      @CConst final CCharPointer address,
-      final DxfgAuthToken token,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .readFromFile(NativeUtils.MAPPER_STRING.toJava(address),
                 NativeUtils.MAPPER_AUTH_TOKEN.toJava(token))));
@@ -513,35 +352,7 @@ public class InstrumentProfileReaderNative {
         .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
             NativeUtils.MAPPER_STRING.toJava(address));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
-  }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_read4_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_read4_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @CConst final CCharPointer address,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
-            NativeUtils.MAPPER_STRING.toJava(address));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
 
   @CEntryPoint(
@@ -561,30 +372,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
-                NativeUtils.MAPPER_STRING.toJava(address))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_read6_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_read6_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @CConst final CCharPointer address,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream),
                 NativeUtils.MAPPER_STRING.toJava(address))));
@@ -632,33 +419,7 @@ public class InstrumentProfileReaderNative {
     var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
         .readCompressed(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
-  }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readCompressed2_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readCompressed2_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .readCompressed(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
 
   @CEntryPoint(
@@ -677,28 +438,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .readCompressed(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_readCompressed3_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_readCompressed3_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .readCompressed(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
 
@@ -744,33 +483,7 @@ public class InstrumentProfileReaderNative {
     var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
         .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream));
 
-    return fillNativeProfiles(profiles, instrumentProfiles, size, false);
-  }
-
-  @SuppressWarnings("SameReturnValue")
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_read3_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_read3_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @DxfgOut final DxfgInstrumentProfile2PointerPointer instrumentProfiles,
-      @DxfgOut final CInt32Pointer size
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
-    }
-
-    var profiles = NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-        .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream));
-
-    return fillNativeProfiles(profiles, instrumentProfiles, size, true);
+    return fillNativeProfiles(profiles, instrumentProfiles, size);
   }
 
   @CEntryPoint(
@@ -789,28 +502,6 @@ public class InstrumentProfileReaderNative {
 
     //noinspection DataFlowIssue
     instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2.toNativeList(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
-            .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_InstrumentProfileReader_read5_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_InstrumentProfileReader_read5_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfileReader dxfgInstrumentProfileReader,
-      final DxfgInputStream dxfgInputStream,
-      @DxfgOut final DxfgInstrumentProfile2ListPointerPointer instrumentProfiles
-  ) throws IOException {
-    if (instrumentProfiles.isNull()) {
-      throw new IllegalArgumentException("The `instrumentProfiles` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    instrumentProfiles.write(NativeUtils.MAPPER_INSTRUMENT_PROFILES_2_CACHED.toNativeList(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_READER.toJava(dxfgInstrumentProfileReader)
             .read(NativeUtils.MAPPER_INPUT_STREAM.toJava(dxfgInputStream))));
 

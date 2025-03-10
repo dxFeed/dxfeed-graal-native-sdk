@@ -131,28 +131,6 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getInstance4_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_Schedule_getInstance4_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfile2Pointer instrumentProfile,
-      final @DxfgOut DxfgScheduleHandlePointer schedule
-  ) {
-    if (schedule.isNull()) {
-      throw new IllegalArgumentException("The `schedule` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
-        Schedule.getInstance(
-            NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile))
-    ));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
       name = "dxfg_Schedule_getInstance2",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
@@ -206,30 +184,6 @@ public class ScheduleNative {
   }
 
   @CEntryPoint(
-      name = "dxfg_Schedule_getInstance5_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_Schedule_getInstance5_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfile2Pointer instrumentProfile,
-      @CConst final CCharPointer venue,
-      final @DxfgOut DxfgScheduleHandlePointer schedule
-  ) {
-    if (schedule.isNull()) {
-      throw new IllegalArgumentException("The `schedule` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    schedule.write(NativeUtils.MAPPER_SCHEDULE.toNative(
-        Schedule.getInstance(
-            NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile),
-            NativeUtils.MAPPER_STRING.toJava(venue))
-    ));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
       name = "dxfg_Schedule_getTradingVenues",
       exceptionHandler = ExceptionHandlerReturnNullWord.class
   )
@@ -259,28 +213,6 @@ public class ScheduleNative {
     //noinspection DataFlowIssue
     var javaVenues = Schedule.getTradingVenues(
         NativeUtils.MAPPER_INSTRUMENT_PROFILE_2.toJava(instrumentProfile));
-
-    venues.write(NativeUtils.MAPPER_STRINGS.toNativeList(javaVenues));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_Schedule_getTradingVenues2_cached",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_Schedule_getTradingVenues2_cached(
-      final IsolateThread ignoredThread,
-      final DxfgInstrumentProfile2Pointer instrumentProfile,
-      @DxfgOut DxfgCStringListPointerPointer venues
-  ) {
-    if (venues.isNull()) {
-      throw new IllegalArgumentException("The `venues` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    var javaVenues = Schedule.getTradingVenues(
-        NativeUtils.MAPPER_INSTRUMENT_PROFILE_2_CACHED.toJava(instrumentProfile));
 
     venues.write(NativeUtils.MAPPER_STRINGS.toNativeList(javaVenues));
 

@@ -9,14 +9,10 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
 
-  private final Mapper<String, CCharPointer> stringMapper;
-
   public ProfileMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    super(stringMapperForMarketEvent);
-    this.stringMapper = stringMapper;
+    super(stringMapper);
   }
 
   @Override
@@ -29,8 +25,8 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   @Override
   public void fillNative(final Profile jObject, final DxfgProfile nObject, boolean clean) {
     super.fillNative(jObject, nObject, clean);
-    nObject.setDescription(this.stringMapper.toNative(jObject.getDescription()));
-    nObject.setStatusReason(this.stringMapper.toNative(jObject.getStatusReason()));
+    nObject.setDescription(stringMapper.toNative(jObject.getDescription()));
+    nObject.setStatusReason(stringMapper.toNative(jObject.getStatusReason()));
     nObject.setHaltStartTime(jObject.getHaltStartTime());
     nObject.setHaltEndTime(jObject.getHaltEndTime());
     nObject.setHighLimitPrice(jObject.getHighLimitPrice());
@@ -50,8 +46,8 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   @Override
   public void cleanNative(final DxfgProfile nObject) {
     super.cleanNative(nObject);
-    this.stringMapper.release(nObject.getDescription());
-    this.stringMapper.release(nObject.getStatusReason());
+    stringMapper.release(nObject.getDescription());
+    stringMapper.release(nObject.getStatusReason());
   }
 
   @Override
@@ -64,8 +60,8 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
   @Override
   public void fillJava(final DxfgProfile nObject, final Profile jObject) {
     super.fillJava(nObject, jObject);
-    jObject.setDescription(this.stringMapper.toJava(nObject.getDescription()));
-    jObject.setStatusReason(this.stringMapper.toJava(nObject.getStatusReason()));
+    jObject.setDescription(stringMapper.toJava(nObject.getDescription()));
+    jObject.setStatusReason(stringMapper.toJava(nObject.getStatusReason()));
     jObject.setHaltStartTime(nObject.getHaltStartTime());
     jObject.setHaltEndTime(nObject.getHaltEndTime());
     jObject.setHighLimitPrice(nObject.getHighLimitPrice());

@@ -10,10 +10,9 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 public class AnalyticOrderMapper extends OrderMapper<AnalyticOrder, DxfgAnalyticOrder> {
 
   public AnalyticOrderMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent,
       final Mapper<String, CCharPointer> stringMapper
   ) {
-    super(stringMapperForMarketEvent, stringMapper);
+    super(stringMapper);
   }
 
   @Override
