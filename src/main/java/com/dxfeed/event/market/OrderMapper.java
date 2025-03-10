@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,41 +12,41 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class OrderMapper<T extends Order, V extends DxfgOrder> extends OrderAbstractMapper<T, V> {
 
-  public OrderMapper(
-      final Mapper<String, CCharPointer> stringMapper
-  ) {
-    super(stringMapper);
-  }
+    public OrderMapper(
+            final Mapper<String, CCharPointer> stringMapper
+    ) {
+        super(stringMapper);
+    }
 
-  @Override
-  public V createNativeObject() {
-    final V nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrder.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_ORDER.getCValue());
-    return nObject;
-  }
+    @Override
+    public V createNativeObject() {
+        final V nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrder.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_ORDER.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final T jObject, final V nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-    nObject.setMarketMaker(stringMapper.toNative(jObject.getMarketMaker()));
-  }
+    @Override
+    public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+        nativeObject.setMarketMaker(stringMapper.toNative(javaObject.getMarketMaker()));
+    }
 
-  @Override
-  public void cleanNative(final V nObject) {
-    super.cleanNative(nObject);
-    stringMapper.release(nObject.getMarketMaker());
-  }
+    @Override
+    public void cleanNative(final V nativeObject) {
+        super.cleanNative(nativeObject);
+        stringMapper.release(nativeObject.getMarketMaker());
+    }
 
-  @Override
-  protected T doToJava(final V nObject) {
-    final T jObject = (T) new Order();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected T doToJava(final V nativeObject) {
+        final T javaObject = (T) new Order();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final V nObject, final T jObject) {
-    super.fillJava(nObject, jObject);
-    jObject.setMarketMaker(stringMapper.toJava(nObject.getMarketMaker()));
-  }
+    @Override
+    public void fillJava(final V nativeObject, final T javaObject) {
+        super.fillJava(nativeObject, javaObject);
+        javaObject.setMarketMaker(stringMapper.toJava(nativeObject.getMarketMaker()));
+    }
 }

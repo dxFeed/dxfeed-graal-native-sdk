@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.event.IndexedEventSource;
@@ -9,32 +12,32 @@ import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListIndexedEventSourceMapper extends
-    ListMapper<IndexedEventSource, DxfgIndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourceList> {
+        ListMapper<IndexedEventSource, DxfgIndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourceList> {
 
-  private final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers;
+    private final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers;
 
-  public ListIndexedEventSourceMapper(
-      final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers) {
-    this.sourceMappers = sourceMappers;
-  }
+    public ListIndexedEventSourceMapper(
+            final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers) {
+        this.sourceMappers = sourceMappers;
+    }
 
-  @Override
-  protected IndexedEventSource toJava(final DxfgIndexedEventSource nObject) {
-    return sourceMappers.toJava(nObject);
-  }
+    @Override
+    protected IndexedEventSource toJava(final DxfgIndexedEventSource nativeObject) {
+        return sourceMappers.toJava(nativeObject);
+    }
 
-  @Override
-  protected void releaseNative(final DxfgIndexedEventSource nObject) {
-    sourceMappers.release(nObject);
-  }
+    @Override
+    protected void releaseNative(final DxfgIndexedEventSource nativeObject) {
+        sourceMappers.release(nativeObject);
+    }
 
-  @Override
-  protected DxfgIndexedEventSource toNative(final IndexedEventSource jObject) {
-    return sourceMappers.toNative(jObject);
-  }
+    @Override
+    protected DxfgIndexedEventSource toNative(final IndexedEventSource javaObject) {
+        return sourceMappers.toNative(javaObject);
+    }
 
-  @Override
-  protected int getNativeListSize() {
-    return SizeOf.get(DxfgIndexedEventSourceList.class);
-  }
+    @Override
+    protected int getNativeListSize() {
+        return SizeOf.get(DxfgIndexedEventSourceList.class);
+    }
 }

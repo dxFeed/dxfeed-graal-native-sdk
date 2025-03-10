@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.event.misc.Configuration;
@@ -16,86 +19,86 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfiguration> {
 
-  private final static Logger logger = Logger.getLogger(
-      ConfigurationMapper.class.getCanonicalName());
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final static Logger logger = Logger.getLogger(
+            ConfigurationMapper.class.getCanonicalName());
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  static {
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
-  }
-
-  protected final Mapper<String, CCharPointer> stringMapper;
-
-  public ConfigurationMapper(final Mapper<String, CCharPointer> stringMapper) {
-    this.stringMapper = stringMapper;
-  }
-
-  @Override
-  public DxfgConfiguration createNativeObject() {
-    final DxfgConfiguration nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgConfiguration.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_CONFIGURATION.getCValue());
-    return nObject;
-  }
-
-  @Override
-  public final void fillNative(
-      final Configuration jObject, final DxfgConfiguration nObject, boolean clean
-  ) {
-    if (clean) {
-      cleanNative(nObject);
+    static {
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
     }
-    
-    nObject.setEventSymbol(stringMapper.toNative(jObject.getEventSymbol()));
-    nObject.setEventTime(jObject.getEventTime());
-    nObject.setVersion(jObject.getVersion());
-    try {
-      nObject.setAttachment(
-          this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(jObject.getAttachment()))
-      );
-    } catch (final JsonProcessingException e) {
-      logger.log(Level.WARNING, e.getMessage(), e);
+
+    protected final Mapper<String, CCharPointer> stringMapper;
+
+    public ConfigurationMapper(final Mapper<String, CCharPointer> stringMapper) {
+        this.stringMapper = stringMapper;
     }
-  }
 
-  @Override
-  public final void cleanNative(final DxfgConfiguration nObject) {
-    stringMapper.release(nObject.getEventSymbol());
-    stringMapper.release(nObject.getAttachment());
-  }
+    @Override
+    public DxfgConfiguration createNativeObject() {
+        final DxfgConfiguration nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgConfiguration.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_CONFIGURATION.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  protected Configuration doToJava(final DxfgConfiguration nObject) {
-    final Configuration jObject = new Configuration();
-    fillJava(nObject, jObject);
-    return jObject;
-  }
-
-  @Override
-  public void fillJava(final DxfgConfiguration nObject, final Configuration jObject) {
-    jObject.setEventSymbol(stringMapper.toJava(nObject.getEventSymbol()));
-    jObject.setEventTime(nObject.getEventTime());
-    jObject.setVersion(nObject.getVersion());
-    final String content = this.stringMapper.toJava(nObject.getAttachment());
-    if (content == null) {
-      jObject.setAttachment(null);
-    } else {
-      final Object attachment = jObject.getAttachment();
-      if (attachment != null) {
-        try {
-          jObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
-        } catch (final JsonProcessingException e) {
-          logger.log(Level.WARNING, e.getMessage(), e);
+    @Override
+    public final void fillNative(
+            final Configuration javaObject, final DxfgConfiguration nativeObject, boolean clean
+    ) {
+        if (clean) {
+            cleanNative(nativeObject);
         }
-      }
-    }
-  }
 
-  @Override
-  public DxfgConfiguration createNativeObject(final String symbol) {
-    final DxfgConfiguration nObject = createNativeObject();
-    nObject.setEventSymbol(this.stringMapper.toNative(symbol));
-    return nObject;
-  }
+        nativeObject.setEventSymbol(stringMapper.toNative(javaObject.getEventSymbol()));
+        nativeObject.setEventTime(javaObject.getEventTime());
+        nativeObject.setVersion(javaObject.getVersion());
+        try {
+            nativeObject.setAttachment(
+                    this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(javaObject.getAttachment()))
+            );
+        } catch (final JsonProcessingException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public final void cleanNative(final DxfgConfiguration nativeObject) {
+        stringMapper.release(nativeObject.getEventSymbol());
+        stringMapper.release(nativeObject.getAttachment());
+    }
+
+    @Override
+    protected Configuration doToJava(final DxfgConfiguration nativeObject) {
+        final Configuration javaObject = new Configuration();
+        fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
+
+    @Override
+    public void fillJava(final DxfgConfiguration nativeObject, final Configuration javaObject) {
+        javaObject.setEventSymbol(stringMapper.toJava(nativeObject.getEventSymbol()));
+        javaObject.setEventTime(nativeObject.getEventTime());
+        javaObject.setVersion(nativeObject.getVersion());
+        final String content = this.stringMapper.toJava(nativeObject.getAttachment());
+        if (content == null) {
+            javaObject.setAttachment(null);
+        } else {
+            final Object attachment = javaObject.getAttachment();
+            if (attachment != null) {
+                try {
+                    javaObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
+                } catch (final JsonProcessingException e) {
+                    logger.log(Level.WARNING, e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public DxfgConfiguration createNativeObject(final String symbol) {
+        final DxfgConfiguration nativeObject = createNativeObject();
+        nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
+        return nativeObject;
+    }
 }

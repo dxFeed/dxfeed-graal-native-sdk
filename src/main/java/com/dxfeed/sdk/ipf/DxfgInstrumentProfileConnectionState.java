@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.ipf;
 
 import static com.dxfeed.ipf.live.InstrumentProfileConnection.State.CLOSED;
@@ -17,30 +20,30 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 @CContext(Directives.class)
 @CEnum("dxfg_ipf_connection_state_t")
 public enum DxfgInstrumentProfileConnectionState {
-  DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED,
-  DXFG_IPF_CONNECTION_STATE_CONNECTING,
-  DXFG_IPF_CONNECTION_STATE_CONNECTED,
-  DXFG_IPF_CONNECTION_STATE_COMPLETED,
-  DXFG_IPF_CONNECTION_STATE_CLOSED,
-  ;
+    DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED,
+    DXFG_IPF_CONNECTION_STATE_CONNECTING,
+    DXFG_IPF_CONNECTION_STATE_CONNECTED,
+    DXFG_IPF_CONNECTION_STATE_COMPLETED,
+    DXFG_IPF_CONNECTION_STATE_CLOSED,
+    ;
 
-  private static final Map<State, DxfgInstrumentProfileConnectionState> map = new EnumMap<>(State.class);
+    private static final Map<State, DxfgInstrumentProfileConnectionState> map = new EnumMap<>(State.class);
 
-  static {
-    map.put(NOT_CONNECTED, DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED);
-    map.put(CONNECTING, DXFG_IPF_CONNECTION_STATE_CONNECTING);
-    map.put(CONNECTED, DXFG_IPF_CONNECTION_STATE_CONNECTED);
-    map.put(COMPLETED, DXFG_IPF_CONNECTION_STATE_COMPLETED);
-    map.put(CLOSED, DXFG_IPF_CONNECTION_STATE_CLOSED);
-  }
+    static {
+        map.put(NOT_CONNECTED, DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED);
+        map.put(CONNECTING, DXFG_IPF_CONNECTION_STATE_CONNECTING);
+        map.put(CONNECTED, DXFG_IPF_CONNECTION_STATE_CONNECTED);
+        map.put(COMPLETED, DXFG_IPF_CONNECTION_STATE_COMPLETED);
+        map.put(CLOSED, DXFG_IPF_CONNECTION_STATE_CLOSED);
+    }
 
-  public static DxfgInstrumentProfileConnectionState of(final State state) {
-    return map.get(state);
-  }
+    public static DxfgInstrumentProfileConnectionState of(final State state) {
+        return map.get(state);
+    }
 
-  @CEnumLookup
-  public static native DxfgInstrumentProfileConnectionState fromCValue(int value);
+    @CEnumLookup
+    public static native DxfgInstrumentProfileConnectionState fromCValue(int value);
 
-  @CEnumValue
-  public native int getCValue();
+    @CEnumValue
+    public native int getCValue();
 }

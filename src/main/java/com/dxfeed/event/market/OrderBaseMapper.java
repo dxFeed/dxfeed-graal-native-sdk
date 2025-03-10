@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,36 +12,36 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class OrderBaseMapper extends OrderAbstractMapper<OrderBase, DxfgOrderBase> {
 
-  public OrderBaseMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
-    super(stringMapperForMarketEvent);
-  }
+    public OrderBaseMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
+        super(stringMapperForMarketEvent);
+    }
 
-  @Override
-  public DxfgOrderBase createNativeObject() {
-    final DxfgOrderBase nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrderBase.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_ORDER_BASE.getCValue());
-    return nObject;
-  }
+    @Override
+    public DxfgOrderBase createNativeObject() {
+        final DxfgOrderBase nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgOrderBase.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_ORDER_BASE.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final OrderBase jObject, final DxfgOrderBase nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-  }
+    @Override
+    public void fillNative(final OrderBase javaObject, final DxfgOrderBase nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+    }
 
-  @Override
-  public void cleanNative(final DxfgOrderBase nObject) {
-    super.cleanNative(nObject);
-  }
+    @Override
+    public void cleanNative(final DxfgOrderBase nativeObject) {
+        super.cleanNative(nativeObject);
+    }
 
-  @Override
-  protected OrderBase doToJava(final DxfgOrderBase nObject) {
-    final OrderBase jObject = new OrderBase();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected OrderBase doToJava(final DxfgOrderBase nativeObject) {
+        final OrderBase javaObject = new OrderBase();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final DxfgOrderBase nObject, final OrderBase jObject) {
-    super.fillJava(nObject, jObject);
-  }
+    @Override
+    public void fillJava(final DxfgOrderBase nativeObject, final OrderBase javaObject) {
+        super.fillJava(nativeObject, javaObject);
+    }
 }

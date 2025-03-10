@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.endpoint;
 
 import static com.dxfeed.api.DXEndpoint.Role.FEED;
@@ -19,38 +22,38 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 @CContext(Directives.class)
 @CEnum("dxfg_endpoint_role_t")
 public enum DxfgEndpointRole {
-  DXFG_ENDPOINT_ROLE_FEED(FEED),
-  DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED(ON_DEMAND_FEED),
-  DXFG_ENDPOINT_ROLE_STREAM_FEED(STREAM_FEED),
-  DXFG_ENDPOINT_ROLE_PUBLISHER(PUBLISHER),
-  DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER(STREAM_PUBLISHER),
-  DXFG_ENDPOINT_ROLE_LOCAL_HUB(LOCAL_HUB),
-  ;
+    DXFG_ENDPOINT_ROLE_FEED(FEED),
+    DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED(ON_DEMAND_FEED),
+    DXFG_ENDPOINT_ROLE_STREAM_FEED(STREAM_FEED),
+    DXFG_ENDPOINT_ROLE_PUBLISHER(PUBLISHER),
+    DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER(STREAM_PUBLISHER),
+    DXFG_ENDPOINT_ROLE_LOCAL_HUB(LOCAL_HUB),
+    ;
 
-  private static final Map<Role, DxfgEndpointRole> map = new EnumMap<>(Role.class);
+    private static final Map<Role, DxfgEndpointRole> map = new EnumMap<>(Role.class);
 
-  static {
-    map.put(FEED, DXFG_ENDPOINT_ROLE_FEED);
-    map.put(ON_DEMAND_FEED, DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED);
-    map.put(STREAM_FEED, DXFG_ENDPOINT_ROLE_STREAM_FEED);
-    map.put(PUBLISHER, DXFG_ENDPOINT_ROLE_PUBLISHER);
-    map.put(STREAM_PUBLISHER, DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER);
-    map.put(LOCAL_HUB, DXFG_ENDPOINT_ROLE_LOCAL_HUB);
-  }
+    static {
+        map.put(FEED, DXFG_ENDPOINT_ROLE_FEED);
+        map.put(ON_DEMAND_FEED, DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED);
+        map.put(STREAM_FEED, DXFG_ENDPOINT_ROLE_STREAM_FEED);
+        map.put(PUBLISHER, DXFG_ENDPOINT_ROLE_PUBLISHER);
+        map.put(STREAM_PUBLISHER, DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER);
+        map.put(LOCAL_HUB, DXFG_ENDPOINT_ROLE_LOCAL_HUB);
+    }
 
-  public final DXEndpoint.Role qdRole;
+    public final DXEndpoint.Role qdRole;
 
-  DxfgEndpointRole(final Role qdRole) {
-    this.qdRole = qdRole;
-  }
+    DxfgEndpointRole(final Role qdRole) {
+        this.qdRole = qdRole;
+    }
 
-  public static DxfgEndpointRole of(final DXEndpoint.Role role) {
-    return map.get(role);
-  }
+    public static DxfgEndpointRole of(final DXEndpoint.Role role) {
+        return map.get(role);
+    }
 
-  @CEnumLookup
-  public static native DxfgEndpointRole fromCValue(int value);
+    @CEnumLookup
+    public static native DxfgEndpointRole fromCValue(int value);
 
-  @CEnumValue
-  public native int getCValue();
+    @CEnumValue
+    public native int getCValue();
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,36 +12,36 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
 
-  public TradeETHMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
-    super(stringMapperForMarketEvent);
-  }
+    public TradeETHMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
+        super(stringMapperForMarketEvent);
+    }
 
-  @Override
-  public DxfgTradeETH createNativeObject() {
-    final DxfgTradeETH nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTradeETH.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_TRADE_ETH.getCValue());
-    return nObject;
-  }
+    @Override
+    public DxfgTradeETH createNativeObject() {
+        final DxfgTradeETH nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTradeETH.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_TRADE_ETH.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final TradeETH jObject, final DxfgTradeETH nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-  }
+    @Override
+    public void fillNative(final TradeETH javaObject, final DxfgTradeETH nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+    }
 
-  @Override
-  public void cleanNative(final DxfgTradeETH nObject) {
-    super.cleanNative(nObject);
-  }
+    @Override
+    public void cleanNative(final DxfgTradeETH nativeObject) {
+        super.cleanNative(nativeObject);
+    }
 
-  @Override
-  protected TradeETH doToJava(final DxfgTradeETH nObject) {
-    final TradeETH jObject = new TradeETH();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected TradeETH doToJava(final DxfgTradeETH nativeObject) {
+        final TradeETH javaObject = new TradeETH();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final DxfgTradeETH nObject, final TradeETH jObject) {
-    super.fillJava(nObject, jObject);
-  }
+    @Override
+    public void fillJava(final DxfgTradeETH nativeObject, final TradeETH javaObject) {
+        super.fillJava(nativeObject, javaObject);
+    }
 }

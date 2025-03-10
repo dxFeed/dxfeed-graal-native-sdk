@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk.logging;
@@ -17,17 +17,17 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CTypedef(name = "dxfg_logging_listener_function_t")
 public interface DxfgInterceptableLoggingListenerFunction extends CFunctionPointer {
 
-  @InvokeCFunctionPointer
-  void invoke(
-      final IsolateThread thread,
-      final DxfgLoggingLevel loggingLevel,
-      final long timestamp,
-      final @CConst CCharPointer threadName,
-      final long threadId,
-      final @CConst CCharPointer loggerName,
-      final @CConst CCharPointer message,
-      final DxfgException exception,
-      final @CConst CCharPointer formattedMessage,
-      final VoidPointer userData
-  );
+    @InvokeCFunctionPointer
+    void invoke(
+            final IsolateThread thread,
+            final DxfgLoggingLevel loggingLevel,
+            final long timestamp,
+            final @CConst CCharPointer threadName,
+            final long threadId,
+            final @CConst CCharPointer loggerName,
+            final @CConst CCharPointer message,
+            final DxfgException exception,
+            final @CConst CCharPointer formattedMessage,
+            final VoidPointer userData
+    );
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.system;
 
 import static com.dxfeed.sdk.NativeUtils.MAPPER_STRING;
@@ -13,44 +16,44 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 @CContext(Directives.class)
 public final class SystemNative {
 
-  @CEntryPoint(
-      name = "dxfg_system_set_property",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int setSystemProperty(
-      final IsolateThread ignoredThread,
-      final CCharPointer key,
-      final CCharPointer value
-  ) {
-    System.setProperty(
-        MAPPER_STRING.toJava(key),
-        MAPPER_STRING.toJava(value)
-    );
-    return EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_system_set_property",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int setSystemProperty(
+            final IsolateThread ignoredThread,
+            final CCharPointer key,
+            final CCharPointer value
+    ) {
+        System.setProperty(
+                MAPPER_STRING.toJava(key),
+                MAPPER_STRING.toJava(value)
+        );
+        return EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_system_get_property",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static CCharPointer getSystemProperty(
-      final IsolateThread ignoredThread,
-      final CCharPointer key
-  ) {
-    return MAPPER_STRING.toNative(
-        System.getProperty(MAPPER_STRING.toJava(key))
-    );
-  }
+    @CEntryPoint(
+            name = "dxfg_system_get_property",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static CCharPointer getSystemProperty(
+            final IsolateThread ignoredThread,
+            final CCharPointer key
+    ) {
+        return MAPPER_STRING.toNative(
+                System.getProperty(MAPPER_STRING.toJava(key))
+        );
+    }
 
-  @CEntryPoint(
-      name = "dxfg_system_release_property",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int releaseSystemProperty(
-      final IsolateThread ignoredThread,
-      final CCharPointer value
-  ) {
-    MAPPER_STRING.release(value);
-    return EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_system_release_property",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int releaseSystemProperty(
+            final IsolateThread ignoredThread,
+            final CCharPointer value
+    ) {
+        MAPPER_STRING.release(value);
+        return EXECUTE_SUCCESSFULLY;
+    }
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.events;
 
 import org.graalvm.nativeimage.c.CContext;
@@ -9,27 +12,27 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 @CStruct("dxfg_configuration_t")
 public interface DxfgConfiguration extends DxfgEventType {
 
-  @CField("event_symbol")
-  CCharPointer getEventSymbol();
+    @CField("event_symbol")
+    CCharPointer getEventSymbol();
 
-  @CField("event_symbol")
-  void setEventSymbol(CCharPointer eventSymbol);
+    @CField("event_symbol")
+    void setEventSymbol(CCharPointer eventSymbol);
 
-  @CField("event_time")
-  long getEventTime();
+    @CField("event_time")
+    long getEventTime();
 
-  @CField("event_time")
-  void setEventTime(long eventTime);
+    @CField("event_time")
+    void setEventTime(long eventTime);
 
-  @CField("version")
-  int getVersion();
+    @CField("version")
+    int getVersion();
 
-  @CField("version")
-  void setVersion(int eventTime);
+    @CField("version")
+    void setVersion(int eventTime);
 
-  @CField("attachment")
-  CCharPointer getAttachment();
+    @CField("attachment")
+    CCharPointer getAttachment();
 
-  @CField("attachment")
-  void setAttachment(CCharPointer eventSymbol);
+    @CField("attachment")
+    void setAttachment(CCharPointer eventSymbol);
 }

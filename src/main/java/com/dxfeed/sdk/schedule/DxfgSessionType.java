@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.schedule;
 
 import static com.dxfeed.schedule.SessionType.AFTER_MARKET;
@@ -16,28 +19,28 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 @CContext(Directives.class)
 @CEnum("dxfg_session_type_t")
 public enum DxfgSessionType {
-  DXFG_SESSION_TYPE_NO_TRADING,
-  DXFG_SESSION_TYPE_PRE_MARKET,
-  DXFG_SESSION_TYPE_REGULAR,
-  DXFG_SESSION_TYPE_AFTER_MARKET,
-  ;
+    DXFG_SESSION_TYPE_NO_TRADING,
+    DXFG_SESSION_TYPE_PRE_MARKET,
+    DXFG_SESSION_TYPE_REGULAR,
+    DXFG_SESSION_TYPE_AFTER_MARKET,
+    ;
 
-  private static final Map<SessionType, DxfgSessionType> map = new EnumMap<>(SessionType.class);
+    private static final Map<SessionType, DxfgSessionType> map = new EnumMap<>(SessionType.class);
 
-  static {
-    map.put(NO_TRADING, DXFG_SESSION_TYPE_NO_TRADING);
-    map.put(PRE_MARKET, DXFG_SESSION_TYPE_PRE_MARKET);
-    map.put(REGULAR, DXFG_SESSION_TYPE_REGULAR);
-    map.put(AFTER_MARKET, DXFG_SESSION_TYPE_AFTER_MARKET);
-  }
+    static {
+        map.put(NO_TRADING, DXFG_SESSION_TYPE_NO_TRADING);
+        map.put(PRE_MARKET, DXFG_SESSION_TYPE_PRE_MARKET);
+        map.put(REGULAR, DXFG_SESSION_TYPE_REGULAR);
+        map.put(AFTER_MARKET, DXFG_SESSION_TYPE_AFTER_MARKET);
+    }
 
-  public static DxfgSessionType of(final SessionType state) {
-    return map.get(state);
-  }
+    public static DxfgSessionType of(final SessionType state) {
+        return map.get(state);
+    }
 
-  @CEnumLookup
-  public static native DxfgSessionType fromCValue(int value);
+    @CEnumLookup
+    public static native DxfgSessionType fromCValue(int value);
 
-  @CEnumValue
-  public native int getCValue();
+    @CEnumValue
+    public native int getCValue();
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.event.market;
@@ -8,41 +8,41 @@ import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMarketEvent>
-    extends EventMapper<T, V> {
+        extends EventMapper<T, V> {
 
-  protected final Mapper<String, CCharPointer> stringMapper;
+    protected final Mapper<String, CCharPointer> stringMapper;
 
-  public MarketEventMapper(final Mapper<String, CCharPointer> stringMapper) {
-    this.stringMapper = stringMapper;
-  }
-
-  @Override
-  public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
-    if (clean) {
-      cleanNative(nativeObject);
+    public MarketEventMapper(final Mapper<String, CCharPointer> stringMapper) {
+        this.stringMapper = stringMapper;
     }
 
-    nativeObject.setEventSymbol(this.stringMapper.toNative(javaObject.getEventSymbol()));
-    nativeObject.setEventTime(javaObject.getEventTime());
-  }
+    @Override
+    public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
+        if (clean) {
+            cleanNative(nativeObject);
+        }
 
-  @Override
-  public void cleanNative(final V nativeObject) {
-    this.stringMapper.release(nativeObject.getEventSymbol());
-  }
+        nativeObject.setEventSymbol(this.stringMapper.toNative(javaObject.getEventSymbol()));
+        nativeObject.setEventTime(javaObject.getEventTime());
+    }
 
-  @Override
-  public void fillJava(final V nativeObject, final T javaObject) {
-    javaObject.setEventSymbol(this.stringMapper.toJava(nativeObject.getEventSymbol()));
-    javaObject.setEventTime(nativeObject.getEventTime());
-  }
+    @Override
+    public void cleanNative(final V nativeObject) {
+        this.stringMapper.release(nativeObject.getEventSymbol());
+    }
 
-  @Override
-  public V createNativeObject(final String symbol) {
-    final V nativeObject = createNativeObject();
+    @Override
+    public void fillJava(final V nativeObject, final T javaObject) {
+        javaObject.setEventSymbol(this.stringMapper.toJava(nativeObject.getEventSymbol()));
+        javaObject.setEventTime(nativeObject.getEventTime());
+    }
 
-    nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
+    @Override
+    public V createNativeObject(final String symbol) {
+        final V nativeObject = createNativeObject();
 
-    return nativeObject;
-  }
+        nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
+
+        return nativeObject;
+    }
 }

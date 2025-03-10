@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,36 +12,36 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
 
-  public TradeMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
-    super(stringMapperForMarketEvent);
-  }
+    public TradeMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
+        super(stringMapperForMarketEvent);
+    }
 
-  @Override
-  public DxfgTrade createNativeObject() {
-    final DxfgTrade nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTrade.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_TRADE.getCValue());
-    return nObject;
-  }
+    @Override
+    public DxfgTrade createNativeObject() {
+        final DxfgTrade nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTrade.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_TRADE.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final Trade jObject, final DxfgTrade nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-  }
+    @Override
+    public void fillNative(final Trade javaObject, final DxfgTrade nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+    }
 
-  @Override
-  public void cleanNative(final DxfgTrade nObject) {
-    super.cleanNative(nObject);
-  }
+    @Override
+    public void cleanNative(final DxfgTrade nativeObject) {
+        super.cleanNative(nativeObject);
+    }
 
-  @Override
-  protected Trade doToJava(final DxfgTrade nObject) {
-    final Trade jObject = new Trade();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected Trade doToJava(final DxfgTrade nativeObject) {
+        final Trade javaObject = new Trade();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final DxfgTrade nObject, final Trade jObject) {
-    super.fillJava(nObject, jObject);
-  }
+    @Override
+    public void fillJava(final DxfgTrade nativeObject, final Trade javaObject) {
+        super.fillJava(nativeObject, javaObject);
+    }
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.ipf;
 
 import org.graalvm.nativeimage.IsolateThread;
@@ -11,10 +14,10 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CTypedef(name = "dxfg_ipf_update_listener_function")
 interface DxfgInstrumentProfileUpdateListenerFunction extends CFunctionPointer {
 
-  @InvokeCFunctionPointer
-  void invoke(
-      final IsolateThread thread,
-      final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
-      final VoidPointer userData
-  );
+    @InvokeCFunctionPointer
+    void invoke(
+            final IsolateThread thread,
+            final DxfgIterableInstrumentProfile dxfgIterableInstrumentProfile,
+            final VoidPointer userData
+    );
 }

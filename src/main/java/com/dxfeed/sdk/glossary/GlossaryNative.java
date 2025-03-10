@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk.glossary;
@@ -32,741 +32,741 @@ import org.graalvm.nativeimage.c.type.CDoublePointer;
 @CContext(Directives.class)
 public class GlossaryNative {
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_EMPTY(final IsolateThread ignoredThread,
-      @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer emptyAdditionalUnderlyings) {
-    if (emptyAdditionalUnderlyings.isNull()) {
-      throw new IllegalArgumentException("The `emptyAdditionalUnderlyings` pointer is null");
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_EMPTY(final IsolateThread ignoredThread,
+            @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer emptyAdditionalUnderlyings) {
+        if (emptyAdditionalUnderlyings.isNull()) {
+            throw new IllegalArgumentException("The `emptyAdditionalUnderlyings` pointer is null");
+        }
+
+        emptyAdditionalUnderlyings.write(
+                NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(AdditionalUnderlyings.EMPTY));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    emptyAdditionalUnderlyings.write(
-        NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(AdditionalUnderlyings.EMPTY));
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_valueOf(final IsolateThread ignoredThread,
+            @CConst final CCharPointer text,
+            @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer additionalUnderlyings) {
+        if (additionalUnderlyings.isNull()) {
+            throw new IllegalArgumentException("The `additionalUnderlyings` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        additionalUnderlyings.write(NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(
+                AdditionalUnderlyings.valueOf(NativeUtils.MAPPER_STRING.toJava(text))));
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_valueOf(final IsolateThread ignoredThread,
-      @CConst final CCharPointer text,
-      @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer additionalUnderlyings) {
-    if (additionalUnderlyings.isNull()) {
-      throw new IllegalArgumentException("The `additionalUnderlyings` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    additionalUnderlyings.write(NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(
-        AdditionalUnderlyings.valueOf(NativeUtils.MAPPER_STRING.toJava(text))));
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_valueOf(final IsolateThread ignoredThread,
+            @CConst final DxfgStringToDoubleMapEntryPointer mapEntries, int size,
+            @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer additionalUnderlyings) {
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        if (additionalUnderlyings.isNull()) {
+            throw new IllegalArgumentException("The `additionalUnderlyings` pointer is null");
+        }
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_valueOf(final IsolateThread ignoredThread,
-      @CConst final DxfgStringToDoubleMapEntryPointer mapEntries, int size,
-      @DxfgOut final DxfgAdditionalUnderlyingsHandlePointer additionalUnderlyings) {
+        Map<String, Double> map = Map.of();
 
-    if (additionalUnderlyings.isNull()) {
-      throw new IllegalArgumentException("The `additionalUnderlyings` pointer is null");
+        if (mapEntries.isNonNull() && size > 0) {
+            map = new HashMap<>();
+
+            for (int i = 0; i < size; i++) {
+                var mapEntry = mapEntries.addressOf(i);
+
+                map.put(NativeUtils.MAPPER_STRING.toJava(mapEntry.getKey()), mapEntry.getValue());
+            }
+        }
+
+        additionalUnderlyings.write(
+                NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(AdditionalUnderlyings.valueOf(map)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    Map<String, Double> map = Map.of();
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getSPC", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_getSPC(final IsolateThread ignoredThread,
+            @CConst final CCharPointer text, @CConst final CCharPointer symbol,
+            @DxfgOut final CDoublePointer spc) {
+        if (spc.isNull()) {
+            throw new IllegalArgumentException("The `spc` pointer is null");
+        }
 
-    if (mapEntries.isNonNull() && size > 0) {
-      map = new HashMap<>();
+        double result = 0;
 
-      for (int i = 0; i < size; i++) {
-        var mapEntry = mapEntries.addressOf(i);
+        if (text.isNonNull() && symbol.isNonNull()) {
+            result = AdditionalUnderlyings.getSPC(NativeUtils.MAPPER_STRING.toJava(text),
+                    NativeUtils.MAPPER_STRING.toJava(symbol));
+        }
 
-        map.put(NativeUtils.MAPPER_STRING.toJava(mapEntry.getKey()), mapEntry.getValue());
-      }
+        spc.write(result);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    additionalUnderlyings.write(
-        NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toNative(AdditionalUnderlyings.valueOf(map)));
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getText", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_getText(final IsolateThread ignoredThread,
+            final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
+            @DxfgOut final CCharPointerPointer text) {
+        if (text.isNull()) {
+            throw new IllegalArgumentException("The `text` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        text.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(additionalUnderlyings).getText()));
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getSPC", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_getSPC(final IsolateThread ignoredThread,
-      @CConst final CCharPointer text, @CConst final CCharPointer symbol,
-      @DxfgOut final CDoublePointer spc) {
-    if (spc.isNull()) {
-      throw new IllegalArgumentException("The `spc` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    double result = 0;
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getMap", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_getMap(final IsolateThread ignoredThread,
+            final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
+            @DxfgOut final DxfgStringToDoubleMapEntryPointerPointer mapEntries,
+            @DxfgOut final CInt32Pointer size) {
+        if (mapEntries.isNull()) {
+            throw new IllegalArgumentException("The `mapEntries` pointer is null");
+        }
 
-    if (text.isNonNull() && symbol.isNonNull()) {
-      result = AdditionalUnderlyings.getSPC(NativeUtils.MAPPER_STRING.toJava(text),
-          NativeUtils.MAPPER_STRING.toJava(symbol));
+        if (size.isNull()) {
+            throw new IllegalArgumentException("The `size` pointer is null");
+        }
+
+        var javaAdditionalUnderlyings = NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(
+                additionalUnderlyings);
+        //noinspection DataFlowIssue
+        var map = javaAdditionalUnderlyings.getMap();
+
+        DxfgStringToDoubleMapEntryPointer resultMapEntries = UnmanagedMemory.calloc(
+                map.size() * SizeOf.get(DxfgStringToDoubleMapEntryPointer.class));
+
+        int counter = 0;
+        for (var mapEntry : map.entrySet()) {
+            DxfgStringToDoubleMapEntryPointer resultEntry = resultMapEntries.addressOf(counter++);
+
+            resultEntry.setKey(NativeUtils.MAPPER_STRING.toNative(mapEntry.getKey()));
+            resultEntry.setValue(mapEntry.getValue());
+        }
+
+        mapEntries.write(resultMapEntries);
+        size.write(counter);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    spc.write(result);
+    @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getSPC2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_AdditionalUnderlyings_getSPC(final IsolateThread ignoredThread,
+            final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
+            @CConst final CCharPointer symbol, @DxfgOut final CDoublePointer spc) {
+        if (spc.isNull()) {
+            throw new IllegalArgumentException("The `spc` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        spc.write(NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(additionalUnderlyings)
+                .getSPC(NativeUtils.MAPPER_STRING.toJava(symbol)));
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getText", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_getText(final IsolateThread ignoredThread,
-      final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
-      @DxfgOut final CCharPointerPointer text) {
-    if (text.isNull()) {
-      throw new IllegalArgumentException("The `text` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    text.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(additionalUnderlyings).getText()));
+    @CEntryPoint(name = "dxfg_CFI_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_EMPTY(final IsolateThread ignoredThread,
+            @DxfgOut final DxfgCFIHandlePointer emptyCfi) {
+        if (emptyCfi.isNull()) {
+            throw new IllegalArgumentException("The `emptyCfi` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        emptyCfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.EMPTY));
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getMap", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_getMap(final IsolateThread ignoredThread,
-      final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
-      @DxfgOut final DxfgStringToDoubleMapEntryPointerPointer mapEntries,
-      @DxfgOut final CInt32Pointer size) {
-    if (mapEntries.isNull()) {
-      throw new IllegalArgumentException("The `mapEntries` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
+    @CEntryPoint(name = "dxfg_CFI_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_valueOf(final IsolateThread ignoredThread,
+            @CConst final CCharPointer code, @DxfgOut final DxfgCFIHandlePointer cfi) {
+        if (cfi.isNull()) {
+            throw new IllegalArgumentException("The `cfi` pointer is null");
+        }
+
+        cfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.valueOf(NativeUtils.MAPPER_STRING.toJava(code))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    var javaAdditionalUnderlyings = NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(
-        additionalUnderlyings);
-    //noinspection DataFlowIssue
-    var map = javaAdditionalUnderlyings.getMap();
+    @CEntryPoint(name = "dxfg_CFI_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_valueOf(final IsolateThread ignoredThread, final int intCode,
+            @DxfgOut final DxfgCFIHandlePointer cfi) {
+        if (cfi.isNull()) {
+            throw new IllegalArgumentException("The `cfi` pointer is null");
+        }
 
-    DxfgStringToDoubleMapEntryPointer resultMapEntries = UnmanagedMemory.calloc(
-        map.size() * SizeOf.get(DxfgStringToDoubleMapEntryPointer.class));
+        cfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.valueOf(intCode)));
 
-    int counter = 0;
-    for (var mapEntry : map.entrySet()) {
-      DxfgStringToDoubleMapEntryPointer resultEntry = resultMapEntries.addressOf(counter++);
-
-      resultEntry.setKey(NativeUtils.MAPPER_STRING.toNative(mapEntry.getKey()));
-      resultEntry.setValue(mapEntry.getValue());
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    mapEntries.write(resultMapEntries);
-    size.write(counter);
+    @CEntryPoint(name = "dxfg_CFI_getCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_getCode(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CCharPointerPointer code) {
+        if (code.isNull()) {
+            throw new IllegalArgumentException("The `code` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        code.write(NativeUtils.MAPPER_STRING.toNative(NativeUtils.MAPPER_CFI.toJava(cfi).getCode()));
 
-  @CEntryPoint(name = "dxfg_AdditionalUnderlyings_getSPC2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_AdditionalUnderlyings_getSPC(final IsolateThread ignoredThread,
-      final DxfgAdditionalUnderlyingsHandle additionalUnderlyings,
-      @CConst final CCharPointer symbol, @DxfgOut final CDoublePointer spc) {
-    if (spc.isNull()) {
-      throw new IllegalArgumentException("The `spc` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    spc.write(NativeUtils.MAPPER_ADDITIONAL_UNDERLYINGS.toJava(additionalUnderlyings)
-        .getSPC(NativeUtils.MAPPER_STRING.toJava(symbol)));
+    @CEntryPoint(name = "dxfg_CFI_getIntCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_getIntCode(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt32Pointer intCode) {
+        if (intCode.isNull()) {
+            throw new IllegalArgumentException("The `intCode` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        intCode.write(NativeUtils.MAPPER_CFI.toJava(cfi).getIntCode());
 
-  @CEntryPoint(name = "dxfg_CFI_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_EMPTY(final IsolateThread ignoredThread,
-      @DxfgOut final DxfgCFIHandlePointer emptyCfi) {
-    if (emptyCfi.isNull()) {
-      throw new IllegalArgumentException("The `emptyCfi` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    emptyCfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.EMPTY));
+    @CEntryPoint(name = "dxfg_CFI_getCategory", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_getCategory(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt16Pointer category) {
+        if (category.isNull()) {
+            throw new IllegalArgumentException("The `category` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        category.write(NativeUtils.MAPPER_CFI.toJava(cfi).getCategory());
 
-  @CEntryPoint(name = "dxfg_CFI_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_valueOf(final IsolateThread ignoredThread,
-      @CConst final CCharPointer code, @DxfgOut final DxfgCFIHandlePointer cfi) {
-    if (cfi.isNull()) {
-      throw new IllegalArgumentException("The `cfi` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    cfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.valueOf(NativeUtils.MAPPER_STRING.toJava(code))));
+    @CEntryPoint(name = "dxfg_CFI_getGroup", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_getGroup(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt16Pointer group) {
+        if (group.isNull()) {
+            throw new IllegalArgumentException("The `group` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        group.write(NativeUtils.MAPPER_CFI.toJava(cfi).getGroup());
 
-  @CEntryPoint(name = "dxfg_CFI_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_valueOf(final IsolateThread ignoredThread, final int intCode,
-      @DxfgOut final DxfgCFIHandlePointer cfi) {
-    if (cfi.isNull()) {
-      throw new IllegalArgumentException("The `cfi` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    cfi.write(NativeUtils.MAPPER_CFI.toNative(CFI.valueOf(intCode)));
+    @CEntryPoint(name = "dxfg_CFI_isEquity", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isEquity(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt32Pointer isEquity) {
+        if (isEquity.isNull()) {
+            throw new IllegalArgumentException("The `isEquity` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isEquity.write(NativeUtils.MAPPER_CFI.toJava(cfi).isEquity() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_getCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_getCode(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CCharPointerPointer code) {
-    if (code.isNull()) {
-      throw new IllegalArgumentException("The `code` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    code.write(NativeUtils.MAPPER_STRING.toNative(NativeUtils.MAPPER_CFI.toJava(cfi).getCode()));
+    @CEntryPoint(name = "dxfg_CFI_isDebtInstrument", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isDebtInstrument(final IsolateThread ignoredThread,
+            final DxfgCFIHandle cfi, @DxfgOut final CInt32Pointer isDebtInstrument) {
+        if (isDebtInstrument.isNull()) {
+            throw new IllegalArgumentException("The `isDebtInstrument` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isDebtInstrument.write(NativeUtils.MAPPER_CFI.toJava(cfi).isDebtInstrument() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_getIntCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_getIntCode(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt32Pointer intCode) {
-    if (intCode.isNull()) {
-      throw new IllegalArgumentException("The `intCode` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    intCode.write(NativeUtils.MAPPER_CFI.toJava(cfi).getIntCode());
+    @CEntryPoint(name = "dxfg_CFI_isEntitlement", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isEntitlement(final IsolateThread ignoredThread,
+            final DxfgCFIHandle cfi, @DxfgOut final CInt32Pointer isEntitlement) {
+        if (isEntitlement.isNull()) {
+            throw new IllegalArgumentException("The `isEntitlement` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isEntitlement.write(NativeUtils.MAPPER_CFI.toJava(cfi).isEntitlement() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_getCategory", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_getCategory(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt16Pointer category) {
-    if (category.isNull()) {
-      throw new IllegalArgumentException("The `category` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    category.write(NativeUtils.MAPPER_CFI.toJava(cfi).getCategory());
+    @CEntryPoint(name = "dxfg_CFI_isOption", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isOption(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt32Pointer isOption) {
+        if (isOption.isNull()) {
+            throw new IllegalArgumentException("The `isOption` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isOption.write(NativeUtils.MAPPER_CFI.toJava(cfi).isOption() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_getGroup", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_getGroup(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt16Pointer group) {
-    if (group.isNull()) {
-      throw new IllegalArgumentException("The `group` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    group.write(NativeUtils.MAPPER_CFI.toJava(cfi).getGroup());
+    @CEntryPoint(name = "dxfg_CFI_isFuture", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isFuture(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt32Pointer isFuture) {
+        if (isFuture.isNull()) {
+            throw new IllegalArgumentException("The `isFuture` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isFuture.write(NativeUtils.MAPPER_CFI.toJava(cfi).isFuture() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_isEquity", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isEquity(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt32Pointer isEquity) {
-    if (isEquity.isNull()) {
-      throw new IllegalArgumentException("The `isEquity` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isEquity.write(NativeUtils.MAPPER_CFI.toJava(cfi).isEquity() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_isOther", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_isOther(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final CInt32Pointer isOther) {
+        if (isOther.isNull()) {
+            throw new IllegalArgumentException("The `isOther` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        isOther.write(NativeUtils.MAPPER_CFI.toJava(cfi).isOther() ? 1 : 0);
 
-  @CEntryPoint(name = "dxfg_CFI_isDebtInstrument", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isDebtInstrument(final IsolateThread ignoredThread,
-      final DxfgCFIHandle cfi, @DxfgOut final CInt32Pointer isDebtInstrument) {
-    if (isDebtInstrument.isNull()) {
-      throw new IllegalArgumentException("The `isDebtInstrument` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isDebtInstrument.write(NativeUtils.MAPPER_CFI.toJava(cfi).isDebtInstrument() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_decipher", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_decipher(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
+            @DxfgOut final DxfgCFIValueHandlePointer values, @DxfgOut final CInt32Pointer size) {
+        if (values.isNull()) {
+            throw new IllegalArgumentException("The `values` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        if (size.isNull()) {
+            throw new IllegalArgumentException("The `size` pointer is null");
+        }
 
-  @CEntryPoint(name = "dxfg_CFI_isEntitlement", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isEntitlement(final IsolateThread ignoredThread,
-      final DxfgCFIHandle cfi, @DxfgOut final CInt32Pointer isEntitlement) {
-    if (isEntitlement.isNull()) {
-      throw new IllegalArgumentException("The `isEntitlement` pointer is null");
+        var cfiObject = NativeUtils.MAPPER_CFI.toJava(cfi);
+        //noinspection DataFlowIssue
+        var decipherResult = cfiObject.decipher();
+        var mapper = (JavaObjectHandlerMapper<Value, DxfgCFIValueHandle>) NativeUtils.MAPPER_CFI_VALUE;
+
+        values.write(mapper.toNativeArray(decipherResult));
+        size.write(decipherResult.length);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isEntitlement.write(NativeUtils.MAPPER_CFI.toJava(cfi).isEntitlement() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_describe", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_describe(final IsolateThread ignoredThread,
+            final DxfgCFIHandle cfi,
+            @DxfgOut final CCharPointerPointer description) {
+        if (description.isNull()) {
+            throw new IllegalArgumentException("The `description` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        description.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_CFI.toJava(cfi).describe()));
 
-  @CEntryPoint(name = "dxfg_CFI_isOption", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isOption(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt32Pointer isOption) {
-    if (isOption.isNull()) {
-      throw new IllegalArgumentException("The `isOption` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isOption.write(NativeUtils.MAPPER_CFI.toJava(cfi).isOption() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_Attribute_getName", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Attribute_getName(final IsolateThread ignoredThread,
+            final DxfgCFIAttributeHandle cfiAttribute,
+            @DxfgOut final CCharPointerPointer name) {
+        if (name.isNull()) {
+            throw new IllegalArgumentException("The `name` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        name.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute).getName()));
 
-  @CEntryPoint(name = "dxfg_CFI_isFuture", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isFuture(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt32Pointer isFuture) {
-    if (isFuture.isNull()) {
-      throw new IllegalArgumentException("The `isFuture` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isFuture.write(NativeUtils.MAPPER_CFI.toJava(cfi).isFuture() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_Attribute_getDescription", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Attribute_getDescription(final IsolateThread ignoredThread,
+            final DxfgCFIAttributeHandle cfiAttribute,
+            @DxfgOut final CCharPointerPointer description) {
+        if (description.isNull()) {
+            throw new IllegalArgumentException("The `description` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        description.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute).getDescription()));
 
-  @CEntryPoint(name = "dxfg_CFI_isOther", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_isOther(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final CInt32Pointer isOther) {
-    if (isOther.isNull()) {
-      throw new IllegalArgumentException("The `isOther` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    isOther.write(NativeUtils.MAPPER_CFI.toJava(cfi).isOther() ? 1 : 0);
+    @CEntryPoint(name = "dxfg_CFI_Attribute_getValues", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Attribute_getValues(final IsolateThread ignoredThread,
+            final DxfgCFIAttributeHandle cfiAttribute,
+            @DxfgOut final DxfgCFIValueHandlePointer values, @DxfgOut final CInt32Pointer size) {
+        if (values.isNull()) {
+            throw new IllegalArgumentException("The `values` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        if (size.isNull()) {
+            throw new IllegalArgumentException("The `size` pointer is null");
+        }
 
-  @CEntryPoint(name = "dxfg_CFI_decipher", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_decipher(final IsolateThread ignoredThread, final DxfgCFIHandle cfi,
-      @DxfgOut final DxfgCFIValueHandlePointer values, @DxfgOut final CInt32Pointer size) {
-    if (values.isNull()) {
-      throw new IllegalArgumentException("The `values` pointer is null");
+        var cfiAttributeObject = NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute);
+        //noinspection DataFlowIssue
+        var getValuesResult = cfiAttributeObject.getValues();
+        var mapper = (JavaObjectHandlerMapper<Value, DxfgCFIValueHandle>) NativeUtils.MAPPER_CFI_VALUE;
+
+        values.write(mapper.toNativeArray(getValuesResult));
+        size.write(getValuesResult.length);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
+    @CEntryPoint(name = "dxfg_CFI_Value_getAttribute", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Value_getAttribute(final IsolateThread ignoredThread,
+            final DxfgCFIValueHandle cfiValue,
+            @DxfgOut final DxfgCFIAttributeHandlePointer attribute) {
+        if (attribute.isNull()) {
+            throw new IllegalArgumentException("The `attribute` pointer is null");
+        }
+
+        //noinspection DataFlowIssue
+        attribute.write(NativeUtils.MAPPER_CFI_ATTRIBUTE.toNative(
+                NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getAttribute()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    var cfiObject = NativeUtils.MAPPER_CFI.toJava(cfi);
-    //noinspection DataFlowIssue
-    var decipherResult = cfiObject.decipher();
-    var mapper = (JavaObjectHandlerMapper<Value, DxfgCFIValueHandle>) NativeUtils.MAPPER_CFI_VALUE;
+    @CEntryPoint(name = "dxfg_CFI_Value_getCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Value_getCode(final IsolateThread ignoredThread,
+            final DxfgCFIValueHandle cfiValue,
+            @DxfgOut final CInt16Pointer code) {
+        if (code.isNull()) {
+            throw new IllegalArgumentException("The `code` pointer is null");
+        }
 
-    values.write(mapper.toNativeArray(decipherResult));
-    size.write(decipherResult.length);
+        //noinspection DataFlowIssue
+        code.write(NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getCode());
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_CFI_describe", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_describe(final IsolateThread ignoredThread,
-      final DxfgCFIHandle cfi,
-      @DxfgOut final CCharPointerPointer description) {
-    if (description.isNull()) {
-      throw new IllegalArgumentException("The `description` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    description.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_CFI.toJava(cfi).describe()));
+    @CEntryPoint(name = "dxfg_CFI_Value_getName", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Value_getName(final IsolateThread ignoredThread,
+            final DxfgCFIValueHandle cfiValue,
+            @DxfgOut final CCharPointerPointer name) {
+        if (name.isNull()) {
+            throw new IllegalArgumentException("The `name` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        name.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getName()));
 
-  @CEntryPoint(name = "dxfg_CFI_Attribute_getName", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Attribute_getName(final IsolateThread ignoredThread,
-      final DxfgCFIAttributeHandle cfiAttribute,
-      @DxfgOut final CCharPointerPointer name) {
-    if (name.isNull()) {
-      throw new IllegalArgumentException("The `name` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    name.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute).getName()));
+    @CEntryPoint(name = "dxfg_CFI_Value_getDescription", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_CFI_Value_getDescription(final IsolateThread ignoredThread,
+            final DxfgCFIValueHandle cfiValue,
+            @DxfgOut final CCharPointerPointer description) {
+        if (description.isNull()) {
+            throw new IllegalArgumentException("The `description` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        description.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getDescription()));
 
-  @CEntryPoint(name = "dxfg_CFI_Attribute_getDescription", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Attribute_getDescription(final IsolateThread ignoredThread,
-      final DxfgCFIAttributeHandle cfiAttribute,
-      @DxfgOut final CCharPointerPointer description) {
-    if (description.isNull()) {
-      throw new IllegalArgumentException("The `description` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    description.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute).getDescription()));
+    @CEntryPoint(name = "dxfg_PriceIncrements_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_EMPTY(final IsolateThread ignoredThread,
+            @DxfgOut final DxfgPriceIncrementsHandlePointer emptyPriceIncrements) {
+        if (emptyPriceIncrements.isNull()) {
+            throw new IllegalArgumentException("The `emptyPriceIncrements` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        emptyPriceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(PriceIncrements.EMPTY));
 
-  @CEntryPoint(name = "dxfg_CFI_Attribute_getValues", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Attribute_getValues(final IsolateThread ignoredThread,
-      final DxfgCFIAttributeHandle cfiAttribute,
-      @DxfgOut final DxfgCFIValueHandlePointer values, @DxfgOut final CInt32Pointer size) {
-    if (values.isNull()) {
-      throw new IllegalArgumentException("The `values` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
+    @CEntryPoint(name = "dxfg_PriceIncrements_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
+            @CConst final CCharPointer text,
+            @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
+        if (priceIncrements.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        }
+
+        priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
+                PriceIncrements.valueOf(NativeUtils.MAPPER_STRING.toJava(text))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    var cfiAttributeObject = NativeUtils.MAPPER_CFI_ATTRIBUTE.toJava(cfiAttribute);
-    //noinspection DataFlowIssue
-    var getValuesResult = cfiAttributeObject.getValues();
-    var mapper = (JavaObjectHandlerMapper<Value, DxfgCFIValueHandle>) NativeUtils.MAPPER_CFI_VALUE;
+    @CEntryPoint(name = "dxfg_PriceIncrements_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
+            double increment,
+            @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
+        if (priceIncrements.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        }
 
-    values.write(mapper.toNativeArray(getValuesResult));
-    size.write(getValuesResult.length);
+        priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
+                PriceIncrements.valueOf(increment)));
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_CFI_Value_getAttribute", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Value_getAttribute(final IsolateThread ignoredThread,
-      final DxfgCFIValueHandle cfiValue,
-      @DxfgOut final DxfgCFIAttributeHandlePointer attribute) {
-    if (attribute.isNull()) {
-      throw new IllegalArgumentException("The `attribute` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    attribute.write(NativeUtils.MAPPER_CFI_ATTRIBUTE.toNative(
-        NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getAttribute()));
+    @CEntryPoint(name = "dxfg_PriceIncrements_valueOf3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
+            @CConst final CDoublePointer increments,
+            int size,
+            @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
+        if (priceIncrements.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        var priceIncrementsResult = PriceIncrements.valueOf("");
 
-  @CEntryPoint(name = "dxfg_CFI_Value_getCode", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Value_getCode(final IsolateThread ignoredThread,
-      final DxfgCFIValueHandle cfiValue,
-      @DxfgOut final CInt16Pointer code) {
-    if (code.isNull()) {
-      throw new IllegalArgumentException("The `code` pointer is null");
+        if (increments.isNonNull() && size > 0) {
+            double[] incrementsArray = new double[size];
+
+            for (int i = 0; i < size; i++) {
+                incrementsArray[i] = increments.addressOf(i).read();
+            }
+
+            priceIncrementsResult = PriceIncrements.valueOf(incrementsArray);
+        }
+
+        priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
+                priceIncrementsResult));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    code.write(NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getCode());
+    @CEntryPoint(name = "dxfg_PriceIncrements_getText", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getText(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            @DxfgOut final CCharPointerPointer text) {
+        if (text.isNull()) {
+            throw new IllegalArgumentException("The `text` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        text.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getText()));
 
-  @CEntryPoint(name = "dxfg_CFI_Value_getName", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Value_getName(final IsolateThread ignoredThread,
-      final DxfgCFIValueHandle cfiValue,
-      @DxfgOut final CCharPointerPointer name) {
-    if (name.isNull()) {
-      throw new IllegalArgumentException("The `name` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    name.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getName()));
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrements", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPriceIncrements(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            @DxfgOut final CDoublePointerPointer increments,
+            @DxfgOut final CInt32Pointer size) {
+        if (increments.isNull()) {
+            throw new IllegalArgumentException("The `increments` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        if (size.isNull()) {
+            throw new IllegalArgumentException("The `size` pointer is null");
+        }
 
-  @CEntryPoint(name = "dxfg_CFI_Value_getDescription", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_CFI_Value_getDescription(final IsolateThread ignoredThread,
-      final DxfgCFIValueHandle cfiValue,
-      @DxfgOut final CCharPointerPointer description) {
-    if (description.isNull()) {
-      throw new IllegalArgumentException("The `description` pointer is null");
+        //noinspection DataFlowIssue
+        var result = NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrements();
+
+        if (result.length > 0) {
+            CDoublePointer resultIncrements = UnmanagedMemory.calloc(
+                    result.length * SizeOf.get(CDoublePointer.class));
+
+            for (int i = 0; i < result.length; i++) {
+                resultIncrements.addressOf(i).write(result[i]);
+            }
+
+            increments.write(resultIncrements);
+        }
+
+        size.write(result.length);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    description.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_CFI_VALUE.toJava(cfiValue).getDescription()));
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            @DxfgOut final CDoublePointer priceIncrement) {
+        if (priceIncrement.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrement` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        priceIncrement.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrement());
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_EMPTY(final IsolateThread ignoredThread,
-      @DxfgOut final DxfgPriceIncrementsHandlePointer emptyPriceIncrements) {
-    if (emptyPriceIncrements.isNull()) {
-      throw new IllegalArgumentException("The `emptyPriceIncrements` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    emptyPriceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(PriceIncrements.EMPTY));
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            @DxfgOut final CDoublePointer priceIncrement) {
+        if (priceIncrement.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrement` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        priceIncrement.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrement(price));
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_valueOf", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
-      @CConst final CCharPointer text,
-      @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
-    if (priceIncrements.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
-        PriceIncrements.valueOf(NativeUtils.MAPPER_STRING.toJava(text))));
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            int direction,
+            @DxfgOut final CDoublePointer priceIncrement) {
+        if (priceIncrement.isNull()) {
+            throw new IllegalArgumentException("The `priceIncrement` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        priceIncrement.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .getPriceIncrement(price, direction));
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_valueOf2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
-      double increment,
-      @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
-    if (priceIncrements.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
-        PriceIncrements.valueOf(increment)));
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPricePrecision", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPricePrecision(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            @DxfgOut final CInt32Pointer pricePrecision) {
+        if (pricePrecision.isNull()) {
+            throw new IllegalArgumentException("The `pricePrecision` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        pricePrecision.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .getPricePrecision());
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_valueOf3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_valueOf(final IsolateThread ignoredThread,
-      @CConst final CDoublePointer increments,
-      int size,
-      @DxfgOut final DxfgPriceIncrementsHandlePointer priceIncrements) {
-    if (priceIncrements.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrements` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    var priceIncrementsResult = PriceIncrements.valueOf("");
+    @CEntryPoint(name = "dxfg_PriceIncrements_getPricePrecision2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_getPricePrecision(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            @DxfgOut final CInt32Pointer pricePrecision) {
+        if (pricePrecision.isNull()) {
+            throw new IllegalArgumentException("The `pricePrecision` pointer is null");
+        }
 
-    if (increments.isNonNull() && size > 0) {
-      double[] incrementsArray = new double[size];
+        //noinspection DataFlowIssue
+        pricePrecision.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .getPricePrecision(price));
 
-      for (int i = 0; i < size; i++) {
-        incrementsArray[i] = increments.addressOf(i).read();
-      }
-
-      priceIncrementsResult = PriceIncrements.valueOf(incrementsArray);
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    priceIncrements.write(NativeUtils.MAPPER_PRICE_INCREMENTS.toNative(
-        priceIncrementsResult));
+    @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            @DxfgOut final CDoublePointer roundedPrice) {
+        if (roundedPrice.isNull()) {
+            throw new IllegalArgumentException("The `roundedPrice` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        roundedPrice.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).roundPrice(price));
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_getText", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getText(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      @DxfgOut final CCharPointerPointer text) {
-    if (text.isNull()) {
-      throw new IllegalArgumentException("The `text` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    text.write(NativeUtils.MAPPER_STRING.toNative(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getText()));
+    @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            int direction,
+            @DxfgOut final CDoublePointer roundedPrice) {
+        if (roundedPrice.isNull()) {
+            throw new IllegalArgumentException("The `roundedPrice` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        roundedPrice.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).roundPrice(price, direction));
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrements", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPriceIncrements(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      @DxfgOut final CDoublePointerPointer increments,
-      @DxfgOut final CInt32Pointer size) {
-    if (increments.isNull()) {
-      throw new IllegalArgumentException("The `increments` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    if (size.isNull()) {
-      throw new IllegalArgumentException("The `size` pointer is null");
+    @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            DxfgRoundingMode roundingMode,
+            @DxfgOut final CDoublePointer roundedPrice) {
+        if (roundedPrice.isNull()) {
+            throw new IllegalArgumentException("The `roundedPrice` pointer is null");
+        }
+
+        //noinspection DataFlowIssue
+        roundedPrice.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .roundPrice(price, roundingMode.getRoundingMode()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    //noinspection DataFlowIssue
-    var result = NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrements();
+    @CEntryPoint(name = "dxfg_PriceIncrements_incrementPrice", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_incrementPrice(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            int direction,
+            @DxfgOut final CDoublePointer incrementedPrice) {
+        if (incrementedPrice.isNull()) {
+            throw new IllegalArgumentException("The `incrementedPrice` pointer is null");
+        }
 
-    if (result.length > 0) {
-      CDoublePointer resultIncrements = UnmanagedMemory.calloc(
-          result.length * SizeOf.get(CDoublePointer.class));
+        //noinspection DataFlowIssue
+        incrementedPrice.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .incrementPrice(price, direction));
 
-      for (int i = 0; i < result.length; i++) {
-        resultIncrements.addressOf(i).write(result[i]);
-      }
-
-      increments.write(resultIncrements);
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
-    size.write(result.length);
+    @CEntryPoint(name = "dxfg_PriceIncrements_incrementPrice2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_PriceIncrements_incrementPrice(final IsolateThread ignoredThread,
+            final DxfgPriceIncrementsHandle priceIncrements,
+            double price,
+            int direction,
+            double step,
+            @DxfgOut final CDoublePointer incrementedPrice) {
+        if (incrementedPrice.isNull()) {
+            throw new IllegalArgumentException("The `incrementedPrice` pointer is null");
+        }
 
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+        //noinspection DataFlowIssue
+        incrementedPrice.write(
+                NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
+                        .incrementPrice(price, direction, step));
 
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      @DxfgOut final CDoublePointer priceIncrement) {
-    if (priceIncrement.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrement` pointer is null");
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
-
-    //noinspection DataFlowIssue
-    priceIncrement.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrement());
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      @DxfgOut final CDoublePointer priceIncrement) {
-    if (priceIncrement.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrement` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    priceIncrement.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).getPriceIncrement(price));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPriceIncrement3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPriceIncrement(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      int direction,
-      @DxfgOut final CDoublePointer priceIncrement) {
-    if (priceIncrement.isNull()) {
-      throw new IllegalArgumentException("The `priceIncrement` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    priceIncrement.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .getPriceIncrement(price, direction));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPricePrecision", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPricePrecision(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      @DxfgOut final CInt32Pointer pricePrecision) {
-    if (pricePrecision.isNull()) {
-      throw new IllegalArgumentException("The `pricePrecision` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    pricePrecision.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .getPricePrecision());
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_getPricePrecision2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_getPricePrecision(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      @DxfgOut final CInt32Pointer pricePrecision) {
-    if (pricePrecision.isNull()) {
-      throw new IllegalArgumentException("The `pricePrecision` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    pricePrecision.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .getPricePrecision(price));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      @DxfgOut final CDoublePointer roundedPrice) {
-    if (roundedPrice.isNull()) {
-      throw new IllegalArgumentException("The `roundedPrice` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    roundedPrice.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).roundPrice(price));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      int direction,
-      @DxfgOut final CDoublePointer roundedPrice) {
-    if (roundedPrice.isNull()) {
-      throw new IllegalArgumentException("The `roundedPrice` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    roundedPrice.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements).roundPrice(price, direction));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_roundPrice3", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_roundPrice(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      DxfgRoundingMode roundingMode,
-      @DxfgOut final CDoublePointer roundedPrice) {
-    if (roundedPrice.isNull()) {
-      throw new IllegalArgumentException("The `roundedPrice` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    roundedPrice.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .roundPrice(price, roundingMode.getRoundingMode()));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_incrementPrice", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_incrementPrice(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      int direction,
-      @DxfgOut final CDoublePointer incrementedPrice) {
-    if (incrementedPrice.isNull()) {
-      throw new IllegalArgumentException("The `incrementedPrice` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    incrementedPrice.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .incrementPrice(price, direction));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(name = "dxfg_PriceIncrements_incrementPrice2", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
-  public static int dxfg_PriceIncrements_incrementPrice(final IsolateThread ignoredThread,
-      final DxfgPriceIncrementsHandle priceIncrements,
-      double price,
-      int direction,
-      double step,
-      @DxfgOut final CDoublePointer incrementedPrice) {
-    if (incrementedPrice.isNull()) {
-      throw new IllegalArgumentException("The `incrementedPrice` pointer is null");
-    }
-
-    //noinspection DataFlowIssue
-    incrementedPrice.write(
-        NativeUtils.MAPPER_PRICE_INCREMENTS.toJava(priceIncrements)
-            .incrementPrice(price, direction, step));
-
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
 }

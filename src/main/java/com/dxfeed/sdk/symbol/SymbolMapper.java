@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.symbol;
 
 import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
@@ -14,130 +17,130 @@ import org.graalvm.word.WordFactory;
 
 public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
 
-  private final Mapper<String, CCharPointer> stringMapper;
-  private final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource;
+    private final Mapper<String, CCharPointer> stringMapper;
+    private final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource;
 
-  public SymbolMapper(
-      final Mapper<String, CCharPointer> stringMapper,
-      final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource
-  ) {
-    this.stringMapper = stringMapper;
-    this.mapperSource = mapperSource;
-  }
-
-  @Override
-  public DxfgSymbol toNative(final Object jObject) {
-    if (jObject == null) {
-      return WordFactory.nullPointer();
-    }
-    final DxfgSymbol nObject;
-    if (jObject instanceof String) {
-      nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgStringSymbol.class));
-      nObject.setType(DxfgSymbolType.STRING.getCValue());
-    } else if (jObject instanceof CandleSymbol) {
-      nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandleSymbol.class));
-      nObject.setType(DxfgSymbolType.CANDLE.getCValue());
-    } else if (jObject instanceof TimeSeriesSubscriptionSymbol) {
-      nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeSeriesSubscriptionSymbol.class));
-      nObject.setType(DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.getCValue());
-    } else if (jObject instanceof IndexedEventSubscriptionSymbol) {
-      nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgIndexedEventSubscriptionSymbol.class));
-      nObject.setType(DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.getCValue());
-    } else if (jObject instanceof WildcardSymbol) {
-      nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgWildcardSymbol.class));
-      nObject.setType(DxfgSymbolType.WILDCARD.getCValue());
-    } else {
-      throw new IllegalStateException();
+    public SymbolMapper(
+            final Mapper<String, CCharPointer> stringMapper,
+            final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource
+    ) {
+        this.stringMapper = stringMapper;
+        this.mapperSource = mapperSource;
     }
 
-    fillNative(jObject, nObject, false);
+    @Override
+    public DxfgSymbol toNative(final Object javaObject) {
+        if (javaObject == null) {
+            return WordFactory.nullPointer();
+        }
+        final DxfgSymbol nativeObject;
+        if (javaObject instanceof String) {
+            nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgStringSymbol.class));
+            nativeObject.setType(DxfgSymbolType.STRING.getCValue());
+        } else if (javaObject instanceof CandleSymbol) {
+            nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgCandleSymbol.class));
+            nativeObject.setType(DxfgSymbolType.CANDLE.getCValue());
+        } else if (javaObject instanceof TimeSeriesSubscriptionSymbol) {
+            nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeSeriesSubscriptionSymbol.class));
+            nativeObject.setType(DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.getCValue());
+        } else if (javaObject instanceof IndexedEventSubscriptionSymbol) {
+            nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgIndexedEventSubscriptionSymbol.class));
+            nativeObject.setType(DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.getCValue());
+        } else if (javaObject instanceof WildcardSymbol) {
+            nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgWildcardSymbol.class));
+            nativeObject.setType(DxfgSymbolType.WILDCARD.getCValue());
+        } else {
+            throw new IllegalStateException();
+        }
 
-    return nObject;
-  }
+        fillNative(javaObject, nativeObject, false);
 
-  @Override
-  public void fillNative(final Object jObject, final DxfgSymbol nObject, boolean clean) {
-    if (clean) {
-      cleanNative(nObject);
+        return nativeObject;
     }
 
-    if (jObject instanceof String) {
-      final DxfgStringSymbol dxfgStringSymbol = (DxfgStringSymbol) nObject;
-      final String stringSymbol = (String) jObject;
-      dxfgStringSymbol.setType(DxfgSymbolType.STRING.getCValue());
-      dxfgStringSymbol.setSymbol(this.stringMapper.toNative(stringSymbol));
-    } else if (jObject instanceof CandleSymbol) {
-      final DxfgCandleSymbol dxfgCandleSymbol = (DxfgCandleSymbol) nObject;
-      final CandleSymbol candleSymbol = (CandleSymbol) jObject;
-      dxfgCandleSymbol.setType(DxfgSymbolType.CANDLE.getCValue());
-      dxfgCandleSymbol.setSymbol(this.stringMapper.toNative(candleSymbol.toString()));
-    } else if (jObject instanceof WildcardSymbol) {
-      nObject.setType(DxfgSymbolType.WILDCARD.getCValue());
-    } else if (jObject instanceof TimeSeriesSubscriptionSymbol) {
-      final DxfgTimeSeriesSubscriptionSymbol dxfgTssSymbol = (DxfgTimeSeriesSubscriptionSymbol) nObject;
-      final TimeSeriesSubscriptionSymbol<?> tssSymbol = (TimeSeriesSubscriptionSymbol<?>) jObject;
-      dxfgTssSymbol.setType(DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.getCValue());
-      dxfgTssSymbol.setSymbol(toNative(tssSymbol.getEventSymbol()));
-      dxfgTssSymbol.setFromTime(tssSymbol.getFromTime());
-    } else if (jObject instanceof IndexedEventSubscriptionSymbol) {
-      final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nObject;
-      final IndexedEventSubscriptionSymbol<?> iesSymbol = (IndexedEventSubscriptionSymbol<?>) jObject;
-      dxfgIesSymbol.setType(DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.getCValue());
-      dxfgIesSymbol.setSymbol(toNative(iesSymbol.getEventSymbol()));
-      dxfgIesSymbol.setSource(this.mapperSource.toNative(iesSymbol.getSource()));
-    }
-  }
+    @Override
+    public void fillNative(final Object javaObject, final DxfgSymbol nativeObject, boolean clean) {
+        if (clean) {
+            cleanNative(nativeObject);
+        }
 
-  @Override
-  public void cleanNative(final DxfgSymbol nObject) {
-    switch (DxfgSymbolType.fromCValue(nObject.getType())) {
-      case STRING:
-        this.stringMapper.release(((DxfgStringSymbol) nObject).getSymbol());
-        break;
-      case CANDLE:
-        this.stringMapper.release(((DxfgCandleSymbol) nObject).getSymbol());
-        break;
-      case TIME_SERIES_SUBSCRIPTION:
-        release(((DxfgTimeSeriesSubscriptionSymbol) nObject).getSymbol());
-        break;
-      case INDEXED_EVENT_SUBSCRIPTION:
-        final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nObject;
-        release(dxfgIesSymbol.getSymbol());
-        this.mapperSource.release(dxfgIesSymbol.getSource());
-        break;
+        if (javaObject instanceof String) {
+            final DxfgStringSymbol dxfgStringSymbol = (DxfgStringSymbol) nativeObject;
+            final String stringSymbol = (String) javaObject;
+            dxfgStringSymbol.setType(DxfgSymbolType.STRING.getCValue());
+            dxfgStringSymbol.setSymbol(this.stringMapper.toNative(stringSymbol));
+        } else if (javaObject instanceof CandleSymbol) {
+            final DxfgCandleSymbol dxfgCandleSymbol = (DxfgCandleSymbol) nativeObject;
+            final CandleSymbol candleSymbol = (CandleSymbol) javaObject;
+            dxfgCandleSymbol.setType(DxfgSymbolType.CANDLE.getCValue());
+            dxfgCandleSymbol.setSymbol(this.stringMapper.toNative(candleSymbol.toString()));
+        } else if (javaObject instanceof WildcardSymbol) {
+            nativeObject.setType(DxfgSymbolType.WILDCARD.getCValue());
+        } else if (javaObject instanceof TimeSeriesSubscriptionSymbol) {
+            final DxfgTimeSeriesSubscriptionSymbol dxfgTssSymbol = (DxfgTimeSeriesSubscriptionSymbol) nativeObject;
+            final TimeSeriesSubscriptionSymbol<?> tssSymbol = (TimeSeriesSubscriptionSymbol<?>) javaObject;
+            dxfgTssSymbol.setType(DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.getCValue());
+            dxfgTssSymbol.setSymbol(toNative(tssSymbol.getEventSymbol()));
+            dxfgTssSymbol.setFromTime(tssSymbol.getFromTime());
+        } else if (javaObject instanceof IndexedEventSubscriptionSymbol) {
+            final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nativeObject;
+            final IndexedEventSubscriptionSymbol<?> iesSymbol = (IndexedEventSubscriptionSymbol<?>) javaObject;
+            dxfgIesSymbol.setType(DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.getCValue());
+            dxfgIesSymbol.setSymbol(toNative(iesSymbol.getEventSymbol()));
+            dxfgIesSymbol.setSource(this.mapperSource.toNative(iesSymbol.getSource()));
+        }
     }
-  }
 
-  @Override
-  protected Object doToJava(final DxfgSymbol nObject) {
-    switch (DxfgSymbolType.fromCValue(nObject.getType())) {
-      case STRING:
-        return this.stringMapper.toJava(((DxfgStringSymbol) nObject).getSymbol());
-      case CANDLE:
-        return CandleSymbol.valueOf(
-            this.stringMapper.toJava(((DxfgCandleSymbol) nObject).getSymbol())
-        );
-      case WILDCARD:
-        return WildcardSymbol.ALL;
-      case TIME_SERIES_SUBSCRIPTION:
-        final DxfgTimeSeriesSubscriptionSymbol dxfgTssSymbol = (DxfgTimeSeriesSubscriptionSymbol) nObject;
-        return new TimeSeriesSubscriptionSymbol<>(
-            toJava(dxfgTssSymbol.getSymbol()),
-            dxfgTssSymbol.getFromTime()
-        );
-      case INDEXED_EVENT_SUBSCRIPTION:
-        final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nObject;
-        return new IndexedEventSubscriptionSymbol<>(
-            toJava(dxfgIesSymbol.getSymbol()),
-            this.mapperSource.toJava(dxfgIesSymbol.getSource())
-        );
-      default:
-        throw new IllegalStateException();
+    @Override
+    public void cleanNative(final DxfgSymbol nativeObject) {
+        switch (DxfgSymbolType.fromCValue(nativeObject.getType())) {
+            case STRING:
+                this.stringMapper.release(((DxfgStringSymbol) nativeObject).getSymbol());
+                break;
+            case CANDLE:
+                this.stringMapper.release(((DxfgCandleSymbol) nativeObject).getSymbol());
+                break;
+            case TIME_SERIES_SUBSCRIPTION:
+                release(((DxfgTimeSeriesSubscriptionSymbol) nativeObject).getSymbol());
+                break;
+            case INDEXED_EVENT_SUBSCRIPTION:
+                final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nativeObject;
+                release(dxfgIesSymbol.getSymbol());
+                this.mapperSource.release(dxfgIesSymbol.getSource());
+                break;
+        }
     }
-  }
 
-  @Override
-  public void fillJava(final DxfgSymbol nObject, final Object jObject) {
-    throw new IllegalStateException("The Java object does not support setters.");
-  }
+    @Override
+    protected Object doToJava(final DxfgSymbol nativeObject) {
+        switch (DxfgSymbolType.fromCValue(nativeObject.getType())) {
+            case STRING:
+                return this.stringMapper.toJava(((DxfgStringSymbol) nativeObject).getSymbol());
+            case CANDLE:
+                return CandleSymbol.valueOf(
+                        this.stringMapper.toJava(((DxfgCandleSymbol) nativeObject).getSymbol())
+                );
+            case WILDCARD:
+                return WildcardSymbol.ALL;
+            case TIME_SERIES_SUBSCRIPTION:
+                final DxfgTimeSeriesSubscriptionSymbol dxfgTssSymbol = (DxfgTimeSeriesSubscriptionSymbol) nativeObject;
+                return new TimeSeriesSubscriptionSymbol<>(
+                        toJava(dxfgTssSymbol.getSymbol()),
+                        dxfgTssSymbol.getFromTime()
+                );
+            case INDEXED_EVENT_SUBSCRIPTION:
+                final DxfgIndexedEventSubscriptionSymbol dxfgIesSymbol = (DxfgIndexedEventSubscriptionSymbol) nativeObject;
+                return new IndexedEventSubscriptionSymbol<>(
+                        toJava(dxfgIesSymbol.getSymbol()),
+                        this.mapperSource.toJava(dxfgIesSymbol.getSource())
+                );
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    @Override
+    public void fillJava(final DxfgSymbol nativeObject, final Object javaObject) {
+        throw new IllegalStateException("The Java object does not support setters.");
+    }
 }

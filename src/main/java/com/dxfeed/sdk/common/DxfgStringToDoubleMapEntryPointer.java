@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk.common;
@@ -15,20 +15,20 @@ import org.graalvm.word.SignedWord;
 @CStruct("dxfg_string_to_double_map_entry_t")
 public interface DxfgStringToDoubleMapEntryPointer extends PointerBase {
 
-  @CField("key")
-  @CConst
-  CCharPointer getKey();
+    @CField("key")
+    @CConst
+    CCharPointer getKey();
 
-  @CField("key")
-  void setKey(CCharPointer value);
+    @CField("key")
+    void setKey(CCharPointer value);
 
-  @CField("value")
-  double getValue();
+    @CField("value")
+    double getValue();
 
-  @CField("value")
-  void setValue(double value);
+    @CField("value")
+    void setValue(double value);
 
-  DxfgStringToDoubleMapEntryPointer addressOf(int index);
+    DxfgStringToDoubleMapEntryPointer addressOf(int index);
 
-  DxfgStringToDoubleMapEntryPointer addressOf(SignedWord index);
+    DxfgStringToDoubleMapEntryPointer addressOf(SignedWord index);
 }

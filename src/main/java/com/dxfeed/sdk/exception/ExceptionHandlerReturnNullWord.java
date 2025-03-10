@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.exception;
 
 import com.oracle.svm.core.Uninterruptible;
@@ -8,9 +11,9 @@ import org.graalvm.word.WordFactory;
 
 public class ExceptionHandlerReturnNullWord implements CEntryPoint.ExceptionHandler {
 
-  @Uninterruptible(reason = "exception handler")
-  static <T extends PointerBase> T handle(final Throwable throwable) {
-    JNIThreadLocalPendingException.set(throwable);
-    return WordFactory.nullPointer();
-  }
+    @Uninterruptible(reason = "exception handler")
+    static <T extends PointerBase> T handle(final Throwable throwable) {
+        JNIThreadLocalPendingException.set(throwable);
+        return WordFactory.nullPointer();
+    }
 }

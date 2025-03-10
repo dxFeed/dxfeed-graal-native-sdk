@@ -1,6 +1,8 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.javac;
 
-import com.dxfeed.sdk.glossary.DxfgCFIValueHandle;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
@@ -12,13 +14,13 @@ import org.graalvm.word.SignedWord;
 @CStruct("dxfg_java_object_handler")
 public interface JavaObjectHandler<T> extends PointerBase {
 
-  @CField("java_object_handle")
-  ObjectHandle getJavaObjectHandler();
+    @CField("java_object_handle")
+    ObjectHandle getJavaObjectHandler();
 
-  @CField("java_object_handle")
-  void setJavaObjectHandler(ObjectHandle value);
+    @CField("java_object_handle")
+    void setJavaObjectHandler(ObjectHandle value);
 
-  JavaObjectHandler<T> addressOf(int index);
+    JavaObjectHandler<T> addressOf(int index);
 
-  JavaObjectHandler<T> addressOf(SignedWord index);
+    JavaObjectHandler<T> addressOf(SignedWord index);
 }

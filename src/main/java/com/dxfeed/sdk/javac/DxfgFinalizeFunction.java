@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.javac;
 
 import org.graalvm.nativeimage.IsolateThread;
@@ -11,9 +14,9 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CTypedef(name = "dxfg_finalize_function")
 public interface DxfgFinalizeFunction extends CFunctionPointer {
 
-  @InvokeCFunctionPointer
-  void invoke(
-      final IsolateThread thread,
-      final VoidPointer userData
-  );
+    @InvokeCFunctionPointer
+    void invoke(
+            final IsolateThread thread,
+            final VoidPointer userData
+    );
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.exception;
 
 import org.graalvm.nativeimage.c.CContext;
@@ -10,33 +13,33 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_exception_t")
 public interface DxfgException extends PointerBase {
 
-  @CField("class_name")
-  CCharPointer getClassName();
+    @CField("class_name")
+    CCharPointer getClassName();
 
-  @CField("class_name")
-  void setClassName(CCharPointer className);
+    @CField("class_name")
+    void setClassName(CCharPointer className);
 
-  @CField("message")
-  CCharPointer getMessage();
+    @CField("message")
+    CCharPointer getMessage();
 
-  @CField("message")
-  void setMessage(CCharPointer message);
+    @CField("message")
+    void setMessage(CCharPointer message);
 
-  @CField("print_stack_trace")
-  CCharPointer getPrintStackTrace();
+    @CField("print_stack_trace")
+    CCharPointer getPrintStackTrace();
 
-  @CField("print_stack_trace")
-  void setPrintStackTrace(CCharPointer stackTrace);
+    @CField("print_stack_trace")
+    void setPrintStackTrace(CCharPointer stackTrace);
 
-  @CField("stack_trace")
-  DxfgStackTraceElementList getStackTrace();
+    @CField("stack_trace")
+    DxfgStackTraceElementList getStackTrace();
 
-  @CField("stack_trace")
-  void setStackTrace(DxfgStackTraceElementList stackTrace);
+    @CField("stack_trace")
+    void setStackTrace(DxfgStackTraceElementList stackTrace);
 
-  @CField("cause")
-  DxfgException getCause();
+    @CField("cause")
+    DxfgException getCause();
 
-  @CField("cause")
-  void setCause(DxfgException cause);
+    @CField("cause")
+    void setCause(DxfgException cause);
 }

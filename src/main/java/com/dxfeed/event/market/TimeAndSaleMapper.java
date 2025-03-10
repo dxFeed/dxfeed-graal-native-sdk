@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,69 +12,69 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAndSale> {
 
-  public TimeAndSaleMapper(
-      final Mapper<String, CCharPointer> stringMapper
-  ) {
-    super(stringMapper);
-  }
+    public TimeAndSaleMapper(
+            final Mapper<String, CCharPointer> stringMapper
+    ) {
+        super(stringMapper);
+    }
 
-  @Override
-  public DxfgTimeAndSale createNativeObject() {
-    final DxfgTimeAndSale nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeAndSale.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE.getCValue());
-    return nObject;
-  }
+    @Override
+    public DxfgTimeAndSale createNativeObject() {
+        final DxfgTimeAndSale nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeAndSale.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final TimeAndSale jObject, final DxfgTimeAndSale nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-    nObject.setEventFlags(jObject.getEventFlags());
-    nObject.setIndex(jObject.getIndex());
-    nObject.setTimeNanoPart(jObject.getTimeNanoPart());
-    nObject.setExchangeCode(jObject.getExchangeCode());
-    nObject.setPrice(jObject.getPrice());
-    nObject.setSize(jObject.getSizeAsDouble());
-    nObject.setBidPrice(jObject.getBidPrice());
-    nObject.setAskPrice(jObject.getAskPrice());
-    nObject.setExchangeSaleConditions(
-        stringMapper.toNative(jObject.getExchangeSaleConditions())
-    );
-    nObject.setFlags(jObject.getFlags());
-    nObject.setBuyer(stringMapper.toNative(jObject.getBuyer()));
-    nObject.setSeller(stringMapper.toNative(jObject.getSeller()));
-  }
+    @Override
+    public void fillNative(final TimeAndSale javaObject, final DxfgTimeAndSale nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+        nativeObject.setEventFlags(javaObject.getEventFlags());
+        nativeObject.setIndex(javaObject.getIndex());
+        nativeObject.setTimeNanoPart(javaObject.getTimeNanoPart());
+        nativeObject.setExchangeCode(javaObject.getExchangeCode());
+        nativeObject.setPrice(javaObject.getPrice());
+        nativeObject.setSize(javaObject.getSizeAsDouble());
+        nativeObject.setBidPrice(javaObject.getBidPrice());
+        nativeObject.setAskPrice(javaObject.getAskPrice());
+        nativeObject.setExchangeSaleConditions(
+                stringMapper.toNative(javaObject.getExchangeSaleConditions())
+        );
+        nativeObject.setFlags(javaObject.getFlags());
+        nativeObject.setBuyer(stringMapper.toNative(javaObject.getBuyer()));
+        nativeObject.setSeller(stringMapper.toNative(javaObject.getSeller()));
+    }
 
-  @Override
-  public void cleanNative(final DxfgTimeAndSale nObject) {
-    super.cleanNative(nObject);
-    stringMapper.release(nObject.getExchangeSaleConditions());
-    stringMapper.release(nObject.getBuyer());
-    stringMapper.release(nObject.getSeller());
-  }
+    @Override
+    public void cleanNative(final DxfgTimeAndSale nativeObject) {
+        super.cleanNative(nativeObject);
+        stringMapper.release(nativeObject.getExchangeSaleConditions());
+        stringMapper.release(nativeObject.getBuyer());
+        stringMapper.release(nativeObject.getSeller());
+    }
 
-  @Override
-  protected TimeAndSale doToJava(final DxfgTimeAndSale nObject) {
-    final TimeAndSale jObject = new TimeAndSale();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected TimeAndSale doToJava(final DxfgTimeAndSale nativeObject) {
+        final TimeAndSale javaObject = new TimeAndSale();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final DxfgTimeAndSale nObject, final TimeAndSale jObject) {
-    super.fillJava(nObject, jObject);
-    jObject.setEventFlags(nObject.getEventFlags());
-    jObject.setIndex(nObject.getIndex());
-    jObject.setTimeNanoPart(nObject.getTimeNanoPart());
-    jObject.setExchangeCode(nObject.getExchangeCode());
-    jObject.setPrice(nObject.getPrice());
-    jObject.setSizeAsDouble(nObject.getSize());
-    jObject.setBidPrice(nObject.getBidPrice());
-    jObject.setAskPrice(nObject.getAskPrice());
-    jObject.setExchangeSaleConditions(
-        stringMapper.toJava(nObject.getExchangeSaleConditions())
-    );
-    jObject.setFlags(nObject.getFlags());
-    jObject.setBuyer(stringMapper.toJava(nObject.getBuyer()));
-    jObject.setSeller(stringMapper.toJava(nObject.getSeller()));
-  }
+    @Override
+    public void fillJava(final DxfgTimeAndSale nativeObject, final TimeAndSale javaObject) {
+        super.fillJava(nativeObject, javaObject);
+        javaObject.setEventFlags(nativeObject.getEventFlags());
+        javaObject.setIndex(nativeObject.getIndex());
+        javaObject.setTimeNanoPart(nativeObject.getTimeNanoPart());
+        javaObject.setExchangeCode(nativeObject.getExchangeCode());
+        javaObject.setPrice(nativeObject.getPrice());
+        javaObject.setSizeAsDouble(nativeObject.getSize());
+        javaObject.setBidPrice(nativeObject.getBidPrice());
+        javaObject.setAskPrice(nativeObject.getAskPrice());
+        javaObject.setExchangeSaleConditions(
+                stringMapper.toJava(nativeObject.getExchangeSaleConditions())
+        );
+        javaObject.setFlags(nativeObject.getFlags());
+        javaObject.setBuyer(stringMapper.toJava(nativeObject.getBuyer()));
+        javaObject.setSeller(stringMapper.toJava(nativeObject.getSeller()));
+    }
 }

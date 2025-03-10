@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk.javac;
@@ -12,15 +12,15 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_list")
 public interface CList<T extends CPointerPointer<?>> extends PointerBase {
 
-  @CField("elements")
-  T getElements();
+    @CField("elements")
+    T getElements();
 
-  @CField("elements")
-  void setElements(T value);
+    @CField("elements")
+    void setElements(T value);
 
-  @CField("size")
-  int getSize();
+    @CField("size")
+    int getSize();
 
-  @CField("size")
-  void setSize(int value);
+    @CField("size")
+    void setSize(int value);
 }

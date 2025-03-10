@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.schedule;
 
 import org.graalvm.nativeimage.IsolateThread;
@@ -10,9 +13,9 @@ import org.graalvm.nativeimage.c.type.CTypedef;
 @CTypedef(name = "dxfg_day_filter_function")
 interface DxfgDayFilterFunction extends CFunctionPointer {
 
-  @InvokeCFunctionPointer
-  int invoke(
-      final IsolateThread thread,
-      final DxfgDay dxfgDay
-  );
+    @InvokeCFunctionPointer
+    int invoke(
+            final IsolateThread thread,
+            final DxfgDay dxfgDay
+    );
 }

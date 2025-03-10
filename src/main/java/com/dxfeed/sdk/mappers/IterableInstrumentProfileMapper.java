@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.mappers;
 
 import com.dxfeed.ipf.InstrumentProfile;
@@ -6,10 +9,10 @@ import java.util.Iterator;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class IterableInstrumentProfileMapper
-    extends JavaObjectHandlerMapper<Iterator<InstrumentProfile>, DxfgIterableInstrumentProfile> {
+        extends JavaObjectHandlerMapper<Iterator<InstrumentProfile>, DxfgIterableInstrumentProfile> {
 
-  @Override
-  protected int getSizeJavaObjectHandler() {
-    return SizeOf.get(DxfgIterableInstrumentProfile.class);
-  }
+    @Override
+    protected int getSizeJavaObjectHandler() {
+        return SizeOf.get(DxfgIterableInstrumentProfile.class);
+    }
 }

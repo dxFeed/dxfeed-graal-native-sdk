@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.event.misc.Message;
@@ -16,82 +19,82 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class MessageMapper extends EventMapper<Message, DxfgMessage> {
 
-  private final static Logger logger = Logger.getLogger(MessageMapper.class.getCanonicalName());
+    private final static Logger logger = Logger.getLogger(MessageMapper.class.getCanonicalName());
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  static {
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-    OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
-  }
-
-  protected final Mapper<String, CCharPointer> stringMapper;
-
-  public MessageMapper(final Mapper<String, CCharPointer> stringMapper) {
-    this.stringMapper = stringMapper;
-  }
-
-  @Override
-  public final void fillNative(final Message jObject, final DxfgMessage nObject, boolean clean) {
-    if (clean) {
-      cleanNative(nObject);
+    static {
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+        OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
     }
 
-    nObject.setEventSymbol(this.stringMapper.toNative(jObject.getEventSymbol()));
-    nObject.setEventTime(jObject.getEventTime());
-    try {
-      nObject.setAttachment(
-          this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(jObject.getAttachment()))
-      );
-    } catch (final JsonProcessingException e) {
-      logger.log(Level.WARNING, e.getMessage(), e);
+    protected final Mapper<String, CCharPointer> stringMapper;
+
+    public MessageMapper(final Mapper<String, CCharPointer> stringMapper) {
+        this.stringMapper = stringMapper;
     }
-  }
 
-  @Override
-  public DxfgMessage createNativeObject() {
-    final DxfgMessage nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgMessage.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_MESSAGE.getCValue());
-    return nObject;
-  }
-
-  @Override
-  public final void cleanNative(final DxfgMessage nObject) {
-    this.stringMapper.release(nObject.getEventSymbol());
-    this.stringMapper.release(nObject.getAttachment());
-  }
-
-  @Override
-  protected Message doToJava(final DxfgMessage nObject) {
-    final Message jObject = new Message();
-    fillJava(nObject, jObject);
-    return jObject;
-  }
-
-  @Override
-  public void fillJava(final DxfgMessage nObject, final Message jObject) {
-    jObject.setEventSymbol(this.stringMapper.toJava(nObject.getEventSymbol()));
-    jObject.setEventTime(nObject.getEventTime());
-    final String content = this.stringMapper.toJava(nObject.getAttachment());
-    if (content == null) {
-      jObject.setAttachment(null);
-    } else {
-      final Object attachment = jObject.getAttachment();
-      if (attachment != null) {
-        try {
-          jObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
-        } catch (final JsonProcessingException e) {
-          logger.log(Level.WARNING, e.getMessage(), e);
+    @Override
+    public final void fillNative(final Message javaObject, final DxfgMessage nativeObject, boolean clean) {
+        if (clean) {
+            cleanNative(nativeObject);
         }
-      }
-    }
-  }
 
-  @Override
-  public DxfgMessage createNativeObject(final String symbol) {
-    final DxfgMessage nObject = createNativeObject();
-    nObject.setEventSymbol(this.stringMapper.toNative(symbol));
-    return nObject;
-  }
+        nativeObject.setEventSymbol(this.stringMapper.toNative(javaObject.getEventSymbol()));
+        nativeObject.setEventTime(javaObject.getEventTime());
+        try {
+            nativeObject.setAttachment(
+                    this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(javaObject.getAttachment()))
+            );
+        } catch (final JsonProcessingException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public DxfgMessage createNativeObject() {
+        final DxfgMessage nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgMessage.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_MESSAGE.getCValue());
+        return nativeObject;
+    }
+
+    @Override
+    public final void cleanNative(final DxfgMessage nativeObject) {
+        this.stringMapper.release(nativeObject.getEventSymbol());
+        this.stringMapper.release(nativeObject.getAttachment());
+    }
+
+    @Override
+    protected Message doToJava(final DxfgMessage nativeObject) {
+        final Message javaObject = new Message();
+        fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
+
+    @Override
+    public void fillJava(final DxfgMessage nativeObject, final Message javaObject) {
+        javaObject.setEventSymbol(this.stringMapper.toJava(nativeObject.getEventSymbol()));
+        javaObject.setEventTime(nativeObject.getEventTime());
+        final String content = this.stringMapper.toJava(nativeObject.getAttachment());
+        if (content == null) {
+            javaObject.setAttachment(null);
+        } else {
+            final Object attachment = javaObject.getAttachment();
+            if (attachment != null) {
+                try {
+                    javaObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
+                } catch (final JsonProcessingException e) {
+                    logger.log(Level.WARNING, e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public DxfgMessage createNativeObject(final String symbol) {
+        final DxfgMessage nativeObject = createNativeObject();
+        nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
+        return nativeObject;
+    }
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.subscription;
 
 import com.dxfeed.sdk.events.DxfgEventTypeList;
@@ -12,10 +15,10 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CTypedef(name = "dxfg_feed_event_listener_function")
 public interface DxfgFeedEventListenerFunction extends CFunctionPointer {
 
-  @InvokeCFunctionPointer
-  void invoke(
-      final IsolateThread thread,
-      final DxfgEventTypeList dxfgEventTypeList,
-      final VoidPointer userData
-  );
+    @InvokeCFunctionPointer
+    void invoke(
+            final IsolateThread thread,
+            final DxfgEventTypeList dxfgEventTypeList,
+            final VoidPointer userData
+    );
 }

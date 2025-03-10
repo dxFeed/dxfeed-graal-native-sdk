@@ -27,7 +27,7 @@ BEGIN
             VALUE "CompanyName", "Devexperts LLC"
             VALUE "FileDescription", "GraalVM C-library wrapper for dxFeed Java API."
             VALUE "InternalName", "DxFeedGraalNativeSdk.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2024 Devexperts LLC"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Devexperts LLC"
             VALUE "OriginalFilename", "DxFeedGraalNativeSdk.dll"
             VALUE "ProductName", "dxFeed Graal Native SDK"
             VALUE "ProductVersion", xstr(DXFSDK_VERSION)

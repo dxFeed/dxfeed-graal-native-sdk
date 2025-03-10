@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.subscription;
 
 import com.dxfeed.api.DXFeedEventListener;
@@ -30,425 +33,432 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CContext(Directives.class)
 public class SubscriptionNative {
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_new",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeedSubscription_new(
-      final IsolateThread ignoredThread,
-      final DxfgEventClazz dxfgClazz
-  ) {
-    return NativeUtils.MAPPER_SUBSCRIPTION.toNative(new DXFeedSubscription<>(dxfgClazz.clazz));
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_new",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeedSubscription_new(
+            final IsolateThread ignoredThread,
+            final DxfgEventClazz dxfgClazz
+    ) {
+        return NativeUtils.MAPPER_SUBSCRIPTION.toNative(new DXFeedSubscription<>(dxfgClazz.clazz));
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_new2",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeedSubscription_new(
-      final IsolateThread ignoredThread,
-      final DxfgEventClazzList eventClazzList
-  ) {
-    return NativeUtils.MAPPER_SUBSCRIPTION.toNative(
-        new DXFeedSubscription<>(
-            NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
-        )
-    );
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_close",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_close(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).close();
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_clear",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_clear(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).clear();
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_addSymbols",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_addSymbols(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbolList symbols
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(symbols));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_addSymbol",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_addSymbol(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbol dxfgSymbol
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_removeSymbols",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_removeSymbols(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbolList symbols
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).removeSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(symbols));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_removeSymbol",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_removeSymbol(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbol dxfgSymbol
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).removeSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
-
-  @CEntryPoint(
-      name = "dxfg_DXFeedEventListener_new",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgFeedEventListener dxfg_DXFeedEventListener_new(
-      final IsolateThread ignoreThread,
-      final DxfgFeedEventListenerFunction dxfgFeedEventListenerFunction,
-      final VoidPointer userData
-  ) {
-    return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new DXFeedEventListener<EventType<?>>() {
-      @Override
-      public void eventsReceived(final List<EventType<?>> events) {
-        final DxfgEventTypeList dxfgEventTypeList = NativeUtils.MAPPER_EVENTS.toNativeList(events);
-        dxfgFeedEventListenerFunction.invoke(
-            CurrentIsolate.getCurrentThread(),
-            dxfgEventTypeList,
-            userData
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_new2",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeedSubscription_new(
+            final IsolateThread ignoredThread,
+            final DxfgEventClazzList eventClazzList
+    ) {
+        return NativeUtils.MAPPER_SUBSCRIPTION.toNative(
+                new DXFeedSubscription<>(
+                        NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+                )
         );
-        NativeUtils.MAPPER_EVENTS.release(dxfgEventTypeList);
-      }
-    });
-  }
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_addEventListener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_addEventListener(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeedEventListener dxfgFeedEventListener
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addEventListener(
-        NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener)
-    );
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_close",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_close(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).close();
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_removeEventListener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_removeEventListener(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeedEventListener dxfgFeedEventListener
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
-        .removeEventListener(NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_clear",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_clear(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).clear();
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_attach",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_attach(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeed feed
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).attach(NativeUtils.MAPPER_FEED.toJava(feed));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_addSymbols",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_addSymbols(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbolList symbols
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .addSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(symbols));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_detach",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_detach(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgFeed feed
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).detach(NativeUtils.MAPPER_FEED.toJava(feed));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_addSymbol",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_addSymbol(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbol dxfgSymbol
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .addSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_isClosed",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_isClosed(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).isClosed() ? 1 : 0;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_removeSymbols",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_removeSymbols(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbolList symbols
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .removeSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(symbols));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getEventTypes",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgEventClazzList dxfg_DXFeedSubscription_getEventTypes(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_EVENT_TYPES.toNativeList(
-        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getEventTypes()
-    );
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_removeSymbol",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_removeSymbol(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbol dxfgSymbol
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .removeSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_containsEventType",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_containsEventType(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgEventClazz dxfgClazz
-  ) {
-    return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).containsEventType(dxfgClazz.clazz) ? 1 : 0;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedEventListener_new",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgFeedEventListener dxfg_DXFeedEventListener_new(
+            final IsolateThread ignoreThread,
+            final DxfgFeedEventListenerFunction dxfgFeedEventListenerFunction,
+            final VoidPointer userData
+    ) {
+        return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new DXFeedEventListener<EventType<?>>() {
+            @Override
+            public void eventsReceived(final List<EventType<?>> events) {
+                final DxfgEventTypeList dxfgEventTypeList = NativeUtils.MAPPER_EVENTS.toNativeList(events);
+                dxfgFeedEventListenerFunction.invoke(
+                        CurrentIsolate.getCurrentThread(),
+                        dxfgEventTypeList,
+                        userData
+                );
+                NativeUtils.MAPPER_EVENTS.release(dxfgEventTypeList);
+            }
+        });
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getSymbols",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgSymbolList dxfg_DXFeedSubscription_getSymbols(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_SYMBOLS.toNativeList(NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getSymbols());
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_addEventListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_addEventListener(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgFeedEventListener dxfgFeedEventListener
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addEventListener(
+                NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener)
+        );
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_setSymbol",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_setSymbol(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbol dxfgSymbol
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_removeEventListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_removeEventListener(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgFeedEventListener dxfgFeedEventListener
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .removeEventListener(NativeUtils.MAPPER_FEED_EVENT_LISTENER.toJava(dxfgFeedEventListener));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_setSymbols",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_setSymbols(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgSymbolList dxfgSymbolList
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
-        .setSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(dxfgSymbolList));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_attach",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_attach(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgFeed feed
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).attach(NativeUtils.MAPPER_FEED.toJava(feed));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getDecoratedSymbols",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgSymbolList dxfg_DXFeedSubscription_getDecoratedSymbols(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_SYMBOLS.toNativeList(
-        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getDecoratedSymbols());
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_detach",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_detach(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgFeed feed
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).detach(NativeUtils.MAPPER_FEED.toJava(feed));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getExecutor",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgExecutor dxfg_DXFeedSubscription_getExecutor(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_EXECUTOR.toNative(NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getExecutor());
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_isClosed",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_isClosed(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).isClosed() ? 1 : 0;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_setExecutor",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_setExecutor(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgExecutor dxfgExecutor
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(
-        dxfgExecutor));
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getEventTypes",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgEventClazzList dxfg_DXFeedSubscription_getEventTypes(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_EVENT_TYPES.toNativeList(
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getEventTypes()
+        );
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getAggregationPeriod",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgTimePeriod dxfg_DXFeedSubscription_getAggregationPeriod(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_TIME_PERIOD.toNative(
-      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriod()
-    );
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_containsEventType",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_containsEventType(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgEventClazz dxfgClazz
+    ) {
+        return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).containsEventType(dxfgClazz.clazz) ? 1 : 0;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_setAggregationPeriod",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_setAggregationPeriod(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgTimePeriod dxfgTimePeriod
-  ) {
-      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setAggregationPeriod(
-          NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod)
-      );
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getSymbols",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgSymbolList dxfg_DXFeedSubscription_getSymbols(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_SYMBOLS.toNativeList(
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getSymbols());
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_getEventsBatchLimit",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_getEventsBatchLimit(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
-  ) {
-    return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getEventsBatchLimit();
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_setSymbol",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_setSymbol(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbol dxfgSymbol
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .setSymbols(NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_setEventsBatchLimit",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_setEventsBatchLimit(
-      final IsolateThread ignoredThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final int eventsBatchLimit
-  ) {
-      NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setEventsBatchLimit(
-          eventsBatchLimit
-      );
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_setSymbols",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_setSymbols(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgSymbolList dxfgSymbolList
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .setSymbols(NativeUtils.MAPPER_SYMBOLS.toJavaList(dxfgSymbolList));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_ObservableSubscriptionChangeListener_new",
-      exceptionHandler = ExceptionHandlerReturnNullWord.class
-  )
-  public static DxfgObservableSubscriptionChangeListener dxfg_ObservableSubscriptionChangeListener_new(
-      final IsolateThread ignoreThread,
-      final DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded functionSymbolsAdded,
-      final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved,
-      final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed,
-      final VoidPointer userData
-  ) {
-    return NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toNative(
-        new ObservableSubscriptionChangeListener() {
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getDecoratedSymbols",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgSymbolList dxfg_DXFeedSubscription_getDecoratedSymbols(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_SYMBOLS.toNativeList(
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getDecoratedSymbols());
+    }
 
-          @Override
-          public void symbolsAdded(final Set<?> symbols) {
-            final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
-            functionSymbolsAdded.invoke(
-                CurrentIsolate.getCurrentThread(),
-                dxfgSymbolList,
-                userData
-            );
-            NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
-          }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getExecutor",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgExecutor dxfg_DXFeedSubscription_getExecutor(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_EXECUTOR.toNative(
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getExecutor());
+    }
 
-          @Override
-          public void symbolsRemoved(final Set<?> symbols) {
-            final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
-            functionSymbolsRemoved.invoke(
-                CurrentIsolate.getCurrentThread(),
-                dxfgSymbolList,
-                userData
-            );
-            NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
-          }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_setExecutor",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_setExecutor(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgExecutor dxfgExecutor
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(
+                dxfgExecutor));
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-          @Override
-          public void subscriptionClosed() {
-            functionSubscriptionClosed.invoke(
-                CurrentIsolate.getCurrentThread(),
-                userData
-            );
-          }
-        }
-    );
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getAggregationPeriod",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgTimePeriod dxfg_DXFeedSubscription_getAggregationPeriod(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_TIME_PERIOD.toNative(
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriod()
+        );
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_addChangeListener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_addChangeListener(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addChangeListener(
-        NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
-    );
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_setAggregationPeriod",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_setAggregationPeriod(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgTimePeriod dxfgTimePeriod
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setAggregationPeriod(
+                NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod)
+        );
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 
-  @CEntryPoint(
-      name = "dxfg_DXFeedSubscription_removeChangeListener",
-      exceptionHandler = ExceptionHandlerReturnMinusOne.class
-  )
-  public static int dxfg_DXFeedSubscription_removeChangeListener(
-      final IsolateThread ignoreThread,
-      final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
-      final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
-  ) {
-    NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).removeChangeListener(
-        NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
-    );
-    return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-  }
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_getEventsBatchLimit",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_getEventsBatchLimit(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription
+    ) {
+        return NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getEventsBatchLimit();
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_setEventsBatchLimit",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_setEventsBatchLimit(
+            final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final int eventsBatchLimit
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).setEventsBatchLimit(
+                eventsBatchLimit
+        );
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_ObservableSubscriptionChangeListener_new",
+            exceptionHandler = ExceptionHandlerReturnNullWord.class
+    )
+    public static DxfgObservableSubscriptionChangeListener dxfg_ObservableSubscriptionChangeListener_new(
+            final IsolateThread ignoreThread,
+            final DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded functionSymbolsAdded,
+            final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved,
+            final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed,
+            final VoidPointer userData
+    ) {
+        return NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toNative(
+                new ObservableSubscriptionChangeListener() {
+
+                    @Override
+                    public void symbolsAdded(final Set<?> symbols) {
+                        final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                        functionSymbolsAdded.invoke(
+                                CurrentIsolate.getCurrentThread(),
+                                dxfgSymbolList,
+                                userData
+                        );
+                        NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                    }
+
+                    @Override
+                    public void symbolsRemoved(final Set<?> symbols) {
+                        final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                        functionSymbolsRemoved.invoke(
+                                CurrentIsolate.getCurrentThread(),
+                                dxfgSymbolList,
+                                userData
+                        );
+                        NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                    }
+
+                    @Override
+                    public void subscriptionClosed() {
+                        functionSubscriptionClosed.invoke(
+                                CurrentIsolate.getCurrentThread(),
+                                userData
+                        );
+                    }
+                }
+        );
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_addChangeListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_addChangeListener(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).addChangeListener(
+                NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
+        );
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXFeedSubscription_removeChangeListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeedSubscription_removeChangeListener(
+            final IsolateThread ignoreThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final DxfgObservableSubscriptionChangeListener dxfgFeedEventListener
+    ) {
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).removeChangeListener(
+                NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toJava(dxfgFeedEventListener)
+        );
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 }

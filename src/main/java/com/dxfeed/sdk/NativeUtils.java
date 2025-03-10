@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk;
@@ -219,226 +219,226 @@ import org.graalvm.nativeimage.c.type.CIntPointer;
 
 public final class NativeUtils {
 
-  public static final Finalizer FINALIZER = new Finalizer();
-  public static final Mapper<StackTraceElement, DxfgStackTraceElement> MAPPER_STACK_TRACE_ELEMENT;
-  public static final ListMapper<StackTraceElement, DxfgStackTraceElement, DxfgStackTraceElementPointer, DxfgStackTraceElementList> MAPPER_STACK_TRACE_ELEMENTS;
-  public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
-  public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
-  public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
-  public static final Mapper<String, CCharPointer> MAPPER_STRING;
-  public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> MAPPER_STRINGS;
-  public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
-  public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
-  public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;
-  public static final Mapper<Executor, DxfgExecutor> MAPPER_EXECUTOR;
-  public static final Mapper<TimePeriod, DxfgTimePeriod> MAPPER_TIME_PERIOD;
-  public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
-  public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
-  public static final Mapper<AuthToken, DxfgAuthToken> MAPPER_AUTH_TOKEN;
-  public static final Mapper<InputStream, DxfgInputStream> MAPPER_INPUT_STREAM;
-  public static final Mapper<Builder, DxfgEndpointBuilder> MAPPER_ENDPOINT_BUILDER;
-  public static final Mapper<DXEndpoint, DxfgEndpoint> MAPPER_ENDPOINT;
-  public static final Mapper<Promise<?>, DxfgPromise> MAPPER_PROMISE;
-  public static final Mapper<DXPublisher, DxfgPublisher> MAPPER_PUBLISHER;
-  public static final Mapper<OnDemandService, DxfgOnDemandService> MAPPER_ON_DEMAND_SERVICE;
-  public static final Mapper<PropertyChangeListener, DxfgEndpointStateChangeListener> MAPPER_ENDPOINT_STATE_CHANGE_LISTENER;
-  public static final Mapper<OrderBookModel, DxfgOrderBookModel> MAPPER_ORDER_BOOK_MODEL;
-  public static final Mapper<IndexedEventModel<?>, DxfgIndexedEventModel> MAPPER_INDEXED_EVENT_MODEL;
-  public static final Mapper<TimeSeriesEventModel<?>, DxfgTimeSeriesEventModel> MAPPER_TIME_SERIES_EVENT_MODEL;
-  public static final Mapper<ObservableListModel<? extends IndexedEvent<?>>, DxfgObservableListModel> MAPPER_OBSERVABLE_LIST_MODEL;
-  public static final Mapper<OrderBookModelListener, DxfgOrderBookModelListener> MAPPER_ORDER_BOOK_MODEL_LISTENER;
-  public static final Mapper<ObservableListModelListener<? super IndexedEvent<?>>, DxfgObservableListModelListener> MAPPER_OBSERVABLE_LIST_MODEL_LISTENER;
-  public static final Mapper<ObservableSubscription<? extends EventType<?>>, DxfgObservableSubscription> MAPPER_OBSERVABLE_SUBSCRIPTION;
-  public static final Mapper<ObservableSubscriptionChangeListener, DxfgObservableSubscriptionChangeListener> MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER;
-  public static final Mapper<DXFeedSubscription<EventType<?>>, DxfgSubscription<DXFeedSubscription<EventType<?>>>> MAPPER_SUBSCRIPTION;
-  public static final Mapper<DXFeedTimeSeriesSubscription<? extends TimeSeriesEvent<?>>, DxfgTimeSeriesSubscription> MAPPER_TIME_SERIES_SUBSCRIPTION;
-  public static final Mapper<Object, JavaObjectHandler<Object>> MAPPER_JAVA_OBJECT_HANDLER;
-  public static final ListMapper<Object, JavaObjectHandler<?>, DxfgJavaObjectHandlerPointer, DxfgJavaObjectHandlerList> MAPPER_JAVA_OBJECT_HANDLERS;
-  public static final Mapper<IndexedEventSource, DxfgIndexedEventSource> MAPPER_INDEXED_EVENT_SOURCE;
-  public static final ListMapper<IndexedEventSource, DxfgIndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourceList> MAPPER_INDEXED_EVENT_SOURCES;
-  public static final Mapper<DXFeed, DxfgFeed> MAPPER_FEED;
-  public static final Mapper<DXFeedEventListener<EventType<?>>, DxfgFeedEventListener> MAPPER_FEED_EVENT_LISTENER;
-  public static final ListMapper<Promise<?>, DxfgPromise, DxfgPromisePointer, DxfgPromiseList> MAPPER_PROMISES;
-  public static final Mapper<InstrumentProfileConnection, DxfgInstrumentProfileConnection> MAPPER_INSTRUMENT_PROFILE_CONNECTION;
-  public static final Mapper<InstrumentProfile, DxfgInstrumentProfile> MAPPER_INSTRUMENT_PROFILE;
-  public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile, DxfgInstrumentProfilePointer, DxfgInstrumentProfileList> MAPPER_INSTRUMENT_PROFILES;
-  public static final Mapper<Iterator<InstrumentProfile>, DxfgIterableInstrumentProfile> MAPPER_ITERABLE_INSTRUMENT_PROFILE;
-  public static final Mapper<InstrumentProfileCollector, DxfgInstrumentProfileCollector> MAPPER_INSTRUMENT_PROFILE_COLLECTOR;
-  public static final Mapper<InstrumentProfileReader, DxfgInstrumentProfileReader> MAPPER_INSTRUMENT_PROFILE_READER;
-  public static final Mapper<PropertyChangeListener, DxfgIpfConnectionStateChangeListener> MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER;
-  public static final Mapper<InstrumentProfileUpdateListener, DxfgInstrumentProfileUpdateListener> MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER;
-  public static final Mapper<Session, DxfgSession> MAPPER_SESSION;
-  public static final ListMapper<Session, DxfgSession, DxfgSessionPointer, DxfgSessionList> MAPPER_SESSIONS;
-  public static final Mapper<Day, DxfgDay> MAPPER_DAY;
-  public static final Mapper<SessionFilter, DxfgSessionFilter> MAPPER_SESSION_FILTER;
-  public static final Mapper<DayFilter, DxfgDayFilter> MAPPER_DAY_FILTER;
-  public static final Mapper<Schedule, DxfgScheduleHandle> MAPPER_SCHEDULE;
-  public static final Mapper<AdditionalUnderlyings, DxfgAdditionalUnderlyingsHandle> MAPPER_ADDITIONAL_UNDERLYINGS;
-  public static final Mapper<CFI, DxfgCFIHandle> MAPPER_CFI;
-  public static final Mapper<CFI.Attribute, DxfgCFIAttributeHandle> MAPPER_CFI_ATTRIBUTE;
-  public static final Mapper<CFI.Value, DxfgCFIValueHandle> MAPPER_CFI_VALUE;
-  public static final Mapper<PriceIncrements, DxfgPriceIncrementsHandle> MAPPER_PRICE_INCREMENTS;
-  public static final Mapper<InterceptableLoggingListener, DxfgInterceptableLoggingListenerHandle> MAPPER_INTERCEPTABLE_LOGGING_LISTENER;
-  public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
-  public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
-  public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
+    public static final Finalizer FINALIZER = new Finalizer();
+    public static final Mapper<StackTraceElement, DxfgStackTraceElement> MAPPER_STACK_TRACE_ELEMENT;
+    public static final ListMapper<StackTraceElement, DxfgStackTraceElement, DxfgStackTraceElementPointer, DxfgStackTraceElementList> MAPPER_STACK_TRACE_ELEMENTS;
+    public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
+    public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
+    public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
+    public static final Mapper<String, CCharPointer> MAPPER_STRING;
+    public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> MAPPER_STRINGS;
+    public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
+    public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
+    public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;
+    public static final Mapper<Executor, DxfgExecutor> MAPPER_EXECUTOR;
+    public static final Mapper<TimePeriod, DxfgTimePeriod> MAPPER_TIME_PERIOD;
+    public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
+    public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
+    public static final Mapper<AuthToken, DxfgAuthToken> MAPPER_AUTH_TOKEN;
+    public static final Mapper<InputStream, DxfgInputStream> MAPPER_INPUT_STREAM;
+    public static final Mapper<Builder, DxfgEndpointBuilder> MAPPER_ENDPOINT_BUILDER;
+    public static final Mapper<DXEndpoint, DxfgEndpoint> MAPPER_ENDPOINT;
+    public static final Mapper<Promise<?>, DxfgPromise> MAPPER_PROMISE;
+    public static final Mapper<DXPublisher, DxfgPublisher> MAPPER_PUBLISHER;
+    public static final Mapper<OnDemandService, DxfgOnDemandService> MAPPER_ON_DEMAND_SERVICE;
+    public static final Mapper<PropertyChangeListener, DxfgEndpointStateChangeListener> MAPPER_ENDPOINT_STATE_CHANGE_LISTENER;
+    public static final Mapper<OrderBookModel, DxfgOrderBookModel> MAPPER_ORDER_BOOK_MODEL;
+    public static final Mapper<IndexedEventModel<?>, DxfgIndexedEventModel> MAPPER_INDEXED_EVENT_MODEL;
+    public static final Mapper<TimeSeriesEventModel<?>, DxfgTimeSeriesEventModel> MAPPER_TIME_SERIES_EVENT_MODEL;
+    public static final Mapper<ObservableListModel<? extends IndexedEvent<?>>, DxfgObservableListModel> MAPPER_OBSERVABLE_LIST_MODEL;
+    public static final Mapper<OrderBookModelListener, DxfgOrderBookModelListener> MAPPER_ORDER_BOOK_MODEL_LISTENER;
+    public static final Mapper<ObservableListModelListener<? super IndexedEvent<?>>, DxfgObservableListModelListener> MAPPER_OBSERVABLE_LIST_MODEL_LISTENER;
+    public static final Mapper<ObservableSubscription<? extends EventType<?>>, DxfgObservableSubscription> MAPPER_OBSERVABLE_SUBSCRIPTION;
+    public static final Mapper<ObservableSubscriptionChangeListener, DxfgObservableSubscriptionChangeListener> MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER;
+    public static final Mapper<DXFeedSubscription<EventType<?>>, DxfgSubscription<DXFeedSubscription<EventType<?>>>> MAPPER_SUBSCRIPTION;
+    public static final Mapper<DXFeedTimeSeriesSubscription<? extends TimeSeriesEvent<?>>, DxfgTimeSeriesSubscription> MAPPER_TIME_SERIES_SUBSCRIPTION;
+    public static final Mapper<Object, JavaObjectHandler<Object>> MAPPER_JAVA_OBJECT_HANDLER;
+    public static final ListMapper<Object, JavaObjectHandler<?>, DxfgJavaObjectHandlerPointer, DxfgJavaObjectHandlerList> MAPPER_JAVA_OBJECT_HANDLERS;
+    public static final Mapper<IndexedEventSource, DxfgIndexedEventSource> MAPPER_INDEXED_EVENT_SOURCE;
+    public static final ListMapper<IndexedEventSource, DxfgIndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourceList> MAPPER_INDEXED_EVENT_SOURCES;
+    public static final Mapper<DXFeed, DxfgFeed> MAPPER_FEED;
+    public static final Mapper<DXFeedEventListener<EventType<?>>, DxfgFeedEventListener> MAPPER_FEED_EVENT_LISTENER;
+    public static final ListMapper<Promise<?>, DxfgPromise, DxfgPromisePointer, DxfgPromiseList> MAPPER_PROMISES;
+    public static final Mapper<InstrumentProfileConnection, DxfgInstrumentProfileConnection> MAPPER_INSTRUMENT_PROFILE_CONNECTION;
+    public static final Mapper<InstrumentProfile, DxfgInstrumentProfile> MAPPER_INSTRUMENT_PROFILE;
+    public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile, DxfgInstrumentProfilePointer, DxfgInstrumentProfileList> MAPPER_INSTRUMENT_PROFILES;
+    public static final Mapper<Iterator<InstrumentProfile>, DxfgIterableInstrumentProfile> MAPPER_ITERABLE_INSTRUMENT_PROFILE;
+    public static final Mapper<InstrumentProfileCollector, DxfgInstrumentProfileCollector> MAPPER_INSTRUMENT_PROFILE_COLLECTOR;
+    public static final Mapper<InstrumentProfileReader, DxfgInstrumentProfileReader> MAPPER_INSTRUMENT_PROFILE_READER;
+    public static final Mapper<PropertyChangeListener, DxfgIpfConnectionStateChangeListener> MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER;
+    public static final Mapper<InstrumentProfileUpdateListener, DxfgInstrumentProfileUpdateListener> MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER;
+    public static final Mapper<Session, DxfgSession> MAPPER_SESSION;
+    public static final ListMapper<Session, DxfgSession, DxfgSessionPointer, DxfgSessionList> MAPPER_SESSIONS;
+    public static final Mapper<Day, DxfgDay> MAPPER_DAY;
+    public static final Mapper<SessionFilter, DxfgSessionFilter> MAPPER_SESSION_FILTER;
+    public static final Mapper<DayFilter, DxfgDayFilter> MAPPER_DAY_FILTER;
+    public static final Mapper<Schedule, DxfgScheduleHandle> MAPPER_SCHEDULE;
+    public static final Mapper<AdditionalUnderlyings, DxfgAdditionalUnderlyingsHandle> MAPPER_ADDITIONAL_UNDERLYINGS;
+    public static final Mapper<CFI, DxfgCFIHandle> MAPPER_CFI;
+    public static final Mapper<CFI.Attribute, DxfgCFIAttributeHandle> MAPPER_CFI_ATTRIBUTE;
+    public static final Mapper<CFI.Value, DxfgCFIValueHandle> MAPPER_CFI_VALUE;
+    public static final Mapper<PriceIncrements, DxfgPriceIncrementsHandle> MAPPER_PRICE_INCREMENTS;
+    public static final Mapper<InterceptableLoggingListener, DxfgInterceptableLoggingListenerHandle> MAPPER_INTERCEPTABLE_LOGGING_LISTENER;
+    public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
+    public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
+    public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
 
 
-  static {
-    MAPPER_STRING = new StringMapper();
-    MAPPER_STACK_TRACE_ELEMENT = new DxfgStackTraceElementMapper(MAPPER_STRING);
-    MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
-    MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
-    MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
-    SingletonScheduledExecutorService.start(
-        "clean cache & finalize native",
-        () -> {
-          try {
-            FINALIZER.finalizeResources();
-          } catch (final Throwable throwable) {
-            throwable.printStackTrace();
-          }
-        },
-        1000
-    );
-    MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING);
-    MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING, MAPPER_INDEXED_EVENT_SOURCE);
-    MAPPER_EVENT = new EventMappers(
-        MAPPER_STRING,
-        new QuoteMapper(MAPPER_STRING),
-        new SeriesMapper(MAPPER_STRING),
-        new OptionSaleMapper(MAPPER_STRING),
-        new MarketMakerMapper(MAPPER_STRING),
-        new TimeAndSaleMapper(MAPPER_STRING),
-        new SpreadOrderMapper(MAPPER_STRING),
-        new OrderMapper<>(MAPPER_STRING),
-        new AnalyticOrderMapper(MAPPER_STRING),
-        new OtcMarketsOrderMapper(MAPPER_STRING),
-        new MessageMapper(MAPPER_STRING),
-        new OrderBaseMapper(MAPPER_STRING),
-        new ConfigurationMapper(MAPPER_STRING),
-        new TradeMapper(MAPPER_STRING),
-        new TradeETHMapper(MAPPER_STRING),
-        new TheoPriceMapper(MAPPER_STRING),
-        new UnderlyingMapper(MAPPER_STRING),
-        new GreeksMapper(MAPPER_STRING),
-        new SummaryMapper(MAPPER_STRING),
-        new ProfileMapper(MAPPER_STRING),
-        new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
-        new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL),
-        new TextMessageMapper(MAPPER_STRING)
-    );
-    MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
-    MAPPER_INDEXED_EVENT_SOURCES = new ListIndexedEventSourceMapper(MAPPER_INDEXED_EVENT_SOURCE);
-    MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
-    MAPPER_EVENT_TYPES = new ListEventTypeMapper();
-    MAPPER_EXECUTOR = new ExecutorMapper();
-    MAPPER_TIME_FORMAT = new TimeFormatMapper();
-    MAPPER_TIME_PERIOD = new TimePeriodMapper();
-    MAPPER_TIME_ZONE = new TimeZoneMapper();
-    MAPPER_AUTH_TOKEN = new AuthTokenMapper();
-    MAPPER_INPUT_STREAM = new InputStreamMapper();
-    MAPPER_ENDPOINT_BUILDER = new EndpointBuilderMapper();
-    MAPPER_ENDPOINT = new EndpointMapper();
-    MAPPER_PROMISE = new PromiseMapper();
-    MAPPER_PUBLISHER = new PublisherMapper();
-    MAPPER_ON_DEMAND_SERVICE = new OnDemandServiceMapper();
-    MAPPER_ENDPOINT_STATE_CHANGE_LISTENER = new EndpointStateChangeListenerMapper();
-    MAPPER_ORDER_BOOK_MODEL = new OrderBookModelMapper();
-    MAPPER_INDEXED_EVENT_MODEL = new IndexedEventModelMapper();
-    MAPPER_TIME_SERIES_EVENT_MODEL = new TimeSeriesEventModelMapper();
-    MAPPER_OBSERVABLE_LIST_MODEL = new ObservableListModelMapper();
-    MAPPER_ORDER_BOOK_MODEL_LISTENER = new OrderBookModelListenerMapper();
-    MAPPER_OBSERVABLE_LIST_MODEL_LISTENER = new ObservableListModelListenerMapper();
-    MAPPER_OBSERVABLE_SUBSCRIPTION = new ObservableSubscriptionMapper();
-    MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER = new ObservableSubscriptionChangeListenerMapper();
-    MAPPER_SUBSCRIPTION = new SubscriptionMapper<>();
-    MAPPER_TIME_SERIES_SUBSCRIPTION = new TimeSeriesSubscriptionMapper();
-    MAPPER_JAVA_OBJECT_HANDLER = new JavaObjectHandlerMapper<>();
-    MAPPER_JAVA_OBJECT_HANDLERS = new ListJavaObjectHandlerMapper(MAPPER_JAVA_OBJECT_HANDLER);
-    MAPPER_FEED = new FeedMapper();
-    MAPPER_FEED_EVENT_LISTENER = new FeedEventListenerMapper();
-    MAPPER_PROMISES = new ListPromiseMapper(MAPPER_PROMISE);
-    MAPPER_INSTRUMENT_PROFILE_CONNECTION = new InstrumentProfileConnectionMapper();
-    MAPPER_INSTRUMENT_PROFILE = new InstrumentProfileMapper();
-    MAPPER_INSTRUMENT_PROFILES = new ListInstrumentProfileMapper(MAPPER_INSTRUMENT_PROFILE);
-    MAPPER_ITERABLE_INSTRUMENT_PROFILE = new IterableInstrumentProfileMapper();
-    MAPPER_INSTRUMENT_PROFILE_COLLECTOR = new InstrumentProfileCollectorMapper();
-    MAPPER_INSTRUMENT_PROFILE_READER = new InstrumentProfileReaderMapper();
-    MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER = new IpfConnectionStateChangeListenerMapper();
-    MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER = new InstrumentProfileUpdateListenerMapper();
-    MAPPER_SESSION = new SessionMapper();
-    MAPPER_SESSIONS = new ListSessionMapper(MAPPER_SESSION);
-    MAPPER_DAY = new DayMapper();
-    MAPPER_SESSION_FILTER = new SessionFilterMapper();
-    MAPPER_DAY_FILTER = new DayFilterMapper();
-    MAPPER_SCHEDULE = new ScheduleMapper();
-    MAPPER_ADDITIONAL_UNDERLYINGS = new AdditionalUnderlyingsMapper();
-    MAPPER_CFI = new CFIMapper();
-    MAPPER_CFI_ATTRIBUTE = new CFIAttributeMapper();
-    MAPPER_CFI_VALUE = new CFIValueMapper();
-    MAPPER_PRICE_INCREMENTS = new PriceIncrementsMapper();
-    MAPPER_INTERCEPTABLE_LOGGING_LISTENER = new InterceptableLoggingListenerMapper();
-    MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
-    MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
-    MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
-  }
-
-  public static class Finalizer {
-
-    private final Set<Reference<Object>> holder = ConcurrentHashMap.newKeySet();
-    private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
-
-    public void createFinalizer(final Object object, final Runnable finalizer) {
-      holder.add(new FinalizerReference(object, queue, finalizer));
+    static {
+        MAPPER_STRING = new StringMapper();
+        MAPPER_STACK_TRACE_ELEMENT = new DxfgStackTraceElementMapper(MAPPER_STRING);
+        MAPPER_STACK_TRACE_ELEMENTS = new ListStackTraceElementMapper(MAPPER_STACK_TRACE_ELEMENT);
+        MAPPER_EXCEPTION = new ExceptionMapper(MAPPER_STRING, MAPPER_STACK_TRACE_ELEMENTS);
+        MAPPER_STRINGS = new ListStringsMapper(MAPPER_STRING);
+        SingletonScheduledExecutorService.start(
+                "clean cache & finalize native",
+                () -> {
+                    try {
+                        FINALIZER.finalizeResources();
+                    } catch (final Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                },
+                1000
+        );
+        MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING);
+        MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING, MAPPER_INDEXED_EVENT_SOURCE);
+        MAPPER_EVENT = new EventMappers(
+                MAPPER_STRING,
+                new QuoteMapper(MAPPER_STRING),
+                new SeriesMapper(MAPPER_STRING),
+                new OptionSaleMapper(MAPPER_STRING),
+                new MarketMakerMapper(MAPPER_STRING),
+                new TimeAndSaleMapper(MAPPER_STRING),
+                new SpreadOrderMapper(MAPPER_STRING),
+                new OrderMapper<>(MAPPER_STRING),
+                new AnalyticOrderMapper(MAPPER_STRING),
+                new OtcMarketsOrderMapper(MAPPER_STRING),
+                new MessageMapper(MAPPER_STRING),
+                new OrderBaseMapper(MAPPER_STRING),
+                new ConfigurationMapper(MAPPER_STRING),
+                new TradeMapper(MAPPER_STRING),
+                new TradeETHMapper(MAPPER_STRING),
+                new TheoPriceMapper(MAPPER_STRING),
+                new UnderlyingMapper(MAPPER_STRING),
+                new GreeksMapper(MAPPER_STRING),
+                new SummaryMapper(MAPPER_STRING),
+                new ProfileMapper(MAPPER_STRING),
+                new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
+                new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL),
+                new TextMessageMapper(MAPPER_STRING)
+        );
+        MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
+        MAPPER_INDEXED_EVENT_SOURCES = new ListIndexedEventSourceMapper(MAPPER_INDEXED_EVENT_SOURCE);
+        MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);
+        MAPPER_EVENT_TYPES = new ListEventTypeMapper();
+        MAPPER_EXECUTOR = new ExecutorMapper();
+        MAPPER_TIME_FORMAT = new TimeFormatMapper();
+        MAPPER_TIME_PERIOD = new TimePeriodMapper();
+        MAPPER_TIME_ZONE = new TimeZoneMapper();
+        MAPPER_AUTH_TOKEN = new AuthTokenMapper();
+        MAPPER_INPUT_STREAM = new InputStreamMapper();
+        MAPPER_ENDPOINT_BUILDER = new EndpointBuilderMapper();
+        MAPPER_ENDPOINT = new EndpointMapper();
+        MAPPER_PROMISE = new PromiseMapper();
+        MAPPER_PUBLISHER = new PublisherMapper();
+        MAPPER_ON_DEMAND_SERVICE = new OnDemandServiceMapper();
+        MAPPER_ENDPOINT_STATE_CHANGE_LISTENER = new EndpointStateChangeListenerMapper();
+        MAPPER_ORDER_BOOK_MODEL = new OrderBookModelMapper();
+        MAPPER_INDEXED_EVENT_MODEL = new IndexedEventModelMapper();
+        MAPPER_TIME_SERIES_EVENT_MODEL = new TimeSeriesEventModelMapper();
+        MAPPER_OBSERVABLE_LIST_MODEL = new ObservableListModelMapper();
+        MAPPER_ORDER_BOOK_MODEL_LISTENER = new OrderBookModelListenerMapper();
+        MAPPER_OBSERVABLE_LIST_MODEL_LISTENER = new ObservableListModelListenerMapper();
+        MAPPER_OBSERVABLE_SUBSCRIPTION = new ObservableSubscriptionMapper();
+        MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER = new ObservableSubscriptionChangeListenerMapper();
+        MAPPER_SUBSCRIPTION = new SubscriptionMapper<>();
+        MAPPER_TIME_SERIES_SUBSCRIPTION = new TimeSeriesSubscriptionMapper();
+        MAPPER_JAVA_OBJECT_HANDLER = new JavaObjectHandlerMapper<>();
+        MAPPER_JAVA_OBJECT_HANDLERS = new ListJavaObjectHandlerMapper(MAPPER_JAVA_OBJECT_HANDLER);
+        MAPPER_FEED = new FeedMapper();
+        MAPPER_FEED_EVENT_LISTENER = new FeedEventListenerMapper();
+        MAPPER_PROMISES = new ListPromiseMapper(MAPPER_PROMISE);
+        MAPPER_INSTRUMENT_PROFILE_CONNECTION = new InstrumentProfileConnectionMapper();
+        MAPPER_INSTRUMENT_PROFILE = new InstrumentProfileMapper();
+        MAPPER_INSTRUMENT_PROFILES = new ListInstrumentProfileMapper(MAPPER_INSTRUMENT_PROFILE);
+        MAPPER_ITERABLE_INSTRUMENT_PROFILE = new IterableInstrumentProfileMapper();
+        MAPPER_INSTRUMENT_PROFILE_COLLECTOR = new InstrumentProfileCollectorMapper();
+        MAPPER_INSTRUMENT_PROFILE_READER = new InstrumentProfileReaderMapper();
+        MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER = new IpfConnectionStateChangeListenerMapper();
+        MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER = new InstrumentProfileUpdateListenerMapper();
+        MAPPER_SESSION = new SessionMapper();
+        MAPPER_SESSIONS = new ListSessionMapper(MAPPER_SESSION);
+        MAPPER_DAY = new DayMapper();
+        MAPPER_SESSION_FILTER = new SessionFilterMapper();
+        MAPPER_DAY_FILTER = new DayFilterMapper();
+        MAPPER_SCHEDULE = new ScheduleMapper();
+        MAPPER_ADDITIONAL_UNDERLYINGS = new AdditionalUnderlyingsMapper();
+        MAPPER_CFI = new CFIMapper();
+        MAPPER_CFI_ATTRIBUTE = new CFIAttributeMapper();
+        MAPPER_CFI_VALUE = new CFIValueMapper();
+        MAPPER_PRICE_INCREMENTS = new PriceIncrementsMapper();
+        MAPPER_INTERCEPTABLE_LOGGING_LISTENER = new InterceptableLoggingListenerMapper();
+        MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
+        MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
+        MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
     }
 
-    private void finalizeResources() {
-      Reference<?> reference;
-      while ((reference = queue.poll()) != null) {
-        ((FinalizerReference) reference).finalizeResources();
-        holder.remove(reference);
-      }
+    public static class Finalizer {
+
+        private final Set<Reference<Object>> holder = ConcurrentHashMap.newKeySet();
+        private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
+
+        public void createFinalizer(final Object object, final Runnable finalizer) {
+            holder.add(new FinalizerReference(object, queue, finalizer));
+        }
+
+        private void finalizeResources() {
+            Reference<?> reference;
+            while ((reference = queue.poll()) != null) {
+                ((FinalizerReference) reference).finalizeResources();
+                holder.remove(reference);
+            }
+        }
+
+
+        private static class FinalizerReference extends PhantomReference<Object> {
+
+            private final Runnable finalize;
+
+            public FinalizerReference(
+                    final Object referent,
+                    final ReferenceQueue<Object> q,
+                    final Runnable finalize
+            ) {
+                super(referent, q);
+                this.finalize = finalize;
+            }
+
+            public void finalizeResources() {
+                this.finalize.run();
+            }
+        }
     }
-
-
-    private static class FinalizerReference extends PhantomReference<Object> {
-
-      private final Runnable finalize;
-
-      public FinalizerReference(
-          final Object referent,
-          final ReferenceQueue<Object> q,
-          final Runnable finalize
-      ) {
-        super(referent, q);
-        this.finalize = finalize;
-      }
-
-      public void finalizeResources() {
-        this.finalize.run();
-      }
-    }
-  }
 }
 
 class SingletonScheduledExecutorService {
 
-  private static volatile ScheduledExecutorService instance;
+    private static volatile ScheduledExecutorService instance;
 
-  public static void start(final String name, final Runnable task, final int periodInMs) {
-    if (instance == null) {
-      synchronized (SingletonScheduledExecutorService.class) {
+    public static void start(final String name, final Runnable task, final int periodInMs) {
         if (instance == null) {
-          instance = Executors.newScheduledThreadPool(1, runnable -> {
-            final Thread thread = new Thread(runnable);
-            thread.setDaemon(true);
-            thread.setName(name);
-            return thread;
-          });
-          instance.scheduleAtFixedRate(task, periodInMs, periodInMs, MILLISECONDS);
+            synchronized (SingletonScheduledExecutorService.class) {
+                if (instance == null) {
+                    instance = Executors.newScheduledThreadPool(1, runnable -> {
+                        final Thread thread = new Thread(runnable);
+                        thread.setDaemon(true);
+                        thread.setName(name);
+                        return thread;
+                    });
+                    instance.scheduleAtFixedRate(task, periodInMs, periodInMs, MILLISECONDS);
+                }
+            }
         }
-      }
     }
-  }
 }

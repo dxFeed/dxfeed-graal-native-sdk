@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -9,41 +12,41 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpreadOrder> {
 
-  public SpreadOrderMapper(
-      final Mapper<String, CCharPointer> stringMapper
-  ) {
-    super(stringMapper);
-  }
+    public SpreadOrderMapper(
+            final Mapper<String, CCharPointer> stringMapper
+    ) {
+        super(stringMapper);
+    }
 
-  @Override
-  public DxfgSpreadOrder createNativeObject() {
-    final DxfgSpreadOrder nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgSpreadOrder.class));
-    nObject.setClazz(DxfgEventClazz.DXFG_EVENT_SPREAD_ORDER.getCValue());
-    return nObject;
-  }
+    @Override
+    public DxfgSpreadOrder createNativeObject() {
+        final DxfgSpreadOrder nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgSpreadOrder.class));
+        nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_SPREAD_ORDER.getCValue());
+        return nativeObject;
+    }
 
-  @Override
-  public void fillNative(final SpreadOrder jObject, final DxfgSpreadOrder nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-    nObject.setSpreadSymbol(stringMapper.toNative(jObject.getSpreadSymbol()));
-  }
+    @Override
+    public void fillNative(final SpreadOrder javaObject, final DxfgSpreadOrder nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+        nativeObject.setSpreadSymbol(stringMapper.toNative(javaObject.getSpreadSymbol()));
+    }
 
-  @Override
-  public void cleanNative(final DxfgSpreadOrder nObject) {
-    super.cleanNative(nObject);
-    stringMapper.release(nObject.getSpreadSymbol());
-  }
+    @Override
+    public void cleanNative(final DxfgSpreadOrder nativeObject) {
+        super.cleanNative(nativeObject);
+        stringMapper.release(nativeObject.getSpreadSymbol());
+    }
 
-  @Override
-  protected SpreadOrder doToJava(final DxfgSpreadOrder nObject) {
-    final SpreadOrder jObject = new SpreadOrder();
-    this.fillJava(nObject, jObject);
-    return jObject;
-  }
+    @Override
+    protected SpreadOrder doToJava(final DxfgSpreadOrder nativeObject) {
+        final SpreadOrder javaObject = new SpreadOrder();
+        this.fillJava(nativeObject, javaObject);
+        return javaObject;
+    }
 
-  @Override
-  public void fillJava(final DxfgSpreadOrder nObject, final SpreadOrder jObject) {
-    super.fillJava(nObject, jObject);
-    jObject.setSpreadSymbol(stringMapper.toJava(nObject.getSpreadSymbol()));
-  }
+    @Override
+    public void fillJava(final DxfgSpreadOrder nativeObject, final SpreadOrder javaObject) {
+        super.fillJava(nativeObject, javaObject);
+        javaObject.setSpreadSymbol(stringMapper.toJava(nativeObject.getSpreadSymbol()));
+    }
 }

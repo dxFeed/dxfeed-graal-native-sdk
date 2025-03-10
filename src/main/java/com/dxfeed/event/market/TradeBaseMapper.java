@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.event.market;
 
 import com.dxfeed.sdk.events.DxfgTradeBase;
@@ -5,46 +8,46 @@ import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBase>
-    extends MarketEventMapper<V, T> {
+        extends MarketEventMapper<V, T> {
 
-  public TradeBaseMapper(
-      final Mapper<String, CCharPointer> stringMapperForMarketEvent
-  ) {
-    super(stringMapperForMarketEvent);
-  }
+    public TradeBaseMapper(
+            final Mapper<String, CCharPointer> stringMapperForMarketEvent
+    ) {
+        super(stringMapperForMarketEvent);
+    }
 
-  @Override
-  public void fillNative(final V jObject, final T nObject, boolean clean) {
-    super.fillNative(jObject, nObject, clean);
-    nObject.setTimeSequence(jObject.getTimeSequence());
-    nObject.setTimeNanoPart(jObject.getTimeNanoPart());
-    nObject.setExchangeCode(jObject.getExchangeCode());
-    nObject.setPrice(jObject.getPrice());
-    nObject.setChange(jObject.getChange());
-    nObject.setSize(jObject.getSizeAsDouble());
-    nObject.setDayId(jObject.getDayId());
-    nObject.setDayVolume(jObject.getDayVolumeAsDouble());
-    nObject.setDayTurnover(jObject.getDayTurnover());
-    nObject.setFlags(jObject.getFlags());
-  }
+    @Override
+    public void fillNative(final V javaObject, final T nativeObject, boolean clean) {
+        super.fillNative(javaObject, nativeObject, clean);
+        nativeObject.setTimeSequence(javaObject.getTimeSequence());
+        nativeObject.setTimeNanoPart(javaObject.getTimeNanoPart());
+        nativeObject.setExchangeCode(javaObject.getExchangeCode());
+        nativeObject.setPrice(javaObject.getPrice());
+        nativeObject.setChange(javaObject.getChange());
+        nativeObject.setSize(javaObject.getSizeAsDouble());
+        nativeObject.setDayId(javaObject.getDayId());
+        nativeObject.setDayVolume(javaObject.getDayVolumeAsDouble());
+        nativeObject.setDayTurnover(javaObject.getDayTurnover());
+        nativeObject.setFlags(javaObject.getFlags());
+    }
 
-  @Override
-  public void cleanNative(final T nObject) {
-    super.cleanNative(nObject);
-  }
+    @Override
+    public void cleanNative(final T nativeObject) {
+        super.cleanNative(nativeObject);
+    }
 
-  @Override
-  public void fillJava(final T nObject, final V jObject) {
-    super.fillJava(nObject, jObject);
-    jObject.setTimeSequence(nObject.getTimeSequence());
-    jObject.setTimeNanoPart(nObject.getTimeNanoPart());
-    jObject.setExchangeCode(nObject.getExchangeCode());
-    jObject.setPrice(nObject.getPrice());
-    jObject.setChange(nObject.getChange());
-    jObject.setSizeAsDouble(nObject.getSize());
-    jObject.setDayId(nObject.getDayId());
-    jObject.setDayVolumeAsDouble(nObject.getDayVolume());
-    jObject.setDayTurnover(nObject.getDayTurnover());
-    jObject.setFlags(nObject.getFlags());
-  }
+    @Override
+    public void fillJava(final T nativeObject, final V javaObject) {
+        super.fillJava(nativeObject, javaObject);
+        javaObject.setTimeSequence(nativeObject.getTimeSequence());
+        javaObject.setTimeNanoPart(nativeObject.getTimeNanoPart());
+        javaObject.setExchangeCode(nativeObject.getExchangeCode());
+        javaObject.setPrice(nativeObject.getPrice());
+        javaObject.setChange(nativeObject.getChange());
+        javaObject.setSizeAsDouble(nativeObject.getSize());
+        javaObject.setDayId(nativeObject.getDayId());
+        javaObject.setDayVolumeAsDouble(nativeObject.getDayVolume());
+        javaObject.setDayTurnover(nativeObject.getDayTurnover());
+        javaObject.setFlags(nativeObject.getFlags());
+    }
 }

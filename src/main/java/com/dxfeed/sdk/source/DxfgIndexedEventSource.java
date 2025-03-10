@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.source;
 
 import org.graalvm.nativeimage.c.CContext;
@@ -10,21 +13,21 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_indexed_event_source_t")
 public interface DxfgIndexedEventSource extends PointerBase {
 
-  @CField("type")
-  int getType();
+    @CField("type")
+    int getType();
 
-  @CField("type")
-  void setType(final int value);
+    @CField("type")
+    void setType(final int value);
 
-  @CField("id")
-  int getId();
+    @CField("id")
+    int getId();
 
-  @CField("id")
-  void setId(final int value);
+    @CField("id")
+    void setId(final int value);
 
-  @CField("name")
-  CCharPointer getName();
+    @CField("name")
+    CCharPointer getName();
 
-  @CField("name")
-  void setName(final CCharPointer name);
+    @CField("name")
+    void setName(final CCharPointer name);
 }

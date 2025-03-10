@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 package com.dxfeed.sdk.mappers;
 
 import com.dxfeed.sdk.exception.DxfgStackTraceElement;
@@ -8,54 +11,55 @@ import org.graalvm.word.WordFactory;
 
 public class DxfgStackTraceElementMapper extends Mapper<StackTraceElement, DxfgStackTraceElement> {
 
-  protected final Mapper<String, CCharPointer> stringMapper;
+    protected final Mapper<String, CCharPointer> stringMapper;
 
-  public DxfgStackTraceElementMapper(final Mapper<String, CCharPointer> stringMapper) {
-    this.stringMapper = stringMapper;
-  }
-
-  @Override
-  public DxfgStackTraceElement toNative(final StackTraceElement jObject) {
-    if (jObject == null) {
-      return WordFactory.nullPointer();
-    }
-    final DxfgStackTraceElement nObject = UnmanagedMemory.calloc(SizeOf.get(DxfgStackTraceElement.class));
-    fillNative(jObject, nObject, false);
-    return nObject;
-  }
-
-  @Override
-  public final void fillNative(final StackTraceElement jObject, final DxfgStackTraceElement nObject, boolean clean) {
-    if (clean) {
-      cleanNative(nObject);
+    public DxfgStackTraceElementMapper(final Mapper<String, CCharPointer> stringMapper) {
+        this.stringMapper = stringMapper;
     }
 
-    nObject.setClassName(this.stringMapper.toNative(jObject.getClassName()));
-    nObject.setClassLoaderName(this.stringMapper.toNative(jObject.getClassLoaderName()));
-    nObject.setFileName(this.stringMapper.toNative(jObject.getFileName()));
-    nObject.setMethodName(this.stringMapper.toNative(jObject.getMethodName()));
-    nObject.setLineNumber(jObject.getLineNumber());
-    nObject.setIsNativeMethod(jObject.isNativeMethod() ? 1 : 0);
-    nObject.setModuleName(this.stringMapper.toNative(jObject.getModuleName()));
-    nObject.setModuleVersion(this.stringMapper.toNative(jObject.getModuleVersion()));
-  }
+    @Override
+    public DxfgStackTraceElement toNative(final StackTraceElement javaObject) {
+        if (javaObject == null) {
+            return WordFactory.nullPointer();
+        }
+        final DxfgStackTraceElement nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgStackTraceElement.class));
+        fillNative(javaObject, nativeObject, false);
+        return nativeObject;
+    }
 
-  @Override
-  public final void cleanNative(final DxfgStackTraceElement nObject) {
-    stringMapper.release(nObject.getClassName());
-    stringMapper.release(nObject.getClassLoaderName());
-    stringMapper.release(nObject.getFileName());
-    stringMapper.release(nObject.getModuleName());
-    stringMapper.release(nObject.getModuleVersion());
-  }
+    @Override
+    public final void fillNative(final StackTraceElement javaObject, final DxfgStackTraceElement nativeObject,
+            boolean clean) {
+        if (clean) {
+            cleanNative(nativeObject);
+        }
 
-  @Override
-  protected StackTraceElement doToJava(final DxfgStackTraceElement nObject) {
-    throw new IllegalStateException();
-  }
+        nativeObject.setClassName(this.stringMapper.toNative(javaObject.getClassName()));
+        nativeObject.setClassLoaderName(this.stringMapper.toNative(javaObject.getClassLoaderName()));
+        nativeObject.setFileName(this.stringMapper.toNative(javaObject.getFileName()));
+        nativeObject.setMethodName(this.stringMapper.toNative(javaObject.getMethodName()));
+        nativeObject.setLineNumber(javaObject.getLineNumber());
+        nativeObject.setIsNativeMethod(javaObject.isNativeMethod() ? 1 : 0);
+        nativeObject.setModuleName(this.stringMapper.toNative(javaObject.getModuleName()));
+        nativeObject.setModuleVersion(this.stringMapper.toNative(javaObject.getModuleVersion()));
+    }
 
-  @Override
-  public void fillJava(final DxfgStackTraceElement nObject, final StackTraceElement jObject) {
-    throw new IllegalStateException("The Java object does not support setters.");
-  }
+    @Override
+    public final void cleanNative(final DxfgStackTraceElement nativeObject) {
+        stringMapper.release(nativeObject.getClassName());
+        stringMapper.release(nativeObject.getClassLoaderName());
+        stringMapper.release(nativeObject.getFileName());
+        stringMapper.release(nativeObject.getModuleName());
+        stringMapper.release(nativeObject.getModuleVersion());
+    }
+
+    @Override
+    protected StackTraceElement doToJava(final DxfgStackTraceElement nativeObject) {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public void fillJava(final DxfgStackTraceElement nativeObject, final StackTraceElement javaObject) {
+        throw new IllegalStateException("The Java object does not support setters.");
+    }
 }

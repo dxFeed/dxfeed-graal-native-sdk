@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Devexperts LLC.
+// Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
 package com.dxfeed.sdk.javac;
@@ -12,9 +12,9 @@ import org.graalvm.word.PointerBase;
 @CPointerTo(VoidPointer.class)
 public interface CPointerPointer<T extends PointerBase> extends PointerBase {
 
-  CPointerPointer<T> addressOf(int index);
+    CPointerPointer<T> addressOf(int index);
 
-  T read();
+    T read();
 
-  void write(T data);
+    void write(T data);
 }
