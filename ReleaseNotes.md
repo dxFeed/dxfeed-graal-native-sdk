@@ -1,3 +1,4 @@
+* **\[MDAPI-233]\[GRAAL]** Fixed an issue with setting the buffer size for the collector.
 * **\[MDAPI-237]\[GRAAL]** The deprecated cached mappers and unused StringMapperCacheStore were removed.
 
 ## v2.4.0
