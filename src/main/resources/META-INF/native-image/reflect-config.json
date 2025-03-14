@@ -84,11 +84,77 @@
   "name":"com.devexperts.mars.jvm.JVMSelfMonitoring$PluginFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
 },
-{
-  "name":"com.devexperts.mars.jvm.JVMSelfMonitoringMXBean",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"forceGarbageCollection","parameterTypes":[] }, {"name":"getCpuUsage","parameterTypes":[] }, {"name":"getHeapSize","parameterTypes":[] }, {"name":"getHeapUsage","parameterTypes":[] }, {"name":"getNonHeapSize","parameterTypes":[] }, {"name":"getNonHeapUsage","parameterTypes":[] }, {"name":"getThreadCount","parameterTypes":[] }, {"name":"getThreadDeadlockedCount","parameterTypes":[] }, {"name":"getThreadDumpsCount","parameterTypes":[] }, {"name":"getThreadDumpsFile","parameterTypes":[] }, {"name":"getThreadDumpsPeriod","parameterTypes":[] }, {"name":"getThreadDumpsScheduledAt","parameterTypes":[] }, {"name":"getTimeZone","parameterTypes":[] }, {"name":"getUptime","parameterTypes":[] }, {"name":"makeThreadDumps","parameterTypes":["int","java.lang.String","java.lang.String","java.lang.String"] }]
-},
+  {
+    "name": "com.devexperts.mars.jvm.JVMSelfMonitoringMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "forceGarbageCollection",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCpuUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getHeapSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getHeapUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNonHeapSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNonHeapUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadDeadlockedCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadDumpsCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadDumpsFile",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadDumpsPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadDumpsScheduledAt",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTimeZone",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUptime",
+        "parameterTypes": []
+      },
+      {
+        "name": "makeThreadDumps",
+        "parameterTypes": [
+          "int",
+          "java.lang.String",
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
 {
   "name":"com.devexperts.mdd.auth.entitle.EntitleLoginHandlerFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
@@ -140,11 +206,170 @@
   "name":"com.devexperts.qd.dxlink.websocket.transport.WebSocketWriter",
   "fields":[{"name":"state"}]
 },
-{
-  "name":"com.devexperts.qd.impl.matrix.management.impl.CollectorMXBean",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"dumpCollectorsToFile","parameterTypes":["java.lang.String"] }, {"name":"dumpSubscriptionToFile","parameterTypes":["java.lang.String"] }, {"name":"getAgentBufferSizeDefault","parameterTypes":[] }, {"name":"getAllLockOperations","parameterTypes":[] }, {"name":"getBufferOverflowLogInterval","parameterTypes":[] }, {"name":"getCollectorCount","parameterTypes":[] }, {"name":"getContract","parameterTypes":[] }, {"name":"getCounters","parameterTypes":[] }, {"name":"getDistributionBucket","parameterTypes":[] }, {"name":"getFatalError","parameterTypes":[] }, {"name":"getInterleave","parameterTypes":[] }, {"name":"getLockWaitLogInterval","parameterTypes":[] }, {"name":"getMaxDistributionSpins","parameterTypes":[] }, {"name":"getSubscriptionBucket","parameterTypes":[] }, {"name":"getUseLockCounters","parameterTypes":[] }, {"name":"getUseLockPriority","parameterTypes":[] }, {"name":"reportCounters","parameterTypes":["java.lang.String","java.lang.Integer"] }, {"name":"reportData","parameterTypes":["java.lang.String","java.lang.String","boolean","java.lang.String"] }, {"name":"reportSubscription","parameterTypes":["java.lang.String","java.lang.String","java.lang.String"] }, {"name":"resetCounters","parameterTypes":[] }, {"name":"resetToDefaults","parameterTypes":[] }, {"name":"verifyCollectors","parameterTypes":[] }]
-},
+  {
+    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getCollectorCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getContract",
+        "parameterTypes": []
+      },
+      {
+        "name": "resetToDefaults",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSubscriptionBucket",
+        "parameterTypes": []
+      },
+      {
+        "name": "setSubscriptionBucket",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getDistributionBucket",
+        "parameterTypes": []
+      },
+      {
+        "name": "setDistributionBucket",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getInterleave",
+        "parameterTypes": []
+      },
+      {
+        "name": "setInterleave",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getAgentBufferSizeDefault",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAgentBufferSizeDefault",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getMaxDistributionSpins",
+        "parameterTypes": []
+      },
+      {
+        "name": "setMaxDistributionSpins",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getBufferOverflowLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBufferOverflowLogInterval",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getLockWaitLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "setLockWaitLogInterval",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getUseLockPriority",
+        "parameterTypes": []
+      },
+      {
+        "name": "setUseLockPriority",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getUseLockCounters",
+        "parameterTypes": []
+      },
+      {
+        "name": "setUseLockCounters",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getAllLockOperations",
+        "parameterTypes": []
+      },
+      {
+        "name": "getFatalError",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCounters",
+        "parameterTypes": []
+      },
+      {
+        "name": "reportCounters",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "resetCounters",
+        "parameterTypes": []
+      },
+      {
+        "name": "dumpSubscriptionToFile",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "dumpCollectorsToFile",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "verifyCollectors",
+        "parameterTypes": []
+      },
+      {
+        "name": "reportData",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "boolean",
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "reportSubscription",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
 {
   "name":"com.devexperts.qd.impl.matrix.management.impl.CollectorManagementFactoryImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }]
