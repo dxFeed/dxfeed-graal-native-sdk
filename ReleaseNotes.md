@@ -1,3 +1,5 @@
+* **\[MDAPI-237]\[GRAAL]** The deprecated cached mappers and unused StringMapperCacheStore were removed.
+
 ## v2.4.0
 
 * **\[MDAPI-230]\[GRAAL]** Improved InstrumentProfileCustomFields.
