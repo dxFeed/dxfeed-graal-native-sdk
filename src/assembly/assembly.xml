@@ -2,11 +2,18 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 http://maven.apache.org/xsd/assembly-2.1.1.xsd">
-  <id>${arch.name}</id>
+  <id>${arch.name}${static.suffix}${debug.suffix}</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>${project.basedir}/src/main/c/api/CMakeLists${static.suffix}.txt</source>
+      <outputDirectory/>
+      <destName>CMakeLists.txt</destName>
+    </file>
+  </files>
   <fileSets>
     <fileSet>
       <directory>${native.image.path}</directory>
@@ -18,6 +25,7 @@
         <include>*.lib</include>
         <include>*.o</include>
         <include>*.a</include>
+        <include>*.pdb</include>
       </includes>
       <excludes>
         <exclude>${native.image.name}.h</exclude>
@@ -37,6 +45,7 @@
       <excludes>
         <exclude>.idea/**</exclude>
         <exclude>cmake-**/**</exclude>
+        <exclude>*.txt</exclude>
       </excludes>
       <outputDirectory/>
     </fileSet>

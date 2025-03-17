@@ -19,6 +19,13 @@
     <set-rpath.skip>true</set-rpath.skip>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <arch.name>${os.arch}-${os.detected.name}</arch.name>
+    <static.suffix></static.suffix>
+    <debug.suffix></debug.suffix>
+    <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
+    <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
+    <isShared>true</isShared>
+    <isRelease>true</isRelease>
+    <isDebug>false</isDebug>
     <macIos>false</macIos>
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
@@ -27,6 +34,7 @@
     <qd.version>3.339</qd.version>
     <dxfeed.api.experimental.model.version>1.1</dxfeed.api.experimental.model.version>
     <nativebridge.version>0.5</nativebridge.version>
+    <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -114,6 +122,24 @@
   </distributionManagement>
 
   <profiles>
+    <profile>
+      <id>buildStatic</id>
+      <!-- TODO: implement static library building-->
+      <properties>
+        <isShared></isShared>
+        <static.suffix>-static</static.suffix>
+      </properties>
+    </profile>
+    <profile>
+      <id>buildDebug</id>
+      <properties>
+        <isRelease>false</isRelease>
+        <isDebug>true</isDebug>
+        <debug.suffix>-debug</debug.suffix>
+        <debug.buildArg1>-g</debug.buildArg1>
+        <debug.buildArg2>-H:+SourceLevelDebug</debug.buildArg2>
+      </properties>
+    </profile>
     <profile>
       <id>mac</id>
       <activation>
@@ -214,7 +240,7 @@
           <plugin>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>0.9.28</version>
+            <version>${graalvm-native-maven-plugin.version}</version>
             <extensions>true</extensions>
             <executions>
               <execution>
@@ -231,8 +257,9 @@
               </metadataRepository>
               <skip>false</skip>
               <imageName>${native.image.name}</imageName>
-              <sharedLibrary>true</sharedLibrary>
+              <sharedLibrary>${isShared}</sharedLibrary>
               <buildArgs>
+                <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -243,7 +270,10 @@
                 <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
                 <buildArg>-march=compatibility</buildArg>
                 <buildArg>-H:NativeLinkerOption=version.res</buildArg>
+                <buildArg>${debug.buildArg1}</buildArg>
+                <buildArg>${debug.buildArg2}</buildArg>
               </buildArgs>
+              <debug>${isDebug}</debug>
             </configuration>
           </plugin>
         </plugins>
@@ -279,7 +309,7 @@
           <plugin>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>0.9.28</version>
+            <version>${graalvm-native-maven-plugin.version}</version>
             <extensions>true</extensions>
             <executions>
               <execution>
@@ -298,6 +328,7 @@
               <imageName>${native.image.name}</imageName>
               <sharedLibrary>true</sharedLibrary>
               <buildArgs>
+                <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -355,7 +386,7 @@
           <plugin>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>0.9.28</version>
+            <version>${graalvm-native-maven-plugin.version}</version>
             <extensions>true</extensions>
             <executions>
               <execution>
@@ -373,6 +404,7 @@
               <skip>false</skip>
               <imageName>${native.image.name}</imageName>
               <buildArgs>
+                <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -438,7 +470,7 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
-        <version>0.9.28</version>
+        <version>${graalvm-native-maven-plugin.version}</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -455,8 +487,9 @@
           </metadataRepository>
           <skip>false</skip>
           <imageName>${native.image.name}</imageName>
-          <sharedLibrary>true</sharedLibrary>
+          <sharedLibrary>${isShared}</sharedLibrary>
           <buildArgs>
+            <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
             <buildArg>--enable-url-protocols=http,https</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -472,10 +505,10 @@
               --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
             </buildArg>
             <buildArg>-march=compatibility</buildArg>
-<!--            <buildArg>-g</buildArg>-->
-<!--            <buildArg>-H:+SourceLevelDebug</buildArg>-->
-<!--            <buildArg>-D</buildArg>-->
+            <buildArg>${debug.buildArg1}</buildArg>
+            <buildArg>${debug.buildArg2}</buildArg>
           </buildArgs>
+          <debug>${isDebug}</debug>
         </configuration>
       </plugin>
       <plugin>
