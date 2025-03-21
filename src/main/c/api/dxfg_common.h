@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Common declarations
  */
 
-#ifndef DXFG_CONFIG_H
-#define DXFG_CONFIG_H
+#ifndef DXFG_COMMON_H
+#define DXFG_COMMON_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,4 +84,4 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
 }
 #endif
 
-#endif // DXFG_CONFIG_H
+#endif // DXFG_COMMON_H

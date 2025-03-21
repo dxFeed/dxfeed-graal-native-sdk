@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Schedule functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_SCHEDULE_H_
-#define DXFEED_GRAAL_NATIVE_SDK_SCHEDULE_H_
+#ifndef DXFG_SCHEDULE_H
+#define DXFG_SCHEDULE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -201,7 +201,7 @@ int32_t dxfg_Schedule_getTradingVenues2(graal_isolatethread_t *thread, dxfg_inst
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_SCHEDULE_H_
+#endif // DXFG_SCHEDULE_H
 
 
 

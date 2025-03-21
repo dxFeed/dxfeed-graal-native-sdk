@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Glossary functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_GLOSSARY_H_
-#define DXFEED_GRAAL_NATIVE_SDK_GLOSSARY_H_
+#ifndef DXFG_GLOSSARY_H
+#define DXFG_GLOSSARY_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -1464,4 +1464,4 @@ int32_t dxfg_PriceIncrements_incrementPrice2(graal_isolatethread_t *thread, dxfg
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_GLOSSARY_H_
+#endif // DXFG_GLOSSARY_H

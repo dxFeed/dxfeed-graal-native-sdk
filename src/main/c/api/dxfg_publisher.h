@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Publisher functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
-#define DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
+#ifndef DXFG_PUBLISHER_H
+#define DXFG_PUBLISHER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +60,4 @@ int32_t                    dxfg_ObservableSubscription_removeChangeListener(graa
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
+#endif // DXFG_PUBLISHER_H

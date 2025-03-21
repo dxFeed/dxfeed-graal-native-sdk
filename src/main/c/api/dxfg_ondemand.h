@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK OnDemand functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_ONDEMAND_H_
-#define DXFEED_GRAAL_NATIVE_SDK_ONDEMAND_H_
+#ifndef DXFG_ONDEMAND_H
+#define DXFG_ONDEMAND_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +60,4 @@ int32_t                           dxfg_OnDemandService_setSpeed(graal_isolatethr
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_ONDEMAND_H_
+#endif // DXFG_ONDEMAND_H

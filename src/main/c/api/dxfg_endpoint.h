@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Endpoint functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
-#define DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
+#ifndef DXFG_ENDPOINT_H
+#define DXFG_ENDPOINT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -145,4 +145,4 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
+#endif // DXFG_ENDPOINT_H

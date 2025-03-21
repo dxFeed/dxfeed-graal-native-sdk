@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK System functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_SYSTEM_H_
-#define DXFEED_GRAAL_NATIVE_SDK_SYSTEM_H_
+#ifndef DXFG_SYSTEM_H
+#define DXFG_SYSTEM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,4 +45,4 @@ int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_SYSTEM_H_
+#endif // DXFG_SYSTEM_H

@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK EventModel functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_
-#define DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_
+#ifndef DXFG_EVENT_MODEL_H
+#define DXFG_EVENT_MODEL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -183,4 +183,4 @@ dxfg_tx_model_listener_t* dxfg_TxModelListener_new(graal_isolatethread_t* thread
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_EVENT_MODEL_H_
+#endif // DXFG_EVENT_MODEL_H

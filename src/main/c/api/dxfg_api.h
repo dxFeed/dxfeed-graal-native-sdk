@@ -1,8 +1,8 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_H_
-#define DXFEED_GRAAL_NATIVE_SDK_H_
+#ifndef DXFG_API_H
+#define DXFG_API_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,9 +27,10 @@ extern "C" {
 #include "dxfg_schedule.h"
 #include "dxfg_glossary.h"
 #include "dxfg_logging.h"
+#include "dxfg_candlewebservice.h"
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_H_
+#endif // DXFG_API_H

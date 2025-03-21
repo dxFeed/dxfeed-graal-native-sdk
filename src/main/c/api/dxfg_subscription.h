@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Subscription functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
-#define DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
+#ifndef DXFG_SUBSCRIPTION_H
+#define DXFG_SUBSCRIPTION_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,4 +85,4 @@ int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_iso
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_SUBSCRIPTION_H_
+#endif // DXFG_SUBSCRIPTION_H

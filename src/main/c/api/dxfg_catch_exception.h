@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Exceptions functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_
-#define DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_
+#ifndef DXFG_CATCH_EXCEPTION_H
+#define DXFG_CATCH_EXCEPTION_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,4 +56,4 @@ void dxfg_Exception_release(graal_isolatethread_t *thread, dxfg_exception_t *exc
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_CATCH_EXCEPTION_H_
+#endif // DXFG_CATCH_EXCEPTION_H

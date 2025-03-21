@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Logging functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_LOGGING_H_
-#define DXFEED_GRAAL_NATIVE_SDK_LOGGING_H_
+#ifndef DXFG_LOGGING_H
+#define DXFG_LOGGING_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -148,4 +148,4 @@ int32_t dxfg_logging_set_err_level(graal_isolatethread_t *thread, dxfg_logging_l
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_LOGGING_H_
+#endif // DXFG_LOGGING_H

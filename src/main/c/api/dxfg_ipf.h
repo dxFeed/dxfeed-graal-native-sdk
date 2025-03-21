@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK IPF functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_IPF_H_
-#define DXFEED_GRAAL_NATIVE_SDK_IPF_H_
+#ifndef DXFG_IPF_H
+#define DXFG_IPF_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -714,4 +714,4 @@ int32_t dxfg_instrument_profile2_list_free(graal_isolatethread_t *thread, dxfg_i
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_IPF_H_
+#endif // DXFG_IPF_H

@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Events functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_
-#define DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_
+#ifndef DXFG_EVENTS_H
+#define DXFG_EVENTS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -548,4 +548,4 @@ dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChang
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_EVENTS_H_
+#endif // DXFG_EVENTS_H

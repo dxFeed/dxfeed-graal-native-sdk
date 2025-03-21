@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK QDS functions declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_QDS_H_
-#define DXFEED_GRAAL_NATIVE_SDK_QDS_H_
+#ifndef DXFG_QDS_H
+#define DXFG_QDS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,7 +32,7 @@ int32_t             dxfg_Tools_main(graal_isolatethread_t *thread, dxfg_string_l
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_QDS_H_
+#endif // DXFG_QDS_H
 
 
 

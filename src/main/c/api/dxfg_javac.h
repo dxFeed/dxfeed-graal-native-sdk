@@ -6,8 +6,8 @@
  * @brief dxFeed Graal Native SDK Java functions and types declarations
  */
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
-#define DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
+#ifndef DXFG_JAVAC_H
+#define DXFG_JAVAC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -446,4 +446,4 @@ const char *dxfg_AuthToken_getValue(graal_isolatethread_t *thread, dxfg_auth_tok
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_JAVAC_H_
+#endif // DXFG_JAVAC_H
