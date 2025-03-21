@@ -13,7 +13,7 @@ import com.dxfeed.promise.Promises;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.DxfgException;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
@@ -185,7 +185,7 @@ public class PromiseNative {
             name = "dxfg_Promise_List_EventType_getResult",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgEventTypeList dxfg_Promise_List_EventType_getResult(
+    public static DxfgEventTypeListPointer dxfg_Promise_List_EventType_getResult(
             final IsolateThread ignoredThread,
             final DxfgPromise dxfgPromise
     ) {
@@ -263,10 +263,10 @@ public class PromiseNative {
     public static int dxfg_Promise_List_EventType_complete(
             final IsolateThread ignoredThread,
             final DxfgPromise dxfgPromise,
-            final DxfgEventTypeList dxfgEventTypeList
+            final DxfgEventTypeListPointer events
     ) {
         ((Promise<Collection<EventType<?>>>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise))
-                .complete(NativeUtils.MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
+                .complete(NativeUtils.MAPPER_EVENTS.toJavaList(events));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

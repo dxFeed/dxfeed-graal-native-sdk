@@ -14,7 +14,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
@@ -174,7 +174,7 @@ public class FeedNative {
             name = "dxfg_DXFeed_getIndexedEventsIfSubscribed",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgEventTypeList dxfg_DXFeed_getIndexedEventsIfSubscribed(
+    public static DxfgEventTypeListPointer dxfg_DXFeed_getIndexedEventsIfSubscribed(
             final IsolateThread ignoredThread,
             final DxfgFeed feed,
             final DxfgEventClazz dxfgClazz,
@@ -194,7 +194,7 @@ public class FeedNative {
             name = "dxfg_DXFeed_getTimeSeriesIfSubscribed",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgEventTypeList dxfg_DXFeed_getTimeSeriesIfSubscribed(
+    public static DxfgEventTypeListPointer dxfg_DXFeed_getTimeSeriesIfSubscribed(
             final IsolateThread ignoredThread,
             final DxfgFeed feed,
             final DxfgEventClazz dxfgClazz,
@@ -234,10 +234,10 @@ public class FeedNative {
     public static int dxfg_DXFeed_getLastEvents(
             final IsolateThread ignoredThread,
             final DxfgFeed feed,
-            final DxfgEventTypeList nEvents
+            final DxfgEventTypeListPointer events
     ) {
-        for (int i = 0; i < nEvents.getSize(); i++) {
-            final DxfgEventType nEvent = nEvents.getElements().addressOf(i).read();
+        for (int i = 0; i < events.getSize(); i++) {
+            final DxfgEventType nEvent = events.getElements().addressOf(i).read();
             final LastingEvent<?> jEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nEvent);
             NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
             NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent, true);

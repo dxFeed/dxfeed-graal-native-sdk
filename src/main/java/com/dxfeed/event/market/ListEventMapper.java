@@ -5,14 +5,14 @@ package com.dxfeed.event.market;
 
 import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;
 import com.dxfeed.sdk.mappers.ListMapper;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListEventMapper extends
-        ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> {
+        ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeListPointer> {
 
     private final Mapper<EventType<?>, DxfgEventType> eventMappers;
 
@@ -37,6 +37,6 @@ public class ListEventMapper extends
 
     @Override
     protected int getNativeListSize() {
-        return SizeOf.get(DxfgEventTypeList.class);
+        return SizeOf.get(DxfgEventTypeListPointer.class);
     }
 }

@@ -86,9 +86,9 @@ public class EventsNative {
     )
     public static int dxfg_CList_EventType_release(
             final IsolateThread ignoredThread,
-            final DxfgEventTypeList nEvents
+            final DxfgEventTypeListPointer events
     ) {
-        NativeUtils.MAPPER_EVENTS.release(nEvents);
+        NativeUtils.MAPPER_EVENTS.release(events);
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

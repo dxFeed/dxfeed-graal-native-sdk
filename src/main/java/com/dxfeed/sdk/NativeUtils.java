@@ -70,13 +70,16 @@ import com.dxfeed.schedule.DayFilter;
 import com.dxfeed.schedule.Schedule;
 import com.dxfeed.schedule.Session;
 import com.dxfeed.schedule.SessionFilter;
+import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointBuilderHandle;
+import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointHandle;
+import com.dxfeed.sdk.candlewebservice.HistoryEndpoint;
 import com.dxfeed.sdk.endpoint.DxfgEndpoint;
 import com.dxfeed.sdk.endpoint.DxfgEndpointBuilder;
 import com.dxfeed.sdk.endpoint.DxfgEndpointStateChangeListener;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.events.DxfgEventClazzPointer;
 import com.dxfeed.sdk.events.DxfgEventType;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourcePointer;
@@ -136,6 +139,8 @@ import com.dxfeed.sdk.mappers.ExceptionMapper;
 import com.dxfeed.sdk.mappers.ExecutorMapper;
 import com.dxfeed.sdk.mappers.FeedEventListenerMapper;
 import com.dxfeed.sdk.mappers.FeedMapper;
+import com.dxfeed.sdk.mappers.HistoryEndpointBuilderMapper;
+import com.dxfeed.sdk.mappers.HistoryEndpointMapper;
 import com.dxfeed.sdk.mappers.IndexedEventModelMapper;
 import com.dxfeed.sdk.mappers.InputStreamMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfile2ListMapper;
@@ -224,7 +229,7 @@ public final class NativeUtils {
     public static final ListMapper<StackTraceElement, DxfgStackTraceElement, DxfgStackTraceElementPointer, DxfgStackTraceElementList> MAPPER_STACK_TRACE_ELEMENTS;
     public static final Mapper<Throwable, DxfgException> MAPPER_EXCEPTION;
     public static final Mapper<EventType<?>, DxfgEventType> MAPPER_EVENT;
-    public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeList> MAPPER_EVENTS;
+    public static final ListMapper<EventType<?>, DxfgEventType, DxfgEventTypePointer, DxfgEventTypeListPointer> MAPPER_EVENTS;
     public static final Mapper<String, CCharPointer> MAPPER_STRING;
     public static final ListMapper<String, CCharPointer, DxfgCharPointerPointer, DxfgCStringListPointer> MAPPER_STRINGS;
     public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
@@ -282,6 +287,8 @@ public final class NativeUtils {
     public static final Mapper<InstrumentProfileCustomFields, DxfgInstrumentProfileCustomFieldsHandle> MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS;
     public static final Mapper<InstrumentProfile, DxfgInstrumentProfile2Pointer> MAPPER_INSTRUMENT_PROFILE_2;
     public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
+    public static final Mapper<HistoryEndpoint, DxfgHistoryEndpointHandle> MAPPER_HISTORY_ENDPOINT;
+    public static final Mapper<HistoryEndpoint.Builder, DxfgHistoryEndpointBuilderHandle> MAPPER_HISTORY_ENDPOINT_BUILDER;
 
 
     static {
@@ -382,6 +389,8 @@ public final class NativeUtils {
         MAPPER_INSTRUMENT_PROFILE_CUSTOM_FIELDS = new InstrumentProfileCustomFieldsMapper();
         MAPPER_INSTRUMENT_PROFILE_2 = new InstrumentProfile2Mapper(MAPPER_STRING);
         MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
+        MAPPER_HISTORY_ENDPOINT = new HistoryEndpointMapper();
+        MAPPER_HISTORY_ENDPOINT_BUILDER = new HistoryEndpointBuilderMapper();
     }
 
     public static class Finalizer {

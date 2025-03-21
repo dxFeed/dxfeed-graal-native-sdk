@@ -9,6 +9,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_history_endpoint_t")
-public interface DxfgHistoryEndpoint extends JavaObjectHandler<HistoryEndpoint> {
+public interface DxfgHistoryEndpointHandle extends JavaObjectHandler<HistoryEndpoint> {
 
 }

@@ -13,7 +13,7 @@ import com.dxfeed.model.market.OrderBookModelFilter;
 import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
@@ -602,7 +602,7 @@ public class EventModelNative {
             name = "dxfg_ObservableListModel_toArray",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgEventTypeList dxfg_ObservableListModel_toArray(
+    public static DxfgEventTypeListPointer dxfg_ObservableListModel_toArray(
             final IsolateThread ignoreThread,
             final DxfgObservableListModel dxfgObservableListModel
     ) {
@@ -679,7 +679,7 @@ public class EventModelNative {
                 new ObservableListModelListener<IndexedEvent<?>>() {
                     @Override
                     public void modelChanged(final Change<? extends IndexedEvent<?>> change) {
-                        final DxfgEventTypeList dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(
+                        final DxfgEventTypeListPointer dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(
                                 change.getSource());
                         userFunc.invoke(
                                 CurrentIsolate.getCurrentThread(),

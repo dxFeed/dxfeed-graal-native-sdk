@@ -10,7 +10,7 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded;
@@ -151,13 +151,13 @@ public class SubscriptionNative {
         return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new DXFeedEventListener<EventType<?>>() {
             @Override
             public void eventsReceived(final List<EventType<?>> events) {
-                final DxfgEventTypeList dxfgEventTypeList = NativeUtils.MAPPER_EVENTS.toNativeList(events);
+                final DxfgEventTypeListPointer nativeEvents = NativeUtils.MAPPER_EVENTS.toNativeList(events);
                 dxfgFeedEventListenerFunction.invoke(
                         CurrentIsolate.getCurrentThread(),
-                        dxfgEventTypeList,
+                        nativeEvents,
                         userData
                 );
-                NativeUtils.MAPPER_EVENTS.release(dxfgEventTypeList);
+                NativeUtils.MAPPER_EVENTS.release(nativeEvents);
             }
         });
     }

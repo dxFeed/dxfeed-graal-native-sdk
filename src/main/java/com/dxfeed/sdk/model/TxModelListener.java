@@ -9,7 +9,7 @@ import com.dxfeed.bridge.annotations.ParameterName;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.sdk.NativeUtils;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface TxModelListener extends com.dxfeed.api.experimental.model.TxMod
             order = 0
     )
     @ListenerParameter(
-            value = DxfgEventTypeList.class,
+            value = DxfgEventTypeListPointer.class,
             codeTemplateToNative = "$T.MAPPER_EVENTS.toNativeList(($T<? extends $T<?>>) $N)",
             toNativeParameters = {NativeUtils.class, Collection.class, EventType.class},
             codeTemplateToRelease = "$T.MAPPER_EVENTS.release($N)",

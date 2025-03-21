@@ -13,7 +13,7 @@ import static com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SU
 import com.dxfeed.api.DXPublisher;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
@@ -41,10 +41,10 @@ public class PublisherNative {
     public static int dxfg_DXPublisher_publishEvents(
             final IsolateThread ignoredThread,
             final DxfgPublisher dxfgPublisher,
-            final DxfgEventTypeList dxfgEventTypeList
+            final DxfgEventTypeListPointer events
     ) {
         MAPPER_PUBLISHER.toJava(dxfgPublisher)
-                .publishEvents(MAPPER_EVENTS.toJavaList(dxfgEventTypeList));
+                .publishEvents(MAPPER_EVENTS.toJavaList(events));
         return EXECUTE_SUCCESSFULLY;
     }
 

@@ -3,7 +3,7 @@
 
 package com.dxfeed.sdk.model;
 
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
@@ -18,7 +18,7 @@ public interface DxfgObservableListModelListenerFunction extends CFunctionPointe
     @InvokeCFunctionPointer
     void invoke(
             final IsolateThread thread,
-            final DxfgEventTypeList dxfgOrderList,
+            final DxfgEventTypeListPointer orders,
             final VoidPointer userData
     );
 }

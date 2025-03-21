@@ -3,7 +3,7 @@
 
 package com.dxfeed.sdk.subscription;
 
-import com.dxfeed.sdk.events.DxfgEventTypeList;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
@@ -18,7 +18,7 @@ public interface DxfgFeedEventListenerFunction extends CFunctionPointer {
     @InvokeCFunctionPointer
     void invoke(
             final IsolateThread thread,
-            final DxfgEventTypeList dxfgEventTypeList,
+            final DxfgEventTypeListPointer events,
             final VoidPointer userData
     );
 }

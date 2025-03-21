@@ -3,15 +3,15 @@
 
 package com.dxfeed.sdk.mappers;
 
-import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointBuilder;
+import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointBuilderHandle;
 import com.dxfeed.sdk.candlewebservice.HistoryEndpoint;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class HistoryEndpointBuilderMapper extends
-        JavaObjectHandlerMapper<HistoryEndpoint.Builder, DxfgHistoryEndpointBuilder> {
+        JavaObjectHandlerMapper<HistoryEndpoint.Builder, DxfgHistoryEndpointBuilderHandle> {
 
     @Override
     protected int getSizeJavaObjectHandler() {
-        return SizeOf.get(DxfgHistoryEndpointBuilder.class);
+        return SizeOf.get(DxfgHistoryEndpointBuilderHandle.class);
     }
 }

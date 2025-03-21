@@ -9,6 +9,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(Directives.class)
 @CStruct("dxfg_event_type_list")
-public interface DxfgEventTypeList extends CList<DxfgEventTypePointer> {
+public interface DxfgEventTypeListPointer extends CList<DxfgEventTypePointer> {
 
 }
