@@ -21,6 +21,8 @@ extern "C" {
 #include "dxfg_javac.h"
 #include "graal_isolate.h"
 
+#include "dxfg_events.h"
+
 /** @defgroup CandleWebService
  *  @{
  */
