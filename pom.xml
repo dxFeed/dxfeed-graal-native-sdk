@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--SPDX-License-Identifier: MPL-2.0-->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.dxfeed</groupId>
@@ -23,6 +24,9 @@
     <debug.suffix></debug.suffix>
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
+    <initialize-at-build-time>
+      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format
+    </initialize-at-build-time>
     <isShared>true</isShared>
     <isRelease>true</isRelease>
     <isDebug>false</isDebug>
@@ -267,7 +271,9 @@
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED</buildArg>
-                <buildArg>--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter</buildArg>
+                <buildArg>
+                  --initialize-at-build-time=${initialize-at-build-time}
+                </buildArg>
                 <buildArg>-march=compatibility</buildArg>
                 <buildArg>-H:NativeLinkerOption=version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
@@ -341,7 +347,7 @@
                   --add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED
                 </buildArg>
                 <buildArg>
-                  --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
+                  --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
@@ -417,9 +423,8 @@
                   --add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED
                 </buildArg>
                 <buildArg>
-                  --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
+                  --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
-
                 <buildArg>--native-image-info</buildArg>
                 <buildArg>-H:TempDirectory=${project.build.directory}/tmp_IOS</buildArg>
                 <buildArg>-H:+ExitAfterRelocatableImageWrite</buildArg>
@@ -502,7 +507,7 @@
               --add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED
             </buildArg>
             <buildArg>
-              --initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter
+              --initialize-at-build-time=${initialize-at-build-time}
             </buildArg>
             <buildArg>-march=compatibility</buildArg>
             <buildArg>${debug.buildArg1}</buildArg>
@@ -551,25 +556,25 @@
               <target>
                 <copy todir="${project.build.directory}/arm64">
                   <fileset dir="${project.build.directory}/tmp_IOS">
-                    <include name="**/*.o" />
+                    <include name="**/*.o"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
                 <copy todir="${native.image.path}">
                   <fileset dir="${project.build.directory}/tmp_IOS">
-                    <include name="**/*.o" />
+                    <include name="**/*.o"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
                 <copy todir="${native.image.path}">
                   <fileset dir="${project.basedir}/jre-ios">
-                    <include name="**/*-arm64-ios-r.a" />
+                    <include name="**/*-arm64-ios-r.a"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
                 <delete failonerror="false">
                   <fileset dir="${project.build.directory}/tmp_IOS">
-                    <include name="**/*.o" />
+                    <include name="**/*.o"/>
                   </fileset>
                 </delete>
               </target>
@@ -586,31 +591,31 @@
               <target>
                 <copy todir="${project.build.directory}/amd64">
                   <fileset dir="${project.build.directory}/tmp_IOS">
-                    <include name="**/*.o" />
+                    <include name="**/*.o"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
                 <copy todir="${native.image.path}">
                   <fileset dir="${project.basedir}/jre-ios">
-                    <include name="**/*-ios-simulator-r.a" />
+                    <include name="**/*-ios-simulator-r.a"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
                 <delete failonerror="false">
                   <fileset dir="${native.image.path}">
-                    <include name="**/*-arm64-ios-r.a" />
+                    <include name="**/*-arm64-ios-r.a"/>
                   </fileset>
                 </delete>
                 <exec executable="lipo" failonerror="true">
-                  <arg value="-create" />
-                  <arg value="${project.build.directory}/arm64/libDxFeedGraalNativeSdk.o" />
-                  <arg value="${project.build.directory}/amd64/libDxFeedGraalNativeSdk.o" />
-                  <arg value="-output" />
-                  <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                  <arg value="-create"/>
+                  <arg value="${project.build.directory}/arm64/libDxFeedGraalNativeSdk.o"/>
+                  <arg value="${project.build.directory}/amd64/libDxFeedGraalNativeSdk.o"/>
+                  <arg value="-output"/>
+                  <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o"/>
                 </exec>
                 <delete failonerror="false">
                   <fileset dir="${project.build.directory}">
-                    <include name="**/*aarch64-ios.zip" />
+                    <include name="**/*aarch64-ios.zip"/>
                   </fileset>
                 </delete>
               </target>
@@ -620,7 +625,8 @@
             <!-- Create version file -->
             <configuration>
               <target>
-                <echo file="${project.build.directory}/docs/${project.name}-version.inc" message="build.number=${project.version}-${maven.build.timestamp}" />
+                <echo file="${project.build.directory}/docs/${project.name}-version.inc"
+                  message="build.number=${project.version}-${maven.build.timestamp}"/>
               </target>
             </configuration>
             <goals>
@@ -635,7 +641,7 @@
             <configuration>
               <target>
                 <delete failonerror="false">
-                  <fileset dir="${project.build.directory}" includes="${project.name}-${project.version}.jar" />
+                  <fileset dir="${project.build.directory}" includes="${project.name}-${project.version}.jar"/>
                 </delete>
               </target>
             </configuration>

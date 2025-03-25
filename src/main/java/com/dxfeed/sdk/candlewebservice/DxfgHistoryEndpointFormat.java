@@ -26,14 +26,14 @@ public enum DxfgHistoryEndpointFormat {
 
     static {
         for (DxfgHistoryEndpointFormat value : values()) {
-            MAP.put(value.format, value);
+            MAP.put(value.qdFormat, value);
         }
     }
 
-    public final HistoryEndpoint.Format format;
+    public final HistoryEndpoint.Format qdFormat;
 
-    DxfgHistoryEndpointFormat(final HistoryEndpoint.Format format) {
-        this.format = format;
+    DxfgHistoryEndpointFormat(final HistoryEndpoint.Format qdFormat) {
+        this.qdFormat = qdFormat;
     }
 
     public static DxfgHistoryEndpointFormat of(final HistoryEndpoint.Format format) {

@@ -27,14 +27,14 @@ public enum DxfgHistoryEndpointCompression {
 
     static {
         for (DxfgHistoryEndpointCompression value : values()) {
-            MAP.put(value.compression, value);
+            MAP.put(value.qdCompression, value);
         }
     }
 
-    public final HistoryEndpoint.Compression compression;
+    public final HistoryEndpoint.Compression qdCompression;
 
-    DxfgHistoryEndpointCompression(final HistoryEndpoint.Compression compression) {
-        this.compression = compression;
+    DxfgHistoryEndpointCompression(final HistoryEndpoint.Compression qdCompression) {
+        this.qdCompression = qdCompression;
     }
 
     public static DxfgHistoryEndpointCompression of(final HistoryEndpoint.Compression compression) {

@@ -52,7 +52,7 @@ public final class HistoryEndpointNative {
             throw new IllegalArgumentException("The `events` pointer is null");
         }
 
-        //noinspection DataFlowIssue
+        //noinspection DataFlowIssue,unchecked
         events.write(NativeUtils.MAPPER_EVENTS.toNativeList(
                 NativeUtils.MAPPER_HISTORY_ENDPOINT.toJava(historyEndpoint).getTimeSeries(
                         (Class<TimeSeriesEvent<?>>) dxfgClazz.clazz,

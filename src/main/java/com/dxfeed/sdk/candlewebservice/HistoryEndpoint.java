@@ -176,7 +176,7 @@ public class HistoryEndpoint {
          * @param compression the compression type to be applied, represented by the {@link Compression} enum
          * @return the Builder instance with the updated compression value
          */
-        private Builder withCompression(Compression compression) {
+        public Builder withCompression(Compression compression) {
             this.compression = compression;
             return this;
         }
@@ -187,7 +187,7 @@ public class HistoryEndpoint {
          * @param format the format type to be applied, represented by the {@link Format} enum
          * @return the Builder instance with the updated format value
          */
-        private Builder withFormat(Format format) {
+        public Builder withFormat(Format format) {
             this.format = format;
             return this;
         }
