@@ -1,3 +1,20 @@
+* **\[MDAPI-241]\[GRAAL]** Implemented HistoryEndpoint.
+    * Added `HistoryEndpoint`.
+    * Added `DxfgHistoryEndpointHandle` interface (`dxfg_history_endpoint_t` struct), mappers, etc.
+    * Added `DxfgHistoryEndpointBuilderHandle` (`dxfg_history_endpoint_builder_t`), mappers, etc.
+    * Added `DxfgHistoryEnpointCompression` enum (`dxfg_history_endpoint_compression_t`).
+    * Added `DxfgHistoryEnpointFormat` enum (`dxfg_history_endpoint_compression_t`).
+    * Added `dxfg_candlewebservice.h` header.
+    * Added functions:
+        * `dxfg_HistoryEndpoint_newBuilder`.
+        * `dxfg_HistoryEndpoint_getTimeSeries`.
+        * `dxfg_HistoryEndpoint_Builder_withAddress`.
+        * `dxfg_HistoryEndpoint_Builder_withUserName`.
+        * `dxfg_HistoryEndpoint_Builder_withPassword`.
+        * `dxfg_HistoryEndpoint_Builder_withAuthToken`.
+        * `dxfg_HistoryEndpoint_Builder_withCompression`.
+        * `dxfg_HistoryEndpoint_Builder_withFormat`.
+        * `dxfg_HistoryEndpoint_Builder_build`.
 * **\[MDAPI-233]\[GRAAL]** Fixed an issue with setting the buffer size for the collector.
 * **\[MDAPI-237]\[GRAAL]** The deprecated cached mappers and unused StringMapperCacheStore were removed.
 
