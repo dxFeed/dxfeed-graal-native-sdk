@@ -19,7 +19,7 @@ void getException(graal_isolatethread_t *isolateThread);
 void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
 namespace dxfg {
-Command promisesAllOfCase{
+inline Command promisesAllOfCase{
     "PromisesAllOfCase",
     {"pao"},
     "",

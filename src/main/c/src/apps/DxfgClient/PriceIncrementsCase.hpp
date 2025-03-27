@@ -17,7 +17,7 @@
 void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
-Command priceIncrementsCase{
+inline Command priceIncrementsCase{
     "PriceIncrementsCase",
     {"pi"},
     "",

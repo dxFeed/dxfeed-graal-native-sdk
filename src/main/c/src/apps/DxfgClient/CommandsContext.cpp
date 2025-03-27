@@ -12,23 +12,29 @@ CommandsContext::CommandsContext() {
 
     defaultHost_ = "demo.dxfeed.com";
     defaultPort_ = 7300;
+    defaultToolsHost_ = "tools.dxfeed.com";
     defaultAddress_ = defaultHost_ + ":"s + std::to_string(defaultPort_);
     defaultWsAddress_ = "dxlink:wss://"s + defaultHost_ + "/dxlink-ws"s;
     defaultOnDemandPort_ = 7680;
     defaultOnDemandAddress_ = "(ondemand:"s + defaultHost_ + ":"s + std::to_string(defaultOnDemandPort_) + ")"s;
     defaultUser_ = "demo";
     defaultPassword_ = "demo";
-    defaultIpfAddress_ = "https://"s + defaultUser_ + ":" + defaultPassword_ + "@" + defaultHost_ + "/ipf"s;
+    defaultIpfAddress_ = "https://"s + defaultUser_ + ":" + defaultPassword_ + "@" + defaultToolsHost_ + "/ipf"s;
     defaultIpfFilePath_ = "../../../../../ipf.txt";
+    defaultCandleDataAddress_ = "https://"s + defaultToolsHost_ + "/candledata"s;
     defaultSymbols_ = {"AAPL", "IBM"};
 }
 
-std::string CommandsContext::getDefaultHost() const {
+const std::string& CommandsContext::getDefaultHost() const& {
     return defaultHost_;
 }
 
 int CommandsContext::getDefaultPort() const {
     return defaultPort_;
+}
+
+const std::string& CommandsContext::getDefaultToolsHost() const& {
+    return defaultToolsHost_;
 }
 
 const std::string &CommandsContext::getDefaultPortString() const & {
@@ -75,6 +81,10 @@ const std::string &CommandsContext::getDefaultIpfFilePath() const & {
     return defaultIpfFilePath_;
 }
 
+const std::string &CommandsContext::getDefaultCandleDataAddress() const & {
+    return defaultCandleDataAddress_;
+}
+
 const std::vector<std::string> &CommandsContext::getDefaultSymbols() const & {
     return defaultSymbols_;
 }
@@ -97,6 +107,7 @@ std::string CommandsContext::substituteDefaultValues(std::string templateString)
     static const std::unordered_map<std::string, std::reference_wrapper<const std::string>> mapping{
         {"%defaultHost%", std::cref(defaultHost_)},
         {"%defaultPort%", std::cref(getDefaultPortString())},
+        {"%defaultToolsHost%", std::cref(defaultToolsHost_)},
         {"%defaultAddress%", std::cref(defaultAddress_)},
         {"%defaultWsAddress%", std::cref(defaultWsAddress_)},
         {"%defaultOnDemandPort%", std::cref(getDefaultOnDemandPortString())},
@@ -105,6 +116,7 @@ std::string CommandsContext::substituteDefaultValues(std::string templateString)
         {"%defaultPassword%", std::cref(defaultPassword_)},
         {"%defaultIpfAddress%", std::cref(defaultIpfAddress_)},
         {"%defaultIpfFilePath%", std::cref(defaultIpfFilePath_)},
+        {"%defaultCandleDataAddress%", std::cref(defaultCandleDataAddress_)},
         {"%defaultSymbols%", std::cref(getDefaultSymbolsString())},
     };
 

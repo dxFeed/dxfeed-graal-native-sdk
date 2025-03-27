@@ -16,7 +16,7 @@
 void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
-Command exceptionCase{"ExceptionCase",
+inline Command exceptionCase{"ExceptionCase",
                       {"ex"},
                       "",
                       "ex [<properties>]",

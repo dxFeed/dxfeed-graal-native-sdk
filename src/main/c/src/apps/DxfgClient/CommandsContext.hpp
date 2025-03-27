@@ -13,6 +13,7 @@ namespace dxfg {
 class CommandsContext {
     std::string defaultHost_;
     int defaultPort_;
+    std::string defaultToolsHost_;
     std::string defaultAddress_;
     std::string defaultWsAddress_;
     int defaultOnDemandPort_;
@@ -21,6 +22,7 @@ class CommandsContext {
     std::string defaultPassword_;
     std::string defaultIpfAddress_;
     std::string defaultIpfFilePath_;
+    std::string defaultCandleDataAddress_;
     std::vector<std::string> defaultSymbols_;
     mutable std::mutex mutex_{};
     std::unordered_map<std::string, std::string> systemProperties_{};
@@ -28,9 +30,11 @@ class CommandsContext {
   public:
     CommandsContext();
 
-    std::string getDefaultHost() const;
+    const std::string &getDefaultHost() const&;
 
     int getDefaultPort() const;
+
+    const std::string &getDefaultToolsHost() const&;
 
     const std::string &getDefaultPortString() const &;
 
@@ -51,6 +55,8 @@ class CommandsContext {
     const std::string &getDefaultIpfAddress() const &;
 
     const std::string &getDefaultIpfFilePath() const &;
+
+    const std::string &getDefaultCandleDataAddress() const &;
 
     const std::vector<std::string> &getDefaultSymbols() const &;
 

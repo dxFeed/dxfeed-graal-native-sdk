@@ -21,7 +21,7 @@ void endpointStateChangeListener(graal_isolatethread_t * /* thread */, dxfg_endp
                                  dxfg_endpoint_state_t new_state, void * /* user_data */);
 
 namespace dxfg {
-Command finalizeListenerCase{
+inline Command finalizeListenerCase{
     "FinalizeListenerCase",
     {"fl"},
     "",

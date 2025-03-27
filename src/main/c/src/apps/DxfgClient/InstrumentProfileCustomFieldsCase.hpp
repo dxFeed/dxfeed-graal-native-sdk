@@ -16,7 +16,7 @@
 void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
-Command instrumentProfileCustomFieldsCase{
+inline Command instrumentProfileCustomFieldsCase{
     "InstrumentProfileCustomFieldsCase",
     {"ipcf"},
     "",

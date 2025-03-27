@@ -14,26 +14,27 @@
 #include <vector>
 
 namespace dxfg {
-Command systemPropertiesCase{"SystemPropertiesCase",
-                             {"sp"},
-                             "",
-                             "sp [<properties>]",
-                             {},
-                             [](const Command & /*self*/, graal_isolatethread_t *isolateThread,
-                                const std::vector<std::string> & /*args*/, const dxfg::CommandsContext & /*context*/) {
-                                 puts("== SystemProperties ==");
+inline Command systemPropertiesCase{"SystemPropertiesCase",
+                                    {"sp"},
+                                    "",
+                                    "sp [<properties>]",
+                                    {},
+                                    [](const Command & /*self*/, graal_isolatethread_t *isolateThread,
+                                       const std::vector<std::string> & /*args*/,
+                                       const dxfg::CommandsContext & /*context*/) {
+                                        puts("== SystemProperties ==");
 
-                                 const char *propertyName = "property-name";
-                                 const char *string = dxfg_system_get_property(isolateThread, propertyName);
+                                        const char *propertyName = "property-name";
+                                        const char *string = dxfg_system_get_property(isolateThread, propertyName);
 
-                                 printf("\"%s\" must not be equal to \"property-value\"\n", string);
+                                        printf("\"%s\" must not be equal to \"property-value\"\n", string);
 
-                                 dxfg_String_release(isolateThread, string);
-                                 dxfg_system_set_property(isolateThread, "property-name", "property-value");
+                                        dxfg_String_release(isolateThread, string);
+                                        dxfg_system_set_property(isolateThread, "property-name", "property-value");
 
-                                 const char *value = dxfg_system_get_property(isolateThread, propertyName);
+                                        const char *value = dxfg_system_get_property(isolateThread, propertyName);
 
-                                 printf("\"%s\" must be equal to \"property-value\"\n", value);
-                                 dxfg_String_release(isolateThread, value);
-                             }};
+                                        printf("\"%s\" must be equal to \"property-value\"\n", value);
+                                        dxfg_String_release(isolateThread, value);
+                                    }};
 } // namespace dxfg

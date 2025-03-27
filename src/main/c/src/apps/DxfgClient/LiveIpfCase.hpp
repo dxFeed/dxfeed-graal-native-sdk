@@ -57,7 +57,7 @@ inline void ipfPropertyChangeListenerCallback(graal_isolatethread_t * /* thread 
 }
 
 namespace dxfg {
-Command liveIpfCase{
+inline Command liveIpfCase{
     "LiveIpfCase",
     {"li"},
     "",

@@ -18,7 +18,7 @@
 void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
 namespace dxfg {
-Command lastEventIfSubscribedCase{
+inline Command lastEventIfSubscribedCase{
     "LastEventIfSubscribedCase",
     {"le"},
     "",

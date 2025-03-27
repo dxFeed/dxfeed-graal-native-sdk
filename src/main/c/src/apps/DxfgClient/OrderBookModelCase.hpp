@@ -50,7 +50,7 @@ inline void orderBookModelListenerCallback(graal_isolatethread_t *isolateThread,
 }
 
 namespace dxfg {
-Command orderBookModelCase{
+inline Command orderBookModelCase{
     "OrderBookModelCase",
     {"obm"},
     "",

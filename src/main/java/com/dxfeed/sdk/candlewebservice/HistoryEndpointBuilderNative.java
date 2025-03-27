@@ -22,17 +22,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withAddress(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            @CConst final CCharPointer address,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            @CConst final CCharPointer address
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withAddress(NativeUtils.MAPPER_STRING.toJava(address))));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withAddress(NativeUtils.MAPPER_STRING.toJava(address));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -44,17 +42,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withUserName(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            @CConst final CCharPointer userName,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            @CConst final CCharPointer userName
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withUserName(NativeUtils.MAPPER_STRING.toJava(userName))));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withUserName(NativeUtils.MAPPER_STRING.toJava(userName));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -66,17 +62,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withPassword(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            @CConst final CCharPointer password,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            @CConst final CCharPointer password
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withPassword(NativeUtils.MAPPER_STRING.toJava(password))));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withPassword(NativeUtils.MAPPER_STRING.toJava(password));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -88,17 +82,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withAuthToken(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            @CConst final CCharPointer authToken,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            @CConst final CCharPointer authToken
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withAuthToken(NativeUtils.MAPPER_STRING.toJava(authToken))));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withAuthToken(NativeUtils.MAPPER_STRING.toJava(authToken));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -110,17 +102,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withCompression(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            final DxfgHistoryEndpointCompression compression,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            final DxfgHistoryEndpointCompression compression
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withCompression(compression.qdCompression)));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withCompression(compression.qdCompression);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -132,17 +122,15 @@ public class HistoryEndpointBuilderNative {
     public static int dxfg_HistoryEndpoint_Builder_withFormat(
             final IsolateThread ignoreThread,
             final DxfgHistoryEndpointBuilderHandle builder,
-            final DxfgHistoryEndpointFormat format,
-            @DxfgOut final DxfgHistoryEndpointBuilderHandlePointer newBuilder
+            final DxfgHistoryEndpointFormat format
     ) {
         if (builder.isNull()) {
             throw new IllegalArgumentException("The `newBuilder` pointer is null");
         }
 
         //noinspection DataFlowIssue
-        newBuilder.write(NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toNative(
-                NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
-                        .withFormat(format.qdFormat)));
+        NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
+                .withFormat(format.qdFormat);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

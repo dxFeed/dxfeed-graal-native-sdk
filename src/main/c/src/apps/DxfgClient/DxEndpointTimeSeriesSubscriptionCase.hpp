@@ -19,7 +19,7 @@ void printEvents(graal_isolatethread_t *isolateThread, dxfg_event_type_list *eve
 void finalize(graal_isolatethread_t * /* thread */, void * /* user_data */);
 
 namespace dxfg {
-Command dxEndpointTimeSeriesSubscriptionCase{
+inline Command dxEndpointTimeSeriesSubscriptionCase{
     "DxEndpointTimeSeriesSubscriptionCase",
     {"ets"},
     "",

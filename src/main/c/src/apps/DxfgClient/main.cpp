@@ -24,8 +24,12 @@
 #include "ExecutorBaseOnConcurrentLinkedQueueCase.hpp"
 #include "FinalizeListenerCase.hpp"
 #include "GetLastEventCase.hpp"
+#include "HistoryEndpointCase.hpp"
 #include "IndexedEventModelCase.hpp"
 #include "IndexedEventsPromiseCase.hpp"
+#include "InstrumentProfileCustomFieldsCase.hpp"
+#include "InstrumentProfileFieldCase.hpp"
+#include "InstrumentProfileReaderBench.hpp"
 #include "LastEventIfSubscribedCase.hpp"
 #include "LiveIpfCase.hpp"
 #include "LoggingCase.hpp"
@@ -38,9 +42,6 @@
 #include "ScheduleCase.hpp"
 #include "SystemPropertiesCase.hpp"
 #include "TxIndexedEventModelCase.hpp"
-#include "InstrumentProfileFieldCase.hpp"
-#include "InstrumentProfileCustomFieldsCase.hpp"
-#include "InstrumentProfileReaderBench.hpp"
 
 #include <cinttypes>
 
@@ -137,9 +138,14 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
     } break;
     case DXFG_EVENT_CANDLE: {
         auto *candle = (dxfg_candle_t *)event;
+        const auto time = (candle->index >> 32ULL) * 1000 + (int64_t)(((uint64_t)(candle->index >> 22ULL) & 0x3ffULL));
 
-        printf("  CANDLE{symbol=%s, index=%" PRId64 ", ask_volume=%E, volume=%f, event_time=%" PRId64 "}\n",
-               candle->event_symbol, candle->index, candle->ask_volume, candle->volume, candle->event_time);
+        printf("  CANDLE{symbol=%s, index=%" PRId64 ", count=%" PRId64 ", time=%" PRId64
+               ", high=%f, low=%f, open=%f, close=%f, volume=%f, vwap=%f, bid_volume=%f, ask_volume=%f, "
+               "imp_volatility=%f, open_interest=%f, event_time=%" PRId64 "}\n",
+               candle->event_symbol, candle->index, candle->count, time, candle->high, candle->low, candle->open,
+               candle->close, candle->volume, candle->vwap, candle->bid_volume, candle->ask_volume,
+               candle->imp_volatility, candle->open_interest, candle->event_time);
     } break;
     case DXFG_EVENT_DAILY_CANDLE: {
         auto *daily_candle = (dxfg_daily_candle_t *)event;
@@ -316,6 +322,7 @@ int main(int argc, char *argv[]) {
         instrumentProfileFieldCase,
         instrumentProfileCustomFieldsCase,
         instrumentProfileReaderBench,
+        historyEndpointCase,
     };
 
     for (auto const &c : cases) {
@@ -334,42 +341,43 @@ int main(int argc, char *argv[]) {
                                       }
                                   }});
 
-    CommandsRegistry::addCommand({"List",
-                              {"--list", "-l"},
-                              "Shows a list of all cases.",
-                              "list",
-                              {},
-                              [&cases](const Command & /*self*/, graal_isolatethread_t */*isolateThread*/,
-                                       const std::vector<std::string> & /*args*/, const dxfg::CommandsContext &context) {
-                                  for (auto const &c : cases) {
-                                      std::string info{};
+    CommandsRegistry::addCommand(
+        {"List",
+         {"--list", "-l"},
+         "Shows a list of all cases.",
+         "list",
+         {},
+         [&cases](const Command & /*self*/, graal_isolatethread_t * /*isolateThread*/,
+                  const std::vector<std::string> & /*args*/, const dxfg::CommandsContext &context) {
+             for (auto const &c : cases) {
+                 std::string info{};
 
-                                      info += c.name;
+                 info += c.name;
 
-                                      for (auto const &sn : c.shortNames) {
-                                          info += "|" + sn;
-                                      }
+                 for (auto const &sn : c.shortNames) {
+                     info += "|" + sn;
+                 }
 
-                                      if (!c.description.empty()) {
-                                          info += " - " + c.description;
-                                      }
+                 if (!c.description.empty()) {
+                     info += " - " + c.description;
+                 }
 
-                                      info += "\n";
+                 info += "\n";
 
-                                      if (!c.usage.empty()) {
-                                          info += "Usage:\n  DxfgClient " + c.usage + "\n";
-                                      }
+                 if (!c.usage.empty()) {
+                     info += "Usage:\n  DxfgClient " + c.usage + "\n";
+                 }
 
-                                      if (!c.examples.empty()) {
-                                          info += "Examples:\n";
-                                          for (auto& example : c.examples) {
-                                              info += "  DxfgClient " + context.substituteDefaultValues(example) + "\n";
-                                          }
-                                      }
+                 if (!c.examples.empty()) {
+                     info += "Examples:\n";
+                     for (auto &example : c.examples) {
+                         info += "  DxfgClient " + context.substituteDefaultValues(example) + "\n";
+                     }
+                 }
 
-                                      std::cout << info << std::endl;
-                                  }
-                              }});
+                 std::cout << info << std::endl;
+             }
+         }});
 
     CommandsRegistry::addCommand({"Qds",
                                   {},
@@ -395,15 +403,16 @@ int main(int argc, char *argv[]) {
                                       dxfg_Tools_main(mainIsolateThread, &toolsArgs);
                                   }});
 
-    CommandsRegistry::addCommand({"Help",
-                              {"-h", "--help", "-?"},
-                              "Shows this help",
-                              "-?",
-                              {},
-                              [&cases](const Command & /*self*/, graal_isolatethread_t */*isolateThread*/,
-                                       const std::vector<std::string> &/*args*/, const dxfg::CommandsContext &/*context*/) {
-                                  printUsage();
-                              }});
+    CommandsRegistry::addCommand(
+        {"Help",
+         {"-h", "--help", "-?"},
+         "Shows this help",
+         "-?",
+         {},
+         [&cases](const Command & /*self*/, graal_isolatethread_t * /*isolateThread*/,
+                  const std::vector<std::string> & /*args*/, const dxfg::CommandsContext & /*context*/) {
+             printUsage();
+         }});
 
     if (graal_create_isolate(nullptr, &maintIsolate, &mainIsolateThread) != 0) {
         getException(mainIsolateThread);

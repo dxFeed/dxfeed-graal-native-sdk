@@ -20,7 +20,7 @@ void observableListModelListenerCallback(graal_isolatethread_t *isolateThread, d
                                          void * /* user_data */);
 
 namespace dxfg {
-Command indexedEventModelCase{
+inline Command indexedEventModelCase{
     "IndexedEventModelCase",
     {"iem"},
     "",

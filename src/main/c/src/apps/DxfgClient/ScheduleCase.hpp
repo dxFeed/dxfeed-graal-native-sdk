@@ -66,34 +66,35 @@ Command scheduleCase{"ScheduleCase",
                          dxfg_JavaObjectHandler_release(isolateThread, &reader->handler);
                      }};
 
-Command schedule2Case{"Schedule2Case",
-                      {"sch2"},
-                      "",
-                      "sch2 [<properties>]",
-                      {},
-                      [](const Command & /*self*/, graal_isolatethread_t *isolateThread,
-                         const std::vector<std::string> & /*args*/, const dxfg::CommandsContext & /*context*/) {
-                          puts("== Schedule2 ==");
+inline Command schedule2Case{"Schedule2Case",
+                             {"sch2"},
+                             "",
+                             "sch2 [<properties>]",
+                             {},
+                             [](const Command & /*self*/, graal_isolatethread_t *isolateThread,
+                                const std::vector<std::string> & /*args*/, const dxfg::CommandsContext & /*context*/) {
+                                 puts("== Schedule2 ==");
 
-                          dxfg_system_set_property(isolateThread, "com.dxfeed.schedule.download", "auto");
+                                 dxfg_system_set_property(isolateThread, "com.dxfeed.schedule.download", "auto");
 
-                          dxfg_schedule_t *schedule = dxfg_Schedule_getInstance2(isolateThread, "(tz=GMT;de=2300;0=)");
-                          dxfg_day_t *day = dxfg_Schedule_getDayById(isolateThread, schedule, 42);
-                          int32_t dayId = dxfg_Day_getDayId(isolateThread, day);
+                                 dxfg_schedule_t *schedule =
+                                     dxfg_Schedule_getInstance2(isolateThread, "(tz=GMT;de=2300;0=)");
+                                 dxfg_day_t *day = dxfg_Schedule_getDayById(isolateThread, schedule, 42);
+                                 int32_t dayId = dxfg_Day_getDayId(isolateThread, day);
 
-                          printf("  dayId %d should be 42\n", dayId);
+                                 printf("  dayId %d should be 42\n", dayId);
 
-                          const char *timeZoneGetId = dxfg_Schedule_getTimeZone_getID(isolateThread, schedule);
+                                 const char *timeZoneGetId = dxfg_Schedule_getTimeZone_getID(isolateThread, schedule);
 
-                          printf("  timeZoneGetId = %s\n", timeZoneGetId);
+                                 printf("  timeZoneGetId = %s\n", timeZoneGetId);
 
-                          const char *name = dxfg_Schedule_getName(isolateThread, schedule);
+                                 const char *name = dxfg_Schedule_getName(isolateThread, schedule);
 
-                          printf("  schedule %s\n", name);
-                          dxfg_String_release(isolateThread, name);
-                          dxfg_String_release(isolateThread, timeZoneGetId);
-                          dxfg_JavaObjectHandler_release(isolateThread, &day->handler);
-                          dxfg_JavaObjectHandler_release(isolateThread, &schedule->handler);
-                      }};
+                                 printf("  schedule %s\n", name);
+                                 dxfg_String_release(isolateThread, name);
+                                 dxfg_String_release(isolateThread, timeZoneGetId);
+                                 dxfg_JavaObjectHandler_release(isolateThread, &day->handler);
+                                 dxfg_JavaObjectHandler_release(isolateThread, &schedule->handler);
+                             }};
 
 } // namespace dxfg

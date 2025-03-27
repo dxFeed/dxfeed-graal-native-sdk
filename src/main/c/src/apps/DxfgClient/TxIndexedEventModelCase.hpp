@@ -31,7 +31,7 @@ inline void txModelListenerCallback(graal_isolatethread_t *isolateThread, dxfg_i
 }
 
 namespace dxfg {
-Command txIndexedEventModelCase{
+inline Command txIndexedEventModelCase{
     "TxIndexedEventModelCase",
     {"txiem"},
     "",

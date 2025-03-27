@@ -18,7 +18,7 @@
 void printEvents(graal_isolatethread_t *isolateThread, dxfg_event_type_list *events, void * /* user_data */);
 
 namespace dxfg {
-Command onDemandServiceCase{
+inline Command onDemandServiceCase{
     "OnDemandServiceCase",
     {"ods"},
     "",

@@ -18,7 +18,7 @@
 void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
 namespace dxfg {
-Command getLastEventCase{
+inline Command getLastEventCase{
     "GetLastEventCase",
     {"gle"},
     "",

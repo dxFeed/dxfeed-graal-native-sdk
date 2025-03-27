@@ -302,7 +302,7 @@ struct StopWatch final {
 };
 
 namespace dxfg {
-Command instrumentProfileReaderBench{
+inline Command instrumentProfileReaderBench{
     "InstrumentProfileReaderBench",
     {"ipf"},
     "",

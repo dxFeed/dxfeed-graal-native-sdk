@@ -19,7 +19,7 @@
 void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
-Command loggingCase{
+inline Command loggingCase{
     "LoggingCase",
     {"l"},
     "",

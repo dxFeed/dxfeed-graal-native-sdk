@@ -87,14 +87,11 @@ int32_t dxfg_HistoryEndpoint_getTimeSeries(graal_isolatethread_t *thread, dxfg_h
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] address The address of the endpoint to be set.
- * @param[out] newBuilder The builder instance with the updated address value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withAddress(graal_isolatethread_t *thread,
-                                                 dxfg_history_endpoint_builder_t *builder, const char *address,
-                                                 DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                 dxfg_history_endpoint_builder_t *builder, const char *address);
 
 /**
  * Sets the username for the target endpoint.
@@ -102,14 +99,11 @@ int32_t dxfg_HistoryEndpoint_Builder_withAddress(graal_isolatethread_t *thread,
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] userName The username to be set for the endpoint.
- * @param[out] newBuilder The builder instance with the updated username value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withUserName(graal_isolatethread_t *thread,
-                                                  dxfg_history_endpoint_builder_t *builder, const char *userName,
-                                                  DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                  dxfg_history_endpoint_builder_t *builder, const char *userName);
 
 /**
  * Sets the password for the target endpoint.
@@ -117,14 +111,11 @@ int32_t dxfg_HistoryEndpoint_Builder_withUserName(graal_isolatethread_t *thread,
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] password The password to be set for the endpoint.
- * @param[out] newBuilder The builder instance with the updated password value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withPassword(graal_isolatethread_t *thread,
-                                                  dxfg_history_endpoint_builder_t *builder, const char *password,
-                                                  DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                  dxfg_history_endpoint_builder_t *builder, const char *password);
 
 /**
  * Sets the authentication token for the target endpoint.
@@ -132,14 +123,11 @@ int32_t dxfg_HistoryEndpoint_Builder_withPassword(graal_isolatethread_t *thread,
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] authToken The authentication token to be used for access.
- * @param[out] newBuilder The builder instance with the updated authentication token value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withAuthToken(graal_isolatethread_t *thread,
-                                                   dxfg_history_endpoint_builder_t *builder, const char *authToken,
-                                                   DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                   dxfg_history_endpoint_builder_t *builder, const char *authToken);
 
 /**
  * Sets the compression type to be used for data transmission or storage.
