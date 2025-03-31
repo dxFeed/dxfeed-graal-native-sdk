@@ -3,6 +3,7 @@
 
 package com.dxfeed.event.market;
 
+import com.dxfeed.event.EventMapper;
 import com.dxfeed.sdk.events.DxfgMarketEvent;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;

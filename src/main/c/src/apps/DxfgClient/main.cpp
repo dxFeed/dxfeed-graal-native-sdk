@@ -250,6 +250,14 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
                market_maker->bid_price, market_maker->bid_size, market_maker->bid_count, market_maker->ask_time,
                market_maker->ask_price, market_maker->ask_size, market_maker->ask_count);
     } break;
+    case DXFG_EVENT_TEXT_CONFIGURATION: {
+        auto *text_configuration = (dxfg_text_configuration_t *)event;
+
+        printf("  TEXT_CONFIGURATION{event_symbol=%s, event_time=%" PRId64 ", time_sequence=%" PRId64
+               ", version=%d, text=%s}\n",
+               text_configuration->event_symbol, text_configuration->event_time, text_configuration->time_sequence,
+               text_configuration->version, text_configuration->text);
+    } break;
 
     default:
         printf("  %u{}\n", event->clazz);

@@ -6,7 +6,7 @@ package com.dxfeed.sdk.events;
 import com.dxfeed.api.osub.WildcardSymbol;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
-import com.dxfeed.event.market.EventMappers;
+import com.dxfeed.event.EventMappers;
 import com.dxfeed.event.market.OrderSource;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;

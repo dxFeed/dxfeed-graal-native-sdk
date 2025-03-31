@@ -26,6 +26,11 @@ public class SpreadOrderMapper extends OrderAbstractMapper<SpreadOrder, DxfgSpre
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_SPREAD_ORDER;
+    }
+
+    @Override
     public void fillNative(final SpreadOrder javaObject, final DxfgSpreadOrder nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setSpreadSymbol(stringMapper.toNative(javaObject.getSpreadSymbol()));

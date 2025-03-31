@@ -1,9 +1,8 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.event.market;
+package com.dxfeed.event;
 
-import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgEventType;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;

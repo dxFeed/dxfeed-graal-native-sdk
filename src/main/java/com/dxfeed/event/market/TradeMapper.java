@@ -24,6 +24,11 @@ public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_TRADE;
+    }
+
+    @Override
     public void fillNative(final Trade javaObject, final DxfgTrade nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
     }

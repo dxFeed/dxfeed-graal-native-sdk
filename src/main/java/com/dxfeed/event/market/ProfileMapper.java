@@ -26,6 +26,11 @@ public class ProfileMapper extends MarketEventMapper<Profile, DxfgProfile> {
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_PROFILE;
+    }
+
+    @Override
     public void fillNative(final Profile javaObject, final DxfgProfile nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setDescription(stringMapper.toNative(javaObject.getDescription()));

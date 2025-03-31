@@ -29,6 +29,11 @@ public class MarketMakerMapper
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_MARKET_MAKER;
+    }
+
+    @Override
     public void fillNative(final MarketMaker javaObject, final DxfgMarketMaker nativeObject,
             boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);

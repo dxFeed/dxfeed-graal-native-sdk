@@ -21,6 +21,7 @@ import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeETH;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
+import com.dxfeed.event.misc.TextConfiguration;
 import com.dxfeed.event.misc.TextMessage;
 import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.Series;
@@ -36,29 +37,30 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 @CContext(Directives.class)
 @CEnum("dxfg_event_clazz_t")
 public enum DxfgEventClazz {
-    DXFG_EVENT_QUOTE(Quote.class),                 // LASTING
-    DXFG_EVENT_PROFILE(Profile.class),             // LASTING
-    DXFG_EVENT_SUMMARY(Summary.class),             // LASTING
-    DXFG_EVENT_GREEKS(Greeks.class),               // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_CANDLE(Candle.class),               // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_DAILY_CANDLE(DailyCandle.class),    // LASTING + INDEXED -> TIME_SERIES -> CANDLE
-    DXFG_EVENT_UNDERLYING(Underlying.class),       // LASTING + INDEXED -> TIME_SERIES
-    DXFG_EVENT_THEO_PRICE(TheoPrice.class),        // LASTING + INDEXED -> TIME_SERIES
-    //abstract DXFG_EVENT_TRADE_BASE,              // LASTING
-    DXFG_EVENT_TRADE(Trade.class),                 // LASTING -> TRADE_BASE
-    DXFG_EVENT_TRADE_ETH(TradeETH.class),          // LASTING -> TRADE_BASE
-    DXFG_EVENT_CONFIGURATION(Configuration.class), // LASTING
-    DXFG_EVENT_MESSAGE(Message.class),             //
-    DXFG_EVENT_TIME_AND_SALE(TimeAndSale.class),   // INDEXED -> TIME_SERIES
-    DXFG_EVENT_ORDER_BASE(OrderBase.class),        // INDEXED
-    DXFG_EVENT_ORDER(Order.class),                 // INDEXED -> ORDER_BASE
-    DXFG_EVENT_ANALYTIC_ORDER(AnalyticOrder.class),// INDEXED -> ORDER_BASE -> ORDER
-    DXFG_EVENT_OTC_MARKETS_ORDER(OtcMarketsOrder.class),// INDEXED -> ORDER_BASE -> ORDER
-    DXFG_EVENT_SPREAD_ORDER(SpreadOrder.class),    // INDEXED -> ORDER_BASE
-    DXFG_EVENT_SERIES(Series.class),               // INDEXED
-    DXFG_EVENT_OPTION_SALE(OptionSale.class),      // INDEXED
-    DXFG_EVENT_TEXT_MESSAGE(TextMessage.class),    //
-    DXFG_EVENT_MARKET_MAKER(MarketMaker.class),    // INDEXED
+    DXFG_EVENT_QUOTE(Quote.class),                         // LASTING
+    DXFG_EVENT_PROFILE(Profile.class),                     // LASTING
+    DXFG_EVENT_SUMMARY(Summary.class),                     // LASTING
+    DXFG_EVENT_GREEKS(Greeks.class),                       // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_CANDLE(Candle.class),                       // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_DAILY_CANDLE(DailyCandle.class),            // LASTING + INDEXED -> TIME_SERIES -> CANDLE
+    DXFG_EVENT_UNDERLYING(Underlying.class),               // LASTING + INDEXED -> TIME_SERIES
+    DXFG_EVENT_THEO_PRICE(TheoPrice.class),                // LASTING + INDEXED -> TIME_SERIES
+    //abstract DXFG_EVENT_TRADE_BASE,                      // LASTING
+    DXFG_EVENT_TRADE(Trade.class),                         // LASTING -> TRADE_BASE
+    DXFG_EVENT_TRADE_ETH(TradeETH.class),                  // LASTING -> TRADE_BASE
+    DXFG_EVENT_CONFIGURATION(Configuration.class),         // LASTING
+    DXFG_EVENT_MESSAGE(Message.class),                     //
+    DXFG_EVENT_TIME_AND_SALE(TimeAndSale.class),           // INDEXED -> TIME_SERIES
+    DXFG_EVENT_ORDER_BASE(OrderBase.class),                // INDEXED
+    DXFG_EVENT_ORDER(Order.class),                         // INDEXED -> ORDER_BASE
+    DXFG_EVENT_ANALYTIC_ORDER(AnalyticOrder.class),        // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_OTC_MARKETS_ORDER(OtcMarketsOrder.class),   // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_SPREAD_ORDER(SpreadOrder.class),            // INDEXED -> ORDER_BASE
+    DXFG_EVENT_SERIES(Series.class),                       // INDEXED
+    DXFG_EVENT_OPTION_SALE(OptionSale.class),              // INDEXED
+    DXFG_EVENT_TEXT_MESSAGE(TextMessage.class),            //
+    DXFG_EVENT_MARKET_MAKER(MarketMaker.class),            // INDEXED
+    DXFG_EVENT_TEXT_CONFIGURATION(TextConfiguration.class),// LASTING
     ;
     private static final Map<Class<? extends EventType<?>>, DxfgEventClazz> map = new HashMap<>();
 
@@ -86,6 +88,7 @@ public enum DxfgEventClazz {
         map.put(OptionSale.class, DXFG_EVENT_OPTION_SALE);
         map.put(TextMessage.class, DXFG_EVENT_TEXT_MESSAGE);
         map.put(MarketMaker.class, DXFG_EVENT_MARKET_MAKER);
+        map.put(TextConfiguration.class, DXFG_EVENT_TEXT_CONFIGURATION);
     }
 
     public final Class<? extends EventType<?>> clazz;

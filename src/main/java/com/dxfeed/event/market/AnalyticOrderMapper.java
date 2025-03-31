@@ -26,6 +26,11 @@ public class AnalyticOrderMapper extends OrderMapper<AnalyticOrder, DxfgAnalytic
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_ANALYTIC_ORDER;
+    }
+
+    @Override
     public void fillNative(final AnalyticOrder javaObject, final DxfgAnalyticOrder nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setIcebergPeakSize(javaObject.getIcebergPeakSize());

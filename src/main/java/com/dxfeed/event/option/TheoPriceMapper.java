@@ -1,9 +1,9 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.event.market;
+package com.dxfeed.event.option;
 
-import com.dxfeed.event.option.TheoPrice;
+import com.dxfeed.event.market.MarketEventMapper;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgTheoPrice;
 import com.dxfeed.sdk.mappers.Mapper;
@@ -24,6 +24,11 @@ public class TheoPriceMapper extends MarketEventMapper<TheoPrice, DxfgTheoPrice>
         final DxfgTheoPrice nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTheoPrice.class));
         nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_THEO_PRICE.getCValue());
         return nativeObject;
+    }
+
+    @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_THEO_PRICE;
     }
 
     @Override

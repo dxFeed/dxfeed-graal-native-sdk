@@ -26,6 +26,11 @@ public class OtcMarketsOrderMapper extends OrderMapper<OtcMarketsOrder, DxfgOtcM
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_OTC_MARKETS_ORDER;
+    }
+
+    @Override
     public void fillNative(final OtcMarketsOrder javaObject, final DxfgOtcMarketsOrder nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setQuoteAccessPayment(javaObject.getQuoteAccessPayment());

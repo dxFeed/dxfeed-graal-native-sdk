@@ -26,6 +26,11 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE;
+    }
+
+    @Override
     public void fillNative(final TimeAndSale javaObject, final DxfgTimeAndSale nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setEventFlags(javaObject.getEventFlags());

@@ -28,6 +28,11 @@ public class OptionSaleMapper extends MarketEventMapper<OptionSale, DxfgOptionSa
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_OPTION_SALE;
+    }
+
+    @Override
     public void fillNative(final OptionSale javaObject, final DxfgOptionSale nativeObject,
             boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);

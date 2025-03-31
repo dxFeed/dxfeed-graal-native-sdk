@@ -22,32 +22,10 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.TimeSeriesEvent;
-import com.dxfeed.event.market.AnalyticOrderMapper;
-import com.dxfeed.event.market.CandleMapper;
-import com.dxfeed.event.market.ConfigurationMapper;
-import com.dxfeed.event.market.DailyCandleMapper;
-import com.dxfeed.event.market.EventMappers;
-import com.dxfeed.event.market.GreeksMapper;
-import com.dxfeed.event.market.ListEventMapper;
-import com.dxfeed.event.market.ListEventTypeMapper;
-import com.dxfeed.event.market.ListIndexedEventSourceMapper;
-import com.dxfeed.event.market.MarketMakerMapper;
-import com.dxfeed.event.market.MessageMapper;
-import com.dxfeed.event.market.OptionSaleMapper;
-import com.dxfeed.event.market.OrderBaseMapper;
-import com.dxfeed.event.market.OrderMapper;
-import com.dxfeed.event.market.OtcMarketsOrderMapper;
-import com.dxfeed.event.market.ProfileMapper;
-import com.dxfeed.event.market.QuoteMapper;
-import com.dxfeed.event.market.SeriesMapper;
-import com.dxfeed.event.market.SpreadOrderMapper;
-import com.dxfeed.event.market.SummaryMapper;
-import com.dxfeed.event.market.TextMessageMapper;
-import com.dxfeed.event.market.TheoPriceMapper;
-import com.dxfeed.event.market.TimeAndSaleMapper;
-import com.dxfeed.event.market.TradeETHMapper;
-import com.dxfeed.event.market.TradeMapper;
-import com.dxfeed.event.market.UnderlyingMapper;
+import com.dxfeed.event.EventMappers;
+import com.dxfeed.event.ListEventMapper;
+import com.dxfeed.event.ListEventTypeMapper;
+import com.dxfeed.event.ListIndexedEventSourceMapper;
 import com.dxfeed.glossary.AdditionalUnderlyings;
 import com.dxfeed.glossary.CFI;
 import com.dxfeed.glossary.PriceIncrements;
@@ -310,31 +288,7 @@ public final class NativeUtils {
         );
         MAPPER_INDEXED_EVENT_SOURCE = new IndexedEventSourceMapper(MAPPER_STRING);
         MAPPER_SYMBOL = new SymbolMapper(MAPPER_STRING, MAPPER_INDEXED_EVENT_SOURCE);
-        MAPPER_EVENT = new EventMappers(
-                MAPPER_STRING,
-                new QuoteMapper(MAPPER_STRING),
-                new SeriesMapper(MAPPER_STRING),
-                new OptionSaleMapper(MAPPER_STRING),
-                new MarketMakerMapper(MAPPER_STRING),
-                new TimeAndSaleMapper(MAPPER_STRING),
-                new SpreadOrderMapper(MAPPER_STRING),
-                new OrderMapper<>(MAPPER_STRING),
-                new AnalyticOrderMapper(MAPPER_STRING),
-                new OtcMarketsOrderMapper(MAPPER_STRING),
-                new MessageMapper(MAPPER_STRING),
-                new OrderBaseMapper(MAPPER_STRING),
-                new ConfigurationMapper(MAPPER_STRING),
-                new TradeMapper(MAPPER_STRING),
-                new TradeETHMapper(MAPPER_STRING),
-                new TheoPriceMapper(MAPPER_STRING),
-                new UnderlyingMapper(MAPPER_STRING),
-                new GreeksMapper(MAPPER_STRING),
-                new SummaryMapper(MAPPER_STRING),
-                new ProfileMapper(MAPPER_STRING),
-                new DailyCandleMapper(MAPPER_STRING, MAPPER_SYMBOL),
-                new CandleMapper<>(MAPPER_STRING, MAPPER_SYMBOL),
-                new TextMessageMapper(MAPPER_STRING)
-        );
+        MAPPER_EVENT = EventMappers.createDefault(MAPPER_STRING, MAPPER_SYMBOL);
         MAPPER_EVENTS = new ListEventMapper(MAPPER_EVENT);
         MAPPER_INDEXED_EVENT_SOURCES = new ListIndexedEventSourceMapper(MAPPER_INDEXED_EVENT_SOURCE);
         MAPPER_SYMBOLS = new ListSymbolMapper(MAPPER_SYMBOL);

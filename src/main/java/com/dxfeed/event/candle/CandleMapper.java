@@ -1,10 +1,10 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.event.market;
+package com.dxfeed.event.candle;
 
-import com.dxfeed.event.candle.Candle;
-import com.dxfeed.event.candle.CandleSymbol;
+import com.dxfeed.event.EventMapper;
+import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.events.DxfgCandle;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.mappers.Mapper;
@@ -92,5 +92,10 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
         final V nativeObject = createNativeObject();
         nativeObject.setSymbol(this.stringMapper.toNative(symbol));
         return nativeObject;
+    }
+
+    @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_CANDLE;
     }
 }

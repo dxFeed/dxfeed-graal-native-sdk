@@ -3857,6 +3857,102 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.misc.TextConfiguration",
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "int"
+        ]
+      },
+      {
+        "name": "getEventSymbol",
+        "parameterTypes": []
+      },
+      {
+        "name": "setEventSymbol",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getEventTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "setEventTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "setTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getSequence",
+        "parameterTypes": []
+      },
+      {
+        "name": "setSequence",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getVersion",
+        "parameterTypes": []
+      },
+      {
+        "name": "setVersion",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getText",
+        "parameterTypes": []
+      },
+      {
+        "name": "setText",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.dxfeed.event.misc.MiscFactoryImpl",
     "methods": [
       {

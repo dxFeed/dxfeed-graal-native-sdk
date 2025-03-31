@@ -26,6 +26,11 @@ public class QuoteMapper extends MarketEventMapper<Quote, DxfgQuote> {
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_QUOTE;
+    }
+
+    @Override
     public void fillNative(final Quote javaObject, final DxfgQuote nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setTimeMillisSequence(javaObject.getTimeMillisSequence());

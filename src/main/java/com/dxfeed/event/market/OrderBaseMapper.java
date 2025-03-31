@@ -24,6 +24,11 @@ public class OrderBaseMapper extends OrderAbstractMapper<OrderBase, DxfgOrderBas
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_ORDER_BASE;
+    }
+
+    @Override
     public void fillNative(final OrderBase javaObject, final DxfgOrderBase nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
     }

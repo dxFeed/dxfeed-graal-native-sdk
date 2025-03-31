@@ -26,6 +26,11 @@ public class OrderMapper<T extends Order, V extends DxfgOrder> extends OrderAbst
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_ORDER;
+    }
+
+    @Override
     public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setMarketMaker(stringMapper.toNative(javaObject.getMarketMaker()));

@@ -26,6 +26,11 @@ public class SummaryMapper extends MarketEventMapper<Summary, DxfgSummary> {
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_SUMMARY;
+    }
+
+    @Override
     public void fillNative(final Summary javaObject, final DxfgSummary nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setDayId(javaObject.getDayId());

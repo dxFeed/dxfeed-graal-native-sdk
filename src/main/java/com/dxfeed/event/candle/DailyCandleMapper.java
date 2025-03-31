@@ -1,9 +1,8 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.event.market;
+package com.dxfeed.event.candle;
 
-import com.dxfeed.event.candle.DailyCandle;
 import com.dxfeed.sdk.events.DxfgDailyCandle;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.mappers.Mapper;
@@ -33,5 +32,10 @@ public class DailyCandleMapper extends CandleMapper<DailyCandle, DxfgDailyCandle
         final DailyCandle javaObject = new DailyCandle();
         fillJava(nativeObject, javaObject);
         return javaObject;
+    }
+
+    @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_DAILY_CANDLE;
     }
 }

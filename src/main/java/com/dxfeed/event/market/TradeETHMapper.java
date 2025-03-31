@@ -24,6 +24,11 @@ public class TradeETHMapper extends TradeBaseMapper<TradeETH, DxfgTradeETH> {
     }
 
     @Override
+    public DxfgEventClazz getEventClazz() {
+        return DxfgEventClazz.DXFG_EVENT_TRADE_ETH;
+    }
+
+    @Override
     public void fillNative(final TradeETH javaObject, final DxfgTradeETH nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
     }
