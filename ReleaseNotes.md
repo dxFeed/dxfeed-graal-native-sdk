@@ -1,3 +1,5 @@
+## v2.5.0
+
 * **\[MDAPI-242]\[GRAAL]** Migrated to QDS 3.340.
     * Migrated to QDS 3.340 and MDD 507
     * Added `DxfgTextConfiguration` interface and `dxfg_text_configuration_t` struct.

@@ -102,6 +102,16 @@ object BuildPatchAndDeployLinux : BuildType({
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m 8GB"
         }
+        script {
+            name = "release:deploy debug"
+            id = "release_deploy_debug"
+            scriptContent = """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy -P buildDebug
+            """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m 8GB"
+        }
     }
 
     features {
@@ -155,6 +165,16 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m 8GB"
         }
+        script {
+            name = "release:deploy debug"
+            id = "release_deploy_debug"
+            scriptContent = """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy -P buildDebug
+            """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m 8GB"
+        }
     }
 
     features {
@@ -193,6 +213,18 @@ object DeployForLinuxAarch64 : BuildType({
             name = "Deploy"
             scriptContent = """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+            """.trimIndent()
+            formatStderrAsError = true
+
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+        }
+
+        script {
+            name = "Deploy Debug"
+            scriptContent = """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
 
@@ -253,6 +285,15 @@ object DeployWindows : BuildType({
             name = "Deploy"
             scriptContent = Util.prepareWin() + """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+            """.trimIndent()
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
+            dockerRunParameters = "--rm -m 4GB"
+        }
+        script {
+            name = "Deploy Debug"
+            scriptContent = Util.prepareWin() + """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
             """.trimIndent()
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
