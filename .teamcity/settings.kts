@@ -352,6 +352,7 @@ object DeployWindows : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
+        contains("teamcity.agent.hostname", "winbuilder5161")
     }
 })
 
@@ -661,6 +662,7 @@ object BuildForWindows : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
+        contains("teamcity.agent.hostname", "winbuilder5161")
     }
 })
 
