@@ -56,6 +56,7 @@ project {
     buildType(BuildPatchAndDeployLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
     buildType(DeployForLinuxAarch64)
+    buildType(DeployForLinuxAarch64Debug)
     buildType(DeployWindows)
     buildType(DeployMacOsAndIOS)
     buildType(DeployNuget)
@@ -63,6 +64,7 @@ project {
     buildType(BuildForLinux)
     buildType(BuildForWindows)
     buildType(BuildForMacOSAndIOS)
+    buildType(BuildAndPushDockerImageForLinuxX64)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
     buildType(BuildForLinuxAarch64)
 }
@@ -243,6 +245,51 @@ object DeployForLinuxAarch64 : BuildType({
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${BuildPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+    }
+
+    features {
+        dockerSupport {
+            loginToRegistry = on {
+                dockerRegistryId = "PROJECT_EXT_153"
+            }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        contains("teamcity.agent.hostname", "macbuilder20")
+    }
+})
+
+object DeployForLinuxAarch64Debug : BuildType({
+    name = "Deploy for Linux Aarch64 Debug"
+
+    params {
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "4G")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Checkout Latest Tag"
+            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
+        }
 
         script {
             name = "Deploy Debug"
@@ -258,11 +305,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            buildType = "${DeployForLinuxAarch64.id}"
             successfulOnly = true
         }
     }
@@ -325,21 +368,12 @@ object DeployWindows : BuildType({
             dockerRunParameters = "--rm -m 4GB"
         }
     }
-    //DeployForLinuxAarch64
 
     triggers {
         finishBuildTrigger {
-            buildType = "${DeployForLinuxAarch64.id}"
+            buildType = "${DeployForLinuxAarch64Debug.id}"
             successfulOnly = true
         }
-//        finishBuildTrigger {
-//            buildType = "${BuildPatchAndDeployLinux.id}"
-//            successfulOnly = true
-//        }
-//        finishBuildTrigger {
-//            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
-//            successfulOnly = true
-//        }
     }
 
     features {
@@ -550,6 +584,42 @@ object BuildForLinux : BuildType({
             loginToRegistry = on {
                 dockerRegistryId = "PROJECT_EXT_153"
             }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Linux")
+    }
+})
+
+object BuildAndPushDockerImageForLinuxX64 : BuildType({
+    name = "Build and push a docker image for Linux x64"
+
+    params {
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                cd .teamcity
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker images --all
+                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
+                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
+                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker logout
+            """.trimIndent()
+            formatStderrAsError = true
         }
     }
 
