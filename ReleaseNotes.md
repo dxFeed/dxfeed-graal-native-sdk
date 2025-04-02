@@ -1,3 +1,11 @@
+* **\[MDAPI-242]\[GRAAL]** Migrated to QDS 3.340.
+    * Migrated to QDS 3.340 and MDD 507
+    * Added `DxfgTextConfiguration` interface and `dxfg_text_configuration_t` struct.
+    * Added `DXFG_EVENT_TEXT_CONFIGURATION` to `DxfgEventClazz` enum and `DXFG_EVENT_TEXT_CONFIGURATION`
+      to `dxfg_event_clazz_t` C-enum.
+    * `com.dxfeed.event.misc.TextConfiguration` info added to the `reflect-config.json`.
+    * The mappers are moved according to the packages in QD.
+    * Added `getEventClazz` method to the `EventMapper` interface. Added implementation to all inheritors.
 * **\[MDAPI-241]\[GRAAL]** Implemented HistoryEndpoint.
     * Added `HistoryEndpoint`.
     * Added `DxfgHistoryEndpointHandle` interface (`dxfg_history_endpoint_t` struct), mappers, etc.
