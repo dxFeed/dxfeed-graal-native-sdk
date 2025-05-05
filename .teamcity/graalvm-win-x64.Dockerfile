@@ -46,7 +46,9 @@ ARG MSYS2_DOWNLOAD_URL="https://github.com/msys2/msys2-installer/releases/downlo
 RUN curl -SL --output msys2.exe %MSYS2_DOWNLOAD_URL% && \
     msys2.exe -y -oC:/ && \
     del msys2.exe && \
-    C:/msys64/usr/bin/bash -lc "export TZ='UTC'; echo 'export TZ=UTC' >> ~/.bashrc" && \
+    C:/msys64/usr/bin/bash -lc " " && \
+    C:/msys64/usr/bin/bash -lc "echo 'export TZ=UTC' > /etc/profile.d/timezone.sh" && \
+    C:/msys64/usr/bin/bash -lc "chmod +x /etc/profile.d/timezone.sh" && \
     setx /M PATH "C:/msys64/usr/local/bin;C:/msys64/usr/bin;C:/msys64/bin;%PATH%"
 
 # Copy the helper script to the PATH directory with correct permissions.
