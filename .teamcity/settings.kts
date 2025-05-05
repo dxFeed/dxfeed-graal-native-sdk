@@ -67,6 +67,7 @@ project {
     buildType(BuildAndPushDockerImageForLinuxX64)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
     buildType(BuildForLinuxAarch64)
+    buildType(BuildAndPushDockerImageForWindowsX64)
 }
 
 object BuildPatchAndDeployLinux : BuildType({
@@ -223,6 +224,7 @@ object DeployForLinuxAarch64 : BuildType({
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
     vcs {
@@ -268,7 +270,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "macbuilder20")
+        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -279,6 +281,7 @@ object DeployForLinuxAarch64Debug : BuildType({
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
     vcs {
@@ -320,7 +323,7 @@ object DeployForLinuxAarch64Debug : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "macbuilder20")
+        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -330,6 +333,7 @@ object DeployWindows : BuildType({
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.AGENT_HOSTNAME", "winbuilder5161")
     }
 
     vcs {
@@ -386,7 +390,7 @@ object DeployWindows : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
-        contains("teamcity.agent.hostname", "winbuilder5161")
+        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -673,6 +677,7 @@ object BuildForLinuxAarch64 : BuildType({
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
     steps {
@@ -698,7 +703,45 @@ object BuildForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "macbuilder20")
+        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+    }
+})
+
+object BuildAndPushDockerImageForWindowsX64 : BuildType({
+    name = "Build and push a docker image for Windows x64"
+
+    params {
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.AGENT_HOSTNAME", "winbuilder5161")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                cd .teamcity
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker images --all
+                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
+                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64.Dockerfile .
+                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker logout
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Windows 11")
+        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
