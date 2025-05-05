@@ -46,16 +46,19 @@ ARG MSYS2_DOWNLOAD_URL="https://github.com/msys2/msys2-installer/releases/downlo
 RUN curl -SL --output msys2.exe %MSYS2_DOWNLOAD_URL% && \
     msys2.exe -y -oC:/ && \
     del msys2.exe && \
-    C:/msys64/usr/bin/bash -lc " " &&\
+    C:/msys64/usr/bin/bash -lc "export TZ='UTC'; echo 'export TZ=UTC' >> ~/.bashrc" && \
     setx /M PATH "C:/msys64/usr/local/bin;C:/msys64/usr/bin;C:/msys64/bin;%PATH%"
 
-# Copy the helper script to the PATH directory.
+# Copy the helper script to the PATH directory with correct permissions.
 COPY install.sh "C:/msys64/usr/local/bin/"
+RUN C:/msys64/usr/bin/bash -lc "chmod +x /usr/local/bin/install.sh"
 
 # Download and install Build Tools for Visual Studio.
 ARG VS_BUILD_TOOLS_VERSION="17"
 ARG VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools/"
-RUN	bash -lc "install.sh vs_build_tools %VS_BUILD_TOOLS_VERSION% %VS_BUILD_TOOLS_INSTALL_PATH%"
+RUN	bash -lc "pacman -Syuu --noconfirm" && \
+    bash -lc "pacman -Syu --noconfirm" && \
+    bash -lc "install.sh vs_build_tools %VS_BUILD_TOOLS_VERSION% %VS_BUILD_TOOLS_INSTALL_PATH%"
 
 # Download and install Apache Maven.
 ARG MVN_VERSION="3.8.8"
