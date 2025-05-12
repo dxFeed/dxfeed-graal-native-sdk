@@ -42,7 +42,8 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 ARG TARGETPLATFORM="win-x64"
 
 # Download and install latest MSYS2,
-ARG MSYS2_DOWNLOAD_URL="https://github.com/msys2/msys2-installer/releases/download/nightly-x86_64/msys2-base-x86_64-latest.sfx.exe"
+# ARG MSYS2_DOWNLOAD_URL="https://github.com/msys2/msys2-installer/releases/download/nightly-x86_64/msys2-base-x86_64-latest.sfx.exe"
+ARG MSYS2_DOWNLOAD_URL="https://github.com/msys2/msys2-installer/releases/download/2024-05-07/msys2-base-x86_64-20240507.sfx.exe"
 RUN curl -SL --output msys2.exe %MSYS2_DOWNLOAD_URL% && \
     msys2.exe -y -oC:/ && \
     del msys2.exe && \
@@ -57,9 +58,7 @@ RUN C:/msys64/usr/bin/bash -lc "chmod +x /usr/local/bin/install.sh"
 # Download and install Build Tools for Visual Studio.
 ARG VS_BUILD_TOOLS_VERSION="17"
 ARG VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools/"
-RUN	bash -lc "pacman -Syuu --noconfirm" && \
-    bash -lc "pacman -Syu --noconfirm" && \
-    bash -lc "install.sh vs_build_tools %VS_BUILD_TOOLS_VERSION% %VS_BUILD_TOOLS_INSTALL_PATH%"
+RUN	bash -lc "install.sh vs_build_tools %VS_BUILD_TOOLS_VERSION% %VS_BUILD_TOOLS_INSTALL_PATH%"
 
 # Download and install Apache Maven.
 ARG MVN_VERSION="3.8.8"
