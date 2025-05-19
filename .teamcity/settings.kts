@@ -721,22 +721,20 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
     }
 
     steps {
-        powerShell {
+        script {
             name = "Build"
-            scriptMode = script {
-                content = """
-                    cd .teamcity
-                    docker images --all
-                    docker rmi -f @(docker images -aq)
-                    docker images --all
-                    docker login dxfeed-docker.jfrog.io --username $env:JFROG_USER --password $env:JFROG_PASSWORD
-                    docker build -t "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-$env:GRAALVM_VERSION" --build-arg GRAALVM_VERSION="$env:GRAALVM_VERSION" -f graalvm-win-x64-v2.Dockerfile .
-                    docker push "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-$env:GRAALVM_VERSION"
-                    docker images --all
-                    docker rmi -f @(docker images -aq)
-                    docker logout
-                """.trimIndent()
-            }
+            scriptContent = """
+                cd .teamcity
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker images --all
+                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
+                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
+                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%
+                docker images --all
+                docker rmi -f ${'$'}(docker images -aq)
+                docker logout
+            """.trimIndent()
             formatStderrAsError = true
         }
     }
