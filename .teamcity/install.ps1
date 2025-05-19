@@ -6,8 +6,14 @@ function Install-Maven {
     [string]$InstallPath
   )
 
+  Write-Host "Starting Maven installation with parameters:"
+  Write-Host "Version: $Version"
+  Write-Host "Install path: $InstallPath"
+
   $BaseUrl = "https://dlcdn.apache.org/maven/"
   $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1))/$Version/binaries/apache-maven-$Version-bin.tar.gz"
+
+  Write-Host "Download URL: $DownloadUrl"
 
   if (-not (Test-Path -Path $InstallPath)) {
     New-Item -ItemType Directory -Path $InstallPath | Out-Null
@@ -27,6 +33,11 @@ function Install-GraalVM {
     [Parameter(Mandatory=$true)]
     [string]$InstallPath
   )
+
+  Write-Host "Starting GraalVM installation with parameters:"
+  Write-Host "Version: $Version"
+  Write-Host "Platform: $Platform"
+  Write-Host "Install path: $InstallPath"
 
   $BaseUrl = "https://github.com/graalvm/graalvm-ce-builds/releases/download/"
   $PlatformOS = $Platform -replace '-.*', ''
@@ -65,6 +76,8 @@ function Install-GraalVM {
 
   $DownloadUrl = "$BaseUrl/$VersionTag/$DistributionTag$OSTag$ArchTag$Suffix"
 
+  Write-Host "Download URL: $DownloadUrl"
+
   if (-not (Test-Path -Path $InstallPath)) {
     New-Item -ItemType Directory -Path $InstallPath | Out-Null
   }
@@ -86,9 +99,15 @@ function Install-VSBuildTools {
     [string]$InstallPath
   )
 
+  Write-Host "Starting VSBuildTools installation with parameters:"
+  Write-Host "Version: $Version"
+  Write-Host "Install path: $InstallPath"
+
   $BaseUrl = "https://aka.ms/vs/"
   $VSBuildTools = "vs_buildtools.exe"
   $DownloadUrl = "$BaseUrl/$Version/release/$VSBuildTools"
+
+  Write-Host "Download URL: $DownloadUrl"
 
   Invoke-WebRequest -Uri $DownloadUrl -OutFile $VSBuildTools
   try {
