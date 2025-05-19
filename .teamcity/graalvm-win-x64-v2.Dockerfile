@@ -60,7 +60,7 @@ RUN powershell -Command \
     . C:/install.ps1; \
     Install-VSBuildTools -Version ${VS_BUILD_TOOLS_VERSION} -InstallPath ${VS_BUILD_TOOLS_INSTALL_PATH}; \
     Install-Maven -Version ${MVN_VERSION} -InstallPath ${MVN_INSTALL_PATH}; \
-    Install-GraalVM -Version ${GRAALVM_VERSION} -Platform ${TARGETPLATFORM -InstallPath ${GRAALVM_INSTALL_PATH}; \
+    Install-GraalVM -Version ${GRAALVM_VERSION} -Platform ${TARGETPLATFORM} -InstallPath ${GRAALVM_INSTALL_PATH}; \
     Remove-Item -Path C:/install.ps1
 
 # Update environment variables
