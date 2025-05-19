@@ -46,9 +46,6 @@ ARG GRAALVM_VERSION="java11-22.3.1"
 ARG MVN_VERSION="3.8.8"
 ARG VS_BUILD_TOOLS_VERSION="17"
 
-# Verify that ARG values are properly passed as default values
-RUN echo "ARG Values: GRAALVM_VERSION=${GRAALVM_VERSION}, MVN_VERSION=${MVN_VERSION}, VS_BUILD_TOOLS_VERSION=${VS_BUILD_TOOLS_VERSION}"
-
 # Define installation paths
 ENV MVN_INSTALL_PATH="C:/mvn" \
     GRAALVM_INSTALL_PATH="C:/graalvm" \
@@ -62,8 +59,12 @@ COPY install.ps1 C:/install.ps1
 RUN powershell -Command \
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
     . C:/install.ps1; \
-    Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH"; \
-    Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH"; \
+    Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH";
+
+RUN powershell -Command \
+    Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH";
+
+RUN powershell -Command \
     Install-GraalVM -Version "$Env:GRAALVM_VERSION" -Platform "$Env:TARGETPLATFORM" -InstallPath "$Env:GRAALVM_INSTALL_PATH"; \
     Remove-Item -Path C:/install.ps1
 
