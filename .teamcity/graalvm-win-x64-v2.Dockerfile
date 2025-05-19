@@ -46,21 +46,25 @@ ARG GRAALVM_VERSION="java11-22.3.1"
 ARG MVN_VERSION="3.8.8"
 ARG VS_BUILD_TOOLS_VERSION="17"
 
+# Verify that ARG values are properly passed as default values
+RUN echo "ARG Values: GRAALVM_VERSION=${GRAALVM_VERSION}, MVN_VERSION=${MVN_VERSION}, VS_BUILD_TOOLS_VERSION=${VS_BUILD_TOOLS_VERSION}"
+
 # Define installation paths
-ARG MVN_INSTALL_PATH="C:/mvn"
-ARG GRAALVM_INSTALL_PATH="C:/graalvm"
-ARG VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools"
+ENV MVN_INSTALL_PATH="C:/mvn" \
+    GRAALVM_INSTALL_PATH="C:/graalvm" \
+    VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools"
 
 # Copy PowerShell helper script into the container
 COPY install.ps1 C:/install.ps1
 
 # Run installation steps using PowerShell
+# Use PowerShell to run installation steps
 RUN powershell -Command \
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
     . C:/install.ps1; \
-    Install-VSBuildTools -Version ${VS_BUILD_TOOLS_VERSION} -InstallPath ${VS_BUILD_TOOLS_INSTALL_PATH}; \
-    Install-Maven -Version ${MVN_VERSION} -InstallPath ${MVN_INSTALL_PATH}; \
-    Install-GraalVM -Version ${GRAALVM_VERSION} -Platform ${TARGETPLATFORM} -InstallPath ${GRAALVM_INSTALL_PATH}; \
+    Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH"; \
+    Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH"; \
+    Install-GraalVM -Version "$Env:GRAALVM_VERSION" -Platform "$Env:TARGETPLATFORM" -InstallPath "$Env:GRAALVM_INSTALL_PATH"; \
     Remove-Item -Path C:/install.ps1
 
 # Update environment variables
