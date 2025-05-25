@@ -106,12 +106,20 @@ function Install-VSBuildTools {
   $BaseUrl = "https://aka.ms/vs/"
   $VSBuildTools = "vs_buildtools.exe"
   $DownloadUrl = "$BaseUrl/$Version/release/$VSBuildTools"
+  $TempPath = "C:/temp/"
 
   Write-Host "Download URL: $DownloadUrl"
 
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile $VSBuildTools
+  if (-not (Test-Path -Path $TempPath)) {
+    New-Item -ItemType Directory -Path $TempPath | Out-Null
+  }
+
+  Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempPath/$VSBuildTools
+
+  Get-ChildItem $TempPath
+
   try {
-    Start-Process -FilePath $VSBuildTools -ArgumentList @(
+    Start-Process -FilePath $TempPath/$VSBuildTools -ArgumentList @(
       '--quiet', '--wait', '--norestart', '--nocache',
       "--installPath $InstallPath",
       '--includeRecommended',
@@ -120,6 +128,6 @@ function Install-VSBuildTools {
       '--add Microsoft.VisualStudio.Component.Windows11SDK.22621'
     ) -Wait
   } finally {
-    Remove-Item -Path $VSBuildTools -Force
+    Remove-Item -Path $TempPath/$VSBuildTools -Force
   }
 }
