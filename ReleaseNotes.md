@@ -1,3 +1,9 @@
+## v2.6.0
+* **\[MDAPI-260]\[GRAAL]** Improved the export of `HistoryEndpoint.Builder` methods:
+    * Removed an unnecessary `newBuilder` parameter from exported functions `dxfg_HistoryEndpoint_Builder_withCompression` and `dxfg_HistoryEndpoint_Builder_withFormat`.
+    * Removed all error messages "The `newBuilder` pointer is null"
+* Migrated to QDS 3.342 and MDD 510
+
 ## v2.5.0
 
 * **\[MDAPI-242]\[GRAAL]** Migrated to QDS 3.340.

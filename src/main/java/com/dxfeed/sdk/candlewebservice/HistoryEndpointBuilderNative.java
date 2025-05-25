@@ -24,10 +24,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             @CConst final CCharPointer address
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withAddress(NativeUtils.MAPPER_STRING.toJava(address));
@@ -44,10 +40,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             @CConst final CCharPointer userName
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withUserName(NativeUtils.MAPPER_STRING.toJava(userName));
@@ -64,10 +56,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             @CConst final CCharPointer password
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withPassword(NativeUtils.MAPPER_STRING.toJava(password));
@@ -84,10 +72,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             @CConst final CCharPointer authToken
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withAuthToken(NativeUtils.MAPPER_STRING.toJava(authToken));
@@ -104,10 +88,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             final DxfgHistoryEndpointCompression compression
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withCompression(compression.qdCompression);
@@ -124,10 +104,6 @@ public class HistoryEndpointBuilderNative {
             final DxfgHistoryEndpointBuilderHandle builder,
             final DxfgHistoryEndpointFormat format
     ) {
-        if (builder.isNull()) {
-            throw new IllegalArgumentException("The `newBuilder` pointer is null");
-        }
-
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_HISTORY_ENDPOINT_BUILDER.toJava(builder)
                 .withFormat(format.qdFormat);

@@ -136,15 +136,12 @@ int32_t dxfg_HistoryEndpoint_Builder_withAuthToken(graal_isolatethread_t *thread
  * @param[in] builder The history endpoint's builder.
  * @param[in] compression The compression type to be applied, represented by the dxfg_history_endpoint_compression_t
  * enum
- * @param[out] newBuilder The builder instance with the updated compression value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withCompression(graal_isolatethread_t *thread,
                                                      dxfg_history_endpoint_builder_t *builder,
-                                                     dxfg_history_endpoint_compression_t compression,
-                                                     DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                     dxfg_history_endpoint_compression_t compression);
 
 /**
  * Sets the format to be used for data handling.
@@ -152,14 +149,11 @@ int32_t dxfg_HistoryEndpoint_Builder_withCompression(graal_isolatethread_t *thre
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] format The format type to be applied, represented by the dxfg_history_endpoint_format_t enum.
- * @param[out] newBuilder The builder instance with the updated format value.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the object handle.
  */
 int32_t dxfg_HistoryEndpoint_Builder_withFormat(graal_isolatethread_t *thread, dxfg_history_endpoint_builder_t *builder,
-                                                dxfg_history_endpoint_format_t format,
-                                                DXFG_OUT dxfg_history_endpoint_builder_t **newBuilder);
+                                                dxfg_history_endpoint_format_t format);
 
 /**
  * Builds and returns a configured instance of `HistoryEndpoint`(dxfg_history_endpoint_t).

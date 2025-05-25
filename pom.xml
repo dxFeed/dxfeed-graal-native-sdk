@@ -33,8 +33,8 @@
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
     <!-- qd version and auther-api version must be compatible -->
-    <auther-api.version>507</auther-api.version>
-    <qd.version>3.340</qd.version>
+    <auther-api.version>510</auther-api.version>
+    <qd.version>3.342</qd.version>
     <dxfeed.api.experimental.model.version>1.1</dxfeed.api.experimental.model.version>
     <nativebridge.version>0.5</nativebridge.version>
     <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
