@@ -56,13 +56,14 @@ COPY install.ps1 C:/install.ps1
 
 # Run installation steps using PowerShell
 # Use PowerShell to run installation steps
+
 RUN powershell -Command \
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
     . C:/install.ps1; \
-    Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH";
+    Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH";
 
 RUN powershell -Command \
-    Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH";
+    Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH";
 
 RUN powershell -Command \
     Install-GraalVM -Version "$Env:GRAALVM_VERSION" -Platform "$Env:TARGETPLATFORM" -InstallPath "$Env:GRAALVM_INSTALL_PATH"; \
