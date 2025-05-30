@@ -42,7 +42,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 ARG TARGETPLATFORM="win-x64"
 
 # Define arguments for versions
-ARG GRAALVM_VERSION="java11-22.3.1"
+ARG GRAALVM_VERSION="jdk-23.0.2"
 ARG MVN_VERSION="3.8.8"
 ARG VS_BUILD_TOOLS_VERSION="17"
 
@@ -55,19 +55,23 @@ ENV MVN_INSTALL_PATH="C:/mvn" \
 COPY install.ps1 C:/install.ps1
 
 # Run installation steps using PowerShell
-# Use PowerShell to run installation steps
-
 RUN powershell -Command \
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
     . C:/install.ps1; \
     Install-Maven -Version "$Env:MVN_VERSION" -InstallPath "$Env:MVN_INSTALL_PATH";
 
 RUN powershell -Command \
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
+    . C:/install.ps1; \
     Install-VSBuildTools -Version "$Env:VS_BUILD_TOOLS_VERSION" -InstallPath "$Env:VS_BUILD_TOOLS_INSTALL_PATH";
 
 RUN powershell -Command \
-    Install-GraalVM -Version "$Env:GRAALVM_VERSION" -Platform "$Env:TARGETPLATFORM" -InstallPath "$Env:GRAALVM_INSTALL_PATH"; \
-    Remove-Item -Path C:/install.ps1
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; \
+    . C:/install.ps1; \
+    Install-GraalVM -Version "$Env:GRAALVM_VERSION" -Platform "$Env:TARGETPLATFORM" -InstallPath "$Env:GRAALVM_INSTALL_PATH";
+
+RUN powershell -Command \
+    if (Test-Path -Path C:/install.ps1) { Remove-Item C:/install.ps1 -Force }
 
 # Update environment variables
 ENV JAVA_HOME="${GRAALVM_INSTALL_PATH}"

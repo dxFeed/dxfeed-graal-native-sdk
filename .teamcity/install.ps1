@@ -1,8 +1,9 @@
-function Install-Maven {
+function Install-Maven
+{
   param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Version,
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$InstallPath
   )
 
@@ -11,123 +12,224 @@ function Install-Maven {
   Write-Host "Install path: $InstallPath"
 
   $BaseUrl = "https://dlcdn.apache.org/maven/"
-  $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1))/$Version/binaries/apache-maven-$Version-bin.tar.gz"
+  $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1) )/$Version/binaries/apache-maven-$Version-bin.tar.gz"
 
   Write-Host "Download URL: $DownloadUrl"
 
-  if (-not (Test-Path -Path $InstallPath)) {
+  if (-not (Test-Path -Path $InstallPath))
+  {
     New-Item -ItemType Directory -Path $InstallPath | Out-Null
   }
 
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile "$($InstallPath)\maven.tar.gz"
-  tar -xzf "$($InstallPath)\maven.tar.gz" -C $InstallPath --strip-components=1
-  Remove-Item "$($InstallPath)\maven.tar.gz"
+  Invoke-WebRequest -Uri $DownloadUrl -OutFile "$( $InstallPath )\maven.tar.gz"
+  tar -xzf "$( $InstallPath )\maven.tar.gz" -C $InstallPath --strip-components=1
+  Remove-Item "$( $InstallPath )\maven.tar.gz"
 }
 
-function Install-GraalVM {
+function Install-GraalVM
+{
   param (
-    [Parameter(Mandatory=$true)]
-    [string]$Version,
-    [Parameter(Mandatory=$true)]
-    [string]$Platform,
-    [Parameter(Mandatory=$true)]
-    [string]$InstallPath
+    [Parameter(Mandatory = $true)][string]$Version,
+    [Parameter(Mandatory = $true)][string]$Platform,
+    [Parameter(Mandatory = $true)][string]$InstallPath
   )
 
-  Write-Host "Starting GraalVM installation with parameters:"
-  Write-Host "Version: $Version"
-  Write-Host "Platform: $Platform"
-  Write-Host "Install path: $InstallPath"
-
+  $ErrorActionPreference = 'Stop'
   $BaseUrl = "https://github.com/graalvm/graalvm-ce-builds/releases/download/"
-  $PlatformOS = $Platform -replace '-.*', ''
-  $PlatformArch = $Platform -replace '.*-', ''
+
+  $PlatformOS, $PlatformArch = $Platform -split '-', 2
+
   $FileExtension = "tar.gz"
+  $VersionTag = ""
+  $DistributionTag = ""
+  $OSTag = ""
+  $ArchTag = ""
   $Suffix = ""
 
-  if ($Version -match "^java") {
-    $ReleaseTag = $Version -replace '.*-(\d+\.\d+\.\d+)', '$1'
-    $VersionTag = "vm-$ReleaseTag"
-    $DistributionTag = "graalvm-ce-java$($Version -replace '^java(\d+).*', '$1')"
+  if ($Version -match "^java")
+  {
+    if ($Version -match "(\d+\.\d+\.\d+)$")
+    {
+      $ReleaseTag = $Matches[1]
+      $VersionTag = "vm-$ReleaseTag"
+    }
+    else
+    {
+      Write-Error "Cannot extract release tag from version string"
+    }
+
+    if ($Version -match "java(\d+)")
+    {
+      $JavaVersion = $Matches[1]
+      $DistributionTag = "graalvm-ce-java$JavaVersion"
+    }
+
+    switch ( $PlatformOS.ToLower())
+    {
+      "linux" {
+        $OSTag = "-linux"
+      }
+      "macos" {
+        $OSTag = "-darwin"
+      }
+      "osx"   {
+        $OSTag = "-darwin"
+      }
+      "win"   {
+        $OSTag = "-windows"; $FileExtension = "zip"
+      }
+      default {
+        throw "Unknown OS tag '$PlatformOS'"
+      }
+    }
+
+    switch ( $PlatformArch.ToLower())
+    {
+      "x64"     {
+        $ArchTag = "-amd64"
+      }
+      "amd64"   {
+        $ArchTag = "-amd64"
+      }
+      "arm64"   {
+        $ArchTag = "-aarch64"
+      }
+      "aarch64" {
+        $ArchTag = "-aarch64"
+      }
+      default   {
+        throw "Unknown arch '$PlatformArch'"
+      }
+    }
+
     $Suffix = "-$ReleaseTag.$FileExtension"
-  } elseif ($Version -match "^jdk-") {
+  }
+  elseif ($Version -match "^jdk-")
+  {
     $VersionTag = $Version
     $DistributionTag = "graalvm-community-$Version"
+
+    switch ( $PlatformOS.ToLower())
+    {
+      "linux" {
+        $OSTag = "_linux"
+      }
+      "osx"   {
+        $OSTag = "_macos"
+      }
+      "win"   {
+        $OSTag = "_windows"; $FileExtension = "zip"
+      }
+      default {
+        throw "Unknown OS tag '$PlatformOS'"
+      }
+    }
+
+    switch ( $PlatformArch.ToLower())
+    {
+      "x64"     {
+        $ArchTag = "-x64"
+      }
+      "amd64"   {
+        $ArchTag = "-x64"
+      }
+      "arm64"   {
+        $ArchTag = "-aarch64"
+      }
+      "aarch64" {
+        $ArchTag = "-aarch64"
+      }
+      default   {
+        throw "Unknown arch '$PlatformArch'"
+      }
+    }
+
     $Suffix = "_bin.$FileExtension"
-  } else {
-    throw "Invalid GraalVM version format: $Version"
+  }
+  else
+  {
+    Write-Error "Invalid GraalVM version format: '$Version'. Allowed formats:
+        java<java_version>-<version> (legacy format)
+        jdk-<jdk_version>"
   }
 
-  $OSTag = switch ($PlatformOS) {
-    "linux" { "-linux" }
-    "macos" { "-darwin" }
-    "osx"   { "-darwin" }
-    "win"   { "-windows"; $FileExtension = "zip" }
-    default { throw "Invalid OS: $PlatformOS" }
-  }
-
-  $ArchTag = switch ($PlatformArch) {
-    "x64"   { "-amd64" }
-    "amd64" { "-amd64" }
-    "arm64" { "-aarch64" }
-    "aarch64" { "-aarch64" }
-    default { throw "Invalid architecture: $PlatformArch" }
-  }
-
+  New-Item -ItemType Directory -Force -Path $InstallPath | Out-Null
   $DownloadUrl = "$BaseUrl/$VersionTag/$DistributionTag$OSTag$ArchTag$Suffix"
 
-  Write-Host "Download URL: $DownloadUrl"
+  Write-Host "Downloading from $DownloadUrl"
+  $TempFile = "$([System.IO.Path]::GetTempFileName() ).$FileExtension"
+  Write-Host "Temp file name: $TempFile"
+  Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UseBasicParsing
 
-  if (-not (Test-Path -Path $InstallPath)) {
-    New-Item -ItemType Directory -Path $InstallPath | Out-Null
+  if ($FileExtension -eq "zip")
+  {
+    Expand-Archive -Path $TempFile -DestinationPath $InstallPath -Force
+    # PowerShell's Expand-Archive doesn't support --strip-components, so manual fix may be needed
+  }
+  else
+  {
+    # Requires tar (usually available in modern Windows or via WSL or Git bash)
+    tar -xzf $TempFile -C $InstallPath --strip-components=1
   }
 
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile "$($InstallPath)\graalvm.$FileExtension"
-  if ($FileExtension -eq "zip") {
-    Expand-Archive -LiteralPath "$($InstallPath)\graalvm.$FileExtension" -DestinationPath $InstallPath -Force
-  } else {
-    tar -xzf "$($InstallPath)\graalvm.$FileExtension" -C $InstallPath --strip-components=1
+  Remove-Item $TempFile -Force
+
+  $Gu = Get-ChildItem -Path $InstallPath -Recurse -Filter "gu*" | Select-Object -First 1
+  if ($Gu)
+  {
+    & $Gu.FullName install native-image
   }
-  Remove-Item "$($InstallPath)\graalvm.$FileExtension"
 }
 
-function Install-VSBuildTools {
+
+function Install-VSBuildTools
+{
   param (
-    [Parameter(Mandatory=$true)]
-    [string]$Version,
-    [Parameter(Mandatory=$true)]
-    [string]$InstallPath
+    [Parameter(Mandatory = $true)][string]$Version,
+    [Parameter(Mandatory = $true)][string]$InstallPath
   )
 
-  Write-Host "Starting VSBuildTools installation with parameters:"
-  Write-Host "Version: $Version"
-  Write-Host "Install path: $InstallPath"
+  $ErrorActionPreference = 'Stop'
 
-  $BaseUrl = "https://aka.ms/vs/"
-  $VSBuildTools = "vs_buildtools.exe"
-  $DownloadUrl = "$BaseUrl/$Version/release/$VSBuildTools"
-  $TempPath = "C:/temp/"
-
-  Write-Host "Download URL: $DownloadUrl"
-
-  if (-not (Test-Path -Path $TempPath)) {
-    New-Item -ItemType Directory -Path $TempPath | Out-Null
+  if ([string]::IsNullOrWhiteSpace($Version) -or [string]::IsNullOrWhiteSpace($InstallPath))
+  {
+    Write-Host "Usage: Install-VSBuildTools -Version <version> -InstallPath <install_path>"
+    return 1
   }
 
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempPath/$VSBuildTools
+  $BaseUrl = "https://aka.ms/vs/"
+  $InstallerName = "vs_buildtools.exe"
+  $DownloadUrl = "$BaseUrl/$Version/release/$InstallerName"
+  $InstallerPath = Join-Path -Path $PWD -ChildPath $InstallerName
 
-  Get-ChildItem $TempPath
+  try
+  {
+    Write-Host "Downloading Visual Studio Build Tools from: $DownloadUrl"
+    Invoke-WebRequest -Uri $DownloadUrl -OutFile $InstallerPath -UseBasicParsing -ErrorAction Stop
 
-  try {
-    Start-Process -FilePath $TempPath/$VSBuildTools -ArgumentList @(
-      '--quiet', '--wait', '--norestart', '--nocache',
-      "--installPath $InstallPath",
-      '--includeRecommended',
-      '--add Microsoft.VisualStudio.Workload.VCTools',
-      '--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
-      '--add Microsoft.VisualStudio.Component.Windows11SDK.22621'
-    ) -Wait
-  } finally {
-    Remove-Item -Path $TempPath/$VSBuildTools -Force
+    Write-Host "Starting installer..."
+    Start-Process -FilePath $InstallerPath `
+            -ArgumentList @(
+      "--quiet",
+      "--wait",
+      "--norestart",
+      "--nocache",
+      "--installPath", "`"$InstallPath`"",
+      "--includeRecommended",
+      "--add", "Microsoft.VisualStudio.Workload.VCTools",
+      "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+      "--add", "Microsoft.VisualStudio.Component.Windows11SDK.22621"
+    ) `
+            -Wait -NoNewWindow
+
+    Write-Host "Installation completed successfully."
+  }
+  finally
+  {
+    if (Test-Path $InstallerPath)
+    {
+      Remove-Item $InstallerPath -Force
+      Write-Host "Cleaned up installer: $InstallerName"
+    }
   }
 }
