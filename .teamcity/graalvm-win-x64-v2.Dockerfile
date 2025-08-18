@@ -43,7 +43,7 @@ ARG TARGETPLATFORM="win-x64"
 
 # Define arguments for versions
 ARG GRAALVM_VERSION="jdk-23.0.2"
-ARG MVN_VERSION="3.8.8"
+ARG MVN_VERSION="3.8.9"
 ARG VS_BUILD_TOOLS_VERSION="17"
 
 # Define installation paths

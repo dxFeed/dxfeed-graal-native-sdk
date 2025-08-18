@@ -61,7 +61,7 @@ ARG VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools/"
 RUN	bash -lc "install.sh vs_build_tools %VS_BUILD_TOOLS_VERSION% %VS_BUILD_TOOLS_INSTALL_PATH%"
 
 # Download and install Apache Maven.
-ARG MVN_VERSION="3.8.8"
+ARG MVN_VERSION="3.8.9"
 ARG MVN_INSTALL_PATH="C:/mvn/"
 RUN	bash -lc "install.sh maven %MVN_VERSION% %MVN_INSTALL_PATH%" && \
     setx /M PATH "%MVN_INSTALL_PATH%/bin;%PATH%"

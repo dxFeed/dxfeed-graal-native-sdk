@@ -55,8 +55,11 @@ project {
 
     buildType(BuildPatchAndDeployLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
-    buildType(DeployForLinuxAarch64)
+    buildType(DeployForLinuxAarch64Release)
     buildType(DeployForLinuxAarch64Debug)
+    buildType(DeployForLinuxAarch64)
+    buildType(DeployWindowsRelease)
+    buildType(DeployWindowsDebug)
     buildType(DeployWindows)
     buildType(DeployMacOsAndIOS)
     buildType(DeployNuget)
@@ -76,6 +79,7 @@ object BuildPatchAndDeployLinux : BuildType({
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "8g")
     }
 
     vcs {
@@ -94,7 +98,7 @@ object BuildPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
 
         script {
@@ -108,7 +112,7 @@ object BuildPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
 
         script {
@@ -126,7 +130,7 @@ object BuildPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -150,6 +154,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         text("env.RELEASE_VERSION", "", allowEmpty = false)
+        param("env.DOCKER_MEMORY_SIZE", "8g")
     }
 
     vcs {
@@ -168,7 +173,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
 
         script {
@@ -182,7 +187,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
 
         script {
@@ -200,7 +205,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -217,13 +222,13 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 })
 
-object DeployForLinuxAarch64 : BuildType({
-    name = "Deploy for Linux Aarch64"
+object DeployForLinuxAarch64Release : BuildType({
+    name = "Deploy for Linux Aarch64 Release"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
-        param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
@@ -249,17 +254,6 @@ object DeployForLinuxAarch64 : BuildType({
         }
     }
 
-    triggers {
-        finishBuildTrigger {
-            buildType = "${BuildPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-    }
-
     features {
         dockerSupport {
             loginToRegistry = on {
@@ -270,7 +264,7 @@ object DeployForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -280,7 +274,7 @@ object DeployForLinuxAarch64Debug : BuildType({
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
-        param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
@@ -306,13 +300,6 @@ object DeployForLinuxAarch64Debug : BuildType({
         }
     }
 
-    triggers {
-        finishBuildTrigger {
-            buildType = "${DeployForLinuxAarch64.id}"
-            successfulOnly = true
-        }
-    }
-
     features {
         dockerSupport {
             loginToRegistry = on {
@@ -323,16 +310,42 @@ object DeployForLinuxAarch64Debug : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
-object DeployWindows : BuildType({
-    name = "Deploy Windows"
+object DeployForLinuxAarch64 : BuildType({
+    name = "Deploy for Linux Aarch64"
+    type = Type.COMPOSITE
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${BuildPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
+    }
+
+    dependencies {
+        snapshot(DeployForLinuxAarch64Release) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+        snapshot(DeployForLinuxAarch64Debug) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
+        }
+    }
+})
+
+object DeployWindowsRelease : BuildType({
+    name = "Deploy Windows Release"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "winbuilder5161")
     }
 
@@ -358,25 +371,7 @@ object DeployWindows : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m 4GB"
-        }
-
-        script {
-            name = "Deploy Debug"
-            scriptContent = Util.prepareWin() + """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m 4GB"
-        }
-    }
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "${DeployForLinuxAarch64Debug.id}"
-            successfulOnly = true
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -390,7 +385,78 @@ object DeployWindows : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
-        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+    }
+})
+
+object DeployWindowsDebug : BuildType({
+    name = "Deploy Windows Debug"
+
+    params {
+        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
+        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "8g")
+        param("env.AGENT_HOSTNAME", "winbuilder5161")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    }
+
+    steps {
+        powerShell {
+            name = "Checkout Latest Tag"
+            scriptMode = script {
+                content = """
+                    ${'$'}tag = git describe --abbrev=0
+                    git checkout ${'$'}tag
+                """.trimIndent()
+            }
+        }
+        script {
+            name = "Deploy Debug"
+            scriptContent = Util.prepareWin() + """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
+            """.trimIndent()
+            formatStderrAsError = true
+            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+        }
+    }
+
+    features {
+        dockerSupport {
+            loginToRegistry = on {
+                dockerRegistryId = "PROJECT_EXT_153"
+            }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Windows 11")
+        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+    }
+})
+
+object DeployWindows : BuildType({
+    name = "Deploy Windows"
+    type = Type.COMPOSITE
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${DeployForLinuxAarch64Debug.id}"
+            successfulOnly = true
+        }
+    }
+
+    dependencies {
+        snapshot(DeployWindowsRelease) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+        snapshot(DeployWindowsDebug) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
+        }
     }
 })
 
@@ -444,6 +510,7 @@ object DeployNuget : BuildType({
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        param("env.DOCKER_MEMORY_SIZE", "8g")
     }
 
     vcs {
@@ -496,7 +563,7 @@ object DeployNuget : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -566,6 +633,10 @@ object SyncGitHubWithMain : BuildType({
 object BuildForLinux : BuildType({
     name = "Build for Linux"
 
+    params {
+        param("env.DOCKER_MEMORY_SIZE", "8g")
+    }
+
     vcs {
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
     }
@@ -579,7 +650,7 @@ object BuildForLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -676,7 +747,7 @@ object BuildForLinuxAarch64 : BuildType({
     }
 
     params {
-        param("env.DOCKER_MEMORY_SIZE", "4G")
+        param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "macbuilder20")
     }
 
@@ -703,7 +774,7 @@ object BuildForLinuxAarch64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -741,12 +812,17 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
-        contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
 object BuildForWindows : BuildType({
     name = "Build for Windows"
+
+    params {
+        param("env.DOCKER_MEMORY_SIZE", "8g")
+        param("env.AGENT_HOSTNAME", "winbuilder5161")
+    }
 
     vcs {
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
@@ -761,7 +837,7 @@ object BuildForWindows : BuildType({
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m 4GB"
+            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
     }
 
@@ -775,7 +851,7 @@ object BuildForWindows : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Windows 11")
-        contains("teamcity.agent.hostname", "winbuilder5161")
+        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -817,7 +893,7 @@ object Util {
 
     fun prepareMacOS(): String {
         return """
-            mvn_version=3.8.8
+            mvn_version=3.8.9
             mvn_install_path=~/.graal/maven-${'$'}{mvn_version}
             if [ ! -d "${'$'}{mvn_install_path}" ]; then
                 .teamcity/install.sh maven "${'$'}{mvn_version}" "${'$'}{mvn_install_path}"

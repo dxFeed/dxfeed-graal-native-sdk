@@ -60,7 +60,7 @@ RUN fc-cache -f -v
 COPY install.sh "/usr/local/bin/"
 
 # Download and install Apache Maven.
-ARG MVN_VERSION="3.8.8"
+ARG MVN_VERSION="3.8.9"
 ARG MVN_INSTALL_PATH="/opt/mvn/"
 ENV PATH="${MVN_INSTALL_PATH}/bin:${PATH}"
 RUN install.sh maven "${MVN_VERSION}" "${MVN_INSTALL_PATH}"
