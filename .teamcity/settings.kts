@@ -55,21 +55,21 @@ project {
 
     buildType(BuildPatchAndDeployLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
-    buildType(DeployForLinuxAarch64Release)
-    buildType(DeployForLinuxAarch64Debug)
-    buildType(DeployForLinuxAarch64)
-    buildType(DeployWindowsRelease)
-    buildType(DeployWindowsDebug)
-    buildType(DeployWindows)
-    buildType(DeployMacOsAndIOS)
+    buildType(BuildAndDeployForLinuxAarch64Release)
+    buildType(BuildAndDeployForLinuxAarch64Debug)
+    buildType(BuildAndDeployForLinuxAarch64)
+    buildType(BuildAndDeployForWindowsRelease)
+    buildType(BuildAndDeployForWindowsDebug)
+    buildType(BuildAndDeployForWindows)
+    buildType(BuildAndDeployForMacOsAndIOS)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMain)
     buildType(BuildForLinux)
     buildType(BuildForWindows)
     buildType(BuildForMacOSAndIOS)
+    buildType(BuildForLinuxAarch64)
     buildType(BuildAndPushDockerImageForLinuxX64)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
-    buildType(BuildForLinuxAarch64)
     buildType(BuildAndPushDockerImageForWindowsX64)
 }
 
@@ -222,8 +222,8 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 })
 
-object DeployForLinuxAarch64Release : BuildType({
-    name = "Deploy for Linux Aarch64 Release"
+object BuildAndDeployForLinuxAarch64Release : BuildType({
+    name = "Build and Deploy for Linux Aarch64 [Release]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -268,8 +268,8 @@ object DeployForLinuxAarch64Release : BuildType({
     }
 })
 
-object DeployForLinuxAarch64Debug : BuildType({
-    name = "Deploy for Linux Aarch64 Debug"
+object BuildAndDeployForLinuxAarch64Debug : BuildType({
+    name = "Build and Deploy for Linux Aarch64 [Debug]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -314,8 +314,8 @@ object DeployForLinuxAarch64Debug : BuildType({
     }
 })
 
-object DeployForLinuxAarch64 : BuildType({
-    name = "Deploy for Linux Aarch64"
+object BuildAndDeployForLinuxAarch64 : BuildType({
+    name = "Build and Deploy for Linux Aarch64"
     type = Type.COMPOSITE
 
     triggers {
@@ -330,17 +330,17 @@ object DeployForLinuxAarch64 : BuildType({
     }
 
     dependencies {
-        snapshot(DeployForLinuxAarch64Release) {
+        snapshot(BuildAndDeployForLinuxAarch64Release) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
-        snapshot(DeployForLinuxAarch64Debug) {
+        snapshot(BuildAndDeployForLinuxAarch64Debug) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
         }
     }
 })
 
-object DeployWindowsRelease : BuildType({
-    name = "Deploy Windows Release"
+object BuildAndDeployForWindowsRelease : BuildType({
+    name = "Build and Deploy for Windows [Release]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -389,8 +389,8 @@ object DeployWindowsRelease : BuildType({
     }
 })
 
-object DeployWindowsDebug : BuildType({
-    name = "Deploy Windows Debug"
+object BuildAndDeployForWindowsDebug : BuildType({
+    name = "Build and Deploy for Windows [Debug]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -439,29 +439,29 @@ object DeployWindowsDebug : BuildType({
     }
 })
 
-object DeployWindows : BuildType({
-    name = "Deploy Windows"
+object BuildAndDeployForWindows : BuildType({
+    name = "Build and Deploy for Windows"
     type = Type.COMPOSITE
 
     triggers {
         finishBuildTrigger {
-            buildType = "${DeployForLinuxAarch64Debug.id}"
+            buildType = "${BuildAndDeployForLinuxAarch64Debug.id}"
             successfulOnly = true
         }
     }
 
     dependencies {
-        snapshot(DeployWindowsRelease) {
+        snapshot(BuildAndDeployForWindowsRelease) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
-        snapshot(DeployWindowsDebug) {
+        snapshot(BuildAndDeployForWindowsDebug) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
         }
     }
 })
 
-object DeployMacOsAndIOS : BuildType({
-    name = "Deploy macOS and iOS"
+object BuildAndDeployForMacOsAndIOS : BuildType({
+    name = "Build and Deploy for macOS and iOS"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -494,7 +494,7 @@ object DeployMacOsAndIOS : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${DeployWindows.id}"
+            buildType = "${BuildAndDeployForWindows.id}"
             successfulOnly = true
         }
     }
@@ -569,7 +569,7 @@ object DeployNuget : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${DeployMacOsAndIOS.id}"
+            buildType = "${BuildAndDeployForMacOsAndIOS.id}"
             successfulOnly = true
             enforceCleanCheckout = true
         }
