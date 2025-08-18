@@ -53,7 +53,7 @@ project {
         }
     }
 
-    buildType(BuildPatchAndDeployLinux)
+    buildType(BuildPatchAndDeployForLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
     buildType(BuildAndDeployForLinuxAarch64Release)
     buildType(BuildAndDeployForLinuxAarch64Debug)
@@ -62,6 +62,7 @@ project {
     buildType(BuildAndDeployForWindowsDebug)
     buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForMacOsAndIOS)
+    buildType(BuildAndDeployForLinuxAarch64WindowsAndMacOS)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMain)
     buildType(BuildForLinux)
@@ -73,8 +74,8 @@ project {
     buildType(BuildAndPushDockerImageForWindowsX64)
 }
 
-object BuildPatchAndDeployLinux : BuildType({
-    name = "Build PATCH and Deploy Linux"
+object BuildPatchAndDeployForLinux : BuildType({
+    name = "Build PATCH & Deploy [Linux, x64]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -148,7 +149,7 @@ object BuildPatchAndDeployLinux : BuildType({
 })
 
 object BuildMajorMinorPatchAndDeployLinux : BuildType({
-    name = "Build MAJOR.MINOR.PATCH and Deploy Linux"
+    name = "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -223,7 +224,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
 })
 
 object BuildAndDeployForLinuxAarch64Release : BuildType({
-    name = "Build and Deploy for Linux Aarch64 [Release]"
+    name = "Build & Deploy [Linux, aarch64][Release]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -269,7 +270,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 })
 
 object BuildAndDeployForLinuxAarch64Debug : BuildType({
-    name = "Build and Deploy for Linux Aarch64 [Debug]"
+    name = "Build & Deploy [Linux, aarch64][Debug]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -315,32 +316,21 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 })
 
 object BuildAndDeployForLinuxAarch64 : BuildType({
-    name = "Build and Deploy for Linux Aarch64"
+    name = "Build & Deploy [Linux, aarch64]"
     type = Type.COMPOSITE
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "${BuildPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-        finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
-            successfulOnly = true
-        }
-    }
 
     dependencies {
         snapshot(BuildAndDeployForLinuxAarch64Release) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForLinuxAarch64Debug) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.IGNORE
         }
     }
 })
 
 object BuildAndDeployForWindowsRelease : BuildType({
-    name = "Build and Deploy for Windows [Release]"
+    name = "Build & Deploy [Windows, x64][Release]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -390,7 +380,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
 })
 
 object BuildAndDeployForWindowsDebug : BuildType({
-    name = "Build and Deploy for Windows [Debug]"
+    name = "Build & Deploy [Windows, x64][Debug]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -440,28 +430,21 @@ object BuildAndDeployForWindowsDebug : BuildType({
 })
 
 object BuildAndDeployForWindows : BuildType({
-    name = "Build and Deploy for Windows"
+    name = "Build & Deploy [Windows]"
     type = Type.COMPOSITE
-
-    triggers {
-        finishBuildTrigger {
-            buildType = "${BuildAndDeployForLinuxAarch64Debug.id}"
-            successfulOnly = true
-        }
-    }
 
     dependencies {
         snapshot(BuildAndDeployForWindowsRelease) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForWindowsDebug) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.ADD_PROBLEM
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.IGNORE
         }
     }
 })
 
 object BuildAndDeployForMacOsAndIOS : BuildType({
-    name = "Build and Deploy for macOS and iOS"
+    name = "Build & Deploy [macOS, iOS]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -492,15 +475,36 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
         }
     }
 
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
+object BuildAndDeployForLinuxAarch64WindowsAndMacOS : BuildType({
+    name = "Build & Deploy [Linux, aarch64][Windows][macOS, iOS]"
+    type = Type.COMPOSITE
+
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildAndDeployForWindows.id}"
+            buildType = "${BuildPatchAndDeployForLinux.id}"
+            successfulOnly = true
+        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
             successfulOnly = true
         }
     }
 
-    requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    dependencies {
+        snapshot(BuildAndDeployForLinuxAarch64) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+        snapshot(BuildAndDeployForWindows) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+        snapshot(BuildAndDeployForMacOsAndIOS) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
     }
 })
 
@@ -569,7 +573,7 @@ object DeployNuget : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildAndDeployForMacOsAndIOS.id}"
+            buildType = "${BuildAndDeployForLinuxAarch64WindowsAndMacOS.id}"
             successfulOnly = true
             enforceCleanCheckout = true
         }
@@ -600,7 +604,7 @@ object DeployNuget : BuildType({
 })
 
 object SyncGitHubWithMain : BuildType({
-    name = "Sync GitHub with 'main'"
+    name = "Sync GitHub With 'main'"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
@@ -631,7 +635,7 @@ object SyncGitHubWithMain : BuildType({
 })
 
 object BuildForLinux : BuildType({
-    name = "Build for Linux"
+    name = "Build [Linux, x64]"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -668,7 +672,7 @@ object BuildForLinux : BuildType({
 })
 
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
-    name = "Build and push a docker image for Linux x64"
+    name = "Build & Push a Docker Image [Linux, x64]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -704,7 +708,7 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
 })
 
 object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
-    name = "Build and push a docker image for Linux Aarch64"
+    name = "Build & Push a Docker Image [Linux, aarch64]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -740,7 +744,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
 })
 
 object BuildForLinuxAarch64 : BuildType({
-    name = "Build for Linux Aarch64"
+    name = "Build [Linux, aarch64]"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
@@ -779,7 +783,7 @@ object BuildForLinuxAarch64 : BuildType({
 })
 
 object BuildAndPushDockerImageForWindowsX64 : BuildType({
-    name = "Build and push a docker image for Windows x64"
+    name = "Build & Push a Docker Image [Windows, x64]"
 
     params {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
@@ -817,7 +821,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 })
 
 object BuildForWindows : BuildType({
-    name = "Build for Windows"
+    name = "Build [Windows, x64]"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -856,7 +860,7 @@ object BuildForWindows : BuildType({
 })
 
 object BuildForMacOSAndIOS : BuildType({
-    name = "Build for macOS and iOS"
+    name = "Build [macOS, iOS]"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
