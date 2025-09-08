@@ -150,19 +150,6 @@ set(CPACK_INSTALL_CMAKE_PROJECTS "")
 # Add install dir
 set(CPACK_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/install .)
 
-
-#
-# External dependencies
-#
-
-# Add date lib
-FetchContent_Declare(date
-        GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-        GIT_TAG v3.0.1
-        )
-FetchContent_MakeAvailable(date)
-
-
 #
 # Project modules
 #

@@ -1,4 +1,9 @@
+## v2.7.0
+
+* **\[MDAPI-282]\[GRAAL]** Fixed build with new CMake.
+
 ## v2.6.0
+
 * **\[MDAPI-260]\[GRAAL]** Improved the export of `HistoryEndpoint.Builder` methods:
     * Removed an unnecessary `newBuilder` parameter from exported functions `dxfg_HistoryEndpoint_Builder_withCompression` and `dxfg_HistoryEndpoint_Builder_withFormat`.
     * Removed all error messages "The `newBuilder` pointer is null"
