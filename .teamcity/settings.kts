@@ -34,7 +34,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2024.03"
+version = "2025.03"
 
 project {
     vcsRoot(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
@@ -62,7 +62,7 @@ project {
     buildType(BuildAndDeployForWindowsDebug)
     buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForMacOsAndIOS)
-    buildType(BuildAndDeployForLinuxAarch64WindowsAndMacOS)
+    buildType(BuildAndDeployForAll)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMain)
     buildType(BuildForLinux)
@@ -480,9 +480,10 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
     }
 })
 
-object BuildAndDeployForLinuxAarch64WindowsAndMacOS : BuildType({
-    name = "Build & Deploy [Linux, aarch64][Windows][macOS, iOS]"
+object BuildAndDeployForAll : BuildType({
+    name = "Build & Deploy [All]"
     type = Type.COMPOSITE
+    allowExternalStatus = true
 
     triggers {
         finishBuildTrigger {
@@ -573,7 +574,7 @@ object DeployNuget : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildAndDeployForLinuxAarch64WindowsAndMacOS.id}"
+            buildType = "${BuildAndDeployForAll.id}"
             successfulOnly = true
             enforceCleanCheckout = true
         }
