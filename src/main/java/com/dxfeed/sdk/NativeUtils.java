@@ -16,16 +16,17 @@ import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.api.DXPublisher;
+import com.dxfeed.api.SubscriptionController;
 import com.dxfeed.api.osub.ObservableSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
+import com.dxfeed.event.EventMappers;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.IndexedEventSource;
-import com.dxfeed.event.TimeSeriesEvent;
-import com.dxfeed.event.EventMappers;
 import com.dxfeed.event.ListEventMapper;
 import com.dxfeed.event.ListEventTypeMapper;
 import com.dxfeed.event.ListIndexedEventSourceMapper;
+import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.glossary.AdditionalUnderlyings;
 import com.dxfeed.glossary.CFI;
 import com.dxfeed.glossary.PriceIncrements;
@@ -36,6 +37,7 @@ import com.dxfeed.ipf.live.InstrumentProfileCollector;
 import com.dxfeed.ipf.live.InstrumentProfileConnection;
 import com.dxfeed.ipf.live.InstrumentProfileUpdateListener;
 import com.dxfeed.model.IndexedEventModel;
+import com.dxfeed.model.IndexedEventTxModel;
 import com.dxfeed.model.ObservableListModel;
 import com.dxfeed.model.ObservableListModelListener;
 import com.dxfeed.model.TimeSeriesEventModel;
@@ -80,6 +82,12 @@ import com.dxfeed.sdk.glossary.mappers.CFIAttributeMapper;
 import com.dxfeed.sdk.glossary.mappers.CFIMapper;
 import com.dxfeed.sdk.glossary.mappers.CFIValueMapper;
 import com.dxfeed.sdk.glossary.mappers.PriceIncrementsMapper;
+import com.dxfeed.sdk.indexedeventtxmodel.DxfgIndexedEventTxModelBuilderHandle;
+import com.dxfeed.sdk.indexedeventtxmodel.DxfgIndexedEventTxModelHandle;
+import com.dxfeed.sdk.indexedeventtxmodel.DxfgIndexedEventTxModelListenerHandle;
+import com.dxfeed.sdk.indexedeventtxmodel.IndexedEventTxModelBuilderMapper;
+import com.dxfeed.sdk.indexedeventtxmodel.IndexedEventTxModelListenerMapper;
+import com.dxfeed.sdk.indexedeventtxmodel.IndexedEventTxModelMapper;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2ListPointer;
 import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2Pointer;
@@ -96,12 +104,12 @@ import com.dxfeed.sdk.ipf.DxfgIterableInstrumentProfile;
 import com.dxfeed.sdk.javac.DxfgAuthToken;
 import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import com.dxfeed.sdk.javac.DxfgCharPointerPointer;
-import com.dxfeed.sdk.javac.DxfgExecutor;
+import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgInputStream;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerPointer;
 import com.dxfeed.sdk.javac.DxfgTimeFormat;
-import com.dxfeed.sdk.javac.DxfgTimePeriod;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 import com.dxfeed.sdk.javac.DxfgTimeZone;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.logging.DxfgInterceptableLoggingListenerHandle;
@@ -180,6 +188,8 @@ import com.dxfeed.sdk.source.IndexedEventSourceMapper;
 import com.dxfeed.sdk.subscription.DxfgFeedEventListener;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
 import com.dxfeed.sdk.subscription.DxfgTimeSeriesSubscription;
+import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandle;
+import com.dxfeed.sdk.subscriptioncontroller.SubscriptionControllerMapper;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
@@ -213,8 +223,8 @@ public final class NativeUtils {
     public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
     public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
     public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;
-    public static final Mapper<Executor, DxfgExecutor> MAPPER_EXECUTOR;
-    public static final Mapper<TimePeriod, DxfgTimePeriod> MAPPER_TIME_PERIOD;
+    public static final Mapper<Executor, DxfgExecutorHandle> MAPPER_EXECUTOR;
+    public static final Mapper<TimePeriod, DxfgTimePeriodHandle> MAPPER_TIME_PERIOD;
     public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
     public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
     public static final Mapper<AuthToken, DxfgAuthToken> MAPPER_AUTH_TOKEN;
@@ -267,7 +277,13 @@ public final class NativeUtils {
     public static final ListMapper<InstrumentProfile, DxfgInstrumentProfile2Pointer, DxfgInstrumentProfile2PointerPointer, DxfgInstrumentProfile2ListPointer> MAPPER_INSTRUMENT_PROFILES_2;
     public static final Mapper<HistoryEndpoint, DxfgHistoryEndpointHandle> MAPPER_HISTORY_ENDPOINT;
     public static final Mapper<HistoryEndpoint.Builder, DxfgHistoryEndpointBuilderHandle> MAPPER_HISTORY_ENDPOINT_BUILDER;
-
+    public static final Mapper<SubscriptionController, DxfgSubscriptionControllerHandle> MAPPER_SUBSCRIPTION_CONTROLLER;
+    @SuppressWarnings("rawtypes")
+    public static final Mapper<IndexedEventTxModel, DxfgIndexedEventTxModelHandle> MAPPER_INDEXED_EVENT_TX_MODEL;
+    @SuppressWarnings("rawtypes")
+    public static final Mapper<IndexedEventTxModel.Builder, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
+    @SuppressWarnings("rawtypes")
+    public static final Mapper<IndexedEventTxModel.Listener, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
 
     static {
         MAPPER_STRING = new StringMapper();
@@ -345,6 +361,10 @@ public final class NativeUtils {
         MAPPER_INSTRUMENT_PROFILES_2 = new InstrumentProfile2ListMapper(MAPPER_INSTRUMENT_PROFILE_2);
         MAPPER_HISTORY_ENDPOINT = new HistoryEndpointMapper();
         MAPPER_HISTORY_ENDPOINT_BUILDER = new HistoryEndpointBuilderMapper();
+        MAPPER_SUBSCRIPTION_CONTROLLER = new SubscriptionControllerMapper();
+        MAPPER_INDEXED_EVENT_TX_MODEL = new IndexedEventTxModelMapper();
+        MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER = new IndexedEventTxModelBuilderMapper();
+        MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER = new IndexedEventTxModelListenerMapper();
     }
 
     public static class Finalizer {

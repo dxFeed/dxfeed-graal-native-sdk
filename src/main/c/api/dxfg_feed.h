@@ -43,7 +43,7 @@ typedef struct dxfg_feed_t {
 } dxfg_feed_t;
 
 /**
- * @brief The DXFeed.
+ * @brief The Promise.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/promise/Promise.html">Javadoc</a>
  */
 typedef struct dxfg_promise_t {

@@ -1,6 +1,26 @@
 ## v2.7.0
 
 * **\[MDAPI-282]\[GRAAL]** Fixed build with new CMake.
+* **\[MDAPI-244]\[GRAAL]** Added IndexedEventTxModel.
+  * `DxfgExecutor` renamed to `DxfgExecutorHandle`. Added `DxfgExecutorHandlePointer`.
+  * `DxfgTimePeriod` renamed to `DxfgTimePeriodHandle`. Added `DxfgTimePeriodHandlePointer`.
+  * Added `dxfg_subscription_controller.h` header.
+  * Added `DxfgSubscriptionControllerHandle` (`dxfg_subscription_controller_t` struct), `DxfgSubscriptionControllerHandlePointer`, mapper and native wrappers.
+  * Added functions to `SubscriptionControllerNative` (`dxfg_subscription_controller.h`):
+    * `dxfg_SubscriptionController_*`.
+  * Added functions to `SubscriptionNative` (`dxfg_subscription.h`):
+    * `dxfg_DXFeedSubscription_getSubscriptionController`
+  * Added `dxfg_indexed_event_tx_model.h` header.
+  * Added `DxfgIndexedEventTxModelHandle` (`dxfg_indexed_event_tx_model_t` struct), `DxfgIndexedEventTxModelHandlePointer`, mapper and native wrappers.
+  * Added `DxfgIndexedEventTxModelListenerHandle` (`dxfg_indexed_event_tx_model_listener_t` struct), `DxfgIndexedEventTxModelListenerHandlePointer`, mapper and native wrappers.
+  * Added `DxfgIndexedEventTxModelBuilderHandle` (`dxfg_indexed_event_tx_model_builder_t` struct), `DxfgIndexedEventTxModelBuilderHandlePointer`, mapper and native wrappers.
+  * Added `DxfgIndexedEventTxModelListenerEventsReceivedFunctionPointer` (`dxfg_IndexedEventTxModel_Listener_eventsReceived_f` define).
+  * Added functions to `IndexedEventTxModelNative` (`dxfg_indexed_event_tx_model.h`):
+    *  `dxfg_IndexedEventTxModel_*`
+    *  `dxfg_IndexedEventTxModel_Listener_new`
+    *  `dxfg_IndexedEventTxModel_Builder_*`
+  * Added `DxfgClient`'s cases:
+      * `IndexedEventTxModelCase`.
 
 ## v2.6.0
 

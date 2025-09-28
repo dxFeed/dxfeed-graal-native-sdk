@@ -15,6 +15,7 @@ extern "C" {
 #include "dxfg_events.h"
 #include "dxfg_feed.h"
 #include "dxfg_publisher.h"
+#include "dxfg_subscription_controller.h"
 #include "dxfg_subscription.h"
 #include "dxfg_system.h"
 #include "dxfg_javac.h"
@@ -28,6 +29,7 @@ extern "C" {
 #include "dxfg_glossary.h"
 #include "dxfg_logging.h"
 #include "dxfg_candlewebservice.h"
+#include "dxfg_indexed_event_tx_model.h"
 
 #ifdef __cplusplus
 }

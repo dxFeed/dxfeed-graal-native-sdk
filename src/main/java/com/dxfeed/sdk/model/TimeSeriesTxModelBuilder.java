@@ -14,7 +14,7 @@ import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.feed.DxfgFeed;
-import com.dxfeed.sdk.javac.DxfgExecutor;
+import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -38,6 +38,6 @@ public interface TimeSeriesTxModelBuilder {
     @Parameter(value = DxfgSymbol.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_SYMBOL.toJava($N)", cTypeName = "dxfg_symbol_t*")
     public void withSymbol(Object symbol);
 
-    @Parameter(value = DxfgExecutor.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_EXECUTOR.toJava($N)", cTypeName = "dxfg_executor_t*")
+    @Parameter(value = DxfgExecutorHandle.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_EXECUTOR.toJava($N)", cTypeName = "dxfg_executor_t*")
     public void withExecutor(Executor executor);
 }

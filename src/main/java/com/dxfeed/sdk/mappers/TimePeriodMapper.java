@@ -4,13 +4,13 @@
 package com.dxfeed.sdk.mappers;
 
 import com.devexperts.util.TimePeriod;
-import com.dxfeed.sdk.javac.DxfgTimePeriod;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class TimePeriodMapper extends JavaObjectHandlerMapper<TimePeriod, DxfgTimePeriod> {
+public class TimePeriodMapper extends JavaObjectHandlerMapper<TimePeriod, DxfgTimePeriodHandle> {
 
     @Override
     protected int getSizeJavaObjectHandler() {
-        return SizeOf.get(DxfgTimePeriod.class);
+        return SizeOf.get(DxfgTimePeriodHandle.class);
     }
 }

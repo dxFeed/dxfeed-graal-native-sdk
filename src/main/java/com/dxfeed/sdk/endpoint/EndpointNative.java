@@ -11,7 +11,7 @@ import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
-import com.dxfeed.sdk.javac.DxfgExecutor;
+import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -302,10 +302,10 @@ public final class EndpointNative {
     public static int dxfg_DXEndpoint_executor(
             final IsolateThread ignoredThread,
             final DxfgEndpoint dxfgEndpoint,
-            final DxfgExecutor dxfgExecutor
+            final DxfgExecutorHandle executor
     ) {
         NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).executor(NativeUtils.MAPPER_EXECUTOR.toJava(
-                dxfgExecutor));
+                executor));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

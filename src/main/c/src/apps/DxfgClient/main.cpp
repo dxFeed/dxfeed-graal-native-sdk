@@ -42,6 +42,7 @@
 #include "ScheduleCase.hpp"
 #include "SystemPropertiesCase.hpp"
 #include "TxIndexedEventModelCase.hpp"
+#include "IndexedEventTxModelCase.hpp"
 
 #include <cinttypes>
 
@@ -57,7 +58,7 @@ void printUsage() {
 DxfgClient [<help|Help|-h|-?|--help>]
   Shows help on how to use the program.
 
-DxfcClient <list|--list|-l>
+DxfgClient <list|--list|-l>
   Shows a list of all cases.
 
 DxfgClient <case> [<properties>] [<options>]
@@ -331,6 +332,7 @@ int main(int argc, char *argv[]) {
         instrumentProfileCustomFieldsCase,
         instrumentProfileReaderBench,
         historyEndpointCase,
+        indexedEventTxModelCase,
     };
 
     for (auto const &c : cases) {

@@ -3,14 +3,14 @@
 
 package com.dxfeed.sdk.mappers;
 
-import com.dxfeed.sdk.javac.DxfgExecutor;
+import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import java.util.concurrent.Executor;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
-public class ExecutorMapper extends JavaObjectHandlerMapper<Executor, DxfgExecutor> {
+public class ExecutorMapper extends JavaObjectHandlerMapper<Executor, DxfgExecutorHandle> {
 
     @Override
     protected int getSizeJavaObjectHandler() {
-        return SizeOf.get(DxfgExecutor.class);
+        return SizeOf.get(DxfgExecutorHandle.class);
     }
 }

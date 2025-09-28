@@ -8,6 +8,13 @@ set(target SystemNativeTest)
 # Output name
 set(output_name ${target})
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CXX_EXTENSIONS OFF)
+set(C_EXTENSIONS OFF)
+
 # Print status
 message(STATUS "Test ${target}")
 

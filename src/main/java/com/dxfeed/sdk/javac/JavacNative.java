@@ -234,7 +234,7 @@ public class JavacNative {
             name = "dxfg_TimePeriod_ZERO",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgTimePeriod dxfg_TimePeriod_ZERO(final IsolateThread ignoredThread) {
+    public static DxfgTimePeriodHandle dxfg_TimePeriod_ZERO(final IsolateThread ignoredThread) {
         return NativeUtils.MAPPER_TIME_PERIOD.toNative(TimePeriod.ZERO);
     }
 
@@ -242,7 +242,7 @@ public class JavacNative {
             name = "dxfg_TimePeriod_UNLIMITED",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgTimePeriod dxfg_TimePeriod_UNLIMITED(final IsolateThread ignoredThread) {
+    public static DxfgTimePeriodHandle dxfg_TimePeriod_UNLIMITED(final IsolateThread ignoredThread) {
         return NativeUtils.MAPPER_TIME_PERIOD.toNative(TimePeriod.UNLIMITED);
     }
 
@@ -250,7 +250,7 @@ public class JavacNative {
             name = "dxfg_TimePeriod_valueOf",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgTimePeriod dxfg_TimePeriod_valueOf(
+    public static DxfgTimePeriodHandle dxfg_TimePeriod_valueOf(
             final IsolateThread ignoredThread,
             final long value
     ) {
@@ -261,7 +261,7 @@ public class JavacNative {
             name = "dxfg_TimePeriod_valueOf2",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgTimePeriod dxfg_TimePeriod_valueOf2(
+    public static DxfgTimePeriodHandle dxfg_TimePeriod_valueOf2(
             final IsolateThread ignoredThread,
             final CCharPointer value
     ) {
@@ -276,9 +276,9 @@ public class JavacNative {
     )
     public static long dxfg_TimePeriod_getTime(
             final IsolateThread ignoredThread,
-            final DxfgTimePeriod dxfgTimePeriod
+            final DxfgTimePeriodHandle timePeriod
     ) {
-        return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getTime();
+        return NativeUtils.MAPPER_TIME_PERIOD.toJava(timePeriod).getTime();
     }
 
     @CEntryPoint(
@@ -287,9 +287,9 @@ public class JavacNative {
     )
     public static int dxfg_TimePeriod_getSeconds(
             final IsolateThread ignoredThread,
-            final DxfgTimePeriod dxfgTimePeriod
+            final DxfgTimePeriodHandle timePeriod
     ) {
-        return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getSeconds();
+        return NativeUtils.MAPPER_TIME_PERIOD.toJava(timePeriod).getSeconds();
     }
 
     @CEntryPoint(
@@ -298,9 +298,9 @@ public class JavacNative {
     )
     public static long dxfg_TimePeriod_getNanos(
             final IsolateThread ignoredThread,
-            final DxfgTimePeriod dxfgTimePeriod
+            final DxfgTimePeriodHandle timePeriod
     ) {
-        return NativeUtils.MAPPER_TIME_PERIOD.toJava(dxfgTimePeriod).getNanos();
+        return NativeUtils.MAPPER_TIME_PERIOD.toJava(timePeriod).getNanos();
     }
 
     @CEntryPoint(
@@ -754,7 +754,7 @@ public class JavacNative {
             name = "dxfg_Executors_newFixedThreadPool",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgExecutor dxfg_Executors_newFixedThreadPool(
+    public static DxfgExecutorHandle dxfg_Executors_newFixedThreadPool(
             final IsolateThread ignoredThread,
             final int nThreads,
             final CCharPointer name
@@ -771,7 +771,7 @@ public class JavacNative {
             name = "dxfg_Executors_newScheduledThreadPool",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgExecutor dxfg_Executors_newScheduledThreadPool(
+    public static DxfgExecutorHandle dxfg_Executors_newScheduledThreadPool(
             final IsolateThread ignoredThread,
             final int nThreads,
             final CCharPointer name
@@ -788,7 +788,7 @@ public class JavacNative {
             name = "dxfg_ExecutorBaseOnConcurrentLinkedQueue_new",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgExecutor dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(
+    public static DxfgExecutorHandle dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(
             final IsolateThread ignoredThread
     ) {
         return NativeUtils.MAPPER_EXECUTOR.toNative(new ExecutorBaseOnConcurrentLinkedQueue());
@@ -800,7 +800,7 @@ public class JavacNative {
     )
     public static int dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(
             final IsolateThread ignoredThread,
-            final DxfgExecutor executor
+            final DxfgExecutorHandle executor
     ) {
         ((ExecutorBaseOnConcurrentLinkedQueue) NativeUtils.MAPPER_EXECUTOR.toJava(
                 executor)).processAllPendingTasks();
