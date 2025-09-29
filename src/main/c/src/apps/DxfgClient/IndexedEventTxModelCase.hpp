@@ -5,6 +5,8 @@
 
 #include <dxfg_api.h>
 
+#include "Common.hpp"
+
 #include "CommandLineParser.hpp"
 #include "CommandsContext.hpp"
 #include "CommandsRegistry.hpp"
@@ -21,13 +23,14 @@ void getException(graal_isolatethread_t *isolateThread);
 
 void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
-inline void indexedEventTxModelListenerCallback(graal_isolatethread_t *isolateThread,
-                                                                   dxfg_event_type_list *events, int32_t isSnapshot,
-                                                                   void */*userData*/) {
+inline void indexedEventTxModelListenerCallback(graal_isolatethread_t *isolateThread, dxfg_event_type_list *events,
+                                                int32_t isSnapshot, void * /*userData*/) {
     printf("IndexedEventTxModelListenerCallback:\n");
 
     if (1 == isSnapshot) {
         puts("  <SNAPSHOT>");
+    } else {
+        puts("  <UPDATE>");
     }
 
     for (int i = 0; i < events->size; ++i) {
@@ -50,36 +53,128 @@ inline Command indexedEventTxModelCase{
         auto address = dxfg::CommandLineParser::parseAddress(args, argIndex, context.getDefaultAddress());
         dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(isolateThread);
 
-        dxfg_DXEndpoint_connect(isolateThread, endpoint, address.c_str());
+        if (nullptr == endpoint) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &endpoint->handler);
+        });
+
+        auto result = dxfg_DXEndpoint_connect(isolateThread, endpoint, address.c_str());
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_DXEndpoint_close(isolateThread, endpoint);
+        });
 
         dxfg_feed_t *feed = dxfg_DXEndpoint_getFeed(isolateThread, endpoint);
+
+        if (nullptr == feed) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &feed->handler);
+        });
+
         dxfg_indexed_event_tx_model_builder_t *builder{};
 
-        dxfg_IndexedEventTxModel_newBuilder(isolateThread, DXFG_EVENT_ORDER, &builder);
-        dxfg_IndexedEventTxModel_Builder_withFeed(isolateThread, builder, feed);
-        dxfg_IndexedEventTxModel_Builder_withSymbol2(isolateThread, builder, "IBM");
+        result = dxfg_IndexedEventTxModel_newBuilder(isolateThread, DXFG_EVENT_ORDER, &builder);
 
-        dxfg_indexed_event_source_t source{.type = INDEXED_EVENT_SOURCE, .id = 6579576, .name = "dex"};
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
 
-        dxfg_IndexedEventTxModel_Builder_withSource(isolateThread, builder, &source);
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &builder->handler);
+        });
+
+        result = dxfg_IndexedEventTxModel_Builder_withFeed(isolateThread, builder, feed);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        result = dxfg_IndexedEventTxModel_Builder_withSymbol2(isolateThread, builder, "AAPL");
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        const auto source = dxfg_IndexedEventSource_new(isolateThread, "ntv");
+
+        if (nullptr == source) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_IndexedEventSource_release(isolateThread, source);
+        });
+
+        result = dxfg_IndexedEventTxModel_Builder_withSource(isolateThread, builder, source);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
 
         dxfg_indexed_event_tx_model_listener_t *listener{};
 
-        dxfg_IndexedEventTxModel_Listener_new(isolateThread, &indexedEventTxModelListenerCallback, nullptr, &listener);
-        dxfg_IndexedEventTxModel_Builder_withListener(isolateThread, builder, nullptr);
+        result = dxfg_IndexedEventTxModel_Listener_new(isolateThread, &indexedEventTxModelListenerCallback, nullptr, &listener);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &listener->handler);
+        });
+
+        result = dxfg_IndexedEventTxModel_Builder_withListener(isolateThread, builder, listener);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
 
         dxfg_indexed_event_tx_model_t *model{};
 
-        dxfg_IndexedEventTxModel_Builder_build(isolateThread, builder, &model);
+        result = dxfg_IndexedEventTxModel_Builder_build(isolateThread, builder, &model);
 
-        std::this_thread::sleep_for(std::chrono::seconds(30));
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
 
-        dxfg_IndexedEventTxModel_close(isolateThread, model);
-        dxfg_DXEndpoint_close(isolateThread, endpoint);
-        dxfg_JavaObjectHandler_release(isolateThread, &builder->handler);
-        dxfg_JavaObjectHandler_release(isolateThread, &model->handler);
-        dxfg_JavaObjectHandler_release(isolateThread, &listener->handler);
-        dxfg_JavaObjectHandler_release(isolateThread, &feed->handler);
-        dxfg_JavaObjectHandler_release(isolateThread, &endpoint->handler);
+            return;
+        }
+
+        finally([&] {
+            dxfg_IndexedEventTxModel_close(isolateThread, model);
+            dxfg_JavaObjectHandler_release(isolateThread, &model->handler);
+        });
+
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+
     }};
 } // namespace dxfg

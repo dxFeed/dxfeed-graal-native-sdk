@@ -26,6 +26,7 @@
 #include "GetLastEventCase.hpp"
 #include "HistoryEndpointCase.hpp"
 #include "IndexedEventModelCase.hpp"
+#include "IndexedEventTxModelCase.hpp"
 #include "IndexedEventsPromiseCase.hpp"
 #include "InstrumentProfileCustomFieldsCase.hpp"
 #include "InstrumentProfileFieldCase.hpp"
@@ -42,7 +43,6 @@
 #include "ScheduleCase.hpp"
 #include "SystemPropertiesCase.hpp"
 #include "TxIndexedEventModelCase.hpp"
-#include "IndexedEventTxModelCase.hpp"
 
 #include <cinttypes>
 
@@ -104,6 +104,22 @@ void getException(graal_isolatethread_t *isolateThread) {
 }
 
 void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event) {
+    static constexpr size_t DXFG_ORDER_FLAGS_SIDE_SHIFT = 2;
+    static constexpr uint32_t DXFG_ORDER_FLAGS_SIDE_MASK = 0b11;
+
+    auto getOrderSide = [](const int32_t flags) {
+        switch (static_cast<uint32_t>(flags) >> DXFG_ORDER_FLAGS_SIDE_SHIFT & DXFG_ORDER_FLAGS_SIDE_MASK) {
+        case 0:
+            return "UNDEFINED(0)";
+        case 1:
+            return "BUY(1)";
+        case 2:
+            return "SELL(2)";
+        default:
+            return "UNKNOWN";
+        }
+    };
+
     if (!event) {
         return;
     }
@@ -199,9 +215,10 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
         dxfg_indexed_event_source_t *source =
             dxfg_IndexedEvent_getSource(isolateThread, &order->order_base.market_event.event_type);
 
-        printf("  Order{%s, source=%s, price=%f, size=%f, marketMaker='%s'}\n",
-               order->order_base.market_event.event_symbol, source->name, order->order_base.price,
-               order->order_base.size, order->market_maker);
+        printf("  Order{%s, src=%s, side=%s, price=%f, size=%f, mm='%s', flags=0x%X, e.Flags=0x%X}\n",
+               order->order_base.market_event.event_symbol, source->name, getOrderSide(order->order_base.flags),
+               order->order_base.price, order->order_base.size, order->market_maker, order->order_base.flags,
+               order->order_base.event_flags);
         dxfg_IndexedEventSource_release(isolateThread, source);
     } break;
     case DXFG_EVENT_ANALYTIC_ORDER: {
