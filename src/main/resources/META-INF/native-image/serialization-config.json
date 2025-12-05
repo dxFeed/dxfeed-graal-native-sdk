@@ -1,5 +1,176 @@
 {
   "types":[
+    {
+      "name": "com.devexperts.auth.AuthToken"
+    },
+    {
+      "name": "com.dxfeed.event.candle.Candle"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandleAlignment"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandleExchange"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandlePeriod"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandlePrice"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandlePriceLevel"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandleSession"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandleSymbol"
+    },
+    {
+      "name": "com.dxfeed.event.candle.CandleType"
+    },
+    {
+      "name": "com.dxfeed.event.custom.NuamOrder"
+    },
+    {
+      "name": "com.dxfeed.event.custom.NuamOrderType"
+    },
+    {
+      "name": "com.dxfeed.event.custom.NuamTimeAndSale"
+    },
+    {
+      "name": "com.dxfeed.event.custom.NuamTimeInForceType"
+    },
+    {
+      "name": "com.dxfeed.event.market.AnalyticOrder"
+    },
+    {
+      "name": "com.dxfeed.event.market.Direction"
+    },
+    {
+      "name": "com.dxfeed.event.market.IcebergType"
+    },
+    {
+      "name": "com.dxfeed.event.market.MarketEvent"
+    },
+    {
+      "name": "com.dxfeed.event.market.MarketEventSymbols"
+    },
+    {
+      "name": "com.dxfeed.event.market.MarketMaker"
+    },
+    {
+      "name": "com.dxfeed.event.market.OptionSale"
+    },
+    {
+      "name": "com.dxfeed.event.market.Order"
+    },
+    {
+      "name": "com.dxfeed.event.market.OrderAction"
+    },
+    {
+      "name": "com.dxfeed.event.market.OrderBase"
+    },
+    {
+      "name": "com.dxfeed.event.market.OrderSource"
+    },
+    {
+      "name": "com.dxfeed.event.market.OtcMarketsOrder"
+    },
+    {
+      "name": "com.dxfeed.event.market.OtcMarketsPriceType"
+    },
+    {
+      "name": "com.dxfeed.event.market.PriceType"
+    },
+    {
+      "name": "com.dxfeed.event.market.Profile"
+    },
+    {
+      "name": "com.dxfeed.event.market.Quote"
+    },
+    {
+      "name": "com.dxfeed.event.market.Scope"
+    },
+    {
+      "name": "com.dxfeed.event.market.ShortSaleRestriction"
+    },
+    {
+      "name": "com.dxfeed.event.market.Side"
+    },
+    {
+      "name": "com.dxfeed.event.market.SpreadOrder"
+    },
+    {
+      "name": "com.dxfeed.event.market.Summary"
+    },
+    {
+      "name": "com.dxfeed.event.market.TimeAndSale"
+    },
+    {
+      "name": "com.dxfeed.event.market.TimeAndSaleType"
+    },
+    {
+      "name": "com.dxfeed.event.market.Trade"
+    },
+    {
+      "name": "com.dxfeed.event.market.TradeBase"
+    },
+    {
+      "name": "com.dxfeed.event.market.TradeETH"
+    },
+    {
+      "name": "com.dxfeed.event.market.TradingStatus"
+    },
+    {
+      "name": "com.dxfeed.event.misc.Configuration"
+    },
+    {
+      "name": "com.dxfeed.event.misc.Message"
+    },
+    {
+      "name": "com.dxfeed.event.misc.TextConfiguration"
+    },
+    {
+      "name": "com.dxfeed.event.misc.TextMessage"
+    },
+    {
+      "name": "com.dxfeed.event.option.Greeks"
+    },
+    {
+      "name": "com.dxfeed.event.option.Series"
+    },
+    {
+      "name": "com.dxfeed.event.option.TheoPrice"
+    },
+    {
+      "name": "com.dxfeed.event.option.Underlying"
+    },
+    {
+      "name": "com.dxfeed.glossary.AdditionalUnderlyings"
+    },
+    {
+      "name": "com.dxfeed.glossary.CFI"
+    },
+    {
+      "name": "com.dxfeed.glossary.CFI$Value"
+    },
+    {
+      "name": "com.dxfeed.glossary.CFI$Attribute"
+    },
+    {
+      "name": "com.dxfeed.glossary.PriceIncrements"
+    },
+    {
+      "name": "com.dxfeed.ipf.InstrumentProfile"
+    },
+    {
+      "name": "com.dxfeed.ipf.InstrumentProfileField"
+    },
+    {
+      "name": "com.dxfeed.ipf.InstrumentProfileType"
+    }
   ],
   "lambdaCapturingTypes":[
   ],
