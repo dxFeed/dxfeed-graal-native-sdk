@@ -44,6 +44,7 @@ import com.dxfeed.model.TimeSeriesEventModel;
 import com.dxfeed.model.market.OrderBookModel;
 import com.dxfeed.model.market.OrderBookModelListener;
 import com.dxfeed.ondemand.OnDemandService;
+import com.dxfeed.orcs.api.AuthOrderSource;
 import com.dxfeed.promise.Promise;
 import com.dxfeed.schedule.Day;
 import com.dxfeed.schedule.DayFilter;
@@ -174,6 +175,11 @@ import com.dxfeed.sdk.model.DxfgOrderBookModel;
 import com.dxfeed.sdk.model.DxfgOrderBookModelListener;
 import com.dxfeed.sdk.model.DxfgTimeSeriesEventModel;
 import com.dxfeed.sdk.ondemand.DxfgOnDemandService;
+import com.dxfeed.sdk.orcs.DxfgAuthOrderSourceHandle;
+import com.dxfeed.sdk.orcs.DxfgPriceLevelServiceHandle;
+import com.dxfeed.sdk.orcs.PriceLevelServiceHolder;
+import com.dxfeed.sdk.orcs.mappers.AuthOrderSourceMapper;
+import com.dxfeed.sdk.orcs.mappers.PriceLevelServiceMapper;
 import com.dxfeed.sdk.publisher.DxfgObservableSubscription;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
 import com.dxfeed.sdk.schedule.DxfgDay;
@@ -284,6 +290,8 @@ public final class NativeUtils {
     public static final Mapper<IndexedEventTxModel.Builder, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
     @SuppressWarnings("rawtypes")
     public static final Mapper<IndexedEventTxModel.Listener, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
+    public static final Mapper<PriceLevelServiceHolder, DxfgPriceLevelServiceHandle> MAPPER_PRICE_LEVEL_SERVICE;
+    public static final Mapper<AuthOrderSource, DxfgAuthOrderSourceHandle> MAPPER_AUTH_ORDER_SOURCE;
 
     static {
         MAPPER_STRING = new StringMapper();
@@ -365,6 +373,8 @@ public final class NativeUtils {
         MAPPER_INDEXED_EVENT_TX_MODEL = new IndexedEventTxModelMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER = new IndexedEventTxModelBuilderMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER = new IndexedEventTxModelListenerMapper();
+        MAPPER_PRICE_LEVEL_SERVICE = new PriceLevelServiceMapper();
+        MAPPER_AUTH_ORDER_SOURCE = new AuthOrderSourceMapper();
     }
 
     public static class Finalizer {

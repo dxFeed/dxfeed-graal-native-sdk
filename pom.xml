@@ -35,6 +35,7 @@
     <!-- qd version and auther-api version must be compatible -->
     <auther-api.version>510</auther-api.version>
     <qd.version>3.342</qd.version>
+    <orcs-api.version>524</orcs-api.version>
     <dxfeed.api.experimental.model.version>1.1</dxfeed.api.experimental.model.version>
     <nativebridge.version>0.5</nativebridge.version>
     <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
@@ -46,7 +47,6 @@
       <artifactId>annotations</artifactId>
       <version>${nativebridge.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxlink-websocket</artifactId>
@@ -56,6 +56,11 @@
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxfeed-ondemand</artifactId>
       <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dxfeed</groupId>
+      <artifactId>orcs-api</artifactId>
+      <version>${orcs-api.version}</version>
     </dependency>
     <dependency>
       <groupId>com.dxfeed.api.experimental</groupId>
