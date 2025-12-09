@@ -290,8 +290,6 @@ public final class NativeUtils {
     public static final Mapper<IndexedEventTxModel.Builder, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
     @SuppressWarnings("rawtypes")
     public static final Mapper<IndexedEventTxModel.Listener, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
-    public static final Mapper<PriceLevelServiceHolder, DxfgPriceLevelServiceHandle> MAPPER_PRICE_LEVEL_SERVICE;
-    public static final Mapper<AuthOrderSource, DxfgAuthOrderSourceHandle> MAPPER_AUTH_ORDER_SOURCE;
 
     static {
         MAPPER_STRING = new StringMapper();
@@ -373,8 +371,6 @@ public final class NativeUtils {
         MAPPER_INDEXED_EVENT_TX_MODEL = new IndexedEventTxModelMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER = new IndexedEventTxModelBuilderMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER = new IndexedEventTxModelListenerMapper();
-        MAPPER_PRICE_LEVEL_SERVICE = new PriceLevelServiceMapper();
-        MAPPER_AUTH_ORDER_SOURCE = new AuthOrderSourceMapper();
     }
 
     public static class Finalizer {

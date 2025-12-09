@@ -25,6 +25,7 @@ extern "C" {
 #include "dxfg_event_model.h"
 #include "dxfg_ipf.h"
 #include "dxfg_ondemand.h"
+#include "dxfg_orcs.h"
 #include "dxfg_schedule.h"
 #include "dxfg_glossary.h"
 #include "dxfg_logging.h"

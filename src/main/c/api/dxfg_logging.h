@@ -36,19 +36,19 @@ typedef enum dxfg_logging_level_t {
     /// Indicates a highly detailed tracing message.
     DXFG_LOGGING_LEVEL_TRACE,
 
-    /// Is a message level providing tracing debug information.
+    /// It is a message level providing tracing debug information.
     DXFG_LOGGING_LEVEL_DEBUG,
 
-    /// Is a message level for informational messages.
+    /// It is a message level for informational messages.
     DXFG_LOGGING_LEVEL_INFO,
 
-    /// Is a message level indicating a potential problem.
+    /// It is a message level indicating a potential problem.
     DXFG_LOGGING_LEVEL_WARN,
 
-    /// Is a message level indicating a serious failure.
+    /// It is a message level indicating a serious failure.
     DXFG_LOGGING_LEVEL_ERROR,
 
-    /// Is a special level that can be used to turn off logging.
+    /// It is a special level that can be used to turn off logging.
     DXFG_LOGGING_LEVEL_OFF,
 } dxfg_logging_level_t;
 
