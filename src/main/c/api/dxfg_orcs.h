@@ -18,9 +18,9 @@ extern "C" {
 
 #include "dxfg_common.h"
 
+#include "dxfg_events.h"
 #include "dxfg_javac.h"
 #include "graal_isolate.h"
-#include "dxfg_events.h"
 
 /**
  * @defgroup OrcsApi ORCS API
@@ -127,9 +127,15 @@ int32_t dxfg_AuthOrderSource_getByIds(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_id_map_entry_list_t **symbolsByOrderSourceIdMapEntryList);
 
+int32_t dxfg_symbols_by_order_source_id_map_entry_list_free(graal_isolatethread_t *thread,
+                                                            dxfg_symbols_by_order_source_id_map_entry_list_t *list);
+
 int32_t dxfg_AuthOrderSource_getByOrderSources(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_map_entry_list_t **symbolsByOrderSourceMapEntryList);
+
+int32_t dxfg_symbols_by_order_source_map_entry_list_free(graal_isolatethread_t *thread,
+                                                         dxfg_symbols_by_order_source_map_entry_list_t *list);
 
 /// @} end of AuthOrderSourceFunctions
 

@@ -42,6 +42,8 @@ inline Command historyEndpointCase{
         if (address == "UNKNOWN" || user == "UNKNOWN" || password == "UNKNOWN" || fromDateTime == "UNKNOWN" ||
             toDateTime == "UNKNOWN") {
             puts("Parameters not specified");
+
+            return;
         }
 
         dxfg_history_endpoint_builder_t *builder{};

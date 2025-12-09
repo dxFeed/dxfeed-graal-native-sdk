@@ -35,6 +35,7 @@
 #include "LiveIpfCase.hpp"
 #include "LoggingCase.hpp"
 #include "OnDemandServiceCase.hpp"
+#include "OrcsCase.hpp"
 #include "OrderBookModelCase.hpp"
 #include "PriceIncrementsCase.hpp"
 #include "PromiseCase.hpp"
@@ -336,6 +337,7 @@ int main(int argc, char *argv[]) {
         liveIpfCase,
         loggingCase,
         onDemandServiceCase,
+        orcsCase,
         orderBookModelCase,
         priceIncrementsCase,
         promiseCase,

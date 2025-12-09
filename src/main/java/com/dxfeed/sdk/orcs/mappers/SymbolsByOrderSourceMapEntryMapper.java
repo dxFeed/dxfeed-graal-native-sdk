@@ -53,6 +53,7 @@ public class SymbolsByOrderSourceMapEntryMapper extends
             return;
         }
 
+        NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.release(nativeObject.getOrderSource());
         NativeUtils.MAPPER_STRINGS.release(nativeObject.getSymbols());
     }
 

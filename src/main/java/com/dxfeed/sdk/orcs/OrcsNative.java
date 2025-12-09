@@ -14,6 +14,7 @@ import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointerPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
+import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2ListPointer;
 import com.dxfeed.sdk.orcs.mappers.Mappers;
 import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
@@ -187,6 +188,17 @@ public class OrcsNative {
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
+    @CEntryPoint(
+            name = "dxfg_symbols_by_order_source_id_map_entry_list_free",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfgSymbolsByOrderSourceIdMapEntryListFree(final IsolateThread ignoredThread,
+            @CConst DxfgSymbolsByOrderSourceIdMapEntryListPointer list) {
+        Mappers.SYMBOLS_BY_ORDER_SOURCE_ID_MAP_ENTRY_LIST_MAPPER.release(list);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
     @CEntryPoint(name = "dxfg_AuthOrderSource_getByOrderSources", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_AuthOrderSource_getByOrderSources(final IsolateThread ignoredThread,
             final DxfgAuthOrderSourceHandle authOrderSource,
@@ -202,6 +214,17 @@ public class OrcsNative {
                 Mappers.SYMBOLS_BY_ORDER_SOURCE_MAP_ENTRY_LIST_MAPPER.toNativeList(
                         Mappers.AUTH_ORDER_SOURCE_MAPPER.toJava(authOrderSource)
                                 .getByOrderSources().entrySet()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_symbols_by_order_source_map_entry_list_free",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfgSymbolsByOrderSourceMapEntryListFree(final IsolateThread ignoredThread,
+            @CConst DxfgSymbolsByOrderSourceMapEntryListPointer list) {
+        Mappers.SYMBOLS_BY_ORDER_SOURCE_MAP_ENTRY_LIST_MAPPER.release(list);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
