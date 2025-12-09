@@ -65,6 +65,8 @@ inline Command orcsCase{
 
         if (result != DXFG_EXECUTE_SUCCESSFULLY) {
             getException(isolateThread);
+
+            return;
         }
 
         finally([&] {
@@ -77,6 +79,8 @@ inline Command orcsCase{
 
         if (result != DXFG_EXECUTE_SUCCESSFULLY) {
             getException(isolateThread);
+
+            return;
         }
 
         finally([&] {

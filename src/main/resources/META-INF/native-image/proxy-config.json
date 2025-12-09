@@ -1,2 +1,5 @@
 [
+  {
+    "interfaces" : ["com.dxfeed.orcs.api.PriceLevelService"]
+  }
 ]

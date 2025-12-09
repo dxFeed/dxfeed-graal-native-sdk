@@ -170,6 +170,9 @@
     },
     {
       "name": "com.dxfeed.ipf.InstrumentProfileType"
+    },
+    {
+      "name": "com.dxfeed.orcs.api.AuthOrderSource"
     }
   ],
   "lambdaCapturingTypes":[
