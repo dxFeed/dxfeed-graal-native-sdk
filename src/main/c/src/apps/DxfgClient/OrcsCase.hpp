@@ -90,10 +90,21 @@ inline Command orcsCase{
         printf("Authorized sources: [");
 
         for (int32_t i = 0; i < symbolsByOrder->size; ++i) {
-            printf("%s, ", symbolsByOrder->elements[i]->order_source->name);
+            printf("%s%s", symbolsByOrder->elements[i]->order_source->name, i == symbolsByOrder->size - 1 ? "" : ", ");
         }
 
         printf("]\n");
+
+        for (int32_t i = 0; i < symbolsByOrder->size; ++i) {
+            printf("%s: [", symbolsByOrder->elements[i]->order_source->name);
+
+            for (int32_t j = 0; j < symbolsByOrder->elements[i]->symbols->size; ++j) {
+                printf("%s%s", symbolsByOrder->elements[i]->symbols->elements[j],
+                       j == symbolsByOrder->elements[i]->symbols->size - 1 ? "" : ", ");
+            }
+
+            printf("]\n\n");
+        }
 
         dxfg_time_format_t *format = dxfg_TimeFormat_GMT(isolateThread);
 
@@ -134,6 +145,58 @@ inline Command orcsCase{
             return;
         }
 
-        return;
+        StopWatch stopWatch{};
+        stopWatch.start();
+
+        dxfg_event_type_list *orders{};
+
+        result = dxfg_PriceLevelService_getOrders2(isolateThread, service, &candleSymbol.supper, orderSource, from, to,
+                                                   &orders);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_CList_EventType_release(isolateThread, orders);
+        });
+
+        stopWatch.stop();
+
+        printf("Received %d orders in %lldms\n", orders->size, stopWatch.elapsed().count());
+
+        int32_t isValid = 0;
+
+        result = dxfg_PriceLevelChecker_validate(isolateThread, orders, 60000, 0, &isValid);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        printf("Orders are valid: %s\n", isValid ? "true" : "false");
+
+        stopWatch.start();
+
+        dxfg_event_type_list *quotes{};
+
+        result = dxfg_PriceLevelService_getQuotes2(isolateThread, service, &candleSymbol.supper, from, to, &quotes);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_CList_EventType_release(isolateThread, quotes);
+        });
+
+        stopWatch.stop();
+
+        printf("Received %d quotes in %lldms\n", quotes->size, stopWatch.elapsed().count());
     }};
 } // namespace dxfg

@@ -67,6 +67,9 @@
       "name": "com.dxfeed.event.market.Order"
     },
     {
+      "name": "com.dxfeed.event.market.OrderSource"
+    },
+    {
       "name": "com.dxfeed.event.market.OrderAction"
     },
     {
@@ -173,6 +176,33 @@
     },
     {
       "name": "com.dxfeed.orcs.api.AuthOrderSource"
+    },
+    {
+      "name": "java.lang.Integer"
+    },
+    {
+      "name": "java.lang.Number"
+    },
+    {
+      "name": "java.lang.String"
+    },
+    {
+      "name": "java.util.HashMap"
+    },
+    {
+      "name": "java.util.LinkedHashMap"
+    },
+    {
+      "name": "java.util.ArrayList"
+    },
+    {
+      "name": "java.util.HashSet"
+    },
+    {
+      "name": "java.util.LinkedHashSet"
+    },
+    {
+      "name": "java.util.TreeSet"
     }
   ],
   "lambdaCapturingTypes":[

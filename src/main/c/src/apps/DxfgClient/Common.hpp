@@ -7,6 +7,9 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <mutex>
+#include <atomic>
+#include <chrono>
 
 namespace dxfg {
 
@@ -58,5 +61,72 @@ template <typename Func> struct OnScopeExit {
 } // namespace detail
 
 #define finally(...) detail::OnScopeExit DXFG_MACRO_UNIQUE_NAME(ose__) = __VA_ARGS__
+
+struct StopWatch final {
+private:
+    mutable std::mutex mutex_{};
+    std::chrono::milliseconds elapsed_{};
+    std::chrono::steady_clock::time_point startTimeStamp_{};
+    std::atomic<bool> isRunning_{};
+
+public:
+    StopWatch() noexcept {
+        reset();
+    }
+
+    void start() noexcept {
+        if (!isRunning_) {
+            std::lock_guard<std::mutex> lock{mutex_};
+            startTimeStamp_ = std::chrono::steady_clock::now();
+            isRunning_ = true;
+        }
+    }
+
+    void stop() noexcept {
+        if (isRunning_) {
+            auto endTimestamp = std::chrono::steady_clock::now();
+
+            std::lock_guard<std::mutex> lock{mutex_};
+            auto elapsedThisPeriod = endTimestamp - startTimeStamp_;
+            elapsed_ += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedThisPeriod);
+            isRunning_ = false;
+        }
+    }
+
+    void reset() noexcept {
+        std::lock_guard<std::mutex> lock{mutex_};
+
+        elapsed_ = std::chrono::milliseconds::zero();
+        isRunning_ = false;
+        startTimeStamp_ = std::chrono::steady_clock::time_point{};
+    }
+
+    void restart() noexcept {
+        std::lock_guard<std::mutex> lock{mutex_};
+
+        elapsed_ = std::chrono::milliseconds::zero();
+        isRunning_ = true;
+        startTimeStamp_ = std::chrono::steady_clock::now();
+    }
+
+    bool isRunning() const noexcept {
+        return isRunning_;
+    }
+
+    std::chrono::milliseconds elapsed() const noexcept {
+        std::lock_guard<std::mutex> lock{mutex_};
+
+        auto elapsed = elapsed_;
+
+        if (isRunning_) {
+            auto currentTimestamp = std::chrono::steady_clock::now();
+            auto elapsedUntilNow = currentTimestamp - startTimeStamp_;
+
+            elapsed += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedUntilNow);
+        }
+
+        return elapsed;
+    }
+};
 
 } // namespace dxfg

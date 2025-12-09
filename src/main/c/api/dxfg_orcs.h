@@ -61,7 +61,7 @@ typedef struct dxfg_auth_order_source_t {
 // Map.Entry<Integer, Set<String>
 typedef struct dxfg_symbols_by_order_source_id_map_entry_t {
     int32_t order_source_id;
-    dxfg_symbol_list *symbols;
+    dxfg_string_list *symbols;
 } dxfg_symbols_by_order_source_id_map_entry_t;
 
 // Collection<? extends Map.Entry<Integer, Set<String>>
@@ -73,7 +73,7 @@ typedef struct dxfg_symbols_by_order_source_id_map_entry_list_t {
 // Map.Entry<? extends IndexedEventSource, Set<String>
 typedef struct dxfg_symbols_by_order_source_map_entry_t {
     dxfg_indexed_event_source_t *order_source;
-    dxfg_symbol_list *symbols;
+    dxfg_string_list *symbols;
 } dxfg_symbols_by_order_source_map_entry_t;
 
 // Collection<? extends Map.Entry<? extends IndexedEventSource, Set<String>>
