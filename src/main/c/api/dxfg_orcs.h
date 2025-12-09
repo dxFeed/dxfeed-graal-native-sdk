@@ -90,6 +90,17 @@ typedef struct dxfg_symbols_by_order_source_map_entry_list_t {
  * @{
  */
 
+/**
+ * Creates a new PriceLevelService instance and connects it to an RMI endpoint.
+ * The handle of this instance will be written to the passed pointer.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] address The RMI endpoint's address.
+ * @param[out] service The pointer to the service's handle.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ * Use dxfg_JavaObjectHandler_release() to free the service handle.
+ */
 int32_t dxfg_PriceLevelService_new(graal_isolatethread_t *thread, const char *address,
                                    DXFG_OUT dxfg_price_level_service_t **service);
 
