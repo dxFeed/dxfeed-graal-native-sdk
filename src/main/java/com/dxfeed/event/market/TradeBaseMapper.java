@@ -29,6 +29,7 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
         nativeObject.setDayVolume(javaObject.getDayVolumeAsDouble());
         nativeObject.setDayTurnover(javaObject.getDayTurnover());
         nativeObject.setFlags(javaObject.getFlags());
+        nativeObject.setTradeId(javaObject.getTradeId());
     }
 
     @Override
@@ -49,5 +50,6 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
         javaObject.setDayVolumeAsDouble(nativeObject.getDayVolume());
         javaObject.setDayTurnover(nativeObject.getDayTurnover());
         javaObject.setFlags(nativeObject.getFlags());
+        javaObject.setTradeId(nativeObject.getTradeId());
     }
 }

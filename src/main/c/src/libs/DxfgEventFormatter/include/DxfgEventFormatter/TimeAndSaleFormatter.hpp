@@ -43,7 +43,7 @@ class TimeAndSaleFormatter {
     static bool isSpreadLeg(const dxfg_time_and_sale_t *e);
     static bool isExtendedTradingHours(const dxfg_time_and_sale_t *e);
     static bool isValidTick(const dxfg_time_and_sale_t *e);
-    static dxfg_time_and_sale_t getType(const dxfg_time_and_sale_t *e);
+    static int64_t getTradeId(const dxfg_time_and_sale_t *e);
     static std::string toString(const dxfg_time_and_sale_t *e);
 };
 

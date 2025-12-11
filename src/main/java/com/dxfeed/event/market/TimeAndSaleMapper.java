@@ -47,6 +47,7 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
         nativeObject.setFlags(javaObject.getFlags());
         nativeObject.setBuyer(stringMapper.toNative(javaObject.getBuyer()));
         nativeObject.setSeller(stringMapper.toNative(javaObject.getSeller()));
+        nativeObject.setTradeId(javaObject.getTradeId());
     }
 
     @Override
@@ -81,5 +82,6 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
         javaObject.setFlags(nativeObject.getFlags());
         javaObject.setBuyer(stringMapper.toJava(nativeObject.getBuyer()));
         javaObject.setSeller(stringMapper.toJava(nativeObject.getSeller()));
+        javaObject.setTradeId(nativeObject.getTradeId());
     }
 }

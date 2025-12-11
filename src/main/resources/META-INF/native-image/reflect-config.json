@@ -461,6 +461,10 @@
         ]
       },
       {
+        "name": "getStickyScheduleMinDelay",
+        "parameterTypes": []
+      },
+      {
         "name": "getBufferOverflowLogInterval",
         "parameterTypes": []
       },

@@ -1,5 +1,7 @@
-## v2.7.0
+## v3.0.0
 
+* **\[MDAPI-296]\[GRAAL]** TimeAndSale, Trade and TradeETH events extended with new field tradeId.
+* Migrated to QDS 3.347 and MDD 525
 * **\[MDAPI-298]** dxFeed Graal Native SDK + ORCS API.
   * Added `dxfg_orcs.h` header
   * Added `PriceLevelServiceHolder` class.

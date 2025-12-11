@@ -71,4 +71,9 @@ public interface DxfgTradeBase extends DxfgMarketEvent {
     @CField("flags")
     void setFlags(int value);
 
+    @CField("trade_id")
+    long getTradeId();
+
+    @CField("trade_id")
+    void setTradeId(long tradeId);
 }

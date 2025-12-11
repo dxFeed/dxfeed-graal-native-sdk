@@ -29,6 +29,10 @@ bool TimeAndSaleFormatter::isValidTick(const dxfg_time_and_sale_t *e) {
     return (e->flags & VALID_TICK) != 0;
 }
 
+int64_t TimeAndSaleFormatter::getTradeId(const dxfg_time_and_sale_t *e) {
+    return e->trade_id;
+}
+
 std::string TimeAndSaleFormatter::toString(const dxfg_time_and_sale_t *e) {
     std::stringstream ss{};
     ss.precision(9);
@@ -50,6 +54,7 @@ std::string TimeAndSaleFormatter::toString(const dxfg_time_and_sale_t *e) {
        ", validTick=" << StringUtils::encodeBool(isValidTick(e)) <<
        (e->buyer == nullptr ? "" : (", byuer='" + std::string(e->buyer) + "'")) <<
        (e->seller == nullptr ? "" : (", seller='" + std::string(e->seller) + "'")) <<
+       ", tradeId=" << getTradeId(e) <<
        '}';
     // clang-format on
     return ss.str();

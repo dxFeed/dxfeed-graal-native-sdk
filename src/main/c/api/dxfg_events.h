@@ -313,6 +313,7 @@ typedef struct dxfg_trade_base_t {
     double day_volume;
     double day_turnover;
     int32_t flags;
+    int64_t trade_id;
 } dxfg_trade_base_t;
 
 /**
@@ -369,6 +370,7 @@ typedef struct dxfg_time_and_sale_t {
     int32_t flags;
     const char *buyer;
     const char *seller;
+    int64_t trade_id;
 } dxfg_time_and_sale_t;
 
 /**

@@ -84,4 +84,9 @@ public interface DxfgTimeAndSale extends DxfgMarketEvent {
     @CField("seller")
     void setSeller(CCharPointer seller);
 
+    @CField("trade_id")
+    long getTradeId();
+
+    @CField("trade_id")
+    void setTradeId(long tradeId);
 }
