@@ -1,7 +1,7 @@
 * **\[MDAPI-298]** dxFeed Graal Native SDK + ORCS API.
   * Added `dxfg_orcs.h` header
   * Added `PriceLevelServiceHolder` class.
-  * Added all mappers, wrappers, headers and handlers for ORCS API.
+  * Added all mappers, wrappers, headers, and handlers for ORCS API.
 
 ## v2.7.0
 
