@@ -60,9 +60,40 @@ inline Command promisesAllOfCase{
 
         dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(isolateThread);
 
-        dxfg_DXEndpoint_connect(isolateThread, endpoint, address.c_str());
+        if (endpoint == nullptr) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &endpoint->handler);
+        });
+
+        auto result = dxfg_DXEndpoint_connect(isolateThread, endpoint, address.c_str());
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_DXEndpoint_close(isolateThread, endpoint);
+        });
 
         dxfg_feed_t *feed = dxfg_DXEndpoint_getFeed(isolateThread, endpoint);
+
+        if (feed == nullptr) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &feed->handler);
+        });
+
         size_t size = symbols.size();
         dxfg_symbol_list symbolList;
 
@@ -78,11 +109,46 @@ inline Command promisesAllOfCase{
             symbolList.elements[i] = &symbol->supper;
         }
 
+        finally([&] {
+            for (int i = 0; i < size; i++) {
+                delete symbolList.elements[i];
+            }
+
+            delete symbolList.elements;
+        });
+
         dxfg_promise_list *promises =
             dxfg_DXFeed_getLastEventsPromises(isolateThread, feed, DXFG_EVENT_QUOTE, &symbolList);
+
+        if (promises == nullptr) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_CList_JavaObjectHandler_release(isolateThread, &promises->list);
+        });
+
         dxfg_promise_t *all = dxfg_Promises_allOf(isolateThread, promises);
 
-        dxfg_Promise_awaitWithoutException(isolateThread, all, 30000);
+        if (all == nullptr) {
+            getException(isolateThread);
+
+            return;
+        }
+
+        finally([&] {
+            dxfg_JavaObjectHandler_release(isolateThread, &all->handler);
+        });
+
+        result = dxfg_Promise_awaitWithoutException(isolateThread, all, 30000);
+
+        if (result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            return;
+        }
 
         if (dxfg_Promise_hasResult(isolateThread, all) == 1) {
             for (int i = 0; i < size; ++i) {
@@ -93,18 +159,5 @@ inline Command promisesAllOfCase{
                 dxfg_EventType_release(isolateThread, event);
             }
         }
-
-        dxfg_DXEndpoint_close(isolateThread, endpoint);
-
-        for (int i = 0; i < size; i++) {
-            delete symbolList.elements[i];
-        }
-
-        delete symbolList.elements;
-
-        dxfg_JavaObjectHandler_release(isolateThread, &all->handler);
-        dxfg_CList_JavaObjectHandler_release(isolateThread, &promises->list);
-        dxfg_JavaObjectHandler_release(isolateThread, &feed->handler);
-        dxfg_JavaObjectHandler_release(isolateThread, &endpoint->handler);
     }};
 } // namespace dxfg

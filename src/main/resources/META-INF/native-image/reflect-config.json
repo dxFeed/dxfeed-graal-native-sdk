@@ -559,6 +559,14 @@
           "java.lang.String",
           "java.lang.String"
         ]
+      },
+      {
+        "name": "getStickySubscriptionLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getStickySubscriptionPeriod",
+        "parameterTypes": []
       }
     ]
   },
