@@ -5,19 +5,17 @@
 
 #include <dxfg_api.h>
 
+#include "Common.hpp"
+
 #include "CommandLineParser.hpp"
 #include "CommandsContext.hpp"
 #include "CommandsRegistry.hpp"
-#include "Common.hpp"
 
 #include <chrono>
 #include <cstdio>
 #include <string>
 #include <thread>
 #include <vector>
-
-void getException(graal_isolatethread_t *isolateThread);
-void printEvents(graal_isolatethread_t *isolateThread, dxfg_event_type_list *events, void * /* user_data */);
 
 namespace dxfg {
 inline Command historyEndpointCase{

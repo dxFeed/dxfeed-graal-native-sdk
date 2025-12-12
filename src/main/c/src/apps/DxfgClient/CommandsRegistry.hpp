@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <algorithm>
 #include <locale>
 #include <string>
@@ -13,7 +15,6 @@
 
 #include <dxfg_api.h>
 
-#include "Common.hpp"
 #include "CommandsContext.hpp"
 
 namespace dxfg {

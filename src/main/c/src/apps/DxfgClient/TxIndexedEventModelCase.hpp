@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -17,9 +19,7 @@
 #include <thread>
 #include <vector>
 
-void getException(graal_isolatethread_t *isolateThread);
-
-void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
+namespace dxfg {
 
 inline void txModelListenerCallback(graal_isolatethread_t *isolateThread, dxfg_indexed_event_source_t * /* source */,
                                     dxfg_event_type_list *events, int32_t /* isSnapshot */, void * /* user_data */) {
@@ -30,7 +30,6 @@ inline void txModelListenerCallback(graal_isolatethread_t *isolateThread, dxfg_i
     }
 }
 
-namespace dxfg {
 inline Command txIndexedEventModelCase{
     "TxIndexedEventModelCase",
     {"txiem"},

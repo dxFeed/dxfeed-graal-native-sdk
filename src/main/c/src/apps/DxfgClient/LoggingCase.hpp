@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -15,8 +17,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
 inline Command loggingCase{

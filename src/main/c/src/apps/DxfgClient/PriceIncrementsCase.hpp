@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -13,8 +15,6 @@
 #include <cstdio>
 #include <string>
 #include <vector>
-
-void getException(graal_isolatethread_t *isolateThread);
 
 namespace dxfg {
 inline Command priceIncrementsCase{

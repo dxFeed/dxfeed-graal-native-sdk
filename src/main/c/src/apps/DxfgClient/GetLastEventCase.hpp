@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -14,8 +16,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
 namespace dxfg {
 inline Command getLastEventCase{

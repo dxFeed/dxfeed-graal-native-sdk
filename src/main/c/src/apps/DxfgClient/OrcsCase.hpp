@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -15,8 +17,6 @@
 #include <thread>
 #include <vector>
 
-void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
-
 namespace dxfg {
 inline Command orcsCase{
     "OrcsCase",
@@ -25,7 +25,7 @@ inline Command orcsCase{
     R"(orcs [<properties>] <address> <candleSymbol> <orderSource> <fromDateTime> <toDateTime>)",
     {R"(orcs localhost:6666[login=entitle:<TOKEN>] "/6B:XCME{=d,gr=10m}" "GLBX" "20251208-000000-0500" "20251208-235959-0500")"},
     [](const Command & /*self*/, graal_isolatethread_t *isolateThread, const std::vector<std::string> &args,
-       const dxfg::CommandsContext &context) {
+       const dxfg::CommandsContext &) {
         using namespace std::chrono_literals;
 
         std::size_t argIndex = 0;

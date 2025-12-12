@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -15,7 +17,7 @@
 #include <thread>
 #include <vector>
 
-void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
+namespace dxfg {
 
 inline void onDoneCallback(graal_isolatethread_t *isolateThread, dxfg_promise_t *promise, void * /* user_data */) {
     dxfg_event_type_t *event =
@@ -27,7 +29,6 @@ inline void onDoneCallback(graal_isolatethread_t *isolateThread, dxfg_promise_t 
     dxfg_EventType_release(isolateThread, event);
 }
 
-namespace dxfg {
 inline Command promiseCase{"PromiseCase",
                            {"p"},
                            "",

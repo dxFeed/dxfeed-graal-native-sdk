@@ -3,102 +3,22 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
-#include "CommandLineParser.hpp"
 #include "CommandsContext.hpp"
 #include "CommandsRegistry.hpp"
 
 #include <chrono>
 #include <cstdio>
-#include <cstring>
 #include <deque>
 #include <functional>
 #include <future>
-#include <mutex>
 #include <string>
-#include <thread>
-#include <unordered_map>
 #include <vector>
 
-template <std::size_t Bits> struct hashMixImpl;
-
-template <> struct hashMixImpl<64> {
-    constexpr static std::uint64_t fn(std::uint64_t x) noexcept {
-        std::uint64_t const m = (static_cast<std::uint64_t>(0xe9846af) << 32) + 0x9b1a615d;
-
-        x ^= x >> 32;
-        x *= m;
-        x ^= x >> 32;
-        x *= m;
-        x ^= x >> 28;
-
-        return x;
-    }
-};
-
-template <> struct hashMixImpl<32> {
-    constexpr static std::uint32_t fn(std::uint32_t x) noexcept {
-        std::uint32_t const m1 = 0x21f0aaad;
-        std::uint32_t const m2 = 0x735a2d97;
-
-        x ^= x >> 16;
-        x *= m1;
-        x ^= x >> 15;
-        x *= m2;
-        x ^= x >> 15;
-
-        return x;
-    }
-};
-
-constexpr static std::size_t hashMix(std::size_t v) noexcept {
-    return hashMixImpl<sizeof(std::size_t) * CHAR_BIT>::fn(v);
-}
-
-template <class T> constexpr void hashCombine(std::size_t &seed, const T &v) noexcept {
-    seed = hashMix(seed + 0x9e3779b9 + std::hash<T>()(v));
-}
-
-inline std::size_t getHash(char *str) {
-    std::size_t seed = 0;
-
-    if (str == nullptr) {
-        return seed;
-    }
-
-    auto length = std::strlen(str);
-
-    for (std::size_t i = 0; i < length; i++) {
-        hashCombine(seed, str[i]);
-    }
-
-    return seed;
-}
-
-inline std::size_t getHash(const char *str) {
-    std::size_t seed = 0;
-
-    if (str == nullptr) {
-        return seed;
-    }
-
-    auto length = std::strlen(str);
-
-    for (std::size_t i = 0; i < length; i++) {
-        hashCombine(seed, str[i]);
-    }
-
-    return seed;
-}
-
-constexpr void hashCombine(std::size_t &seed, const char *str) noexcept {
-    seed = hashMix(seed + 0x9e3779b9 + getHash(str));
-}
-
-constexpr void hashCombine(std::size_t &seed, char *str) noexcept {
-    seed = hashMix(seed + 0x9e3779b9 + getHash(str));
-}
+namespace dxfg {
 
 inline std::size_t getHash(graal_isolatethread_t *isolateThread, dxfg_instrument_profile_t *profile) {
     std::size_t result = 0;
@@ -234,7 +154,6 @@ inline std::size_t getHash(const dxfg_instrument_profile2_t &profile) {
     return result;
 }
 
-namespace dxfg {
 inline Command instrumentProfileReaderBench{
     "InstrumentProfileReaderBench",
     {"ipf"},

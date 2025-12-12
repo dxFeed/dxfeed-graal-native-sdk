@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -14,11 +16,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-void finalize(graal_isolatethread_t * /* thread */, void * /* user_data */);
-void printEvents(graal_isolatethread_t *isolateThread, dxfg_event_type_list *events, void * /* user_data */);
-void endpointStateChangeListener(graal_isolatethread_t * /* thread */, dxfg_endpoint_state_t old_state,
-                                 dxfg_endpoint_state_t new_state, void * /* user_data */);
 
 namespace dxfg {
 inline Command finalizeListenerCase{

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -13,8 +15,7 @@
 #include <string>
 #include <vector>
 
-void getException(graal_isolatethread_t *isolateThread);
-void finalize(graal_isolatethread_t * /* thread */, void * /* user_data */);
+namespace dxfg {
 
 inline void instrumentProfileUpdateListenerCallback(graal_isolatethread_t *thread, dxfg_iterable_ip_t *profiles,
                                                     void * /* user_data */) {
@@ -56,7 +57,6 @@ inline void ipfPropertyChangeListenerCallback(graal_isolatethread_t * /* thread 
     printf("  IPF stateChangeListener %d -> %d\n", old_state, new_state);
 }
 
-namespace dxfg {
 inline Command liveIpfCase{
     "LiveIpfCase",
     {"li"},

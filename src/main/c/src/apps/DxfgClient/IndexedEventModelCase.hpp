@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -14,10 +16,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-void finalize(graal_isolatethread_t * /* thread */, void * /* user_data */);
-void observableListModelListenerCallback(graal_isolatethread_t *isolateThread, dxfg_event_type_list *orders,
-                                         void * /* user_data */);
 
 namespace dxfg {
 inline Command indexedEventModelCase{

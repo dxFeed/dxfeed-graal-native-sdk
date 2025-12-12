@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Common.hpp"
+
 #include <dxfg_api.h>
 
 #include "CommandLineParser.hpp"
@@ -13,10 +15,6 @@
 #include <cstdio>
 #include <string>
 #include <vector>
-
-void getException(graal_isolatethread_t *isolateThread);
-
-void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *event);
 
 namespace dxfg {
 inline Command promisesAllOfCase{
