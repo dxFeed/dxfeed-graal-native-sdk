@@ -110,6 +110,10 @@ typedef enum dxfg_event_clazz_t {
     DXFG_EVENT_TEXT_MESSAGE,       //
     DXFG_EVENT_MARKET_MAKER,       // INDEXED
     DXFG_EVENT_TEXT_CONFIGURATION, // LASTING
+    DXFG_EVENT_NUAM_ORDER,         // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_NUAM_TIME_AND_SALE, // INDEXED -> TIME_SERIES -> TIME_AND_SALE
+    DXFG_EVENT_NUAM_TRADE,         // LASTING -> TRADE_BASE -> TRADE
+    DXFG_EVENT_ORDER_IMBALANCE,    // MARKET_EVENT
 } dxfg_event_clazz_t;
 
 /**
@@ -522,6 +526,57 @@ typedef struct dxfg_text_configuration_t {
     int32_t version;
     const char *text;
 } dxfg_text_configuration_t;
+
+/// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html
+typedef struct dxfg_nuam_order_t {
+    dxfg_order_t order_base;
+    int32_t actor_id;
+    int32_t participant_id;
+    int32_t submitter_id;
+    int32_t on_behalf_of_submitter_id;
+    const char *client_order_id;
+    const char *customer_account;
+    const char *customer_info;
+    const char *exchange_info;
+    int32_t time_in_force_data;
+    int32_t trigger_order_book_id;
+    double trigger_price;
+    int32_t trigger_session_type;
+    double order_quantity;
+    double display_quantity;
+    double refresh_quantity;
+    double leaves_quantity;
+    double matched_quantity;
+    int32_t nuamFlags;
+} dxfg_nuam_order_t;
+
+/// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html
+typedef struct dxfg_nuam_time_and_sale_t {
+    dxfg_time_and_sale_t time_and_sale_base;
+    int64_t match_id;
+} dxfg_nuam_time_and_sale_t;
+
+/// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html
+typedef struct dxfg_nuam_trade_t {
+    dxfg_trade_t trade_base;
+    int64_t trade_stat_time;
+    double last_significant_price;
+    double last_price_for_all;
+    int32_t number_of_trades;
+    double vwap;
+} dxfg_nuam_trade_t;
+
+/// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html
+typedef struct dxfg_order_imbalance_t {
+    int32_t source_id;
+    int64_t time_sequence;
+    double ref_price;
+    double paired_size;
+    double imbalance_size;
+    double near_price;
+    double far_price;
+    int32_t flags;
+} dxfg_order_imbalance_t;
 
 typedef struct dxfg_event_type_list {
     int32_t size;
