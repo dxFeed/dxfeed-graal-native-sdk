@@ -5,10 +5,14 @@ package com.dxfeed.event;
 
 import com.dxfeed.event.candle.CandleMapper;
 import com.dxfeed.event.candle.DailyCandleMapper;
+import com.dxfeed.event.custom.NuamOrderMapper;
+import com.dxfeed.event.custom.NuamTimeAndSaleMapper;
+import com.dxfeed.event.custom.NuamTradeMapper;
 import com.dxfeed.event.market.AnalyticOrderMapper;
 import com.dxfeed.event.market.MarketMakerMapper;
 import com.dxfeed.event.market.OptionSaleMapper;
 import com.dxfeed.event.market.OrderBaseMapper;
+import com.dxfeed.event.market.OrderImbalanceMapper;
 import com.dxfeed.event.market.OrderMapper;
 import com.dxfeed.event.market.OtcMarketsOrderMapper;
 import com.dxfeed.event.market.ProfileMapper;
@@ -62,6 +66,10 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
                 //candle
                 new CandleMapper<>(stringMapper, symbolMapper),
                 new DailyCandleMapper(stringMapper, symbolMapper),
+                // custom
+                new NuamOrderMapper(stringMapper),
+                new NuamTimeAndSaleMapper(stringMapper),
+                new NuamTradeMapper(stringMapper),
                 //market
                 new AnalyticOrderMapper(stringMapper),
                 new MarketMakerMapper(stringMapper),
@@ -73,9 +81,10 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
                 new QuoteMapper(stringMapper),
                 new SpreadOrderMapper(stringMapper),
                 new SummaryMapper(stringMapper),
-                new TimeAndSaleMapper(stringMapper),
+                new TimeAndSaleMapper<>(stringMapper),
                 new TradeETHMapper(stringMapper),
-                new TradeMapper(stringMapper),
+                new TradeMapper<>(stringMapper),
+                new OrderImbalanceMapper(stringMapper),
                 //misc
                 new ConfigurationMapper(stringMapper),
                 new MessageMapper(stringMapper),
@@ -90,11 +99,12 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     }
 
     @Override
-    public DxfgEventType toNative(final EventType<?> jEvent) {
-        if (jEvent == null) {
+    public DxfgEventType toNative(final EventType<?> javaEvent) {
+        if (javaEvent == null) {
             return WordFactory.nullPointer();
         }
-        return this.mapperByClass.get(jEvent.getClass()).toNativeObjectWithCast(jEvent);
+
+        return this.mapperByClass.get(javaEvent.getClass()).toNativeObjectWithCast(javaEvent);
     }
 
     @Override
@@ -102,7 +112,9 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
         if (nativeObject.isNull()) {
             return;
         }
+
         final DxfgEventClazz key = DxfgEventClazz.fromCValue(nativeObject.getClazz());
+
         this.mapperByDxfgEventType.get(key).releaseWithCast(nativeObject);
     }
 
@@ -123,12 +135,14 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
     @Override
     protected EventType<?> doToJava(final DxfgEventType nativeObject) {
         final DxfgEventClazz key = DxfgEventClazz.fromCValue(nativeObject.getClazz());
+
         return this.mapperByDxfgEventType.get(key).toJavaObjectWithCast(nativeObject);
     }
 
     @Override
     public void fillJava(final DxfgEventType nativeObject, final EventType<?> javaObject) {
         final DxfgEventClazz key = DxfgEventClazz.fromCValue(nativeObject.getClazz());
+
         this.mapperByDxfgEventType.get(key).fillJavaObjectWithCast(nativeObject, javaObject);
     }
 

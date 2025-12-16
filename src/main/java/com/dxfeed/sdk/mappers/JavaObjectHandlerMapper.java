@@ -9,41 +9,42 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.word.WordFactory;
 
-public class JavaObjectHandlerMapper<T, V extends JavaObjectHandler<T>> extends Mapper<T, V> {
+public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends JavaObjectHandler<JavaObjectType>> extends
+        Mapper<JavaObjectType, NativeObjectType> {
 
     @Override
-    public V toNative(final T javaObject) {
+    public NativeObjectType toNative(final JavaObjectType javaObject) {
         if (javaObject == null) {
             return WordFactory.nullPointer();
         }
 
-        final V nativeObject = UnmanagedMemory.calloc(getSizeJavaObjectHandler());
+        final NativeObjectType nativeObject = UnmanagedMemory.calloc(getSizeJavaObjectHandler());
         fillNative(javaObject, nativeObject,
                 false); //There is no need to destroy the object handle since the memory has just been allocated and zeroed.
 
         return nativeObject;
     }
 
-    public V toNativeArray(final T[] javaObjects) {
+    public NativeObjectType toNativeArray(final JavaObjectType[] javaObjects) {
         if (javaObjects == null || javaObjects.length == 0) {
             return WordFactory.nullPointer();
         }
 
-        final V nativeObject = UnmanagedMemory.calloc(getSizeJavaObjectHandler() * javaObjects.length);
+        final NativeObjectType nativeObject = UnmanagedMemory.calloc(getSizeJavaObjectHandler() * javaObjects.length);
 
         for (int i = 0; i < javaObjects.length; i++) {
             //noinspection unchecked
-            fillNative(javaObjects[i], (V) nativeObject.addressOf(i), false);
+            fillNative(javaObjects[i], (NativeObjectType) nativeObject.addressOf(i), false);
         }
 
         return nativeObject;
     }
 
-    public void releaseNativeArray(final V nativeArray, int size) {
+    public void releaseNativeArray(final NativeObjectType nativeArray, int size) {
         if (nativeArray.isNonNull() && size > 0) {
             for (int i = 0; i < size; i++) {
                 //noinspection unchecked
-                cleanNative((V) nativeArray.addressOf(i));
+                cleanNative((NativeObjectType) nativeArray.addressOf(i));
             }
 
             UnmanagedMemory.free(nativeArray);
@@ -51,7 +52,7 @@ public class JavaObjectHandlerMapper<T, V extends JavaObjectHandler<T>> extends 
     }
 
     @Override
-    public final void fillNative(final T javaObject, final V nativeObject, boolean clean) {
+    public final void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         if (clean) {
             cleanNative(nativeObject);
         }
@@ -60,17 +61,17 @@ public class JavaObjectHandlerMapper<T, V extends JavaObjectHandler<T>> extends 
     }
 
     @Override
-    public final void cleanNative(final V nativeObject) {
+    public final void cleanNative(final NativeObjectType nativeObject) {
         ObjectHandles.getGlobal().destroy(nativeObject.getJavaObjectHandler());
     }
 
     @Override
-    protected T doToJava(final V nativeObject) {
+    protected JavaObjectType doToJava(final NativeObjectType nativeObject) {
         return ObjectHandles.getGlobal().get(nativeObject.getJavaObjectHandler());
     }
 
     @Override
-    public void fillJava(final V nativeObject, final T javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         throw new IllegalStateException("The Java object does not support setters.");
     }
 

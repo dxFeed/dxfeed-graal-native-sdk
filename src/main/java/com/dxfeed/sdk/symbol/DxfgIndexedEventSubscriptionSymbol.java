@@ -3,7 +3,7 @@
 
 package com.dxfeed.sdk.symbol;
 
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
@@ -19,8 +19,8 @@ public interface DxfgIndexedEventSubscriptionSymbol extends DxfgSymbol {
     void setSymbol(DxfgSymbol value);
 
     @CField("source")
-    DxfgIndexedEventSource getSource();
+    DxfgIndexedEventSourcePointer getSource();
 
     @CField("source")
-    void setSource(DxfgIndexedEventSource value);
+    void setSource(DxfgIndexedEventSourcePointer value);
 }

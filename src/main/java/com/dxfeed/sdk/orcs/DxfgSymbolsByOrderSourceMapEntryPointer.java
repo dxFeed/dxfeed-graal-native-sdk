@@ -4,7 +4,7 @@
 package com.dxfeed.sdk.orcs;
 
 import com.dxfeed.sdk.javac.DxfgCStringListPointer;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
@@ -14,10 +14,10 @@ import org.graalvm.word.PointerBase;
 @CStruct("dxfg_symbols_by_order_source_map_entry_t")
 public interface DxfgSymbolsByOrderSourceMapEntryPointer extends PointerBase {
     @CField("order_source")
-    DxfgIndexedEventSource getOrderSource();
+    DxfgIndexedEventSourcePointer getOrderSource();
 
     @CField("order_source")
-    void setOrderSource(DxfgIndexedEventSource value);
+    void setOrderSource(DxfgIndexedEventSourcePointer value);
 
     @CField("symbols")
     DxfgCStringListPointer getSymbols();

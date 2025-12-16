@@ -7,8 +7,8 @@ import com.dxfeed.sdk.events.DxfgTradeBase;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBase>
-        extends MarketEventMapper<V, T> {
+public abstract class TradeBaseMapper<JavaObjectType extends TradeBase, NativeObjectType extends DxfgTradeBase>
+        extends MarketEventMapper<JavaObjectType, NativeObjectType> {
 
     public TradeBaseMapper(
             final Mapper<String, CCharPointer> stringMapperForMarketEvent
@@ -17,7 +17,7 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
     }
 
     @Override
-    public void fillNative(final V javaObject, final T nativeObject, boolean clean) {
+    public void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setTimeSequence(javaObject.getTimeSequence());
         nativeObject.setTimeNanoPart(javaObject.getTimeNanoPart());
@@ -33,12 +33,12 @@ public abstract class TradeBaseMapper<V extends TradeBase, T extends DxfgTradeBa
     }
 
     @Override
-    public void cleanNative(final T nativeObject) {
+    public void cleanNative(final NativeObjectType nativeObject) {
         super.cleanNative(nativeObject);
     }
 
     @Override
-    public void fillJava(final T nativeObject, final V javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         super.fillJava(nativeObject, javaObject);
         javaObject.setTimeSequence(nativeObject.getTimeSequence());
         javaObject.setTimeNanoPart(nativeObject.getTimeNanoPart());

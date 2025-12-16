@@ -4,8 +4,8 @@
 #include "Common.hpp"
 
 #include <cinttypes>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 
 namespace dxfg {
 
@@ -145,7 +145,7 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
         dxfg_indexed_event_source_t *source =
             dxfg_IndexedEvent_getSource(isolateThread, &order->order_base.market_event.event_type);
 
-        printf("  Order{%s, src=%s, side=%s, price=%f, size=%f, mm='%s', flags=0x%X, e.Flags=0x%X}\n",
+        printf("  Order{event_symbol=%s, src=%s, side=%s, price=%f, size=%f, mm='%s', flags=0x%X, e.Flags=0x%X}\n",
                order->order_base.market_event.event_symbol, source->name, getOrderSide(order->order_base.flags),
                order->order_base.price, order->order_base.size, order->market_maker, order->order_base.flags,
                order->order_base.event_flags);
@@ -206,6 +206,55 @@ void printEvent(graal_isolatethread_t *isolateThread, const dxfg_event_type_t *e
                text_configuration->event_symbol, text_configuration->event_time, text_configuration->time_sequence,
                text_configuration->version, text_configuration->text);
     } break;
+    case DXFG_EVENT_NUAM_ORDER: {
+        auto *nuam_order = (dxfg_nuam_order_t *)event;
+
+        dxfg_indexed_event_source_t *source =
+            dxfg_IndexedEvent_getSource(isolateThread, &nuam_order->order_base.order_base.market_event.event_type);
+
+        printf("  NUAM_ORDER{event_symbol=%s, src=%s, side=%s, price=%f, size=%f, mm='%s', flags=0x%X, e.Flags=0x%X, "
+               "nuamFlags=0x%X}\n",
+               nuam_order->order_base.order_base.market_event.event_symbol, source->name,
+               getOrderSide(nuam_order->order_base.order_base.flags), nuam_order->order_base.order_base.price,
+               nuam_order->order_base.order_base.size, nuam_order->order_base.market_maker,
+               nuam_order->order_base.order_base.flags, nuam_order->order_base.order_base.event_flags,
+               nuam_order->nuam_flags);
+    } break;
+    case DXFG_EVENT_NUAM_TIME_AND_SALE: {
+        auto *nuam_time_and_sale = (dxfg_nuam_time_and_sale_t *)event;
+
+        printf("  NUAM_TIME_AND_SALE{event_symbol=%s, bid_price=%f, exchange_sale_conditions=%s, buyer=%s, seller=%s, "
+               "match_id=%" PRId64 "}\n",
+               nuam_time_and_sale->time_and_sale_base.market_event.event_symbol,
+               nuam_time_and_sale->time_and_sale_base.bid_price,
+               nuam_time_and_sale->time_and_sale_base.exchange_sale_conditions,
+               nuam_time_and_sale->time_and_sale_base.buyer, nuam_time_and_sale->time_and_sale_base.seller,
+               nuam_time_and_sale->match_id);
+    } break;
+    case DXFG_EVENT_NUAM_TRADE: {
+        auto *nuam_trade = (dxfg_nuam_trade_t *)event;
+
+        printf("  NUAM_TRADE{event_symbol=%s, size=%f, price=%f, number_of_trades=%d}\n",
+               nuam_trade->trade_base.trade_base.market_event.event_symbol, nuam_trade->trade_base.trade_base.size,
+               nuam_trade->trade_base.trade_base.price, nuam_trade->number_of_trades);
+    } break;
+    case DXFG_EVENT_ORDER_IMBALANCE: {
+        auto *order_imbalance = (dxfg_order_imbalance_t *)event;
+
+        dxfg_indexed_event_source_t *source{};
+
+        if (auto result = dxfg_IndexedEventSource_new2(isolateThread, order_imbalance->source_id, &source);
+            result != DXFG_EXECUTE_SUCCESSFULLY) {
+            getException(isolateThread);
+
+            break;
+        }
+
+        printf("  ORDER_IMBALANCE{event_symbol=%s, order_source=%s, flags=0x%X}\n",
+               order_imbalance->market_event.event_symbol, source->name, order_imbalance->flags);
+
+        dxfg_IndexedEventSource_release(isolateThread, source);
+    }
 
     default:
         printf("  %u{}\n", event->clazz);
@@ -240,4 +289,4 @@ void finalize(graal_isolatethread_t * /* thread */, void * /* user_data */) {
     puts("  finalize");
 }
 
-}
+} // namespace dxfg

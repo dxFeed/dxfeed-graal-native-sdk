@@ -10,16 +10,18 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
+public class TradeMapper<JavaObjectType extends Trade, NativeObjectType extends DxfgTrade> extends
+        TradeBaseMapper<JavaObjectType, NativeObjectType> {
 
     public TradeMapper(final Mapper<String, CCharPointer> stringMapperForMarketEvent) {
         super(stringMapperForMarketEvent);
     }
 
     @Override
-    public DxfgTrade createNativeObject() {
-        final DxfgTrade nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTrade.class));
+    public NativeObjectType createNativeObject() {
+        final NativeObjectType nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTrade.class));
         nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_TRADE.getCValue());
+
         return nativeObject;
     }
 
@@ -29,24 +31,25 @@ public class TradeMapper extends TradeBaseMapper<Trade, DxfgTrade> {
     }
 
     @Override
-    public void fillNative(final Trade javaObject, final DxfgTrade nativeObject, boolean clean) {
+    public void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
     }
 
     @Override
-    public void cleanNative(final DxfgTrade nativeObject) {
+    public void cleanNative(final NativeObjectType nativeObject) {
         super.cleanNative(nativeObject);
     }
 
     @Override
-    protected Trade doToJava(final DxfgTrade nativeObject) {
-        final Trade javaObject = new Trade();
+    protected JavaObjectType doToJava(final NativeObjectType nativeObject) {
+        @SuppressWarnings("unchecked") final JavaObjectType javaObject = (JavaObjectType) new Trade();
         this.fillJava(nativeObject, javaObject);
+
         return javaObject;
     }
 
     @Override
-    public void fillJava(final DxfgTrade nativeObject, final Trade javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         super.fillJava(nativeObject, javaObject);
     }
 }

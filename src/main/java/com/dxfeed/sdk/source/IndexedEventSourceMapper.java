@@ -11,7 +11,7 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.WordFactory;
 
-public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgIndexedEventSource> {
+public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgIndexedEventSourcePointer> {
 
     private final Mapper<String, CCharPointer> stringMapper;
 
@@ -20,13 +20,13 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
     }
 
     @Override
-    public DxfgIndexedEventSource toNative(final IndexedEventSource javaObject) {
+    public DxfgIndexedEventSourcePointer toNative(final IndexedEventSource javaObject) {
         if (javaObject == null) {
             return WordFactory.nullPointer();
         }
 
-        final DxfgIndexedEventSource nativeObject = UnmanagedMemory.calloc(
-                SizeOf.get(DxfgIndexedEventSource.class)
+        final DxfgIndexedEventSourcePointer nativeObject = UnmanagedMemory.calloc(
+                SizeOf.get(DxfgIndexedEventSourcePointer.class)
         );
 
         fillNative(javaObject, nativeObject, false);
@@ -35,7 +35,7 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
     }
 
     @Override
-    public void fillNative(final IndexedEventSource javaObject, final DxfgIndexedEventSource nativeObject,
+    public void fillNative(final IndexedEventSource javaObject, final DxfgIndexedEventSourcePointer nativeObject,
             boolean clean) {
         if (clean) {
             cleanNative(nativeObject);
@@ -51,12 +51,12 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
     }
 
     @Override
-    public void cleanNative(final DxfgIndexedEventSource nativeObject) {
+    public void cleanNative(final DxfgIndexedEventSourcePointer nativeObject) {
         this.stringMapper.release(nativeObject.getName());
     }
 
     @Override
-    protected IndexedEventSource doToJava(final DxfgIndexedEventSource nativeObject) {
+    protected IndexedEventSource doToJava(final DxfgIndexedEventSourcePointer nativeObject) {
         switch (DxfgIndexedEventSourceType.fromCValue(nativeObject.getType())) {
             case INDEXED_EVENT_SOURCE:
                 return new IndexedEventSource(
@@ -75,7 +75,7 @@ public class IndexedEventSourceMapper extends Mapper<IndexedEventSource, DxfgInd
     }
 
     @Override
-    public void fillJava(final DxfgIndexedEventSource nativeObject, final IndexedEventSource javaObject) {
+    public void fillJava(final DxfgIndexedEventSourcePointer nativeObject, final IndexedEventSource javaObject) {
         throw new IllegalStateException("The Java object does not support setters.");
     }
 }

@@ -8,48 +8,48 @@ import com.dxfeed.sdk.events.DxfgEventType;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.word.WordFactory;
 
-public abstract class EventMapper<V extends EventType<?>, T extends DxfgEventType>
-        extends Mapper<V, T> {
+public abstract class EventMapper<JavaObjectType extends EventType<?>, NativeObjectType extends DxfgEventType>
+        extends Mapper<JavaObjectType, NativeObjectType> {
 
-    public T toNative(final V javaObject) {
+    public NativeObjectType toNative(final JavaObjectType javaObject) {
         if (javaObject == null) {
             return WordFactory.nullPointer();
         }
 
-        final T nativeObject = createNativeObject();
+        final NativeObjectType nativeObject = createNativeObject();
 
         fillNative(javaObject, nativeObject, true);
 
         return nativeObject;
     }
 
-    protected abstract T createNativeObject();
+    protected abstract NativeObjectType createNativeObject();
 
-    public T toNativeObjectWithCast(final EventType<?> javaEvent) {
-        return toNative((V) javaEvent);
+    public NativeObjectType toNativeObjectWithCast(final EventType<?> javaEvent) {
+        return toNative((JavaObjectType) javaEvent);
     }
 
-    public V toJavaObjectWithCast(final DxfgEventType nativeEvent) {
-        return toJava((T) nativeEvent);
+    public JavaObjectType toJavaObjectWithCast(final DxfgEventType nativeEvent) {
+        return toJava((NativeObjectType) nativeEvent);
     }
 
     public void fillNativeObjectWithCast(final EventType<?> javaEvent, final DxfgEventType nativeEvent) {
-        fillNative((V) javaEvent, (T) nativeEvent, true);
+        fillNative((JavaObjectType) javaEvent, (NativeObjectType) nativeEvent, true);
     }
 
     public void cleanNativeObjectWithCast(final DxfgEventType nativeEvent) {
-        cleanNative((T) nativeEvent);
+        cleanNative((NativeObjectType) nativeEvent);
     }
 
     public void fillJavaObjectWithCast(final DxfgEventType nativeEvent, final EventType<?> javaEvent) {
-        fillJava((T) nativeEvent, (V) javaEvent);
+        fillJava((NativeObjectType) nativeEvent, (JavaObjectType) javaEvent);
     }
 
     public void releaseWithCast(final DxfgEventType nativeEvent) {
-        release((T) nativeEvent);
+        release((NativeObjectType) nativeEvent);
     }
 
-    public abstract T createNativeObject(final String symbol);
+    public abstract NativeObjectType createNativeObject(final String symbol);
 
     public abstract DxfgEventClazz getEventClazz();
 }

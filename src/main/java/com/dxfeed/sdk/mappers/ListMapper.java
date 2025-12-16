@@ -14,28 +14,28 @@ import org.graalvm.word.PointerBase;
 import org.graalvm.word.WordFactory;
 
 public abstract class ListMapper<
-        JavaObject,
-        NativeObject extends PointerBase,
-        NativeObjectPointer extends CPointerPointer<NativeObject>,
-        NativeList extends CList<NativeObjectPointer>
+        JavaObjectType,
+        NativeObjectType extends PointerBase,
+        NativeObjectPointerType extends CPointerPointer<NativeObjectType>,
+        NativeListType extends CList<NativeObjectPointerType>
         > {
 
     //https://github.com/graalvm/graal-jvmci-8/blob/master/jvmci/jdk.vm.ci.code/src/jdk/vm/ci/code/TargetDescription.java
     //ConfigurationValues.getTarget().arch.getWordSize() or ConfigurationValues.getTarget().wordSize;
     protected static final int SIZE_OF_C_POINTER = 8;
 
-    public NativeList toNativeList(final Collection<? extends JavaObject> javaCollection) {
-        final NativeList nativeList = UnmanagedMemory.calloc(getNativeListSize());
+    public NativeListType toNativeList(final Collection<? extends JavaObjectType> javaCollection) {
+        final NativeListType nativeList = UnmanagedMemory.calloc(getNativeListSize());
 
         if (javaCollection == null || javaCollection.isEmpty()) {
             nativeList.setSize(0);
             nativeList.setElements(WordFactory.nullPointer());
         } else {
-            final NativeObjectPointer nativeListElements = UnmanagedMemory.calloc(
+            final NativeObjectPointerType nativeListElements = UnmanagedMemory.calloc(
                     SIZE_OF_C_POINTER * javaCollection.size());
             int i = 0;
 
-            for (final JavaObject javaObject : javaCollection) {
+            for (final JavaObjectType javaObject : javaCollection) {
                 nativeListElements.addressOf(i++).write(toNative(javaObject));
             }
 
@@ -46,12 +46,12 @@ public abstract class ListMapper<
         return nativeList;
     }
 
-    public List<JavaObject> toJavaList(final NativeList nativeList) {
+    public List<JavaObjectType> toJavaList(final NativeListType nativeList) {
         if (nativeList.isNull() || nativeList.getSize() == 0) {
             return Collections.emptyList();
         }
 
-        final List<JavaObject> javaList = new ArrayList<>(nativeList.getSize());
+        final List<JavaObjectType> javaList = new ArrayList<>(nativeList.getSize());
 
         for (int i = 0; i < nativeList.getSize(); i++) {
             javaList.add(toJava(nativeList.getElements().addressOf(i).read()));
@@ -60,14 +60,14 @@ public abstract class ListMapper<
         return javaList;
     }
 
-    public void release(final NativeList nativeList) {
+    public void release(final NativeListType nativeList) {
         if (nativeList.isNull()) {
             return;
         }
 
         if (nativeList.getElements().isNonNull()) {
             for (int i = 0; i < nativeList.getSize(); ++i) {
-                final NativeObject nativeObject = nativeList.getElements().addressOf(i).read();
+                final NativeObjectType nativeObject = nativeList.getElements().addressOf(i).read();
 
                 if (nativeObject.isNonNull()) {
                     releaseNative(nativeObject);
@@ -80,11 +80,11 @@ public abstract class ListMapper<
         UnmanagedMemory.free(nativeList);
     }
 
-    protected abstract JavaObject toJava(final NativeObject nativeObject);
+    protected abstract JavaObjectType toJava(final NativeObjectType nativeObject);
 
-    protected abstract NativeObject toNative(final JavaObject javaObject);
+    protected abstract NativeObjectType toNative(final JavaObjectType javaObject);
 
-    protected abstract void releaseNative(final NativeObject nativeObject);
+    protected abstract void releaseNative(final NativeObjectType nativeObject);
 
     protected abstract int getNativeListSize();
 }

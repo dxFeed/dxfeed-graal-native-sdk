@@ -19,7 +19,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import java.util.Collection;
@@ -78,7 +78,7 @@ public class PromiseNative {
             final DxfgFeed feed,
             final DxfgEventClazz dxfgClazz,
             final DxfgSymbol dxfgSymbol,
-            final DxfgIndexedEventSource source
+            final DxfgIndexedEventSourcePointer source
     ) {
         return NativeUtils.MAPPER_PROMISE.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).getIndexedEventsPromise(

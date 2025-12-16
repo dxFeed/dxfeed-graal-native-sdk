@@ -4,14 +4,16 @@
 package com.dxfeed.sdk.events;
 
 import com.dxfeed.api.osub.WildcardSymbol;
+import com.dxfeed.event.EventMappers;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
-import com.dxfeed.event.EventMappers;
 import com.dxfeed.event.market.OrderSource;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointerPointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import com.dxfeed.sdk.symbol.DxfgSymbolType;
@@ -120,7 +122,7 @@ public class EventsNative {
             name = "dxfg_IndexedEventSource_new",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgIndexedEventSource dxfg_IndexedEventSource_new(
+    public static DxfgIndexedEventSourcePointer dxfg_IndexedEventSource_new(
             final IsolateThread ignoredThread,
             final CCharPointer source
     ) {
@@ -132,12 +134,31 @@ public class EventsNative {
     }
 
     @CEntryPoint(
+            name = "dxfg_IndexedEventSource_new2",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_IndexedEventSource_new2(
+            final IsolateThread ignoredThread,
+            int sourceId,
+            @DxfgOut DxfgIndexedEventSourcePointerPointer source
+    ) {
+        if (source.isNull()) {
+            throw new IllegalArgumentException("The `source` pointer is null");
+        }
+
+        source.write(NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.toNative(
+                sourceId == 0 ? IndexedEventSource.DEFAULT : OrderSource.valueOf(sourceId)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_IndexedEventSource_release",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )
     public static int dxfg_IndexedEventSource_release(
             final IsolateThread ignoredThread,
-            final DxfgIndexedEventSource source
+            final DxfgIndexedEventSourcePointer source
     ) {
         NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.release(source);
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
@@ -147,7 +168,7 @@ public class EventsNative {
             name = "dxfg_IndexedEvent_getSource",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
-    public static DxfgIndexedEventSource dxfg_IndexedEvent_getSource(
+    public static DxfgIndexedEventSourcePointer dxfg_IndexedEvent_getSource(
             final IsolateThread ignoredThread,
             final DxfgEventType event
     ) {

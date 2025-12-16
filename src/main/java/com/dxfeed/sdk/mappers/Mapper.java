@@ -6,11 +6,11 @@ package com.dxfeed.sdk.mappers;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.word.PointerBase;
 
-public abstract class Mapper<V, T extends PointerBase> {
+public abstract class Mapper<JavaObjectType, NativeObjectType extends PointerBase> {
 
-    public abstract T toNative(final V javaObject);
+    public abstract NativeObjectType toNative(final JavaObjectType javaObject);
 
-    public void release(final T nativeObject) {
+    public void release(final NativeObjectType nativeObject) {
         if (nativeObject.isNull()) {
             return;
         }
@@ -19,11 +19,12 @@ public abstract class Mapper<V, T extends PointerBase> {
         UnmanagedMemory.free(nativeObject);
     }
 
-    public abstract void fillNative(final V javaObject, final T nativeObject, boolean clean);
+    public abstract void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject,
+            boolean clean);
 
-    public abstract void cleanNative(final T nativeObject);
+    public abstract void cleanNative(final NativeObjectType nativeObject);
 
-    public final V toJava(final T nativeObject) {
+    public final JavaObjectType toJava(final NativeObjectType nativeObject) {
         if (nativeObject.isNull()) {
             return null;
         }
@@ -31,7 +32,7 @@ public abstract class Mapper<V, T extends PointerBase> {
         return doToJava(nativeObject);
     }
 
-    protected abstract V doToJava(final T nativeObject);
+    protected abstract JavaObjectType doToJava(final NativeObjectType nativeObject);
 
-    public abstract void fillJava(final T nativeObject, final V javaObject);
+    public abstract void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject);
 }

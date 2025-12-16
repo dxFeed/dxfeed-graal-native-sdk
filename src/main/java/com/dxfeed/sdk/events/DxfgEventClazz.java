@@ -6,11 +6,15 @@ package com.dxfeed.sdk.events;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.DailyCandle;
+import com.dxfeed.event.custom.NuamOrder;
+import com.dxfeed.event.custom.NuamTimeAndSale;
+import com.dxfeed.event.custom.NuamTrade;
 import com.dxfeed.event.market.AnalyticOrder;
 import com.dxfeed.event.market.MarketMaker;
 import com.dxfeed.event.market.OptionSale;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderBase;
+import com.dxfeed.event.market.OrderImbalance;
 import com.dxfeed.event.market.OtcMarketsOrder;
 import com.dxfeed.event.market.Profile;
 import com.dxfeed.event.market.Quote;
@@ -61,6 +65,10 @@ public enum DxfgEventClazz {
     DXFG_EVENT_TEXT_MESSAGE(TextMessage.class),            //
     DXFG_EVENT_MARKET_MAKER(MarketMaker.class),            // INDEXED
     DXFG_EVENT_TEXT_CONFIGURATION(TextConfiguration.class),// LASTING
+    DXFG_EVENT_NUAM_ORDER(NuamOrder.class),                // INDEXED -> ORDER_BASE -> ORDER
+    DXFG_EVENT_NUAM_TIME_AND_SALE(NuamTimeAndSale.class),  // INDEXED -> TIME_SERIES -> TIME_AND_SALE
+    DXFG_EVENT_NUAM_TRADE(NuamTrade.class),                // LASTING -> TRADE_BASE -> TRADE
+    DXFG_EVENT_ORDER_IMBALANCE(OrderImbalance.class),      // MARKET_EVENT
     ;
     private static final Map<Class<? extends EventType<?>>, DxfgEventClazz> map = new HashMap<>();
 
@@ -89,6 +97,10 @@ public enum DxfgEventClazz {
         map.put(TextMessage.class, DXFG_EVENT_TEXT_MESSAGE);
         map.put(MarketMaker.class, DXFG_EVENT_MARKET_MAKER);
         map.put(TextConfiguration.class, DXFG_EVENT_TEXT_CONFIGURATION);
+        map.put(NuamOrder.class, DXFG_EVENT_NUAM_ORDER);
+        map.put(NuamTimeAndSale.class, DXFG_EVENT_NUAM_TIME_AND_SALE);
+        map.put(NuamTrade.class, DXFG_EVENT_NUAM_TRADE);
+        map.put(OrderImbalance.class, DXFG_EVENT_ORDER_IMBALANCE);
     }
 
     public final Class<? extends EventType<?>> clazz;

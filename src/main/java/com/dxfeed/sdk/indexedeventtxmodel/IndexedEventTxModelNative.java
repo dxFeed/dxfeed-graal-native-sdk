@@ -15,12 +15,12 @@ import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
-import com.dxfeed.sdk.events.DxfgIndexedEventSourcePointer;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointerPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
 import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandlePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
@@ -82,7 +82,7 @@ public class IndexedEventTxModelNative {
 
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_getSource", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_IndexedEventTxModel_getSource(final IsolateThread ignoredThread,
-            DxfgIndexedEventTxModelHandle model, @DxfgOut final DxfgIndexedEventSourcePointer source) {
+            DxfgIndexedEventTxModelHandle model, @DxfgOut final DxfgIndexedEventSourcePointerPointer source) {
         if (source.isNull()) {
             throw new IllegalArgumentException("The `source` pointer is null");
         }
@@ -177,7 +177,7 @@ public class IndexedEventTxModelNative {
 
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_Builder_withSource", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_IndexedEventTxModel_Builder_withSource(final IsolateThread ignoredThread,
-            DxfgIndexedEventTxModelBuilderHandle builder, DxfgIndexedEventSource source) {
+            DxfgIndexedEventTxModelBuilderHandle builder, DxfgIndexedEventSourcePointer source) {
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER.toJava(builder)
                 .withSource(NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.toJava(source));

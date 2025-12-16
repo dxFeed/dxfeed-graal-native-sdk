@@ -11,7 +11,7 @@ import org.graalvm.word.PointerBase;
 
 @CContext(Directives.class)
 @CStruct("dxfg_indexed_event_source_t")
-public interface DxfgIndexedEventSource extends PointerBase {
+public interface DxfgIndexedEventSourcePointer extends PointerBase {
 
     @CField("type")
     int getType();

@@ -3,7 +3,6 @@
 
 package com.dxfeed.sdk.orcs;
 
-import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.CandleSymbol;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderSource;
@@ -14,12 +13,10 @@ import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointerPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
-import com.dxfeed.sdk.ipf.DxfgInstrumentProfile2ListPointer;
 import com.dxfeed.sdk.orcs.mappers.Mappers;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.graalvm.nativeimage.IsolateThread;
@@ -50,7 +47,7 @@ public class OrcsNative {
     public static int dxfg_PriceLevelService_getOrders(final IsolateThread ignoredThread,
             final DxfgPriceLevelServiceHandle service,
             final DxfgSymbol candleSymbol,
-            final DxfgIndexedEventSource orderSource,
+            final DxfgIndexedEventSourcePointer orderSource,
             final long from, final long to,
             @CConst final CCharPointer caller,
             @DxfgOut final DxfgEventTypeListPointerPointer orders
@@ -75,7 +72,7 @@ public class OrcsNative {
     public static int dxfg_PriceLevelService_getOrders2(final IsolateThread ignoredThread,
             final DxfgPriceLevelServiceHandle service,
             final DxfgSymbol candleSymbol,
-            final DxfgIndexedEventSource orderSource,
+            final DxfgIndexedEventSourcePointer orderSource,
             final long from, final long to,
             @DxfgOut final DxfgEventTypeListPointerPointer orders
 

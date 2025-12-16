@@ -8,8 +8,8 @@ import com.dxfeed.sdk.events.DxfgMarketEvent;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMarketEvent>
-        extends EventMapper<T, V> {
+public abstract class MarketEventMapper<JavaObjectType extends MarketEvent, NativeObjectType extends DxfgMarketEvent>
+        extends EventMapper<JavaObjectType, NativeObjectType> {
 
     protected final Mapper<String, CCharPointer> stringMapper;
 
@@ -18,7 +18,7 @@ public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMar
     }
 
     @Override
-    public void fillNative(final T javaObject, final V nativeObject, boolean clean) {
+    public void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         if (clean) {
             cleanNative(nativeObject);
         }
@@ -28,19 +28,19 @@ public abstract class MarketEventMapper<T extends MarketEvent, V extends DxfgMar
     }
 
     @Override
-    public void cleanNative(final V nativeObject) {
+    public void cleanNative(final NativeObjectType nativeObject) {
         this.stringMapper.release(nativeObject.getEventSymbol());
     }
 
     @Override
-    public void fillJava(final V nativeObject, final T javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         javaObject.setEventSymbol(this.stringMapper.toJava(nativeObject.getEventSymbol()));
         javaObject.setEventTime(nativeObject.getEventTime());
     }
 
     @Override
-    public V createNativeObject(final String symbol) {
-        final V nativeObject = createNativeObject();
+    public NativeObjectType createNativeObject(final String symbol) {
+        final NativeObjectType nativeObject = createNativeObject();
 
         nativeObject.setEventSymbol(this.stringMapper.toNative(symbol));
 

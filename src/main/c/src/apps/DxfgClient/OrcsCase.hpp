@@ -18,6 +18,37 @@
 #include <vector>
 
 namespace dxfg {
+
+inline std::optional<int64_t> parseGranularityAsMillis(graal_isolatethread_t *isolateThread,
+                                               const std::string &candleSymbolString) {
+    if (const auto granularityKeyValueIndex = candleSymbolString.find("gr=");
+        granularityKeyValueIndex != std::string::npos) {
+        if (const auto closingCurlyBraceIndex = candleSymbolString.find('}', granularityKeyValueIndex);
+            closingCurlyBraceIndex != std::string::npos) {
+            const auto granularityValueIndex = granularityKeyValueIndex + 3;
+            const auto granularityValueString =
+                candleSymbolString.substr(granularityValueIndex, closingCurlyBraceIndex - granularityValueIndex);
+            const auto timePeriod = dxfg_TimePeriod_valueOf2(isolateThread, granularityValueString.c_str());
+
+            finally([&] {
+                dxfg_JavaObjectHandler_release(isolateThread, &timePeriod->handler);
+            });
+
+            if (timePeriod) {
+                auto result = dxfg_TimePeriod_getTime(isolateThread, timePeriod);
+
+                if (result == std::numeric_limits<int64_t>::min()) {
+                    return std::nullopt;
+                }
+
+                return result;
+            }
+        }
+    }
+
+    return std::nullopt;
+}
+
 inline Command orcsCase{
     "OrcsCase",
     {"orcs"},
@@ -167,9 +198,11 @@ inline Command orcsCase{
 
         printf("Received %d orders in %lldms\n", orders->size, stopWatch.elapsed().count());
 
+        auto timeGapBound = parseGranularityAsMillis(isolateThread, candleSymbolString).value_or(60000);
+
         int32_t isValid = 0;
 
-        result = dxfg_PriceLevelChecker_validate(isolateThread, orders, 60000, 0, &isValid);
+        result = dxfg_PriceLevelChecker_validate(isolateThread, orders, timeGapBound, 0, &isValid);
 
         if (result != DXFG_EXECUTE_SUCCESSFULLY) {
             getException(isolateThread);

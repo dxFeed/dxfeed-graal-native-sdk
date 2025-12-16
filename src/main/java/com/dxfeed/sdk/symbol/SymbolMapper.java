@@ -9,7 +9,7 @@ import com.dxfeed.api.osub.WildcardSymbol;
 import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
 import com.dxfeed.sdk.mappers.Mapper;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
@@ -18,11 +18,11 @@ import org.graalvm.word.WordFactory;
 public class SymbolMapper extends Mapper<Object, DxfgSymbol> {
 
     private final Mapper<String, CCharPointer> stringMapper;
-    private final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource;
+    private final Mapper<IndexedEventSource, DxfgIndexedEventSourcePointer> mapperSource;
 
     public SymbolMapper(
             final Mapper<String, CCharPointer> stringMapper,
-            final Mapper<IndexedEventSource, DxfgIndexedEventSource> mapperSource
+            final Mapper<IndexedEventSource, DxfgIndexedEventSourcePointer> mapperSource
     ) {
         this.stringMapper = stringMapper;
         this.mapperSource = mapperSource;

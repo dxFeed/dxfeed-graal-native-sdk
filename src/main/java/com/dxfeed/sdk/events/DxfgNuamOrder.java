@@ -15,7 +15,7 @@ public interface DxfgNuamOrder extends DxfgOrder {
     int getActorId();
 
     @CField("actor_id")
-    int setActorId(int actorId);
+    void setActorId(int actorId);
 
     @CField("participant_id")
     int getParticipantId();

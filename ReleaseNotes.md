@@ -1,5 +1,10 @@
 ## v3.0.0
 
+* **\[MDAPI-243]\[GRAAL]** Added `NuamOrder`, `NuamTimeAndSale`, `NuamTrade`, and `OrderImbalance` events.
+  * Added all necessary structs, mappers, wrappers.
+  * Impoved the `DxfgClient` tool.
+  * Added reflection info for the `NuamOrder`, `NuamTimeAndSale`, `NuamTrade`, and `OrderImbalance` events.
+  * Added `dxfg_IndexedEventSource_new2(graal_isolatethread_t *thread, int32_t sourceId, DXFG_OUT dxfg_indexed_event_source_t** source)` function.
 * **\[MDAPI-296]\[GRAAL]** TimeAndSale, Trade and TradeETH events extended with new field tradeId.
 * Migrated to QDS 3.347 and MDD 525
 * **\[MDAPI-298]** dxFeed Graal Native SDK + ORCS API.

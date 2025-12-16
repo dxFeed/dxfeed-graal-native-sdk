@@ -547,7 +547,7 @@ typedef struct dxfg_nuam_order_t {
     double refresh_quantity;
     double leaves_quantity;
     double matched_quantity;
-    int32_t nuamFlags;
+    int32_t nuam_flags;
 } dxfg_nuam_order_t;
 
 /// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html
@@ -568,6 +568,7 @@ typedef struct dxfg_nuam_trade_t {
 
 /// https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html
 typedef struct dxfg_order_imbalance_t {
+    dxfg_market_event_t market_event;
     int32_t source_id;
     int64_t time_sequence;
     double ref_price;
@@ -588,16 +589,30 @@ typedef struct dxfg_event_clazz_list_t {
     dxfg_event_clazz_t **elements;
 } dxfg_event_clazz_list_t;
 
-dxfg_symbol_t*              dxfg_Symbol_new(graal_isolatethread_t *thread, const char *symbol, dxfg_symbol_type_t symbolType);
-int32_t                     dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t* symbol);
-dxfg_event_type_t*          dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
-int32_t                     dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
-int32_t                     dxfg_CList_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_list* eventTypes);// free the memory occupied by the с data structure (list and all events)
-int32_t                     dxfg_CList_EventClazz_release(graal_isolatethread_t *thread, dxfg_event_clazz_list_t* eventClazzes);// free the memory occupied by the с data structure (list and all int-pointer)
-int32_t                     dxfg_CList_symbol_release(graal_isolatethread_t *thread, dxfg_symbol_list*);// free the memory occupied by the с data structure (list and all int-pointer)
-dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
-dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t *thread, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
-int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t* source);
+dxfg_symbol_t *dxfg_Symbol_new(graal_isolatethread_t *thread, const char *symbol, dxfg_symbol_type_t symbolType);
+int32_t dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t *symbol);
+dxfg_event_type_t *dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
+int32_t dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t *eventType);
+int32_t dxfg_CList_EventType_release(
+    graal_isolatethread_t *thread,
+    dxfg_event_type_list *eventTypes); // free the memory occupied by the с data structure (list and all events)
+int32_t dxfg_CList_EventClazz_release(graal_isolatethread_t *thread,
+                                      dxfg_event_clazz_list_t *eventClazzes); // free the memory occupied by the с data
+                                                                              // structure (list and all int-pointer)
+int32_t dxfg_CList_symbol_release(
+    graal_isolatethread_t *thread,
+    dxfg_symbol_list *); // free the memory occupied by the с data structure (list and all int-pointer)
+dxfg_indexed_event_source_t *dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t *eventType);
+dxfg_indexed_event_source_t *dxfg_IndexedEventSource_new(
+    graal_isolatethread_t *thread,
+    const char *source); // if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+
+// dxfg_IndexedEventSource_release
+int32_t dxfg_IndexedEventSource_new2(
+    graal_isolatethread_t *thread,
+    int32_t sourceId, DXFG_OUT dxfg_indexed_event_source_t** source); // if sourceId == 0, then return IndexedEventSource.DEFAULT else OrderSource
+
+int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t *source);
 
 typedef struct dxfg_observable_subscription_change_listener_t {
     dxfg_java_object_handler handler;

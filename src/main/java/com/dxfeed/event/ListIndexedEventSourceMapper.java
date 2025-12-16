@@ -4,34 +4,34 @@
 package com.dxfeed.event;
 
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
-import com.dxfeed.sdk.events.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.mappers.ListMapper;
 import com.dxfeed.sdk.mappers.Mapper;
-import com.dxfeed.sdk.source.DxfgIndexedEventSource;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
+import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointerPointer;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 public class ListIndexedEventSourceMapper extends
-        ListMapper<IndexedEventSource, DxfgIndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourceList> {
+        ListMapper<IndexedEventSource, DxfgIndexedEventSourcePointer, DxfgIndexedEventSourcePointerPointer, DxfgIndexedEventSourceList> {
 
-    private final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers;
+    private final Mapper<IndexedEventSource, DxfgIndexedEventSourcePointer> sourceMappers;
 
     public ListIndexedEventSourceMapper(
-            final Mapper<IndexedEventSource, DxfgIndexedEventSource> sourceMappers) {
+            final Mapper<IndexedEventSource, DxfgIndexedEventSourcePointer> sourceMappers) {
         this.sourceMappers = sourceMappers;
     }
 
     @Override
-    protected IndexedEventSource toJava(final DxfgIndexedEventSource nativeObject) {
+    protected IndexedEventSource toJava(final DxfgIndexedEventSourcePointer nativeObject) {
         return sourceMappers.toJava(nativeObject);
     }
 
     @Override
-    protected void releaseNative(final DxfgIndexedEventSource nativeObject) {
+    protected void releaseNative(final DxfgIndexedEventSourcePointer nativeObject) {
         sourceMappers.release(nativeObject);
     }
 
     @Override
-    protected DxfgIndexedEventSource toNative(final IndexedEventSource javaObject) {
+    protected DxfgIndexedEventSourcePointer toNative(final IndexedEventSource javaObject) {
         return sourceMappers.toNative(javaObject);
     }
 

@@ -7,8 +7,8 @@ import com.dxfeed.sdk.events.DxfgOrderBase;
 import com.dxfeed.sdk.mappers.Mapper;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrderBase>
-        extends MarketEventMapper<V, T> {
+public abstract class OrderAbstractMapper<JavaObjectType extends OrderBase, NativeObjectType extends DxfgOrderBase>
+        extends MarketEventMapper<JavaObjectType, NativeObjectType> {
 
     public OrderAbstractMapper(
             final Mapper<String, CCharPointer> stringMapper
@@ -17,7 +17,7 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
     }
 
     @Override
-    public void fillNative(final V javaObject, final T nativeObject, boolean clean) {
+    public void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setEventFlags(javaObject.getEventFlags());
         nativeObject.setIndex(javaObject.getIndex());
@@ -37,12 +37,12 @@ public abstract class OrderAbstractMapper<V extends OrderBase, T extends DxfgOrd
     }
 
     @Override
-    public void cleanNative(final T nativeObject) {
+    public void cleanNative(final NativeObjectType nativeObject) {
         super.cleanNative(nativeObject);
     }
 
     @Override
-    public void fillJava(final T nativeObject, final V javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         super.fillJava(nativeObject, javaObject);
         javaObject.setEventFlags(nativeObject.getEventFlags());
         javaObject.setIndex(nativeObject.getIndex());

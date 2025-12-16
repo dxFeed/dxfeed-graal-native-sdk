@@ -76,6 +76,9 @@
       "name": "com.dxfeed.event.market.OrderBase"
     },
     {
+      "name": "com.dxfeed.event.market.OrderImbalance"
+    },
+    {
       "name": "com.dxfeed.event.market.OrderSource"
     },
     {

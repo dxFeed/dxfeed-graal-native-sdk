@@ -10,7 +10,8 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAndSale> {
+public class TimeAndSaleMapper<JavaObjectType extends TimeAndSale, NativeObjectType extends DxfgTimeAndSale> extends
+        MarketEventMapper<JavaObjectType, NativeObjectType> {
 
     public TimeAndSaleMapper(
             final Mapper<String, CCharPointer> stringMapper
@@ -19,9 +20,10 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     }
 
     @Override
-    public DxfgTimeAndSale createNativeObject() {
-        final DxfgTimeAndSale nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeAndSale.class));
+    public NativeObjectType createNativeObject() {
+        final NativeObjectType nativeObject = UnmanagedMemory.calloc(SizeOf.get(DxfgTimeAndSale.class));
         nativeObject.setClazz(DxfgEventClazz.DXFG_EVENT_TIME_AND_SALE.getCValue());
+
         return nativeObject;
     }
 
@@ -31,7 +33,7 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     }
 
     @Override
-    public void fillNative(final TimeAndSale javaObject, final DxfgTimeAndSale nativeObject, boolean clean) {
+    public void fillNative(final JavaObjectType javaObject, final NativeObjectType nativeObject, boolean clean) {
         super.fillNative(javaObject, nativeObject, clean);
         nativeObject.setEventFlags(javaObject.getEventFlags());
         nativeObject.setIndex(javaObject.getIndex());
@@ -51,23 +53,26 @@ public class TimeAndSaleMapper extends MarketEventMapper<TimeAndSale, DxfgTimeAn
     }
 
     @Override
-    public void cleanNative(final DxfgTimeAndSale nativeObject) {
+    public void cleanNative(final NativeObjectType nativeObject) {
         super.cleanNative(nativeObject);
+
         stringMapper.release(nativeObject.getExchangeSaleConditions());
         stringMapper.release(nativeObject.getBuyer());
         stringMapper.release(nativeObject.getSeller());
     }
 
     @Override
-    protected TimeAndSale doToJava(final DxfgTimeAndSale nativeObject) {
-        final TimeAndSale javaObject = new TimeAndSale();
+    protected JavaObjectType doToJava(final NativeObjectType nativeObject) {
+        @SuppressWarnings("unchecked") final JavaObjectType javaObject = (JavaObjectType) new TimeAndSale();
         this.fillJava(nativeObject, javaObject);
+
         return javaObject;
     }
 
     @Override
-    public void fillJava(final DxfgTimeAndSale nativeObject, final TimeAndSale javaObject) {
+    public void fillJava(final NativeObjectType nativeObject, final JavaObjectType javaObject) {
         super.fillJava(nativeObject, javaObject);
+
         javaObject.setEventFlags(nativeObject.getEventFlags());
         javaObject.setIndex(nativeObject.getIndex());
         javaObject.setTimeNanoPart(nativeObject.getTimeNanoPart());
