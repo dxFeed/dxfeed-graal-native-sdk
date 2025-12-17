@@ -25,7 +25,7 @@ class CommandLineParser {
             return properties;
         }
 
-        while (std::string(args[currentArg]).find(propertyPattern_, 0) == 0) {
+        while (currentArg < args.size() && std::string(args[currentArg]).find(propertyPattern_, 0) == 0) {
             auto strings = StringUtils::splitString(args[currentArg], '=');
 
             if (strings.size() != 2) {

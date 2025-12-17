@@ -83,7 +83,35 @@ int32_t                   dxfg_DXFeedSubscription_removeSymbols(graal_isolatethr
 dxfg_executor_t*          dxfg_DXFeedSubscription_getExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 int32_t                   dxfg_DXFeedSubscription_setExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_executor_t *executor);
 dxfg_time_period_t*       dxfg_DXFeedSubscription_getAggregationPeriod(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
+
+/**
+ * Returns the aggregation period (in millis) for data for this subscription instance.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription handle.
+ * @param[out] aggregationPeriod A pointer to the aggregation period.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t  dxfg_DXFeedSubscription_getAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT int64_t *aggregationPeriod);
+
 int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_time_period_t *period);
+
+/**
+ * Sets the aggregation period for data.
+ * This method sets a new aggregation period for data, which will only take effect on the next iteration of data
+ * notification. For example, if the current aggregation period is 5 seconds, and it is changed to 1 second, the next
+ * call to the next call to the retrieve method may take up to 5 seconds, after which the new aggregation period will
+ * take effect.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription handle.
+ * @param[in] aggregationPeriod The aggregation period in millis.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int64_t aggregationPeriod);
+
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t *thread, dxfg_feed_event_listener_function user_func, void *user_data);
 int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);
 int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);

@@ -24,10 +24,25 @@
     "name": "[Lcom.dxfeed.event.candle.CandleSymbolAttribute;"
   },
   {
+    "name": "[Ljava.lang.Object;"
+  },
+  {
     "name": "[Ljava.lang.String;"
   },
   {
+    "name": "[Ljava.rmi.MarshalledObject;"
+  },
+  {
+    "name": "[Ljava.rmi.server.ObjID;"
+  },
+  {
+    "name": "[Ljavax.management.ObjectName;"
+  },
+  {
     "name": "[Ljavax.management.openmbean.CompositeData;"
+  },
+  {
+    "name": "[Ljavax.security.auth.Subject;"
   },
   {
     "name": "[Lsun.security.pkcs.SignerInfo;"
@@ -50,51 +65,6 @@
   {
     "name": "char",
     "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "java.lang.String",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.Integer",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.util.HashMap",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
   },
   {
     "name": "com.devexperts.annotation.Description",
@@ -159,12 +129,6 @@
     ]
   },
   {
-    "name": "com.devexperts.logging.Log4j2Logging"
-  },
-  {
-    "name": "com.devexperts.logging.Log4jLogging"
-  },
-  {
     "name": "com.devexperts.logging.InterceptableLogging",
     "methods": [
       {
@@ -172,6 +136,12 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.devexperts.logging.Log4j2Logging"
+  },
+  {
+    "name": "com.devexperts.logging.Log4jLogging"
   },
   {
     "name": "com.devexperts.mars.jvm.JVMSelfMonitoring",
@@ -273,10 +243,6 @@
         "parameterTypes": []
       }
     ]
-  },
-  {
-    "name": "com.devexperts.qd.SerialFieldType",
-    "allDeclaredFields": true
   },
   {
     "name": "com.devexperts.qd.dxlink.websocket.application.DxLinkWebSocketApplicationConnectionFactory",
@@ -393,6 +359,27 @@
         "name": "state"
       }
     ]
+  },
+  {
+    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementFactoryImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstance",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplAnyContract",
+    "queryAllPublicConstructors": true
+  },
+  {
+    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplOneContract",
+    "queryAllPublicConstructors": true
   },
   {
     "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorMXBean",
@@ -571,27 +558,6 @@
     ]
   },
   {
-    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementFactoryImpl",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      },
-      {
-        "name": "getInstance",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplAnyContract",
-    "queryAllPublicConstructors": true
-  },
-  {
-    "name": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplOneContract",
-    "queryAllPublicConstructors": true
-  },
-  {
     "name": "com.devexperts.qd.kit.SymbolStriperFactoryImpl",
     "methods": [
       {
@@ -610,6 +576,48 @@
       {
         "name": "getInstance",
         "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.monitoring.JmxHtml",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "init",
+        "parameterTypes": [
+          "java.util.Properties"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.monitoring.JmxRmi",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "init",
+        "parameterTypes": [
+          "java.util.Properties"
+        ]
       }
     ]
   },
@@ -685,17 +693,7 @@
     ]
   },
   {
-    "name": "com.devexperts.qd.qtp.DistributorAdapter$Factory",
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "getFieldReplacer",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.qtp.DxLinkWebSocketConnectorFactory",
+    "name": "com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
     "methods": [
       {
         "name": "<init>",
@@ -708,176 +706,17 @@
     ]
   },
   {
-    "name": "com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
-    "methods": [
-      {
-        "name": "getFilter",
-        "parameterTypes": []
-      },
-      {
-        "name": "setFilter",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+    "name": "com.devexperts.qd.qtp.DistributorAdapter$Factory",
     "queryAllPublicMethods": true,
     "methods": [
-      {
-        "name": "getAuth",
-        "parameterTypes": []
-      },
-      {
-        "name": "getHeartbeatPeriod",
-        "parameterTypes": []
-      },
-      {
-        "name": "getHeartbeatTimeout",
-        "parameterTypes": []
-      },
-      {
-        "name": "getInitialHeartbeatPeriod",
-        "parameterTypes": []
-      },
-      {
-        "name": "getLogin",
-        "parameterTypes": []
-      },
-      {
-        "name": "getPassword",
-        "parameterTypes": []
-      },
-      {
-        "name": "getUser",
-        "parameterTypes": []
-      },
-      {
-        "name": "setLogin",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setPassword",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setUser",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.qtp.MessageAdapterMBean",
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "close",
-        "parameterTypes": []
-      },
-      {
-        "name": "isAlive",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.qtp.MessageConnector",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "com.devexperts.qd.qtp.MessageConnectorMBean",
-    "methods": [
-      {
-        "name": "getAddress",
-        "parameterTypes": []
-      },
-      {
-        "name": "getConnectionCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getEndpointStats",
-        "parameterTypes": []
-      },
       {
         "name": "getFieldReplacer",
         "parameterTypes": []
-      },
-      {
-        "name": "getName",
-        "parameterTypes": []
-      },
-      {
-        "name": "getPassword",
-        "parameterTypes": []
-      },
-      {
-        "name": "getReconnectDelay",
-        "parameterTypes": []
-      },
-      {
-        "name": "getState",
-        "parameterTypes": []
-      },
-      {
-        "name": "getThreadPriority",
-        "parameterTypes": []
-      },
-      {
-        "name": "getUser",
-        "parameterTypes": []
-      },
-      {
-        "name": "isActive",
-        "parameterTypes": []
-      },
-      {
-        "name": "reconnect",
-        "parameterTypes": []
-      },
-      {
-        "name": "resetEndpointStats",
-        "parameterTypes": []
-      },
-      {
-        "name": "restart",
-        "parameterTypes": []
-      },
-      {
-        "name": "retrieveCompleteEndpointStats",
-        "parameterTypes": []
-      },
-      {
-        "name": "start",
-        "parameterTypes": []
-      },
-      {
-        "name": "stop",
-        "parameterTypes": []
       }
     ]
   },
   {
-    "name": "com.devexperts.qd.qtp.MessageType",
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
+    "name": "com.devexperts.qd.qtp.DxLinkWebSocketConnectorFactory",
     "methods": [
       {
         "name": "<init>",
@@ -1107,6 +946,175 @@
     "name": "com.devexperts.qd.qtp.file.TapeConnectorMXBean"
   },
   {
+    "name": "com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
+    "methods": [
+      {
+        "name": "getFilter",
+        "parameterTypes": []
+      },
+      {
+        "name": "setFilter",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getAuth",
+        "parameterTypes": []
+      },
+      {
+        "name": "getHeartbeatPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getHeartbeatTimeout",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInitialHeartbeatPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLogin",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPassword",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUser",
+        "parameterTypes": []
+      },
+      {
+        "name": "setLogin",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setPassword",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setUser",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.MessageAdapterMBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "close",
+        "parameterTypes": []
+      },
+      {
+        "name": "isAlive",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.MessageConnector",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "com.devexperts.qd.qtp.MessageConnectorMBean",
+    "methods": [
+      {
+        "name": "getAddress",
+        "parameterTypes": []
+      },
+      {
+        "name": "getConnectionCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getEndpointStats",
+        "parameterTypes": []
+      },
+      {
+        "name": "getFieldReplacer",
+        "parameterTypes": []
+      },
+      {
+        "name": "getName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPassword",
+        "parameterTypes": []
+      },
+      {
+        "name": "getReconnectDelay",
+        "parameterTypes": []
+      },
+      {
+        "name": "getState",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadPriority",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUser",
+        "parameterTypes": []
+      },
+      {
+        "name": "isActive",
+        "parameterTypes": []
+      },
+      {
+        "name": "reconnect",
+        "parameterTypes": []
+      },
+      {
+        "name": "resetEndpointStats",
+        "parameterTypes": []
+      },
+      {
+        "name": "restart",
+        "parameterTypes": []
+      },
+      {
+        "name": "retrieveCompleteEndpointStats",
+        "parameterTypes": []
+      },
+      {
+        "name": "start",
+        "parameterTypes": []
+      },
+      {
+        "name": "stop",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.MessageType",
+    "methods": [
+      {
+        "name": "valueOf",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
     "name": "com.devexperts.qd.qtp.nio.NioConnectorFactory",
     "methods": [
       {
@@ -1215,6 +1223,10 @@
         "name": "state"
       }
     ]
+  },
+  {
+    "name": "com.devexperts.qd.SerialFieldType",
+    "allDeclaredFields": true
   },
   {
     "name": "com.devexperts.qd.spi.QDFilterFactory",
@@ -1384,38 +1396,6 @@
         "parameterTypes": []
       }
     ]
-  },
-  {
-    "name": "com.dxfeed.event.EventType",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "setEventSymbol",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setEventTime",
-        "parameterTypes": [
-          "long"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "com.dxfeed.event.IndexedEvent",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "com.dxfeed.event.LastingEvent",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "com.dxfeed.event.TimeSeriesEvent",
-    "queryAllDeclaredMethods": true
   },
   {
     "name": "com.dxfeed.event.candle.Candle",
@@ -1752,6 +1732,49 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.EventType",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "setEventSymbol",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setEventTime",
+        "parameterTypes": [
+          "long"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.event.IndexedEvent",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "com.dxfeed.event.IndexedEventSource",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.event.LastingEvent",
+    "queryAllDeclaredMethods": true
+  },
+  {
     "name": "com.dxfeed.event.market.AnalyticOrder",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -1861,6 +1884,149 @@
       },
       {
         "name": "getInstance",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.event.market.MarketMaker",
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSource",
+        "parameterTypes": []
+      },
+      {
+        "name": "getEventFlags",
+        "parameterTypes": []
+      },
+      {
+        "name": "setEventFlags",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "getIndex",
+        "parameterTypes": []
+      },
+      {
+        "name": "setIndex",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getExchangeCode",
+        "parameterTypes": []
+      },
+      {
+        "name": "setExchangeCode",
+        "parameterTypes": [
+          "char"
+        ]
+      },
+      {
+        "name": "getMarketMaker",
+        "parameterTypes": []
+      },
+      {
+        "name": "setMarketMaker",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getBidTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBidTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getBidPrice",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBidPrice",
+        "parameterTypes": [
+          "double"
+        ]
+      },
+      {
+        "name": "getBidSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBidSize",
+        "parameterTypes": [
+          "double"
+        ]
+      },
+      {
+        "name": "getBidCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBidCount",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getAskTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAskTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getAskPrice",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAskPrice",
+        "parameterTypes": [
+          "double"
+        ]
+      },
+      {
+        "name": "getAskSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAskSize",
+        "parameterTypes": [
+          "double"
+        ]
+      },
+      {
+        "name": "getAskCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAskCount",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "toString",
         "parameterTypes": []
       }
     ]
@@ -2137,149 +2303,6 @@
     ]
   },
   {
-    "name": "com.dxfeed.event.market.MarketMaker",
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      },
-      {
-        "name": "getSource",
-        "parameterTypes": []
-      },
-      {
-        "name": "getEventFlags",
-        "parameterTypes": []
-      },
-      {
-        "name": "setEventFlags",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getIndex",
-        "parameterTypes": []
-      },
-      {
-        "name": "setIndex",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "getTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "getExchangeCode",
-        "parameterTypes": []
-      },
-      {
-        "name": "setExchangeCode",
-        "parameterTypes": [
-          "char"
-        ]
-      },
-      {
-        "name": "getMarketMaker",
-        "parameterTypes": []
-      },
-      {
-        "name": "setMarketMaker",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getBidTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "setBidTime",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "getBidPrice",
-        "parameterTypes": []
-      },
-      {
-        "name": "setBidPrice",
-        "parameterTypes": [
-          "double"
-        ]
-      },
-      {
-        "name": "getBidSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "setBidSize",
-        "parameterTypes": [
-          "double"
-        ]
-      },
-      {
-        "name": "getBidCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "setBidCount",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "getAskTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "setAskTime",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "getAskPrice",
-        "parameterTypes": []
-      },
-      {
-        "name": "setAskPrice",
-        "parameterTypes": [
-          "double"
-        ]
-      },
-      {
-        "name": "getAskSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "setAskSize",
-        "parameterTypes": [
-          "double"
-        ]
-      },
-      {
-        "name": "getAskCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "setAskCount",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "toString",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
     "name": "com.dxfeed.event.market.Order",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -2305,36 +2328,6 @@
         "parameterTypes": [
           "java.lang.String"
         ]
-      }
-    ]
-  },
-  {
-    "name": "com.dxfeed.event.IndexedEventSource",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.dxfeed.event.market.OrderSource",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
       }
     ]
   },
@@ -2633,6 +2626,21 @@
       },
       {
         "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.event.market.OrderSource",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
         "parameterTypes": []
       }
     ]
@@ -3937,76 +3945,14 @@
     ]
   },
   {
-    "name": "com.dxfeed.event.misc.TextMessage",
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
+    "name": "com.dxfeed.event.misc.MiscFactoryImpl",
     "methods": [
       {
         "name": "<init>",
         "parameterTypes": []
       },
       {
-        "name": "getEventSymbol",
-        "parameterTypes": []
-      },
-      {
-        "name": "getEventTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "getTimeSequence",
-        "parameterTypes": []
-      },
-      {
-        "name": "getTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "getSequence",
-        "parameterTypes": []
-      },
-      {
-        "name": "getText",
-        "parameterTypes": []
-      },
-      {
-        "name": "setEventSymbol",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setEventTime",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setTimeSequence",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setTime",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setSequence",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "setText",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "toString",
+        "name": "getInstance",
         "parameterTypes": []
       }
     ]
@@ -4108,14 +4054,76 @@
     ]
   },
   {
-    "name": "com.dxfeed.event.misc.MiscFactoryImpl",
+    "name": "com.dxfeed.event.misc.TextMessage",
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
     "methods": [
       {
         "name": "<init>",
         "parameterTypes": []
       },
       {
-        "name": "getInstance",
+        "name": "getEventSymbol",
+        "parameterTypes": []
+      },
+      {
+        "name": "getEventTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTimeSequence",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSequence",
+        "parameterTypes": []
+      },
+      {
+        "name": "getText",
+        "parameterTypes": []
+      },
+      {
+        "name": "setEventSymbol",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setEventTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setTimeSequence",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setSequence",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setText",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "toString",
         "parameterTypes": []
       }
     ]
@@ -4666,16 +4674,8 @@
     ]
   },
   {
-    "name": "com.dxfeed.ipf.InstrumentProfile",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name": "com.dxfeed.event.TimeSeriesEvent",
+    "queryAllDeclaredMethods": true
   },
   {
     "name": "com.dxfeed.ipf.filter.IPFFilterFactory",
@@ -4691,7 +4691,10 @@
     ]
   },
   {
-    "name": "com.dxfeed.ondemand.impl.OnDemandServiceImpl",
+    "name": "com.dxfeed.ipf.InstrumentProfile",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
     "methods": [
       {
         "name": "<init>",
@@ -4743,6 +4746,30 @@
       },
       {
         "name": "getTime",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.ondemand.impl.OnDemandServiceImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.orcs.api.AuthOrderSource",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
         "parameterTypes": []
       }
     ]
@@ -4860,6 +4887,15 @@
     ]
   },
   {
+    "name": "com.sun.jndi.url.rmi.rmiURLContextFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.sun.management.GarbageCollectorMXBean",
     "queryAllPublicMethods": true
   },
@@ -4869,22 +4905,6 @@
   },
   {
     "name": "com.sun.management.HotSpotDiagnosticMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "com.sun.management.OperatingSystemMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "com.sun.management.ThreadMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "com.sun.management.UnixOperatingSystemMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "com.sun.management.VMOption",
     "queryAllPublicMethods": true
   },
   {
@@ -4902,6 +4922,48 @@
   {
     "name": "com.sun.management.internal.OperatingSystemImpl",
     "queryAllPublicConstructors": true
+  },
+  {
+    "name": "com.sun.management.OperatingSystemMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getCommittedVirtualMemorySize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getFreeMemorySize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getFreeSwapSpaceSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getProcessCpuTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTotalMemorySize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTotalSwapSpaceSize",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.sun.management.ThreadMXBean",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.UnixOperatingSystemMXBean",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.VMOption",
+    "queryAllPublicMethods": true
   },
   {
     "name": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
@@ -4948,6 +5010,15 @@
   {
     "name": "java.io.Serializable",
     "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "java.lang.AutoCloseable",
+    "methods": [
+      {
+        "name": "close",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "java.lang.Boolean",
@@ -4999,6 +5070,18 @@
   },
   {
     "name": "java.lang.Integer",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
     "fields": [
       {
         "name": "TYPE"
@@ -5012,6 +5095,373 @@
         "name": "TYPE"
       }
     ]
+  },
+  {
+    "name": "java.lang.management.BufferPoolMXBean",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "java.lang.management.ClassLoadingMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getLoadedClassCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTotalLoadedClassCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUnloadedClassCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "isVerbose",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.CompilationMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTotalCompilationTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "isCompilationTimeMonitoringSupported",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.GarbageCollectorMXBean",
+    "methods": [
+      {
+        "name": "getCollectionCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCollectionTime",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.LockInfo",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getClassName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIdentityHashCode",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.ManagementFactory",
+    "methods": [
+      {
+        "name": "getRuntimeMXBean",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.ManagementPermission",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.MemoryManagerMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getName",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.MemoryMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getHeapMemoryUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNonHeapMemoryUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getObjectPendingFinalizationCount",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.MemoryPoolMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUsage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUsageThreshold",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.MemoryUsage",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getCommitted",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInit",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMax",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUsed",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.MonitorInfo",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "java.lang.management.OperatingSystemMXBean",
+    "methods": [
+      {
+        "name": "getArch",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAvailableProcessors",
+        "parameterTypes": []
+      },
+      {
+        "name": "getName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getVersion",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.PlatformLoggingMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getLoggerLevel",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getLoggerNames",
+        "parameterTypes": []
+      },
+      {
+        "name": "getParentLoggerName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setLoggerLevel",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.RuntimeMXBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getClassPath",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInputArguments",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLibraryPath",
+        "parameterTypes": []
+      },
+      {
+        "name": "getName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUptime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getVmName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getVmVendor",
+        "parameterTypes": []
+      },
+      {
+        "name": "getVmVersion",
+        "parameterTypes": []
+      },
+      {
+        "name": "isBootClassPathSupported",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.ThreadInfo",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getBlockedCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getBlockedTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockedMonitors",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockedSynchronizers",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockInfo",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockOwnerId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockOwnerName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPriority",
+        "parameterTypes": []
+      },
+      {
+        "name": "getStackTrace",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadState",
+        "parameterTypes": []
+      },
+      {
+        "name": "getWaitedCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getWaitedTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "isDaemon",
+        "parameterTypes": []
+      },
+      {
+        "name": "isInNative",
+        "parameterTypes": []
+      },
+      {
+        "name": "isSuspended",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.management.ThreadMXBean",
+    "methods": [
+      {
+        "name": "getAllThreadIds",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDaemonThreadCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPeakThreadCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getThreadInfo",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getTotalStartedThreadCount",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.Number"
   },
   {
     "name": "java.lang.Object",
@@ -5050,6 +5500,18 @@
   },
   {
     "name": "java.lang.String",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
     "fields": [
       {
         "name": "TYPE"
@@ -5071,105 +5533,6 @@
         "name": "TYPE"
       }
     ]
-  },
-  {
-    "name": "java.lang.management.BufferPoolMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.ClassLoadingMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.CompilationMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.LockInfo",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.ManagementFactory",
-    "methods": [
-      {
-        "name": "getRuntimeMXBean",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.management.ManagementPermission",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "java.lang.management.MemoryMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.MemoryManagerMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.MemoryPoolMXBean",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.MemoryUsage",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.MonitorInfo",
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.management.PlatformLoggingMXBean",
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "getLoggerLevel",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getLoggerNames",
-        "parameterTypes": []
-      },
-      {
-        "name": "getParentLoggerName",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setLoggerLevel",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "java.lang.management.RuntimeMXBean",
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "getInputArguments",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.management.ThreadInfo",
-    "queryAllPublicMethods": true
   },
   {
     "name": "java.math.BigDecimal"
@@ -5227,7 +5590,66 @@
     ]
   },
   {
+    "name": "java.rmi.dgc.Lease"
+  },
+  {
+    "name": "java.rmi.dgc.VMID"
+  },
+  {
+    "name": "java.rmi.MarshalledObject"
+  },
+  {
+    "name": "java.rmi.registry.Registry",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "java.rmi.Remote",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "java.rmi.server.ObjID"
+  },
+  {
+    "name": "java.rmi.server.RemoteObject"
+  },
+  {
+    "name": "java.rmi.server.RemoteStub"
+  },
+  {
+    "name": "java.rmi.server.UID"
+  },
+  {
     "name": "java.security.AlgorithmParametersSpi"
+  },
+  {
+    "name": "java.security.interfaces.RSAPrivateKey"
+  },
+  {
+    "name": "java.security.interfaces.RSAPublicKey"
   },
   {
     "name": "java.security.KeyStoreSpi"
@@ -5237,27 +5659,6 @@
   },
   {
     "name": "java.security.SecureRandomParameters"
-  },
-  {
-    "name": "java.security.interfaces.RSAPrivateKey"
-  },
-  {
-    "name": "java.security.interfaces.RSAPublicKey"
-  },
-  {
-    "name": "java.util.Date"
-  },
-  {
-    "name": "java.util.PropertyPermission",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.lang.String"
-        ]
-      }
-    ]
   },
   {
     "name": "java.util.concurrent.atomic.AtomicBoolean",
@@ -5287,6 +5688,28 @@
     ]
   },
   {
+    "name": "java.util.Date"
+  },
+  {
+    "name": "java.util.HashMap",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.util.logging.LoggingMXBean",
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "java.util.logging.LogManager",
     "methods": [
       {
@@ -5296,8 +5719,22 @@
     ]
   },
   {
-    "name": "java.util.logging.LoggingMXBean",
-    "queryAllPublicMethods": true
+    "name": "java.util.Map"
+  },
+  {
+    "name": "java.util.PropertyPermission",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.util.Vector"
   },
   {
     "name": "javax.management.MBeanOperationInfo",
@@ -5319,7 +5756,337 @@
     ]
   },
   {
+    "name": "javax.management.NotificationBroadcaster"
+  },
+  {
+    "name": "javax.management.NotificationEmitter"
+  },
+  {
+    "name": "javax.management.NotificationFilterSupport"
+  },
+  {
     "name": "javax.management.ObjectName"
+  },
+  {
+    "name": "javax.management.openmbean.CompositeData"
+  },
+  {
+    "name": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
+  },
+  {
+    "name": "javax.management.openmbean.TabularData"
+  },
+  {
+    "name": "javax.management.remote.JMXConnectorServer",
+    "methods": [
+      {
+        "name": "getNotificationInfo",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "javax.management.remote.JMXConnectorServerMBean",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getAddress",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAttributes",
+        "parameterTypes": []
+      },
+      {
+        "name": "getConnectionIds",
+        "parameterTypes": []
+      },
+      {
+        "name": "isActive",
+        "parameterTypes": []
+      },
+      {
+        "name": "start",
+        "parameterTypes": []
+      },
+      {
+        "name": "stop",
+        "parameterTypes": []
+      },
+      {
+        "name": "toJMXConnector",
+        "parameterTypes": [
+          "java.util.Map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIConnection",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "addNotificationListener",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "addNotificationListeners",
+        "parameterTypes": [
+          "javax.management.ObjectName[]",
+          "java.rmi.MarshalledObject[]",
+          "javax.security.auth.Subject[]"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": []
+      },
+      {
+        "name": "createMBean",
+        "parameterTypes": [
+          "java.lang.String",
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "java.lang.String[]",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "createMBean",
+        "parameterTypes": [
+          "java.lang.String",
+          "javax.management.ObjectName",
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "java.lang.String[]",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "createMBean",
+        "parameterTypes": [
+          "java.lang.String",
+          "javax.management.ObjectName",
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "createMBean",
+        "parameterTypes": [
+          "java.lang.String",
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "fetchNotifications",
+        "parameterTypes": [
+          "long",
+          "int",
+          "long"
+        ]
+      },
+      {
+        "name": "getAttribute",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.lang.String",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getAttributes",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.lang.String[]",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getConnectionId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDefaultDomain",
+        "parameterTypes": [
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getDomains",
+        "parameterTypes": [
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getMBeanCount",
+        "parameterTypes": [
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getMBeanInfo",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "getObjectInstance",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "invoke",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.lang.String",
+          "java.rmi.MarshalledObject",
+          "java.lang.String[]",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "isInstanceOf",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.lang.String",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "isRegistered",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "queryMBeans",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "queryNames",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "removeNotificationListener",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "removeNotificationListener",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "removeNotificationListeners",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.lang.Integer[]",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "setAttribute",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "setAttributes",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "java.rmi.MarshalledObject",
+          "javax.security.auth.Subject"
+        ]
+      },
+      {
+        "name": "unregisterMBean",
+        "parameterTypes": [
+          "javax.management.ObjectName",
+          "javax.security.auth.Subject"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIConnectionImpl_Skel"
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIConnectionImpl_Stub",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.rmi.server.RemoteRef"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIConnectorServer",
+    "queryAllPublicConstructors": true
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIConnectorServerMXBean"
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIServer",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getVersion",
+        "parameterTypes": []
+      },
+      {
+        "name": "newClient",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIServerImpl_Skel"
+  },
+  {
+    "name": "javax.management.remote.rmi.RMIServerImpl_Stub",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.rmi.server.RemoteRef"
+        ]
+      }
+    ]
   },
   {
     "name": "javax.management.StandardEmitterMBean",
@@ -5339,15 +6106,6 @@
         "parameterTypes": []
       }
     ]
-  },
-  {
-    "name": "javax.management.openmbean.CompositeData"
-  },
-  {
-    "name": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
-  },
-  {
-    "name": "javax.management.openmbean.TabularData"
   },
   {
     "name": "javax.security.auth.x500.X500Principal",
@@ -5510,6 +6268,55 @@
     ]
   },
   {
+    "name": "sun.rmi.registry.RegistryImpl_Skel",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.rmi.registry.RegistryImpl_Stub",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.rmi.server.RemoteRef"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sun.rmi.server.UnicastRef",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.rmi.transport.DGCImpl_Skel",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.rmi.transport.DGCImpl_Stub",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.rmi.server.RemoteRef"
+        ]
+      }
+    ]
+  },
+  {
     "name": "sun.security.pkcs12.PKCS12KeyStore",
     "methods": [
       {
@@ -5520,6 +6327,15 @@
   },
   {
     "name": "sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.security.provider.certpath.PKIXCertPathValidator",
     "methods": [
       {
         "name": "<init>",
@@ -5630,15 +6446,6 @@
   },
   {
     "name": "sun.security.provider.X509Factory",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "sun.security.provider.certpath.PKIXCertPathValidator",
     "methods": [
       {
         "name": "<init>",
@@ -5767,7 +6574,10 @@
     ]
   },
   {
-    "name": "sun.security.x509.CRLDistributionPointsExtension",
+    "name": "sun.security.x509.CertificateExtensions"
+  },
+  {
+    "name": "sun.security.x509.CertificatePoliciesExtension",
     "methods": [
       {
         "name": "<init>",
@@ -5779,10 +6589,7 @@
     ]
   },
   {
-    "name": "sun.security.x509.CertificateExtensions"
-  },
-  {
-    "name": "sun.security.x509.CertificatePoliciesExtension",
+    "name": "sun.security.x509.CRLDistributionPointsExtension",
     "methods": [
       {
         "name": "<init>",
@@ -5874,21 +6681,6 @@
           "java.lang.Boolean",
           "java.lang.Object"
         ]
-      }
-    ]
-  },
-  {
-    "name": "com.dxfeed.orcs.api.AuthOrderSource",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
       }
     ]
   }

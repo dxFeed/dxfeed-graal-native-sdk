@@ -1,5 +1,8 @@
 {
-  "types":[
+  "types": [
+    {
+      "name": "byte[]"
+    },
     {
       "name": "com.devexperts.auth.AuthToken"
     },
@@ -65,9 +68,6 @@
     },
     {
       "name": "com.dxfeed.event.market.Order"
-    },
-    {
-      "name": "com.dxfeed.event.market.OrderSource"
     },
     {
       "name": "com.dxfeed.event.market.OrderAction"
@@ -160,10 +160,10 @@
       "name": "com.dxfeed.glossary.CFI"
     },
     {
-      "name": "com.dxfeed.glossary.CFI$Value"
+      "name": "com.dxfeed.glossary.CFI$Attribute"
     },
     {
-      "name": "com.dxfeed.glossary.CFI$Attribute"
+      "name": "com.dxfeed.glossary.CFI$Value"
     },
     {
       "name": "com.dxfeed.glossary.PriceIncrements"
@@ -181,35 +181,189 @@
       "name": "com.dxfeed.orcs.api.AuthOrderSource"
     },
     {
+      "name": "java.lang.Boolean"
+    },
+    {
       "name": "java.lang.Integer"
+    },
+    {
+      "name": "java.lang.Integer[]"
+    },
+    {
+      "name": "java.lang.Long"
     },
     {
       "name": "java.lang.Number"
     },
     {
+      "name": "java.lang.Object[]"
+    },
+    {
       "name": "java.lang.String"
     },
     {
-      "name": "java.util.HashMap"
+      "name": "java.rmi.dgc.Lease"
     },
     {
-      "name": "java.util.LinkedHashMap"
+      "name": "java.rmi.dgc.VMID"
+    },
+    {
+      "name": "java.rmi.MarshalledObject"
+    },
+    {
+      "name": "java.rmi.MarshalledObject[]"
+    },
+    {
+      "name": "java.rmi.registry.Registry"
+    },
+    {
+      "name": "java.rmi.Remote"
+    },
+    {
+      "name": "java.rmi.server.ObjID"
+    },
+    {
+      "name": "java.rmi.server.ObjID[]"
+    },
+    {
+      "name": "java.rmi.server.RemoteObject"
+    },
+    {
+      "name": "java.rmi.server.RemoteStub"
+    },
+    {
+      "name": "java.rmi.server.UID"
     },
     {
       "name": "java.util.ArrayList"
     },
     {
+      "name": "java.util.Collections$UnmodifiableCollection"
+    },
+    {
+      "name": "java.util.Collections$UnmodifiableList"
+    },
+    {
+      "name": "java.util.Collections$UnmodifiableMap"
+    },
+    {
+      "name": "java.util.Collections$UnmodifiableRandomAccessList"
+    },
+    {
+      "name": "java.util.HashMap"
+    },
+    {
       "name": "java.util.HashSet"
+    },
+    {
+      "name": "java.util.LinkedHashMap"
     },
     {
       "name": "java.util.LinkedHashSet"
     },
     {
+      "name": "java.util.TreeMap"
+    },
+    {
       "name": "java.util.TreeSet"
+    },
+    {
+      "name": "java.util.Vector"
+    },
+    {
+      "name": "javax.management.Attribute"
+    },
+    {
+      "name": "javax.management.AttributeList"
+    },
+    {
+      "name": "javax.management.MBeanAttributeInfo"
+    },
+    {
+      "name": "javax.management.MBeanAttributeInfo[]"
+    },
+    {
+      "name": "javax.management.MBeanConstructorInfo[]"
+    },
+    {
+      "name": "javax.management.MBeanFeatureInfo"
+    },
+    {
+      "name": "javax.management.MBeanInfo"
+    },
+    {
+      "name": "javax.management.MBeanNotificationInfo"
+    },
+    {
+      "name": "javax.management.MBeanNotificationInfo[]"
+    },
+    {
+      "name": "javax.management.MBeanOperationInfo"
+    },
+    {
+      "name": "javax.management.MBeanOperationInfo[]"
+    },
+    {
+      "name": "javax.management.MBeanParameterInfo"
+    },
+    {
+      "name": "javax.management.MBeanParameterInfo[]"
+    },
+    {
+      "name": "javax.management.NotificationFilterSupport"
+    },
+    {
+      "name": "javax.management.ObjectName"
+    },
+    {
+      "name": "javax.management.ObjectName[]"
+    },
+    {
+      "name": "javax.management.openmbean.ArrayType"
+    },
+    {
+      "name": "javax.management.openmbean.CompositeData[]"
+    },
+    {
+      "name": "javax.management.openmbean.CompositeDataSupport"
+    },
+    {
+      "name": "javax.management.openmbean.CompositeType"
+    },
+    {
+      "name": "javax.management.openmbean.OpenMBeanAttributeInfoSupport"
+    },
+    {
+      "name": "javax.management.openmbean.OpenType"
+    },
+    {
+      "name": "javax.management.openmbean.SimpleType"
+    },
+    {
+      "name": "javax.management.openmbean.TabularType"
+    },
+    {
+      "name": "javax.management.remote.JMXServiceURL"
+    },
+    {
+      "name": "javax.management.remote.NotificationResult"
+    },
+    {
+      "name": "javax.management.remote.rmi.RMIConnectionImpl_Stub"
+    },
+    {
+      "name": "javax.management.remote.rmi.RMIServerImpl_Stub"
+    },
+    {
+      "name": "javax.management.remote.TargetedNotification[]"
+    },
+    {
+      "name": "javax.security.auth.Subject[]"
+    },
+    {
+      "name": "long[]"
     }
   ],
-  "lambdaCapturingTypes":[
-  ],
-  "proxies":[
-  ]
+  "lambdaCapturingTypes": [],
+  "proxies": []
 }

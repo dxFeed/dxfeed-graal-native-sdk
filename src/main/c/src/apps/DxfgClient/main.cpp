@@ -229,8 +229,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (!systemProperties.empty()) {
-        args.erase(args.begin() + 1, args.begin() + static_cast<std::ptrdiff_t>(argIndex));
+    if (!systemProperties.empty() && args.size() > 1) {
+        const size_t endIndex = argIndex == args.size() - 1 ? args.size() : argIndex;
+
+        args.erase(args.begin() + 1, args.begin() + static_cast<std::ptrdiff_t>(endIndex));
     }
 
     CommandsRegistry::tryRunCommand(mainIsolateThread, args, [] {

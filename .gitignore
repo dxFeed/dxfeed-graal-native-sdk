@@ -45,3 +45,8 @@ fabric.properties
 # Resources
 version.res
 /reports/**/*.txt
+
+config
+cp.txt
+/reflect-config.json
+/serialization-config.json

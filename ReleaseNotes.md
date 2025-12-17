@@ -1,3 +1,9 @@
+## v3.1.0
+
+* **\[MDAPI-71]\[GRAAL]** Added new alternatives to the `getAggregationPeriod` and `setAggregationPeriod` methods for subscription.
+  * Added `int32_t dxfg_DXFeedSubscription_getAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT int64_t *aggregationPeriod)` function.
+  * Added `int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int64_t aggregationPeriod)` function.
+
 ## v3.0.0
 
 * **\[MDAPI-243]\[GRAAL]** Added `NuamOrder`, `NuamTimeAndSale`, `NuamTrade`, and `OrderImbalance` events.

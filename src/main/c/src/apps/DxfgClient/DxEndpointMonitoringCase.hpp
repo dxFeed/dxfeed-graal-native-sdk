@@ -53,7 +53,7 @@ inline Command dxEndpointMonitoringCase{
         symbolAAPL.symbol = "AAPL";
         dxfg_DXFeedSubscription_setSymbol(isolateThread, subscriptionQuote, &symbolAAPL.supper);
 
-        std::this_thread::sleep_for(2s);
+        std::this_thread::sleep_for(20s);
 
         dxfg_DXFeedSubscription_close(isolateThread, subscriptionQuote);
         dxfg_DXEndpoint_close(isolateThread, endpoint);

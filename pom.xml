@@ -229,7 +229,7 @@
                 </goals>
                 <phase>compile</phase>
                 <configuration>
-                  <executable>rc.exe</executable>
+                  <executable>rc</executable>
                   <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>-DDXFSDK_VERSION=${project.version}</argument>
@@ -269,6 +269,7 @@
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
@@ -340,6 +341,7 @@
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
@@ -416,6 +418,7 @@
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
@@ -500,6 +503,7 @@
           <buildArgs>
             <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
             <buildArg>--enable-url-protocols=http,https</buildArg>
+            <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>

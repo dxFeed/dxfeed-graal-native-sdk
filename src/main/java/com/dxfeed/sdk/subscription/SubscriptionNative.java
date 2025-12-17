@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.subscription;
 
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
@@ -30,6 +31,7 @@ import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(Directives.class)
@@ -192,16 +194,44 @@ public class SubscriptionNative {
     @CEntryPoint(name = "dxfg_DXFeedSubscription_getAggregationPeriod", exceptionHandler = ExceptionHandlerReturnNullWord.class)
     public static DxfgTimePeriodHandle dxfg_DXFeedSubscription_getAggregationPeriod(final IsolateThread ignoredThread,
             final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription) {
+        //noinspection DataFlowIssue
         return NativeUtils.MAPPER_TIME_PERIOD.toNative(
                 NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriod());
+    }
+
+    @CEntryPoint(name = "dxfg_DXFeedSubscription_getAggregationPeriodMillis", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_DXFeedSubscription_getAggregationPeriodMillis(final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            @DxfgOut final CLongPointer aggregationPeriod) {
+        if (aggregationPeriod.isNull()) {
+            throw new IllegalArgumentException("The `aggregationPeriod` pointer is null");
+        }
+
+        //noinspection DataFlowIssue
+        aggregationPeriod.write(NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriod().getTime());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
     @CEntryPoint(name = "dxfg_DXFeedSubscription_setAggregationPeriod", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_DXFeedSubscription_setAggregationPeriod(final IsolateThread ignoredThread,
             final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
             final DxfgTimePeriodHandle timePeriod) {
+        //noinspection DataFlowIssue
         NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
                 .setAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(timePeriod));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(name = "dxfg_DXFeedSubscription_setAggregationPeriodMillis", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_DXFeedSubscription_setAggregationPeriodMillis(final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            final long timePeriod) {
+        //noinspection DataFlowIssue
+        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
+                .setAggregationPeriod(TimePeriod.valueOf(timePeriod));
+
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
