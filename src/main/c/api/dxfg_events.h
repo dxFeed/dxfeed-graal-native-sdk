@@ -614,6 +614,8 @@ int32_t dxfg_IndexedEventSource_new2(
 
 int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t *source);
 
+int32_t dxfg_CList_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_list* list);
+
 typedef struct dxfg_observable_subscription_change_listener_t {
     dxfg_java_object_handler handler;
 } dxfg_observable_subscription_change_listener_t;

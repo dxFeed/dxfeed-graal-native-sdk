@@ -7,6 +7,9 @@
       "name": "com.devexperts.auth.AuthToken"
     },
     {
+      "name": "com.devexperts.rmi.RMIException"
+    },
+    {
       "name": "com.dxfeed.event.candle.Candle"
     },
     {
@@ -181,7 +184,13 @@
       "name": "com.dxfeed.orcs.api.AuthOrderSource"
     },
     {
+      "name": "java.io.IOException"
+    },
+    {
       "name": "java.lang.Boolean"
+    },
+    {
+      "name": "java.lang.Exception"
     },
     {
       "name": "java.lang.Integer"
@@ -199,7 +208,19 @@
       "name": "java.lang.Object[]"
     },
     {
+      "name": "java.lang.RuntimeException"
+    },
+    {
       "name": "java.lang.String"
+    },
+    {
+      "name": "java.lang.SecurityException"
+    },
+    {
+      "name": "java.lang.Throwable"
+    },
+    {
+      "name": "java.util.Collections$EmptyList"
     },
     {
       "name": "java.rmi.dgc.Lease"
@@ -218,6 +239,9 @@
     },
     {
       "name": "java.rmi.Remote"
+    },
+    {
+      "name": "java.rmi.RemoteException"
     },
     {
       "name": "java.rmi.server.ObjID"

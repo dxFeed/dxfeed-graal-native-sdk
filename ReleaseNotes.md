@@ -1,3 +1,8 @@
+## v3.2.0
+
+* **\[MDAPI-315]\[GRAAL]** Added `dxfg_CList_IndexedEventSource_release` function.
+* Improved the reflection and serialization.
+
 ## v3.1.0
 
 * **\[MDAPI-71]\[GRAAL]** Added new alternatives to the `getAggregationPeriod` and `setAggregationPeriod` methods for subscription.

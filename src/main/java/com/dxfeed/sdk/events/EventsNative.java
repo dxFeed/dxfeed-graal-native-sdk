@@ -165,6 +165,18 @@ public class EventsNative {
     }
 
     @CEntryPoint(
+            name = "dxfg_CList_IndexedEventSource_release",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_CList_IndexedEventSource_release(
+            final IsolateThread ignoredThread,
+            final DxfgIndexedEventSourceList list
+    ) {
+        NativeUtils.MAPPER_INDEXED_EVENT_SOURCES.release(list);
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_IndexedEvent_getSource",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
     )
