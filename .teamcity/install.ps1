@@ -164,7 +164,20 @@ function Install-GraalVM
   if ($FileExtension -eq "zip")
   {
     Expand-Archive -Path $TempFile -DestinationPath $InstallPath -Force
-    # PowerShell's Expand-Archive doesn't support --strip-components, so manual fix may be needed
+    # --- strip-components=1 for zip ---
+    $items = Get-ChildItem -LiteralPath $InstallPath
+    $dirs  = $items | Where-Object { $_.PSIsContainer }
+    $hasBin = Test-Path -LiteralPath (Join-Path $InstallPath "bin")
+
+    if (-not $hasBin -and $dirs.Count -eq 1)
+    {
+      $root = $dirs[0].FullName
+      Write-Host "Fixing zip layout: moving '$root' contents to '$InstallPath'"
+      Get-ChildItem -LiteralPath $root -Force | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination $InstallPath -Force
+      }
+      Remove-Item -LiteralPath $root -Force -Recurse
+    }
   }
   else
   {
@@ -174,10 +187,15 @@ function Install-GraalVM
 
   Remove-Item $TempFile -Force
 
-  $Gu = Get-ChildItem -Path $InstallPath -Recurse -Filter "gu*" | Select-Object -First 1
-  if ($Gu)
-  {
-    & $Gu.FullName install native-image
+  $guCmd = Join-Path $InstallPath "bin\gu.cmd"
+  $guExe = Join-Path $InstallPath "bin\gu.exe"
+
+  if (Test-Path $guCmd) {
+    & $guCmd install native-image
+  } elseif (Test-Path $guExe) {
+    & $guExe install native-image
+  } else {
+    throw "Cannot find gu in $InstallPath\bin"
   }
 }
 

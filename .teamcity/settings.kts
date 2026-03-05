@@ -836,8 +836,11 @@ object BuildForWindows : BuildType({
     steps {
         script {
             name = "Build"
+//            scriptContent = Util.prepareWin() + """
+//                powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 clean package
+//            """.trimIndent()
             scriptContent = Util.prepareWin() + """
-                mvn clean package
+                powershell -NoProfile -ExecutionPolicy Bypass -File C:\build.ps1
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
