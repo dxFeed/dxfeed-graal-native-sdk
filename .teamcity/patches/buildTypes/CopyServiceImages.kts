@@ -18,8 +18,8 @@ create(DslContext.projectId, BuildType({
 
     params {
         password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
         param("env.srcRepo", "dxfeed.jfrog.io/ui/repos/tree/general/docker/dxfeed-api/graalvm/linux-aarch64-jdk-23.0.2")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
     vcs {
@@ -36,8 +36,7 @@ create(DslContext.projectId, BuildType({
                 apt-get install -y skopeo
                 
                 image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 11)
-                echo ${'$'}image_tag
-                
+                echo "Image tag is ${'$'}image_tag"
                 
                 skopeo copy \
                   --src-creds amordovskii:%env.jfrogPass% \
