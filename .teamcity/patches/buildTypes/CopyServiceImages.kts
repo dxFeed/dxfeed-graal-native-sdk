@@ -25,8 +25,8 @@ create(DslContext.projectId, BuildType({
             name = "test"
             id = "test"
             scriptContent = """
-                sudo apt-get update
-                sudo apt-get install -y skopeo
+                apt-get update
+                apt-get install -y skopeo
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
