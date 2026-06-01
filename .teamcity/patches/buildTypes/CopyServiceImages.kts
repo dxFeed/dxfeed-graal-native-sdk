@@ -16,6 +16,10 @@ create(DslContext.projectId, BuildType({
     id("CopyServiceImages")
     name = "Copy service images"
 
+    params {
+        password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
+    }
+
     vcs {
         root(RelativeId("SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags"))
     }
