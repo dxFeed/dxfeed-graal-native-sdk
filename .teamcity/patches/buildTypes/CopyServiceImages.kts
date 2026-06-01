@@ -18,7 +18,7 @@ create(DslContext.projectId, BuildType({
 
     params {
         password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("srcRepo", "https://dxfeed.jfrog.io/ui/repos/tree/General/docker/dxfeed-api/graalvm/linux-aarch64-jdk-23.0.2")
+        param("env.srcRepo", "https://dxfeed.jfrog.io/ui/repos/tree/General/docker/dxfeed-api/graalvm/linux-aarch64-jdk-23.0.2")
         param("target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
