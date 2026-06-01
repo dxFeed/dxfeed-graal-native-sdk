@@ -18,8 +18,8 @@ create(DslContext.projectId, BuildType({
 
     params {
         password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
         param("env.srcRepo", "dxfeed-docker.jfrog.io/artifactory/dxfeed-api/graalvm:linux-aarch64-jdk-23.0.2")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
     vcs {
@@ -36,7 +36,7 @@ create(DslContext.projectId, BuildType({
                 apt-get install -y skopeo
                 apt-get install -y ca-certificates 
                 
-                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
+                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 4)
                 echo "Image tag is ${'$'}image_tag"
                 echo "Source image - %env.srcRepo%:latest"
                 echo "Target image - %env.target.repo%/${'$'}image_tag"
