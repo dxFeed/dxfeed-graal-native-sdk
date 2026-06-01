@@ -33,7 +33,11 @@ create(DslContext.projectId, BuildType({
                 apt-get update
                 apt-get install -y skopeo
                 
-                skopeo copy --src-creds amordovskii:pass --dest-creds user:pass docker://src.reg/img docker://dest.reg/img
+                skopeo copy \
+                  --src-creds amordovskii:%env.jfrogPass% \
+                  --dest-creds %dxcity.login%:%dxcity.password% \
+                  docker://src.reg/img \ 
+                  docker://dest.reg/img
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
