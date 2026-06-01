@@ -36,7 +36,7 @@ create(DslContext.projectId, BuildType({
                 apt-get install -y skopeo
                 apt-get install -y ca-certificates 
                 
-                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 9)
+                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 6)
                 echo "Image tag is ${'$'}image_tag"
                 echo "Source image - %env.srcRepo%:latest"
                 echo "Target image - %env.target.repo%/${'$'}image_tag"
