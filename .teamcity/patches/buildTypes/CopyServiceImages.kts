@@ -3,6 +3,7 @@ package patches.buildTypes
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.ui.*
 
 /*
@@ -16,6 +17,14 @@ create(DslContext.projectId, BuildType({
 
     vcs {
         root(RelativeId("SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags"))
+    }
+
+    steps {
+        script {
+            name = "test"
+            id = "test"
+            scriptContent = "echo %dxcity.password%"
+        }
     }
 
     features {
