@@ -44,8 +44,7 @@ create(DslContext.projectId, BuildType({
                 skopeo copy \
                   --src-creds amordovskii:%env.jfrogPass% \
                   --dest-creds %dxcity.login%:%dxcity.password% \
-                  docker://%env.srcRepo%:latest \ 
-                  docker://%env.target.repo%/${'$'}image_tag
+                  docker://%env.srcRepo%:latest docker://%env.target.repo%/${'$'}image_tag:latest
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
