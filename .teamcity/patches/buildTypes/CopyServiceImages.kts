@@ -18,8 +18,8 @@ create(DslContext.projectId, BuildType({
 
     params {
         password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
         param("env.srcRepo", "dxfeed.jfrog.io/artifactory/docker/dxfeed-api/graalvm/linux-aarch64-jdk-23.0.2")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
     vcs {
@@ -45,7 +45,7 @@ create(DslContext.projectId, BuildType({
                 skopeo copy \
                   --src-creds amordovskii:%env.jfrogPass% \
                   --dest-creds %dxcity.login%:%dxcity.password% \
-                  docker://%env.srcRepo%:latest docker://%env.target.repo%/${'$'}image_tag:latest
+                  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
