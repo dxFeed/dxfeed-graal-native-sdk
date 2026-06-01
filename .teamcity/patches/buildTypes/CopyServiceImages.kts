@@ -37,12 +37,15 @@ create(DslContext.projectId, BuildType({
                 
                 image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 9)
                 echo "Image tag is ${'$'}image_tag"
+                echo "Source image - %env.srcRepo%:latest"
+                echo "Target image - %env.target.repo%/${'$'}image_tag:latest"
+                
                 
                 skopeo copy \
                   --src-creds amordovskii:%env.jfrogPass% \
                   --dest-creds %dxcity.login%:%dxcity.password% \
-                  docker://%env.srcRepo% \ 
-                  docker://%env.target.repo%/${'$'}image_tag
+                  docker://%env.srcRepo%:latest \ 
+                  docker://%env.target.repo%/${'$'}image_tag:latest
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
