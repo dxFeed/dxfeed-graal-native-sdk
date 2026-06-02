@@ -49,14 +49,12 @@ create(DslContext.projectId, BuildType({
                   
                 echo "List images nuget:"
                 skopeo list-tags \
-                  --src-creds amordovskii:%env.jfrogPass% \
-                  --dest-creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.login%:%dxcity.password% \
                 docker://%env.target.repo%/nuget
                 
                 echo "List images graal:"
                 skopeo list-tags \
-                  --src-creds amordovskii:%env.jfrogPass% \
-                  --dest-creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.login%:%dxcity.password% \
                 docker://%env.target.repo%/graalvm
             """.trimIndent()
             dockerImage = "ubuntu:latest"
