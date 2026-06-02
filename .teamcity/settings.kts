@@ -1,6 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.ParameterDisplay
-import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerSupport
+import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
@@ -50,6 +50,14 @@ project {
             url = "https://dxfeed-docker.jfrog.io"
             userName = "graal"
             password = "credentialsJSON:0de10768-dff5-49c2-8610-1ee72c8fdb09"
+        }
+
+        dockerRegistry {
+            id = "NEXUS"
+            name = "Nexus"
+            url = "https://nexus-docker-graalvm.in.devexperts.com"
+            userName = "%dxcity.login%"
+            password = "%dxcity.password%"
         }
     }
 
@@ -136,9 +144,9 @@ object BuildPatchAndDeployForLinux : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -211,9 +219,9 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -256,9 +264,9 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -302,9 +310,9 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -366,9 +374,9 @@ object BuildAndDeployForWindowsRelease : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -416,9 +424,9 @@ object BuildAndDeployForWindowsDebug : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -581,9 +589,9 @@ object DeployNuget : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
         notifications {
@@ -660,9 +668,9 @@ object BuildForLinux : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -770,9 +778,9 @@ object BuildForLinuxAarch64 : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
@@ -850,9 +858,9 @@ object BuildForWindows : BuildType({
     }
 
     features {
-        dockerSupport {
+        dockerRegistryConnections {
             loginToRegistry = on {
-                dockerRegistryId = "PROJECT_EXT_153"
+                dockerRegistryId = "NEXUS"
             }
         }
     }
