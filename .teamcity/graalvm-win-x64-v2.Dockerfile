@@ -13,7 +13,7 @@
 #
 # For example:
 # docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f graalvm-win-x64-v2.Dockerfile .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t graalvm:win-x64-jdk-22.0.1 -f graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64-v2.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #

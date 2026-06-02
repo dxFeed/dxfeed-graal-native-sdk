@@ -40,7 +40,7 @@ project {
     vcsRoot(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
 
     params {
-        param("env.GRAALVM_VERSION", "jdk-22.0.1")
+        param("env.GRAALVM_VERSION", "jdk-23.0.2")
     }
 
     features {

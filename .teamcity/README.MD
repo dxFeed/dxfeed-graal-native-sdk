@@ -94,14 +94,14 @@ docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
 
 Example build Windows docker image:
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-22.0.1 -f graalvm-win-x64.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-22.0.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-23.0.2
 ```
 
 Example build Linux docker image:
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-22.0.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1 -f graalvm-linux-x64.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-22.0.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-23.0.2 -f graalvm-linux-x64.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-23.0.2
 ```
 
 # Creating and Publishing NuGet Package
