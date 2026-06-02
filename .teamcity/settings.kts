@@ -661,7 +661,7 @@ object BuildForLinux : BuildType({
                 mvn clean package
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -771,7 +771,7 @@ object BuildForLinuxAarch64 : BuildType({
                 mvn clean package
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -851,7 +851,7 @@ object BuildForWindows : BuildType({
                 powershell -NoProfile -ExecutionPolicy Bypass -File C:\build.ps1
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
