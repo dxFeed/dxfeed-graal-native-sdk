@@ -18,8 +18,8 @@ create(DslContext.projectId, BuildType({
 
     params {
         password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
         param("env.srcRepo", "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
     vcs {
@@ -47,8 +47,11 @@ create(DslContext.projectId, BuildType({
                 #  --dest-creds %dxcity.login%:%dxcity.password% \
                 #  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
                   
-                echo "List images:"
-                skopeo list-tags docker://%env.target.repo%/
+                echo "List images nuget:"
+                skopeo list-tags docker://%env.target.repo%/nuget
+                
+                echo "List images graal:"
+                skopeo list-tags docker://%env.target.repo%/graalvm
             """.trimIndent()
             dockerImage = "ubuntu:latest"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
