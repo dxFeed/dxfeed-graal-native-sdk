@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <name>Eugenics_DxfeedGraalNativeApi Config DSL Script</name>
-  <groupId>Eugenics_DxfeedGraalNativeApi</groupId>
-  <artifactId>Eugenics_DxfeedGraalNativeApi_dsl</artifactId>
+  <name>Mdapi_DxfeedGraalNativeSdk Config DSL Script</name>
+  <groupId>Mdapi_DxfeedGraalNativeSdk</groupId>
+  <artifactId>Mdapi_DxfeedGraalNativeSdk_dsl</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <parent>

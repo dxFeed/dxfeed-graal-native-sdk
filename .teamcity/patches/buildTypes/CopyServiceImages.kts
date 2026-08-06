@@ -23,7 +23,7 @@ create(DslContext.projectId, BuildType({
     }
 
     vcs {
-        root(RelativeId("SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags"))
+        root(RelativeId("SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags"))
     }
 
     steps {
@@ -34,24 +34,24 @@ create(DslContext.projectId, BuildType({
                 echo "Installing Skopeo"
                 apt-get update
                 apt-get install -y skopeo
-                apt-get install -y ca-certificates 
-                
+                apt-get install -y ca-certificates
+
                 image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
                 echo "Image tag is ${'$'}image_tag"
                 echo "Source image - %env.srcRepo%:latest"
                 echo "Target image - %env.target.repo%/${'$'}image_tag"
-                
-                
+
+
                 #skopeo copy \
                 #  --src-creds amordovskii:%env.jfrogPass% \
                 #  --dest-creds %dxcity.login%:%dxcity.password% \
                 #  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
-                  
+
                 echo "List images nuget:"
                 skopeo list-tags \
                   --creds %dxcity.login%:%dxcity.password% \
                 docker://%env.target.repo%/nuget
-                
+
                 echo "List images graal:"
                 skopeo list-tags \
                   --creds %dxcity.login%:%dxcity.password% \

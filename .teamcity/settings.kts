@@ -37,7 +37,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2025.03"
 
 project {
-    vcsRoot(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+    vcsRoot(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
 
     params {
         param("env.GRAALVM_VERSION", "jdk-23.0.2")
@@ -92,7 +92,7 @@ object BuildPatchAndDeployForLinux : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -167,7 +167,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -242,7 +242,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -288,7 +288,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -348,7 +348,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -398,7 +398,7 @@ object BuildAndDeployForWindowsDebug : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -460,7 +460,7 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -527,7 +527,7 @@ object DeployNuget : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -616,7 +616,7 @@ object SyncGitHubWithMain : BuildType({
     name = "Sync GitHub With 'main'"
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -651,7 +651,7 @@ object BuildForLinux : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -689,7 +689,7 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -725,7 +725,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -756,7 +756,7 @@ object BuildForLinuxAarch64 : BuildType({
     name = "Build [Linux, aarch64]"
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     params {
@@ -801,7 +801,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -838,7 +838,7 @@ object BuildForWindows : BuildType({
     }
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -875,7 +875,7 @@ object BuildForMacOSAndIOS : BuildType({
     name = "Build [macOS, iOS]"
 
     vcs {
-        root(SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags)
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
@@ -930,7 +930,7 @@ object Util {
     }
 }
 
-object SshGitStashInDevexpertsCom7999enDxfeedGraalNativeApiGitRefsHeadsMainTags : GitVcsRoot({
+object SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags : GitVcsRoot({
     name = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git#refs/heads/main tags"
     url = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git"
     branch = "refs/heads/main"
