@@ -2,13 +2,23 @@
   <servers>
     <server>
       <id>qd</id>
-      <username>${qd.user}</username>
-      <password>${qd.password}</password>
+      <username>${nexus.user}</username>
+      <password>${nexus.password}</password>
     </server>
     <server>
       <id>qd-snapshot</id>
-      <username>${qd.user}</username>
-      <password>${qd.password}</password>
+      <username>${nexus.user}</username>
+      <password>${nexus.password}</password>
+    </server>
+    <server>
+      <id>dxfeed-api</id>
+      <username>${nexus.user}</username>
+      <password>${nexus.password}</password>
+    </server>
+    <server>
+      <id>mdd</id>
+      <username>${nexus.user}</username>
+      <password>${nexus.password}</password>
     </server>
   </servers>
 </settings>

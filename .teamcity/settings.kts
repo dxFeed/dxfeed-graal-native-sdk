@@ -114,7 +114,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             scriptContent = """
                     git config --global user.name %dxcity.login%
                     git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dqd.user=%dxcity.login% -Dqd.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
+                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -132,7 +132,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             name = "release:deploy debug"
             id = "release_deploy_debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dqd.user=%dxcity.login% -Dqd.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -187,7 +187,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             scriptContent = """
                     git config --global user.name %dxcity.login%
                     git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dqd.user=%dxcity.login% -Dqd.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
+                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -205,7 +205,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             name = "release:deploy debug"
             id = "release_deploy_debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dqd.user=%dxcity.login% -Dqd.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
