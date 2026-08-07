@@ -233,8 +233,6 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     name = "Build & Deploy [Linux, aarch64][Release]"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "macbuilder20")
     }
@@ -252,10 +250,10 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
         script {
             name = "Deploy"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -279,8 +277,6 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
     name = "Build & Deploy [Linux, aarch64][Debug]"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "macbuilder20")
     }
@@ -298,10 +294,10 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
         script {
             name = "Deploy Debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -339,8 +335,6 @@ object BuildAndDeployForWindowsRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release]"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "winbuilder5161")
     }
@@ -362,10 +356,10 @@ object BuildAndDeployForWindowsRelease : BuildType({
         script {
             name = "Deploy"
             scriptContent = Util.prepareWin() + """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -389,8 +383,6 @@ object BuildAndDeployForWindowsDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug]"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "8g")
         param("env.AGENT_HOSTNAME", "winbuilder5161")
     }
@@ -412,10 +404,10 @@ object BuildAndDeployForWindowsDebug : BuildType({
         script {
             name = "Deploy Debug"
             scriptContent = Util.prepareWin() + """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -452,11 +444,6 @@ object BuildAndDeployForWindows : BuildType({
 object BuildAndDeployForMacOsAndIOS : BuildType({
     name = "Build & Deploy [macOS, iOS]"
 
-    params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -471,11 +458,11 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
             name = "Deploy"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIos=true clean deploy
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIos=true clean deploy
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -DmacIosSimulator=true deploy
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% clean deploy
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIosSimulator=true deploy
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -520,8 +507,6 @@ object DeployNuget : BuildType({
     name = "Deploy NuGet"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.DOCKER_MEMORY_SIZE", "8g")
     }
 
@@ -552,14 +537,44 @@ object DeployNuget : BuildType({
                   fi
                 }
 
+                download_file2() {
+                  version=${'$'}1
+                  path_to_save=${'$'}2
+                  file_name=${'$'}3
+                  os=${'$'}4
+                  platform=${'$'}5
+                  extension="zip"
+
+                  base_url="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk"
+                  archive_name="graal-native-sdk-${'$'}{version}-${'$'}{platform}-${'$'}{os}.${'$'}{extension}"
+                  url="${'$'}{base_url}/${'$'}{version}/${'$'}{archive_name}"
+
+                  mkdir -p "${'$'}path_to_save"
+                  tmp_dir=${'$'}(mktemp -d)
+
+                  if ! (cd "${'$'}tmp_dir" && curl -LO -f "${'$'}url"); then
+                    echo "Failed to download: ${'$'}url"
+                    rm -rf "${'$'}tmp_dir"
+                    exit 1
+                  fi
+
+                  if ! unzip -o "${'$'}{tmp_dir}/${'$'}{archive_name}" "${'$'}file_name" -d "${'$'}path_to_save"; then
+                    echo "Failed to extract ${'$'}file_name from ${'$'}{archive_name}"
+                    rm -rf "${'$'}tmp_dir"
+                    exit 1
+                  fi
+
+                  rm -rf "${'$'}tmp_dir"
+                }
+
                 version=${'$'}(git describe --abbrev=0)
                 version=${'$'}{version#"v"}
 
-                download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
-                download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
-                download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
-                download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
-                download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
+                download_file2 "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
+                download_file2 "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
+                download_file2 "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
+                download_file2 "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
+                download_file2 "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -573,7 +588,7 @@ object DeployNuget : BuildType({
                 nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://dxfeed.jfrog.io/artifactory/api/nuget/nuget-open/com/dxfeed/graal-native/${'$'}VERSION -ApiKey %env.JFROG_USER%:%env.JFROG_PASSWORD%
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1"
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
         }
@@ -699,9 +714,9 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker images --all
-                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
-                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
-                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-%env.GRAALVM_VERSION%
+                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
+                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
+                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker logout
