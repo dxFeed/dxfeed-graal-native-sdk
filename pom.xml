@@ -124,11 +124,9 @@
   </issueManagement>
 
   <scm>
-    <connection>
-      git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git
-    </connection>
-    <tag>HEAD</tag>
     <url>https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</url>
+    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git</connection>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
