@@ -98,6 +98,10 @@
 
   <repositories>
     <repository>
+      <id>jfrog</id>
+      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
+    </repository>
+    <repository>
       <id>dxfeed-api</id>
       <url>https://maven.in.devexperts.com/content/repositories/dxfeed-api</url>
     </repository>
@@ -108,6 +112,14 @@
     <repository>
       <id>qd-snapshot</id>
       <url>https://maven.in.devexperts.com/content/repositories/qd-snapshot/</url>
+    </repository>
+    <repository>
+      <id>mdd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/mdd/</url>
+    </repository>
+    <repository>
+      <id>mdd-snapshot</id>
+      <url>https://maven.in.devexperts.com/content/repositories/mdd-snapshot/</url>
     </repository>
   </repositories>
 

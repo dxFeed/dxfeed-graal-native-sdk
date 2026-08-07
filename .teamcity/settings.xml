@@ -1,6 +1,11 @@
 <settings>
   <servers>
     <server>
+      <id>jfrog</id>
+      <username>${jfrog.user}</username>
+      <password>${jfrog.password}</password>
+    </server>
+    <server>
       <id>qd</id>
       <username>${nexus.user}</username>
       <password>${nexus.password}</password>
