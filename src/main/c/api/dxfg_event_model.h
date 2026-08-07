@@ -135,6 +135,16 @@ int32_t                                       dxfg_OrderBookModel_addListener(gr
 int32_t                                       dxfg_OrderBookModel_removeListener(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_order_book_model_listener_t *listener);
 dxfg_event_type_list*                         dxfg_ObservableListModel_toArray(graal_isolatethread_t *thread, dxfg_observable_list_model_t *list); // use dxfg_CList_EventType_release to release the allocated memory
 
+/// Represents the available sorting orders.
+typedef enum dxfg_TimeSeriesTxModelSortOrder_t {
+    /// Indicates that no sorting should be applied. Events will be passed in the same order in which they were received.
+    NONE,
+    /// Indicates that sorting should be in ascending order by index.
+    ASCENDING,
+    /// Indicates that sorting should be in descending order by index.
+    DESCENDING,
+} dxfg_TimeSeriesTxModelSortOrder_t;
+
 // GENERATED_DEFINITIONS_START
 typedef struct dxfg_indexed_tx_model_t { dxfg_java_object_handler handler; } dxfg_indexed_tx_model_t;
 typedef struct dxfg_indexed_tx_model_builder_t { dxfg_java_object_handler handler; } dxfg_indexed_tx_model_builder_t;
@@ -149,12 +159,14 @@ int32_t dxfg_IndexedTxModel_isBatchProcessing(graal_isolatethread_t* thread, dxf
 int32_t dxfg_IndexedTxModel_isSnapshotProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 int32_t dxfg_IndexedTxModel_attach(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_feed_t* feed);
 int32_t dxfg_IndexedTxModel_detach(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_feed_t* feed);
+int32_t dxfg_IndexedTxModel_setAggregationPeriod(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_time_period_t* aggregationPeriod);
 int32_t dxfg_IndexedTxModel_close(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSources(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_indexed_event_source_list* sources);
 dxfg_indexed_tx_model_t* dxfg_IndexedTxModel_Builder_build(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withBatchProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, int32_t isBatchProcessing);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSnapshotProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, int32_t isSnapshotProcessing);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withFeed(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_feed_t* feed);
+dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withAggregationPeriod(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_time_period_t* aggregationPeriod);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSymbol(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_symbol_t* symbol);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withListener(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_tx_model_listener_t* listener);
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withExecutor(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_executor_t* executor);
@@ -165,12 +177,19 @@ int32_t dxfg_TimeSeriesTxModel_isBatchProcessing(graal_isolatethread_t* thread, 
 int32_t dxfg_TimeSeriesTxModel_isSnapshotProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 int32_t dxfg_TimeSeriesTxModel_attach(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_feed_t* feed);
 int32_t dxfg_TimeSeriesTxModel_detach(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_feed_t* feed);
+int32_t dxfg_TimeSeriesTxModel_setAggregationPeriod(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_time_period_t* aggregationPeriod);
 int32_t dxfg_TimeSeriesTxModel_close(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFromTime(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int64_t fromTime);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSorting(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_TimeSeriesTxModelSortOrder_t sortOrder);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreRemoveEvents(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t ignoreRemoveEvents);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreEventsFromPast(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t ignoreEventFromPast);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withConfirmationTick(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t confirmationTick);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withEventPeek(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, void* eventPeek);
 dxfg_time_series_tx_model_t* dxfg_TimeSeriesTxModel_Builder_build(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withBatchProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t isBatchProcessing);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSnapshotProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t isSnapshotProcessing);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFeed(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_feed_t* feed);
+dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withAggregationPeriod(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_time_period_t* aggregationPeriod);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSymbol(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_symbol_t* symbol);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withListener(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_tx_model_listener_t* listener);
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withExecutor(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_executor_t* executor);

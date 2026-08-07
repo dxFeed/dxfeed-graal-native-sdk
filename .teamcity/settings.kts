@@ -34,7 +34,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2025.03"
+version = "2026.1"
 
 project {
     vcsRoot(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -934,7 +934,10 @@ object SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTa
     name = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git#refs/heads/main tags"
     url = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git"
     branch = "refs/heads/main"
-    branchSpec = "+:refs/tags/*"
+    branchSpec = """
+        +:refs/tags/*
+        +:refs/heads/*
+    """.trimIndent()
     useTagsAsBranches = true
     authMethod = uploadedKey {
         userName = "git"

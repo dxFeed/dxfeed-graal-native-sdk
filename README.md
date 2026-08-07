@@ -347,7 +347,7 @@ $JAVA_HOME/bin/java -Dtoken=<TOKEN> -agentlib:native-image-agent=config-output-d
 
 ### To release a new version
 
-We use [teamcity](https://dxcity.in.devexperts.com/project/Eugenics_DxfeedGraalNativeApi).
+We use [teamcity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNativeSdk).
 
 1. Run the "build PATCH and deploy linux" configuration to release a version of PATCH or "build
    MAJOR.MINOR.PATCH and deploy linux" (set env.RELEASE_VERSION in run parameters) to release a

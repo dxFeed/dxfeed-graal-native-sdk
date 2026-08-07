@@ -24,7 +24,7 @@
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <initialize-at-build-time>
-      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format
+      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
     <isShared>true</isShared>
     <isRelease>true</isRelease>
@@ -34,9 +34,10 @@
     <notIosSimulator>true</notIosSimulator>
     <!-- qd version and auther-api version must be compatible -->
     <auther-api.version>525</auther-api.version>
-    <qd.version>3.347</qd.version>
+<!--    <qd.version>3.347</qd.version>-->
+    <qd.version>3.353-SNAPSHOT</qd.version>
     <orcs-api.version>525</orcs-api.version>
-    <dxfeed.api.experimental.model.version>1.1</dxfeed.api.experimental.model.version>
+    <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
     <nativebridge.version>0.5</nativebridge.version>
     <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
   </properties>
@@ -63,8 +64,8 @@
       <version>${orcs-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.dxfeed.api.experimental</groupId>
-      <artifactId>model</artifactId>
+      <groupId>com.dxfeed.api.experimental.model</groupId>
+      <artifactId>dxfeed-model</artifactId>
       <version>${dxfeed.api.experimental.model.version}</version>
     </dependency>
     <dependency>
@@ -98,35 +99,47 @@
 
   <repositories>
     <repository>
-      <id>jfrog</id>
-      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
+      <id>dxfeed-api</id>
+      <url>https://maven.in.devexperts.com/content/repositories/dxfeed-api</url>
+    </repository>
+    <repository>
+      <id>qd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd/</url>
+    </repository>
+    <repository>
+      <id>qd-snapshot</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd-snapshot/</url>
     </repository>
   </repositories>
 
   <ciManagement>
     <system>TeamCity</system>
-    <url>https://dxcity.in.devexperts.com/buildConfiguration/Eugenics_DxfeedGraalNativeApi_Build
+    <url>https://dxcity.in.devexperts.com/buildConfiguration/Mdapi_DxfeedGraalNativeSdk_BuildForLinux
     </url>
   </ciManagement>
 
   <issueManagement>
     <system>JIRA</system>
-    <url>https://jira.in.devexperts.com/browse/EN</url>
+    <url>https://jira.in.devexperts.com/browse/MDAPI</url>
   </issueManagement>
 
   <scm>
     <connection>
-      scm:git:https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-sdk.git
+      git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git
     </connection>
     <tag>HEAD</tag>
-    <url>https://stash.in.devexperts.com/scm/en/dxfeed-graal-native-sdk.git</url>
+    <url>https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</url>
   </scm>
 
   <distributionManagement>
     <repository>
-      <id>jfrog</id>
-      <url>https://dxfeed.jfrog.io/artifactory/maven-open</url>
+      <id>qd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd/</url>
     </repository>
+    <snapshotRepository>
+      <id>qd-snapshot</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd-snapshot/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <profiles>

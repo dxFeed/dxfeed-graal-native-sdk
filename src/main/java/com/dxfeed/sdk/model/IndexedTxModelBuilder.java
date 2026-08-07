@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.model;
 
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.experimental.model.IndexedTxModel.Builder;
 import com.dxfeed.bridge.annotations.Ignore;
@@ -14,6 +15,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -39,4 +41,7 @@ public interface IndexedTxModelBuilder {
 
     @Parameter(value = DxfgExecutorHandle.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_EXECUTOR.toJava($N)", cTypeName = "dxfg_executor_t*")
     public void withExecutor(Executor executor);
+
+    @Parameter(value = DxfgTimePeriodHandle.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_TIME_PERIOD.toJava($N)", cTypeName = "dxfg_time_period_t*")
+    public void withAggregationPeriod(TimePeriod aggregationPeriod);
 }

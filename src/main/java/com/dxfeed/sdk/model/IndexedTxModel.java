@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.model;
 
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.experimental.model.IndexedTxModel.Builder;
 import com.dxfeed.bridge.annotations.Ignore;
@@ -15,6 +16,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.feed.DxfgFeed;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,4 +52,7 @@ public interface IndexedTxModel {
 
     @Parameter(value = DxfgFeed.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_FEED.toJava($N)", cTypeName = "dxfg_feed_t*")
     public void detach(DXFeed feed);
+
+    @Parameter(value = DxfgTimePeriodHandle.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_TIME_PERIOD.toJava($N)", cTypeName = "dxfg_time_period_t*")
+    public void setAggregationPeriod(TimePeriod aggregationPeriod);
 }

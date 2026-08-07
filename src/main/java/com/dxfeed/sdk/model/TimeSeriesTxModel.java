@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.model;
 
+import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.experimental.model.TimeSeriesTxModel.Builder;
 import com.dxfeed.bridge.annotations.ObjectHandler;
@@ -11,6 +12,7 @@ import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.feed.DxfgFeed;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 
 @ObjectHandler(
         value = com.dxfeed.api.experimental.model.TimeSeriesTxModel.class,
@@ -30,4 +32,7 @@ public interface TimeSeriesTxModel {
 
     @Parameter(value = DxfgFeed.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_FEED.toJava($N)", cTypeName = "dxfg_feed_t*")
     public void detach(DXFeed feed);
+
+    @Parameter(value = DxfgTimePeriodHandle.class, mapperParameters = NativeUtils.class, mapperCodeTemplateToJava = "$T.MAPPER_TIME_PERIOD.toJava($N)", cTypeName = "dxfg_time_period_t*")
+    public void setAggregationPeriod(TimePeriod aggregationPeriod);
 }
