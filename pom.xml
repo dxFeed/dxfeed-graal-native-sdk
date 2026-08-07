@@ -33,10 +33,9 @@
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
     <!-- qd version and auther-api version must be compatible -->
-    <auther-api.version>525</auther-api.version>
-<!--    <qd.version>3.347</qd.version>-->
-    <qd.version>3.353-SNAPSHOT</qd.version>
-    <orcs-api.version>525</orcs-api.version>
+    <auther-api.version>543</auther-api.version>
+    <qd.version>3.353</qd.version>
+    <orcs-api.version>543</orcs-api.version>
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
     <nativebridge.version>0.5</nativebridge.version>
     <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
