@@ -482,9 +482,9 @@ object BuildAndDeployForAll : BuildType({
         snapshot(BuildAndDeployForLinuxAarch64) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
-//        snapshot(BuildAndDeployForWindows) {
-//            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
-//        }
+        snapshot(BuildAndDeployForWindows) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
         snapshot(BuildAndDeployForMacOsAndIOS) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
