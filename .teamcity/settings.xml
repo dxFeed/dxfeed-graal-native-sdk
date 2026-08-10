@@ -34,8 +34,9 @@
   <mirrors>
     <mirror>
       <id>Nexus</id>
-      <mirrorOf>*,!jfrog,!qd,!qd-snapshot,!dxfeed-api,!mdd,!mdd-snapshot</mirrorOf>
-      <url>https://nexus.in.devexperts.com/repository/public</url>
+      <name>Nexus Public Mirror</name>
+      <mirrorOf>central</mirrorOf>
+      <url>https://maven.in.devexperts.com/content/repositories/maven-central</url>
     </mirror>
   </mirrors>
 </settings>
