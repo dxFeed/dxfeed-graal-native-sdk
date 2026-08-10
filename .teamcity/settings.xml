@@ -26,4 +26,11 @@
       <password>${nexus.password}</password>
     </server>
   </servers>
+  <mirrors>
+    <mirror>
+      <id>Nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>https://nexus.in.devexperts.com/repository/public</url>
+    </mirror>
+  </mirrors>
 </settings>
