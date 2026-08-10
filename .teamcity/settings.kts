@@ -955,16 +955,24 @@ object Util {
         return """
             ${'$'}ErrorActionPreference = 'Stop'
 
-            # --- 1. Find VS/Build Tools on the agent via vswhere and import MSVC variables ---
-            ${'$'}vswhere = "${'$'}{env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-            if (-not (Test-Path ${'$'}vswhere)) { throw "vswhere.exe not found - VS Installer component missing" }
+            . .teamcity\install.ps1
 
-            ${'$'}vsPath = & ${'$'}vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-            if (-not ${'$'}vsPath) { throw "No Visual Studio installation with VC Tools found on this agent" }
+            # --- 1. Download and cache VS Build Tools 2022 if not already installed ---
+            ${'$'}vsInstallPath = "C:\BuildCache\vs-buildtools-2022"
+            ${'$'}vsDevCmd = Join-Path ${'$'}vsInstallPath "Common7\Tools\VsDevCmd.bat"
 
-            ${'$'}vsDevCmd = Join-Path ${'$'}vsPath "Common7\Tools\VsDevCmd.bat"
-            if (-not (Test-Path ${'$'}vsDevCmd)) { throw "VsDevCmd.bat not found: ${'$'}vsDevCmd" }
+            if (-not (Test-Path ${'$'}vsDevCmd)) {
+                Write-Host "VS Build Tools 2022 not found in cache, installing..."
+                Install-VSBuildTools -Version "17" -InstallPath ${'$'}vsInstallPath
+            } else {
+                Write-Host "VS Build Tools 2022 found in cache, skipping installation"
+            }
 
+            if (-not (Test-Path ${'$'}vsDevCmd)) {
+                throw "VS Build Tools installation failed - VsDevCmd.bat still not found at ${'$'}vsDevCmd"
+            }
+
+            # --- 2. Import MSVC environment variables from the installed VS 2022 ---
             ${'$'}envDump = cmd /c "`"${'$'}vsDevCmd`" -arch=amd64 && set"
             foreach (${'$'}line in ${'$'}envDump) {
                 if (${'$'}line -match '^(?<k>[^=]+)=(?<v>.*)${'$'}') {
@@ -972,21 +980,25 @@ object Util {
                 }
             }
 
-            # --- 2. Download Maven if it is not already cached on this agent. ---
-            . .teamcity\install.ps1
-
+            # --- 3. Download Maven if not already cached ---
             ${'$'}mvnVersion = "3.8.9"
             ${'$'}mvnInstallPath = "C:\BuildCache\maven-${'$'}mvnVersion"
             if (-not (Test-Path "${'$'}mvnInstallPath\bin\mvn.cmd")) {
+                Write-Host "Maven ${'$'}mvnVersion not found in cache, installing..."
                 Install-Maven -Version ${'$'}mvnVersion -InstallPath ${'$'}mvnInstallPath
+            } else {
+                Write-Host "Maven ${'$'}mvnVersion found in cache, skipping installation"
             }
             ${'$'}env:Path = "${'$'}mvnInstallPath\bin;${'$'}env:Path"
 
-            # --- 3. Download GraalVM if it is not already cached on this agent. ---
+            # --- 4. Download GraalVM if not already cached ---
             ${'$'}graalVersion = "%env.GRAALVM_VERSION%"
             ${'$'}graalInstallPath = "C:\BuildCache\graalvm-${'$'}graalVersion-win-x64"
             if (-not (Test-Path "${'$'}graalInstallPath\bin\java.exe")) {
+                Write-Host "GraalVM ${'$'}graalVersion not found in cache, installing..."
                 Install-GraalVM -Version ${'$'}graalVersion -Platform "win-x64" -InstallPath ${'$'}graalInstallPath
+            } else {
+                Write-Host "GraalVM ${'$'}graalVersion found in cache, skipping installation"
             }
             ${'$'}env:JAVA_HOME = ${'$'}graalInstallPath
             ${'$'}env:Path = "${'$'}graalInstallPath\bin;${'$'}env:Path"

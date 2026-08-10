@@ -58,9 +58,10 @@ function Install-Maven
   Write-Host "Version: $Version"
   Write-Host "Install path: $InstallPath"
 
-  # $BaseUrl = "https://dlcdn.apache.org/maven/"
+  # archive.apache.org keeps every released version forever, unlike dlcdn.apache.org,
+  # which only hosts the single latest patch release of each minor line.
   $BaseUrl = "https://archive.apache.org/dist/maven"
-  $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1) )/$Version/binaries/apache-maven-$Version-bin.tar.gz"
+  $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1))/$Version/binaries/apache-maven-$Version-bin.tar.gz"
 
   Write-Host "Download URL: $DownloadUrl"
 
@@ -70,9 +71,8 @@ function Install-Maven
   }
 
   Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile "$($InstallPath)\maven.tar.gz"
-  # Invoke-WebRequest -Uri $DownloadUrl -OutFile "$( $InstallPath )\maven.tar.gz"
-  tar -xzf "$( $InstallPath )\maven.tar.gz" -C $InstallPath --strip-components=1
-  Remove-Item "$( $InstallPath )\maven.tar.gz"
+  tar -xzf "$($InstallPath)\maven.tar.gz" -C $InstallPath --strip-components=1
+  Remove-Item "$($InstallPath)\maven.tar.gz"
 }
 
 function Install-GraalVM
@@ -84,7 +84,7 @@ function Install-GraalVM
   )
 
   $ErrorActionPreference = 'Stop'
-  $BaseUrl = "https://github.com/graalvm/graalvm-ce-builds/releases/download/"
+  $BaseUrl = "https://github.com/graalvm/graalvm-ce-builds/releases/download"
 
   $PlatformOS, $PlatformArch = $Platform -split '-', 2
 
@@ -113,42 +113,22 @@ function Install-GraalVM
       $DistributionTag = "graalvm-ce-java$JavaVersion"
     }
 
-    switch ( $PlatformOS.ToLower())
+    switch ($PlatformOS.ToLower())
     {
-      "linux" {
-        $OSTag = "-linux"
-      }
-      "macos" {
-        $OSTag = "-darwin"
-      }
-      "osx"   {
-        $OSTag = "-darwin"
-      }
-      "win"   {
-        $OSTag = "-windows"; $FileExtension = "zip"
-      }
-      default {
-        throw "Unknown OS tag '$PlatformOS'"
-      }
+      "linux" { $OSTag = "-linux" }
+      "macos" { $OSTag = "-darwin" }
+      "osx"   { $OSTag = "-darwin" }
+      "win"   { $OSTag = "-windows"; $FileExtension = "zip" }
+      default { throw "Unknown OS tag '$PlatformOS'" }
     }
 
-    switch ( $PlatformArch.ToLower())
+    switch ($PlatformArch.ToLower())
     {
-      "x64"     {
-        $ArchTag = "-amd64"
-      }
-      "amd64"   {
-        $ArchTag = "-amd64"
-      }
-      "arm64"   {
-        $ArchTag = "-aarch64"
-      }
-      "aarch64" {
-        $ArchTag = "-aarch64"
-      }
-      default   {
-        throw "Unknown arch '$PlatformArch'"
-      }
+      "x64"     { $ArchTag = "-amd64" }
+      "amd64"   { $ArchTag = "-amd64" }
+      "arm64"   { $ArchTag = "-aarch64" }
+      "aarch64" { $ArchTag = "-aarch64" }
+      default   { throw "Unknown arch '$PlatformArch'" }
     }
 
     $Suffix = "-$ReleaseTag.$FileExtension"
@@ -158,39 +138,21 @@ function Install-GraalVM
     $VersionTag = $Version
     $DistributionTag = "graalvm-community-$Version"
 
-    switch ( $PlatformOS.ToLower())
+    switch ($PlatformOS.ToLower())
     {
-      "linux" {
-        $OSTag = "_linux"
-      }
-      "osx"   {
-        $OSTag = "_macos"
-      }
-      "win"   {
-        $OSTag = "_windows"; $FileExtension = "zip"
-      }
-      default {
-        throw "Unknown OS tag '$PlatformOS'"
-      }
+      "linux" { $OSTag = "_linux" }
+      "osx"   { $OSTag = "_macos" }
+      "win"   { $OSTag = "_windows"; $FileExtension = "zip" }
+      default { throw "Unknown OS tag '$PlatformOS'" }
     }
 
-    switch ( $PlatformArch.ToLower())
+    switch ($PlatformArch.ToLower())
     {
-      "x64"     {
-        $ArchTag = "-x64"
-      }
-      "amd64"   {
-        $ArchTag = "-x64"
-      }
-      "arm64"   {
-        $ArchTag = "-aarch64"
-      }
-      "aarch64" {
-        $ArchTag = "-aarch64"
-      }
-      default   {
-        throw "Unknown arch '$PlatformArch'"
-      }
+      "x64"     { $ArchTag = "-x64" }
+      "amd64"   { $ArchTag = "-x64" }
+      "arm64"   { $ArchTag = "-aarch64" }
+      "aarch64" { $ArchTag = "-aarch64" }
+      default   { throw "Unknown arch '$PlatformArch'" }
     }
 
     $Suffix = "_bin.$FileExtension"
@@ -206,15 +168,14 @@ function Install-GraalVM
   $DownloadUrl = "$BaseUrl/$VersionTag/$DistributionTag$OSTag$ArchTag$Suffix"
 
   Write-Host "Downloading from $DownloadUrl"
-  $TempFile = "$([System.IO.Path]::GetTempFileName() ).$FileExtension"
+  $TempFile = "$([System.IO.Path]::GetTempFileName()).$FileExtension"
   Write-Host "Temp file name: $TempFile"
   Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile $TempFile
-  # Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UseBasicParsing
 
   if ($FileExtension -eq "zip")
   {
     Expand-Archive -Path $TempFile -DestinationPath $InstallPath -Force
-    # --- strip-components=1 for zip ---
+    # --- strip-components=1 equivalent for zip archives ---
     $items = Get-ChildItem -LiteralPath $InstallPath
     $dirs  = $items | Where-Object { $_.PSIsContainer }
     $hasBin = Test-Path -LiteralPath (Join-Path $InstallPath "bin")
@@ -231,7 +192,7 @@ function Install-GraalVM
   }
   else
   {
-    # Requires tar (usually available in modern Windows or via WSL or Git bash)
+    # Requires tar (available by default on modern Windows).
     tar -xzf $TempFile -C $InstallPath --strip-components=1
   }
 
@@ -249,7 +210,6 @@ function Install-GraalVM
   }
 }
 
-
 function Install-VSBuildTools
 {
   param (
@@ -265,7 +225,7 @@ function Install-VSBuildTools
     return 1
   }
 
-  $BaseUrl = "https://aka.ms/vs/"
+  $BaseUrl = "https://aka.ms/vs"
   $InstallerName = "vs_buildtools.exe"
   $DownloadUrl = "$BaseUrl/$Version/release/$InstallerName"
   $InstallerPath = Join-Path -Path $PWD -ChildPath $InstallerName
@@ -273,7 +233,7 @@ function Install-VSBuildTools
   try
   {
     Write-Host "Downloading Visual Studio Build Tools from: $DownloadUrl"
-    Invoke-WebRequest -Uri $DownloadUrl -OutFile $InstallerPath -UseBasicParsing -ErrorAction Stop
+    Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile $InstallerPath
 
     Write-Host "Starting installer..."
     Start-Process -FilePath $InstallerPath `
