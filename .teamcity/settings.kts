@@ -890,33 +890,35 @@ object DetectVisualStudioVersion : BuildType({
     description = "Runs a check of the installed VS on each Windows agent separately"
 
     steps {
-        script {
+        powerShell {
             name = "Detect Visual Studio Version"
-            scriptContent = """
-                ${'$'}vswhere = "${'$'}env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+            scriptMode = script {
+                content = """
+                    ${'$'}vswhere = "${'$'}env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
 
-                if (-not (Test-Path ${'$'}vswhere)) {
-                    Write-Host "##teamcity[message text='vswhere.exe not found - VS Installer component missing' status='WARNING']"
-                    exit 0
-                }
+                    if (-not (Test-Path ${'$'}vswhere)) {
+                        Write-Host "##teamcity[message text='vswhere.exe not found - VS Installer component missing' status='WARNING']"
+                        exit 0
+                    }
 
-                ${'$'}installations = & ${'$'}vswhere -all -products * -format json | ConvertFrom-Json
+                    ${'$'}installations = & ${'$'}vswhere -all -products * -format json | ConvertFrom-Json
 
-                if (-not ${'$'}installations) {
-                    Write-Host "##teamcity[message text='Visual Studio not found on this agent' status='WARNING']"
-                    exit 0
-                }
+                    if (-not ${'$'}installations) {
+                        Write-Host "##teamcity[message text='Visual Studio not found on this agent' status='WARNING']"
+                        exit 0
+                    }
 
-                foreach (${'$'}vs in ${'$'}installations) {
-                    Write-Host "Name:    ${'$'}(${'$'}vs.displayName)"
-                    Write-Host "Version: ${'$'}(${'$'}vs.installationVersion)"
-                    Write-Host "Path:    ${'$'}(${'$'}vs.installationPath)"
-                    Write-Host "---"
-                }
+                    foreach (${'$'}vs in ${'$'}installations) {
+                        Write-Host "Name:    ${'$'}(${'$'}vs.displayName)"
+                        Write-Host "Version: ${'$'}(${'$'}vs.installationVersion)"
+                        Write-Host "Path:    ${'$'}(${'$'}vs.installationPath)"
+                        Write-Host "---"
+                    }
 
-                ${'$'}primary = ${'$'}installations | Select-Object -First 1
-                Write-Host "##teamcity[setParameter name='env.DETECTED_VS_VERSION' value='${'$'}(${'$'}primary.installationVersion)']"
-            """.trimIndent()
+                    ${'$'}primary = ${'$'}installations | Select-Object -First 1
+                    Write-Host "##teamcity[setParameter name='env.DETECTED_VS_VERSION' value='${'$'}(${'$'}primary.installationVersion)']"
+                """.trimIndent()
+            }
             formatStderrAsError = true
         }
     }
