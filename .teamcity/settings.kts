@@ -931,7 +931,7 @@ object DetectVisualStudioVersion : BuildType({
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Windows")
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
         equals("teamcity.agent.name", "%AGENT_NAME%")
     }
 })
