@@ -886,17 +886,8 @@ object BuildForMacOSAndIOS : BuildType({
 })
 
 object DetectVisualStudioVersion : BuildType({
-    name = "Detect Visual Studio Version (all agents)"
+    name = "Detect Visual Studio Version"
     description = "Runs a check of the installed VS on each Windows agent separately"
-
-    features {
-        matrix {
-            param("AGENT_NAME", listOf(
-                    value("winAgent5160"),
-                    value("winAgent5161"),
-            ))
-        }
-    }
 
     steps {
         script {
@@ -932,7 +923,6 @@ object DetectVisualStudioVersion : BuildType({
 
     requirements {
         startsWith("teamcity.agent.jvm.os.name", "Windows")
-        equals("teamcity.agent.name", "%AGENT_NAME%")
     }
 })
 
