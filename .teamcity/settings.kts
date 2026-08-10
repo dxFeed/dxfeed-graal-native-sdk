@@ -843,6 +843,7 @@ object BuildForWindows : BuildType({
             name = "Build"
             scriptMode = script {
                 content = Util.prepareWinLocal() + """
+
                     mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                 """.trimIndent()
