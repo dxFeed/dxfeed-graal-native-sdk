@@ -84,6 +84,8 @@ project {
 
     buildType(CopyServiceImages)
     buildType(ListServiceImages)
+
+    buildType(DetectVisualStudioVersion)
 }
 
 object BuildPatchAndDeployForLinux : BuildType({
@@ -868,11 +870,11 @@ object BuildForMacOSAndIOS : BuildType({
             name = "Build"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" clean package
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -DmacIos=true clean package
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean package
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIos=true clean package
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -DmacIosSimulator=true package
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" clean package
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIosSimulator=true package
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean package
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -880,6 +882,57 @@ object BuildForMacOSAndIOS : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
+object DetectVisualStudioVersion : BuildType({
+    name = "Detect Visual Studio Version (all agents)"
+    description = "Runs a check of the installed VS on each Windows agent separately"
+
+    features {
+        matrix {
+            param("AGENT_NAME", listOf(
+                    value("winAgent5160"),
+                    value("winAgent5161"),
+            ))
+        }
+    }
+
+    steps {
+        script {
+            name = "Detect Visual Studio Version"
+            scriptContent = """
+                ${'$'}vswhere = "${'$'}env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+
+                if (-not (Test-Path ${'$'}vswhere)) {
+                    Write-Host "##teamcity[message text='vswhere.exe not found - VS Installer component missing' status='WARNING']"
+                    exit 0
+                }
+
+                ${'$'}installations = & ${'$'}vswhere -all -products * -format json | ConvertFrom-Json
+
+                if (-not ${'$'}installations) {
+                    Write-Host "##teamcity[message text='Visual Studio not found on this agent' status='WARNING']"
+                    exit 0
+                }
+
+                foreach (${'$'}vs in ${'$'}installations) {
+                    Write-Host "Name:    ${'$'}(${'$'}vs.displayName)"
+                    Write-Host "Version: ${'$'}(${'$'}vs.installationVersion)"
+                    Write-Host "Path:    ${'$'}(${'$'}vs.installationPath)"
+                    Write-Host "---"
+                }
+
+                ${'$'}primary = ${'$'}installations | Select-Object -First 1
+                Write-Host "##teamcity[setParameter name='env.DETECTED_VS_VERSION' value='${'$'}(${'$'}primary.installationVersion)']"
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Windows")
+        equals("teamcity.agent.name", "%AGENT_NAME%")
     }
 })
 
