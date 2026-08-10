@@ -11,7 +11,8 @@ function Install-Maven
   Write-Host "Version: $Version"
   Write-Host "Install path: $InstallPath"
 
-  $BaseUrl = "https://dlcdn.apache.org/maven/"
+  # $BaseUrl = "https://dlcdn.apache.org/maven/"
+  $BaseUrl = "https://archive.apache.org/dist/maven"
   $DownloadUrl = "$BaseUrl/maven-$($Version.Substring(0, 1) )/$Version/binaries/apache-maven-$Version-bin.tar.gz"
 
   Write-Host "Download URL: $DownloadUrl"
@@ -195,7 +196,7 @@ function Install-GraalVM
   } elseif (Test-Path $guExe) {
     & $guExe install native-image
   } else {
-    throw "Cannot find gu in $InstallPath\bin"
+    Write-Host "gu not found in $InstallPath\bin - assuming native-image is bundled (GraalVM 23+), skipping"
   }
 }
 

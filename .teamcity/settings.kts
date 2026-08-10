@@ -832,42 +832,25 @@ object BuildForWindows : BuildType({
     name = "Build [Windows, x64]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "winbuilder5161")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
     steps {
-        script {
+        powerShell {
             name = "Build"
-//            scriptContent = Util.prepareWin() + """
-//                powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 clean package
-//            """.trimIndent()
-            scriptContent = Util.prepareWin() + """
-                powershell -NoProfile -ExecutionPolicy Bypass -File C:\build.ps1
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
-        }
-    }
-
-    features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
+            scriptMode = script {
+                content = Util.prepareWinLocal() + """
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+                """.trimIndent()
             }
+            formatStderrAsError = true
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Windows 11")
-        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
 })
 
@@ -988,6 +971,52 @@ object Util {
               echo "DNS not ready yet, retrying..."
               sleep 2
             done
+        """.trimIndent()
+    }
+
+    fun prepareWinLocal(): String {
+        return """
+            ${'$'}ErrorActionPreference = 'Stop'
+
+            # --- 1. Find VS/Build Tools on the agent via vswhere and import MSVC variables ---
+            ${'$'}vswhere = "${'$'}{env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+            if (-not (Test-Path ${'$'}vswhere)) { throw "vswhere.exe not found - VS Installer component missing" }
+
+            ${'$'}vsPath = & ${'$'}vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+            if (-not ${'$'}vsPath) { throw "No Visual Studio installation with VC Tools found on this agent" }
+
+            ${'$'}vsDevCmd = Join-Path ${'$'}vsPath "Common7\Tools\VsDevCmd.bat"
+            if (-not (Test-Path ${'$'}vsDevCmd)) { throw "VsDevCmd.bat not found: ${'$'}vsDevCmd" }
+
+            ${'$'}envDump = cmd /c "`"${'$'}vsDevCmd`" -arch=amd64 && set"
+            foreach (${'$'}line in ${'$'}envDump) {
+                if (${'$'}line -match '^(?<k>[^=]+)=(?<v>.*)${'$'}') {
+                    [System.Environment]::SetEnvironmentVariable(${'$'}Matches.k, ${'$'}Matches.v, "Process")
+                }
+            }
+
+            # --- 2. Download Maven if it is not already cached on this agent. ---
+            . .teamcity\install.ps1
+
+            ${'$'}mvnVersion = "3.8.9"
+            ${'$'}mvnInstallPath = "C:\BuildCache\maven-${'$'}mvnVersion"
+            if (-not (Test-Path "${'$'}mvnInstallPath\bin\mvn.cmd")) {
+                Install-Maven -Version ${'$'}mvnVersion -InstallPath ${'$'}mvnInstallPath
+            }
+            ${'$'}env:Path = "${'$'}mvnInstallPath\bin;${'$'}env:Path"
+
+            # --- 3. Download GraalVM if it is not already cached on this agent. ---
+            ${'$'}graalVersion = "%env.GRAALVM_VERSION%"
+            ${'$'}graalInstallPath = "C:\BuildCache\graalvm-${'$'}graalVersion-win-x64"
+            if (-not (Test-Path "${'$'}graalInstallPath\bin\java.exe")) {
+                Install-GraalVM -Version ${'$'}graalVersion -Platform "win-x64" -InstallPath ${'$'}graalInstallPath
+            }
+            ${'$'}env:JAVA_HOME = ${'$'}graalInstallPath
+            ${'$'}env:Path = "${'$'}graalInstallPath\bin;${'$'}env:Path"
+
+            where.exe cl
+            where.exe java
+            where.exe mvn
         """.trimIndent()
     }
 }
