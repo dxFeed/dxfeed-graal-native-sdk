@@ -555,7 +555,7 @@ object DeployNuget : BuildType({
                 VERSION=${'$'}(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
-                nuget push DxFeed.Graal.Native.${'$'}{'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate
+                nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
