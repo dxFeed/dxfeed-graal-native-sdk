@@ -903,6 +903,10 @@ object DetectVisualStudioVersion : BuildType({
     name = "Detect Visual Studio Version"
     description = "Runs a check of the installed VS on each Windows agent separately"
 
+    params {
+        param("env.DETECTED_VS_VERSION", "")
+    }
+
     steps {
         powerShell {
             name = "Detect Visual Studio Version"
