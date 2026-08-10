@@ -759,7 +759,7 @@ object BuildForLinuxAarch64 : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn clean package
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
