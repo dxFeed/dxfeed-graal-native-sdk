@@ -1,3 +1,50 @@
+function Invoke-DownloadWithProgress
+{
+  param(
+    [Parameter(Mandatory = $true)][string]$Uri,
+    [Parameter(Mandatory = $true)][string]$OutFile
+  )
+
+  $request = [System.Net.HttpWebRequest]::Create($Uri)
+  $response = $request.GetResponse()
+  $totalBytes = $response.ContentLength
+  $responseStream = $response.GetResponseStream()
+  $fileStream = [System.IO.File]::Create($OutFile)
+
+  $buffer = New-Object byte[] 1MB
+  $totalRead = 0L
+  $lastPercent = -5
+
+  try
+  {
+    while (($read = $responseStream.Read($buffer, 0, $buffer.Length)) -gt 0)
+    {
+      $fileStream.Write($buffer, 0, $read)
+      $totalRead += $read
+
+      if ($totalBytes -gt 0)
+      {
+        $percent = [math]::Floor(($totalRead / $totalBytes) * 100)
+        if ($percent -ge $lastPercent + 5)
+        {
+          Write-Host ("Downloaded {0:N0} MB / {1:N0} MB ({2}%)" -f ($totalRead / 1MB), ($totalBytes / 1MB), $percent)
+          $lastPercent = $percent
+        }
+      }
+      else
+      {
+        Write-Host ("Downloaded {0:N0} MB" -f ($totalRead / 1MB))
+      }
+    }
+  }
+  finally
+  {
+    $fileStream.Close()
+    $responseStream.Close()
+    $response.Close()
+  }
+}
+
 function Install-Maven
 {
   param (
@@ -22,7 +69,8 @@ function Install-Maven
     New-Item -ItemType Directory -Path $InstallPath | Out-Null
   }
 
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile "$( $InstallPath )\maven.tar.gz"
+  Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile "$($InstallPath)\maven.tar.gz"
+  # Invoke-WebRequest -Uri $DownloadUrl -OutFile "$( $InstallPath )\maven.tar.gz"
   tar -xzf "$( $InstallPath )\maven.tar.gz" -C $InstallPath --strip-components=1
   Remove-Item "$( $InstallPath )\maven.tar.gz"
 }
@@ -160,7 +208,8 @@ function Install-GraalVM
   Write-Host "Downloading from $DownloadUrl"
   $TempFile = "$([System.IO.Path]::GetTempFileName() ).$FileExtension"
   Write-Host "Temp file name: $TempFile"
-  Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UseBasicParsing
+  Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile $TempFile
+  # Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UseBasicParsing
 
   if ($FileExtension -eq "zip")
   {
