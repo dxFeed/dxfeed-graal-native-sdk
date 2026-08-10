@@ -90,6 +90,7 @@ project {
 
 object BuildPatchAndDeployForLinux : BuildType({
     name = "Build PATCH & Deploy [Linux, x64]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -162,6 +163,7 @@ object BuildPatchAndDeployForLinux : BuildType({
 
 object BuildMajorMinorPatchAndDeployLinux : BuildType({
     name = "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]"
+    artifactRules = "*.zip"
 
     params {
         text("env.RELEASE_VERSION", "", allowEmpty = false)
@@ -235,6 +237,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
 
 object BuildAndDeployForLinuxAarch64Release : BuildType({
     name = "Build & Deploy [Linux, aarch64][Release]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -279,6 +282,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 
 object BuildAndDeployForLinuxAarch64Debug : BuildType({
     name = "Build & Deploy [Linux, aarch64][Debug]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -323,6 +327,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 
 object BuildAndDeployForLinuxAarch64 : BuildType({
     name = "Build & Deploy [Linux, aarch64]"
+    artifactRules = "*.zip"
     type = Type.COMPOSITE
 
     dependencies {
@@ -337,6 +342,7 @@ object BuildAndDeployForLinuxAarch64 : BuildType({
 
 object BuildAndDeployForWindowsRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -385,6 +391,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
 
 object BuildAndDeployForWindowsDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -434,6 +441,7 @@ object BuildAndDeployForWindowsDebug : BuildType({
 object BuildAndDeployForWindows : BuildType({
     name = "Build & Deploy [Windows]"
     type = Type.COMPOSITE
+    artifactRules = "*.zip"
 
     dependencies {
         snapshot(BuildAndDeployForWindowsRelease) {
@@ -447,6 +455,7 @@ object BuildAndDeployForWindows : BuildType({
 
 object BuildAndDeployForMacOsAndIOS : BuildType({
     name = "Build & Deploy [macOS, iOS]"
+    artifactRules = "*.zip"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -481,6 +490,7 @@ object BuildAndDeployForAll : BuildType({
     name = "Build & Deploy [All]"
     type = Type.COMPOSITE
     allowExternalStatus = true
+    artifactRules = "*.zip"
 
     triggers {
         finishBuildTrigger {
@@ -644,6 +654,7 @@ object SyncGitHubWithMain : BuildType({
 
 object BuildForLinux : BuildType({
     name = "Build [Linux, x64]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -743,6 +754,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
 
 object BuildForLinuxAarch64 : BuildType({
     name = "Build [Linux, aarch64]"
+    artifactRules = "*.zip"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -818,6 +830,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 
 object BuildForWindows : BuildType({
     name = "Build [Windows, x64]"
+    artifactRules = "*.zip"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -860,6 +873,7 @@ object BuildForWindows : BuildType({
 
 object BuildForMacOSAndIOS : BuildType({
     name = "Build [macOS, iOS]"
+    artifactRules = "*.zip"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -894,7 +908,7 @@ object DetectVisualStudioVersion : BuildType({
             name = "Detect Visual Studio Version"
             scriptMode = script {
                 content = """
-                    ${'$'}vswhere = "${'$'}env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+                    ${'$'}vswhere = "${'$'}{env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
 
                     if (-not (Test-Path ${'$'}vswhere)) {
                         Write-Host "##teamcity[message text='vswhere.exe not found - VS Installer component missing' status='WARNING']"
