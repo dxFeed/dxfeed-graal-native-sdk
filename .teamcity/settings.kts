@@ -1,7 +1,9 @@
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.ParameterDisplay
+import jetbrains.buildServer.configs.kotlin.RelativeId
 import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
+import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
@@ -43,6 +45,7 @@ project {
         param("env.GRAALVM_VERSION", "jdk-23.0.2")
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
+        password("env.NUGETORG_API_KEY", "credentialsJSON:4ba447c3-64f4-4a4c-8ff8-505258ddd420", display = ParameterDisplay.HIDDEN)
     }
 
     features {
@@ -82,6 +85,9 @@ project {
     buildType(BuildAndPushDockerImageForLinuxX64)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
     buildType(BuildAndPushDockerImageForWindowsX64)
+
+    buildType(CopyServiceImages)
+    buildType(ListServiceImages)
 }
 
 object BuildPatchAndDeployForLinux : BuildType({
@@ -483,20 +489,19 @@ object BuildAndDeployForAll : BuildType({
             buildType = "${BuildPatchAndDeployForLinux.id}"
             successfulOnly = true
         }
-        // TODO: uncomment. TEST
-//        finishBuildTrigger {
-//            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
-//            successfulOnly = true
-//        }
+        finishBuildTrigger {
+            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            successfulOnly = true
+        }
     }
 
     dependencies {
         snapshot(BuildAndDeployForLinuxAarch64) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
-        snapshot(BuildAndDeployForWindows) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
-        }
+//        snapshot(BuildAndDeployForWindows) {
+//            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+//        }
         snapshot(BuildAndDeployForMacOsAndIOS) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
@@ -505,6 +510,7 @@ object BuildAndDeployForAll : BuildType({
 
 object DeployNuget : BuildType({
     name = "Deploy NuGet"
+    artifactRules = "*.nupkg"
 
     params {
         param("env.DOCKER_MEMORY_SIZE", "8g")
@@ -519,25 +525,6 @@ object DeployNuget : BuildType({
             name = "Download Artifacts"
             scriptContent = """
                 download_file() {
-                  version=${'$'}1
-                  path_to_save=${'$'}2
-                  file_name=${'$'}3
-                  os=${'$'}4
-                  platform=${'$'}5
-                  extension="zip"
-
-                  base_url="https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk"
-                  file_path="${'$'}{version}/graal-native-sdk-${'$'}{version}-${'$'}{platform}-${'$'}{os}.${'$'}{extension}"
-                  url="${'$'}{base_url}/${'$'}{file_path}!/${'$'}{file_name}"
-
-                  mkdir -p "${'$'}path_to_save"
-                  if ! (cd "${'$'}path_to_save" && curl -LO -f "${'$'}url"); then
-                    echo "Failed to download: ${'$'}url"
-                    exit 1
-                  fi
-                }
-
-                download_file2() {
                   version=${'$'}1
                   path_to_save=${'$'}2
                   file_name=${'$'}3
@@ -570,11 +557,11 @@ object DeployNuget : BuildType({
                 version=${'$'}(git describe --abbrev=0)
                 version=${'$'}{version#"v"}
 
-                download_file2 "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
-                download_file2 "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
-                download_file2 "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
-                download_file2 "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
-                download_file2 "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
+                download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
+                download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
+                download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
+                download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
+                # download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -585,7 +572,7 @@ object DeployNuget : BuildType({
                 VERSION=${'$'}(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
-                nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://dxfeed.jfrog.io/artifactory/api/nuget/nuget-open/com/dxfeed/graal-native/${'$'}VERSION -ApiKey %env.JFROG_USER%:%env.JFROG_PASSWORD%
+                nuget push DxFeed.Graal.Native.${'$'}{'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
@@ -648,7 +635,7 @@ object SyncGitHubWithMain : BuildType({
 
     features {
         sshAgent {
-            teamcitySshKey = "id_ed25519"
+            teamcitySshKey = "id_rsa_ak_github"
         }
     }
 
@@ -697,11 +684,6 @@ object BuildForLinux : BuildType({
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Docker Image [Linux, x64]"
 
-    params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -732,11 +714,6 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
 
 object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     name = "Build & Push a Docker Image [Linux, aarch64]"
-
-    params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
-    }
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -809,8 +786,6 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
     name = "Build & Push a Docker Image [Windows, x64]"
 
     params {
-        text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
-        password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         param("env.AGENT_HOSTNAME", "winbuilder5161")
     }
 
@@ -958,4 +933,108 @@ object SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTa
         uploadedKey = "dxcity for GIT"
     }
     param("secure:password", "")
+})
+
+object CopyServiceImages : BuildType({
+    name = "Copy service images"
+
+    params {
+        password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
+        param("env.srcRepo", "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
+    }
+
+    vcs {
+        root(RelativeId("SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags"))
+    }
+
+    steps {
+        script {
+            name = "test"
+            id = "test"
+            scriptContent = """
+                echo "Installing Skopeo"
+                apt-get update
+                apt-get install -y skopeo
+                apt-get install -y ca-certificates
+
+                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
+                echo "Image tag is ${'$'}image_tag"
+                echo "Source image - %env.srcRepo%:latest"
+                echo "Target image - %env.target.repo%/${'$'}image_tag"
+
+
+                #skopeo copy \
+                #  --src-creds amordovskii:%env.jfrogPass% \
+                #  --dest-creds %dxcity.login%:%dxcity.password% \
+                #  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
+
+                echo "List images nuget:"
+                skopeo list-tags \
+                  --creds %dxcity.login%:%dxcity.password% \
+                docker://%env.target.repo%/nuget
+
+                echo "List images graal:"
+                skopeo list-tags \
+                  --creds %dxcity.login%:%dxcity.password% \
+                docker://%env.target.repo%/graalvm
+            """.trimIndent()
+            dockerImage = "ubuntu:latest"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+        }
+    }
+
+    features {
+        perfmon {
+        }
+    }
+})
+
+object ListServiceImages : BuildType({
+    name = "List service images"
+
+    params {
+        password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
+        param("env.srcRepo", "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1")
+        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
+    }
+
+    vcs {
+        root(RelativeId("SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags"))
+    }
+
+    steps {
+        script {
+            name = "test"
+            id = "test"
+            scriptContent = """
+                echo "Installing Skopeo"
+                apt-get update
+                apt-get install -y skopeo
+                apt-get install -y ca-certificates
+
+                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
+                echo "Image tag is ${'$'}image_tag"
+                echo "Source image - %env.srcRepo%:latest"
+                echo "Target image - %env.target.repo%/${'$'}image_tag"
+
+                echo "List images nuget:"
+                skopeo list-tags \
+                  --creds %dxcity.login%:%dxcity.password% \
+                docker://%env.target.repo%/nuget
+
+                echo "List images graal:"
+                skopeo list-tags \
+                  --creds %dxcity.login%:%dxcity.password% \
+                docker://%env.target.repo%/graalvm
+            """.trimIndent()
+            dockerImage = "ubuntu:latest"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+        }
+    }
+
+    features {
+        perfmon {
+        }
+    }
 })
