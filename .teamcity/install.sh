@@ -2,6 +2,7 @@
 
 maven() {
     set -eux
+    set -o pipefail
 
     local -r version="$1"
     local -r install_path="$2"
@@ -12,13 +13,18 @@ maven() {
         return 1
     fi
 
-    mkdir -p "${install_path}"
+    local -r tmp_path="${install_path}.tmp.$$"
+    mkdir -p "${tmp_path}"
     local -r download_url="${base_url}/maven-${version:0:1}/${version}/binaries/apache-maven-${version}-bin.tar.gz"
-    curl -fsSL --retry 3 "${download_url}" | bsdtar -xzf - -C "${install_path}" --strip-components=1
+    curl -fsSL --retry 3 "${download_url}" | bsdtar -xzf - -C "${tmp_path}" --strip-components=1
+
+    rm -rf "${install_path}"
+    mv "${tmp_path}" "${install_path}"
 }
 
 graalvm() {
     set -eux
+    set -o pipefail
 
     local -r version="$1"
     local -r platform="$2"
@@ -78,16 +84,22 @@ graalvm() {
         return 1
     fi
 
-    mkdir -p "${install_path}"
+    local -r tmp_path="${install_path}.tmp.$$"
+    trap 'rm -rf "${tmp_path}"' RETURN
+
+    mkdir -p "${tmp_path}"
     local -r download_url="${base_url}/${version_tag}/${distribution_tag}${os_tag}${arch_tag}${suffix}"
-    curl -fsSL --retry 3 "${download_url}" | bsdtar -xzf - -C "${install_path}" --strip-components=1
+    curl -fsSL --retry 3 "${download_url}" | bsdtar -xzf - -C "${tmp_path}" --strip-components=1
 
     # gu does not exist in GraalVM versions above 22.3.3
     # and native-image installation is not required.
-    local -r gu=$(find ${install_path} -name "gu*" -print -quit)
+    local -r gu=$(find "${tmp_path}" -name "gu*" -print -quit)
     if [ -n "${gu}" ]; then
         "${gu}" install native-image
     fi
+
+    rm -rf "${install_path}"
+    mv "${tmp_path}" "${install_path}"
 }
 
 vs_build_tools() {

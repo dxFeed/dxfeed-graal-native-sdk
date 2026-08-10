@@ -896,9 +896,12 @@ object Util {
         return """
             mvn_version=3.8.9
             mvn_install_path=~/.graal/maven-${'$'}{mvn_version}
-            if [ ! -d "${'$'}{mvn_install_path}" ]; then
+
+            if [ ! -x "${'$'}{mvn_install_path}/bin/mvn" ]; then
+                rm -rf "${'$'}{mvn_install_path}"
                 .teamcity/install.sh maven "${'$'}{mvn_version}" "${'$'}{mvn_install_path}"
             fi
+
             mvn=${'$'}{mvn_install_path}/bin/mvn
 
             graalvm_version=%env.GRAALVM_VERSION%
@@ -907,7 +910,8 @@ object Util {
             for platform in "${'$'}{platforms[@]}"
             do
                 graalvm_full_install_path="${'$'}{graalvm_install_path}-${'$'}{platform}"
-                if [ ! -d "${'$'}{graalvm_full_install_path}" ]; then
+                if [ ! -x "${'$'}{graalvm_full_install_path}/Contents/Home/bin/java" ]; then
+                    rm -rf "${'$'}{graalvm_full_install_path}"
                     .teamcity/install.sh graalvm "${'$'}{graalvm_version}" "${'$'}{platform}" "${'$'}{graalvm_full_install_path}"
                 fi
             done
