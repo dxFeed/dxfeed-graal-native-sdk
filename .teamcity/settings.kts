@@ -618,7 +618,7 @@ object SyncGitHubWithMain : BuildType({
 
     features {
         sshAgent {
-            teamcitySshKey = "id_rsa_ak_github"
+            teamcitySshKey = "sshkey_ed25519"
         }
     }
 
