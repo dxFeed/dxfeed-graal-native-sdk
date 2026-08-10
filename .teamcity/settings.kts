@@ -256,7 +256,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
         script {
             name = "Deploy"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
@@ -300,7 +300,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
         script {
             name = "Deploy Debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
