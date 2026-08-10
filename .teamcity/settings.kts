@@ -251,7 +251,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 
         script {
             name = "Deploy"
-            scriptContent = Util.waitForNexus() + """
+            scriptContent = """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy
             """.trimIndent()
             formatStderrAsError = true
@@ -295,7 +295,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 
         script {
             name = "Deploy Debug"
-            scriptContent = Util.waitForNexus() + """
+            scriptContent = """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
@@ -654,7 +654,7 @@ object BuildForLinux : BuildType({
     steps {
         script {
             name = "Build"
-            scriptContent = Util.waitForNexus() + """
+            scriptContent = """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
@@ -754,7 +754,7 @@ object BuildForLinuxAarch64 : BuildType({
     steps {
         script {
             name = "Build"
-            scriptContent = Util.waitForNexus() + """
+            scriptContent = """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
