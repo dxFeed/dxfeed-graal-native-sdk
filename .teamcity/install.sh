@@ -6,7 +6,10 @@ maven() {
 
     local -r version="$1"
     local -r install_path="$2"
-    local -r base_url="https://dlcdn.apache.org/maven/"
+    # archive.apache.org keeps every released version forever, unlike dlcdn.apache.org,
+    # which only hosts the single latest patch release of each minor line and 404s
+    # as soon as a newer patch is published.
+    local -r base_url="https://archive.apache.org/dist/maven"
 
     if [[ -z "${version}" || -z "${install_path}" ]]; then
         echo "Usage: install maven <version> <install_path>"
@@ -14,6 +17,8 @@ maven() {
     fi
 
     local -r tmp_path="${install_path}.tmp.$$"
+    trap 'rm -rf "${tmp_path}"' RETURN
+
     mkdir -p "${tmp_path}"
     local -r download_url="${base_url}/maven-${version:0:1}/${version}/binaries/apache-maven-${version}-bin.tar.gz"
     curl -fsSL --retry 3 "${download_url}" | bsdtar -xzf - -C "${tmp_path}" --strip-components=1
