@@ -346,11 +346,6 @@ object BuildAndDeployForWindowsRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "winbuilder5161")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -365,29 +360,21 @@ object BuildAndDeployForWindowsRelease : BuildType({
                 """.trimIndent()
             }
         }
-        script {
+        powerShell {
             name = "Deploy"
-            scriptContent = Util.prepareWin() + """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
-        }
-    }
+            scriptMode = script {
+                content = Util.prepareWinLocal() + """
 
-    features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean deploy
+                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+                """.trimIndent()
             }
+            formatStderrAsError = true
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Windows 11")
-        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
 })
 
@@ -395,15 +382,9 @@ object BuildAndDeployForWindowsDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "winbuilder5161")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
-
     steps {
         powerShell {
             name = "Checkout Latest Tag"
@@ -414,29 +395,21 @@ object BuildAndDeployForWindowsDebug : BuildType({
                 """.trimIndent()
             }
         }
-        script {
-            name = "Deploy Debug"
-            scriptContent = Util.prepareWin() + """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy -P buildDebug
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
-        }
-    }
+        powerShell {
+            name = "Deploy"
+            scriptMode = script {
+                content = Util.prepareWinLocal() + """
 
-    features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean deploy -P buildDebug
+                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+                """.trimIndent()
             }
+            formatStderrAsError = true
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Windows 11")
-        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
 })
 
@@ -845,7 +818,7 @@ object BuildForWindows : BuildType({
             scriptMode = script {
                 content = Util.prepareWinLocal() + """
 
-                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean package
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                 """.trimIndent()
             }
