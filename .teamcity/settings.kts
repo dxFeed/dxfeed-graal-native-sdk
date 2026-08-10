@@ -276,6 +276,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        doesNotEqual("system.agent.name", "macbuilder23")
         //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
@@ -321,6 +322,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        doesNotEqual("system.agent.name", "macbuilder23")
         //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
