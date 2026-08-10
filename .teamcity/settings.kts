@@ -1,6 +1,4 @@
-import jetbrains.buildServer.configs.kotlin.BuildType
-import jetbrains.buildServer.configs.kotlin.ParameterDisplay
-import jetbrains.buildServer.configs.kotlin.RelativeId
+import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
@@ -8,11 +6,9 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
 import jetbrains.buildServer.configs.kotlin.triggers.finishBuildTrigger
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
-import jetbrains.buildServer.configs.kotlin.version
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -255,7 +251,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 
         script {
             name = "Deploy"
-            scriptContent = """
+            scriptContent = Util.waitForNexus() + """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy
             """.trimIndent()
             formatStderrAsError = true
@@ -299,7 +295,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 
         script {
             name = "Deploy Debug"
-            scriptContent = """
+            scriptContent = Util.waitForNexus() + """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
@@ -658,8 +654,8 @@ object BuildForLinux : BuildType({
     steps {
         script {
             name = "Build"
-            scriptContent = """
-                mvn clean package
+            scriptContent = Util.waitForNexus() + """
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -758,7 +754,7 @@ object BuildForLinuxAarch64 : BuildType({
     steps {
         script {
             name = "Build"
-            scriptContent = """
+            scriptContent = Util.waitForNexus() + """
                 mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
@@ -916,6 +912,16 @@ object Util {
                 fi
             done
         """
+    }
+
+    fun waitForNexus(): String {
+        return """
+            for i in 1 2 3 4 5; do
+              getent hosts nexus.in.devexperts.com && break
+              echo "DNS not ready yet, retrying..."
+              sleep 2
+            done
+        """.trimIndent()
     }
 }
 

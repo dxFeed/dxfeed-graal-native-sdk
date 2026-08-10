@@ -25,11 +25,16 @@
       <username>${nexus.user}</username>
       <password>${nexus.password}</password>
     </server>
+    <server>
+      <id>mdd-snapshot</id>
+      <username>${nexus.user}</username>
+      <password>${nexus.password}</password>
+    </server>
   </servers>
   <mirrors>
     <mirror>
       <id>Nexus</id>
-      <mirrorOf>*</mirrorOf>
+      <mirrorOf>*,!jfrog,!qd,!qd-snapshot,!dxfeed-api,!mdd,!mdd-snapshot</mirrorOf>
       <url>https://nexus.in.devexperts.com/repository/public</url>
     </mirror>
   </mirrors>
