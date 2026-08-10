@@ -712,6 +712,10 @@
       {
         "name": "getFieldReplacer",
         "parameterTypes": []
+      },
+      {
+        "name": "getRequestedAggregationPeriod",
+        "parameterTypes": []
       }
     ]
   },
@@ -1023,6 +1027,26 @@
       {
         "name": "isAlive",
         "parameterTypes": []
+      },
+      {
+        "name": "getAggregationPeriodInfoStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestedAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDefaultAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMinAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMaxAggregationPeriod",
+        "parameterTypes": []
       }
     ]
   },
@@ -1047,6 +1071,30 @@
       },
       {
         "name": "getFieldReplacer",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAggregationPeriodInfoStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestedAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDefaultAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMinAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMaxAggregationPeriod",
         "parameterTypes": []
       },
       {
