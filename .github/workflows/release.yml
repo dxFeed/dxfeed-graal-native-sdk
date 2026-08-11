@@ -1,0 +1,181 @@
+name: Publish GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Determine release tag
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            TAG="${GITHUB_REF_NAME}"
+          else
+            TAG="$(git tag --list 'v*' --sort=-version:refname | head -n1)"
+          fi
+
+          if [[ -z "${TAG}" ]]; then
+            echo "No release tag found"
+            exit 1
+          fi
+
+          if [[ ! "${TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unexpected release tag: ${TAG}"
+            exit 1
+          fi
+
+          VERSION="${TAG#v}"
+
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+          echo "Release tag: ${TAG}"
+          echo "Release version: ${VERSION}"
+
+      - name: Checkout release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "${{ steps.version.outputs.tag }}"
+
+      - name: Extract release notes
+        shell: bash
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          awk -v tag="${TAG}" '
+            $0 == "## " tag {
+              found = 1
+              next
+            }
+
+            found && /^## v/ {
+              exit
+            }
+
+            found {
+              print
+            }
+
+            END {
+              if (!found)
+                exit 2
+            }
+          ' ReleaseNotes.md > release-notes.md
+
+          if [[ ! -s release-notes.md ]]; then
+            echo "Release notes for ${TAG} not found or empty"
+            exit 1
+          fi
+
+          echo "Release notes:"
+          cat release-notes.md
+
+      - name: Download ZIP artifacts from Nexus
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          NEXUS="https://maven.in.devexperts.com"
+          API="${NEXUS}/service/rest/v1/search/assets"
+
+          mkdir -p artifacts
+
+          continuation_token=""
+          count=0
+
+          while true; do
+            args=(
+              --fail
+              --silent
+              --show-error
+              --get
+              "${API}"
+              --data-urlencode "repository=qd"
+              --data-urlencode "group=com.dxfeed"
+              --data-urlencode "name=graal-native-sdk"
+              --data-urlencode "version=${VERSION}"
+              --data-urlencode "maven.extension=zip"
+            )
+
+            if [[ -n "${continuation_token}" ]]; then
+              args+=(
+                --data-urlencode "continuationToken=${continuation_token}"
+              )
+            fi
+
+            response="$(curl "${args[@]}")"
+
+            while IFS= read -r url; do
+              [[ -z "${url}" ]] && continue
+
+              filename="${url##*/}"
+
+              echo "Downloading ${filename}"
+              curl \
+                --fail \
+                --location \
+                --silent \
+                --show-error \
+                "${url}" \
+                --output "artifacts/${filename}"
+
+              count=$((count + 1))
+            done < <(
+              jq -r '
+                .items[]
+                | select(.path | endswith(".zip"))
+                | .downloadUrl
+              ' <<< "${response}"
+            )
+
+            continuation_token="$(
+              jq -r '.continuationToken // empty' <<< "${response}"
+            )"
+
+            [[ -z "${continuation_token}" ]] && break
+          done
+
+          if [[ "${count}" -eq 0 ]]; then
+            echo "No ZIP artifacts found for version ${VERSION}"
+            exit 1
+          fi
+
+          echo "Downloaded ${count} ZIP artifact(s):"
+          ls -lh artifacts/
+
+      - name: Create GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          gh release create "${TAG}" \
+            artifacts/*.zip \
+            --verify-tag \
+            --title "${TAG}" \
+            --notes-file release-notes.md
