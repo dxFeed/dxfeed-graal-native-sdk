@@ -1,3 +1,5 @@
+## v3.2.10
+
 * **\[MDAPI-415]\[GRAAL]** Fixed Graal SDK build and deployment.
 
 ## v3.2.0
