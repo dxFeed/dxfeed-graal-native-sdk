@@ -92,10 +92,6 @@ object BuildPatchAndDeployForLinux : BuildType({
     name = "Build PATCH & Deploy [Linux, x64]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -127,7 +123,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
 
         script {
@@ -141,7 +137,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
 
         script {
@@ -159,7 +155,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
     }
 
@@ -182,7 +178,6 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
 
     params {
         text("env.RELEASE_VERSION", "", allowEmpty = false)
-        param("env.DOCKER_MEMORY_SIZE", "8g")
     }
 
     vcs {
@@ -208,7 +203,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
 
         script {
@@ -222,7 +217,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
 
         script {
@@ -240,7 +235,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
     }
 
@@ -261,11 +256,6 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     name = "Build & Deploy [Linux, aarch64][Release]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "macbuilder20")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -284,7 +274,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm"
         }
     }
 
@@ -299,18 +289,12 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
         doesNotEqual("system.agent.name", "macbuilder23")
-        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
 object BuildAndDeployForLinuxAarch64Debug : BuildType({
     name = "Build & Deploy [Linux, aarch64][Debug]"
     artifactRules = "*.zip"
-
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "macbuilder20")
-    }
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -330,7 +314,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm"
         }
     }
 
@@ -345,7 +329,6 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
         doesNotEqual("system.agent.name", "macbuilder23")
-        //contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
@@ -517,10 +500,6 @@ object DeployNuget : BuildType({
     name = "Deploy NuGet"
     artifactRules = "*.nupkg"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -582,7 +561,7 @@ object DeployNuget : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
     }
 
@@ -627,7 +606,21 @@ object SyncGitHubWithMain : BuildType({
 
     steps {
         script {
-            scriptContent = "git push --follow-tags git@github.com:dxFeed/dxfeed-graal-native-sdk.git main"
+            name = "Sync release to GitHub"
+            scriptContent =
+                """
+                set -eu
+
+                REMOTE="git@github.com:dxFeed/dxfeed-graal-native-sdk.git"
+                TAG=${'$'}(git describe --tags --abbrev=0)
+
+                echo "Pushing main..."
+                git push "${'$'}REMOTE" main
+
+                echo "Pushing release tag: ${'$'}TAG"
+                git push "${'$'}REMOTE" \
+                    "refs/tags/${'$'}TAG:refs/tags/${'$'}TAG"
+                """.trimIndent()
         }
     }
 
@@ -653,10 +646,6 @@ object BuildForLinux : BuildType({
     name = "Build [Linux, x64]"
     artifactRules = "*.zip"
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-    }
-
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
@@ -670,7 +659,7 @@ object BuildForLinux : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm -m 8g"
         }
     }
 
@@ -733,9 +722,9 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker images --all
-                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
-                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-aarch64.Dockerfile .
-                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-aarch64-%env.GRAALVM_VERSION%
+                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
+                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-aarch64.Dockerfile .
+                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker logout
@@ -757,11 +746,6 @@ object BuildForLinuxAarch64 : BuildType({
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
-    params {
-        param("env.DOCKER_MEMORY_SIZE", "8g")
-        param("env.AGENT_HOSTNAME", "macbuilder20")
-    }
-
     steps {
         script {
             name = "Build"
@@ -771,7 +755,7 @@ object BuildForLinuxAarch64 : BuildType({
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+            dockerRunParameters = "--rm"
         }
     }
 
@@ -786,16 +770,11 @@ object BuildForLinuxAarch64 : BuildType({
     requirements {
         equals("teamcity.agent.jvm.os.name", "Mac OS X")
         doesNotEqual("system.agent.name", "macbuilder23")
-        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
     }
 })
 
 object BuildAndPushDockerImageForWindowsX64 : BuildType({
     name = "Build & Push a Docker Image [Windows, x64]"
-
-    params {
-        param("env.AGENT_HOSTNAME", "winbuilder5161")
-    }
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -809,9 +788,9 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker images --all
-                docker login dxfeed-docker.jfrog.io --username %env.JFROG_USER% --password %env.JFROG_PASSWORD%
-                docker build -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
-                docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-%env.GRAALVM_VERSION%
+                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
+                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
+                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%
                 docker images --all
                 docker rmi -f ${'$'}(docker images -aq)
                 docker logout
@@ -821,8 +800,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Windows 11")
-        // contains("teamcity.agent.hostname", "%env.AGENT_HOSTNAME%")
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
 })
 

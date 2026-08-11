@@ -99,71 +99,57 @@ jobs:
           set -euo pipefail
 
           NEXUS="https://maven.in.devexperts.com"
-          API="${NEXUS}/service/rest/v1/search/assets"
+          BASE="${NEXUS}/repository/qd/com/dxfeed/graal-native-sdk/${VERSION}"
+          INDEX="${NEXUS}/service/rest/repository/browse/qd/com/dxfeed/graal-native-sdk/${VERSION}/"
 
           mkdir -p artifacts
 
-          continuation_token=""
-          count=0
+          echo "Resolving Nexus:"
+          getent ahosts maven.in.devexperts.com || true
 
-          while true; do
-            args=(
-              --fail
-              --silent
-              --show-error
-              --get
-              "${API}"
-              --data-urlencode "repository=qd"
-              --data-urlencode "group=com.dxfeed"
-              --data-urlencode "name=graal-native-sdk"
-              --data-urlencode "version=${VERSION}"
-              --data-urlencode "maven.extension=zip"
-            )
+          echo "Downloading artifact index:"
+          curl \
+            --fail \
+            --location \
+            --show-error \
+            --connect-timeout 15 \
+            --max-time 60 \
+            --retry 3 \
+            "${INDEX}" \
+            --output index.html
 
-            if [[ -n "${continuation_token}" ]]; then
-              args+=(
-                --data-urlencode "continuationToken=${continuation_token}"
-              )
-            fi
+          echo "Artifacts found in index:"
 
-            response="$(curl "${args[@]}")"
+          mapfile -t ARTIFACTS < <(
+            grep -oE 'graal-native-sdk-[^"<>[:space:]]+\.zip' index.html \
+              | grep -F "graal-native-sdk-${VERSION}-" \
+              | sort -u
+          )
 
-            while IFS= read -r url; do
-              [[ -z "${url}" ]] && continue
+          printf '  %s\n' "${ARTIFACTS[@]}"
 
-              filename="${url##*/}"
-
-              echo "Downloading ${filename}"
-              curl \
-                --fail \
-                --location \
-                --silent \
-                --show-error \
-                "${url}" \
-                --output "artifacts/${filename}"
-
-              count=$((count + 1))
-            done < <(
-              jq -r '
-                .items[]
-                | select(.path | endswith(".zip"))
-                | .downloadUrl
-              ' <<< "${response}"
-            )
-
-            continuation_token="$(
-              jq -r '.continuationToken // empty' <<< "${response}"
-            )"
-
-            [[ -z "${continuation_token}" ]] && break
-          done
-
-          if [[ "${count}" -eq 0 ]]; then
+          if [[ "${#ARTIFACTS[@]}" -eq 0 ]]; then
             echo "No ZIP artifacts found for version ${VERSION}"
+            echo "Index contents:"
+            cat index.html
             exit 1
           fi
 
-          echo "Downloaded ${count} ZIP artifact(s):"
+          for artifact in "${ARTIFACTS[@]}"; do
+            echo "Downloading ${artifact}"
+
+            curl \
+              --fail \
+              --location \
+              --show-error \
+              --connect-timeout 15 \
+              --max-time 300 \
+              --retry 3 \
+              "${BASE}/${artifact}" \
+              --output "artifacts/${artifact}"
+          done
+
+          echo "Downloaded ${#ARTIFACTS[@]} ZIP artifact(s):"
           ls -lh artifacts/
 
       - name: Create GitHub Release
