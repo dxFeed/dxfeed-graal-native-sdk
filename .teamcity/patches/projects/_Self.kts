@@ -4,7 +4,6 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.Project
 import jetbrains.buildServer.configs.kotlin.projectFeatures.DockerRegistryConnection
 import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
-import jetbrains.buildServer.configs.kotlin.projectFeatures.githubAppConnection
 import jetbrains.buildServer.configs.kotlin.ui.*
 
 /*
@@ -25,20 +24,6 @@ changeProject(DslContext.projectId) {
         }
         feature1.apply {
             password = "credentialsJSON:470f094f-33b8-48f4-b84d-25a373136566"
-        }
-        add {
-            githubAppConnection {
-                id = "PROJECT_EXT_431"
-                displayName = "DxFeed Graal Native Sdk TeamCity"
-                appId = "4561091"
-                clientId = "Iv23li6V4dlFCied0AnU"
-                clientSecret = "credentialsJSON:970080be-e0eb-4c87-be1d-a7b26418327f"
-                privateKey = "credentialsJSON:6924e3b3-1e01-404d-bd39-63bf9c705331"
-                webhookSecret = "credentialsJSON:41ae19f8-d36e-4822-b061-a5ac0e8cc598"
-                ownerUrl = "https://github.com/AnatolyKalin"
-                useUniqueCallback = true
-                allowBuildScopedTokens = true
-            }
         }
     }
 }
