@@ -211,16 +211,13 @@
       "name": "java.lang.RuntimeException"
     },
     {
-      "name": "java.lang.String"
-    },
-    {
       "name": "java.lang.SecurityException"
     },
     {
-      "name": "java.lang.Throwable"
+      "name": "java.lang.String"
     },
     {
-      "name": "java.util.Collections$EmptyList"
+      "name": "java.lang.Throwable"
     },
     {
       "name": "java.rmi.dgc.Lease"
@@ -260,6 +257,9 @@
     },
     {
       "name": "java.util.ArrayList"
+    },
+    {
+      "name": "java.util.Collections$EmptyList"
     },
     {
       "name": "java.util.Collections$UnmodifiableCollection"

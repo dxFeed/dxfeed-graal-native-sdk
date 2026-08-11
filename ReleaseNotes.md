@@ -1,3 +1,5 @@
+* **\[MDAPI-415]\[GRAAL]** Fixed Graal SDK build and deployment.
+
 ## v3.2.0
 
 * **\[MDAPI-315]\[GRAAL]** Added `dxfg_CList_IndexedEventSource_release` function.

@@ -249,6 +249,14 @@
     "queryAllPublicMethods": true,
     "methods": [
       {
+        "name": "getAcceptAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAcceptEventFields",
+        "parameterTypes": []
+      },
+      {
         "name": "getApplicationVersion",
         "parameterTypes": []
       },
@@ -266,6 +274,10 @@
       },
       {
         "name": "getLogin",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestedAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -325,6 +337,18 @@
     "name": "com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$1"
   },
   {
+    "name": "com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$1$1",
+    "methods": [
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
     "name": "com.devexperts.qd.dxlink.websocket.transport.WebSocketTransportConnection$CloseListener",
     "queryAllPublicMethods": true
   },
@@ -348,6 +372,13 @@
         "parameterTypes": [
           "io.netty.channel.ChannelHandlerContext",
           "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
         ]
       }
     ]
@@ -386,137 +417,9 @@
     "queryAllPublicMethods": true,
     "methods": [
       {
-        "name": "getCollectorCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getContract",
-        "parameterTypes": []
-      },
-      {
-        "name": "resetToDefaults",
-        "parameterTypes": []
-      },
-      {
-        "name": "getSubscriptionBucket",
-        "parameterTypes": []
-      },
-      {
-        "name": "setSubscriptionBucket",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getDistributionBucket",
-        "parameterTypes": []
-      },
-      {
-        "name": "setDistributionBucket",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getInterleave",
-        "parameterTypes": []
-      },
-      {
-        "name": "setInterleave",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getAgentBufferSizeDefault",
-        "parameterTypes": []
-      },
-      {
-        "name": "setAgentBufferSizeDefault",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getMaxDistributionSpins",
-        "parameterTypes": []
-      },
-      {
-        "name": "setMaxDistributionSpins",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "getStickyScheduleMinDelay",
-        "parameterTypes": []
-      },
-      {
-        "name": "getBufferOverflowLogInterval",
-        "parameterTypes": []
-      },
-      {
-        "name": "setBufferOverflowLogInterval",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getLockWaitLogInterval",
-        "parameterTypes": []
-      },
-      {
-        "name": "setLockWaitLogInterval",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getUseLockPriority",
-        "parameterTypes": []
-      },
-      {
-        "name": "setUseLockPriority",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getUseLockCounters",
-        "parameterTypes": []
-      },
-      {
-        "name": "setUseLockCounters",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "getAllLockOperations",
-        "parameterTypes": []
-      },
-      {
-        "name": "getFatalError",
-        "parameterTypes": []
-      },
-      {
-        "name": "getCounters",
-        "parameterTypes": []
-      },
-      {
-        "name": "reportCounters",
+        "name": "applyStickySubscriptionPeriod",
         "parameterTypes": [
           "java.lang.String",
-          "java.lang.Integer"
-        ]
-      },
-      {
-        "name": "resetCounters",
-        "parameterTypes": []
-      },
-      {
-        "name": "dumpSubscriptionToFile",
-        "parameterTypes": [
           "java.lang.String"
         ]
       },
@@ -527,8 +430,85 @@
         ]
       },
       {
-        "name": "verifyCollectors",
+        "name": "dumpSubscriptionToFile",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getAgentBufferSizeDefault",
         "parameterTypes": []
+      },
+      {
+        "name": "getAllLockOperations",
+        "parameterTypes": []
+      },
+      {
+        "name": "getBufferOverflowLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCollectorCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getContract",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCounters",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDistributionBucket",
+        "parameterTypes": []
+      },
+      {
+        "name": "getFatalError",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInterleave",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLockWaitLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMaxDistributionSpins",
+        "parameterTypes": []
+      },
+      {
+        "name": "getStickyScheduleMinDelay",
+        "parameterTypes": []
+      },
+      {
+        "name": "getStickySubscriptionLogInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getStickySubscriptionPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSubscriptionBucket",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUseLockCounters",
+        "parameterTypes": []
+      },
+      {
+        "name": "getUseLockPriority",
+        "parameterTypes": []
+      },
+      {
+        "name": "reportCounters",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Integer"
+        ]
       },
       {
         "name": "reportData",
@@ -548,11 +528,69 @@
         ]
       },
       {
-        "name": "getStickySubscriptionLogInterval",
+        "name": "resetCounters",
         "parameterTypes": []
       },
       {
-        "name": "getStickySubscriptionPeriod",
+        "name": "resetToDefaults",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAgentBufferSizeDefault",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setBufferOverflowLogInterval",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setDistributionBucket",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setInterleave",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setLockWaitLogInterval",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setMaxDistributionSpins",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setSubscriptionBucket",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setUseLockCounters",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setUseLockPriority",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "verifyCollectors",
         "parameterTypes": []
       }
     ]
@@ -659,6 +697,10 @@
     "name": "com.devexperts.qd.qtp.AbstractMessageConnectorCustomizer"
   },
   {
+    "name": "com.devexperts.qd.qtp.AgentAdapter",
+    "queryAllPublicConstructors": true
+  },
+  {
     "name": "com.devexperts.qd.qtp.AgentAdapter$Factory",
     "queryAllPublicMethods": true,
     "methods": [
@@ -668,6 +710,18 @@
       },
       {
         "name": "getChannels",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDefaultAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMaxAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMinAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -683,6 +737,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.AgentAdapterMXBean"
   },
   {
     "name": "com.devexperts.qd.qtp.AgentChannel",
@@ -957,6 +1014,10 @@
         "parameterTypes": []
       },
       {
+        "name": "getStripeFilter",
+        "parameterTypes": []
+      },
+      {
         "name": "setFilter",
         "parameterTypes": [
           "java.lang.String"
@@ -993,6 +1054,10 @@
         "parameterTypes": []
       },
       {
+        "name": "getRateLimit",
+        "parameterTypes": []
+      },
+      {
         "name": "getUser",
         "parameterTypes": []
       },
@@ -1025,15 +1090,7 @@
         "parameterTypes": []
       },
       {
-        "name": "isAlive",
-        "parameterTypes": []
-      },
-      {
         "name": "getAggregationPeriodInfoStr",
-        "parameterTypes": []
-      },
-      {
-        "name": "getRequestedAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -1041,11 +1098,19 @@
         "parameterTypes": []
       },
       {
+        "name": "getMaxAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
         "name": "getMinAggregationPeriod",
         "parameterTypes": []
       },
       {
-        "name": "getMaxAggregationPeriod",
+        "name": "getRequestedAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "isAlive",
         "parameterTypes": []
       }
     ]
@@ -1062,7 +1127,19 @@
         "parameterTypes": []
       },
       {
+        "name": "getAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAggregationPeriodInfoStr",
+        "parameterTypes": []
+      },
+      {
         "name": "getConnectionCount",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDefaultAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -1074,27 +1151,11 @@
         "parameterTypes": []
       },
       {
-        "name": "getAggregationPeriodInfoStr",
-        "parameterTypes": []
-      },
-      {
-        "name": "getRequestedAggregationPeriod",
-        "parameterTypes": []
-      },
-      {
-        "name": "getDefaultAggregationPeriod",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAggregationPeriod",
+        "name": "getMaxAggregationPeriod",
         "parameterTypes": []
       },
       {
         "name": "getMinAggregationPeriod",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMaxAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -1107,6 +1168,10 @@
       },
       {
         "name": "getReconnectDelay",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestedAggregationPeriod",
         "parameterTypes": []
       },
       {
@@ -1172,6 +1237,45 @@
       {
         "name": "getInstance",
         "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.ServerConnectorMBean",
+    "methods": [
+      {
+        "name": "closeConnections",
+        "parameterTypes": [
+          "double",
+          "java.lang.String",
+          "boolean"
+        ]
+      },
+      {
+        "name": "getBindAddr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLocalPort",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMaxConnections",
+        "parameterTypes": []
+      },
+      {
+        "name": "isAccepting",
+        "parameterTypes": []
+      },
+      {
+        "name": "stopAcceptor",
+        "parameterTypes": []
+      },
+      {
+        "name": "stopGracefully",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
       }
     ]
   },
@@ -1263,6 +1367,18 @@
         ]
       }
     ]
+  },
+  {
+    "name": "com.devexperts.qd.qtp.socket.ServerSocketConnector",
+    "queryAllPublicMethods": true,
+    "queryAllPublicConstructors": true
+  },
+  {
+    "name": "com.devexperts.qd.qtp.socket.ServerSocketConnectorMBean",
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "com.devexperts.qd.qtp.socket.ServerSocketConnectorMXBean"
   },
   {
     "name": "com.devexperts.qd.qtp.socket.SocketWriter",
@@ -1392,6 +1508,9 @@
   {
     "name": "com.devexperts.rmi.impl.RMIMessageAdapter",
     "queryAllPublicConstructors": true
+  },
+  {
+    "name": "com.devexperts.rmi.impl.RMIMessageAdapterMXBean"
   },
   {
     "name": "com.dxfeed.api.impl.DXEndpointImpl$1",
@@ -1693,6 +1812,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.candle.CandleBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.candle.CandleFactoryImpl",
     "methods": [
       {
@@ -1729,6 +1851,22 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.candle.DailyCandleBeanInfo"
+  },
+  {
+    "name": "com.dxfeed.event.custom.CustomFactoryImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstance",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.dxfeed.event.custom.NuamOrder",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -1744,6 +1882,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.custom.NuamOrderBeanInfo"
   },
   {
     "name": "com.dxfeed.event.custom.NuamTimeAndSale",
@@ -1763,6 +1904,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.custom.NuamTimeAndSaleBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.custom.NuamTrade",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -1778,6 +1922,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.custom.NuamTradeBeanInfo"
   },
   {
     "name": "com.dxfeed.event.EventType",
@@ -1890,6 +2037,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.AnalyticOrderBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.MarketEvent",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -1922,6 +2072,9 @@
         ]
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.MarketEventBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.MarketFactoryImpl",
@@ -2078,6 +2231,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.MarketMakerBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.OptionSale",
@@ -2349,6 +2505,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.OptionSaleBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.Order",
@@ -2662,6 +2821,12 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.OrderBaseBeanInfo"
+  },
+  {
+    "name": "com.dxfeed.event.market.OrderBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.OrderImbalance",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -2677,6 +2842,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.OrderImbalanceBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.OrderSource",
@@ -2789,6 +2957,9 @@
         ]
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.OtcMarketsOrderBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.Profile",
@@ -3010,6 +3181,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.ProfileBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.Quote",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -3167,6 +3341,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.QuoteBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.SpreadOrder",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -3192,6 +3369,9 @@
         ]
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.SpreadOrderBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.Summary",
@@ -3327,6 +3507,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.SummaryBeanInfo"
   },
   {
     "name": "com.dxfeed.event.market.TimeAndSale",
@@ -3600,6 +3783,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.TimeAndSaleBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.Trade",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -3800,6 +3986,12 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.market.TradeBaseBeanInfo"
+  },
+  {
+    "name": "com.dxfeed.event.market.TradeBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.market.TradeETH",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -3823,6 +4015,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.market.TradeETHBeanInfo"
   },
   {
     "name": "com.dxfeed.event.misc.Configuration",
@@ -3914,6 +4109,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.misc.ConfigurationBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.misc.Message",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -3991,6 +4189,9 @@
         ]
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.misc.MessageBeanInfo"
   },
   {
     "name": "com.dxfeed.event.misc.MiscFactoryImpl",
@@ -4102,6 +4303,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.misc.TextConfigurationBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.misc.TextMessage",
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true,
@@ -4175,6 +4379,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.misc.TextMessageBeanInfo"
   },
   {
     "name": "com.dxfeed.event.option.Greeks",
@@ -4304,6 +4511,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.option.GreeksBeanInfo"
   },
   {
     "name": "com.dxfeed.event.option.OptionFactoryImpl",
@@ -4472,6 +4682,9 @@
     ]
   },
   {
+    "name": "com.dxfeed.event.option.SeriesBeanInfo"
+  },
+  {
     "name": "com.dxfeed.event.option.TheoPrice",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
@@ -4591,6 +4804,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.option.TheoPriceBeanInfo"
   },
   {
     "name": "com.dxfeed.event.option.Underlying",
@@ -4720,6 +4936,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name": "com.dxfeed.event.option.UnderlyingBeanInfo"
   },
   {
     "name": "com.dxfeed.event.TimeSeriesEvent",
@@ -4917,6 +5136,15 @@
     ]
   },
   {
+    "name": "com.sun.crypto.provider.HmacCore$HmacSHA256",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.sun.crypto.provider.HmacCore$HmacSHA384",
     "methods": [
       {
@@ -4949,7 +5177,13 @@
   },
   {
     "name": "com.sun.management.GcInfo",
-    "queryAllPublicMethods": true
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "getMemoryUsageBeforeGc",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "com.sun.management.HotSpotDiagnosticMXBean",
@@ -5045,10 +5279,1051 @@
     "queryAllDeclaredMethods": true
   },
   {
+    "name": "io.netty.buffer.AbstractByteBufAllocator",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.buffer.AbstractReferenceCountedByteBuf",
+    "fields": [
+      {
+        "name": "refCnt"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.AbstractChannelHandlerContext",
+    "fields": [
+      {
+        "name": "handlerState"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelDuplexHandler",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelHandlerAdapter",
+    "methods": [
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelInboundHandlerAdapter",
+    "methods": [
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRegistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelUnregistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelWritabilityChanged",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelInitializer",
+    "methods": [
+      {
+        "name": "channelRegistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelOutboundBuffer",
+    "fields": [
+      {
+        "name": "totalPendingSize"
+      },
+      {
+        "name": "unwritable"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.ChannelOutboundHandlerAdapter",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.CombinedChannelDuplexHandler",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRegistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelUnregistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelWritabilityChanged",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.DefaultChannelConfig",
+    "fields": [
+      {
+        "name": "autoRead"
+      },
+      {
+        "name": "writeBufferWaterMark"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.DefaultChannelPipeline",
+    "fields": [
+      {
+        "name": "estimatorHandle"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.DefaultChannelPipeline$HeadContext",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRegistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelUnregistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelWritabilityChanged",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.DefaultChannelPipeline$TailContext",
+    "methods": [
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRegistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelUnregistered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelWritabilityChanged",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.embedded.EmbeddedChannel$2"
+  },
+  {
+    "name": "io.netty.channel.SimpleChannelInboundHandler",
+    "methods": [
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.channel.socket.oio.OioSocketChannel",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.ByteToMessageDecoder",
+    "methods": [
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.compression.JdkZlibDecoder"
+  },
+  {
+    "name": "io.netty.handler.codec.compression.JdkZlibEncoder",
+    "methods": [
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.HttpClientCodec"
+  },
+  {
+    "name": "io.netty.handler.codec.http.HttpObjectAggregator"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.extensions.compression.DeflateDecoder",
+    "methods": [
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateDecoder"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateEncoder"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtensionHandler",
+    "methods": [
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.Utf8FrameValidator",
+    "methods": [
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.WebSocket13FrameDecoder"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.WebSocket13FrameEncoder"
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker",
+    "fields": [
+      {
+        "name": "forceCloseInit"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandshakeHandler",
+    "methods": [
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.MessageAggregator",
+    "methods": [
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.MessageToByteEncoder",
+    "methods": [
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.MessageToMessageDecoder",
+    "methods": [
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.codec.MessageToMessageEncoder",
+    "methods": [
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.handler.ssl.SslHandler",
+    "methods": [
+      {
+        "name": "bind",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "channelActive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelReadComplete",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "deregister",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "flush",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "read",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "write",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object",
+          "io.netty.channel.ChannelPromise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "io.netty.internal.tcnative.SSLContext"
+  },
+  {
     "name": "io.netty.util.concurrent.DefaultPromise",
     "fields": [
       {
         "name": "result"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.concurrent.SingleThreadEventExecutor",
+    "fields": [
+      {
+        "name": "state"
+      },
+      {
+        "name": "threadProperties"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.DefaultAttributeMap",
+    "fields": [
+      {
+        "name": "attributes"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.DefaultAttributeMap$DefaultAttribute",
+    "fields": [
+      {
+        "name": "attributeMap"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
+    "fields": [
+      {
+        "name": "producerLimit"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+    "fields": [
+      {
+        "name": "consumerIndex"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+    "fields": [
+      {
+        "name": "producerIndex"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+    "fields": [
+      {
+        "name": "consumerIndex"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+    "fields": [
+      {
+        "name": "producerIndex"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+    "fields": [
+      {
+        "name": "producerLimit"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.Recycler$DefaultHandle",
+    "fields": [
+      {
+        "name": "state"
+      }
+    ]
+  },
+  {
+    "name": "io.netty.util.ReferenceCountUtil",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.util.ResourceLeakDetector$DefaultResourceLeak",
+    "fields": [
+      {
+        "name": "droppedRecords"
+      },
+      {
+        "name": "head"
       }
     ]
   },
@@ -5286,6 +6561,12 @@
     "queryAllPublicMethods": true,
     "methods": [
       {
+        "name": "from",
+        "parameterTypes": [
+          "javax.management.openmbean.CompositeData"
+        ]
+      },
+      {
         "name": "getCommitted",
         "parameterTypes": []
       },
@@ -5513,7 +6794,8 @@
   },
   {
     "name": "java.lang.Object",
-    "queryAllPublicMethods": true
+    "queryAllPublicMethods": true,
+    "queryAllDeclaredMethods": true
   },
   {
     "name": "java.lang.ObjectBeanInfo"
@@ -6223,6 +7505,96 @@
   {
     "name": "jdk.management.jfr.SettingDescriptorInfo",
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "sun.beans.infos.AnalyticOrderBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.CandleBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.ConfigurationBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.DailyCandleBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.GreeksBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.MarketEventBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.MarketMakerBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.MessageBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.NuamOrderBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.NuamTimeAndSaleBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.NuamTradeBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.ObjectBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.OptionSaleBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.OrderBaseBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.OrderBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.OrderImbalanceBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.OtcMarketsOrderBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.ProfileBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.QuoteBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.SeriesBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.SpreadOrderBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.SummaryBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TextConfigurationBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TextMessageBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TheoPriceBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TimeAndSaleBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TradeBaseBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TradeBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.TradeETHBeanInfo"
+  },
+  {
+    "name": "sun.beans.infos.UnderlyingBeanInfo"
   },
   {
     "name": "sun.management.ClassLoadingImpl",

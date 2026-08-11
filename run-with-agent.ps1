@@ -3,6 +3,9 @@ param(
     [string[]]$JavaArgs
 )
 
+Write-Host "[INFO] Cleaning..." -ForegroundColor Cyan
+mvn clean -q
+
 Write-Host "[INFO] Compiling tests..." -ForegroundColor Cyan
 mvn test-compile -q
 
