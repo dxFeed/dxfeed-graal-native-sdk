@@ -23,7 +23,7 @@
     <debug.suffix />
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
-    <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
+<!--    <debug.buildArg3>-DDXFG1=0</debug.buildArg3>-->
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -170,7 +170,7 @@
         <debug.suffix>-debug</debug.suffix>
         <debug.buildArg1>-g</debug.buildArg1>
         <debug.buildArg2>-O0</debug.buildArg2>
-        <debug.buildArg3>-H:+SourceLevelDebug</debug.buildArg3>
+        <!-- <debug.buildArg3>-H:+SourceLevelDebug</debug.buildArg3> -->
       </properties>
     </profile>
     <profile>
@@ -308,7 +308,7 @@
                 <buildArg>-H:NativeLinkerOption=version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
                 <buildArg>${debug.buildArg2}</buildArg>
-                <buildArg>${debug.buildArg3}</buildArg>
+<!--                <buildArg>${debug.buildArg3}</buildArg>-->
               </buildArgs>
               <debug>${isDebug}</debug>
             </configuration>
@@ -546,7 +546,7 @@
             <buildArg>-march=compatibility</buildArg>
             <buildArg>${debug.buildArg1}</buildArg>
             <buildArg>${debug.buildArg2}</buildArg>
-            <buildArg>${debug.buildArg3}</buildArg>
+<!--            <buildArg>${debug.buildArg3}</buildArg>-->
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>

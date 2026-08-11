@@ -42,6 +42,7 @@ project {
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         password("env.NUGETORG_API_KEY", "credentialsJSON:4ba447c3-64f4-4a4c-8ff8-505258ddd420", display = ParameterDisplay.HIDDEN)
+        password("env.GH_TOKEN", "credentialsJSON:657ea93a-c18d-414f-be39-e12fb36fb13f", display = ParameterDisplay.HIDDEN)
     }
 
     features {
@@ -73,7 +74,7 @@ project {
     buildType(BuildAndDeployForMacOsAndIOS)
     buildType(BuildAndDeployForAll)
     buildType(DeployNuget)
-    buildType(SyncGitHubWithMain)
+    buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(BuildForLinux)
     buildType(BuildForWindows)
     buildType(BuildForMacOSAndIOS)
@@ -597,8 +598,13 @@ object DeployNuget : BuildType({
     }
 })
 
-object SyncGitHubWithMain : BuildType({
-    name = "Sync GitHub With 'main'"
+object SyncGitHubWithMainAndPublishRelease : BuildType({
+    name = "Publish GitHub Release"
+
+    artifactRules = """
+        release-artifacts/*.zip
+        release-notes.md
+    """.trimIndent()
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
@@ -606,9 +612,8 @@ object SyncGitHubWithMain : BuildType({
 
     steps {
         script {
-            name = "Sync release to GitHub"
-            scriptContent =
-                """
+            name = "Push main and release tag to GitHub"
+            scriptContent = """
                 set -eu
 
                 REMOTE="git@github.com:dxFeed/dxfeed-graal-native-sdk.git"
@@ -620,7 +625,211 @@ object SyncGitHubWithMain : BuildType({
                 echo "Pushing release tag: ${'$'}TAG"
                 git push "${'$'}REMOTE" \
                     "refs/tags/${'$'}TAG:refs/tags/${'$'}TAG"
-                """.trimIndent()
+            """.trimIndent()
+        }
+
+        script {
+            name = "Prepare GitHub release"
+            scriptContent = """
+                set -eu
+
+                TAG=${'$'}(git describe --tags --abbrev=0)
+                VERSION=${'$'}{TAG#v}
+
+                NEXUS="https://maven.in.devexperts.com"
+                BASE_URL="${'$'}NEXUS/repository/qd/com/dxfeed/graal-native-sdk/${'$'}VERSION"
+                INDEX_URL="${'$'}NEXUS/service/rest/repository/browse/qd/com/dxfeed/graal-native-sdk/${'$'}VERSION/"
+
+                echo "Preparing release ${'$'}TAG"
+                echo "Version: ${'$'}VERSION"
+
+                rm -rf release-artifacts
+                mkdir -p release-artifacts
+
+                #
+                # Obtain all ZIP artifact names from Nexus.
+                #
+                curl \
+                    --fail \
+                    --location \
+                    --silent \
+                    --show-error \
+                    "${'$'}INDEX_URL" \
+                    --output nexus-index.html
+
+                grep -oE \
+                    "graal-native-sdk-${'$'}VERSION-[^\"<>[:space:]]+\.zip" \
+                    nexus-index.html \
+                    | sort -u \
+                    > release-artifacts.txt
+
+                if [ ! -s release-artifacts.txt ]; then
+                    echo "No ZIP artifacts found for version ${'$'}VERSION"
+                    exit 1
+                fi
+
+                echo "Artifacts:"
+                cat release-artifacts.txt
+
+                #
+                # Download exactly the artifacts belonging to this version.
+                #
+                while IFS= read -r artifact; do
+                    echo "Downloading ${'$'}artifact"
+
+                    curl \
+                        --fail \
+                        --location \
+                        --silent \
+                        --show-error \
+                        "${'$'}BASE_URL/${'$'}artifact" \
+                        --output "release-artifacts/${'$'}artifact"
+                done < release-artifacts.txt
+
+                #
+                # Extract the section:
+                #
+                #   ## v3.2.11
+                #   ...
+                #
+                # up to the next ## heading.
+                #
+                git show "${'$'}{TAG}:ReleaseNotes.md" | \
+                    awk -v tag="${'$'}TAG" '
+                        ${'$'}0 == "## " tag {
+                            found = 1
+                            next
+                        }
+
+                        found && /^## / {
+                            exit
+                        }
+
+                        found {
+                            print
+                        }
+
+                        END {
+                            if (!found)
+                                exit 2
+                        }
+                    ' > release-notes.md
+
+                if [ ! -s release-notes.md ]; then
+                    echo "Release notes for ${'$'}TAG are missing or empty"
+                    exit 1
+                fi
+
+                echo
+                echo "Release notes:"
+                cat release-notes.md
+
+                echo
+                echo "Downloaded artifacts:"
+                ls -lh release-artifacts
+            """.trimIndent()
+        }
+
+        script {
+            name = "Publish GitHub release"
+            scriptContent = """
+                set -eu
+
+                TAG=${'$'}(git describe --tags --abbrev=0)
+
+                export GH_REPO="dxFeed/dxfeed-graal-native-sdk"
+
+                if ! command -v gh >/dev/null 2>&1; then
+                    echo "GitHub CLI (gh) is not installed on this agent, installing..."
+
+                    ARCH=$(uname -m)
+                    case "${'$'}ARCH" in
+                        x86_64)         GH_ARCH="amd64" ;;
+                        aarch64|arm64)  GH_ARCH="arm64" ;;
+                        *)
+                            echo "Unsupported architecture: ${'$'}ARCH"
+                            exit 1
+                            ;;
+                    esac
+
+                    TMP_DIR=$(mktemp -d)
+                    trap 'rm -rf "${'$'}TMP_DIR"' EXIT
+
+                    curl \
+                        --fail \
+                        --location \
+                        --silent \
+                        --show-error \
+                        --header "Accept: application/vnd.github+json" \
+                        --header "Authorization: Bearer %env.GH_TOKEN%" \
+                        --header "X-GitHub-Api-Version: 2026-03-10" \
+                        "https://api.github.com/repos/cli/cli/releases/latest" \
+                        --output "${'$'}TMP_DIR/release.json"
+
+                    GH_VERSION=$(
+                        sed -nE 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v([^"]+)".*/\1/p' \
+                            "${'$'}TMP_DIR/release.json" \
+                            | head -n1
+                    )
+
+                    if [ -z "${'$'}GH_VERSION" ]; then
+                        echo "Failed to determine latest GitHub CLI version"
+                        cat "${'$'}TMP_DIR/release.json"
+                        exit 1
+                    fi
+
+                    echo "Installing GitHub CLI ${'$'}GH_VERSION for ${'$'}GH_ARCH..."
+
+                    curl \
+                        --fail \
+                        --location \
+                        --silent \
+                        --show-error \
+                        "https://github.com/cli/cli/releases/download/v${'$'}{GH_VERSION}/gh_${'$'}{GH_VERSION}_linux_${'$'}{GH_ARCH}.tar.gz" \
+                        --output "${'$'}TMP_DIR/gh.tar.gz"
+
+                    tar -xzf "${'$'}TMP_DIR/gh.tar.gz" -C "${'$'}TMP_DIR"
+
+                    INSTALL_DIR="${'$'}HOME/.local/bin"
+                    mkdir -p "${'$'}INSTALL_DIR"
+
+                    cp \
+                        "${'$'}TMP_DIR/gh_${'$'}{GH_VERSION}_linux_${'$'}{GH_ARCH}/bin/gh" \
+                        "${'$'}INSTALL_DIR/gh"
+
+                    chmod +x "${'$'}INSTALL_DIR/gh"
+
+                    export PATH="${'$'}INSTALL_DIR:${'$'}PATH"
+
+                    # Preserve PATH for subsequent TeamCity build steps.
+                    echo "##teamcity[setParameter name='env.PATH' value='${'$'}INSTALL_DIR:${'$'}PATH']"
+
+                    gh --version
+                else
+                    echo "GitHub CLI is already installed:"
+                    gh --version
+                fi
+
+                if gh release view "${'$'}TAG" >/dev/null 2>&1; then
+                    echo "Release ${'$'}TAG already exists; updating it"
+
+                    gh release edit "${'$'}TAG" \
+                        --title "${'$'}TAG" \
+                        --notes-file release-notes.md
+
+                    gh release upload "${'$'}TAG" \
+                        release-artifacts/*.zip \
+                        --clobber
+                else
+                    echo "Creating release ${'$'}TAG"
+
+                    gh release create "${'$'}TAG" \
+                        release-artifacts/*.zip \
+                        --verify-tag \
+                        --title "${'$'}TAG" \
+                        --notes-file release-notes.md
+                fi
+            """.trimIndent()
         }
     }
 
