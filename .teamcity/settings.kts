@@ -116,6 +116,15 @@ object BuildPatchAndDeployForLinux : BuildType({
         }
 
         script {
+            name = "release:prepend tag header to release notes"
+            id = "release_prepend_changelog_header"
+            scriptContent = Util.releaseNotesHeaderScript(
+                    "git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags | head -n1"
+            )
+            formatStderrAsError = true
+        }
+
+        script {
             name = "release:perform in docker"
             id = "release_perform_in_docker"
             scriptContent = """
@@ -187,6 +196,13 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
             dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
             dockerRunParameters = "--rm -m %env.DOCKER_MEMORY_SIZE%"
+        }
+
+        script {
+            name = "release:prepend tag header to release notes"
+            id = "release_prepend_changelog_header"
+            scriptContent = Util.releaseNotesHeaderScript("echo v%env.RELEASE_VERSION%")
+            formatStderrAsError = true
         }
 
         script {
@@ -907,6 +923,28 @@ object DetectVisualStudioVersion : BuildType({
 })
 
 object Util {
+    fun releaseNotesHeaderScript(tagCommand: String): String {
+        return """
+                git config --global user.name %dxcity.login%
+                git config --global user.email %dxcity.login%@bots.devexperts.com
+
+                TAG=${'$'}(${tagCommand})
+                echo "Detected tag: ${'$'}TAG"
+
+                if grep -qxF "## ${'$'}TAG" ReleaseNotes.md; then
+                    echo "Header '## ${'$'}TAG' already present in ReleaseNotes.md, skipping."
+                    exit 0
+                fi
+
+                { printf '## %s\n\n' "${'$'}TAG"; cat ReleaseNotes.md; } > ReleaseNotes.md.tmp
+                mv ReleaseNotes.md.tmp ReleaseNotes.md
+
+                git add ReleaseNotes.md
+                git commit -m "Add release notes header for ${'$'}TAG"
+                git push https://%dxcity.login%:%dxcity.token.bitbucket%@stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git HEAD:refs/heads/main
+            """.trimIndent()
+    }
+
     fun prepareWin(): String {
         return """
             set TMP=C:\Users\ContainerAdministrator\AppData\Local\Temp
