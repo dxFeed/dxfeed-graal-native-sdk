@@ -931,7 +931,7 @@ object DetectVisualStudioVersion : BuildType({
 object Util {
     fun releaseNotesHeaderScript(tagCommand: String): String {
         return """
-            set -euo pipefail
+            set -eu
 
             TAG=${'$'}(${tagCommand})
             echo "Release tag: ${'$'}TAG"
