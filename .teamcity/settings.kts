@@ -77,6 +77,7 @@ project {
     buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(BuildForLinux)
     buildType(BuildForWindows)
+    buildType(BuildForWindowsInDocker)
     buildType(BuildForMacOSAndIOS)
     buildType(BuildForLinuxAarch64)
     buildType(BuildAndPushDockerImageForLinuxX64)
@@ -892,22 +893,27 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
+    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+
     steps {
         script {
             name = "Build"
             scriptContent = """
                 cd .teamcity
                 docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker images --all
-                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
-                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
-                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%
-                docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker logout
+                docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
+                docker push $image
+                docker rmi -f $image
             """.trimIndent()
             formatStderrAsError = true
+        }
+    }
+
+    features {
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
         }
     }
 
@@ -923,22 +929,27 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
+    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+
     steps {
         script {
             name = "Build"
             scriptContent = """
                 cd .teamcity
                 docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker images --all
-                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
-                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-aarch64.Dockerfile .
-                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%
-                docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker logout
+                docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-aarch64.Dockerfile .
+                docker push $image
+                docker rmi -f $image
             """.trimIndent()
             formatStderrAsError = true
+        }
+    }
+
+    features {
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
         }
     }
 
@@ -989,22 +1000,31 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
     }
 
+    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
+
     steps {
-        script {
+        powerShell {
             name = "Build"
-            scriptContent = """
-                cd .teamcity
-                docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker images --all
-                docker login nexus-docker-graalvm.in.devexperts.com --username %dxcity.login% --password %dxcity.password%
-                docker build -t nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION% --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
-                docker push nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%
-                docker images --all
-                docker rmi -f ${'$'}(docker images -aq)
-                docker logout
-            """.trimIndent()
-            formatStderrAsError = true
+            scriptMode = script {
+                content = """
+                    ${'$'}ErrorActionPreference = 'Stop'
+                    cd .teamcity
+                    docker images --all
+                    docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
+                    if (${'$'}LASTEXITCODE -ne 0) { throw "docker build failed" }
+                    docker push $image
+                    if (${'$'}LASTEXITCODE -ne 0) { throw "docker push failed" }
+                    docker rmi -f $image
+                """.trimIndent()
+            }
+        }
+    }
+
+    features {
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
         }
     }
 
@@ -1032,6 +1052,40 @@ object BuildForWindows : BuildType({
                 """.trimIndent()
             }
             formatStderrAsError = true
+        }
+    }
+
+    requirements {
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
+    }
+})
+
+object BuildForWindowsInDocker : BuildType({
+    name = "Build [Windows, x64]"
+    artifactRules = "*.zip"
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+            mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+        """.trimIndent()
+            formatStderrAsError = true
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
+            dockerRunParameters = "--rm -m 8g"
+        }
+    }
+
+    features {
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
         }
     }
 

@@ -6,6 +6,12 @@
 # It's tailored for building and deploying Java projects.
 # This container must be run from Windows.
 #
+# The container's ENTRYPOINT (docker-entrypoint.cmd) automatically initializes the
+# Visual Studio Build Tools environment (VsDevCmd.bat, cl.exe, INCLUDE/LIB/LIBPATH, etc.)
+# before running any command you pass to `docker run`. This means mvn, java, and any
+# native-image build steps work out of the box, without needing to wrap them in a
+# separate PowerShell setup script.
+#
 # BUILD
 #
 # How to build an image:
@@ -22,23 +28,32 @@
 #
 # NOTES
 #
-# If you're using Windows PowerShell is very weird about handling arguments that contain a dot,
-# so it's probably better to use cmd.
+# Since the VS environment is now set up automatically by the entrypoint, you can run
+# mvn (or any other command) directly without going through run-mvn-vs.ps1 — this also
+# sidesteps PowerShell's quirky handling of arguments containing dots, since plain cmd
+# is used to run the command.
 #
 # EXAMPLES
 #
 # How to build a mvn project (run from project root):
 # cmd:
-# docker run -m 8GB -v %cd%:C:\mnt\ --rm <name:tag> powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 clean package
+# docker run -m 8GB -v %cd%:C:\mnt\ --rm <name:tag> mvn clean package
 # powershell:
-# docker run -m 8GB -v ${PWD}:C:\mnt\ --rm <name:tag> powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 clean package
+# docker run -m 8GB -v ${PWD}:C:\mnt\ --rm <name:tag> mvn clean package
 #
 # How to deploy a mvn project to the JFrog artifactory (run from project root):
 # docker run -m 8GB -v %cd%:C:\mnt\ --rm <name:tag> mvn --settings ".teamcity/settings.xml" -Djfrog.user=<user> -Djfrog.password=<pass> deploy
-# docker run -m 8GB -v %cd%:C:\mnt\ --rm <name:tag> powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 --settings ".teamcity/settings.xml" -Djfrog.user=<user> -Djfrog.password=<pass> deploy
 #
-# How to run an interactive:
-# docker run -m 8GB --rm -it <name:tag> powershell -NoProfile -ExecutionPolicy Bypass -Command "& { . C:\run-mvn-vs.ps1 -SetupOnly; powershell }"
+# How to run an interactive shell (VS environment already set up on entry):
+# docker run -m 8GB --rm -it <name:tag> powershell
+#
+# LEGACY / MANUAL SETUP
+#
+# run-mvn-vs.ps1 and build.ps1 are kept for standalone use outside this container image
+# (e.g. directly on a build agent, where VsDevCmd.bat hasn't been initialized yet).
+# Calling them inside this container is harmless but redundant, since the entrypoint
+# already initializes the VS environment:
+# docker run -m 8GB -v %cd%:C:\mnt\ --rm <name:tag> powershell -NoProfile -ExecutionPolicy Bypass -File C:\run-mvn-vs.ps1 clean package
 
 # We need to specify the container arch, otherwise we may have problems with multi-arch images on Windows.
 FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
@@ -87,8 +102,9 @@ ENV PATH="${MVN_INSTALL_PATH}/bin;${GRAALVM_INSTALL_PATH}/bin;C:/Windows/System3
 # PowerShell wrapper
 COPY run-mvn-vs.ps1 C:/run-mvn-vs.ps1
 COPY build.ps1 C:/build.ps1
+COPY "docker-entrypoint.cmd" "C:/docker-entrypoint.cmd"
 
-ENTRYPOINT ["cmd.exe", "/S", "/C"]
+ENTRYPOINT ["C:/docker-entrypoint.cmd"]
 
 # Set the default working directory for the container
 WORKDIR "C:/mnt/"
