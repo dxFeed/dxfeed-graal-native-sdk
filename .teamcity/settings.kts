@@ -1061,7 +1061,7 @@ object BuildForWindows : BuildType({
 })
 
 object BuildForWindowsInDocker : BuildType({
-    name = "Build [Windows, x64]"
+    name = "Build [Windows, x64] in Docker"
     artifactRules = "*.zip"
 
     vcs {
