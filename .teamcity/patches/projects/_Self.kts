@@ -24,7 +24,7 @@ changeProject(DslContext.projectId) {
         }
         feature1.apply {
             userName = "dcsi-wrp"
-            password = "credentialsJSON:470f094f-33b8-48f4-b84d-25a373136566"
+            password = "credentialsJSON:e08f9c0d-a826-4382-8fcc-286d1cfcd015"
         }
     }
 }
