@@ -58,8 +58,8 @@ project {
             id = "NEXUS"
             name = "Nexus"
             url = "https://nexus-docker-graalvm.in.devexperts.com"
-            userName = "%dxcity.login%"
-            password = "%dxcity.password%"
+            userName = "%dxcity.namecode.nexus%"
+            password = "%dxcity.passcode.nexus%"
         }
     }
 
@@ -118,9 +118,9 @@ object BuildPatchAndDeployForLinux : BuildType({
             name = "release:prepare in docker"
             id = "release_prepare_in_docker"
             scriptContent = """
-                    git config --global user.name %dxcity.login%
-                    git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% release:clean release:prepare -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket%
+                    git config --global user.name dxcity
+                    git config --global user.email dxcity@bots.devexperts.com
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% release:clean release:prepare -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket%
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -132,9 +132,9 @@ object BuildPatchAndDeployForLinux : BuildType({
             name = "release:perform in docker"
             id = "release_perform_in_docker"
             scriptContent = """
-                    git config --global user.name %dxcity.login%
-                    git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
+                    git config --global user.name dxcity
+                    git config --global user.email dxcity@bots.devexperts.com
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% release:perform
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -152,7 +152,7 @@ object BuildPatchAndDeployForLinux : BuildType({
             name = "release:deploy debug"
             id = "release_deploy_debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -198,9 +198,9 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             name = "release:prepare in docker"
             id = "release_prepare_in_docker"
             scriptContent = """
-                    git config --global user.name %dxcity.login%
-                    git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% release:clean release:prepare --batch-mode -DreleaseVersion=%env.RELEASE_VERSION%  -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket%
+                    git config --global user.name dxcity
+                    git config --global user.email dxcity@bots.devexperts.com
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% release:clean release:prepare --batch-mode -DreleaseVersion=%env.RELEASE_VERSION%  -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket%
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -212,9 +212,9 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             name = "release:perform in docker"
             id = "release_perform_in_docker"
             scriptContent = """
-                    git config --global user.name %dxcity.login%
-                    git config --global user.email %dxcity.login%@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% release:perform
+                    git config --global user.name dxcity
+                    git config --global user.email dxcity@bots.devexperts.com
+                    mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% release:perform
                 """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -232,7 +232,7 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
             name = "release:deploy debug"
             id = "release_deploy_debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -271,7 +271,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
         script {
             name = "Deploy"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
@@ -311,7 +311,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
         script {
             name = "Deploy Debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
@@ -372,7 +372,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
             scriptMode = script {
                 content = Util.prepareWinLocal() + """
 
-                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean deploy
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean deploy
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                 """.trimIndent()
             }
@@ -407,7 +407,7 @@ object BuildAndDeployForWindowsDebug : BuildType({
             scriptMode = script {
                 content = Util.prepareWinLocal() + """
 
-                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean deploy -P buildDebug
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean deploy -P buildDebug
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                 """.trimIndent()
             }
@@ -453,11 +453,11 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
             name = "Deploy"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIos=true clean deploy
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean deploy
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean deploy
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIosSimulator=true deploy
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean deploy
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true deploy
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean deploy
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -864,7 +864,7 @@ object BuildForLinux : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
@@ -970,7 +970,7 @@ object BuildForLinuxAarch64 : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+                mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
@@ -1047,7 +1047,7 @@ object BuildForWindows : BuildType({
             scriptMode = script {
                 content = Util.prepareWinLocal() + """
 
-                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.login%" "-Dnexus.password=%dxcity.password%" "-Dusername=%dxcity.login%" "-Dpassword=%dxcity.token.bitbucket%" clean package
+                    mvn --settings ".teamcity/settings.xml" "-Djfrog.user=%env.JFROG_USER%" "-Djfrog.password=%env.JFROG_PASSWORD%" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean package
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                 """.trimIndent()
             }
@@ -1072,7 +1072,7 @@ object BuildForWindowsInDocker : BuildType({
         script {
             name = "Build"
             scriptContent = """
-            mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -Dusername=%dxcity.login% -Dpassword=%dxcity.token.bitbucket% clean package
+            mvn --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
         """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
@@ -1107,11 +1107,11 @@ object BuildForMacOSAndIOS : BuildType({
             name = "Build"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean package
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIos=true clean package
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean package
                 export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% -DmacIosSimulator=true package
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.login% -Dnexus.password=%dxcity.password% clean package
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true package
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -1185,8 +1185,8 @@ object Util {
             { printf '## %s\n\n' "${'$'}TAG"; cat ReleaseNotes.md; } > ReleaseNotes.md.tmp
             mv ReleaseNotes.md.tmp ReleaseNotes.md
 
-            git config user.name "%dxcity.login%"
-            git config user.email "%dxcity.login%@bots.devexperts.com"
+            git config user.name "dxcity"
+            git config user.email "dxcity@bots.devexperts.com"
 
             git add ReleaseNotes.md
             git commit -m "Add release notes header for ${'$'}TAG"
@@ -1343,17 +1343,17 @@ object CopyServiceImages : BuildType({
 
                 #skopeo copy \
                 #  --src-creds amordovskii:%env.jfrogPass% \
-                #  --dest-creds %dxcity.login%:%dxcity.password% \
+                #  --dest-creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
                 #  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
 
                 echo "List images nuget:"
                 skopeo list-tags \
-                  --creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
                 docker://%env.target.repo%/nuget
 
                 echo "List images graal:"
                 skopeo list-tags \
-                  --creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
                 docker://%env.target.repo%/graalvm
             """.trimIndent()
             dockerImage = "ubuntu:latest"
@@ -1396,12 +1396,12 @@ object ListServiceImages : BuildType({
 
                 echo "List images nuget:"
                 skopeo list-tags \
-                  --creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
                 docker://%env.target.repo%/nuget
 
                 echo "List images graal:"
                 skopeo list-tags \
-                  --creds %dxcity.login%:%dxcity.password% \
+                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
                 docker://%env.target.repo%/graalvm
             """.trimIndent()
             dockerImage = "ubuntu:latest"
