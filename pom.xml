@@ -5,7 +5,7 @@
 
   <groupId>com.dxfeed</groupId>
   <artifactId>graal-native-sdk</artifactId>
-  <version>3.2.100-SNAPSHOT</version>
+  <version>3.2.999</version>
 
   <properties>
     <maven.plugin.validation>VERBOSE</maven.plugin.validation>
@@ -180,7 +180,7 @@
     <url>https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</url>
     <connection>scm:git:https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</connection>
 <!--    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git</connection>-->
-    <tag>HEAD</tag>
+    <tag>v3.2.999</tag>
   </scm>
 
   <distributionManagement>
