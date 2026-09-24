@@ -92,10 +92,6 @@
   </organization>
 
   <repositories>
-<!--    <repository>-->
-<!--      <id>jfrog</id>-->
-<!--      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>-->
-<!--    </repository>-->
     <repository>
       <id>dxfeed-api</id>
       <url>https://maven.in.devexperts.com/content/repositories/dxfeed-api</url>
