@@ -20,6 +20,8 @@
 # For example:
 # docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f graalvm-win-x64-v2.Dockerfile .
 # docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:win-x64-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:win-x64-oracle-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #
@@ -61,7 +63,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 ARG TARGETPLATFORM="win-x64"
 
 # Define arguments for versions
-ARG GRAALVM_VERSION="jdk-25.0.1"
+ARG GRAALVM_VERSION="graal-25.4.4.1.1"
 ARG MVN_VERSION="3.8.9"
 ARG VS_BUILD_TOOLS_VERSION="17"
 

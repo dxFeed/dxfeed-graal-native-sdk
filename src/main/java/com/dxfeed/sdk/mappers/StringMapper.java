@@ -3,11 +3,11 @@
 
 package com.dxfeed.sdk.mappers;
 
-import com.oracle.svm.core.SubstrateUtil;
 import java.nio.charset.StandardCharsets;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
+import org.graalvm.word.UnsignedWord;
 import org.graalvm.word.WordFactory;
 
 public class StringMapper extends Mapper<String, CCharPointer> {
@@ -43,9 +43,18 @@ public class StringMapper extends Mapper<String, CCharPointer> {
     protected String doToJava(final CCharPointer nativeObject) {
         return CTypeConversion.toJavaString(
                 nativeObject,
-                SubstrateUtil.strlen(nativeObject),
+                strlen(nativeObject),
                 StandardCharsets.UTF_8
         );
+    }
+
+    // Public API replacement of SubstrateUtil.strlen, which is internal and was moved in GraalVM 25.4.
+    private static UnsignedWord strlen(final CCharPointer str) {
+        int length = 0;
+        while (str.read(length) != 0) {
+            ++length;
+        }
+        return WordFactory.unsigned(length);
     }
 
     @Override

@@ -5,7 +5,8 @@ maven() {
     set -o pipefail
 
     local -r version="$1"
-    local -r install_path="$2"
+    # Strip the trailing slash, otherwise the temporary path below ends up inside the install path.
+    local -r install_path="${2%/}"
     # archive.apache.org keeps every released version forever, unlike dlcdn.apache.org,
     # which only hosts the single latest patch release of each minor line and 404s
     # as soon as a newer patch is published.
@@ -33,8 +34,9 @@ graalvm() {
 
     local -r version="$1"
     local -r platform="$2"
-    local -r install_path="$3"
-    local -r base_url="https://github.com/graalvm/graalvm-ce-builds/releases/download/"
+    # Strip the trailing slash, otherwise the temporary path below ends up inside the install path.
+    local -r install_path="${3%/}"
+    local base_url="https://github.com/graalvm/graalvm-ce-builds/releases/download/"
 
     if [[ -z "${version}" || -z "${platform}" || -z "${install_path}" ]]; then
         echo "Usage: install graalvm <version> <platform> <install_path>"
@@ -67,9 +69,27 @@ graalvm() {
             "aarch64") arch_tag="-aarch64" ;;
         esac
         suffix="-${release_tag}.${file_extension}"
-    elif [[ "${version}" =~ ^jdk- ]]; then
-        version_tag="${version}"
-        distribution_tag="graalvm-community-${version}"
+    # Since GraalVM 25, in addition to the JDK-aligned releases (jdk-25.0.2), there are
+    # Innovation releases identified by the graal version, for example, graal-25.4.4.1.1,
+    # which is GraalVM 25 Innovation 4 based on JDK 25.0.4.1.1 (artifacts are named jdk-25i4-25.0.4.1.1).
+    # The "oracle-" prefix selects Oracle GraalVM (GFTC license) instead of GraalVM Community,
+    # for example, oracle-jdk-25.0.4 or oracle-graal-25.4.4.1.1.
+    elif [[ "${version}" =~ ^(oracle-)?(jdk|graal)-(.+)$ ]]; then
+        local -r vendor="${BASH_REMATCH[1]:+oracle}"
+        local -r kind="${BASH_REMATCH[2]}"
+        local -r number="${BASH_REMATCH[3]}"
+        local jdk_tag major
+        if [[ "${kind}" == "graal" ]]; then
+            if [[ ! "${number}" =~ ^([0-9]+)\.([0-9]+)\.(.+)$ ]]; then
+                echo "Invalid GraalVM version format: '${version}'. Expected graal-<major>.<innovation>.<jdk_update>"
+                return 1
+            fi
+            major="${BASH_REMATCH[1]}"
+            jdk_tag="${major}i${BASH_REMATCH[2]}-${major}.0.${BASH_REMATCH[3]}"
+        else
+            major="${number%%.*}"
+            jdk_tag="${number}"
+        fi
         case "$platform_os" in
             "linux") os_tag="_linux" ;;
             "osx") os_tag="_macos" ;;
@@ -82,10 +102,24 @@ graalvm() {
             "aarch64") arch_tag="-aarch64" ;;
         esac
         suffix="_bin.${file_extension}"
+        if [[ -z "${vendor}" ]]; then
+            version_tag="${kind}-${number}"
+            distribution_tag="graalvm-community-jdk-${jdk_tag}"
+        elif [[ "${kind}" == "graal" ]]; then
+            base_url="https://gds.oracle.com/download/graal"
+            version_tag="${jdk_tag%%-*}/archive"
+            distribution_tag="graalvm-jdk-${jdk_tag}"
+        else
+            base_url="https://download.oracle.com/graalvm"
+            version_tag="${major}/archive"
+            distribution_tag="graalvm-jdk-${jdk_tag}"
+        fi
     else
         echo "Invalid GraalVM version format: '${version}'. Allowed formats:"
         echo "    java<java_version>-<version> (legacy format)"
         echo "    jdk-<jdk_version>"
+        echo "    graal-<graal_version> (innovation releases)"
+        echo "    oracle-jdk-<jdk_version> or oracle-graal-<graal_version> (Oracle GraalVM)"
         return 1
     fi
 

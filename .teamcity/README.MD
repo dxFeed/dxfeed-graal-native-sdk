@@ -94,15 +94,37 @@ docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
 
 Example build Windows docker image:
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-jdk-23.0.2
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1
 ```
 
 Example build Linux docker image:
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-23.0.2 -f graalvm-linux-x64.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-jdk-23.0.2
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
+docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1
 ```
+
+## GraalVM versions
+
+The `GRAALVM_VERSION` value (the `env.GRAALVM_VERSION` TeamCity parameter, the Docker build argument,
+and the argument of `install.sh graalvm` / `Install-GraalVM`) supports the following formats:
+
+| Format                         | Example                   | Distribution                                               |
+|--------------------------------|---------------------------|------------------------------------------------------------|
+| `java<java_version>-<version>` | `java11-22.3.1`           | GraalVM CE, legacy numbering (before 2023)                 |
+| `jdk-<jdk_version>`            | `jdk-25.0.2`              | GraalVM Community, JDK-aligned releases                    |
+| `graal-<graal_version>`        | `graal-25.4.4.1.1`        | GraalVM Community, innovation releases (GraalVM 25.1+)     |
+| `oracle-jdk-<jdk_version>`     | `oracle-jdk-25.0.4`       | Oracle GraalVM (GFTC license), JDK-aligned releases        |
+| `oracle-graal-<graal_version>` | `oracle-graal-25.4.4.1.1` | Oracle GraalVM (GFTC license), innovation releases         |
+
+An innovation release `graal-25.4.4.1.1` is GraalVM 25 Innovation 4 based on JDK 25.0.4.1.1.
+
+GraalVM for macOS x64 is no longer published after `jdk-25.0.1`, so the macOS x64 and iOS simulator
+builds use a separate `env.GRAALVM_VERSION_MACOS_X64` TeamCity parameter.
+
+The project detects the GraalVM layout during the build: if the GraalVM contains `lib/svm/builder/svm-shared.jar`
+(as GraalVM 25.4 does), the `svm-shared` Maven profile and `src/main/java-svm-shared` sources are used,
+otherwise (e.g. `jdk-25.0.x` and older) the `svm-core` Maven profile and `src/main/java-svm-core` sources are used.
 
 # Creating and Publishing NuGet Package
 

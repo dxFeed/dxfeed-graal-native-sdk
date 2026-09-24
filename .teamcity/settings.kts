@@ -38,7 +38,8 @@ project {
     vcsRoot(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
 
     params {
-        param("env.GRAALVM_VERSION", "jdk-23.0.2")
+        param("env.GRAALVM_VERSION", "graal-25.4.4.1.1")
+        param("env.GRAALVM_VERSION_MACOS_X64", "jdk-25.0.1")
         text("env.JFROG_USER", "anatoly.kalin", display = ParameterDisplay.HIDDEN, allowEmpty = false)
         password("env.JFROG_PASSWORD", "credentialsJSON:435755aa-d8b4-4841-baf2-3cf7748cbc10", display = ParameterDisplay.HIDDEN)
         password("env.NUGETORG_API_KEY", "credentialsJSON:4ba447c3-64f4-4a4c-8ff8-505258ddd420", display = ParameterDisplay.HIDDEN)
@@ -452,10 +453,10 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
         script {
             name = "Deploy"
             scriptContent = Util.prepareMacOS() + """
-                export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean deploy
                 arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean deploy
-                export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
+                export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
                 arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true deploy
                 arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean deploy
             """.trimIndent()
@@ -1106,10 +1107,10 @@ object BuildForMacOSAndIOS : BuildType({
         script {
             name = "Build"
             scriptContent = Util.prepareMacOS() + """
-                export JAVA_HOME=${'$'}{graalvm_install_path}-osx-arm64/Contents/Home
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
                 arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean package
-                export JAVA_HOME=${'$'}{graalvm_install_path}-osx-x64/Contents/Home
+                export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
                 arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true package
                 arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Djfrog.user=%env.JFROG_USER% -Djfrog.password=%env.JFROG_PASSWORD% -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
             """.trimIndent()
@@ -1213,15 +1214,16 @@ object Util {
 
             mvn=${'$'}{mvn_install_path}/bin/mvn
 
-            graalvm_version=%env.GRAALVM_VERSION%
-            graalvm_install_path=~/.graal/${'$'}{graalvm_version}
-            declare -a platforms=("osx-x64" "osx-arm64")
-            for platform in "${'$'}{platforms[@]}"
+            # GraalVM for macOS x64 is no longer published after jdk-25.0.1,
+            # so the x64 (and iOS simulator) builds use their own version.
+            graalvm_arm64_path=~/.graal/%env.GRAALVM_VERSION%-osx-arm64
+            graalvm_x64_path=~/.graal/%env.GRAALVM_VERSION_MACOS_X64%-osx-x64
+            for entry in "%env.GRAALVM_VERSION% osx-arm64 ${'$'}{graalvm_arm64_path}" "%env.GRAALVM_VERSION_MACOS_X64% osx-x64 ${'$'}{graalvm_x64_path}"
             do
-                graalvm_full_install_path="${'$'}{graalvm_install_path}-${'$'}{platform}"
-                if [ ! -x "${'$'}{graalvm_full_install_path}/Contents/Home/bin/java" ]; then
-                    rm -rf "${'$'}{graalvm_full_install_path}"
-                    .teamcity/install.sh graalvm "${'$'}{graalvm_version}" "${'$'}{platform}" "${'$'}{graalvm_full_install_path}"
+                set -- ${'$'}{entry}
+                if [ ! -x "${'$'}3/Contents/Home/bin/java" ]; then
+                    rm -rf "${'$'}3"
+                    .teamcity/install.sh graalvm "${'$'}1" "${'$'}2" "${'$'}3"
                 fi
             done
         """

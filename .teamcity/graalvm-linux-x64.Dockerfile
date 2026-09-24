@@ -14,6 +14,8 @@
 # For example:
 # docker build --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:linux-x64-java11-22.3.1 -f graalvm-linux-x64.Dockerfile .
 # docker build --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:linux-x64-jdk-23.0.2 -f graalvm-linux-x64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:linux-x64-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:linux-x64-oracle-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #

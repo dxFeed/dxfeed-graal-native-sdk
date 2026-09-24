@@ -13,7 +13,9 @@
     <maven.compiler.target>22</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <graalvm.version>24.0.1</graalvm.version>
+    <graalvm.version>25.4.4.1.1</graalvm.version>
+    <!-- Used only when building with GraalVM without svm-shared.jar (see the svm-core profile). -->
+    <svm-core.version>25.0.4</svm-core.version>
     <native.image.path>${project.build.directory}/native-image</native.image.path>
     <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
@@ -38,7 +40,7 @@
     <qd.version>3.353</qd.version>
     <orcs-api.version>543</orcs-api.version>
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
-    <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
+    <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -75,12 +77,6 @@
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
-      <version>${graalvm.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.graalvm.nativeimage</groupId>
-      <artifactId>svm</artifactId>
       <version>${graalvm.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -152,6 +148,59 @@
   </distributionManagement>
 
   <profiles>
+    <!--
+      GraalVM 25.4 moved some SVM internals (e.g. @Uninterruptible) from svm.jar to svm-shared.jar
+      and does not publish these jars to Maven Central, so they are taken from the GraalVM that runs the build.
+      Exactly one of the svm-shared and svm-core profiles is activated, depending on the GraalVM layout.
+    -->
+    <profile>
+      <id>svm-shared</id>
+      <activation>
+        <file>
+          <exists>${java.home}/lib/svm/builder/svm-shared.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <svm.sources>src/main/java-svm-shared</svm.sources>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.graalvm.nativeimage</groupId>
+          <artifactId>svm</artifactId>
+          <version>${graalvm.version}</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/lib/svm/builder/svm.jar</systemPath>
+        </dependency>
+        <dependency>
+          <groupId>org.graalvm.nativeimage</groupId>
+          <artifactId>svm-shared</artifactId>
+          <version>${graalvm.version}</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/lib/svm/builder/svm-shared.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>svm-core</id>
+      <activation>
+        <file>
+          <missing>${java.home}/lib/svm/builder/svm-shared.jar</missing>
+        </file>
+      </activation>
+      <properties>
+        <svm.sources>src/main/java-svm-core</svm.sources>
+        <!-- The reachability metadata of newer plugin versions is not supported by older GraalVM versions. -->
+        <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.graalvm.nativeimage</groupId>
+          <artifactId>svm</artifactId>
+          <version>${svm-core.version}</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
     <profile>
       <id>buildStatic</id>
       <!-- TODO: implement static library building-->
@@ -479,6 +528,25 @@
       </extension>
     </extensions>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>add-svm-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${svm.sources}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>

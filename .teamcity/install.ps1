@@ -133,10 +133,49 @@ function Install-GraalVM
 
     $Suffix = "-$ReleaseTag.$FileExtension"
   }
-  elseif ($Version -match "^jdk-")
+  # Since GraalVM 25, in addition to the JDK-aligned releases (jdk-25.0.2), there are
+  # Innovation releases identified by the graal version, for example, graal-25.4.4.1.1,
+  # which is GraalVM 25 Innovation 4 based on JDK 25.0.4.1.1 (artifacts are named jdk-25i4-25.0.4.1.1).
+  # The "oracle-" prefix selects Oracle GraalVM (GFTC license) instead of GraalVM Community,
+  # for example, oracle-jdk-25.0.4 or oracle-graal-25.4.4.1.1.
+  elseif ($Version -match "^(?<vendor>oracle-)?(?<kind>jdk|graal)-(?<number>.+)$")
   {
-    $VersionTag = $Version
-    $DistributionTag = "graalvm-community-$Version"
+    $IsOracle = [bool]$Matches.vendor
+    $Kind = $Matches.kind
+    $Number = $Matches.number
+
+    if ($Kind -eq "graal")
+    {
+      if ($Number -notmatch "^(?<major>\d+)\.(?<innovation>\d+)\.(?<update>.+)$")
+      {
+        throw "Invalid GraalVM version format: '$Version'. Expected graal-<major>.<innovation>.<jdk_update>"
+      }
+      $Major = $Matches.major
+      $JdkTag = "$($Major)i$($Matches.innovation)-$Major.0.$($Matches.update)"
+    }
+    else
+    {
+      $Major = $Number.Split('.')[0]
+      $JdkTag = $Number
+    }
+
+    if (-not $IsOracle)
+    {
+      $VersionTag = "$Kind-$Number"
+      $DistributionTag = "graalvm-community-jdk-$JdkTag"
+    }
+    elseif ($Kind -eq "graal")
+    {
+      $BaseUrl = "https://gds.oracle.com/download/graal"
+      $VersionTag = "$($JdkTag.Split('-')[0])/archive"
+      $DistributionTag = "graalvm-jdk-$JdkTag"
+    }
+    else
+    {
+      $BaseUrl = "https://download.oracle.com/graalvm"
+      $VersionTag = "$Major/archive"
+      $DistributionTag = "graalvm-jdk-$JdkTag"
+    }
 
     switch ($PlatformOS.ToLower())
     {
@@ -161,7 +200,9 @@ function Install-GraalVM
   {
     Write-Error "Invalid GraalVM version format: '$Version'. Allowed formats:
         java<java_version>-<version> (legacy format)
-        jdk-<jdk_version>"
+        jdk-<jdk_version>
+        graal-<graal_version> (innovation releases)
+        oracle-jdk-<jdk_version> or oracle-graal-<graal_version> (Oracle GraalVM)"
   }
 
   New-Item -ItemType Directory -Force -Path $InstallPath | Out-Null
