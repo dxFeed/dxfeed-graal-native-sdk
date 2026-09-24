@@ -38,16 +38,10 @@
     <qd.version>3.353</qd.version>
     <orcs-api.version>543</orcs-api.version>
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
-    <nativebridge.version>0.5</nativebridge.version>
     <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.dxfeed.nativebridge</groupId>
-      <artifactId>annotations</artifactId>
-      <version>${nativebridge.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.devexperts.qd</groupId>
       <artifactId>dxlink-websocket</artifactId>
@@ -98,10 +92,10 @@
   </organization>
 
   <repositories>
-    <repository>
-      <id>jfrog</id>
-      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>
-    </repository>
+<!--    <repository>-->
+<!--      <id>jfrog</id>-->
+<!--      <url>https://dxfeed.jfrog.io/artifactory/maven-open/</url>-->
+<!--    </repository>-->
     <repository>
       <id>dxfeed-api</id>
       <url>https://maven.in.devexperts.com/content/repositories/dxfeed-api</url>
@@ -115,12 +109,20 @@
       <url>https://maven.in.devexperts.com/content/repositories/qd-snapshot/</url>
     </repository>
     <repository>
+      <id>qd-maven</id>
+      <url>https://repo.devexperts.com/repository/qd-maven/com/devexperts/qd/</url>
+    </repository>
+    <repository>
       <id>mdd</id>
       <url>https://maven.in.devexperts.com/content/repositories/mdd/</url>
     </repository>
     <repository>
       <id>mdd-snapshot</id>
       <url>https://maven.in.devexperts.com/content/repositories/mdd-snapshot/</url>
+    </repository>
+    <repository>
+      <id>mdd-maven</id>
+      <url>https://repo.devexperts.com/repository/mdd-maven/com/devexperts/qd/</url>
     </repository>
   </repositories>
 
@@ -481,30 +483,6 @@
       </extension>
     </extensions>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <configuration>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>com.dxfeed.nativebridge</groupId>
-              <artifactId>processor</artifactId>
-              <version>${nativebridge.version}</version>
-            </path>
-          </annotationProcessorPaths>
-          <compilerArgs>
-            <arg>-verbose</arg>
-            <arg>-parameters</arg>
-          </compilerArgs>
-        </configuration>
-        <executions>
-          <execution>
-            <id>process-annotation</id>
-            <phase>compile</phase>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
