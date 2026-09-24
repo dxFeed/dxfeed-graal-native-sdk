@@ -140,9 +140,14 @@ Documentation and examples of how to run the image can be found in the correspon
 Releases (not snapshots) are additionally deployed to the public repository
 https://repo.devexperts.com/repository/mdd-maven/ by the `deploy-mdd-maven` execution of
 `maven-deploy-plugin` in `pom.xml`. The deploy commands in `settings.kts` pass
-`-Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus%` (the `dxcity` bot
-with the deploy permission), `.teamcity/settings.xml` uses them for the `mdd-maven` server.
+`-Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus%`,
+`.teamcity/settings.xml` uses them for the `mdd-maven` server.
 `release:perform` passes the resolved settings to its forked build, so this works there as well.
+
+**Currently disabled** (`<mdd-maven.deploy.skip>true</mdd-maven.deploy.skip>` in `pom.xml`):
+repo.devexperts.com rejects the passed `%dxcity.namecode.nexus%` account (`dcsi-wrp`, the internal Nexus
+account) with 401, the credentials of the `dxcity` bot are needed there. To enable deploying again,
+set the property to `snapshots` and pass the `dxcity` credentials as `repo.user`/`repo.password`.
 
 Every platform build deploys the same pom, so the repository must allow redeploying (as `qd` does).
 

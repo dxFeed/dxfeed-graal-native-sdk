@@ -42,6 +42,11 @@
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
     <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
     <mdd-maven.url>https://repo.devexperts.com/repository/mdd-maven/</mdd-maven.url>
+    <!--
+      Deploying to ${mdd-maven.url} is disabled until the credentials of the dxcity bot for it are known
+      (the nexus credentials are rejected with 401). Set to "snapshots" to deploy releases there again.
+    -->
+    <mdd-maven.deploy.skip>true</mdd-maven.deploy.skip>
   </properties>
 
   <!-- Keeps all QD modules at ${qd.version}, including the ones coming transitively with auther-api and orcs-api. -->
@@ -876,7 +881,7 @@
             </goals>
             <configuration>
               <altReleaseDeploymentRepository>mdd-maven::${mdd-maven.url}</altReleaseDeploymentRepository>
-              <skip>snapshots</skip>
+              <skip>${mdd-maven.deploy.skip}</skip>
             </configuration>
           </execution>
         </executions>

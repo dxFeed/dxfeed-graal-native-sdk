@@ -6,7 +6,7 @@
   * Supported the new connector JMX attributes `Role`, `DisplayFilter` and `DisplayChannels`.
   * The new `NEO` and `neo` order sources are available.
 * The C API documentation (`c-api-docs-html.zip`) is published with every release to the Maven repositories and to the GitHub release.
-* Releases are also published to the public Maven repository https://repo.devexperts.com/repository/mdd-maven/.
+* Publishing releases to the public Maven repository https://repo.devexperts.com/repository/mdd-maven/ is prepared but temporarily disabled.
 * JFrog credentials and references removed from TeamCity settings and scripts.
 * Samples: fixed the crash of the `DxfgClient` `HistoryEndpointCase` on a server error.
 
