@@ -1,0 +1,2 @@
+# Shell scripts must keep LF line endings to run on Linux/macOS/WSL, even when checked out on Windows.
+*.sh text eol=lf

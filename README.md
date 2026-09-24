@@ -24,6 +24,7 @@ into your projects.
 - [Installation](#installation)
 - [Current State](#current-state)
 - [Contribution](#Contribution)
+  * [Scripts](#scripts)
 - [Support](#Support)
 - [License](#License)
 
@@ -320,6 +321,38 @@ Find useful information in our self-service dxFeed Knowledge Base:
 
 [Semantic Versioning](https://semver.org/)
 
+### Scripts
+
+**Native Image metadata**
+
+| Script                                             | Purpose                                                                                                                                                                                                                                                  |
+|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `update-native-image-metadata.ps1`                 | Collects the Native Image metadata with the native-image-agent (GraalVM 23+) by running the scenario classes (`NewCases` by default) and merges it into `src/main/resources/META-INF/native-image`. See [To regenerate META-INF/native-image](#to-regenerate-meta-infnative-image). |
+| `merge-agent-metadata.py`                          | Merges the agent output into `reachability-metadata.json` and the legacy `*-config.json` files (existing entries are never removed). Used by `update-native-image-metadata.ps1`.                                                                        |
+| `run-with-agent.ps1`                               | Legacy: runs a class under the agent, the output is written to `config/`.                                                                                                                                                                                |
+| `merge-json-files.ps1`, `merge-ser-json-files.ps1` | Legacy: merge two `reflect-config.json` / `serialization-config.json` files produced by the agent of GraalVM < 23.                                                                                                                                       |
+
+**Build**
+
+| Script                                        | Purpose                                                                                                                                                                                                                                  |
+|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `rc.cmd`                                      | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`). |
+| `src/main/c/build.cmd`, `src/main/c/build.sh` | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                |
+
+**CI (`.teamcity`)**, see also [.teamcity/README.MD](.teamcity/README.MD)
+
+| Script                                                             | Purpose                                                                                                                                                                              |
+|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `settings.kts`                                                     | TeamCity project configuration (Kotlin DSL).                                                                                                                                         |
+| `install.sh`, `install.ps1`                                        | Download and install Maven, GraalVM (see the [supported version formats](.teamcity/README.MD#graalvm-versions)) and Build Tools for Visual Studio. Used by the Dockerfiles and the macOS and Windows builds. |
+| `graalvm-linux-x64.Dockerfile`, `graalvm-linux-aarch64.Dockerfile` | Linux build images (Oracle Linux 7, glibc 2.17).                                                                                                                                     |
+| `graalvm-win-x64-v2.Dockerfile`                                    | Windows build image.                                                                                                                                                                 |
+| `docker-entrypoint.cmd`                                            | Entry point of the Windows build image: initializes the Visual Studio environment and runs the passed command.                                                                      |
+| `graalvm-win-x64.Dockerfile`                                       | Previous Windows build image based on MSYS2 (not used by the CI).                                                                                                                    |
+| `run-mvn-vs.ps1`                                                   | Initializes the Visual Studio environment (`VsDevCmd.bat`) and runs Maven with the passed arguments; `-SetupOnly` only initializes the environment.                                 |
+| `build.ps1`                                                        | Diagnostic build in the Windows build image: prints the environment and runs `mvn clean package`.                                                                                    |
+| `nuget.Dockerfile`                                                 | Image with the NuGet CLI to pack and publish `NuGet/DxFeed.Graal.Native.nuspec`.                                                                                                     |
+
 ### Installation GraalVM JDK 11 with native-image
 
 [GraalVM Community Edition 22.3.1](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.1)
@@ -339,13 +372,23 @@ Find useful information in our self-service dxFeed Knowledge Base:
 
 ### To regenerate META-INF/native-image
 
-add a new case to src/test/java/com/dxfeed/NativeLibMain.java and execute it
+`src/main/resources/META-INF/native-image` contains the metadata in both formats:
+`reachability-metadata.json` (read by GraalVM 23+) and the legacy `*-config.json` files (read by all versions,
+required for GraalVM < 23). GraalVM 23+ merges both.
 
-```shell
-export M2_HOME=~/.m2
-$JAVA_HOME/bin/java -Dtoken=<TOKEN> -agentlib:native-image-agent=config-output-dir=META-INF/native-image -Dfile.encoding=UTF-8 -classpath ./target/test-classes:./target/classes:$M2_HOME/repository/com/devexperts/qd/qds/3.312/qds-3.312.jar:$M2_HOME/repository/com/devexperts/qd/dxlib/3.312/dxlib-3.312.jar:$M2_HOME/repository/com/devexperts/qd/dxfeed-api/3.312/dxfeed-api-3.312.jar:$M2_HOME/repository/com/devexperts/mdd/auther-api/441/auther-api-441.jar:$M2_HOME/repository/com/devexperts/qd/qds-tools/3.313/qds-tools-3.313.jar:$M2_HOME/repository/com/devexperts/qd/qds-file/3.313/qds-file-3.313.jar:$M2_HOME/repository/org/graalvm/sdk/graal-sdk/22.1.0/graal-sdk-22.1.0.jar:$M2_HOME/repository/org/graalvm/nativeimage/svm/22.1.0/svm-22.1.0.jar:$M2_HOME/repository/org/graalvm/nativeimage/objectfile/22.1.0/objectfile-22.1.0.jar:$M2_HOME/repository/org/graalvm/nativeimage/pointsto/22.1.0/pointsto-22.1.0.jar:$M2_HOME/repository/org/graalvm/compiler/compiler/22.1.0/compiler-22.1.0.jar:$M2_HOME/repository/org/graalvm/truffle/truffle-api/22.1.0/truffle-api-22.1.0.jar:$M2_HOME/repository/org/graalvm/nativeimage/native-image-base/22.1.0/native-image-base-22.1.0.jar com.dxfeed.NativeLibMain
+After changing dependency versions (e.g. `qd.version`), collect the metadata with the native-image-agent:
 
+```powershell
+# JAVA_HOME must point to GraalVM 23+, Maven and Python 3 are required.
+.\update-native-image-metadata.ps1
+# Scenarios that need an address or credentials:
+.\update-native-image-metadata.ps1 -MainClass com.dxfeed.NewCases,com.dxfeed.NativeLibMain -JavaArgs "-Dtoken=<TOKEN>"
 ```
+
+The script runs the scenario classes (`src/test/java/com/dxfeed/NewCases.java` by default) under the agent,
+accumulates the result in `reachability-metadata.json` and merges the new entries into the legacy files
+(`merge-agent-metadata.py`, existing entries are never removed). Add a new case to `NewCases.java` to cover a new
+feature, then review the diff.
 
 ### To release a new version
 

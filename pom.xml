@@ -36,12 +36,53 @@
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
     <!-- qd version and auther-api version must be compatible -->
-    <auther-api.version>543</auther-api.version>
-    <qd.version>3.353</qd.version>
-    <orcs-api.version>543</orcs-api.version>
+    <auther-api.version>548</auther-api.version>
+    <qd.version>3.355</qd.version>
+    <orcs-api.version>548</orcs-api.version>
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
     <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
   </properties>
+
+  <!-- Keeps all QD modules at ${qd.version}, including the ones coming transitively with auther-api and orcs-api. -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>qds</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>qds-tools</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>qds-file</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>qds-monitoring</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>mars</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>dxfeed-api</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.devexperts.qd</groupId>
+        <artifactId>dxlib</artifactId>
+        <version>${qd.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -102,7 +143,7 @@
     </repository>
     <repository>
       <id>qd-maven</id>
-      <url>https://repo.devexperts.com/repository/qd-maven/com/devexperts/qd/</url>
+      <url>https://repo.devexperts.com/repository/qd-maven/</url>
     </repository>
     <repository>
       <id>mdd</id>
@@ -114,7 +155,7 @@
     </repository>
     <repository>
       <id>mdd-maven</id>
-      <url>https://repo.devexperts.com/repository/mdd-maven/com/devexperts/qd/</url>
+      <url>https://repo.devexperts.com/repository/mdd-maven/</url>
     </repository>
   </repositories>
 

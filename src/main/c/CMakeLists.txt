@@ -132,10 +132,13 @@ file(WRITE "${OUTPUT_PATH}/${META_PROJECT_NAME}-version" "${META_FULL_NAME_VERSI
 # Deployment
 #
 
-# Installation paths
-set(INSTALL_BIN ${CMAKE_CURRENT_SOURCE_DIR}/install)
-set(INSTALL_SHARED ${CMAKE_CURRENT_SOURCE_DIR}/install)
-set(INSTALL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/install)
+# Installation paths (relative to CMAKE_INSTALL_PREFIX, absolute destinations are errors in CMake 4.x pedantic mode)
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install CACHE PATH "Install path prefix" FORCE)
+endif ()
+set(INSTALL_BIN .)
+set(INSTALL_SHARED .)
+set(INSTALL_LIB .)
 
 # Set package name
 set(CPACK_PACKAGE_FILE_NAME ${META_FULL_NAME_VERSION})
@@ -148,7 +151,7 @@ set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
 # Clean all projects
 set(CPACK_INSTALL_CMAKE_PROJECTS "")
 # Add install dir
-set(CPACK_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/install .)
+set(CPACK_INSTALLED_DIRECTORIES ${CMAKE_INSTALL_PREFIX} .)
 
 #
 # Project modules

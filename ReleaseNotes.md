@@ -1,4 +1,5 @@
 * Migrated to GraalVM 25.4.4.1.1 (JDK 25.0.4); Oracle GraalVM is supported as well.
+* Migrated to QDS 3.355 and MDD 548.
 
 ## v3.2.13
 

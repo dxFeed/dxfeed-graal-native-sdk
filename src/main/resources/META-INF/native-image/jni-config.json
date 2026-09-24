@@ -6,16 +6,25 @@
   "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
 },
 {
+  "name":"com.sun.management.GcInfo",
+  "methods":[{"name":"<init>","parameterTypes":["com.sun.management.internal.GcInfoBuilder","long","long","long","java.lang.management.MemoryUsage[]","java.lang.management.MemoryUsage[]","java.lang.Object[]"] }]
+},
+{
   "name":"com.sun.management.internal.DiagnosticCommandArgumentInfo",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","boolean","boolean","int"] }]
 },
 {
   "name":"com.sun.management.internal.DiagnosticCommandInfo",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }, {"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }]
 },
 {
   "name":"java.lang.Boolean",
   "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}],
+  "methods":[{"name":"<init>","parameterTypes":["int"] }]
 },
 {
   "name":"java.lang.InternalError",

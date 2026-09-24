@@ -51,9 +51,13 @@
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.socket.SocketSourceFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.spi.QDFilterFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.spi.SymbolStriperFactory\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.rmi.RMIRequestTransformerFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.rmi.security.RMISecurityController\\E"
   }, {
@@ -72,6 +76,8 @@
     "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.rmi.server.RMIClassLoaderSpi\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
   }, {

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 cmake --preset="conf-release" -DCMAKE_BUILD_TYPE=Release .
 cmake --build --preset="build-release" --config=Release
 ctest --test-dir build/conf-release -C Release --extra-verbose

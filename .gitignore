@@ -12,7 +12,7 @@ ehthumbs.db
 Thumbs.db
 
 # User-specific stuff
-.idea/**
+.idea/
 target/**
 
 # CMake

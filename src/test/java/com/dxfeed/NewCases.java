@@ -1,19 +1,32 @@
 package com.dxfeed;
 
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
 import com.dxfeed.event.market.Order;
+import com.dxfeed.event.market.OrderSource;
+import com.dxfeed.event.market.Side;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import javax.management.ObjectName;
 
 /**
- * How to run:
+ * Scenarios for collecting Native Image metadata with the native-image-agent.
+ * How to run (JAVA_HOME must point to GraalVM 23+):
  * ```powershell
- * .\run-with-agent.ps1 com.dxfeed.NewCases
- * .\merge-ser-json-files.ps1 C:\w3\graal\dxfeed-graal-native-sdk\src\main\resources\META-INF\native-image\serialization-config.json C:\w3\graal\dxfeed-graal-native-sdk\config\serialization-config.json .\serialization-config.json
- * .\merge-json-files.ps1 C:\w3\graal\dxfeed-graal-native-sdk\src\main\resources\META-INF\native-image\reflect-config.json C:\w3\graal\dxfeed-graal-native-sdk\config\reflect-config.json .\reflect-config.json
+ * ./update-native-image-metadata.ps1
  * ```
  */
 public class NewCases {
@@ -29,6 +42,9 @@ public class NewCases {
         cases.put("dxLinkCase", NewCases::dxLinkCase);
         cases.put("connectToLocalPublisherCase", NewCases::connectToLocalPublisherCase);
         cases.put("closeFromListenerCase", NewCases::closeFromListenerCase);
+        cases.put("jmxConnectorAttributesCase", NewCases::jmxConnectorAttributesCase);
+        cases.put("newOrderSourcesCase", NewCases::newOrderSourcesCase);
+        cases.put("eventsSerializationCase", NewCases::eventsSerializationCase);
 
         cases.forEach(NewCases::runCase);
     }
@@ -101,6 +117,80 @@ public class NewCases {
             endpoint.awaitNotConnected();
 
             System.out.println("Final state: " + endpoint.getState());
+        }
+    }
+
+    // Reads all attributes of the connector MBeans (e.g. DisplayFilter, DisplayChannels, Role added in QDS 3.354).
+    public static void jmxConnectorAttributesCase() throws Exception {
+        var port = ThreadLocalRandom.current().nextInt(48658, 49150);
+        System.setProperty("jmx.rmi.port", String.valueOf(port + 1));
+        var tapeFile = Files.createTempFile(Path.of("."), "jmx-case", ".txt").getFileName();
+
+        try (var pub = DXEndpoint.create(DXEndpoint.Role.PUBLISHER).connect(":" + port);
+                var feed = DXEndpoint.create(DXEndpoint.Role.FEED).connect("localhost:" + port);
+                var tape = DXEndpoint.create(DXEndpoint.Role.STREAM_PUBLISHER).connect("tape:" + tapeFile + "[format=text]");
+                var file = DXEndpoint.create(DXEndpoint.Role.STREAM_FEED).connect("file:ConvertTapeFile.in[speed=max]")) {
+            Thread.sleep(2000);
+
+            var server = ManagementFactory.getPlatformMBeanServer();
+            for (var name : server.queryNames(new ObjectName("com.devexperts.qd.qtp:*"), null)) {
+                System.out.println(name);
+                for (var attribute : server.getMBeanInfo(name).getAttributes()) {
+                    try {
+                        System.out.println("  " + attribute.getName() + " = " + server.getAttribute(name, attribute.getName()));
+                    } catch (Exception e) {
+                        System.out.println("  " + attribute.getName() + " !! " + e);
+                    }
+                }
+            }
+        } finally {
+            Files.deleteIfExists(tapeFile);
+        }
+    }
+
+    // Publishes and receives orders with the NEO and neo sources added in QDS 3.355.
+    public static void newOrderSourcesCase() throws Exception {
+        var sources = List.of("NEO", "neo");
+        try (var hub = DXEndpoint.create(DXEndpoint.Role.LOCAL_HUB)) {
+            var received = new CountDownLatch(sources.size());
+            var sub = hub.getFeed().createSubscription(Order.class);
+            sub.addEventListener(events -> events.forEach(event -> {
+                System.out.println("Received: " + event);
+                received.countDown();
+            }));
+            for (var source : sources) {
+                sub.addSymbols(new IndexedEventSubscriptionSymbol<>("AAPL", OrderSource.valueOf(source)));
+            }
+
+            for (var source : sources) {
+                var order = new Order("AAPL");
+                order.setIndex(1);
+                order.setSource(OrderSource.valueOf(source));
+                order.setOrderSide(Side.BUY);
+                order.setPrice(100.5);
+                order.setSize(10);
+                hub.getPublisher().publishEvents(List.of(order));
+            }
+            System.out.println("All orders received: " + received.await(5, TimeUnit.SECONDS));
+        }
+    }
+
+    // Serializes and deserializes all event types with Java serialization.
+    public static void eventsSerializationCase() throws Exception {
+        try (var endpoint = DXEndpoint.create(DXEndpoint.Role.STREAM_FEED)) {
+            for (var type : endpoint.getEventTypes()) {
+                try {
+                    var bytes = new ByteArrayOutputStream();
+                    try (var out = new ObjectOutputStream(bytes)) {
+                        out.writeObject(type.getConstructor().newInstance());
+                    }
+                    try (var in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+                        System.out.println(type.getSimpleName() + ": " + in.readObject());
+                    }
+                } catch (Exception e) {
+                    System.out.println(type.getSimpleName() + " !! " + e);
+                }
+            }
         }
     }
 }

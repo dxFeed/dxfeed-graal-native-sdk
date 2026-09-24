@@ -134,6 +134,8 @@ inline Command historyEndpointCase{
 
         if (result != DXFG_EXECUTE_SUCCESSFULLY) {
             getException(isolateThread);
+
+            return;
         }
 
         finally([&] {

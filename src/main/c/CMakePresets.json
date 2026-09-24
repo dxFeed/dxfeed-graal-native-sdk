@@ -25,7 +25,7 @@
         "cmake-pedantic"
       ],
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/install/${presetName}",
+      "installDir": "${sourceDir}/install",
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_ENABLE_EXPORTS": "TRUE",

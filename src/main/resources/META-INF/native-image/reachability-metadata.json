@@ -1,0 +1,2080 @@
+{
+  "reflection": [
+    {
+      "type": "boolean[]"
+    },
+    {
+      "type": "byte[]",
+      "serializable": true
+    },
+    {
+      "type": "char[]"
+    },
+    {
+      "type": "com.devexperts.annotation.Description"
+    },
+    {
+      "type": "com.devexperts.connector.codec.delayed.DelayedCodecFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.connector.codec.shaped.ShapedCodecFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.connector.codec.ssl.SSLCodecFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.connector.proto.ApplicationConnectionFactory",
+      "methods": [
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.logging.Log4j2Logging"
+    },
+    {
+      "type": "com.devexperts.logging.Log4jLogging"
+    },
+    {
+      "type": "com.devexperts.mars.jvm.JVMSelfMonitoring"
+    },
+    {
+      "type": "com.devexperts.mars.jvm.JVMSelfMonitoring$PluginFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.mars.jvm.JVMSelfMonitoringMXBean",
+      "methods": [
+        {
+          "name": "getCpuUsage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeapSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeapUsage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonHeapSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonHeapUsage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadDeadlockedCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadDumpsCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadDumpsFile",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadDumpsPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadDumpsScheduledAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeZone",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUptime",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.application.DxLinkWebSocketApplicationConnectionFactory",
+      "methods": [
+        {
+          "name": "getRequestedAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLogin",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnector"
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorMBean",
+      "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyPort",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.transport.TokenDxLinkLoginHandlerFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.dxlink.websocket.transport.WebSocketWriter"
+    },
+    {
+      "type": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplAnyContract"
+    },
+    {
+      "type": "com.devexperts.qd.impl.matrix.management.impl.CollectorManagementImplOneContract"
+    },
+    {
+      "type": "com.devexperts.qd.impl.matrix.management.impl.CollectorMXBean",
+      "methods": [
+        {
+          "name": "getAgentBufferSizeDefault",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllLockOperations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBufferOverflowLogInterval",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCollectorCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContract",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCounters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDistributionBucket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFatalError",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInterleave",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLockWaitLogInterval",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxDistributionSpins",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStickyScheduleMinDelay",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStickySubscriptionLogInterval",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStickySubscriptionPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubscriptionBucket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUseLockCounters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUseLockPriority",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.logger.LoggedQDFactory",
+      "methods": [
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.monitoring.MonitoredQDEndpoint$BuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.monitoring.MonitoringEndpoint"
+    },
+    {
+      "type": "com.devexperts.qd.monitoring.MonitoringEndpointMXBean",
+      "methods": [
+        {
+          "name": "isLogStripedConnectors",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AgentAdapter"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AgentAdapter$Factory",
+      "methods": [
+        {
+          "name": "getDefaultAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AgentAdapterMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AgentChannel"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.DistributorAdapter$Factory",
+      "methods": [
+        {
+          "name": "getFieldReplacer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestedAggregationPeriod",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.DxLinkWebSocketConnectorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileConnector",
+      "methods": [
+        {
+          "name": "setSpeed",
+          "parameterTypes": [
+            "double"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileConnectorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileConnectorMBean",
+      "methods": [
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelayActual",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelayed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResyncOn",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStart",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStop",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCycle",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIgnoreTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSchemeKnown",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileConnectorMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileFormat",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.TapeConnector",
+      "methods": [
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.TapeConnectorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.TapeConnectorMBean",
+      "methods": [
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOpt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSaveAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSplit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTmpDir",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.TapeConnectorMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
+      "methods": [
+        {
+          "name": "setFilter",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+      "methods": [
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUser",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.MessageAdapterMBean",
+      "methods": [
+        {
+          "name": "getAggregationPeriodInfoStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestedAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAlive",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.MessageConnectorMBean",
+      "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAggregationPeriodInfoStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayChannels",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEndpointStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFieldReplacer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReconnectDelay",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestedAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRole",
+          "parameterTypes": []
+        },
+        {
+          "name": "getState",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadPriority",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUser",
+          "parameterTypes": []
+        },
+        {
+          "name": "isActive",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.nio.NioConnectorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.ServerConnectorMBean",
+      "methods": [
+        {
+          "name": "getBindAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxConnections",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAccepting",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ClientSocketConnector"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ClientSocketConnectorMBean",
+      "methods": [
+        {
+          "name": "getConnectOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentAddresses",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCurrentPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRestoreTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStripe",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ClientSocketConnectorMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ServerSocketConnector"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ServerSocketConnectorMBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ServerSocketConnectorMXBean"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.SocketWriter"
+    },
+    {
+      "type": "com.devexperts.qd.SerialFieldType",
+      "fields": [
+        {
+          "name": "BYTE"
+        },
+        {
+          "name": "BYTE_ARRAY"
+        },
+        {
+          "name": "COMPACT_INT"
+        },
+        {
+          "name": "CUSTOM_OBJECT"
+        },
+        {
+          "name": "DATE"
+        },
+        {
+          "name": "DECIMAL"
+        },
+        {
+          "name": "INT"
+        },
+        {
+          "name": "LONG"
+        },
+        {
+          "name": "SEQUENCE"
+        },
+        {
+          "name": "SERIAL_OBJECT"
+        },
+        {
+          "name": "SHORT"
+        },
+        {
+          "name": "SHORT_STRING"
+        },
+        {
+          "name": "STRING"
+        },
+        {
+          "name": "TIME"
+        },
+        {
+          "name": "TIME_MILLIS"
+        },
+        {
+          "name": "TIME_NANOS"
+        },
+        {
+          "name": "TIME_SECONDS"
+        },
+        {
+          "name": "UTF_CHAR"
+        },
+        {
+          "name": "UTF_CHAR_ARRAY"
+        },
+        {
+          "name": "VOID"
+        },
+        {
+          "name": "WIDE_DECIMAL"
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.spi.QDFilterFactory",
+      "methods": [
+        {
+          "name": "combineFactories",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.tools.TimeSyncTracker"
+    },
+    {
+      "type": "com.devexperts.qd.tools.TimeSyncTracker$PluginFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.tools.TimeSyncTrackerMBean",
+      "methods": [
+        {
+          "name": "getMedianDelta",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerDeltas",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerDeviations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerIds",
+          "parameterTypes": []
+        },
+        {
+          "name": "isActive",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.tools.TimeSyncTrackerMXBean"
+    },
+    {
+      "type": "com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory"
+    },
+    {
+      "type": "com.devexperts.rmi.impl.RMIMessageAdapter"
+    },
+    {
+      "type": "com.devexperts.rmi.impl.RMIMessageAdapterMXBean"
+    },
+    {
+      "type": "com.dxfeed.api.impl.DXEndpointImpl$1"
+    },
+    {
+      "type": "com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.api.impl.FilterFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.api.impl.HistorySubscriptionFilterImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.candle.Candle",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.candle.CandleFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.candle.DailyCandle",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.custom.CustomFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.custom.NuamOrder",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.custom.NuamTimeAndSale",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.custom.NuamTrade",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.AnalyticOrder",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.MarketEvent",
+      "serializable": true
+    },
+    {
+      "type": "com.dxfeed.event.market.MarketFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.MarketMaker",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.OptionSale",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.Order",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.OrderBase",
+      "serializable": true
+    },
+    {
+      "type": "com.dxfeed.event.market.OrderImbalance",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.OtcMarketsOrder",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.Profile",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.Quote",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.SpreadOrder",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.Summary",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.TimeAndSale",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.Trade",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.market.TradeBase",
+      "serializable": true
+    },
+    {
+      "type": "com.dxfeed.event.market.TradeETH",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.misc.Configuration",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.misc.Message",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.misc.MiscFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.misc.TextConfiguration",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.misc.TextMessage",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.option.Greeks",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.option.OptionFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.option.Series",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.option.TheoPrice",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.event.option.Underlying",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.ipf.filter.IPFFilterFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.ondemand.impl.connector.OnDemandConnectorFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.scheme.impl.DXSchemeFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jndi.url.rmi.rmiURLContextFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.GarbageCollectorMXBean"
+    },
+    {
+      "type": "com.sun.management.GcInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.sun.management.internal.GcInfoBuilder",
+            "long",
+            "long",
+            "long",
+            "java.lang.management.MemoryUsage[]",
+            "java.lang.management.MemoryUsage[]",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.HotSpotDiagnosticMXBean"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.GarbageCollectorExtImpl"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotAOTCacheImpl"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotDiagnostic"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotThreadImpl"
+    },
+    {
+      "type": "com.sun.management.internal.OperatingSystemImpl"
+    },
+    {
+      "type": "com.sun.management.internal.VirtualThreadSchedulerImpls$VirtualThreadSchedulerImpl"
+    },
+    {
+      "type": "com.sun.management.OperatingSystemMXBean"
+    },
+    {
+      "type": "com.sun.management.ThreadMXBean"
+    },
+    {
+      "type": "com.sun.management.VMOption"
+    },
+    {
+      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "double[]"
+    },
+    {
+      "type": "float[]"
+    },
+    {
+      "type": "int[]"
+    },
+    {
+      "type": "io.netty.util.concurrent.DefaultPromise"
+    },
+    {
+      "type": "java.io.IOException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.NotSerializableException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.ObjectStreamException",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Boolean",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Byte",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Character",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Deprecated"
+    },
+    {
+      "type": "java.lang.Double",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Exception",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Float",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Integer",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Long",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.management.BufferPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.ClassLoadingMXBean"
+    },
+    {
+      "type": "java.lang.management.CompilationMXBean"
+    },
+    {
+      "type": "java.lang.management.LockInfo"
+    },
+    {
+      "type": "java.lang.management.MemoryManagerMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryUsage"
+    },
+    {
+      "type": "java.lang.management.MonitorInfo"
+    },
+    {
+      "type": "java.lang.management.PlatformLoggingMXBean"
+    },
+    {
+      "type": "java.lang.management.RuntimeMXBean"
+    },
+    {
+      "type": "java.lang.management.ThreadInfo"
+    },
+    {
+      "type": "java.lang.Short",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.StackTraceElement",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.StackTraceElement[]",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String[]"
+    },
+    {
+      "type": "java.lang.Throwable",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Void",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.math.BigDecimal"
+    },
+    {
+      "type": "java.math.BigInteger"
+    },
+    {
+      "type": "java.nio.Bits"
+    },
+    {
+      "type": "java.nio.Buffer",
+      "fields": [
+        {
+          "name": "address"
+        }
+      ]
+    },
+    {
+      "type": "java.nio.ByteBuffer"
+    },
+    {
+      "type": "java.nio.DirectByteBuffer"
+    },
+    {
+      "type": "java.rmi.dgc.Lease",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.dgc.VMID",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.registry.Registry"
+    },
+    {
+      "type": "java.rmi.Remote"
+    },
+    {
+      "type": "java.rmi.server.ObjID",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.ObjID[]",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.RemoteObject",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.RemoteStub",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.UID",
+      "serializable": true
+    },
+    {
+      "type": "java.util.Arrays",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "asList",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.util.Collections$EmptyList",
+      "serializable": true
+    },
+    {
+      "type": "java.util.Date"
+    },
+    {
+      "type": "java.util.Map"
+    },
+    {
+      "type": "javax.management.MBeanOperationInfo"
+    },
+    {
+      "type": "javax.management.MBeanServerBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "javax.management.ObjectName"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData[]"
+    },
+    {
+      "type": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
+    },
+    {
+      "type": "javax.management.openmbean.TabularData"
+    },
+    {
+      "type": "javax.management.remote.JMXConnectorServerMBean",
+      "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionIds",
+          "parameterTypes": []
+        },
+        {
+          "name": "isActive",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "javax.management.remote.rmi.RMIConnectorServer"
+    },
+    {
+      "type": "javax.management.remote.rmi.RMIConnectorServerMXBean"
+    },
+    {
+      "type": "javax.management.remote.rmi.RMIServer"
+    },
+    {
+      "type": "javax.management.remote.rmi.RMIServerImpl_Skel"
+    },
+    {
+      "type": "javax.management.remote.rmi.RMIServerImpl_Stub",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.rmi.server.RemoteRef"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "javax.management.StandardEmitterMBean"
+    },
+    {
+      "type": "jdk.internal.misc.Unsafe",
+      "methods": [
+        {
+          "name": "getUnsafe",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "jdk.management.HotSpotAOTCacheMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.ConfigurationInfo"
+    },
+    {
+      "type": "jdk.management.jfr.EventTypeInfo"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBeanImpl"
+    },
+    {
+      "type": "jdk.management.jfr.RecordingInfo"
+    },
+    {
+      "type": "jdk.management.jfr.SettingDescriptorInfo"
+    },
+    {
+      "type": "jdk.management.VirtualThreadSchedulerMXBean"
+    },
+    {
+      "type": "long[]"
+    },
+    {
+      "type": "short[]"
+    },
+    {
+      "type": "sun.management.ClassLoadingImpl"
+    },
+    {
+      "type": "sun.management.CompilationImpl"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$1"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$PlatformLoggingImpl"
+    },
+    {
+      "type": "sun.management.MemoryImpl"
+    },
+    {
+      "type": "sun.management.MemoryManagerImpl"
+    },
+    {
+      "type": "sun.management.MemoryPoolImpl"
+    },
+    {
+      "type": "sun.management.RuntimeImpl"
+    },
+    {
+      "type": "sun.management.VMManagementImpl",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "compTimeMonitoringSupport"
+        },
+        {
+          "name": "currentThreadCpuTimeSupport"
+        },
+        {
+          "name": "objectMonitorUsageSupport"
+        },
+        {
+          "name": "otherThreadCpuTimeSupport"
+        },
+        {
+          "name": "remoteDiagnosticCommandsSupport"
+        },
+        {
+          "name": "synchronizerUsageSupport"
+        },
+        {
+          "name": "threadAllocatedMemorySupport"
+        },
+        {
+          "name": "threadContentionMonitoringSupport"
+        }
+      ]
+    },
+    {
+      "type": "sun.misc.Unsafe",
+      "fields": [
+        {
+          "name": "theUnsafe"
+        }
+      ],
+      "methods": [
+        {
+          "name": "invokeCleaner",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.net.www.protocol.dxlink.Handler"
+    },
+    {
+      "type": "sun.net.www.protocol.jar.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.net.www.protocol.jrt.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.net.www.protocol.localhost.Handler"
+    },
+    {
+      "type": "sun.net.www.protocol.tape.Handler"
+    },
+    {
+      "type": "sun.reflect.misc.Trampoline",
+      "methods": [
+        {
+          "name": "invoke",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.Object",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.registry.RegistryImpl_Skel",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.registry.RegistryImpl_Stub",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.rmi.server.RemoteRef"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.server.UnicastRef",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.DGCImpl_Skel",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.DGCImpl_Stub",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.rmi.server.RemoteRef"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DRBG",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en_US"
+    },
+    {
+      "type": "sun.util.resources.cldr.CalendarData"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames"
+    }
+  ],
+  "resources": [
+    {
+      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+    },
+    {
+      "glob": "/META-INF/SerialClassBlacklist.txt"
+    },
+    {
+      "glob": "/META-INF/SerialClassWhitelist.txt"
+    },
+    {
+      "glob": "META-INF/logformatter.properties"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.connector.codec.CodecFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.mars.common.MARSPlugin$Factory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.DataSchemeFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.HistorySubscriptionFilter"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.QDErrorHandler"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.QDFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.SubscriptionFilterFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.dxlink.websocket.transport.DxLinkLoginHandlerFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.impl.matrix.management.CollectorManagementFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.ng.RecordMappingFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.MessageConnectorFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.QDEndpoint$Builder"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.SubscriptionFilterFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.auth.ChannelShapersFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.socket.SocketSourceFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.spi.QDFilterFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.rmi.RMIRequestTransformerFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.rmi.security.RMISecurityController"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.rmi.security.SecurityController"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.rmi.task.RMILoadBalancerFactory"
+    },
+    {
+      "glob": "META-INF/services/com.dxfeed.api.DXEndpoint$Builder"
+    },
+    {
+      "glob": "META-INF/services/com.dxfeed.api.impl.EventDelegateFactory"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.InetAddressResolverProvider"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.URLStreamHandlerProvider"
+    },
+    {
+      "glob": "META-INF/services/java.rmi.server.RMIClassLoaderSpi"
+    },
+    {
+      "glob": "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "glob": "META-INF/services/javax.xml.parsers.DocumentBuilderFactory"
+    },
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xerces/internal/impl/xpath/regex/message.properties"
+    },
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xerces/internal/impl/xpath/regex/message_ru.properties"
+    },
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xerces/internal/impl/xpath/regex/message_ru_RU.properties"
+    },
+    {
+      "glob": "dxfeed-schema.xsd"
+    },
+    {
+      "glob": "dxfeed.properties"
+    },
+    {
+      "glob": "dxfeed.xml"
+    },
+    {
+      "glob": "dxlink.xml"
+    },
+    {
+      "glob": "dxpublisher.properties"
+    },
+    {
+      "module": "jdk.jfr",
+      "glob": "jdk/jfr/internal/query/view.ini"
+    },
+    {
+      "glob": "jndi.properties"
+    },
+    {
+      "glob": "org/slf4j/impl/StaticLoggerBinder.class"
+    },
+    {
+      "glob": "types.xml"
+    },
+    {
+      "glob": "visibility.xml"
+    }
+  ]
+}

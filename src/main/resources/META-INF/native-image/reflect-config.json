@@ -1143,6 +1143,14 @@
         "parameterTypes": []
       },
       {
+        "name": "getDisplayChannels",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDisplayFilter",
+        "parameterTypes": []
+      },
+      {
         "name": "getEndpointStats",
         "parameterTypes": []
       },
@@ -1172,6 +1180,10 @@
       },
       {
         "name": "getRequestedAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRole",
         "parameterTypes": []
       },
       {
@@ -7670,6 +7682,24 @@
       },
       {
         "name": "storeFence",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.net.www.protocol.jar.Handler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.net.www.protocol.jrt.Handler",
+    "methods": [
+      {
+        "name": "<init>",
         "parameterTypes": []
       }
     ]

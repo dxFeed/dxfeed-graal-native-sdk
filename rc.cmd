@@ -10,11 +10,6 @@ if not errorlevel 1 (
 
 echo [INFO] rc.exe not found in PATH, setting up environment...
 
-if not exist "C:\jdk\graalvm-community-openjdk-22.0.1+8.1\" (
-    echo [ERROR] Java directory not found
-    exit /b 1
-)
-
 if not exist "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat" (
     echo [ERROR] vcvars64.bat not found
     exit /b 1
