@@ -20,6 +20,12 @@
       <username>${nexus.user}</username>
       <password>${nexus.password}</password>
     </server>
+    <!-- Public repository https://repo.devexperts.com/repository/mdd-maven/ (see the deploy-mdd-maven profile in pom.xml). -->
+    <server>
+      <id>mdd-maven</id>
+      <username>${repo.user}</username>
+      <password>${repo.password}</password>
+    </server>
     <server>
       <id>mdd-snapshot</id>
       <username>${nexus.user}</username>

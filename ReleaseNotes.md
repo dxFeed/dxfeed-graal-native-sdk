@@ -1,5 +1,12 @@
-* Migrated to GraalVM 25.4.4.1.1 (JDK 25.0.4); Oracle GraalVM is supported as well.
+* **\[MDAPI-420]\[GRAAL]** Migrated to GraalVM 25.4.4.1.1 (JDK 25.0.4); Oracle GraalVM is supported as well.
 * Migrated to QDS 3.355 and MDD 548.
+  * All QDS modules have the same version now (the previous releases mixed QDS 3.352 and 3.353 modules).
+  * Supported the new connector JMX attributes `Role`, `DisplayFilter` and `DisplayChannels`.
+  * The new `NEO` and `neo` order sources are available.
+* The C API documentation (`c-api-docs-html.zip`) is published with every release to the Maven repositories and to the GitHub release.
+* Releases are also published to the public Maven repository https://repo.devexperts.com/repository/mdd-maven/.
+* JFrog credentials and references removed from TeamCity settings and scripts.
+* Samples: fixed the crash of the `DxfgClient` `HistoryEndpointCase` on a server error.
 
 ## v3.2.13
 
