@@ -1,3 +1,5 @@
+## v3.4.0
+
 ## v3.3.0
 
 * **\[MDAPI-420]\[GRAAL]** Migrated to GraalVM 25.4.4.1.1 (JDK 25.0.4); Oracle GraalVM is supported as well.
