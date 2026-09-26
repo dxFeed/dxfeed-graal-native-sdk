@@ -1,3 +1,6 @@
+* Fixed the configuration of a project that adds the SDK from a Linux debug build (`*-debug.zip`) without defining
+  `INSTALL_SHARED` (`install FILES given no DESTINATION!`): the debug info is installed next to the library then.
+
 ## v3.3.1
 
 * Linux debug builds (`*-debug.zip`) include the separate debug info `libDxFeedGraalNativeSdk.so.debug`
