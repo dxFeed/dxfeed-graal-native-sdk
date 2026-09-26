@@ -26,6 +26,9 @@
         <include>*.o</include>
         <include>*.a</include>
         <include>*.pdb</include>
+        <!-- Linux debug builds: the separate debug info (see .gnu_debuglink of the .so) and the gdb helpers. -->
+        <include>*.debug</include>
+        <include>gdb-debughelpers.py</include>
       </includes>
       <excludes>
         <exclude>${native.image.name}.h</exclude>

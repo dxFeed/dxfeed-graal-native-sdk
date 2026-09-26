@@ -66,4 +66,10 @@ if (GRAAL_NATIVE_SDK_INSTALL)
             RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT runtime
             LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
             )
+
+    # Linux debug builds: gdb looks for the separate debug info next to the library (see .gnu_debuglink)
+    set(DXFG_DEBUG_INFO "${DXFG_BIN_LOCATION}/${DXFG_LIB_PREFIX}${PROJECT_NAME}.${DXFG_LIB_EXTENSION}.debug")
+    if (EXISTS "${DXFG_DEBUG_INFO}")
+        install(FILES "${DXFG_DEBUG_INFO}" DESTINATION ${INSTALL_SHARED} COMPONENT runtime)
+    endif ()
 endif ()

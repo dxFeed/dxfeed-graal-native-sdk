@@ -22,6 +22,7 @@ into your projects.
   * [Future development](#future-development)
   * [Implementation details and usage](#Implementation-details-and-usage)
 - [Installation](#installation)
+  * [Debug builds](#debug-builds)
 - [Current State](#current-state)
 - [Contribution](#Contribution)
   * [Scripts](#scripts)
@@ -129,6 +130,26 @@ You can find artifacts here:
 
 * https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/
 * https://dxfeed.jfrog.io/artifactory/nuget-open/com/dxfeed/graal-native/
+
+### Debug builds
+
+The `*-debug.zip` archives contain the SDK built with `-g -O0`.
+
+On Linux, `libDxFeedGraalNativeSdk.so` is stripped, its debug info (DWARF, including the unwind info of the SDK code)
+is in `libDxFeedGraalNativeSdk.so.debug`. Keep it next to the `.so` (gdb finds it by `.gnu_debuglink`;
+`install()` of the bundled `CMakeLists.txt` copies it), otherwise set `debug-file-directory` in gdb.
+`gdb-debughelpers.py` is the GraalVM gdb extension (pretty-printers of Java objects), load it with
+`source <path>/gdb-debughelpers.py` after the SDK library is loaded (e.g. at a breakpoint in the application).
+The Java sources are not included.
+
+The SDK code keeps frame pointers in the debug builds, so the sanitizers (LSan/ASan with the default fast unwinder)
+unwind the stack through the SDK back to the application code. Build the application code with
+`-fno-omit-frame-pointer` for that.
+
+gdb unwinds through the SDK using `libDxFeedGraalNativeSdk.so.debug`. The unwind info that GraalVM generates
+for the SDK entry points does not describe the saved `rbp`, so gdb stops at the first application frame
+that is addressed by `rbp` (`previous frame inner to this frame`). To get the full stack in gdb, build the calling
+code with `-fomit-frame-pointer`.
 
 ## Documentation
 
