@@ -1,3 +1,5 @@
+## v3.5.0
+
 * Fixed the configuration of a project that adds the SDK from a Linux debug build (`*-debug.zip`) without defining
   `INSTALL_SHARED` (`install FILES given no DESTINATION!`): the debug info is installed next to the library then.
 * **Changed:** `dxfg_Promise_awaitWithoutException` returns `DXFG_PROMISE_AWAIT_TIMED_OUT` (1) when the wait times out
