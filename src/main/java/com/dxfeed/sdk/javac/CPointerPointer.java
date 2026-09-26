@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CPointerTo;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CPointerTo(VoidPointer.class)
 public interface CPointerPointer<T extends PointerBase> extends PointerBase {
 

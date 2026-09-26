@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(SourceDirectives.class)
 @CStruct("dxfg_indexed_event_source_t")
 public interface DxfgIndexedEventSourcePointer extends PointerBase {
 

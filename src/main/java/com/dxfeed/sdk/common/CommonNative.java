@@ -12,7 +12,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 public class CommonNative {
 
     @CEntryPoint(

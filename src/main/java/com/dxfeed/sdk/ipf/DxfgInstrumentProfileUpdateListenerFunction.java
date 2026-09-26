@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 @CTypedef(name = "dxfg_ipf_update_listener_function")
 interface DxfgInstrumentProfileUpdateListenerFunction extends CFunctionPointer {
 

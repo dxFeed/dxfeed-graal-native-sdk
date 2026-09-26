@@ -38,7 +38,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CEnum("dxfg_event_clazz_t")
 public enum DxfgEventClazz {
     DXFG_EVENT_QUOTE(Quote.class),                         // LASTING

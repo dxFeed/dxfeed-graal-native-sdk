@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(ModelDirectives.class)
 @CTypedef(name = "dxfg_order_book_model_listener_function")
 public interface DxfgOrderBookModelListenerFunction extends CFunctionPointer {
 

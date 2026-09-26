@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(SymbolDirectives.class)
 @CEnum("dxfg_symbol_type_t")
 public enum DxfgSymbolType {
     STRING,

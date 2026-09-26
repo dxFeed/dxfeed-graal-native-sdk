@@ -11,7 +11,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CEnum("dxfg_rounding_mode_t")
 public enum DxfgRoundingMode {
     DXFG_ROUNDING_MODE_UP(RoundingMode.UP),

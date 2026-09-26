@@ -21,6 +21,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandlePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
@@ -35,7 +36,7 @@ import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(IndexedEventTxModelDirectives.class)
 public class IndexedEventTxModelNative {
 
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_newBuilder", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
@@ -193,16 +194,25 @@ public class IndexedEventTxModelNative {
             throw new IllegalArgumentException("The `listener` pointer is null");
         }
 
-        listener.write(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER.toNative(new Listener() {
+        final class NativeTxModelListener extends NativeListener implements Listener {
             @Override
             public void eventsReceived(final List events, final boolean isSnapshot) {
-                @SuppressWarnings("unchecked") DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList(
-                        (Collection<? extends EventType<?>>) events);
-                int isSnapshotNative = isSnapshot ? 1 : 0;
-                eventsReceived.invoke(CurrentIsolate.getCurrentThread(), eventsNative, isSnapshotNative, userData);
-                NativeUtils.MAPPER_EVENTS.release(eventsNative);
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    @SuppressWarnings("unchecked") DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList(
+                            (Collection<? extends EventType<?>>) events);
+                    int isSnapshotNative = isSnapshot ? 1 : 0;
+                    eventsReceived.invoke(CurrentIsolate.getCurrentThread(), eventsNative, isSnapshotNative, userData);
+                    NativeUtils.MAPPER_EVENTS.release(eventsNative);
+                } finally {
+                    exit();
+                }
             }
-        }));
+        }
+
+        listener.write(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER.toNative(new NativeTxModelListener()));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

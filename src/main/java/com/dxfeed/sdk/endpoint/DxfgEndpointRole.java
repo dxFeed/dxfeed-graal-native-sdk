@@ -19,7 +19,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(EndpointDirectives.class)
 @CEnum("dxfg_endpoint_role_t")
 public enum DxfgEndpointRole {
     DXFG_ENDPOINT_ROLE_FEED(FEED),

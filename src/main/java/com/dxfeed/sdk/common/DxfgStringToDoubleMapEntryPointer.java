@@ -11,7 +11,7 @@ import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.SignedWord;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 @CStruct("dxfg_string_to_double_map_entry_t")
 public interface DxfgStringToDoubleMapEntryPointer extends PointerBase {
 

@@ -17,7 +17,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(QdsDirectives.class)
 public class QdsNative {
 
     @CEntryPoint(

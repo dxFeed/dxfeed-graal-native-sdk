@@ -8,6 +8,8 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.javac.NativeListener;
+import com.dxfeed.sdk.system.IsolateResources;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +20,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 public class InstrumentProfileConnectionNative {
 
     @CEntryPoint(
@@ -30,12 +32,12 @@ public class InstrumentProfileConnectionNative {
             final CCharPointer address,
             final DxfgInstrumentProfileCollector dxfgInstrumentProfileCollector
     ) {
-        return NativeUtils.MAPPER_INSTRUMENT_PROFILE_CONNECTION.toNative(
+        return NativeUtils.MAPPER_INSTRUMENT_PROFILE_CONNECTION.toNative(IsolateResources.register(
                 InstrumentProfileConnection.createConnection(
                         NativeUtils.MAPPER_STRING.toJava(address),
                         NativeUtils.MAPPER_INSTRUMENT_PROFILE_COLLECTOR.toJava(dxfgInstrumentProfileCollector)
                 )
-        );
+        ));
     }
 
     @CEntryPoint(
@@ -132,23 +134,30 @@ public class InstrumentProfileConnectionNative {
             final DxfgStateChangeListenerFunction function,
             final VoidPointer userData
     ) {
-        return NativeUtils.MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toNative(
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(final PropertyChangeEvent changeEvent) {
-                        function.invoke(
-                                CurrentIsolate.getCurrentThread(),
-                                DxfgInstrumentProfileConnectionState.of(
-                                        (InstrumentProfileConnection.State) changeEvent.getOldValue()
-                                ),
-                                DxfgInstrumentProfileConnectionState.of(
-                                        (InstrumentProfileConnection.State) changeEvent.getNewValue()
-                                ),
-                                userData
-                        );
-                    }
+        final class Listener extends NativeListener implements PropertyChangeListener {
+            @Override
+            public void propertyChange(final PropertyChangeEvent changeEvent) {
+                if (!enter()) {
+                    return;
                 }
-        );
+                try {
+                    function.invoke(
+                            CurrentIsolate.getCurrentThread(),
+                            DxfgInstrumentProfileConnectionState.of(
+                                    (InstrumentProfileConnection.State) changeEvent.getOldValue()
+                            ),
+                            DxfgInstrumentProfileConnectionState.of(
+                                    (InstrumentProfileConnection.State) changeEvent.getNewValue()
+                            ),
+                            userData
+                    );
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        return NativeUtils.MAPPER_IPF_CONNECTION_STATE_CHANGE_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(

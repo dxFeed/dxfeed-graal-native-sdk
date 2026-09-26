@@ -23,6 +23,10 @@ into your projects.
   * [Implementation details and usage](#Implementation-details-and-usage)
 - [Installation](#installation)
   * [Debug builds](#debug-builds)
+- [Using the C API](#using-the-c-api)
+  * [Listeners](#listeners)
+  * [Shutdown](#shutdown)
+  * [Network activity](#network-activity)
 - [Current State](#current-state)
 - [Contribution](#Contribution)
   * [Scripts](#scripts)
@@ -150,6 +154,41 @@ gdb unwinds through the SDK using `libDxFeedGraalNativeSdk.so.debug`. The unwind
 for the SDK entry points does not describe the saved `rbp`, so gdb stops at the first application frame
 that is addressed by `rbp` (`previous frame inner to this frame`). To get the full stack in gdb, build the calling
 code with `-fomit-frame-pointer`.
+
+## Using the C API
+
+### Listeners
+
+A listener created by a `dxfg_*Listener_new` function calls its function with the user data until it is deactivated:
+when the last handle of the listener is released (`dxfg_JavaObjectHandler_release`, the clones made by
+`dxfg_JavaObjectHandler_clone` count) or by `dxfg_NativeListener_deactivate`. Both wait for the calls that are
+in progress on other threads, so the user data can be freed right after they return. Do not hold the locks that
+the listener's function takes while releasing it. A listener may be released or deactivated from its own callback.
+
+QD may call a listener once more after `dxfg_DXEndpoint_close`, `dxfg_DXFeedSubscription_close` or
+`dxfg_*_remove*Listener` returns, so remove the listener first and then release it. The state changes
+of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECTING`).
+
+### Shutdown
+
+The threads of an open endpoint do not stop on `Thread.interrupt()`, so `graal_tear_down_isolate` waits
+for them forever while any endpoint is open. Before tearing down the isolate (or exiting the process):
+
+1. Release the listeners (or deactivate them with `dxfg_NativeListener_deactivate`).
+2. Call `dxfg_system_close_all_and_await_termination`: it closes all the endpoints (including the default ones
+   of `dxfg_DXEndpoint_getInstance`, `dxfg_DXFeed_getInstance`, etc.) and instrument profile connections created
+   through the SDK and waits for the termination of the endpoints.
+3. Release the remaining handles and call `graal_tear_down_isolate`.
+
+To find the threads that block the tear-down, pass `-XX:TearDownWarningSeconds=<seconds>` in
+`graal_create_isolate_params_t.argv` (the debug builds use 10 seconds by default).
+
+### Network activity
+
+The QD monitoring started with the first endpoint includes the MARS plugin `TimeSyncTracker`, which sends UDP multicast
+packets (`239.192.51.45:5145` by default) from every process to compare the clocks of the hosts. The SDK disables it
+by default. To enable it, set the system property `com.dxfeed.sdk.TimeSyncTracker.enable` to `true` with
+`dxfg_system_set_property` before creating the first endpoint.
 
 ## Documentation
 
@@ -409,7 +448,10 @@ After changing dependency versions (e.g. `qd.version`), collect the metadata wit
 The script runs the scenario classes (`src/test/java/com/dxfeed/NewCases.java` by default) under the agent,
 accumulates the result in `reachability-metadata.json` and merges the new entries into the legacy files
 (`merge-agent-metadata.py`, existing entries are never removed). Add a new case to `NewCases.java` to cover a new
-feature, then review the diff.
+feature, then review the diff. `-JavaArgs "-Dcases=<case1>,<case2>"` runs only the given cases.
+
+`connectorPropertiesCase` sets every property of the QD connectors, codecs and file parameters the way QD does it
+for `address[property=value]` (by reflection), so that all their setters get into the metadata, not only the used ones.
 
 ### To release a new version
 

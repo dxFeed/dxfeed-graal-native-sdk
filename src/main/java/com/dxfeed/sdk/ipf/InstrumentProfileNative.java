@@ -16,7 +16,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 public class InstrumentProfileNative {
 
     @CEntryPoint(

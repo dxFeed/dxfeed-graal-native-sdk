@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(GlossaryDirectives.class)
 @CStruct("dxfg_price_increments_t")
 public interface DxfgPriceIncrementsHandle extends JavaObjectHandler<PriceIncrements> {
 

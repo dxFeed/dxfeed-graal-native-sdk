@@ -15,7 +15,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
-@CContext(Directives.class)
+@CContext(CandleWebServiceDirectives.class)
 public final class HistoryEndpointNative {
 
     @CEntryPoint(

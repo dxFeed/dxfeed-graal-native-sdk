@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(ModelDirectives.class)
 @CEnum("dxfg_TimeSeriesTxModelSortOrder_t")
 public enum DxfgTimeSeriesTxModelSortOrder {
     NONE(TimeSeriesTxModel.SortOrder.NONE),

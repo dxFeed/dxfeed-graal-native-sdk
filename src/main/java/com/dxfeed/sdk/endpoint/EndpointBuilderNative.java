@@ -7,6 +7,8 @@ import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.system.IsolateResources;
+import com.dxfeed.sdk.system.QdPropertyDefaults;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -15,7 +17,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(EndpointDirectives.class)
 public final class EndpointBuilderNative {
 
     @CEntryPoint(
@@ -109,6 +111,8 @@ public final class EndpointBuilderNative {
             final IsolateThread ignoreThread,
             final DxfgEndpointBuilder builder
     ) {
-        return NativeUtils.MAPPER_ENDPOINT.toNative(NativeUtils.MAPPER_ENDPOINT_BUILDER.toJava(builder).build());
+        QdPropertyDefaults.apply();
+        return NativeUtils.MAPPER_ENDPOINT.toNative(
+                IsolateResources.register(NativeUtils.MAPPER_ENDPOINT_BUILDER.toJava(builder).build()));
     }
 }

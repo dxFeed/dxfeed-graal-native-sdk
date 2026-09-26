@@ -13,8 +13,17 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(SystemDirectives.class)
 public final class SystemNative {
+
+    @CEntryPoint(
+            name = "dxfg_system_close_all_and_await_termination",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int closeAllAndAwaitTermination(final IsolateThread ignoredThread) throws InterruptedException {
+        IsolateResources.closeAllAndAwaitTermination();
+        return EXECUTE_SUCCESSFULLY;
+    }
 
     @CEntryPoint(
             name = "dxfg_system_set_property",

@@ -29,7 +29,7 @@ import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CDoublePointer;
 
-@CContext(Directives.class)
+@CContext(GlossaryDirectives.class)
 public class GlossaryNative {
 
     @CEntryPoint(name = "dxfg_AdditionalUnderlyings_EMPTY", exceptionHandler = ExceptionHandlerReturnMinusOne.class)

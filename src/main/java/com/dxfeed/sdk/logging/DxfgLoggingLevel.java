@@ -11,7 +11,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(LoggingDirectives.class)
 @CEnum("dxfg_logging_level_t")
 public enum DxfgLoggingLevel {
     DXFG_LOGGING_LEVEL_ALL(Level.ALL),

@@ -5,6 +5,7 @@ import com.dxfeed.event.EventType;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -24,11 +25,13 @@ public class TxModelListenerBridge {
   )
   public static TxModelListenerCStruct dxfg_TxModelListener_new(IsolateThread ignoreThread,
       DxfgTxModelListenerFunctionEventsReceived functionEventsReceived, VoidPointer userData) {
-    return TxModelListenerUtils.MAPPER.toNative(
-      new TxModelListener() {
-
-        @Override
-        public void eventsReceived(final com.dxfeed.event.IndexedEventSource source, final List events, final boolean isSnapshot) {
+    final class Listener extends NativeListener implements TxModelListener {
+      @Override
+      public void eventsReceived(final com.dxfeed.event.IndexedEventSource source, final List events, final boolean isSnapshot) {
+        if (!enter()) {
+          return;
+        }
+        try {
           DxfgIndexedEventSourcePointer sourceNative = NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.toNative(source);
           DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList((Collection<? extends EventType<?>>) events);
           boolean isSnapshotNative = isSnapshot;
@@ -41,9 +44,13 @@ public class TxModelListenerBridge {
           );
           NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.release(sourceNative);
           NativeUtils.MAPPER_EVENTS.release(eventsNative);
+        } finally {
+          exit();
         }
+      }
+    }
 
-    });
+    return TxModelListenerUtils.MAPPER.toNative(new Listener());
   }
 
   public static class Directives implements CContext.Directives {

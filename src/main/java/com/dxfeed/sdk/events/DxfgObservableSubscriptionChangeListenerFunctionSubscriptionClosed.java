@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CTypedef(name = "dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed")
 public interface DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed
         extends CFunctionPointer {

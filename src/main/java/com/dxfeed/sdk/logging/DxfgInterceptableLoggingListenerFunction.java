@@ -13,7 +13,7 @@ import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(LoggingDirectives.class)
 @CTypedef(name = "dxfg_logging_listener_function_t")
 public interface DxfgInterceptableLoggingListenerFunction extends CFunctionPointer {
 

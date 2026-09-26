@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(ModelDirectives.class)
 @CEnum("dxfg_order_book_model_filter_t")
 public enum DxfgOrderBookModelFilter {
     COMPOSITE(OrderBookModelFilter.COMPOSITE),

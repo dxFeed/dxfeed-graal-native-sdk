@@ -14,7 +14,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(CandleWebServiceDirectives.class)
 @CEnum("dxfg_history_endpoint_compression_t")
 public enum DxfgHistoryEndpointCompression {
     DXFG_HISTORY_ENDPOINT_COMPRESSION_NONE(NONE),

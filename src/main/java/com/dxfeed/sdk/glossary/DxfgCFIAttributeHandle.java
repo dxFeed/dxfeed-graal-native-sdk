@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(GlossaryDirectives.class)
 @CStruct("dxfg_cfi_attribute_t")
 public interface DxfgCFIAttributeHandle extends JavaObjectHandler<CFI.Attribute> {
 

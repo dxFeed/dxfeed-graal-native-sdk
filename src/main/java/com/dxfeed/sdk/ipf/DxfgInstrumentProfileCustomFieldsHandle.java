@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 @CStruct("dxfg_instrument_profile_custom_fields_t")
 public interface DxfgInstrumentProfileCustomFieldsHandle extends JavaObjectHandler<InstrumentProfileCustomFields> {
 

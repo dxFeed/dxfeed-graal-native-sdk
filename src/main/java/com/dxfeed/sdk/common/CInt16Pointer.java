@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CPointerTo;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.SignedWord;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 @CPointerTo(nameOfCType = "int16_t")
 public interface CInt16Pointer extends PointerBase {
 

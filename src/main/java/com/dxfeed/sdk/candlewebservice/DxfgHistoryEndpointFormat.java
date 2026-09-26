@@ -14,7 +14,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(CandleWebServiceDirectives.class)
 @CEnum("dxfg_history_endpoint_format_t")
 public enum DxfgHistoryEndpointFormat {
     DXFG_HISTORY_ENDPOINT_FORMAT_TEXT(TEXT),

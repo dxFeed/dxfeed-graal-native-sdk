@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 @CTypedef(name = "dxfg_day_filter_function")
 interface DxfgDayFilterFunction extends CFunctionPointer {
 

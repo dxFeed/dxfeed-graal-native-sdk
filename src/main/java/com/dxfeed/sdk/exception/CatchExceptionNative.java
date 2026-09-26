@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
-@CContext(Directives.class)
+@CContext(ExceptionDirectives.class)
 public final class CatchExceptionNative {
 
     @CEntryPoint(

@@ -26,6 +26,7 @@
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
+    <debug.buildArg4>-DDXFG1=0</debug.buildArg4>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -330,6 +331,8 @@
           (the LSan/ASan fast unwinder, perf, etc.) walk the stack through the SDK code.
         -->
         <debug.buildArg3>-H:+PreserveFramePointer</debug.buildArg3>
+        <!-- Prints the threads that block graal_tear_down_isolate if it takes longer (-XX:TearDownWarningSeconds at run time). -->
+        <debug.buildArg4>-R:TearDownWarningSeconds=10</debug.buildArg4>
       </properties>
     </profile>
     <profile>
@@ -468,6 +471,7 @@
                 <buildArg>${debug.buildArg1}</buildArg>
                 <buildArg>${debug.buildArg2}</buildArg>
                 <buildArg>${debug.buildArg3}</buildArg>
+                <buildArg>${debug.buildArg4}</buildArg>
               </buildArgs>
               <debug>${isDebug}</debug>
             </configuration>
@@ -701,6 +705,7 @@
             <buildArg>${debug.buildArg1}</buildArg>
             <buildArg>${debug.buildArg2}</buildArg>
             <buildArg>${debug.buildArg3}</buildArg>
+            <buildArg>${debug.buildArg4}</buildArg>
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>

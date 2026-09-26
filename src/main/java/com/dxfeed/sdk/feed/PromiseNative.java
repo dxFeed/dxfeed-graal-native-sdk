@@ -30,8 +30,14 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(FeedDirectives.class)
 public class PromiseNative {
+
+    /**
+     * The result of {@code dxfg_Promise_awaitWithoutException} when the timeout elapsed
+     * ({@code DXFG_PROMISE_AWAIT_TIMED_OUT} in {@code dxfg_feed.h}).
+     */
+    private static final int PROMISE_AWAIT_TIMED_OUT = 1;
 
     @CEntryPoint(
             name = "dxfg_DXFeed_getLastEventPromise",
@@ -239,9 +245,10 @@ public class PromiseNative {
             final DxfgPromise dxfgPromise,
             final int timeoutInMilliseconds
     ) {
-        NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise)
+        final boolean completed = NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise)
                 .awaitWithoutException(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
-        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+        // 0 (not 1) for "completed" keeps the existing callers that compare the result with 0 working
+        return completed ? ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY : PROMISE_AWAIT_TIMED_OUT;
     }
 
     @CEntryPoint(

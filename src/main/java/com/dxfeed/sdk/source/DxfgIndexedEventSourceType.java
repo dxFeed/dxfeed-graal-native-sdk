@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(SourceDirectives.class)
 @CEnum("dxfg_indexed_event_source_type_t")
 public enum DxfgIndexedEventSourceType {
     INDEXED_EVENT_SOURCE,

@@ -27,7 +27,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.word.Pointer;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 public class ScheduleNative {
 
     @CEntryPoint(

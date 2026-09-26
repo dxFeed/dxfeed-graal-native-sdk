@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(FeedDirectives.class)
 @CStruct("dxfg_feed_t")
 public interface DxfgFeed extends JavaObjectHandler<DXFeed> {
 

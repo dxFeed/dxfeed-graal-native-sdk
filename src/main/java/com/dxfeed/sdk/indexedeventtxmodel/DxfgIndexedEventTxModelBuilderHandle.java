@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
 @SuppressWarnings("rawtypes")
-@CContext(Directives.class)
+@CContext(IndexedEventTxModelDirectives.class)
 @CStruct("dxfg_indexed_event_tx_model_builder_t")
 public interface DxfgIndexedEventTxModelBuilderHandle extends JavaObjectHandler<IndexedEventTxModel.Builder> {
 

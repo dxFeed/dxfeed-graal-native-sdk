@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CTypedef(name = "dxfg_finalize_function")
 public interface DxfgFinalizeFunction extends CFunctionPointer {
 

@@ -1,13 +1,30 @@
 * Fixed the configuration of a project that adds the SDK from a Linux debug build (`*-debug.zip`) without defining
   `INSTALL_SHARED` (`install FILES given no DESTINATION!`): the debug info is installed next to the library then.
+* **Changed:** `dxfg_Promise_awaitWithoutException` returns `DXFG_PROMISE_AWAIT_TIMED_OUT` (1) when the wait times out
+  (the promise is cancelled then), it returned 0 ("completed") before. 0 still means "completed", -1 means an error.
+* **Changed:** the listeners created by the `dxfg_*Listener_new` functions stop calling their functions when their last
+  handle is released (`dxfg_JavaObjectHandler_release`), which waits for the calls in progress, so the user data can be
+  freed after that. Before, a released listener kept calling its function with the old user data.
+  The new `dxfg_NativeListener_deactivate` does the same explicitly. See [Listeners](README.md#listeners).
+* **Changed:** the QD `TimeSyncTracker` (UDP multicast to `239.192.51.45:5145` from every process) is disabled by default,
+  set the system property `com.dxfeed.sdk.TimeSyncTracker.enable=true` to enable it.
+  See [Network activity](README.md#network-activity).
+* Added `dxfg_system_close_all_and_await_termination`: closes all the endpoints and instrument profile connections
+  created through the SDK, so that `graal_tear_down_isolate` does not wait for their threads forever.
+  See [Shutdown](README.md#shutdown). The debug builds print the threads that block the isolate tear-down
+  for more than 10 seconds (`-XX:TearDownWarningSeconds`).
+* Fixed `MissingReflectionRegistrationError` for the connector properties in addresses (e.g. `:7700[bindAddr=127.0.0.1]`):
+  all the properties of the QD connectors, codecs (`ssl`, `tls`, `shaped`, `delayed`) and file/tape parameters
+  are registered for reflection.
+* `DXFG_EXECUTE_SUCCESSFULLY` and `DXFG_EXECUTE_FAIL` compile in C (they used the C++ cast syntax).
+* C API documentation: the endpoint creation functions (`dxfg_DXEndpoint_getInstance2` creates a new endpoint on every
+  call), closing, executor, state and event listeners, promises.
 
 ## v3.3.1
 
 * Linux debug builds (`*-debug.zip`) include the separate debug info `libDxFeedGraalNativeSdk.so.debug`
   and `gdb-debughelpers.py`; the SDK code keeps frame pointers, so LSan/ASan and gdb unwind the stack through the SDK.
   See [Debug builds](README.md#debug-builds).
-
-## v3.4.0
 
 ## v3.3.0
 

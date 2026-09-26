@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CStruct("dxfg_time_zone_t")
 public interface DxfgTimeZone extends JavaObjectHandler<TimeZone> {
 

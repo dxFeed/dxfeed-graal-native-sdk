@@ -12,7 +12,7 @@ import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @SuppressWarnings("rawtypes")
-@CContext(Directives.class)
+@CContext(IndexedEventTxModelDirectives.class)
 @CTypedef(
         name = "dxfg_IndexedEventTxModel_Listener_eventsReceived_f"
 )

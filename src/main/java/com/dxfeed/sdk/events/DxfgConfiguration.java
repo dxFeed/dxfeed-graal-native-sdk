@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_configuration_t")
 public interface DxfgConfiguration extends DxfgEventType {
 

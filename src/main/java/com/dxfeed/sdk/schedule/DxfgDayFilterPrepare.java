@@ -11,7 +11,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 @CEnum("dxfg_day_filter_prepare_t")
 public enum DxfgDayFilterPrepare {
     DXFG_DAY_FILTER_ANY(DayFilter.ANY),

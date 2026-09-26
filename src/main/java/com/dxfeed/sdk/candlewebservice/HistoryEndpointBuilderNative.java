@@ -12,7 +12,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 
-@CContext(Directives.class)
+@CContext(CandleWebServiceDirectives.class)
 public class HistoryEndpointBuilderNative {
 
     @CEntryPoint(

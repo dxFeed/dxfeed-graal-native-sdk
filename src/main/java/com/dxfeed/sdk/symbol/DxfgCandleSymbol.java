@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(SymbolDirectives.class)
 @CStruct("dxfg_candle_symbol_t")
 public interface DxfgCandleSymbol extends DxfgSymbol {
 

@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(ExceptionDirectives.class)
 @CStruct("dxfg_exception_t")
 public interface DxfgException extends PointerBase {
 

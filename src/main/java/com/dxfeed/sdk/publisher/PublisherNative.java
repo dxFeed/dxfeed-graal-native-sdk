@@ -10,6 +10,7 @@ import static com.dxfeed.sdk.NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_L
 import static com.dxfeed.sdk.NativeUtils.MAPPER_PUBLISHER;
 import static com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
+import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXPublisher;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
@@ -17,11 +18,13 @@ import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.system.IsolateResources;
+import com.dxfeed.sdk.system.QdPropertyDefaults;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
-@CContext(Directives.class)
+@CContext(PublisherDirectives.class)
 public class PublisherNative {
 
     @CEntryPoint(
@@ -31,6 +34,8 @@ public class PublisherNative {
     public static DxfgPublisher dxfg_DXPublisher_getInstance(
             final IsolateThread ignoredThread
     ) {
+        QdPropertyDefaults.apply();
+        IsolateResources.register(DXEndpoint.getInstance(DXEndpoint.Role.PUBLISHER)); // DXPublisher.getInstance() is its publisher
         return MAPPER_PUBLISHER.toNative(DXPublisher.getInstance());
     }
 

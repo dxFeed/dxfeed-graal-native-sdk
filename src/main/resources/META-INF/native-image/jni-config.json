@@ -19,6 +19,7 @@
 },
 {
   "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}],
   "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
 },
 {

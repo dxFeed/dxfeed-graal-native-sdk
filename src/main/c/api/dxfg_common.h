@@ -31,13 +31,13 @@ extern "C" {
 /**
  * A successful result that any dxFeed Graal Native SDK function can return.
  */
-#define DXFG_EXECUTE_SUCCESSFULLY int32_t(0)
+#define DXFG_EXECUTE_SUCCESSFULLY ((int32_t)0)
 
 /**
  * A result that signals an error that any dxFeed Graal Native SDK function can return. For information about the thrown
  * exception, see the dxfg_get_and_clear_thread_exception_t() function.
  */
-#define DXFG_EXECUTE_FAIL int32_t(-1)
+#define DXFG_EXECUTE_FAIL ((int32_t)-1)
 
 /// Single map entry. A pair of string and double.
 typedef struct dxfg_string_to_double_map_entry_t {

@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.SignedWord;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CStruct("dxfg_java_object_handler")
 public interface JavaObjectHandler<T> extends PointerBase {
 

@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(ExceptionDirectives.class)
 @CStruct("dxfg_stack_trace_element_t")
 public interface DxfgStackTraceElement extends PointerBase {
 

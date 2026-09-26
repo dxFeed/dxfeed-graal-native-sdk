@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.type.CTypedef;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(FeedDirectives.class)
 @CTypedef(name = "dxfg_promise_handler_function")
 interface DxfgPromiseHandlerFunction extends CFunctionPointer {
 

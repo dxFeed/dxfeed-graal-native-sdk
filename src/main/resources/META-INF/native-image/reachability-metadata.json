@@ -14,11 +14,55 @@
       "type": "com.devexperts.annotation.Description"
     },
     {
+      "type": "com.devexperts.connector.codec.CodecConnectionFactory",
+      "methods": [
+        {
+          "name": "getChunkPool",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.connector.codec.delayed.DelayedCodecFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.connector.codec.delayed.DelayedConnectionFactory",
+      "methods": [
+        {
+          "name": "getBufferLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelay",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBufferLimit",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setDelay",
+          "parameterTypes": [
+            "long"
+          ]
         }
       ]
     },
@@ -32,6 +76,21 @@
       ]
     },
     {
+      "type": "com.devexperts.connector.codec.shaped.ShapedConnectionFactory",
+      "methods": [
+        {
+          "name": "getOutLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "setOutLimit",
+          "parameterTypes": [
+            "double"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.connector.codec.ssl.SSLCodecFactory",
       "methods": [
         {
@@ -41,14 +100,181 @@
       ]
     },
     {
+      "type": "com.devexperts.connector.codec.ssl.SSLConnectionFactory",
+      "methods": [
+        {
+          "name": "getCipherSuites",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyStore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyStorePassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyStoreProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyStoreType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProtocols",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskExecutor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTrustStore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTrustStorePassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTrustStoreProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTrustStoreType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isNeedClientAuth",
+          "parameterTypes": []
+        },
+        {
+          "name": "isServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWantClientAuth",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCipherSuites",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyStore",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyStorePassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyStoreProvider",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyStoreType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNeedClientAuth",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setProtocols",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setServer",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setTaskThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setTrustStore",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTrustStorePassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTrustStoreProvider",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTrustStoreType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWantClientAuth",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.connector.proto.ApplicationConnectionFactory",
       "methods": [
+        {
+          "name": "getChunkPool",
+          "parameterTypes": []
+        },
         {
           "name": "getName",
           "parameterTypes": []
         },
         {
           "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.io.ChunkPool"
+    },
+    {
+      "type": "com.devexperts.io.StreamCompression",
+      "methods": [
+        {
+          "name": "valueOf",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -131,22 +357,113 @@
       ]
     },
     {
+      "type": "com.devexperts.mdd.auth.entitle.EntitleLoginHandlerFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.qd.dxlink.websocket.application.DxLinkWebSocketApplicationConnectionFactory",
       "methods": [
         {
+          "name": "getAcceptAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAcceptEventFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getApplicationVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeartbeatTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLogin",
+          "parameterTypes": []
+        },
+        {
           "name": "getRequestedAggregationPeriod",
           "parameterTypes": []
+        },
+        {
+          "name": "setAcceptAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setAcceptEventFields",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setApplicationVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHeartbeatTimeout",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
         },
         {
           "name": "setLogin",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "setRequestedAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
         }
       ]
     },
     {
-      "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnector"
+      "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnector",
+      "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProxyHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProxyPort",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "com.devexperts.qd.dxlink.websocket.transport.DxLinkClientWebSocketConnectorMBean",
@@ -162,6 +479,18 @@
         {
           "name": "getProxyPort",
           "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProxyPort",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -299,11 +628,182 @@
       ]
     },
     {
+      "type": "com.devexperts.qd.ng.RecordFilter"
+    },
+    {
+      "type": "com.devexperts.qd.QDCollector"
+    },
+    {
+      "type": "com.devexperts.qd.QDFilter"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AbstractMessageConnector",
+      "methods": [
+        {
+          "name": "getDefaultAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFieldReplacer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReconnectDelay",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestedAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadPriority",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUser",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDefaultAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFieldReplacer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMaxAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMinAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReconnectDelay",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setRequestedAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setThreadPriority",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setUser",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.AbstractServerConnector",
+      "methods": [
+        {
+          "name": "getBindAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxConnections",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBindAddr",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setLocalPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxConnections",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.qd.qtp.AgentAdapter"
     },
     {
       "type": "com.devexperts.qd.qtp.AgentAdapter$Factory",
       "methods": [
+        {
+          "name": "getAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getChannels",
+          "parameterTypes": []
+        },
         {
           "name": "getDefaultAggregationPeriod",
           "parameterTypes": []
@@ -315,6 +815,60 @@
         {
           "name": "getMinAggregationPeriod",
           "parameterTypes": []
+        },
+        {
+          "name": "getSubscriptionExecutor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubscriptionKeepAlive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubscriptionThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setChannels",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDefaultAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setMaxAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setMinAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setSubscriptionKeepAlive",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setSubscriptionThreads",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -323,6 +877,82 @@
     },
     {
       "type": "com.devexperts.qd.qtp.AgentChannel"
+    },
+    {
+      "type": "com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.ChannelShaper",
+      "methods": [
+        {
+          "name": "getAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCollector",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubscriptionFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAggregationPeriod",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setDefaultAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setMaxAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setMinAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setWeight",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "com.devexperts.qd.qtp.DistributorAdapter$Factory",
@@ -334,6 +964,18 @@
         {
           "name": "getRequestedAggregationPeriod",
           "parameterTypes": []
+        },
+        {
+          "name": "setFieldReplacer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRequestedAggregationPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
         }
       ]
     },
@@ -347,12 +989,139 @@
       ]
     },
     {
+      "type": "com.devexperts.qd.qtp.DynamicChannelShaper"
+    },
+    {
       "type": "com.devexperts.qd.qtp.file.FileConnector",
       "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelayed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResyncOn",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStart",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStop",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCycle",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIgnoreTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSchemeKnown",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setCycle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setDelayed",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setIgnoreTime",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setReadAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setResyncOn",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSchemeKnown",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
         {
           "name": "setSpeed",
           "parameterTypes": [
             "double"
+          ]
+        },
+        {
+          "name": "setStart",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setStop",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
           ]
         }
       ]
@@ -420,6 +1189,84 @@
         {
           "name": "isSchemeKnown",
           "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setCycle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setDelayed",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setIgnoreTime",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setReadAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setResyncOn",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSchemeKnown",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setSpeed",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setStart",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setStop",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
+          ]
         }
       ]
     },
@@ -438,12 +1285,350 @@
       ]
     },
     {
-      "type": "com.devexperts.qd.qtp.file.TapeConnector",
+      "type": "com.devexperts.qd.qtp.file.FileReaderParams$Default",
       "methods": [
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelayTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFieldReplacer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResyncOn",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStartTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStopTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUser",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCycle",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIgnoreTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSchemeKnown",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setCycle",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setDelayTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setFieldReplacer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
         {
           "name": "setFormat",
           "parameterTypes": [
             "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setIgnoreTime",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReadAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setResyncOn",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSchemeKnown",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setSpeed",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setStartTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setStopTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
+          ]
+        },
+        {
+          "name": "setUser",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.FileWriterParams$Default",
+      "methods": [
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOpt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSaveAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSplit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTmpDir",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setOpt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSaveAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSplit",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setStorageSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setStorageTime",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
+          ]
+        },
+        {
+          "name": "setTmpDir",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.file.TapeConnector",
+      "methods": [
+        {
+          "name": "getCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOpt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSaveAs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSplit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStorageTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTmpDir",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setOpt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSaveAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSplit",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setStorageSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setStorageTime",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
+          ]
+        },
+        {
+          "name": "setTmpDir",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         }
       ]
@@ -495,6 +1680,54 @@
         {
           "name": "getTmpDir",
           "parameterTypes": []
+        },
+        {
+          "name": "setCompression",
+          "parameterTypes": [
+            "com.devexperts.io.StreamCompression"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.FileFormat"
+          ]
+        },
+        {
+          "name": "setOpt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSaveAs",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.MessageType"
+          ]
+        },
+        {
+          "name": "setSplit",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setStorageSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setStorageTime",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.file.TimestampsType"
+          ]
         }
       ]
     },
@@ -502,10 +1735,35 @@
       "type": "com.devexperts.qd.qtp.file.TapeConnectorMXBean"
     },
     {
+      "type": "com.devexperts.qd.qtp.file.TimestampsType",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.qd.qtp.MessageAdapter$AbstractFactory",
       "methods": [
         {
+          "name": "getFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStripeFilter",
+          "parameterTypes": []
+        },
+        {
           "name": "setFilter",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setStripeFilter",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -516,12 +1774,84 @@
       "type": "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
       "methods": [
         {
+          "name": "getAuth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeartbeatPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeartbeatTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitialHeartbeatPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLogin",
+          "parameterTypes": []
+        },
+        {
           "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRateLimit",
           "parameterTypes": []
         },
         {
           "name": "getUser",
           "parameterTypes": []
+        },
+        {
+          "name": "setAuth",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHeartbeatPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setHeartbeatTimeout",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setInitialHeartbeatPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setLogin",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRateLimit",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUser",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -636,6 +1966,47 @@
         {
           "name": "isActive",
           "parameterTypes": []
+        },
+        {
+          "name": "setMaxAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMinAggregationPeriod",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReconnectDelay",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setThreadPriority",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.MessageType",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -647,6 +2018,87 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.nio.NioServerConnector",
+      "methods": [
+        {
+          "name": "getReaderThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSocketTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriterThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "setReaderThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSocketTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setWriterThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.nio.NioServerConnectorMBean",
+      "methods": [
+        {
+          "name": "getReaderPoolCounters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReaderThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSocketTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriterPoolCounters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriterThreads",
+          "parameterTypes": []
+        },
+        {
+          "name": "setReaderThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSocketTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setWriterThreads",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.nio.NioServerConnectorMXBean"
     },
     {
       "type": "com.devexperts.qd.qtp.ServerConnectorMBean",
@@ -666,11 +2118,125 @@
         {
           "name": "isAccepting",
           "parameterTypes": []
+        },
+        {
+          "name": "setBindAddr",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setLocalPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxConnections",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
     {
-      "type": "com.devexperts.qd.qtp.socket.ClientSocketConnector"
+      "type": "com.devexperts.qd.qtp.socket.ClientSocketConnector",
+      "methods": [
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRestoreTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStripe",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTls",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTrustManager",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setConnectOrder",
+          "parameterTypes": [
+            "com.devexperts.qd.qtp.socket.ConnectOrder"
+          ]
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setProxyHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProxyPort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRestoreTime",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setStripe",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTls",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
     },
     {
       "type": "com.devexperts.qd.qtp.socket.ClientSocketConnectorMBean",
@@ -714,6 +2280,18 @@
         {
           "name": "getStripe",
           "parameterTypes": []
+        },
+        {
+          "name": "setAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProxyPort",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -721,7 +2299,30 @@
       "type": "com.devexperts.qd.qtp.socket.ClientSocketConnectorMXBean"
     },
     {
-      "type": "com.devexperts.qd.qtp.socket.ServerSocketConnector"
+      "type": "com.devexperts.qd.qtp.socket.ConnectOrder",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.qd.qtp.socket.ServerSocketConnector",
+      "methods": [
+        {
+          "name": "getTls",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTls",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
     },
     {
       "type": "com.devexperts.qd.qtp.socket.ServerSocketConnectorMBean"
@@ -812,6 +2413,12 @@
       ]
     },
     {
+      "type": "com.devexperts.qd.stats.QDStats"
+    },
+    {
+      "type": "com.devexperts.qd.SubscriptionFilter"
+    },
+    {
       "type": "com.devexperts.qd.tools.TimeSyncTracker"
     },
     {
@@ -856,6 +2463,17 @@
       "type": "com.devexperts.qd.tools.TimeSyncTrackerMXBean"
     },
     {
+      "type": "com.devexperts.rmi.impl.AdvertisementFilter",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
       "methods": [
         {
@@ -865,13 +2483,67 @@
       ]
     },
     {
-      "type": "com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory"
+      "type": "com.devexperts.rmi.impl.RMIConnectorInitializer$AdapterFactory",
+      "methods": [
+        {
+          "name": "getAdvertise",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServices",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAdvertise",
+          "parameterTypes": [
+            "com.devexperts.rmi.impl.AdvertisementFilter"
+          ]
+        },
+        {
+          "name": "setServices",
+          "parameterTypes": [
+            "com.devexperts.rmi.impl.ServiceFilter"
+          ]
+        },
+        {
+          "name": "setWeight",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "com.devexperts.rmi.impl.RMIMessageAdapter"
     },
     {
       "type": "com.devexperts.rmi.impl.RMIMessageAdapterMXBean"
+    },
+    {
+      "type": "com.devexperts.rmi.impl.ServiceFilter",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.devexperts.util.TimePeriod",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "com.dxfeed.api.impl.DXEndpointImpl$1"
@@ -881,6 +2553,15 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.api.impl.DXFeedScheme",
+      "methods": [
+        {
+          "name": "getInstance",
           "parameterTypes": []
         }
       ]
@@ -1230,6 +2911,108 @@
       ]
     },
     {
+      "type": "com.dxfeed.ipf.filter.IPFSymbolFilter$Config",
+      "methods": [
+        {
+          "name": "getSchedule",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpdate",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSchedule",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUpdate",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setUser",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.ondemand.impl.connector.OnDemandConnector",
+      "methods": [
+        {
+          "name": "getCacheLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileCacheLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileCachePath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTickPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCacheLimit",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setFileCacheLimit",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setFileCachePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSpeed",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setTickPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.dxfeed.ondemand.impl.connector.OnDemandConnectorFactory",
       "methods": [
         {
@@ -1239,7 +3022,123 @@
       ]
     },
     {
+      "type": "com.dxfeed.ondemand.impl.connector.OnDemandConnectorMBean",
+      "methods": [
+        {
+          "name": "getCacheLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileCacheLimit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileCachePath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTickPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCacheLimit",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setFileCacheLimit",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setSpeed",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setTickPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.dxfeed.ondemand.impl.connector.OnDemandConnectorMXBean"
+    },
+    {
       "type": "com.dxfeed.scheme.impl.DXSchemeFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.AESCipher$General",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ARCFOURCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESedeCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.GaloisCounterMode$AESGCM",
       "methods": [
         {
           "name": "<init>",
@@ -1346,6 +3245,9 @@
       "type": "com.sun.management.ThreadMXBean"
     },
     {
+      "type": "com.sun.management.UnixOperatingSystemMXBean"
+    },
+    {
       "type": "com.sun.management.VMOption"
     },
     {
@@ -1401,9 +3303,18 @@
     },
     {
       "type": "java.lang.Boolean",
+      "jniAccessible": true,
       "fields": [
         {
           "name": "TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBoolean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -1600,6 +3511,9 @@
       "serializable": true
     },
     {
+      "type": "java.security.AlgorithmParametersSpi"
+    },
+    {
       "type": "java.util.Arrays",
       "jniAccessible": true,
       "methods": [
@@ -1614,6 +3528,9 @@
     {
       "type": "java.util.Collections$EmptyList",
       "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.Executor"
     },
     {
       "type": "java.util.Date"
@@ -1695,6 +3612,9 @@
     },
     {
       "type": "javax.management.StandardEmitterMBean"
+    },
+    {
+      "type": "javax.net.ssl.TrustManager"
     },
     {
       "type": "jdk.internal.misc.Unsafe",
@@ -1809,6 +3729,15 @@
       "type": "sun.net.www.protocol.dxlink.Handler"
     },
     {
+      "type": "sun.net.www.protocol.http.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "sun.net.www.protocol.jar.Handler",
       "methods": [
         {
@@ -1828,6 +3757,12 @@
     },
     {
       "type": "sun.net.www.protocol.localhost.Handler"
+    },
+    {
+      "type": "sun.net.www.protocol.nio.Handler"
+    },
+    {
+      "type": "sun.net.www.protocol.ondemand.Handler"
     },
     {
       "type": "sun.net.www.protocol.tape.Handler"
@@ -1906,6 +3841,17 @@
       ]
     },
     {
+      "type": "sun.security.provider.NativePRNG",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
       "type": "sun.security.provider.SHA",
       "methods": [
         {
@@ -1916,6 +3862,15 @@
     },
     {
       "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.SSLContextImpl$TLSContext",
       "methods": [
         {
           "name": "<init>",
@@ -1937,6 +3892,9 @@
     },
     {
       "type": "sun.util.resources.cldr.TimeZoneNames"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en"
     }
   ],
   "resources": [
@@ -1957,6 +3915,9 @@
     },
     {
       "glob": "META-INF/services/com.devexperts.mars.common.MARSPlugin$Factory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.DataScheme"
     },
     {
       "glob": "META-INF/services/com.devexperts.qd.DataSchemeFactory"
@@ -1993,6 +3954,12 @@
     },
     {
       "glob": "META-INF/services/com.devexperts.qd.qtp.auth.ChannelShapersFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.auth.QDAuthRealmFactory"
+    },
+    {
+      "glob": "META-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory"
     },
     {
       "glob": "META-INF/services/com.devexperts.qd.qtp.socket.SocketSourceFactory"

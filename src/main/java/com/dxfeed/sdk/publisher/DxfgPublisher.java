@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(PublisherDirectives.class)
 @CStruct("dxfg_publisher_t")
 public interface DxfgPublisher extends JavaObjectHandler<DXPublisher> {
 

@@ -18,7 +18,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CLongPointer;
 
-@CContext(Directives.class)
+@CContext(SubscriptionControllerDirectives.class)
 public class SubscriptionControllerNative {
 
     @CEntryPoint(name = "dxfg_SubscriptionController_attach", exceptionHandler = ExceptionHandlerReturnMinusOne.class)

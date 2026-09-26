@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(ModelDirectives.class)
 @CStruct("dxfg_indexed_event_model_t")
 public interface DxfgIndexedEventModel extends JavaObjectHandler<IndexedEventModel<?>> {
 

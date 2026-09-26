@@ -7,18 +7,21 @@ import static com.dxfeed.sdk.NativeUtils.MAPPER_ENDPOINT;
 import static com.dxfeed.sdk.NativeUtils.MAPPER_ON_DEMAND_SERVICE;
 import static com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
 
+import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.ondemand.OnDemandService;
 import com.dxfeed.sdk.endpoint.DxfgEndpoint;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOneLong;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNegativeInfinityDouble;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.system.IsolateResources;
+import com.dxfeed.sdk.system.QdPropertyDefaults;
 import java.util.Date;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 
-@CContext(Directives.class)
+@CContext(OnDemandDirectives.class)
 public class OnDemandServiceNative {
 
     @CEntryPoint(
@@ -28,6 +31,8 @@ public class OnDemandServiceNative {
     public static DxfgOnDemandService dxfg_OnDemandService_getInstance(
             final IsolateThread ignoredThread
     ) {
+        QdPropertyDefaults.apply();
+        IsolateResources.register(DXEndpoint.getInstance(DXEndpoint.Role.ON_DEMAND_FEED)); // used by OnDemandService.getInstance()
         return MAPPER_ON_DEMAND_SERVICE.toNative(OnDemandService.getInstance());
     }
 

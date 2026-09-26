@@ -8,7 +8,7 @@ import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointerPointer;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_indexed_event_source_list")
 public interface DxfgIndexedEventSourceList extends CList<DxfgIndexedEventSourcePointerPointer> {
 

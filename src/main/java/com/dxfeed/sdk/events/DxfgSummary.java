@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_summary_t")
 public interface DxfgSummary extends DxfgMarketEvent {
 

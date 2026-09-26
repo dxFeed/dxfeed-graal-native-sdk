@@ -16,7 +16,7 @@ import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CDoublePointer;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 public class InstrumentProfileFieldNative {
 
     @CEntryPoint(

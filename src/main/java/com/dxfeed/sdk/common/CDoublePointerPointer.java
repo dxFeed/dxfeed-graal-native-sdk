@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CPointerTo;
 import org.graalvm.nativeimage.c.type.CDoublePointer;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 @CPointerTo(CDoublePointer.class)
 public interface CDoublePointerPointer extends
         CPointerPointer<CDoublePointer> {

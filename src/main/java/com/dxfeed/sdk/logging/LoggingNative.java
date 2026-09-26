@@ -8,6 +8,7 @@ import com.devexperts.logging.InterceptableLoggingListener;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
+import com.dxfeed.sdk.javac.NativeListener;
 import java.util.logging.Level;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -15,7 +16,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(LoggingDirectives.class)
 public class LoggingNative {
 
     @CEntryPoint(
@@ -33,29 +34,37 @@ public class LoggingNative {
             throw new IllegalArgumentException("The `listener` pointer is null.");
         }
 
-        listener.write(NativeUtils.MAPPER_INTERCEPTABLE_LOGGING_LISTENER.toNative(
-                new InterceptableLoggingListener() {
-                    @Override
-                    public void onLog(final Level level, final long timestamp, final String threadName,
-                            final long threadId, final String loggerName, final String message,
-                            final Throwable exception, final String formattedMessage) {
-                        var nativeThreadName = NativeUtils.MAPPER_STRING.toNative(threadName);
-                        var nativeLoggerName = NativeUtils.MAPPER_STRING.toNative(loggerName);
-                        var nativeMessage = NativeUtils.MAPPER_STRING.toNative(message);
-                        var nativeException = NativeUtils.MAPPER_EXCEPTION.toNative(exception);
-                        var naiveFormattedMessage = NativeUtils.MAPPER_STRING.toNative(formattedMessage);
+        final class Listener extends NativeListener implements InterceptableLoggingListener {
+            @Override
+            public void onLog(final Level level, final long timestamp, final String threadName,
+                    final long threadId, final String loggerName, final String message,
+                    final Throwable exception, final String formattedMessage) {
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    var nativeThreadName = NativeUtils.MAPPER_STRING.toNative(threadName);
+                    var nativeLoggerName = NativeUtils.MAPPER_STRING.toNative(loggerName);
+                    var nativeMessage = NativeUtils.MAPPER_STRING.toNative(message);
+                    var nativeException = NativeUtils.MAPPER_EXCEPTION.toNative(exception);
+                    var naiveFormattedMessage = NativeUtils.MAPPER_STRING.toNative(formattedMessage);
 
-                        userFunc.invoke(CurrentIsolate.getCurrentThread(), DxfgLoggingLevel.of(level),
-                                timestamp, nativeThreadName, threadId, nativeLoggerName, nativeMessage,
-                                nativeException, naiveFormattedMessage, userData);
+                    userFunc.invoke(CurrentIsolate.getCurrentThread(), DxfgLoggingLevel.of(level),
+                            timestamp, nativeThreadName, threadId, nativeLoggerName, nativeMessage,
+                            nativeException, naiveFormattedMessage, userData);
 
-                        NativeUtils.MAPPER_STRING.release(naiveFormattedMessage);
-                        NativeUtils.MAPPER_EXCEPTION.release(nativeException);
-                        NativeUtils.MAPPER_STRING.release(nativeMessage);
-                        NativeUtils.MAPPER_STRING.release(nativeLoggerName);
-                        NativeUtils.MAPPER_STRING.release(nativeThreadName);
-                    }
-                }));
+                    NativeUtils.MAPPER_STRING.release(naiveFormattedMessage);
+                    NativeUtils.MAPPER_EXCEPTION.release(nativeException);
+                    NativeUtils.MAPPER_STRING.release(nativeMessage);
+                    NativeUtils.MAPPER_STRING.release(nativeLoggerName);
+                    NativeUtils.MAPPER_STRING.release(nativeThreadName);
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        listener.write(NativeUtils.MAPPER_INTERCEPTABLE_LOGGING_LISTENER.toNative(new Listener()));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

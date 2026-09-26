@@ -16,7 +16,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 @CEnum("dxfg_session_type_t")
 public enum DxfgSessionType {
     DXFG_SESSION_TYPE_NO_TRADING,

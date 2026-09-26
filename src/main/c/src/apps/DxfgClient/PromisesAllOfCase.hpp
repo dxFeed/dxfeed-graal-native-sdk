@@ -144,6 +144,12 @@ inline Command promisesAllOfCase{
 
         result = dxfg_Promise_awaitWithoutException(isolateThread, all, 30000);
 
+        if (result == DXFG_PROMISE_AWAIT_TIMED_OUT) {
+            puts("  timed out");
+
+            return;
+        }
+
         if (result != DXFG_EXECUTE_SUCCESSFULLY) {
             getException(isolateThread);
 

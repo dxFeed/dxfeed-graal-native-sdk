@@ -12,7 +12,7 @@ import org.graalvm.nativeimage.c.struct.CStruct;
  * DxfgEndpoint represents a binding to a native C structure `dxfg_endpoint_t` within the context of the GraalVM native
  * image environment. It provides the ability to interface with native DXEndpoint objects.
  */
-@CContext(Directives.class)
+@CContext(EndpointDirectives.class)
 @CStruct("dxfg_endpoint_t")
 public interface DxfgEndpoint extends JavaObjectHandler<DXEndpoint> {
 

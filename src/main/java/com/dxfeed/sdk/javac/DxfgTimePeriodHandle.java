@@ -7,7 +7,7 @@ import com.devexperts.util.TimePeriod;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CStruct("dxfg_time_period_t")
 public interface DxfgTimePeriodHandle extends JavaObjectHandler<TimePeriod> {
 

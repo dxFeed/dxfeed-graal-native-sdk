@@ -17,7 +17,7 @@ import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;
 import org.graalvm.nativeimage.c.constant.CEnumValue;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 @CEnum("dxfg_ipf_connection_state_t")
 public enum DxfgInstrumentProfileConnectionState {
     DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED,

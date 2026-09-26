@@ -25,7 +25,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 
-@CContext(Directives.class)
+@CContext(OrcsDirectives.class)
 public class OrcsNative {
 
     @CEntryPoint(name = "dxfg_PriceLevelService_new", exceptionHandler = ExceptionHandlerReturnMinusOne.class)

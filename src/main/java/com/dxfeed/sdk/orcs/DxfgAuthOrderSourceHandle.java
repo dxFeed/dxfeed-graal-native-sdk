@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(OrcsDirectives.class)
 @CStruct("dxfg_auth_order_source_t")
 public interface DxfgAuthOrderSourceHandle extends JavaObjectHandler<AuthOrderSource> {
 

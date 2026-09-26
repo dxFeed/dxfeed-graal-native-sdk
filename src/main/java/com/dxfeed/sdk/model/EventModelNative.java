@@ -18,6 +18,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -26,7 +27,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(ModelDirectives.class)
 public class EventModelNative {
 
     @CEntryPoint(
@@ -649,21 +650,28 @@ public class EventModelNative {
             final DxfgOrderBookModelListenerFunction userFunc,
             final VoidPointer userData
     ) {
-        return NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toNative(
-                new OrderBookModelListener() {
-                    @Override
-                    public void modelChanged(final Change change) {
-                        final DxfgOrderBookModel orderBookModel = NativeUtils.MAPPER_ORDER_BOOK_MODEL.toNative(
-                                change.getSource());
-                        userFunc.invoke(
-                                CurrentIsolate.getCurrentThread(),
-                                orderBookModel,
-                                userData
-                        );
-                        NativeUtils.MAPPER_ORDER_BOOK_MODEL.release(orderBookModel);
-                    }
+        final class Listener extends NativeListener implements OrderBookModelListener {
+            @Override
+            public void modelChanged(final Change change) {
+                if (!enter()) {
+                    return;
                 }
-        );
+                try {
+                    final DxfgOrderBookModel orderBookModel = NativeUtils.MAPPER_ORDER_BOOK_MODEL.toNative(
+                            change.getSource());
+                    userFunc.invoke(
+                            CurrentIsolate.getCurrentThread(),
+                            orderBookModel,
+                            userData
+                    );
+                    NativeUtils.MAPPER_ORDER_BOOK_MODEL.release(orderBookModel);
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        return NativeUtils.MAPPER_ORDER_BOOK_MODEL_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(
@@ -675,20 +683,27 @@ public class EventModelNative {
             final DxfgObservableListModelListenerFunction userFunc,
             final VoidPointer userData
     ) {
-        return NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toNative(
-                new ObservableListModelListener<IndexedEvent<?>>() {
-                    @Override
-                    public void modelChanged(final Change<? extends IndexedEvent<?>> change) {
-                        final DxfgEventTypeListPointer dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(
-                                change.getSource());
-                        userFunc.invoke(
-                                CurrentIsolate.getCurrentThread(),
-                                dxfgOrderList,
-                                userData
-                        );
-                        NativeUtils.MAPPER_EVENTS.release(dxfgOrderList);
-                    }
+        final class Listener extends NativeListener implements ObservableListModelListener<IndexedEvent<?>> {
+            @Override
+            public void modelChanged(final Change<? extends IndexedEvent<?>> change) {
+                if (!enter()) {
+                    return;
                 }
-        );
+                try {
+                    final DxfgEventTypeListPointer dxfgOrderList = NativeUtils.MAPPER_EVENTS.toNativeList(
+                            change.getSource());
+                    userFunc.invoke(
+                            CurrentIsolate.getCurrentThread(),
+                            dxfgOrderList,
+                            userData
+                    );
+                    NativeUtils.MAPPER_EVENTS.release(dxfgOrderList);
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        return NativeUtils.MAPPER_OBSERVABLE_LIST_MODEL_LISTENER.toNative(new Listener());
     }
 }

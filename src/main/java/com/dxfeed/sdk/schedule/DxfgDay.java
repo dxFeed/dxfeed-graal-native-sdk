@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 @CStruct("dxfg_day_t")
 public interface DxfgDay extends JavaObjectHandler<Day> {
 

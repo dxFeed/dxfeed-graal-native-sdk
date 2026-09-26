@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(SymbolDirectives.class)
 @CStruct("dxfg_time_series_subscription_symbol_t")
 public interface DxfgTimeSeriesSubscriptionSymbol extends DxfgSymbol {
 

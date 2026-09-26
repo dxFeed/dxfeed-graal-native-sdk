@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(SubscriptionControllerDirectives.class)
 @CStruct("dxfg_subscription_controller_t")
 public interface DxfgSubscriptionControllerHandle extends JavaObjectHandler<SubscriptionController> {
 

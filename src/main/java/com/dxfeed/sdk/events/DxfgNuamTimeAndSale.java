@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_nuam_time_and_sale_t")
 public interface DxfgNuamTimeAndSale extends DxfgTimeAndSale {
     @CField("match_id")

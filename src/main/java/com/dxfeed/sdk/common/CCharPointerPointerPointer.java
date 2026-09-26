@@ -8,7 +8,7 @@ import org.graalvm.nativeimage.c.struct.CPointerTo;
 import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 @CPointerTo(CCharPointerPointer.class)
 public interface CCharPointerPointerPointer extends PointerBase {
 

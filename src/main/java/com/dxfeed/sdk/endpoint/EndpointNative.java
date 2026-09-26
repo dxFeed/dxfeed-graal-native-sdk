@@ -12,7 +12,10 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
+import com.dxfeed.sdk.system.IsolateResources;
+import com.dxfeed.sdk.system.QdPropertyDefaults;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.stream.Collectors;
@@ -23,7 +26,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(EndpointDirectives.class)
 public final class EndpointNative {
 
     @CEntryPoint(
@@ -33,7 +36,8 @@ public final class EndpointNative {
     public static DxfgEndpoint dxfg_DXEndpoint_getInstance(
             final IsolateThread ignoredThread
     ) {
-        return NativeUtils.MAPPER_ENDPOINT.toNative(DXEndpoint.getInstance());
+        QdPropertyDefaults.apply();
+        return NativeUtils.MAPPER_ENDPOINT.toNative(IsolateResources.register(DXEndpoint.getInstance()));
     }
 
     @CEntryPoint(
@@ -44,7 +48,8 @@ public final class EndpointNative {
             final IsolateThread ignoredThread,
             final DxfgEndpointRole dxfgEndpointRole
     ) {
-        return NativeUtils.MAPPER_ENDPOINT.toNative(DXEndpoint.create(dxfgEndpointRole.qdRole));
+        QdPropertyDefaults.apply();
+        return NativeUtils.MAPPER_ENDPOINT.toNative(IsolateResources.register(DXEndpoint.create(dxfgEndpointRole.qdRole)));
     }
 
     @CEntryPoint(
@@ -54,7 +59,8 @@ public final class EndpointNative {
     public static DxfgEndpoint dxfg_DXEndpoint_create(
             final IsolateThread ignoredThread
     ) {
-        return NativeUtils.MAPPER_ENDPOINT.toNative(DXEndpoint.create());
+        QdPropertyDefaults.apply();
+        return NativeUtils.MAPPER_ENDPOINT.toNative(IsolateResources.register(DXEndpoint.create()));
     }
 
     @CEntryPoint(
@@ -65,7 +71,8 @@ public final class EndpointNative {
             final IsolateThread ignoredThread,
             final DxfgEndpointRole dxfgEndpointRole
     ) {
-        return NativeUtils.MAPPER_ENDPOINT.toNative(DXEndpoint.create(dxfgEndpointRole.qdRole));
+        QdPropertyDefaults.apply();
+        return NativeUtils.MAPPER_ENDPOINT.toNative(IsolateResources.register(DXEndpoint.create(dxfgEndpointRole.qdRole)));
     }
 
     @CEntryPoint(
@@ -226,19 +233,26 @@ public final class EndpointNative {
             final DxfgEndpointStateChangeListenerFunction userFunc,
             final VoidPointer userData
     ) {
-        return NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toNative(
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(final PropertyChangeEvent changeEvent) {
-                        userFunc.invoke(
-                                CurrentIsolate.getCurrentThread(),
-                                DxfgEndpointState.of((State) changeEvent.getOldValue()),
-                                DxfgEndpointState.of((State) changeEvent.getNewValue()),
-                                userData
-                        );
-                    }
+        final class Listener extends NativeListener implements PropertyChangeListener {
+            @Override
+            public void propertyChange(final PropertyChangeEvent changeEvent) {
+                if (!enter()) {
+                    return;
                 }
-        );
+                try {
+                    userFunc.invoke(
+                            CurrentIsolate.getCurrentThread(),
+                            DxfgEndpointState.of((State) changeEvent.getOldValue()),
+                            DxfgEndpointState.of((State) changeEvent.getNewValue()),
+                            userData
+                    );
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        return NativeUtils.MAPPER_ENDPOINT_STATE_CHANGE_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(

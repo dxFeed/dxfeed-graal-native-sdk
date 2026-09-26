@@ -14,6 +14,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgJavaObjectHandlerList;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import com.dxfeed.sdk.javac.NativeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 public class InstrumentProfileCollectorNative {
 
     @CEntryPoint(
@@ -287,20 +288,28 @@ public class InstrumentProfileCollectorNative {
             final DxfgInstrumentProfileUpdateListenerFunction dxfgFunction,
             final VoidPointer userData
     ) {
-        return NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toNative(
-                new InstrumentProfileUpdateListener() {
-                    @Override
-                    public void instrumentProfilesUpdated(final Iterator<InstrumentProfile> instruments) {
-                        final DxfgIterableInstrumentProfile iterator
-                                = NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toNative(instruments);
-                        dxfgFunction.invoke(
-                                CurrentIsolate.getCurrentThread(),
-                                iterator,
-                                userData
-                        );
-                        NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.release(iterator);
-                    }
-                });
+        final class Listener extends NativeListener implements InstrumentProfileUpdateListener {
+            @Override
+            public void instrumentProfilesUpdated(final Iterator<InstrumentProfile> instruments) {
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    final DxfgIterableInstrumentProfile iterator
+                            = NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.toNative(instruments);
+                    dxfgFunction.invoke(
+                            CurrentIsolate.getCurrentThread(),
+                            iterator,
+                            userData
+                    );
+                    NativeUtils.MAPPER_ITERABLE_INSTRUMENT_PROFILE.release(iterator);
+                } finally {
+                    exit();
+                }
+            }
+        }
+
+        return NativeUtils.MAPPER_INSTRUMENT_PROFILE_UPDATE_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(

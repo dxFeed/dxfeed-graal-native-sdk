@@ -7,7 +7,7 @@ import com.dxfeed.sdk.javac.CPointerPointer;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CPointerTo;
 
-@CContext(Directives.class)
+@CContext(CommonDirectives.class)
 @CPointerTo(DxfgStringToDoubleMapEntryPointer.class)
 public interface DxfgStringToDoubleMapEntryPointerPointer extends
         CPointerPointer<DxfgStringToDoubleMapEntryPointer> {

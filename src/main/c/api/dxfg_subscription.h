@@ -112,8 +112,43 @@ int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_iso
  */
 int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int64_t aggregationPeriod);
 
+/**
+ * Creates a new event listener.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] user_func The function to call with the received events.
+ * @param[in] user_data The user data to pass to the function.
+ * @return The listener or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ * Releasing the last handle of the listener with dxfg_JavaObjectHandler_release() (or dxfg_NativeListener_deactivate())
+ * stops the calls of the function: the user data can be freed after that.
+ */
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t *thread, dxfg_feed_event_listener_function user_func, void *user_data);
+
+/**
+ * Adds the event listener to the subscription. Add the listeners before the symbols: QD fails with
+ * `IllegalStateException` when a listener is added to an attached subscription that already has symbols.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription.
+ * @param[in] listener The listener.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on success or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
 int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);
+
+/**
+ * Removes the event listener from the subscription.
+ *
+ * The listener may still receive one more batch of events after this function (or dxfg_DXFeedSubscription_close())
+ * returns. Release the listener (dxfg_JavaObjectHandler_release()) or deactivate it (dxfg_NativeListener_deactivate())
+ * to be sure that its function is not called anymore.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription.
+ * @param[in] listener The listener.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on success or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
 int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);
 int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);

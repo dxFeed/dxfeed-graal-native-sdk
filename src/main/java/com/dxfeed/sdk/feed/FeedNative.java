@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.feed;
 
+import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.event.EventType;
@@ -20,12 +21,14 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
 import com.dxfeed.sdk.subscription.DxfgTimeSeriesSubscription;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
+import com.dxfeed.sdk.system.IsolateResources;
+import com.dxfeed.sdk.system.QdPropertyDefaults;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(FeedDirectives.class)
 public class FeedNative {
 
     @CEntryPoint(
@@ -35,6 +38,8 @@ public class FeedNative {
     public static DxfgFeed dxfg_DXFeed_getInstance(
             final IsolateThread ignoredThread
     ) {
+        QdPropertyDefaults.apply();
+        IsolateResources.register(DXEndpoint.getInstance()); // DXFeed.getInstance() is its feed
         return NativeUtils.MAPPER_FEED.toNative(DXFeed.getInstance());
     }
 

@@ -24,7 +24,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.word.WordFactory;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 public class InstrumentProfileReaderNative {
 
     @CEntryPoint(

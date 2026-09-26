@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_nuam_trade_t")
 public interface DxfgNuamTrade extends DxfgTrade {
     @CField("trade_stat_time")

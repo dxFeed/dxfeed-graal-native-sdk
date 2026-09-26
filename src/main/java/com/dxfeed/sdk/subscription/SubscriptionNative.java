@@ -22,6 +22,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandlePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
@@ -34,7 +35,7 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
-@CContext(Directives.class)
+@CContext(SubscriptionDirectives.class)
 public class SubscriptionNative {
 
     @CEntryPoint(name = "dxfg_DXFeedSubscription_new", exceptionHandler = ExceptionHandlerReturnNullWord.class)
@@ -238,14 +239,23 @@ public class SubscriptionNative {
     @CEntryPoint(name = "dxfg_DXFeedEventListener_new", exceptionHandler = ExceptionHandlerReturnNullWord.class)
     public static DxfgFeedEventListener dxfg_DXFeedEventListener_new(final IsolateThread ignoreThread,
             final DxfgFeedEventListenerFunction dxfgFeedEventListenerFunction, final VoidPointer userData) {
-        return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new DXFeedEventListener<EventType<?>>() {
+        final class Listener extends NativeListener implements DXFeedEventListener<EventType<?>> {
             @Override
             public void eventsReceived(final List<EventType<?>> events) {
-                final DxfgEventTypeListPointer nativeEvents = NativeUtils.MAPPER_EVENTS.toNativeList(events);
-                dxfgFeedEventListenerFunction.invoke(CurrentIsolate.getCurrentThread(), nativeEvents, userData);
-                NativeUtils.MAPPER_EVENTS.release(nativeEvents);
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    final DxfgEventTypeListPointer nativeEvents = NativeUtils.MAPPER_EVENTS.toNativeList(events);
+                    dxfgFeedEventListenerFunction.invoke(CurrentIsolate.getCurrentThread(), nativeEvents, userData);
+                    NativeUtils.MAPPER_EVENTS.release(nativeEvents);
+                } finally {
+                    exit();
+                }
             }
-        });
+        }
+
+        return NativeUtils.MAPPER_FEED_EVENT_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(name = "dxfg_DXFeedSubscription_addEventListener", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
@@ -273,28 +283,49 @@ public class SubscriptionNative {
             final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved,
             final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed,
             final VoidPointer userData) {
-        return NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toNative(
-                new ObservableSubscriptionChangeListener() {
+        final class Listener extends NativeListener implements ObservableSubscriptionChangeListener {
+            @Override
+            public void symbolsAdded(final Set<?> symbols) {
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                    functionSymbolsAdded.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
+                    NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                } finally {
+                    exit();
+                }
+            }
 
-                    @Override
-                    public void symbolsAdded(final Set<?> symbols) {
-                        final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
-                        functionSymbolsAdded.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
-                        NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
-                    }
+            @Override
+            public void symbolsRemoved(final Set<?> symbols) {
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                    functionSymbolsRemoved.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
+                    NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                } finally {
+                    exit();
+                }
+            }
 
-                    @Override
-                    public void symbolsRemoved(final Set<?> symbols) {
-                        final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
-                        functionSymbolsRemoved.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
-                        NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
-                    }
+            @Override
+            public void subscriptionClosed() {
+                if (!enter()) {
+                    return;
+                }
+                try {
+                    functionSubscriptionClosed.invoke(CurrentIsolate.getCurrentThread(), userData);
+                } finally {
+                    exit();
+                }
+            }
+        }
 
-                    @Override
-                    public void subscriptionClosed() {
-                        functionSubscriptionClosed.invoke(CurrentIsolate.getCurrentThread(), userData);
-                    }
-                });
+        return NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toNative(new Listener());
     }
 
     @CEntryPoint(name = "dxfg_DXFeedSubscription_addChangeListener", exceptionHandler = ExceptionHandlerReturnMinusOne.class)

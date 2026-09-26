@@ -8,7 +8,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 @CStruct("dxfg_ipf_collector_t")
 public interface DxfgInstrumentProfileCollector extends JavaObjectHandler<InstrumentProfileCollector> {
 

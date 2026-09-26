@@ -49,6 +49,8 @@
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.ChannelShapersFactory\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDAuthRealmFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.auth.QDLoginHandlerFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.devexperts.qd.qtp.socket.SocketSourceFactory\\E"

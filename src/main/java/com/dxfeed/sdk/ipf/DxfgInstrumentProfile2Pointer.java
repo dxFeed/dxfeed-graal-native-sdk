@@ -10,7 +10,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.word.PointerBase;
 import org.graalvm.word.SignedWord;
 
-@CContext(Directives.class)
+@CContext(IpfDirectives.class)
 @CStruct("dxfg_instrument_profile2_t")
 public interface DxfgInstrumentProfile2Pointer extends PointerBase {
 

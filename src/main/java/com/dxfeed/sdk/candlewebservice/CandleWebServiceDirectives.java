@@ -1,19 +1,19 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-package com.dxfeed.sdk.subscriptioncontroller;
+package com.dxfeed.sdk.candlewebservice;
 
-import org.graalvm.nativeimage.c.CContext;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import org.graalvm.nativeimage.c.CContext;
 
-class Directives implements CContext.Directives {
+class CandleWebServiceDirectives implements CContext.Directives {
 
     @Override
     public List<String> getHeaderFiles() {
         return Collections.singletonList(
-                "\"" + Path.of(System.getProperty("project.path"), "/src/main/c/api/dxfg_subscription_controller.h")
+                "\"" + Path.of(System.getProperty("project.path"), "/src/main/c/api/dxfg_candlewebservice.h")
                         .toAbsolutePath() + "\"");
     }
 }

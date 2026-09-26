@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 @CStruct("dxfg_order_imbalance_t")
 public interface DxfgOrderImbalance extends DxfgMarketEvent {
 

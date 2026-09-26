@@ -32,7 +32,7 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.Pointer;
 import org.graalvm.word.WordFactory;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 public class JavacNative {
 
     private static final int DEEP_RECURSION_TO_THROW_EXCEPTION = 5;
@@ -675,6 +675,23 @@ public class JavacNative {
             final JavaObjectHandler<Object> javaObjectHandler
     ) {
         NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.release(javaObjectHandler);
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_NativeListener_deactivate",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_NativeListener_deactivate(
+            final IsolateThread ignoredThread,
+            final JavaObjectHandler<Object> listener
+    ) {
+        final Object object = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(listener);
+        if (!(object instanceof NativeListener)) {
+            throw new IllegalArgumentException("The object is not a listener created by a dxfg_*Listener_new function: "
+                    + (object == null ? null : object.getClass().getName()));
+        }
+        ((NativeListener) object).deactivate();
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

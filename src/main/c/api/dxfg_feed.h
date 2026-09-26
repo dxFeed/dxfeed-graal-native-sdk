@@ -94,8 +94,54 @@ int32_t               dxfg_Promise_isCancelled(graal_isolatethread_t *thread, dx
 dxfg_event_type_t*    dxfg_Promise_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_event_t *promise);
 dxfg_event_type_list* dxfg_Promise_List_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_events_t *promise);
 dxfg_exception_t*     dxfg_Promise_getException(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+
+/**
+ * The result of dxfg_Promise_awaitWithoutException() when the wait timed out (the promise is cancelled then).
+ */
+#define DXFG_PROMISE_AWAIT_TIMED_OUT ((int32_t)1)
+
+/**
+ * Waits for the promise to complete
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/promise/Promise.html">Promise.await()</a>).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) if the promise has completed normally or #DXFG_EXECUTE_FAIL (-1)
+ * if it has completed exceptionally, was cancelled or the wait was interrupted.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
 int32_t               dxfg_Promise_await(graal_isolatethread_t *thread, dxfg_promise_t *promise);
+
+/**
+ * Waits for the promise to complete or the timeout to elapse
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/promise/Promise.html">Promise.await(timeout, unit)</a>).
+ * If the wait times out, the promise is cancelled and the function fails with `CancellationException`.
+ * Use dxfg_Promise_awaitWithoutException() to distinguish the timeout without an exception.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise.
+ * @param[in] timeoutInMilliseconds The timeout in milliseconds.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) if the promise has completed normally or #DXFG_EXECUTE_FAIL (-1)
+ * if it has completed exceptionally, was cancelled, the wait timed out or was interrupted.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
 int32_t               dxfg_Promise_await2(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
+
+/**
+ * Waits for the promise to complete or the timeout to elapse
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/promise/Promise.html">Promise.awaitWithoutException(timeout, unit)</a>).
+ * If the wait times out, the promise is cancelled and the function returns #DXFG_PROMISE_AWAIT_TIMED_OUT.
+ *
+ * Before v3.5.0 the function returned #DXFG_EXECUTE_SUCCESSFULLY (0) on timeout as well.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise.
+ * @param[in] timeoutInMilliseconds The timeout in milliseconds.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) if the promise has completed normally,
+ * #DXFG_PROMISE_AWAIT_TIMED_OUT (1) if the wait timed out (the promise is cancelled),
+ * or #DXFG_EXECUTE_FAIL (-1) if the promise has completed exceptionally, was cancelled or the wait was interrupted.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
 int32_t               dxfg_Promise_awaitWithoutException(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
 int32_t               dxfg_Promise_cancel(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 int32_t               dxfg_Promise_List_EventType_complete(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_event_type_list* events);

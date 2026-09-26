@@ -7,7 +7,7 @@ import com.devexperts.auth.AuthToken;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CStruct("dxfg_auth_token_t")
 public interface DxfgAuthToken extends JavaObjectHandler<AuthToken> {
 

@@ -277,11 +277,32 @@ typedef enum dxfg_rounding_mode_t {
 
 typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user_data);
 
+/**
+ * Registers a function that is called with the user data after the Java object is garbage collected
+ * (the collected objects are checked about once a second). It does not stop the callbacks of a listener:
+ * see dxfg_NativeListener_deactivate() for that.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] handler The java object handle.
+ * @param[in] finalize The function to call.
+ * @param[in] user_data The user data to pass to the function.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
 int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_handler *handler,
                              dxfg_finalize_function finalize, void *user_data);
 
 /**
  * Frees the memory occupied by the с data structure and release the reference to the java object.
+ *
+ * If the handle is the last handle (see dxfg_JavaObjectHandler_clone()) of a listener created by a `dxfg_*Listener_new`
+ * function, the listener is deactivated (see dxfg_NativeListener_deactivate()): the function waits for the listener's
+ * callbacks that are in progress on other threads and after it returns the listener's function is not called
+ * anymore, so its user data can be freed. Remove the listener (e.g. dxfg_DXFeedSubscription_removeEventListener())
+ * before releasing it, otherwise it stays added and does nothing.
+ *
+ * Do not hold the locks that the listener's function may take while releasing the listener: it may deadlock.
+ * Releasing a listener from its own callback is allowed (the function does not wait for that call).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] handler The java object handle to free.
@@ -289,6 +310,24 @@ int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_han
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
 int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler);
+
+/**
+ * Deactivates a listener created by a `dxfg_*Listener_new` function (e.g. dxfg_DXFeedEventListener_new(),
+ * dxfg_PropertyChangeListener_new()) regardless of the number of its handles: waits for the listener's callbacks
+ * that are in progress on other threads, after that the listener's function is not called anymore, so its user data
+ * can be freed. The listener stays added where it was added, but does nothing, and cannot be activated again.
+ *
+ * Releasing the last handle of the listener with dxfg_JavaObjectHandler_release() deactivates it as well.
+ * Do not hold the locks that the listener's function may take while deactivating the listener: it may deadlock.
+ * Deactivating a listener from its own callback is allowed (the function does not wait for that call).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] listener The listener handle.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error
+ * (e.g. the object is not a listener created by a `dxfg_*Listener_new` function).
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_java_object_handler *listener);
 
 /**
  * Creates another reference to the Java object (also allocates a memory to the new handle's data structure).

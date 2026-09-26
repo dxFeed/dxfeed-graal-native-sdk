@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.word.PointerBase;
 
-@CContext(Directives.class)
+@CContext(OrcsDirectives.class)
 @CStruct("dxfg_symbols_by_order_source_id_map_entry_t")
 public interface DxfgSymbolsByOrderSourceIdMapEntryPointer extends PointerBase {
     @CField("order_source_id")

@@ -7,7 +7,7 @@ import com.dxfeed.sdk.javac.CList;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(ScheduleDirectives.class)
 @CStruct("dxfg_session_list")
 public interface DxfgSessionList extends CList<DxfgSessionPointer> {
 

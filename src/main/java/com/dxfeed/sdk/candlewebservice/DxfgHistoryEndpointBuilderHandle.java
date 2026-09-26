@@ -7,7 +7,7 @@ import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(CandleWebServiceDirectives.class)
 @CStruct("dxfg_history_endpoint_builder_t")
 public interface DxfgHistoryEndpointBuilderHandle extends JavaObjectHandler<HistoryEndpoint.Builder> {
 

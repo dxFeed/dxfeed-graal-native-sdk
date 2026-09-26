@@ -6,7 +6,7 @@ package com.dxfeed.sdk.javac;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.struct.CStruct;
 
-@CContext(Directives.class)
+@CContext(JavacDirectives.class)
 @CStruct("dxfg_java_object_handler_list")
 public interface DxfgJavaObjectHandlerList extends CList<DxfgJavaObjectHandlerPointer> {
 

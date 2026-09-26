@@ -22,7 +22,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
-@CContext(Directives.class)
+@CContext(EventsDirectives.class)
 public class EventsNative {
 
     @CEntryPoint(
