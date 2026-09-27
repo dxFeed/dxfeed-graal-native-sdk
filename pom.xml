@@ -443,6 +443,7 @@
                     <argument>-DDXFSDK_MINOR_VERSION=${parsedVersion.minorVersion}</argument>
                     <!--suppress UnresolvedMavenProperty -->
                     <argument>-DDXFSDK_PATCH_VERSION=${parsedVersion.incrementalVersion}</argument>
+                    <!--suppress UnresolvedMavenProperty -->
                     <argument>-DDXFSDK_PRE_RELEASE_NUMBER=${parsedVersion.preReleaseNumber}</argument>
                     <argument>version.rc</argument>
                   </arguments>
