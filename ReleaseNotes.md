@@ -1,4 +1,4 @@
-## v3.6.0-rc2
+## v3.6.0
 
 * **Changed:** the `attachment` of `Message` and `Configuration` (`dxfg_message_t`, `dxfg_configuration_t`) is a UTF-8
   string or `NULL`. Java -> C: a `String` attachment is passed as is (it was JSON before: `"text"` with the quotes),
