@@ -492,6 +492,10 @@ with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
   pre-release (the last number of the qualifier: `3.6.0-rc2` -> `3.6.0.2`), 0 for a release and for a qualifier
   without a number. The product version (the string) is the full version: `3.6.0-rc2`. Note that the file version of
   the release (`3.6.0.0`) is lower than the ones of its pre-releases.
+- NuGet: the package `DxFeed.Graal.Native` of a version with a qualifier is a pre-release package, NuGet clients take
+  it only when pre-releases are allowed (`-Prerelease`, `Version="3.*-*"`). NuGet compares the qualifiers as strings
+  (`3.6.0-rc10` < `3.6.0-rc2`) and ignores their case (`rc1` and `RC1` are the same version). A qualifier after a dot
+  (`3.6.0.rc1`) is not a valid NuGet version.
 
 #### Deploy iOS
 
