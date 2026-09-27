@@ -403,6 +403,22 @@
                   <propertyPrefix>parsedVersion</propertyPrefix>
                 </configuration>
               </execution>
+              <execution>
+                <!-- The number of the pre-release (the last number of the qualifier: 3.6.0-rc2 -> 2), 0 for a release
+                     and for a qualifier without a number. It is the fourth field of the Windows file version. -->
+                <id>parse-pre-release-number</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>regex-property</goal>
+                </goals>
+                <configuration>
+                  <name>parsedVersion.preReleaseNumber</name>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <value>${parsedVersion.qualifier}#0</value>
+                  <regex>^.*?0*(\d+)\D*#0$|^\D*#(0)$</regex>
+                  <replacement>$1$2</replacement>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -427,6 +443,7 @@
                     <argument>-DDXFSDK_MINOR_VERSION=${parsedVersion.minorVersion}</argument>
                     <!--suppress UnresolvedMavenProperty -->
                     <argument>-DDXFSDK_PATCH_VERSION=${parsedVersion.incrementalVersion}</argument>
+                    <argument>-DDXFSDK_PRE_RELEASE_NUMBER=${parsedVersion.preReleaseNumber}</argument>
                     <argument>version.rc</argument>
                   </arguments>
                 </configuration>

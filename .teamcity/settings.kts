@@ -731,6 +731,12 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
 
                 export GH_REPO="dxFeed/dxfeed-graal-native-sdk"
 
+                # A version with a qualifier (v3.6.0-rc1) is a pre-release on GitHub, so it is not marked as the latest.
+                PRE_RELEASE=false
+                case "${'$'}TAG" in
+                    *-*) PRE_RELEASE=true ;;
+                esac
+
                 if ! command -v gh >/dev/null 2>&1; then
                     echo "GitHub CLI (gh) is not installed on this agent, installing..."
 
@@ -807,6 +813,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
 
                     gh release edit "${'$'}TAG" \
                         --title "${'$'}TAG" \
+                        --prerelease="${'$'}PRE_RELEASE" \
                         --notes-file release-notes.md
 
                     gh release upload "${'$'}TAG" \
@@ -819,6 +826,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                         release-artifacts/*.zip \
                         --verify-tag \
                         --title "${'$'}TAG" \
+                        --prerelease="${'$'}PRE_RELEASE" \
                         --notes-file release-notes.md
                 fi
             """.trimIndent()
@@ -1173,8 +1181,42 @@ object Util {
                 exit 0
             fi
 
-            { printf '## %s\n\n' "${'$'}TAG"; cat ReleaseNotes.md; } > ReleaseNotes.md.tmp
-            mv ReleaseNotes.md.tmp ReleaseNotes.md
+            # The headers of the pre-releases of the same version at the top (## v3.6.0-rc1 for v3.6.0-rc2 or v3.6.0)
+            # are replaced by the new header, so the section of the release lists all the changes since the previous
+            # release.
+            BASE=${'$'}{TAG%%-*}
+
+            : > ReleaseNotes.md.tmp
+            awk -v base="${'$'}BASE" -v tag="${'$'}TAG" -v out=ReleaseNotes.md.tmp '
+                BEGIN {
+                    top = 1
+                }
+
+                top && /^## / {
+                    header = substr(${'$'}0, 4)
+
+                    if (index(header, base "-") == 1 && header != tag) {
+                        print "Replacing the header of the pre-release: " ${'$'}0
+                        skipBlank = 1
+                        next
+                    }
+
+                    top = 0
+                }
+
+                skipBlank && ${'$'}0 == "" {
+                    skipBlank = 0
+                    next
+                }
+
+                {
+                    skipBlank = 0
+                    print > out
+                }
+            ' ReleaseNotes.md
+
+            { printf '## %s\n\n' "${'$'}TAG"; cat ReleaseNotes.md.tmp; } > ReleaseNotes.md
+            rm ReleaseNotes.md.tmp
 
             git config user.name "dxcity"
             git config user.email "dxcity@bots.devexperts.com"

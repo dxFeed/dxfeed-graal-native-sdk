@@ -8,6 +8,10 @@
   prefer `TextMessage` and `TextConfiguration`.
 * The SDK library does not use Jackson any more: `jackson-databind` was used only for the attachments, it is a test
   dependency now.
+* Pre-releases (e.g. `3.6.0-rc1`): the file version of `DxFeedGraalNativeSdk.dll` has the number of the pre-release
+  in the fourth field (`3.6.0-rc2` -> `3.6.0.2`, 0 for a release); the release notes of a version include the changes
+  of its pre-releases; the GitHub release of a pre-release is marked as a pre-release. See
+  [Pre-releases](README.md#pre-releases).
 
 ## v3.5.0
 

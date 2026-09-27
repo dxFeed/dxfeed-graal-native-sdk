@@ -472,6 +472,27 @@ We use [teamcity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNati
    The "deploy osx"
    configuration builds and deploys artifacts under amd, arm architecture osx and arm under IOS.
 
+#### Pre-releases
+
+A pre-release (e.g. a release candidate) is released by "build MAJOR.MINOR.PATCH and deploy linux" with a version
+with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
+
+- Use a qualifier that Maven orders before the release: `rc1`, `beta-1`, `alpha1`, `M1` (`3.6.0-rc1` < `3.6.0`).
+  Maven orders unknown qualifiers such as `pre` or `draft` after the release (`3.6.0-pre` > `3.6.0`), so they look
+  newer than the release in the repositories.
+- After a pre-release, the release plugin increments the number of the qualifier for the next development version:
+  `3.6.0-rc1` -> `3.6.0-rc2-SNAPSHOT` ("build PATCH and deploy linux" would release `3.6.0-rc2` then). Release the
+  final version with "build MAJOR.MINOR.PATCH and deploy linux" as well: `env.RELEASE_VERSION=3.6.0`, the next
+  development version is `3.6.1-SNAPSHOT`.
+- `ReleaseNotes.md`: the header of the new version replaces the headers of the pre-releases of the same version at
+  the top (`## v3.6.0-rc2` replaces `## v3.6.0-rc1`, `## v3.6.0` replaces both), so the section of the version, and
+  the notes of its GitHub release, list all the changes since the previous release. The GitHub release of a version
+  with a qualifier is marked as a pre-release.
+- Windows: the file version of `DxFeedGraalNativeSdk.dll` is `MAJOR.MINOR.PATCH.N`, where `N` is the number of the
+  pre-release (the last number of the qualifier: `3.6.0-rc2` -> `3.6.0.2`), 0 for a release and for a qualifier
+  without a number. The product version (the string) is the full version: `3.6.0-rc2`. Note that the file version of
+  the release (`3.6.0.0`) is lower than the ones of its pre-releases.
+
 #### Deploy iOS
 
 ##### Install JDKs
