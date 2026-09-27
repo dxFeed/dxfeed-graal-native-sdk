@@ -336,6 +336,8 @@ typedef struct dxfg_trade_eth_t {
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html">Javadoc</a>
+ *
+ * The `attachment` is handled as in dxfg_message_t. For a string payload prefer dxfg_text_configuration_t.
  */
 typedef struct dxfg_configuration_t {
     dxfg_event_type_t event_type;
@@ -343,16 +345,42 @@ typedef struct dxfg_configuration_t {
     const char *event_symbol;
     int64_t event_time;
     int32_t version;
+    /** The attachment: a UTF-8 null-terminated string (`const char *`) or NULL, see dxfg_message_t. */
     void *attachment;
 } dxfg_configuration_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html">Javadoc</a>
+ *
+ * The `attachment` (the same for dxfg_configuration_t) is a UTF-8 null-terminated string (`const char *`, declared
+ * as `void *`) or NULL when there is no attachment:
+ * - Java -> C: a `String` attachment is passed as is, the other objects are passed as their string representation
+ *   (`toString()`), no attachment is NULL. An attachment that Java cannot deserialize (e.g. its class is not
+ *   registered for the native image) is NULL too, the SDK logs a warning then.
+ * - C -> Java: the attachment becomes a `String`, NULL is no attachment.
+ *
+ * So a non-string attachment loses its type when it passes through C: if the event is published back
+ * (or forwarded to another endpoint), the Java receivers get the string instead of the original object.
+ *
+ * The C API does not support arbitrary Java attachments: C can neither create nor read them. For a string payload
+ * prefer dxfg_text_message_t and dxfg_text_configuration_t (TextMessage, TextConfiguration): their `text` is a plain
+ * string that passes both ways without loss.
+ *
+ * Memory:
+ * - The events that the SDK gives to the caller (to a listener, from dxfg_DXFeed_getLastEvent(), a promise, etc.)
+ *   own their strings: the SDK frees them with the event (after the listener returns, or with dxfg_EventType_release()
+ *   and dxfg_CList_EventType_release()). Copy the attachment to keep it longer.
+ * - The events that the caller allocates itself and passes to the SDK (dxfg_DXPublisher_publishEvents(), etc.) are
+ *   only read: the SDK copies the attachment during the call, the caller allocates and frees it.
+ * - dxfg_EventType_release() of an event created by dxfg_EventType_new() frees its strings with the SDK's allocator.
+ *   If the caller sets the attachment of such an event to its own string, it resets the attachment to NULL before
+ *   the release and frees the string itself (the allocators of the caller and of the SDK may differ, e.g. on Windows).
  */
 typedef struct dxfg_message_t {
     dxfg_event_type_t event_type;
     const char *event_symbol;
     int64_t event_time;
+    /** The attachment: a UTF-8 null-terminated string (`const char *`) or NULL, see dxfg_message_t. */
     void *attachment;
 } dxfg_message_t;
 

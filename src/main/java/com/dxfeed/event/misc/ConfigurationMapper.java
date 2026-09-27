@@ -7,27 +7,11 @@ import com.dxfeed.event.EventMapper;
 import com.dxfeed.sdk.events.DxfgConfiguration;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.mappers.Mapper;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
 public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfiguration> {
-
-    private final static Logger logger = Logger.getLogger(
-            ConfigurationMapper.class.getCanonicalName());
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    static {
-        OBJECT_MAPPER.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
-        OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-        OBJECT_MAPPER.setVisibility(PropertyAccessor.CREATOR, Visibility.ANY);
-    }
 
     protected final Mapper<String, CCharPointer> stringMapper;
 
@@ -53,13 +37,8 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
         nativeObject.setEventSymbol(stringMapper.toNative(javaObject.getEventSymbol()));
         nativeObject.setEventTime(javaObject.getEventTime());
         nativeObject.setVersion(javaObject.getVersion());
-        try {
-            nativeObject.setAttachment(
-                    this.stringMapper.toNative(OBJECT_MAPPER.writeValueAsString(javaObject.getAttachment()))
-            );
-        } catch (final JsonProcessingException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
-        }
+        nativeObject.setAttachment(this.stringMapper.toNative(
+                NativeAttachment.toNative(javaObject::getAttachment, "Configuration", javaObject.getEventSymbol())));
     }
 
     @Override
@@ -80,18 +59,13 @@ public class ConfigurationMapper extends EventMapper<Configuration, DxfgConfigur
         javaObject.setEventSymbol(stringMapper.toJava(nativeObject.getEventSymbol()));
         javaObject.setEventTime(nativeObject.getEventTime());
         javaObject.setVersion(nativeObject.getVersion());
-        final String content = this.stringMapper.toJava(nativeObject.getAttachment());
-        if (content == null) {
-            javaObject.setAttachment(null);
-        } else {
-            final Object attachment = javaObject.getAttachment();
-            if (attachment != null) {
-                try {
-                    javaObject.setAttachment(OBJECT_MAPPER.readValue(content, attachment.getClass()));
-                } catch (final JsonProcessingException e) {
-                    logger.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
+        // The attachment is a string on the native side (see dxfg_configuration_t.attachment), NULL is no attachment.
+        // A new event has no attachment: setAttachment(null) would set an empty one, which the QD text tapes write
+        // as "null " instead of \NULL and cannot read back.
+        final String attachment = this.stringMapper.toJava(nativeObject.getAttachment());
+
+        if (attachment != null) {
+            javaObject.setAttachment(attachment);
         }
     }
 

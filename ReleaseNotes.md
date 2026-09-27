@@ -1,3 +1,14 @@
+* **Changed:** the `attachment` of `Message` and `Configuration` (`dxfg_message_t`, `dxfg_configuration_t`) is a UTF-8
+  string or `NULL`. Java -> C: a `String` attachment is passed as is (it was JSON before: `"text"` with the quotes),
+  another object as its `toString()`, no attachment as `NULL` (it was the string `null`). C -> Java: the attachment
+  becomes a `String` (`NULL`: no attachment), it was lost before. So a non-string attachment loses its type when the
+  event is published back from C. An attachment that cannot be deserialized is `NULL` with a warning in the log (it
+  failed the whole listener call before, e.g. for a `Configuration` without an attachment read from a QD text tape).
+  See `dxfg_message_t` for the memory ownership. Arbitrary Java attachments are not supported in C; for a string payload
+  prefer `TextMessage` and `TextConfiguration`.
+* The SDK library does not use Jackson any more: `jackson-databind` was used only for the attachments, it is a test
+  dependency now.
+
 ## v3.5.0
 
 * Fixed the configuration of a project that adds the SDK from a Linux debug build (`*-debug.zip`) without defining

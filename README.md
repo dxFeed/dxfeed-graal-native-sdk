@@ -260,10 +260,16 @@ Find useful information in our self-service dxFeed Knowledge Base:
   etc.) for each option symbol listed under the specified Underlying.
 - [x] [Configuration](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html)
   is an event with an
-  application-specific attachment
+  application-specific attachment. In the C API the attachment is only a string (see `dxfg_message_t`):
+  arbitrary Java attachments cannot be created or read in C, for a string payload prefer `TextConfiguration`
 - [x] [Message](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html) is an event
   with an
-  application-specific attachment
+  application-specific attachment. In the C API the attachment is only a string (see `dxfg_message_t`):
+  arbitrary Java attachments cannot be created or read in C, for a string payload prefer `TextMessage`
+- [x] [TextConfiguration](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextConfiguration.html)
+  is an event with an application-specific text
+- [x] [TextMessage](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextMessage.html) is an event
+  with an application-specific text
 
 ### Subscription Symbols
 

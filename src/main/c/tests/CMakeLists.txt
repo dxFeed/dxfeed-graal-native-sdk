@@ -1,1 +1,2 @@
 add_subdirectory(SystemNativeTest)
+add_subdirectory(EventAttachmentTest)
