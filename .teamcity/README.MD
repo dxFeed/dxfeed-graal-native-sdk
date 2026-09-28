@@ -5,6 +5,7 @@
   * [How to install docker on Windows](#how-to-install-docker-on-windows)
 - [Building on Linux](#building-on-linux)
   * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-1)
+- [Testing](#testing)
 - [Building on macOS](#building-on-macos)
   * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent-2)
 - [Creating and Publishing GraalVM Docker Image for Project Build](#creating-and-publishing-graalvm-docker-image-for-project-build)
@@ -72,6 +73,31 @@ available in the corresponding Dockerfile.
 - The `dxcity` user should be capable of running containers without sudo.
 - Establish `TeamCity Connections` to the Docker Registry
   at https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/.
+
+# Testing
+
+The `Test [Linux, x64]` build builds the library in the Linux build image (`graalvm-linux-x64.Dockerfile`) and runs
+the C tests of `src/main/c` (CTest) in the test image (`cpp-test-linux-x64.Dockerfile`, Oracle Linux 9). The library is
+built for glibc 2.17, so the tests also check that it works on a newer distribution.
+
+- The build runs for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
+- The status of the build is published to the pull request in Bitbucket (with a link to the build). The results of the
+  tests are in the build in TeamCity (the JUnit report of CTest).
+- The build configuration appears in TeamCity when `.teamcity/settings.kts` with it gets to `main`.
+
+One-time setup:
+
+1. Run `Build & Push a Test Docker Image [Linux, x64]` to publish `nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9`.
+   Run it again when `cpp-test-linux-x64.Dockerfile` changes.
+2. To block merging a pull request without a successful build, enable the `Minimum successful builds` merge check in the
+   settings of the repository in Bitbucket.
+
+The same locally (after `mvn clean package` in the Linux build image):
+
+```shell
+docker build --pull -t cpp-test:linux-x64-ol9 -f .teamcity/cpp-test-linux-x64.Dockerfile .teamcity
+docker run --rm -v "$(pwd):/mnt" cpp-test:linux-x64-ol9 "cd src/main/c && cmake --preset=conf-release . && cmake --build --preset=build-release -j\$(nproc) && ctest --test-dir build/conf-release --output-on-failure"
+```
 
 # Building on macOS
 

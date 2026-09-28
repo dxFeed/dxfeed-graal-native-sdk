@@ -1,13 +1,18 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
+import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
+import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
+import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
 import jetbrains.buildServer.configs.kotlin.triggers.finishBuildTrigger
+import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /*
@@ -67,11 +72,13 @@ project {
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(BuildForLinux)
+    buildType(TestForLinux)
     buildType(BuildForWindows)
     buildType(BuildForWindowsInDocker)
     buildType(BuildForMacOSAndIOS)
     buildType(BuildForLinuxAarch64)
     buildType(BuildAndPushDockerImageForLinuxX64)
+    buildType(BuildAndPushTestDockerImageForLinuxX64)
     buildType(BuildAndPushDockerImageForLinuxAarch64)
     buildType(BuildAndPushDockerImageForWindowsX64)
 
@@ -885,6 +892,94 @@ object BuildForLinux : BuildType({
     }
 })
 
+object TestForLinux : BuildType({
+    name = "Test [Linux, x64]"
+    description = "Builds the library and runs the C tests (src/main/c, CTest) for the pull requests to main and for main"
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build the library"
+            scriptContent = """
+                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
+            """.trimIndent()
+            formatStderrAsError = true
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m 8g"
+        }
+
+        script {
+            // The library is built for glibc 2.17 (Oracle Linux 7); the tests are built and run on Oracle Linux 9.
+            name = "Build and run the C tests"
+            scriptContent = """
+                set -eu
+                cd src/main/c
+                rm -rf build bin
+                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
+                cmake --build --preset=build-release --config=Release -j${'$'}(nproc)
+                ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml
+            """.trimIndent()
+            dockerImage = "nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9"
+            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
+            dockerRunParameters = "--rm -m 4g"
+        }
+    }
+
+    triggers {
+        vcs {
+            branchFilter = """
+                +:<default>
+                +:pull-requests/*
+            """.trimIndent()
+        }
+    }
+
+    features {
+        pullRequests {
+            vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
+            provider = bitbucketServer {
+                serverUrl = "https://stash.in.devexperts.com"
+                authType = password {
+                    username = "dxcity"
+                    password = "%dxcity.token.bitbucket%"
+                }
+                filterTargetBranch = "+:refs/heads/main"
+                usePullRequestBranches = true
+            }
+        }
+
+        commitStatusPublisher {
+            vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
+            publisher = bitbucketServer {
+                url = "https://stash.in.devexperts.com"
+                authType = password {
+                    userName = "dxcity"
+                    password = "%dxcity.token.bitbucket%"
+                }
+            }
+        }
+
+        xmlReport {
+            reportType = XmlReport.XmlReportType.JUNIT
+            rules = "src/main/c/build/conf-release/ctest-junit.xml"
+        }
+
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Linux")
+    }
+})
+
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Docker Image [Linux, x64]"
 
@@ -901,6 +996,43 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
                 cd .teamcity
                 docker images --all
                 docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
+                docker push $image
+                docker rmi -f $image
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+    }
+
+    features {
+        dockerRegistryConnections {
+            loginToRegistry = on {
+                dockerRegistryId = "NEXUS"
+            }
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Linux")
+    }
+})
+
+object BuildAndPushTestDockerImageForLinuxX64 : BuildType({
+    name = "Build & Push a Test Docker Image [Linux, x64]"
+    description = "The image with the C/C++ tools for the tests (cpp-test-linux-x64.Dockerfile)"
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
+    }
+
+    val image = "nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9"
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                cd .teamcity
+                docker images --all
+                docker build --pull -t $image -f cpp-test-linux-x64.Dockerfile .
                 docker push $image
                 docker rmi -f $image
             """.trimIndent()
