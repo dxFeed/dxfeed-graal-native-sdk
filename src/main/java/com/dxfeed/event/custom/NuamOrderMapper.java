@@ -59,6 +59,15 @@ public class NuamOrderMapper extends OrderMapper<NuamOrder, DxfgNuamOrder> {
     }
 
     @Override
+    public void cleanNative(final DxfgNuamOrder nativeObject) {
+        super.cleanNative(nativeObject);
+        stringMapper.release(nativeObject.getClientOrderId());
+        stringMapper.release(nativeObject.getCustomerAccount());
+        stringMapper.release(nativeObject.getCustomerInfo());
+        stringMapper.release(nativeObject.getExchangeInfo());
+    }
+
+    @Override
     protected NuamOrder doToJava(final DxfgNuamOrder nativeObject) {
         final NuamOrder javaObject = new NuamOrder();
 

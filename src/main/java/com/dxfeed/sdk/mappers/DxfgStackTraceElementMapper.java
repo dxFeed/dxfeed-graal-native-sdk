@@ -47,6 +47,7 @@ public class DxfgStackTraceElementMapper extends Mapper<StackTraceElement, DxfgS
     @Override
     public final void cleanNative(final DxfgStackTraceElement nativeObject) {
         stringMapper.release(nativeObject.getClassName());
+        stringMapper.release(nativeObject.getMethodName());
         stringMapper.release(nativeObject.getClassLoaderName());
         stringMapper.release(nativeObject.getFileName());
         stringMapper.release(nativeObject.getModuleName());

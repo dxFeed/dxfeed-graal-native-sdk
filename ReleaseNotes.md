@@ -1,3 +1,7 @@
+* Fixed memory leaks: the release of a `NuamOrder` (`dxfg_EventType_release`, the lists of events, the events of
+  the listeners) did not free its strings `client_order_id`, `customer_account`, `customer_info` and `exchange_info`,
+  and `dxfg_Exception_release` did not free the method names of the stack trace.
+
 ## v3.6.0
 
 * **Changed:** the `attachment` of `Message` and `Configuration` (`dxfg_message_t`, `dxfg_configuration_t`) is a UTF-8
