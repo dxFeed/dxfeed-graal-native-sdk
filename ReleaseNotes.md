@@ -1,6 +1,18 @@
 * Fixed memory leaks: the release of a `NuamOrder` (`dxfg_EventType_release`, the lists of events, the events of
   the listeners) did not free its strings `client_order_id`, `customer_account`, `customer_info` and `exchange_info`,
   and `dxfg_Exception_release` did not free the method names of the stack trace.
+* **\[MDAPI-169\]** Added `dxfg_DXFeed_getLastEvent2` and `dxfg_DXFeed_getLastEvents2`. They only read the given
+  events (the caller allocates and frees them with any allocator, as for `dxfg_DXPublisher_publishEvents`) and write
+  new events into the output parameter: the last events, or copies of the given events when the last events are not
+  available, as `DXFeed.getLastEvent` in Java. They return 0 or -1 on error (the output is `NULL` then). Free the
+  results with `dxfg_EventType_release` and `dxfg_CList_EventType_release`.
+* **Deprecated:** `dxfg_DXFeed_getLastEvent` and `dxfg_DXFeed_getLastEvents`: they write into the given events and free
+  their strings with the SDK's allocator, so an event allocated by the caller leaks the SDK's strings or corrupts
+  memory. They still work. The compilers warn where the deprecated functions are used (`DXFG_DEPRECATED`), including
+  `dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames` (deprecated before).
+* Fixed the declaration of `dxfg_DXFeedSubscription_getSubscriptionController`: its output parameter is
+  `dxfg_subscription_controller_t **`, as the function writes the pointer to the handle there (it was declared as
+  `dxfg_subscription_controller_t *`).
 
 ## v3.6.0
 

@@ -29,6 +29,22 @@ extern "C" {
 #endif     /* DXFG_OUT */
 
 /**
+ * Marks a deprecated function: the compilers warn where it is used. The function still works, see its description for
+ * the replacement.
+ */
+#ifndef DXFG_DEPRECATED
+#    if defined(__cplusplus) && __cplusplus >= 201402L
+#        define DXFG_DEPRECATED(message) [[deprecated(message)]]
+#    elif defined(__GNUC__) || defined(__clang__)
+#        define DXFG_DEPRECATED(message) __attribute__((deprecated(message)))
+#    elif defined(_MSC_VER)
+#        define DXFG_DEPRECATED(message) __declspec(deprecated(message))
+#    else
+#        define DXFG_DEPRECATED(message)
+#    endif
+#endif /* DXFG_DEPRECATED */
+
+/**
  * A successful result that any dxFeed Graal Native SDK function can return.
  */
 #define DXFG_EXECUTE_SUCCESSFULLY ((int32_t)0)

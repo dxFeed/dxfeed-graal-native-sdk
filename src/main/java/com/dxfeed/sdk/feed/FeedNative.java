@@ -12,10 +12,13 @@ import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.market.OrderSource;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.events.DxfgEventType;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
+import com.dxfeed.sdk.events.DxfgEventTypeListPointerPointer;
+import com.dxfeed.sdk.events.DxfgEventTypePointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
@@ -23,10 +26,14 @@ import com.dxfeed.sdk.subscription.DxfgTimeSeriesSubscription;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.system.IsolateResources;
 import com.dxfeed.sdk.system.QdPropertyDefaults;
+import java.util.ArrayList;
+import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CConst;
+import org.graalvm.word.WordFactory;
 
 @CContext(FeedDirectives.class)
 public class FeedNative {
@@ -224,11 +231,11 @@ public class FeedNative {
     public static int dxfg_DXFeed_getLastEvent(
             final IsolateThread ignoredThread,
             final DxfgFeed feed,
-            final DxfgEventType nEvent
+            final DxfgEventType nativeEvent
     ) {
-        final LastingEvent<?> jEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nEvent);
-        NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
-        NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent, true);
+        final LastingEvent<?> javaEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nativeEvent);
+        NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(javaEvent);
+        NativeUtils.MAPPER_EVENT.fillNative(javaEvent, nativeEvent, true);
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
@@ -242,11 +249,81 @@ public class FeedNative {
             final DxfgEventTypeListPointer events
     ) {
         for (int i = 0; i < events.getSize(); i++) {
-            final DxfgEventType nEvent = events.getElements().addressOf(i).read();
-            final LastingEvent<?> jEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nEvent);
-            NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(jEvent);
-            NativeUtils.MAPPER_EVENT.fillNative(jEvent, nEvent, true);
+            final DxfgEventType nativeEvent = events.getElements().addressOf(i).read();
+            final LastingEvent<?> javaEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nativeEvent);
+            NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(javaEvent);
+            NativeUtils.MAPPER_EVENT.fillNative(javaEvent, nativeEvent, true);
         }
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // The given event is only read (the caller owns it), the result is a new event: the last event, or the copy of the
+    // given event when the last event is not available (as DXFeed.getLastEvent leaves the event unchanged then).
+    @CEntryPoint(
+            name = "dxfg_DXFeed_getLastEvent2",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeed_getLastEvent2(
+            final IsolateThread ignoredThread,
+            final DxfgFeed feed,
+            @CConst final DxfgEventType nativeEvent,
+            @DxfgOut final DxfgEventTypePointer lastEvent
+    ) {
+        if (lastEvent.isNull()) {
+            throw new IllegalArgumentException("The `lastEvent` pointer is null");
+        }
+
+        // NULL on error
+        lastEvent.write(WordFactory.nullPointer());
+
+        final LastingEvent<?> javaEvent = (LastingEvent<?>) NativeUtils.MAPPER_EVENT.toJava(nativeEvent);
+
+        if (javaEvent == null) {
+            throw new IllegalArgumentException("The `event` pointer is null");
+        }
+
+        lastEvent.write(
+                NativeUtils.MAPPER_EVENT.toNative(NativeUtils.MAPPER_FEED.toJava(feed).getLastEvent(javaEvent)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // The given list and its events are only read, the result is a new list of new events
+    // (see dxfg_DXFeed_getLastEvent2).
+    @CEntryPoint(
+            name = "dxfg_DXFeed_getLastEvents2",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXFeed_getLastEvents2(
+            final IsolateThread ignoredThread,
+            final DxfgFeed feed,
+            @CConst final DxfgEventTypeListPointer nativeEvents,
+            @DxfgOut final DxfgEventTypeListPointerPointer lastEvents
+    ) {
+        if (lastEvents.isNull()) {
+            throw new IllegalArgumentException("The `lastEvents` pointer is null");
+        }
+
+        // NULL on error
+        lastEvents.write(WordFactory.nullPointer());
+
+        if (nativeEvents.isNull()) {
+            throw new IllegalArgumentException("The `events` pointer is null");
+        }
+
+        final List<LastingEvent<?>> javaEvents = new ArrayList<>(nativeEvents.getSize());
+
+        for (final EventType<?> javaEvent : NativeUtils.MAPPER_EVENTS.toJavaList(nativeEvents)) {
+            if (javaEvent == null) {
+                throw new IllegalArgumentException("The `events` list contains a null event");
+            }
+
+            javaEvents.add((LastingEvent<?>) javaEvent);
+        }
+
+        lastEvents.write(
+                NativeUtils.MAPPER_EVENTS.toNativeList(NativeUtils.MAPPER_FEED.toJava(feed).getLastEvents(javaEvents)));
+
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 }

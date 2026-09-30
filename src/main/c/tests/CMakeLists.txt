@@ -1,3 +1,4 @@
 add_subdirectory(SystemNativeTest)
 add_subdirectory(EventAttachmentTest)
 add_subdirectory(MemoryReleaseTest)
+add_subdirectory(LastEventTest)

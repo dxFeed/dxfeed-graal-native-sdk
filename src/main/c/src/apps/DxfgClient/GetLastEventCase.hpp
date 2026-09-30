@@ -46,41 +46,46 @@ inline Command getLastEventCase{
 
         dxfg_DXFeedSubscription_setSymbol(isolateThread, subscription, &symbol.supper);
 
-        auto *candle = (dxfg_candle_t *)dxfg_EventType_new(isolateThread, symbol.symbol, DXFG_EVENT_CANDLE);
+        // dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 only read the given events, so they are the caller's
+        // own structures here. The results are new events.
+        dxfg_candle_t aapl{};
+        aapl.event_type.clazz = DXFG_EVENT_CANDLE;
+        aapl.event_symbol = "AAPL";
 
-        dxfg_DXFeed_getLastEvent(isolateThread, feed, &candle->event_type);
-        printEvent(isolateThread, &candle->event_type);
+        dxfg_candle_t ibm{};
+        ibm.event_type.clazz = DXFG_EVENT_CANDLE;
+        ibm.event_symbol = "IBM";
 
-        dxfg_event_type_list event_type_list{};
-        event_type_list.size = 2;
-        event_type_list.elements = new dxfg_event_type_t *[2]{};
-        event_type_list.elements[0] = dxfg_EventType_new(isolateThread, "AAPL", DXFG_EVENT_CANDLE);
-        event_type_list.elements[1] = dxfg_EventType_new(isolateThread, "IBM", DXFG_EVENT_CANDLE);
+        auto printLastEvents = [isolateThread, feed, &aapl, &ibm] {
+            dxfg_event_type_t *lastEvent = nullptr;
 
-        printEvent(isolateThread, event_type_list.elements[0]);
-        printEvent(isolateThread, event_type_list.elements[1]);
+            if (dxfg_DXFeed_getLastEvent2(isolateThread, feed, &aapl.event_type, &lastEvent) ==
+                DXFG_EXECUTE_SUCCESSFULLY) {
+                printEvent(isolateThread, lastEvent);
+                dxfg_EventType_release(isolateThread, lastEvent);
+            }
 
+            dxfg_event_type_t *events[] = {&aapl.event_type, &ibm.event_type};
+            dxfg_event_type_list eventList{2, events};
+            dxfg_event_type_list *lastEvents = nullptr;
+
+            if (dxfg_DXFeed_getLastEvents2(isolateThread, feed, &eventList, &lastEvents) == DXFG_EXECUTE_SUCCESSFULLY) {
+                for (int32_t i = 0; i < lastEvents->size; ++i) {
+                    printEvent(isolateThread, lastEvents->elements[i]);
+                }
+
+                dxfg_CList_EventType_release(isolateThread, lastEvents);
+            }
+        };
+
+        printLastEvents();
         std::this_thread::sleep_for(2s);
-
-        dxfg_DXFeed_getLastEvent(isolateThread, feed, &candle->event_type);
-        printEvent(isolateThread, &candle->event_type);
-        dxfg_DXFeed_getLastEvents(isolateThread, feed, &event_type_list);
-        printEvent(isolateThread, event_type_list.elements[0]);
-        printEvent(isolateThread, event_type_list.elements[1]);
-
+        printLastEvents();
         std::this_thread::sleep_for(2s);
-
-        dxfg_DXFeed_getLastEvent(isolateThread, feed, &candle->event_type);
-        printEvent(isolateThread, &candle->event_type);
-        dxfg_DXFeed_getLastEvents(isolateThread, feed, &event_type_list);
-        printEvent(isolateThread, event_type_list.elements[0]);
-        printEvent(isolateThread, event_type_list.elements[1]);
-
-        delete[] event_type_list.elements;
+        printLastEvents();
 
         dxfg_DXFeedSubscription_close(isolateThread, subscription);
         dxfg_DXEndpoint_close(isolateThread, endpoint);
-        dxfg_EventType_release(isolateThread, &candle->event_type);
         dxfg_JavaObjectHandler_release(isolateThread, &subscription->handler);
         dxfg_JavaObjectHandler_release(isolateThread, &feed->handler);
         dxfg_JavaObjectHandler_release(isolateThread, &endpoint->handler);

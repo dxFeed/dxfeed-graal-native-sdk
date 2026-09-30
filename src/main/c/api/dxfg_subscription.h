@@ -59,12 +59,12 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *th
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
- * @param[out] subscriptionController The subscription controller for this subscription.
+ * @param[out] subscriptionController The pointer to the handle of the subscription controller of this subscription.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the SubscriptionController handle.
  */
-int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT dxfg_subscription_controller_t *subscriptionController);
+int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT dxfg_subscription_controller_t **subscriptionController);
 int32_t                   dxfg_DXFeedSubscription_attach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed);
 int32_t                   dxfg_DXFeedSubscription_detach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed);
 int32_t                   dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t *thread, dxfg_subscription_t *sub);

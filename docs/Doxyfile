@@ -14,3 +14,7 @@ QUIET                  = YES
 WARN_IF_UNDOCUMENTED   = NO
 GENERATE_TREEVIEW      = YES
 GENERATE_LATEX         = NO
+# The attribute of the deprecated functions (they have @deprecated in their descriptions)
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = "DXFG_DEPRECATED(message)="

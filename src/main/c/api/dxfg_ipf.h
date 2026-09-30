@@ -443,6 +443,7 @@ int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *t
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_CList_String_release() to free the result.
  */
+DXFG_DEPRECATED("use dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(), the updated parameter is useless")
 int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT dxfg_string_list** target_field_names, DXFG_OUT int32_t* updated);
 
 /**

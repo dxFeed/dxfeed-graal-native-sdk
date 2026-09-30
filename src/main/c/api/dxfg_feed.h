@@ -75,9 +75,82 @@ int32_t                           dxfg_DXFeed_detachSubscriptionAndClear(graal_i
 dxfg_event_type_t*                dxfg_DXFeed_getLastEventIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
 dxfg_event_type_list*             dxfg_DXFeed_getIndexedEventsIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, const char *source);
 dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, int64_t from_time, int64_t to_time);
-// use dxfg_EventType_new to create an empty structure so that java tries to free up memory when replacing subjects
+
+/**
+ * Fills the given event with the last event for its type and symbol
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvent-E-">DXFeed.getLastEvent</a>).
+ *
+ * @deprecated Use dxfg_DXFeed_getLastEvent2(). This function writes the result into the given event: it frees the
+ * strings of the event with the SDK's allocator and writes the strings allocated by the SDK there. So the event must
+ * be created by dxfg_EventType_new() (or come from the SDK) and be freed by dxfg_EventType_release(); an event
+ * allocated by the caller leaks the SDK's strings or corrupts memory. When the last event is not available, the event
+ * keeps the values it had (as in Java), but the event created by dxfg_EventType_new() has only its symbol, so the
+ * values of the caller's event are lost.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] feed The feed.
+ * @param[in,out] event The event created by dxfg_EventType_new(): its type and symbol, and the result.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+DXFG_DEPRECATED("use dxfg_DXFeed_getLastEvent2(), it does not write into the given event")
 int32_t                           dxfg_DXFeed_getLastEvent(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_t *event);
+
+/**
+ * The bulk version of dxfg_DXFeed_getLastEvent().
+ *
+ * @deprecated Use dxfg_DXFeed_getLastEvents2(), see dxfg_DXFeed_getLastEvent() for the reasons. Every event of the list
+ * must be created by dxfg_EventType_new().
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] feed The feed.
+ * @param[in,out] events The events created by dxfg_EventType_new(), the results are written into them.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+DXFG_DEPRECATED("use dxfg_DXFeed_getLastEvents2(), it does not write into the given events")
 int32_t                           dxfg_DXFeed_getLastEvents(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_list *events);
+
+/**
+ * Gets the last event for the type and symbol of the given event
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvent-E-">DXFeed.getLastEvent</a>):
+ * a new event with the values of the last event, or a copy of the given event when the last event is not available
+ * (no subscription, the data have not arrived yet, etc.), since Java leaves the event unchanged then.
+ *
+ * The given event is only read, as by dxfg_DXPublisher_publishEvents(): the caller allocates it (with any allocator),
+ * fills it and frees it; the SDK copies it during the call. The event must be of a lasting type (Quote, Profile, etc.).
+ *
+ * The function does not make remote calls, it reads the local cache of the feed. The events are in the cache only if
+ * an attached subscription is subscribed to the event type and symbol (a wildcard subscription does not count). With
+ * the #DXFG_ENDPOINT_ROLE_STREAM_FEED role the last event is never available.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] feed The feed.
+ * @param[in] event The event: its type and symbol, and the values to return when the last event is not available.
+ * @param[out] lastEvent The pointer to the new event (NULL on error). Free the event with dxfg_EventType_release().
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (e.g.,
+ * the event is NULL or of a type that is not lasting). Use dxfg_get_and_clear_thread_exception_t() to determine if an
+ * exception was thrown.
+ */
+int32_t                           dxfg_DXFeed_getLastEvent2(graal_isolatethread_t *thread, dxfg_feed_t *feed, const dxfg_event_type_t *event, DXFG_OUT dxfg_event_type_t **lastEvent);
+
+/**
+ * The bulk version of dxfg_DXFeed_getLastEvent2(): gets a new list with the last event for every event of the given
+ * list, in the same order.
+ *
+ * The given list and its events are only read (see dxfg_DXFeed_getLastEvent2()).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] feed The feed.
+ * @param[in] events The events.
+ * @param[out] lastEvents The pointer to the new list of new events (NULL on error). Free the list with
+ * dxfg_CList_EventType_release().
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (e.g.,
+ * the list or one of its events is NULL, or an event is of a type that is not lasting). Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t                           dxfg_DXFeed_getLastEvents2(graal_isolatethread_t *thread, dxfg_feed_t *feed, const dxfg_event_type_list *events, DXFG_OUT dxfg_event_type_list **lastEvents);
+
 dxfg_promise_event_t*             dxfg_DXFeed_getLastEventPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
 dxfg_promise_list*                dxfg_DXFeed_getLastEventsPromises(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_list *symbols);
 dxfg_promise_events_t*            dxfg_DXFeed_getIndexedEventsPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, dxfg_indexed_event_source_t* source);
