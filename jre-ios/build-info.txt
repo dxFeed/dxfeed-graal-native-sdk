@@ -1,0 +1,5 @@
+ios-arm64: graal graal-25.4.4.1.1 (95ce1499c8c96ab7d5a6697c5b4bf42160f3b68b), labs JDK 25.0.4.1.1+1-jvmci-25.4-b23, labs-openjdk jvmci-25.4-b23 (391a5a739cb60fcc35927c6afecf6d9ac00f391d)
+simulator-arm64: graal graal-25.4.4.1.1 (95ce1499c8c96ab7d5a6697c5b4bf42160f3b68b), labs JDK 25.0.4.1.1+1-jvmci-25.4-b23, labs-openjdk jvmci-25.4-b23 (391a5a739cb60fcc35927c6afecf6d9ac00f391d)
+simulator-x86_64: graal jdk-25.0.1 (05ec02567a77a30cc41b8ad9174de0dc5737ceaf), labs JDK 25.0.1+8-jvmci-b01, labs-openjdk 25.0.1+8-jvmci-b01 (dfc259ea538af1837228dfcdfcbe5d789711a2fa)
+minimum iOS version: 12.0
+Xcode 26.6 Build version 17F113
