@@ -109,6 +109,7 @@ src/java.base/unix/native/libnio/fs/UnixFileSystem.c
 src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
 src/jdk.management.agent/unix/native/libmanagement_agent/FileSystemImpl.c
 src/jdk.management/macosx/native/libmanagement_ext/UnixOperatingSystem.c
+src/jdk.management/share/native/libmanagement_ext/management_ext.c
 src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
 src/jdk.net/macosx/native/libextnet/MacOSXSocketOptions.c
 src/jdk.security.auth/unix/native/libjaas/Unix.c

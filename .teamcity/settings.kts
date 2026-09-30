@@ -1301,14 +1301,17 @@ object BuildJreLibrariesForIOS : BuildType({
             name = "Check that the SDK links with the libraries"
             scriptContent = """
                 set -e
+                # Both archives are checked, so one build reports all the missing symbols.
+                status=0
                 for entry in "ios aarch64-ios" "simulator ios-simulator"; do
                     set -- ${'$'}{entry}
                     directory=out/jre-ios/check/${'$'}1
                     rm -rf "${'$'}{directory}"
                     mkdir -p "${'$'}{directory}"
                     unzip -q out/jre-ios/sdk/*-${'$'}2.zip -d "${'$'}{directory}"
-                    arch -arm64 /usr/bin/python3 jre-ios/build.py check --dir "${'$'}{directory}" --platform ${'$'}1
+                    arch -arm64 /usr/bin/python3 jre-ios/build.py check --dir "${'$'}{directory}" --platform ${'$'}1 || status=1
                 done
+                exit ${'$'}{status}
             """.trimIndent()
         }
     }
