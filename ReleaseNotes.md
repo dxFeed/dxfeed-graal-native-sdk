@@ -1,3 +1,12 @@
+* Fixed the archives for iOS and the iOS Simulator (`aarch64-ios`, `ios-simulator`): an application did not link with
+  them since 3.6.0 (undefined symbols such as `Java_java_io_FileInputStream_isRegularFile0` and `svm_get_locale`), as
+  their JDK and Substrate VM libraries were built for GraalVM 22. The libraries are now built from the sources of the
+  GraalVM versions that build the SDK (see `jre-ios/README.MD`).
+* The archives contain only the library of the SDK: they do not contain `management_ext` (`management_ext.dll`,
+  `libmanagement_ext.so`, `libmanagement_ext.dylib`) and `libosxkrb5.dylib` any more. native-image copied these JDK
+  libraries next to the SDK library: `management_ext` could not even be loaded without the `java` and `jvm` libraries
+  of a JDK (the SDK already contains the native code of `OperatingSystemMXBean` that it uses), `libosxkrb5.dylib` is
+  needed only for the Kerberos authentication on macOS. The NuGet package never contained them.
 * Fixed memory leaks: the release of a `NuamOrder` (`dxfg_EventType_release`, the lists of events, the events of
   the listeners) did not free its strings `client_order_id`, `customer_account`, `customer_info` and `exchange_info`,
   and `dxfg_Exception_release` did not free the method names of the stack trace.

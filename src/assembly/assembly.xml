@@ -18,16 +18,17 @@
     <fileSet>
       <directory>${native.image.path}</directory>
       <includes>
-        <include>*.dylib</include>
-        <include>*.dll</include>
-        <include>*.so</include>
+        <!--
+          Only the files of the image: .dll, .lib, .pdb, .so, .so.debug (Linux debug builds, see .gnu_debuglink of
+          the .so), .dylib, .o (iOS). native-image also copies next to the image the JDK libraries that the reachable
+          code loads with System.loadLibrary (management_ext, osxkrb5 on macOS), which the SDK does not need:
+          management_ext cannot even be loaded without the java and jvm libraries of a JDK.
+        -->
+        <include>${native.image.name}.*</include>
         <include>*.h</include>
-        <include>*.lib</include>
-        <include>*.o</include>
+        <!-- iOS: the JDK and Substrate VM libraries of jre-ios. -->
         <include>*.a</include>
-        <include>*.pdb</include>
-        <!-- Linux debug builds: the separate debug info (see .gnu_debuglink of the .so) and the gdb helpers. -->
-        <include>*.debug</include>
+        <!-- Debug builds: the gdb helpers. -->
         <include>gdb-debughelpers.py</include>
       </includes>
       <excludes>
