@@ -1,2 +1,5 @@
 # Shell scripts must keep LF line endings to run on Linux/macOS/WSL, even when checked out on Windows.
 *.sh text eol=lf
+
+# Patches are applied with git apply on macOS, their context lines must keep LF line endings.
+*.patch text eol=lf

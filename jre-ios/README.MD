@@ -1,107 +1,85 @@
-# How to build on macOS M1 for iOS or simulator
+# JDK and Substrate VM libraries for iOS
 
-## 1. Prepare
+The native image of the SDK for iOS is a relocatable object file (`libDxFeedGraalNativeSdk.o`) that contains the Java
+code of the SDK, of the JDK and of Substrate VM. The native code of the JDK and of Substrate VM that it calls is in the
+static libraries of this directory, which the pom puts into the iOS archives next to the object file:
 
-```shell
-# We use https://www.jenv.be/ to switch between JDKs.
-brew install jenv
-jenv enable-plugin maven
-# xcode command line tools
-xcode-select --install
-# Open JDK 22
-cd ~
-curl -LO https://github.com/graalvm/labs-openjdk-22/releases/download/22.0.1%2B8-jvmci-b01/labsjdk-ce-22.0.1+8-jvmci-b01-darwin-aarch64.tar.gz
-sudo xattr -rd com.apple.quarantine labsjdk-ce-22.0.1+8-jvmci-b01-darwin-aarch64.tar.gz
-tar -xzvf labsjdk-ce-22.0.1+8-jvmci-b01-darwin-aarch64.tar.gz
-mv labsjdk-ce-22.0.1-jvmci-b01 labsjdk-ce-22.0.1-jvmci-b01_aarch64
-sudo mv labsjdk-ce-22.0.1-jvmci-b01_aarch64 /Library/Java/JavaVirtualMachines/
-ln -s /Library/Java/JavaVirtualMachines/labsjdk-ce-22.0.1-jvmci-b01_aarch64/Contents/Home ~/.jenv/versions/labsjdk-ce-22.0.1-jvmci-b01_aarch64
-```
+| Library                       | Slices                                    | Archive                                |
+|-------------------------------|-------------------------------------------|----------------------------------------|
+| `jdk-arm64-ios-r.a`           | iOS arm64                                 | `graal-native-sdk-*-aarch64-ios.zip`   |
+| `graal-svm-arm64-ios-r.a`     | iOS arm64                                 | `graal-native-sdk-*-aarch64-ios.zip`   |
+| `jdk-ios-simulator-r.a`       | iOS Simulator arm64, iOS Simulator x86_64 | `graal-native-sdk-*-ios-simulator.zip` |
+| `graal-svm-ios-simulator-r.a` | iOS Simulator arm64, iOS Simulator x86_64 | `graal-native-sdk-*-ios-simulator.zip` |
 
-## 2. Build iOS JDK lib
+The libraries must be built from the same sources as the GraalVM that builds the image: every GraalVM version changes
+the native functions of the JDK and of Substrate VM (for example, the image of GraalVM 25 needs
+`Java_java_io_FileInputStream_isRegularFile0` and `svm_get_locale`, which the libraries of GraalVM 22 do not have, and
+the application does not link). So the libraries are rebuilt whenever `env.GRAALVM_VERSION` of the TeamCity project
+changes. `build-info.txt`, built with the libraries, says which sources they are built from.
 
-```shell
-jenv shell labsjdk-ce-22.0.1-jvmci-b01_aarch64
-git clone https://github.com/graalvm/labs-openjdk-22.git
-cd labs-openjdk-22
-git checkout tags/22.0.1+8-jvmci-b01 -b latest
-git apply patch_and_xcode_projects_for_22_0_1+8-jvmci-b01.patch
-#make clean
-bash configure
-make images graal-builder-image
-./build/macosx-aarch64-server-release/images/graal-builder-jdk/bin/java -version
-#--- Build Succeeded ---
-xcodebuild -sdk iphoneos -arch arm64 -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
-lipo -info xcode/jdk-arm64-ios-r.a
-#Non-fat file: xcode/jdk-arm64-ios-r.a is architecture: arm64
-xcodebuild -sdk iphonesimulator -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
-lipo -info xcode/jdk-arm64-ios-simulator-r.a
-#Architectures in the fat file: xcode/jdk-arm64-ios-simulator-r.a are: arm64 x86_64
-mv xcode/jdk-arm64-ios-simulator-r.a xcode/jdk-ios-simulator-r.a
-```
-Copy the jdk-arm64-ios-simulator-r.a and jdk-ios-simulator-r.a libraries to the /jre-ios folder.
+## Updating the libraries
 
-## 3. Install JDK form previous step
+1. Run the TeamCity build configuration **Build JRE Libraries [iOS]** on the branch with the new GraalVM version. It
+   builds the libraries from the sources of `env.GRAALVM_VERSION` (the parameter `jre.ios.graal.tag`), builds the SDK
+   for iOS and the simulator with them and checks that the SDK links with them.
+2. Download the artifact `jre-ios-libraries-<version>.zip` and replace the `*.a` files and `build-info.txt` of this
+   directory with its content.
+3. Commit them. The SDK archives of the same build (`graal-native-sdk-aarch64-ios.zip`,
+   `graal-native-sdk-ios-simulator.zip`) can be used to check the libraries in an application (the Swift API).
+
+The agent needs macOS on Apple Silicon with Xcode (the Command Line Tools have no iOS SDK). The first build on an agent
+takes longer: it downloads the sources and the labs JDK and builds the Java code of the JDK, which are then kept in
+`~/.graal/jre-ios/<version>`.
+
+## Building the libraries on a Mac
 
 ```shell
-ln -s ~/labs-openjdk-22/build/macosx-aarch64-server-release/images/graal-builder-jdk ~/.jenv/versions/graal-builder-jdk-22
-jenv shell graal-builder-jdk-22
+arch -arm64 python3 jre-ios/build.py build --graal-tag graal-25.4.4.1.1 --work ~/.graal/jre-ios/graal-25.4.4.1.1 --out out/jre-ios/libraries
+cp out/jre-ios/libraries/* jre-ios/
 ```
 
-## 4. Build iOS graal svm lib
+`--graal-tag` is a tag of [oracle/graal](https://github.com/oracle/graal): `graal-<version>` for the GraalVM Community
+innovation releases (`graal-25.4.4.1.1`), `jdk-<version>` for the others (`jdk-25.0.1`); only GraalVM Community is
+supported. `--ios-min-version` sets the minimum iOS version (12.0 by default).
+
+To check that an SDK archive links with its libraries:
 
 ```shell
-cd ~
-git clone https://github.com/graalvm/mx & export PATH=$PATH:~/mx
-git clone git@github.com:oracle/graal.git
-cd graal
-git checkout tags/jdk-22.0.1 -b latest
-cd substratevm
-mx build
-cd ..
-git apply "xcode_project_for_GraalVM.patch"
-cd substratevm
-xcodebuild -sdk iphoneos -project graal-svm-ios.xcodeproj -scheme graal-svm-arm64-release
-lipo -info xcode/graal-svm-arm64-ios-r.a
-#Non-fat file: xcode/graal-svm-arm64-ios-r.a is architecture: arm64
-xcodebuild -sdk iphonesimulator -project graal-svm-ios.xcodeproj -scheme graal-svm-x86-64-release
-lipo -info xcode/graal-svm-x86-64-ios-simulator-r.a
-#Architectures in the fat file: xcode/graal-svm-x86-64-ios-simulator-r.a are: arm64 x86_64
-mv xcode/graal-svm-x86-64-ios-simulator-r.a xcode/graal-svm-ios-simulator-r.a
+unzip target/graal-native-sdk-aarch64-ios.zip -d out/check-ios
+arch -arm64 python3 jre-ios/build.py check --dir out/check-ios --platform ios
+unzip target/graal-native-sdk-ios-simulator.zip -d out/check-simulator
+arch -arm64 python3 jre-ios/build.py check --dir out/check-simulator --platform simulator
 ```
 
-Copy the graal-svm-arm64-ios-r.a and graal-svm-ios-simulator-r.a libraries to the /jre-ios folder.
+## How the libraries are built
 
-## 4. Build project macOS (arm64 & x86_64), iOS (arm64) and simulator (both arm64 & x86_64)
+`build.py build`:
 
-```shell
-cd ~
-# maven
-curl -LO https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
-sudo xattr -rd com.apple.quarantine apache-maven-3.8.8-bin.tar.gz
-tar -xzvf apache-maven-3.8.8-bin.tar.gz
-# add bin to PATH
-#ARCH64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-tar -xzvf graalvm-community-jdk-22.0.1_macos-aarch64_bin.tar.gz
-sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1
-ln -s /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1/Contents/Home ~/.jenv/versions/graalvm-community-openjdk-22.0.1+8.1
-jenv global graalvm-community-openjdk-22.0.1+8.1
-#AMD64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-22.0.1/graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-tar -xzvf graalvm-community-jdk-22.0.1_macos-x64_bin.tar.gz
-sudo mv graalvm-community-openjdk-22.0.1+8.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64
-ln -s /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-22.0.1+8.1-amd64/Contents/Home ~/.jenv/versions/graalvm-community-openjdk-22.0.1+8.1-amd64
-jenv shell graalvm-community-openjdk-22.0.1+8.1
-# macOS
-mvn clean package
-# iOS
-arch -arm64 mvn -DmacIos=true clean package
-jenv shell graalvm-community-openjdk-22.0.1+8.1-amd64
-# Simulator (without clean because it also use iOS artifacts from previous step)
-arch -x86_64 mvn -DmacIosSimulator=true package
-# amd64
-arch -x86_64 mvn clean package
-```
+1. Clones [oracle/graal](https://github.com/oracle/graal) at the tag and [mx](https://github.com/graalvm/mx) of the
+   version that its suites need.
+2. Downloads with `mx fetch-jdk` the labs JDK that this graal is built on (`labsjdk-ce-latest` of its
+   `common.json`) and generates `JvmFuncsFallbacks.c` with `mx build --dependencies svm-jvmfuncs-fallback-builder`:
+   stubs of the `JVM_*` functions that the JDK libraries call and Substrate VM does not implement.
+3. Clones [labs-openjdk](https://github.com/graalvm/labs-openjdk) at the tag of this labs JDK and applies
+   `jdk-ios.patch`, which excludes the parts of the JDK code that iOS does not have (proxy settings,
+   `libproc.h`, ...).
+4. Configures the JDK for macOS and runs `make compile-commands`: it generates the headers of the native code and
+   `compile_commands.json` with the compiler flags of every file of the JDK (autoconf, which the configure needs, is
+   built into the work directory when it is missing).
+5. Compiles the files of `jdk-sources.txt` with these flags for iOS arm64, iOS Simulator arm64 and iOS Simulator
+   x86_64 (the macOS target, SDK and version flags are replaced, `STATIC_BUILD` and `LIBRARY_NAME` are added as for the
+   static JDK libraries), and the files of `svm-sources.txt` with the flags of their mx projects.
+6. Makes the libraries with `libtool` and `lipo` and writes `build-info.txt`.
+
+`build.py check` links a dynamic library from `libDxFeedGraalNativeSdk.o` and the `.a` files of an archive for every
+architecture of the image, so every symbol that the libraries do not define is reported by the linker.
+
+## When a new GraalVM version does not build
+
+* A file of the JDK does not compile for iOS: exclude the code that iOS does not have with `TARGET_OS_IPHONE` in
+  `jdk-ios.patch` (`#include <TargetConditionals.h>`). To update the patch, make the changes in
+  `~/.graal/jre-ios/<version>/labs-openjdk` and run `git diff > jre-ios/jdk-ios.patch` there.
+* A file of `jdk-sources.txt` no longer exists: remove it from the list.
+* The check reports undefined symbols: add the file that defines them to `jdk-sources.txt` (`Java_*`, `JNI_OnLoad_*`;
+  `grep -rl <symbol> src` in labs-openjdk) or to `svm-sources.txt` (`svm_*` and other functions of
+  `substratevm/src/com.oracle.svm.native.*`).

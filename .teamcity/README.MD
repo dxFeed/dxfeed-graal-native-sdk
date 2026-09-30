@@ -108,6 +108,9 @@ The project is built directly on the macOS host system.
 * The agent must be equipped with an Apple Silicon processor.
 * Rosetta 2 must be installed on the agent (`softwareupdate --install-rosetta`).
 * Xcode Command Line Tools must be installed on the agent (`xcode-select --install`).
+* **Build JRE Libraries [iOS]**, which builds the libraries of [jre-ios](../jre-ios/README.MD), also needs Xcode with
+  the iOS and iOS Simulator SDKs, selected with `sudo xcode-select -s /Applications/Xcode.app`: the Command Line
+  Tools have only the macOS SDK.
 
 # Creating and Publishing GraalVM Docker Image for Project Build
 

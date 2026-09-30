@@ -76,6 +76,7 @@ project {
     buildType(BuildForWindows)
     buildType(BuildForWindowsInDocker)
     buildType(BuildForMacOSAndIOS)
+    buildType(BuildJreLibrariesForIOS)
     buildType(BuildForLinuxAarch64)
     buildType(BuildAndPushDockerImageForLinuxX64)
     buildType(BuildAndPushTestDockerImageForLinuxX64)
@@ -1245,6 +1246,70 @@ object BuildForMacOSAndIOS : BuildType({
                 arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
             """.trimIndent()
             formatStderrAsError = true
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
+object BuildJreLibrariesForIOS : BuildType({
+    name = "Build JRE Libraries [iOS]"
+    description = "Builds the jre-ios libraries from the sources of GraalVM Community and checks that the SDK for iOS and the simulator links with them"
+    artifactRules = """
+        out/jre-ios/libraries/** => jre-ios-libraries-%jre.ios.graal.tag%.zip
+        out/jre-ios/sdk/*.zip
+    """.trimIndent()
+
+    params {
+        // The tag of oracle/graal: the GraalVM Community version of the iOS build (graal-25.4.4.1.1, jdk-25.0.1, ...).
+        param("jre.ios.graal.tag", "%env.GRAALVM_VERSION%")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Build the libraries"
+            scriptContent = """
+                set -e
+                rm -rf out/jre-ios
+                arch -arm64 /usr/bin/python3 jre-ios/build.py build --graal-tag "%jre.ios.graal.tag%" --work ~/.graal/jre-ios/%jre.ios.graal.tag% --out out/jre-ios/libraries
+                cp out/jre-ios/libraries/*.a jre-ios/
+            """.trimIndent()
+        }
+
+        script {
+            name = "Build the SDK for iOS and the simulator with the libraries"
+            scriptContent = "set -e\n" + Util.prepareMacOS() + """
+                mkdir -p out/jre-ios/sdk
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean package
+                # The build for the simulator deletes the archive for iOS.
+                cp target/*-aarch64-ios.zip out/jre-ios/sdk/
+                export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true package
+                cp target/*-ios-simulator.zip out/jre-ios/sdk/
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+
+        script {
+            name = "Check that the SDK links with the libraries"
+            scriptContent = """
+                set -e
+                for entry in "ios aarch64-ios" "simulator ios-simulator"; do
+                    set -- ${'$'}{entry}
+                    directory=out/jre-ios/check/${'$'}1
+                    rm -rf "${'$'}{directory}"
+                    mkdir -p "${'$'}{directory}"
+                    unzip -q out/jre-ios/sdk/*-${'$'}2.zip -d "${'$'}{directory}"
+                    arch -arm64 /usr/bin/python3 jre-ios/build.py check --dir "${'$'}{directory}" --platform ${'$'}1
+                done
+            """.trimIndent()
         }
     }
 

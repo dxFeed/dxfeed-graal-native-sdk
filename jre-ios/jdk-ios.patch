@@ -1,0 +1,129 @@
+diff --git a/src/java.base/macosx/native/libjava/java_props_macosx.c b/src/java.base/macosx/native/libjava/java_props_macosx.c
+index 6656bf04e..0c0c8a0d0 100644
+--- a/src/java.base/macosx/native/libjava/java_props_macosx.c
++++ b/src/java.base/macosx/native/libjava/java_props_macosx.c
+@@ -27,11 +27,16 @@
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+-#include <objc/objc-runtime.h>
+ 
+ #include <CoreFoundation/CoreFoundation.h>
+ #include <SystemConfiguration/SystemConfiguration.h>
+ #include <Foundation/Foundation.h>
++#include <TargetConditionals.h>
++
++#if !(TARGET_OS_IPHONE)
++    #include <Security/AuthSession.h>
++    #include <objc/objc-runtime.h>
++#endif
+ 
+ #include "java_props_macosx.h"
+ 
+@@ -225,7 +230,11 @@ char *setupMacOSXLocale(int cat) {
+ 
+ void setOSNameAndVersion(java_props_t *sprops) {
+     // Hardcode os_name, and fill in os_version
+-    sprops->os_name = strdup("Mac OS X");
++#if TARGET_OS_IPHONE
++    sprops->os_name = "iOS";
++#else
++    sprops->os_name = "Mac OS X";
++#endif
+ 
+     NSString *nsVerStr = NULL;
+     char* osVersionCStr = NULL;
+@@ -414,6 +423,10 @@ void setUserHome(java_props_t *sprops) {
+     [pool drain];
+ }
+ 
++
++
++#if defined(MACOSX) && !(TARGET_OS_IPHONE)
++
+ /*
+  * Method for fetching proxy info and storing it in the property list.
+  */
+@@ -491,3 +504,5 @@ void setProxyProperties(java_props_t *sProps) {
+ 
+     CFRelease(dict);
+ }
++
++#endif
+diff --git a/src/java.base/macosx/native/libnet/DefaultProxySelector.c b/src/java.base/macosx/native/libnet/DefaultProxySelector.c
+index a176699be..e2d218cd1 100644
+--- a/src/java.base/macosx/native/libnet/DefaultProxySelector.c
++++ b/src/java.base/macosx/native/libnet/DefaultProxySelector.c
+@@ -27,6 +27,7 @@
+ #include <string.h>
+ #include <CoreFoundation/CoreFoundation.h>
+ #include <CoreServices/CoreServices.h>
++#include <CFNetwork/CFNetwork.h>
+ 
+ #include "jni.h"
+ #include "jni_util.h"
+diff --git a/src/java.base/unix/native/libjava/java_props_md.c b/src/java.base/unix/native/libjava/java_props_md.c
+index 30d0ca676..ff7ea1525 100644
+--- a/src/java.base/unix/native/libjava/java_props_md.c
++++ b/src/java.base/unix/native/libjava/java_props_md.c
+@@ -43,6 +43,7 @@
+ #include <errno.h>
+ 
+ #ifdef MACOSX
++#include <TargetConditionals.h>
+ #include "java_props_macosx.h"
+ #endif
+ 
+@@ -545,7 +546,7 @@ GetJavaProperties(JNIEnv *env)
+     sprops.path_separator = ":";
+     sprops.line_separator = "\n";
+ 
+-#ifdef MACOSX
++#if defined(MACOSX) && !(TARGET_OS_IPHONE)
+     setProxyProperties(&sprops);
+ #endif
+ 
+diff --git a/src/java.base/unix/native/libnet/NetworkInterface.c b/src/java.base/unix/native/libnet/NetworkInterface.c
+index 61267ec13..63f7c6f79 100644
+--- a/src/java.base/unix/native/libnet/NetworkInterface.c
++++ b/src/java.base/unix/native/libnet/NetworkInterface.c
+@@ -25,7 +25,11 @@
+ #include <arpa/inet.h>
+ #include <errno.h>
+ #include <net/if.h>
+-#include <net/if_arp.h>
++
++#if !defined(__APPLE__)
++    #include <net/if_arp.h>
++#endif
++
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
+diff --git a/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c b/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
+index 81a972999..298f5dd4b 100644
+--- a/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
++++ b/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
+@@ -38,8 +38,11 @@
+ #include <sys/param.h>
+ #include <sys/mount.h>
+ #include <mach/mach.h>
+-#include <sys/proc_info.h>
+-#include <libproc.h>
++#include <TargetConditionals.h>
++#if !(TARGET_OS_IPHONE)
++    #include <sys/proc_info.h>
++    #include <libproc.h>
++#endif
+ #endif
+ #elif !defined(_AIX)
+ #include <sys/swap.h>
+@@ -270,7 +273,7 @@ JNIEXPORT jlong JNICALL
+ Java_com_sun_management_internal_OperatingSystemImpl_getOpenFileDescriptorCount0
+   (JNIEnv *env, jobject mbean)
+ {
+-#ifdef __APPLE__
++#if defined(__APPLE__) && !(TARGET_OS_IPHONE)
+     // This code is influenced by the darwin lsof source
+     pid_t my_pid;
+     struct proc_bsdinfo bsdinfo;
