@@ -65,7 +65,8 @@ arch -arm64 python3 jre-ios/build.py check --dir out/check-simulator --platform 
    `libproc.h`, ...).
 4. Configures the JDK for macOS and runs `make compile-commands`: it generates the headers of the native code and
    `compile_commands.json` with the compiler flags of every file of the JDK (autoconf, which the configure needs, is
-   built into the work directory when it is missing).
+   built into the work directory when it is missing; `metal` and `metallib`, which Xcode 26 has only with the Metal
+   Toolchain component, are replaced by a stub: they only compile the shaders of `java.desktop`).
 5. Compiles the files of `jdk-sources.txt` with these flags for iOS arm64, iOS Simulator arm64 and iOS Simulator
    x86_64 (the macOS target, SDK and version flags are replaced, `STATIC_BUILD` and `LIBRARY_NAME` are added as for the
    static JDK libraries), and the files of `svm-sources.txt` with the flags of their mx projects.

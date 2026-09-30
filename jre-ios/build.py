@@ -159,6 +159,23 @@ def ensure_autoconf(work):
     return {'PATH': env['PATH']}
 
 
+def metal_stub(work):
+    """A stand-in for metal and metallib, which the configure of the JDK requires on macOS and which Xcode 26 no longer
+    has without the Metal Toolchain component. They only compile the shaders of java.desktop, which make
+    compile-commands also runs, so the stub just creates the output file."""
+    stub = os.path.join(work, 'tools', 'metal-stub')
+    os.makedirs(os.path.dirname(stub), exist_ok=True)
+    with open(stub, 'w', encoding='utf-8') as file:
+        file.write('#!/bin/sh\n'
+                   '# Creates the -o file: the shaders of java.desktop are not used by the libraries for iOS.\n'
+                   'while [ $# -gt 0 ]; do\n'
+                   '    if [ "$1" = -o ]; then shift; mkdir -p "$(dirname "$1")"; : > "$1"; fi\n'
+                   '    shift\n'
+                   'done\n')
+    os.chmod(stub, 0o755)
+    return stub
+
+
 def mx_version(graal):
     """The mx version required by the suites of graal: the highest of their mxversion."""
     versions = []
@@ -239,8 +256,10 @@ def prepare_jdk(work, labs_jdk, jobs):
     env = dict(os.environ, **ensure_autoconf(work))
     configuration = os.path.join(jdk, 'build', JDK_CONFIGURATION)
     if not os.path.isfile(os.path.join(configuration, 'spec.gmk')):
+        stub = metal_stub(work)
         run(['bash', 'configure', f'--with-boot-jdk={labs_jdk}', f'--with-conf-name={JDK_CONFIGURATION}',
-             '--with-debug-level=release', '--with-native-debug-symbols=none', '--disable-warnings-as-errors'],
+             '--with-debug-level=release', '--with-native-debug-symbols=none', '--disable-warnings-as-errors',
+             f'METAL={stub}', f'METALLIB={stub}'],
             cwd=jdk, env=env)
     # compile-commands compiles the Java code of the modules with native code, which generates their headers.
     run(['make', f'CONF={JDK_CONFIGURATION}', f'JOBS={jobs}', 'compile-commands', 'java.base-copy'], cwd=jdk, env=env)
