@@ -14,33 +14,41 @@ static libraries of this directory, which the pom puts into the iOS archives nex
 The libraries must be built from the same sources as the GraalVM that builds the image: every GraalVM version changes
 the native functions of the JDK and of Substrate VM (for example, the image of GraalVM 25 needs
 `Java_java_io_FileInputStream_isRegularFile0` and `svm_get_locale`, which the libraries of GraalVM 22 do not have, and
-the application does not link). So the libraries are rebuilt whenever `env.GRAALVM_VERSION` of the TeamCity project
-changes. `build-info.txt`, built with the libraries, says which sources they are built from.
+the application does not link). So the libraries are rebuilt whenever `env.GRAALVM_VERSION` or
+`env.GRAALVM_VERSION_MACOS_X64` of the TeamCity project changes. `build-info.txt`, built with the libraries, says which
+sources each slice is built from.
+
+The slices come from two GraalVM versions, as the images do: the arm64 slices from `env.GRAALVM_VERSION`
+(graal-25.4.4.1.1), the x86_64 slice of the simulator from `env.GRAALVM_VERSION_MACOS_X64` (jdk-25.0.1), since GraalVM
+for macOS x64 is no longer published after jdk-25.0.1. The native functions of the two differ too (JDK 25.0.1 has
+`Java_java_io_Console_istty`, JDK 25.0.4 has `Java_java_io_Console_ttyStatus` instead).
 
 ## Updating the libraries
 
 1. Run the TeamCity build configuration **Build JRE Libraries [iOS]** on the branch with the new GraalVM version. It
-   builds the libraries from the sources of `env.GRAALVM_VERSION` (the parameter `jre.ios.graal.tag`), builds the SDK
-   for iOS and the simulator with them and checks that the SDK links with them.
+   builds the libraries from the sources of `env.GRAALVM_VERSION` and `env.GRAALVM_VERSION_MACOS_X64` (the parameters
+   `jre.ios.graal.tag` and `jre.ios.x64.graal.tag`), builds the SDK for iOS and the simulator with them and checks that
+   the SDK links with them.
 2. Download the artifact `jre-ios-libraries-<version>.zip` and replace the `*.a` files and `build-info.txt` of this
    directory with its content.
 3. Commit them. The SDK archives of the same build (`graal-native-sdk-aarch64-ios.zip`,
    `graal-native-sdk-ios-simulator.zip`) can be used to check the libraries in an application (the Swift API).
 
 The agent needs macOS on Apple Silicon with Xcode (the Command Line Tools have no iOS SDK). The first build on an agent
-takes longer: it downloads the sources and the labs JDK and builds the Java code of the JDK, which are then kept in
-`~/.graal/jre-ios/<version>`.
+takes longer: it downloads the sources and the labs JDKs and builds the Java code of the JDKs, which are then kept
+in `~/.graal/jre-ios/<version>`.
 
 ## Building the libraries on a Mac
 
 ```shell
-arch -arm64 python3 jre-ios/build.py build --graal-tag graal-25.4.4.1.1 --work ~/.graal/jre-ios/graal-25.4.4.1.1 --out out/jre-ios/libraries
+arch -arm64 python3 jre-ios/build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios/libraries
 cp out/jre-ios/libraries/* jre-ios/
 ```
 
 `--graal-tag` is a tag of [oracle/graal](https://github.com/oracle/graal): `graal-<version>` for the GraalVM Community
 innovation releases (`graal-25.4.4.1.1`), `jdk-<version>` for the others (`jdk-25.0.1`); only GraalVM Community is
-supported. `--ios-min-version` sets the minimum iOS version (12.0 by default).
+supported. `--x64-graal-tag` is the version for the x86_64 slice of the simulator (`--graal-tag` by default).
+`--ios-min-version` sets the minimum iOS version (12.0 by default).
 
 To check that an SDK archive links with its libraries:
 
@@ -53,7 +61,8 @@ arch -arm64 python3 jre-ios/build.py check --dir out/check-simulator --platform 
 
 ## How the libraries are built
 
-`build.py build`:
+`build.py build` prepares the sources of each GraalVM version in `<work>/<tag>` (steps 1-4) and builds each slice
+from the sources of its version (steps 5-6):
 
 1. Clones [oracle/graal](https://github.com/oracle/graal) at the tag and [mx](https://github.com/graalvm/mx) of the
    version that its suites need.

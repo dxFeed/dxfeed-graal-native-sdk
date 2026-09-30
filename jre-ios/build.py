@@ -6,10 +6,11 @@
 image of the SDK for iOS is linked with, and checks that an image links with them.
 
 The native image contains the Java code of the JDK and of Substrate VM, the libraries contain their native code, so
-both must come from the same sources: the libraries are built from the sources of the given GraalVM Community version
-(graal) and of the labs JDK that it is built on (labs-openjdk, found by mx).
+both must come from the same sources: each slice is built from the sources of the GraalVM Community version that
+builds its image (graal) and of the labs JDK that it is built on (labs-openjdk, found by mx). The x86_64 slice of the
+simulator has its own version, since GraalVM for macOS x64 is no longer published after jdk-25.0.1.
 
-    build.py build --graal-tag graal-25.4.4.1.1 --work ~/.graal/jre-ios --out out/jre-ios
+    build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios
     build.py check --dir <unpacked graal-native-sdk-*-aarch64-ios.zip> --platform ios
 
 Needs macOS on arm64 with Xcode, git, curl, make and python3; autoconf (for the configure of the JDK) is installed
@@ -43,11 +44,13 @@ JDK_CONFIGURATION = 'ios-host'
 class Slice:
     """One architecture of one platform: the libraries for the simulator are fat (arm64 and x86_64)."""
 
-    def __init__(self, name, sdk, arch, triple_suffix):
+    def __init__(self, name, sdk, arch, triple_suffix, x64=False):
         self.name = name
         self.sdk = sdk
         self.arch = arch
         self.triple_suffix = triple_suffix
+        # Built from the sources of the x64 GraalVM (--x64-graal-tag).
+        self.x64 = x64
 
     def triple(self, minimum_version):
         return f'{self.arch}-apple-ios{minimum_version}{self.triple_suffix}'
@@ -56,7 +59,7 @@ class Slice:
 SLICES = {
     'ios-arm64': Slice('ios-arm64', 'iphoneos', 'arm64', ''),
     'simulator-arm64': Slice('simulator-arm64', 'iphonesimulator', 'arm64', '-simulator'),
-    'simulator-x86_64': Slice('simulator-x86_64', 'iphonesimulator', 'x86_64', '-simulator'),
+    'simulator-x86_64': Slice('simulator-x86_64', 'iphonesimulator', 'x86_64', '-simulator', x64=True),
 }
 
 # The published libraries: the name and the slices of each, as the pom and the Swift API expect them.
@@ -210,17 +213,17 @@ def apply_patch(directory, patch):
     run(['git', 'apply', patch], cwd=directory)
 
 
-def prepare_graal(work, graal_tag):
+def prepare_graal(directory, graal_tag):
     """Clones graal and mx, fetches the labs JDK of this graal and generates JvmFuncsFallbacks.c."""
-    graal = os.path.join(work, 'graal')
+    graal = os.path.join(directory, 'graal')
     clone(GRAAL_REPOSITORY, graal_tag, graal)
     mx_tag = mx_version(graal)
-    mx_directory = os.path.join(work, 'mx')
+    mx_directory = os.path.join(directory, 'mx')
     clone(MX_REPOSITORY, mx_tag, mx_directory)
     mx = os.path.join(mx_directory, 'mx')
     substratevm = os.path.join(graal, 'substratevm')
 
-    jdks = os.path.join(work, 'jdks')
+    jdks = os.path.join(directory, 'jdks')
     labs_jdk = os.path.join(jdks, 'labsjdk')
     if not os.path.isfile(os.path.join(labs_jdk, 'release')):
         shutil.rmtree(jdks, ignore_errors=True)
@@ -237,12 +240,12 @@ def prepare_graal(work, graal_tag):
     return graal, labs_jdk, fallbacks[0]
 
 
-def prepare_jdk(work, labs_jdk, jobs):
+def prepare_jdk(work, directory, labs_jdk, jobs):
     """Clones the labs JDK sources of the fetched labs JDK, applies the iOS patch and runs the part of the JDK build
     that the compilation needs: the generated headers and compile_commands.json with the flags of every file."""
     release = read_release(labs_jdk)
     tag = jvmci_tag(release['JAVA_RUNTIME_VERSION'])
-    jdk = os.path.join(work, 'labs-openjdk')
+    jdk = os.path.join(directory, 'labs-openjdk')
     clone(LABS_JDK_REPOSITORY, tag, jdk)
 
     # SOURCE=".:git:391a5a739cb6+ labsjdk-builder:..." names the commit the labs JDK is built from.
@@ -366,8 +369,27 @@ def archive(objects, output):
     run(['xcrun', 'libtool', '-static', '-no_warning_for_no_symbols', '-o', output] + sorted(objects))
 
 
-def build_slice_libraries(work, jdk, commands, graal, labs_jdk, fallbacks, slice_, minimum_version, jobs):
+class Sources:
+    """The prepared sources of one GraalVM version, in <work>/<graal tag>."""
+
+    def __init__(self, work, graal_tag, jobs):
+        self.graal_tag = graal_tag
+        directory = os.path.join(work, graal_tag)
+        self.graal, self.labs_jdk, self.fallbacks = prepare_graal(directory, graal_tag)
+        self.jdk, self.jdk_tag, self.jdk_commit, configuration = prepare_jdk(work, directory, self.labs_jdk, jobs)
+        self.commands = load_compile_commands(self.jdk, configuration)
+        self.graal_commit = run(['git', 'rev-parse', 'HEAD'], cwd=self.graal, capture=True).strip()
+
+    def info(self):
+        return (f'graal {self.graal_tag} ({self.graal_commit}), labs JDK '
+                f'{read_release(self.labs_jdk)["JAVA_RUNTIME_VERSION"]}, labs-openjdk {self.jdk_tag} '
+                f'({self.jdk_commit})')
+
+
+def build_slice_libraries(work, sources, slice_, minimum_version, jobs):
     """Compiles the JDK and the Substrate VM sources for one slice, returns the paths of the two libraries."""
+    jdk, commands, graal, labs_jdk, fallbacks = (sources.jdk, sources.commands, sources.graal, sources.labs_jdk,
+                                                 sources.fallbacks)
     root = os.path.join(work, 'objects', slice_.name)
     shutil.rmtree(root, ignore_errors=True)
     target = ['-target', slice_.triple(minimum_version), '-isysroot', sdk_path(slice_.sdk)]
@@ -407,20 +429,25 @@ def build_slice_libraries(work, jdk, commands, graal, labs_jdk, fallbacks, slice
 
 def build(arguments):
     check_host()
-    work =os.path.abspath(os.path.expanduser(arguments.work))
+    work = os.path.abspath(os.path.expanduser(arguments.work))
     out = os.path.abspath(arguments.out)
     os.makedirs(work, exist_ok=True)
     jobs = arguments.jobs or os.cpu_count()
 
-    graal, labs_jdk, fallbacks = prepare_graal(work, arguments.graal_tag)
-    jdk, jdk_tag, jdk_commit, configuration = prepare_jdk(work, labs_jdk, jobs)
-    commands = load_compile_commands(jdk, configuration)
+    # All the sources are prepared before the compilation, so a problem with any of them shows up early.
+    x64_tag = arguments.x64_graal_tag or arguments.graal_tag
+    sources = {}
+    for tag in dict.fromkeys([arguments.graal_tag, x64_tag]):
+        log(f'== sources of {tag}')
+        sources[tag] = Sources(work, tag, jobs)
+
+    def sources_of(slice_):
+        return sources[x64_tag if slice_.x64 else arguments.graal_tag]
 
     slices = {}
     for name, slice_ in SLICES.items():
         log(f'== {name}')
-        slices[name] = build_slice_libraries(work, jdk, commands, graal, labs_jdk, fallbacks, slice_,
-                                             arguments.ios_min_version, jobs)
+        slices[name] = build_slice_libraries(work, sources_of(slice_), slice_, arguments.ios_min_version, jobs)
 
     os.makedirs(out, exist_ok=True)
     for file_name, kind, names in LIBRARIES:
@@ -430,13 +457,11 @@ def build(arguments):
         run(['xcrun', 'lipo', '-create'] + [slices[name][kind] for name in names] + ['-output', output])
         run(['xcrun', 'lipo', '-info', output])
 
-    graal_commit = run(['git', 'rev-parse', 'HEAD'], cwd=graal, capture=True).strip()
     xcode = run(['xcodebuild', '-version'], capture=True).replace('\n', ' ').strip()
     with open(os.path.join(out, 'build-info.txt'), 'w', encoding='utf-8') as file:
-        file.write(f'graal: {arguments.graal_tag} ({graal_commit})\n'
-                   f'labs JDK: {read_release(labs_jdk)["JAVA_RUNTIME_VERSION"]}\n'
-                   f'labs-openjdk: {jdk_tag} ({jdk_commit})\n'
-                   f'minimum iOS version: {arguments.ios_min_version}\n'
+        for name, slice_ in SLICES.items():
+            file.write(f'{name}: {sources_of(slice_).info()}\n')
+        file.write(f'minimum iOS version: {arguments.ios_min_version}\n'
                    f'{xcode}\n')
     log(f'The libraries are in {out}')
 
@@ -445,7 +470,7 @@ def check(arguments):
     """Links a dynamic library from the native image and the libraries of an unpacked SDK archive for iOS or for the
     simulator, for every architecture of the image: any symbol that the libraries do not define fails the link."""
     check_host()
-    directory =os.path.abspath(arguments.dir)
+    directory = os.path.abspath(arguments.dir)
     image = os.path.join(directory, 'libDxFeedGraalNativeSdk.o')
     libraries = sorted(glob.glob(os.path.join(directory, '*.a')))
     if not os.path.isfile(image) or not libraries:
@@ -482,7 +507,11 @@ def main():
     build_parser.add_argument('--graal-tag', required=True,
                               help='the tag of oracle/graal of the GraalVM Community used for the native image, '
                                    'for example graal-25.4.4.1.1 or jdk-25.0.1')
-    build_parser.add_argument('--work', required=True, help='the directory of the sources and of the build')
+    build_parser.add_argument('--x64-graal-tag',
+                              help='the tag of the GraalVM used for the x86_64 image of the simulator '
+                                   '(default: --graal-tag)')
+    build_parser.add_argument('--work', required=True,
+                              help='the directory of the build, with the sources of each GraalVM in <work>/<tag>')
     build_parser.add_argument('--out', required=True, help='the directory of the built libraries')
     build_parser.add_argument('--ios-min-version', default='12.0', help='the minimum iOS version (default 12.0)')
     build_parser.add_argument('--jobs', type=int, help='the number of parallel jobs (default: the number of CPUs)')

@@ -1263,8 +1263,10 @@ object BuildJreLibrariesForIOS : BuildType({
     """.trimIndent()
 
     params {
-        // The tag of oracle/graal: the GraalVM Community version of the iOS build (graal-25.4.4.1.1, jdk-25.0.1, ...).
+        // The tags of oracle/graal: the GraalVM Community versions of the iOS build (graal-25.4.4.1.1, jdk-25.0.1, ...),
+        // for the arm64 slices and for the x86_64 slice of the simulator, as in prepareMacOS.
         param("jre.ios.graal.tag", "%env.GRAALVM_VERSION%")
+        param("jre.ios.x64.graal.tag", "%env.GRAALVM_VERSION_MACOS_X64%")
     }
 
     vcs {
@@ -1277,7 +1279,7 @@ object BuildJreLibrariesForIOS : BuildType({
             scriptContent = """
                 set -e
                 rm -rf out/jre-ios
-                arch -arm64 /usr/bin/python3 jre-ios/build.py build --graal-tag "%jre.ios.graal.tag%" --work ~/.graal/jre-ios/%jre.ios.graal.tag% --out out/jre-ios/libraries
+                arch -arm64 /usr/bin/python3 jre-ios/build.py build --graal-tag "%jre.ios.graal.tag%" --x64-graal-tag "%jre.ios.x64.graal.tag%" --work ~/.graal/jre-ios --out out/jre-ios/libraries
                 cp out/jre-ios/libraries/*.a jre-ios/
             """.trimIndent()
         }
