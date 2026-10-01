@@ -557,7 +557,9 @@ object DeployNuget : BuildType({
                 VERSION=${'$'}(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
-                nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate
+                # The package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
+                # -SkipDuplicate makes a rerun safe if a timed out push has been accepted after all.
+                nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate -Timeout 1800
             """.trimIndent()
             formatStderrAsError = true
             dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
