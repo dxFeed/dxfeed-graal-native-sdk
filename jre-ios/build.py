@@ -80,10 +80,16 @@ SVM_PROJECT_FLAGS = {
     'com.oracle.svm.native.jvm.posix': ['-fPIC', '-O2', '-fvisibility=hidden'],
 }
 
-# The system libraries the native image and the JDK code may need, as an application that uses the SDK links them
-# (the frameworks that the SDK does not have are skipped).
-LINK_FRAMEWORKS = ['Foundation', 'CoreFoundation', 'CoreServices', 'SystemConfiguration', 'CFNetwork']
-LINK_LIBRARIES = ['-lz']
+# The system libraries that the objects of a JDK library need. The objects name them in LC_LINKER_OPTION, so the
+# linker of the application adds them (autolinking): the application does not have to know them, and the libraries
+# do not embed their own copies (zlib), which would conflict with the system ones that the application may use.
+LIBRARY_DEPENDENCIES = {
+    'zip': ['z'],
+}
+
+# The link check links only with what any application that uses the SDK links (Swift and Objective-C link Foundation),
+# so a system library missing from LIBRARY_DEPENDENCIES fails it, as it fails the link of the application.
+CHECK_LINK_FLAGS = ['-framework', 'Foundation']
 
 
 def log(message):
@@ -339,6 +345,8 @@ def jdk_compile_arguments(arguments, source, slice_):
         flags.append(f'-DLIBRARY_NAME={library}')
     if '-DSTATIC_BUILD=1' not in flags:
         flags.append('-DSTATIC_BUILD=1')
+    for dependency in LIBRARY_DEPENDENCIES.get(library, []):
+        flags += ['-Xclang', f'--dependent-lib={dependency}']
     return flags
 
 
@@ -468,7 +476,8 @@ def build(arguments):
 
 def check(arguments):
     """Links a dynamic library from the native image and the libraries of an unpacked SDK archive for iOS or for the
-    simulator, for every architecture of the image: any symbol that the libraries do not define fails the link."""
+    simulator, for every architecture of the image, as an application does (CHECK_LINK_FLAGS): any symbol that neither
+    the libraries nor the system libraries that they name define fails the link."""
     check_host()
     directory = os.path.abspath(arguments.dir)
     image = os.path.join(directory, 'libDxFeedGraalNativeSdk.o')
@@ -478,16 +487,12 @@ def check(arguments):
     sdk = 'iphoneos' if arguments.platform == 'ios' else 'iphonesimulator'
     architectures = run(['xcrun', 'lipo', '-archs', image], capture=True).split()
     root = sdk_path(sdk)
-    frameworks = []
-    for framework in LINK_FRAMEWORKS:
-        if os.path.isdir(os.path.join(root, 'System', 'Library', 'Frameworks', framework + '.framework')):
-            frameworks += ['-framework', framework]
     failed = []
     for arch in architectures:
         slice_ = next(s for s in SLICES.values() if s.sdk == sdk and s.arch == arch)
         output = os.path.join(directory, f'link-check-{arch}.dylib')
         command = ['xcrun', '--sdk', sdk, 'clang', '-target', slice_.triple(arguments.ios_min_version), '-isysroot',
-                   root, '-dynamiclib', '-o', output, image] + libraries + frameworks + LINK_LIBRARIES
+                   root, '-dynamiclib', '-o', output, image] + libraries + CHECK_LINK_FLAGS
         log(f'== {arguments.platform} {arch}')
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         log(result.stdout.rstrip() or 'linked')

@@ -34,6 +34,9 @@
       sun.net.www.protocol.http(s).Handler), which GraalVM 25.4+ reads instead of the deprecated enable-url-protocols.
     -->
     <url.protocols.buildArg>-DDXFG1=0</url.protocols.buildArg>
+    <macos.buildArg>-DDXFG1=0</macos.buildArg>
+    <macos.min.version />
+    <macos.check.skip>true</macos.check.skip>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -363,6 +366,41 @@
         </dependency>
       </dependencies>
     </profile>
+    <!--
+      The minimum macOS version of the library: without it, the linker takes the version of the SDK of the build
+      machine (macOS 26.0 with Xcode 26), and the linker of an application for an older macOS warns that the library
+      is built for a newer version (dyld still loads it, checked on macOS 15). The minimum is that of
+      the static libraries of the GraalVM that builds the library: Substrate VM of graal-25.4.4.1.1 (arm64) is built for
+      macOS 14.0, jdk-25.0.1 (x64) for macOS 11.0 (LC_BUILD_VERSION of lib/svm/clibraries/darwin-*/*.a).
+    -->
+    <profile>
+      <id>mac-aarch64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <macos.min.version>14.0</macos.min.version>
+        <macos.buildArg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.min.version}</macos.buildArg>
+        <macos.check.skip>false</macos.check.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>mac-x86_64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <macos.min.version>11.0</macos.min.version>
+        <macos.buildArg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.min.version}</macos.buildArg>
+        <macos.check.skip>false</macos.check.skip>
+      </properties>
+    </profile>
     <profile>
       <id>unix</id>
       <activation>
@@ -528,6 +566,7 @@
       </activation>
       <properties>
         <set-rpath.skip>true</set-rpath.skip>
+        <macos.check.skip>true</macos.check.skip>
         <arch.name>ios-simulator</arch.name>
         <notIosSimulator>false</notIosSimulator>
       </properties>
@@ -606,6 +645,7 @@
       </activation>
       <properties>
         <set-rpath.skip>true</set-rpath.skip>
+        <macos.check.skip>true</macos.check.skip>
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
       </properties>
@@ -748,6 +788,7 @@
             <buildArg>${debug.buildArg4}</buildArg>
             <buildArg>${signal.buildArg1}</buildArg>
             <buildArg>${signal.buildArg2}</buildArg>
+            <buildArg>${macos.buildArg}</buildArg>
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>
@@ -772,6 +813,25 @@
                 <argument>
                   ${native.image.path}/${native.image.name}.dylib
                 </argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Fails the build if the minimum macOS version of the library is not macos.min.version. -->
+            <id>check-macos-min-version</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${macos.check.skip}</skip>
+              <executable>sh</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument>minos=$(xcrun vtool -show-build "$1" | awk '/minos/ { print $2; exit }'); echo "The minimum macOS version of $1: $minos"; [ "$minos" = "$2" ] || { echo "Expected $2"; exit 1; }</argument>
+                <argument>check-macos-min-version</argument>
+                <argument>${native.image.path}/${native.image.name}.dylib</argument>
+                <argument>${macos.min.version}</argument>
               </arguments>
             </configuration>
           </execution>

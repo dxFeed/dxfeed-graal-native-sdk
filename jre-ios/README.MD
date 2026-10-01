@@ -78,11 +78,16 @@ from the sources of its version (steps 5-6):
    Toolchain component, are replaced by a stub: they only compile the shaders of `java.desktop`).
 5. Compiles the files of `jdk-sources.txt` with these flags for iOS arm64, iOS Simulator arm64 and iOS Simulator
    x86_64 (the macOS target, SDK and version flags are replaced, `STATIC_BUILD` and `LIBRARY_NAME` are added as for the
-   static JDK libraries), and the files of `svm-sources.txt` with the flags of their mx projects.
+   static JDK libraries), and the files of `svm-sources.txt` with the flags of their mx projects. The objects that
+   need a system library name it for the linker (`LIBRARY_DEPENDENCIES` of `build.py`, `LC_LINKER_OPTION`): the
+   objects of `libzip` add `-lz`, so an application links the system zlib without knowing about it, and the
+   libraries do not embed their own zlib, which would conflict with the one of the application.
 6. Makes the libraries with `libtool` and `lipo` and writes `build-info.txt`.
 
 `build.py check` links a dynamic library from `libDxFeedGraalNativeSdk.o` and the `.a` files of an archive for every
-architecture of the image, so every symbol that the libraries do not define is reported by the linker.
+architecture of the image with only what any application links (`-framework Foundation`), so every symbol that
+neither the libraries nor the system libraries that they name define is reported by the linker, as in the
+application.
 
 ## When a new GraalVM version does not build
 
