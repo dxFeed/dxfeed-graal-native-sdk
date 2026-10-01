@@ -1,3 +1,5 @@
+## v3.7.0-rc1
+
 * Fixed: on Linux and macOS, the process could be killed by `SIGPIPE` when an endpoint was disconnected or closed
   while its connector wrote to the socket (a QD writer thread writing to a socket already shut down by the stopping
   thread). The SDK now ignores `SIGPIPE` and `SIGXFSZ` as the JVM does: when an isolate is created and the action of
