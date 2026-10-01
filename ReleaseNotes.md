@@ -47,6 +47,24 @@
   `dxfg_subscription_controller_t **`, as the function writes the pointer to the handle there (it was declared as
   `dxfg_subscription_controller_t *`).
 
+### For integrators
+
+* iOS and the iOS Simulator: an application links `libDxFeedGraalNativeSdk.o` and the two `.a` libraries of the
+  archive. They name `-lz` and `-framework CFNetwork` for the linker themselves, so they are not needed in the
+  linker flags any more (they do no harm there); the SDK checks that the libraries link with `-framework Foundation`
+  only.
+* Minimum OS versions: macOS 14.0 on arm64 and macOS 11.0 on x64 (before: the version of the build machine, macOS 26.0
+  in 3.6.0); iOS 12.0, the iOS Simulator 14.0 on arm64 and 12.0 on x86_64 (the `.a` libraries;
+  `libDxFeedGraalNativeSdk.o` declares no platform).
+* The archives of Windows, Linux and macOS do not contain `management_ext` and `libosxkrb5.dylib` any more.
+* Linux and macOS: an isolate installs no-op handlers of `SIGPIPE` and `SIGXFSZ` when their action is the default one
+  (`-XX:-EnableSignalHandling` turns it off).
+* macOS x64: tools such as `jstat` do not see the process.
+* The compilers warn where `dxfg_DXFeed_getLastEvent` and `dxfg_DXFeed_getLastEvents` are used (use
+  `dxfg_DXFeed_getLastEvent2` and `dxfg_DXFeed_getLastEvents2`); a call of
+  `dxfg_DXFeedSubscription_getSubscriptionController` that casts its output parameter to
+  `dxfg_subscription_controller_t *` may need a change.
+
 ## v3.6.0
 
 * **Changed:** the `attachment` of `Message` and `Configuration` (`dxfg_message_t`, `dxfg_configuration_t`) is a UTF-8
