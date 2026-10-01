@@ -1,4 +1,4 @@
-## v3.7.0-rc1
+## v3.7.0-rc2
 
 * Fixed: on Linux and macOS, the process could be killed by `SIGPIPE` when an endpoint was disconnected or closed
   while its connector wrote to the socket (a QD writer thread writing to a socket already shut down by the stopping
