@@ -1,4 +1,4 @@
-## v3.7.0-rc2
+## v3.7.0-rc3
 
 * Fixed: the macOS library declared the macOS version of the build machine as its minimum version (macOS 26.0 for
   3.6.0, 3.7.0-rc1 and 3.7.0-rc2), so the linker of an application for an older macOS warned that the library was
