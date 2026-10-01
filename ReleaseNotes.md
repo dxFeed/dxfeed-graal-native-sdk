@@ -1,5 +1,11 @@
 ## v3.7.0-rc4
 
+* Fixed on macOS x64: the jvmstat support called the 32-bit inode `fdopendir` and `readdir` of the system (GraalVM
+  jdk-25.0.1 for macOS x64 declares them without `$INODE64`) but read the 64-bit inode layout of `dirent` when it
+  cleaned up the `hsperfdata` directory at the start: it read the file names at a wrong offset and passed them to
+  `unlinkat` (the stale files were not removed), and an application with AddressSanitizer aborted at the creation of
+  the first isolate. The performance data now stays in the memory of the process on macOS x64 (tools such as `jstat` do
+  not see the process there), and the build fails if the library imports a 32-bit inode function.
 * Fixed: the macOS library declared the macOS version of the build machine as its minimum version (macOS 26.0 for
   3.6.0, 3.7.0-rc1 and 3.7.0-rc2), so the linker of an application for an older macOS warned that the library was
   built for a newer version. It now declares macOS 14.0 on arm64 and macOS 11.0 on x64, the minimum versions of the

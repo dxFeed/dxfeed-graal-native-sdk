@@ -37,6 +37,8 @@
     <macos.buildArg>-DDXFG1=0</macos.buildArg>
     <macos.min.version />
     <macos.check.skip>true</macos.check.skip>
+    <macos.x64.buildArg>-DDXFG1=0</macos.x64.buildArg>
+    <macos.x64.check.skip>true</macos.x64.check.skip>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -399,6 +401,15 @@
         <macos.min.version>11.0</macos.min.version>
         <macos.buildArg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.min.version}</macos.buildArg>
         <macos.check.skip>false</macos.check.skip>
+        <!--
+          Substrate VM of jdk-25.0.1 for macOS x64 calls the 32-bit inode fdopendir and readdir (@CFunction without
+          $INODE64) but reads the 64-bit inode layout of dirent, when the jvmstat support cleans up the hsperfdata
+          directory: the names are read at a wrong offset (and passed to unlinkat), and AddressSanitizer aborts the
+          process. The performance data stays in the memory of the process instead, so the code that reads the
+          directory is not in the image (external tools such as jstat do not see the process on macOS x64).
+        -->
+        <macos.x64.buildArg>-H:-PerfDataMemoryMappedFile</macos.x64.buildArg>
+        <macos.x64.check.skip>false</macos.x64.check.skip>
       </properties>
     </profile>
     <profile>
@@ -567,6 +578,7 @@
       <properties>
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
+        <macos.x64.check.skip>true</macos.x64.check.skip>
         <arch.name>ios-simulator</arch.name>
         <notIosSimulator>false</notIosSimulator>
       </properties>
@@ -646,6 +658,7 @@
       <properties>
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
+        <macos.x64.check.skip>true</macos.x64.check.skip>
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
       </properties>
@@ -789,6 +802,7 @@
             <buildArg>${signal.buildArg1}</buildArg>
             <buildArg>${signal.buildArg2}</buildArg>
             <buildArg>${macos.buildArg}</buildArg>
+            <buildArg>${macos.x64.buildArg}</buildArg>
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>
@@ -832,6 +846,27 @@
                 <argument>check-macos-min-version</argument>
                 <argument>${native.image.path}/${native.image.name}.dylib</argument>
                 <argument>${macos.min.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              Fails the build if the x64 library imports a 32-bit inode function of the directories or files (without
+              $INODE64) while it uses the 64-bit inode structures (see macos.x64.buildArg).
+            -->
+            <id>check-macos-x64-inode64</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${macos.x64.check.skip}</skip>
+              <executable>sh</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument>legacy=$(xcrun nm -u -j "$1" | grep -E '^_(fdopendir|opendir|readdir|readdir_r|telldir|seekdir|rewinddir|scandir|stat|lstat|fstat|fstatat|statfs|fstatfs|getfsstat)$'); [ -z "$legacy" ] || { echo "The 32-bit inode functions imported by $1:" $legacy; exit 1; }; echo "No 32-bit inode functions are imported by $1"</argument>
+                <argument>check-macos-x64-inode64</argument>
+                <argument>${native.image.path}/${native.image.name}.dylib</argument>
               </arguments>
             </configuration>
           </execution>
