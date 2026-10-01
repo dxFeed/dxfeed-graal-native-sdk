@@ -4,10 +4,12 @@
   3.6.0, 3.7.0-rc1 and 3.7.0-rc2), so the linker of an application for an older macOS warned that the library was
   built for a newer version. It now declares macOS 14.0 on arm64 and macOS 11.0 on x64, the minimum versions of the
   GraalVM libraries that it is built with, and the build fails if the library declares another version.
-* iOS and the iOS Simulator: the JDK library names the system zlib for the linker (`-lz` in `LC_LINKER_OPTION`), so an
-  application links it without adding `-lz`. With GraalVM 25 (since 3.6.0) the SDK uses the zlib functions of
-  `java.util.zip` (`Inflater`, `Deflater`), and an application without `-lz` did not link. The libraries do not
-  embed their own zlib, so there is no conflict with the zlib of the application.
+* iOS and the iOS Simulator: the JDK library names the system libraries that it needs for the linker
+  (`LC_LINKER_OPTION`): `-lz` and `-framework CFNetwork`, so an application links them without adding them. With
+  GraalVM 25 (since 3.6.0) the SDK uses the zlib functions of `java.util.zip` (`Inflater`, `Deflater`), and an
+  application without `-lz` did not link; an application in C or Objective-C also needed `-framework CFNetwork`
+  (Swift adds it with Foundation). The libraries do not embed their own zlib, so there is no conflict with the zlib
+  of the application.
 * Fixed: on Linux and macOS, the process could be killed by `SIGPIPE` when an endpoint was disconnected or closed
   while its connector wrote to the socket (a QD writer thread writing to a socket already shut down by the stopping
   thread). The SDK now ignores `SIGPIPE` and `SIGXFSZ` as the JVM does: when an isolate is created and the action of

@@ -79,9 +79,11 @@ from the sources of its version (steps 5-6):
 5. Compiles the files of `jdk-sources.txt` with these flags for iOS arm64, iOS Simulator arm64 and iOS Simulator
    x86_64 (the macOS target, SDK and version flags are replaced, `STATIC_BUILD` and `LIBRARY_NAME` are added as for the
    static JDK libraries), and the files of `svm-sources.txt` with the flags of their mx projects. The objects that
-   need a system library name it for the linker (`LIBRARY_DEPENDENCIES` of `build.py`, `LC_LINKER_OPTION`): the
-   objects of `libzip` add `-lz`, so an application links the system zlib without knowing about it, and the
-   libraries do not embed their own zlib, which would conflict with the one of the application.
+   need a system library name it for the linker (`LIBRARY_DEPENDENCIES` of `build.py`): the objects of `libzip` add
+   `-lz`, those of `libnet` add `-framework CFNetwork`, so an application links them without knowing about them, and
+   the libraries do not embed their own zlib, which would conflict with the one of the application. `build.py`
+   includes a generated header (`-include`) with `__asm__(".linker_option ...")` into these objects, which writes
+   `LC_LINKER_OPTION`.
 6. Makes the libraries with `libtool` and `lipo` and writes `build-info.txt`.
 
 `build.py check` links a dynamic library from `libDxFeedGraalNativeSdk.o` and the `.a` files of an archive for every
