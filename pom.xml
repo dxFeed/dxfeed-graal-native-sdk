@@ -27,6 +27,8 @@
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
     <debug.buildArg4>-DDXFG1=0</debug.buildArg4>
+    <signal.buildArg1>-DDXFG1=0</signal.buildArg1>
+    <signal.buildArg2>-DDXFG1=0</signal.buildArg2>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -361,6 +363,18 @@
           <family>unix</family>
         </os>
       </activation>
+      <properties>
+        <!--
+          Ignore SIGPIPE and SIGXFSZ as HotSpot does: signal handling is disabled by default in a shared library, so
+          SIGPIPE keeps SIG_DFL and a write to a socket closed by the peer or shut down by another thread (a QD
+          connector being stopped) kills the process instead of failing with EPIPE (an IOException). With signal
+          handling enabled, the isolate installs a no-op handler for SIGPIPE and SIGXFSZ when their action is SIG_DFL
+          (a handler or SIG_IGN of the application is kept); the segfault handler stays disabled, as it would replace
+          the SIGSEGV handler of the application (.NET, Go). Applies to macOS too (the unix family includes mac).
+        -->
+        <signal.buildArg1>-R:+EnableSignalHandling</signal.buildArg1>
+        <signal.buildArg2>-R:-InstallSegfaultHandler</signal.buildArg2>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>com.devexperts.mdd</groupId>
@@ -725,6 +739,8 @@
             <buildArg>${debug.buildArg2}</buildArg>
             <buildArg>${debug.buildArg3}</buildArg>
             <buildArg>${debug.buildArg4}</buildArg>
+            <buildArg>${signal.buildArg1}</buildArg>
+            <buildArg>${signal.buildArg2}</buildArg>
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>

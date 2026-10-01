@@ -1,3 +1,9 @@
+* Fixed: on Linux and macOS, the process could be killed by `SIGPIPE` when an endpoint was disconnected or closed
+  while its connector wrote to the socket (a QD writer thread writing to a socket already shut down by the stopping
+  thread). The SDK now ignores `SIGPIPE` and `SIGXFSZ` as the JVM does: when an isolate is created and the action of
+  the signal is the default one, a no-op handler is installed, so such a write fails with `EPIPE` (handled by QD) and
+  a handler or `SIG_IGN` set by the application is kept. A no-op handler, unlike `SIG_IGN`, is not inherited by the
+  programs that the application executes. It can be turned off with the isolate argument `-XX:-EnableSignalHandling`.
 * Fixed the archives for iOS and the iOS Simulator (`aarch64-ios`, `ios-simulator`): an application did not link with
   them since 3.6.0 (undefined symbols such as `Java_java_io_FileInputStream_isRegularFile0` and `svm_get_locale`), as
   their JDK and Substrate VM libraries were built for GraalVM 22. The libraries are now built from the sources of the
