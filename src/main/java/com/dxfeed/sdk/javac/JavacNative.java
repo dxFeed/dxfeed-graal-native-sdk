@@ -662,8 +662,9 @@ public class JavacNative {
             return 1;
         }
 
-        //noinspection unchecked,rawtypes
-        return ((Comparable) javaObject).compareTo(otherJavaObject);
+        // The objects come from C without their types: compareTo throws ClassCastException if they are not comparable.
+        @SuppressWarnings("unchecked") final Comparable<Object> comparable = (Comparable<Object>) javaObject;
+        return comparable.compareTo(otherJavaObject);
     }
 
     @CEntryPoint(
@@ -908,13 +909,8 @@ public class JavacNative {
 
         private final String name;
         private final AtomicInteger index = new AtomicInteger();
-        private final ThreadGroup group;
-
-        {
-            final SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-        }
+        // There is no security manager since JDK 24, so the threads join the group of the creating thread.
+        private final ThreadGroup group = Thread.currentThread().getThreadGroup();
 
         PoolThreadFactory(final String name) {
             this.name = name;

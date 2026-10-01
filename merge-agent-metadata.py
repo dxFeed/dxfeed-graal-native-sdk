@@ -4,6 +4,7 @@ Merges the native-image-agent output (reachability-metadata.json, GraalVM 23+ fo
     (the agent is expected to be run with config-merge-dir seeded with this file, so it accumulates);
   * the legacy reflect-config.json / serialization-config.json / jni-config.json / resource-config.json files
     used by GraalVM < 23. Existing entries are never removed: methods/fields are united, boolean flags are OR-ed.
+    The dynamic proxies ("type": {"proxy": [...]}) are only in reachability-metadata.json.
 Each legacy file keeps its current formatting and is rewritten only if something was added.
 
 Usage: python merge-agent-metadata.py <agent reachability-metadata.json> <native-image config dir> [--no-legacy]
@@ -16,6 +17,22 @@ import re
 PRIMITIVE_CODES = {"Z": "boolean", "B": "byte", "C": "char", "S": "short", "I": "int", "J": "long",
                    "F": "float", "D": "double"}
 SKIP_TYPE_PREFIXES = ("com.dxfeed.NewCases", "com.dxfeed.NativeLibMain", "com.dxfeed.TestJmx")
+
+
+def is_named(entry):
+    """A reflection entry of a named type, not of a dynamic proxy ("type": {"proxy": [...]})."""
+    return isinstance(entry["type"], str)
+
+
+def is_skipped(entry):
+    return is_named(entry) and entry["type"].startswith(SKIP_TYPE_PREFIXES)
+
+
+def type_key(entry):
+    """Sorts the named types by name, the proxies after them."""
+    if is_named(entry):
+        return 0, entry["type"].casefold()
+    return 1, json.dumps(entry["type"], sort_keys=True)
 
 
 def normalize(name):
@@ -149,9 +166,9 @@ def merge_resources(path, resources, stats):
 def write_reachability_metadata(path, agent):
     """Writes the agent output without the test harness types, with a stable order and formatting."""
     data = {}
-    reflection = [e for e in agent.get("reflection", []) if not e["type"].startswith(SKIP_TYPE_PREFIXES)]
+    reflection = [e for e in agent.get("reflection", []) if not is_skipped(e)]
     if reflection:
-        data["reflection"] = sorted(reflection, key=lambda e: e["type"].casefold())
+        data["reflection"] = sorted(reflection, key=type_key)
     for key in agent:
         if key != "reflection":
             items = agent[key]
@@ -175,7 +192,7 @@ def main():
 
     reflection, jni, serialization = [], [], []
     for e in agent.get("reflection", []):
-        if e["type"].startswith(SKIP_TYPE_PREFIXES):
+        if is_skipped(e) or not is_named(e):
             continue
         if "condition" in e:
             raise ValueError(f"conditional entries are not supported: {e}")

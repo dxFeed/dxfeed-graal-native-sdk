@@ -40,6 +40,8 @@ import org.graalvm.nativeimage.c.constant.CEnumValue;
 
 @CContext(EventsDirectives.class)
 @CEnum("dxfg_event_clazz_t")
+// Includes the deprecated DailyCandle, which the C API still supports (DXFG_EVENT_DAILY_CANDLE).
+@SuppressWarnings("deprecation")
 public enum DxfgEventClazz {
     DXFG_EVENT_QUOTE(Quote.class),                         // LASTING
     DXFG_EVENT_PROFILE(Profile.class),                     // LASTING

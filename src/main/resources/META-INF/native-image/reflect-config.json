@@ -9256,6 +9256,15 @@
     ]
   },
   {
+    "name": "sun.net.www.protocol.https.Handler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "sun.net.www.protocol.jar.Handler",
     "methods": [
       {

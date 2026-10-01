@@ -3738,6 +3738,15 @@
       ]
     },
     {
+      "type": "sun.net.www.protocol.https.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "sun.net.www.protocol.jar.Handler",
       "methods": [
         {
@@ -3895,6 +3904,13 @@
     },
     {
       "type": "sun.util.resources.cldr.TimeZoneNames_en"
+    },
+    {
+      "type": {
+        "proxy": [
+          "com.dxfeed.orcs.api.PriceLevelService"
+        ]
+      }
     }
   ],
   "resources": [

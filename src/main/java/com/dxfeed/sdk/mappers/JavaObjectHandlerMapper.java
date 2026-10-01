@@ -35,8 +35,9 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
         final NativeObjectType nativeObject = UnmanagedMemory.calloc(getSizeJavaObjectHandler() * javaObjects.length);
 
         for (int i = 0; i < javaObjects.length; i++) {
-            //noinspection unchecked
-            fillNative(javaObjects[i], (NativeObjectType) nativeObject.addressOf(i), false);
+            // addressOf returns the pointer type of the structure, which is NativeObjectType.
+            @SuppressWarnings("unchecked") final NativeObjectType element = (NativeObjectType) nativeObject.addressOf(i);
+            fillNative(javaObjects[i], element, false);
         }
 
         return nativeObject;
@@ -45,8 +46,8 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
     public void releaseNativeArray(final NativeObjectType nativeArray, int size) {
         if (nativeArray.isNonNull() && size > 0) {
             for (int i = 0; i < size; i++) {
-                //noinspection unchecked
-                cleanNative((NativeObjectType) nativeArray.addressOf(i));
+                @SuppressWarnings("unchecked") final NativeObjectType element = (NativeObjectType) nativeArray.addressOf(i);
+                cleanNative(element);
             }
 
             UnmanagedMemory.free(nativeArray);

@@ -63,6 +63,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+// Subscribes to the deprecated DailyCandle too, which the C API still supports.
+@SuppressWarnings("deprecation")
 public class NativeLibMain {
 
     public static void main(final String[] args) throws Exception {
@@ -108,8 +110,9 @@ public class NativeLibMain {
 
         // Create and link event processor for all types of events
         // Note: set of processed event types could be limited if needed
-        Class<? extends EventType<?>>[] eventTypes = inputEndpoint.getEventTypes()
-                .toArray(new Class[inputEndpoint.getEventTypes().size()]);
+        // There are no generic arrays: the array of the raw Class holds the event types of the set.
+        @SuppressWarnings({"unchecked", "rawtypes"}) Class<? extends EventType<?>>[] eventTypes = inputEndpoint
+                .getEventTypes().toArray(new Class[inputEndpoint.getEventTypes().size()]);
         DXFeedSubscription<? extends EventType<?>> sub = inputEndpoint.getFeed().createSubscription(eventTypes);
         sub.addEventListener(events -> {
             // Here event processing occurs. Events could be modified, removed, or new events added.

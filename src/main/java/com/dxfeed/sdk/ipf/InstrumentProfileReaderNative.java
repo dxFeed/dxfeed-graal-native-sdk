@@ -382,6 +382,10 @@ public class InstrumentProfileReaderNative {
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
+    // The functions dxfg_InstrumentProfileReader_readCompressed* and dxfg_InstrumentProfileReader_read* are the bindings
+    // of the deprecated InstrumentProfileReader.readCompressed(InputStream) and read(InputStream): read(InputStream)
+    // neither decompresses the stream nor reports an incomplete one, unlike read(InputStream, String).
+    @SuppressWarnings("deprecation")
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_readCompressed",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
@@ -399,7 +403,7 @@ public class InstrumentProfileReaderNative {
         );
     }
 
-    @SuppressWarnings("SameReturnValue")
+    @SuppressWarnings({"SameReturnValue", "deprecation"})
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_readCompressed2",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
@@ -425,6 +429,7 @@ public class InstrumentProfileReaderNative {
         return fillNativeProfiles(profiles, instrumentProfiles, size);
     }
 
+    @SuppressWarnings("deprecation")
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_readCompressed3",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
@@ -447,6 +452,7 @@ public class InstrumentProfileReaderNative {
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
+    @SuppressWarnings("deprecation")
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_read",
             exceptionHandler = ExceptionHandlerReturnNullWord.class
@@ -463,7 +469,7 @@ public class InstrumentProfileReaderNative {
         );
     }
 
-    @SuppressWarnings("SameReturnValue")
+    @SuppressWarnings({"SameReturnValue", "deprecation"})
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_read3",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
@@ -489,6 +495,7 @@ public class InstrumentProfileReaderNative {
         return fillNativeProfiles(profiles, instrumentProfiles, size);
     }
 
+    @SuppressWarnings("deprecation")
     @CEntryPoint(
             name = "dxfg_InstrumentProfileReader_read5",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class

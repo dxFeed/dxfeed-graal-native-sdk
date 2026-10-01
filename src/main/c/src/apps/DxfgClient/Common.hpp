@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <climits>
 #include <cstring>
 #include <locale>
 #include <mutex>
@@ -215,11 +216,11 @@ inline std::size_t getHash(const char *str) {
     return seed;
 }
 
-constexpr void hashCombine(std::size_t &seed, const char *str) noexcept {
+inline void hashCombine(std::size_t &seed, const char *str) noexcept {
     seed = hashMix(seed + 0x9e3779b9 + getHash(str));
 }
 
-constexpr void hashCombine(std::size_t &seed, char *str) noexcept {
+inline void hashCombine(std::size_t &seed, char *str) noexcept {
     seed = hashMix(seed + 0x9e3779b9 + getHash(str));
 }
 

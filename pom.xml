@@ -29,6 +29,11 @@
     <debug.buildArg4>-DDXFG1=0</debug.buildArg4>
     <signal.buildArg1>-DDXFG1=0</signal.buildArg1>
     <signal.buildArg2>-DDXFG1=0</signal.buildArg2>
+    <!--
+      The http and https URL protocols are registered in reachability-metadata.json (the reflection of
+      sun.net.www.protocol.http(s).Handler), which GraalVM 25.4+ reads instead of the deprecated enable-url-protocols.
+    -->
+    <url.protocols.buildArg>-DDXFG1=0</url.protocols.buildArg>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -240,6 +245,8 @@
       </activation>
       <properties>
         <svm.sources>src/main/java-svm-core</svm.sources>
+        <!-- GraalVM before 25.4 (jdk-25.0.1 for macOS x64) enables the URL protocols only with this option. -->
+        <url.protocols.buildArg>--enable-url-protocols=http,https</url.protocols.buildArg>
         <!-- The reachability metadata of newer plugin versions is not supported by older GraalVM versions. -->
         <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
       </properties>
@@ -488,7 +495,7 @@
               <sharedLibrary>${isShared}</sharedLibrary>
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
-                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -562,7 +569,7 @@
               <sharedLibrary>true</sharedLibrary>
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
-                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -639,7 +646,7 @@
               <imageName>${native.image.name}</imageName>
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
-                <buildArg>--enable-url-protocols=http,https</buildArg>
+                <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
@@ -719,7 +726,7 @@
           <sharedLibrary>${isShared}</sharedLibrary>
           <buildArgs>
             <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
-            <buildArg>--enable-url-protocols=http,https</buildArg>
+            <buildArg>${url.protocols.buildArg}</buildArg>
             <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>

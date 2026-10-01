@@ -11,6 +11,8 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 
+// The mapper of the deprecated DailyCandle, which the C API still supports (DXFG_EVENT_DAILY_CANDLE).
+@SuppressWarnings("deprecation")
 public class DailyCandleMapper extends CandleMapper<DailyCandle, DxfgDailyCandle> {
 
     public DailyCandleMapper(
