@@ -1,4 +1,4 @@
-## v3.7.0-rc5
+## v3.7.0
 
 * Fixed on macOS x64: the jvmstat support called the 32-bit inode `fdopendir` and `readdir` of the system (GraalVM
   jdk-25.0.1 for macOS x64 declares them without `$INODE64`) but read the 64-bit inode layout of `dirent` when it
