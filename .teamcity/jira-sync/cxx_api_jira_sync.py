@@ -13,8 +13,11 @@ A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than th
 "graal-cxx-api vX.Y.Z":
   - the Jira version is the one of that name, or else the only unreleased graal-cxx-api version (the placeholder of the
     next release), which is renamed;
-  - its tickets in Waiting for build -> Resolved (the transition "Resolve", as the Release Steps of MDAPI do);
-  - its unresolved tickets -> the next version vX.Y.(Z+1), the placeholder, which is created if needed;
+  - its tickets in Waiting for build -> Resolved (the transition "Resolve", as the Release Steps of MDAPI do), and in
+    Waiting for test (the tickets of the time with the testing step) -> Resolved if there is such a transition;
+  - its tickets in Testing stay as they are;
+  - its unfinished tickets (not of the status category "done": In development, Waiting for review...) -> the next
+    version vX.Y.(Z+1), the placeholder, which is created if needed;
   - the version is released with the date of the GitHub release.
 
 The environment: JIRA_URL, JIRA_TOKEN (a personal access token), GH_TOKEN (optional, read-only access is enough),
@@ -46,8 +49,21 @@ IN_DEVELOPMENT = "10003"
 WAITING_FOR_REVIEW = "10013"
 WAITING_FOR_BUILD = "10008"
 RESOLVED = "10011"
+STATUS_NAMES = {
+    IN_DEVELOPMENT: "In development",
+    WAITING_FOR_REVIEW: "Waiting for review",
+    WAITING_FOR_BUILD: "Waiting for build",
+    RESOLVED: "Resolved",
+}
+
+# The permissions that the sync needs (Jira returns all of them, whatever it is asked).
+PERMISSIONS = ("BROWSE_PROJECTS", "TRANSITION_ISSUES", "EDIT_ISSUES", "ADMINISTER_PROJECTS")
 
 RELEASE_TRANSITION = "Resolve"
+
+# The statuses of the testing step, by name (their ids are not needed elsewhere).
+WAITING_FOR_TEST_NAME = "waiting for test"
+TESTING_NAME = "testing"
 
 
 class HttpError(Exception):
@@ -114,9 +130,8 @@ class Jira:
         return self.http.request(method, f"{self.url}/rest/api/2/{path}", self.headers, body)
 
     def permissions(self):
-        keys = "BROWSE_PROJECTS,TRANSITION_ISSUES,EDIT_ISSUES,ADMINISTER_PROJECTS"
-        result = self.call("GET", f"mypermissions?projectKey={JIRA_PROJECT}&permissions={keys}")
-        return {key: value["havePermission"] for key, value in result["permissions"].items()}
+        result = self.call("GET", f"mypermissions?projectKey={JIRA_PROJECT}&permissions={','.join(PERMISSIONS)}")
+        return {key: result["permissions"].get(key, {}).get("havePermission", False) for key in PERMISSIONS}
 
     def status(self, key):
         return self.call("GET", f"issue/{key}?fields=status")["fields"]["status"]
@@ -156,7 +171,7 @@ class Jira:
         self.call("PUT", f"version/{version_id}", fields)
 
     def issues(self, jql):
-        query = urllib.parse.urlencode({"jql": jql, "fields": "status,resolution,summary", "maxResults": "500"})
+        query = urllib.parse.urlencode({"jql": jql, "fields": "status,summary", "maxResults": "500"})
         return self.call("GET", f"search?{query}")["issues"]
 
     def replace_fix_version(self, key, old_id, new_id):
@@ -242,10 +257,9 @@ class Sync:
     # The pull requests.
 
     def sync_pull_requests(self):
-        for pr in self.github.pull_requests():
-            if parse_time(pr["updated_at"]) < self.since:
-                break  # the rest were updated even earlier
+        recent = [pr for pr in self.github.pull_requests() if parse_time(pr["updated_at"]) >= self.since]
 
+        for pr in reversed(recent):  # the earliest updated first, as they happened
             if pr["merged_at"] is not None and parse_time(pr["merged_at"]) < self.since:
                 continue  # an old PR with a new comment
 
@@ -314,20 +328,28 @@ class Sync:
 
         return self.statuses[key]
 
-    def move(self, key, to_status, name=None):
-        """Moves the ticket by the transition to the status (and of the name, if given); False if there is none."""
+    def move(self, key, to_status, prefer=None, report=None):
+        """
+        Moves the ticket by a transition to the status (the one of the name prefer, if there is one). If there is no
+        such transition, reports it (a build problem by default) and returns False.
+        """
         if key in self.simulated:
             # Jira still has the ticket in the status before the dry run moved it, so its transitions are unknown.
-            self.change(f"then to the status {to_status} (the transition is not checked in the dry run)", lambda: None)
+            to_name = STATUS_NAMES.get(to_status, to_status)
+            self.change(f"then to {to_name} (the transition is not checked in the dry run)", lambda: None)
+            self.statuses[key] = {"id": to_status, "name": to_name}
             return True
 
-        transitions = [
-            transition for transition in self.jira.transitions(key)
-            if transition["to"]["id"] == to_status and (name is None or transition["name"] == name)
-        ]
+        transitions = sorted(
+            (transition for transition in self.jira.transitions(key) if transition["to"]["id"] == to_status),
+            key=lambda transition: transition["name"] != prefer,
+        )
 
         if not transitions:
-            self.log.problem(f"{key}: no transition to the status {to_status} for the Jira user of the build")
+            to_name = STATUS_NAMES.get(to_status, to_status)
+            (report or self.log.problem)(
+                f"{key}: no transition from {self.status(key)['name']} to {to_name} for the Jira user of the build"
+            )
             return False
 
         transition = transitions[0]
@@ -355,10 +377,15 @@ class Sync:
             key=lambda release: version_tuple(release["tag_name"][1:]),
         )
 
-        for index, release in enumerate(published):
-            if version_tuple(release["tag_name"][1:]) > last_released:
-                previous = published[index - 1] if index > 0 else None
-                self.release(release, previous, versions)
+        new = [index for index, release in enumerate(published)
+               if version_tuple(release["tag_name"][1:]) > last_released]
+
+        if not new:
+            last = VERSION_PREFIX + ".".join(map(str, last_released))
+            self.log.info(f"No GitHub releases after the last released Jira version {last}")
+
+        for index in new:
+            self.release(published[index], published[index - 1] if index > 0 else None, versions)
 
     def release(self, release, previous, versions):
         number = release["tag_name"][1:]
@@ -394,16 +421,23 @@ class Sync:
         for ticket in tickets:
             key = ticket["key"]
             status = ticket["fields"]["status"]
+            status_name = status["name"].lower()
             self.statuses[key] = status
 
             if status["id"] == WAITING_FOR_BUILD:
                 self.log.info(f"{key}:")
                 self.move(key, RESOLVED, RELEASE_TRANSITION)
-            elif ticket["fields"]["resolution"] is None:
+            elif status_name == WAITING_FOR_TEST_NAME:
+                self.log.info(f"{key}:")
+                self.move(key, RESOLVED, RELEASE_TRANSITION, report=lambda text: self.log.warning(
+                    f"{text}: the ticket stays in {status['name']}, resolve it by hand"))
+            elif status_name == TESTING_NAME:
+                self.log.info(f"{key} of {name} is in {status['name']}: it stays there")
+            elif status["statusCategory"]["key"] != "done":
                 self.log.warning(f"{key} of {name} is not finished ({status['name']}): it moves to the next version")
                 unresolved.append(key)
             elif status["id"] != RESOLVED:
-                self.log.warning(f"{key} of {name} is in {status['name']}, not in Waiting for build: it stays there")
+                self.log.info(f"{key} of {name} is in {status['name']}: it stays there")
 
         next_version = self.next_version(number, versions)
 

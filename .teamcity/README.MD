@@ -207,8 +207,10 @@ A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases th
 
 - if there is no version of that name, the only unreleased `graal-cxx-api` version (the placeholder of the next
   release) is renamed to it;
-- its tickets in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI do), and its
-  unresolved tickets move to the next version `graal-cxx-api vX.Y.(Z+1)`, which is created if needed;
+- its tickets in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI do), as well
+  as those in Waiting for test (left from the time with the testing step); the tickets in Testing stay as they are;
+- its unfinished tickets (In development, Waiting for review and the other statuses not of the category "done") move
+  to the next version `graal-cxx-api vX.Y.(Z+1)`, which is created if needed;
 - the version is released with the date of the GitHub release (no release email: the Release Steps of MDAPI are not
   used);
 - the build warns about the tickets of the commits of the release without the version, and the other way round.

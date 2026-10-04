@@ -11,20 +11,30 @@ import urllib.parse
 import cxx_api_jira_sync as sync
 from cxx_api_jira_sync import IN_DEVELOPMENT, RESOLVED, WAITING_FOR_BUILD, WAITING_FOR_REVIEW, HttpError
 
+ABORTED = "10000"
 CONFIRMED = "10001"
+WAITING_FOR_TEST = "20001"
+TESTING = "20002"
+
+# The names and the status categories of the fake MDAPI workflow.
 NAMES = {
-    CONFIRMED: "Confirmed",
-    IN_DEVELOPMENT: "In development",
-    WAITING_FOR_REVIEW: "Waiting for review",
-    WAITING_FOR_BUILD: "Waiting for build",
-    RESOLVED: "Resolved",
+    ABORTED: ("Aborted", "done"),
+    CONFIRMED: ("Confirmed", "new"),
+    IN_DEVELOPMENT: ("In development", "indeterminate"),
+    WAITING_FOR_REVIEW: ("Waiting for review", "indeterminate"),
+    WAITING_FOR_BUILD: ("Waiting for build", "done"),
+    WAITING_FOR_TEST: ("Waiting for test", "done"),
+    TESTING: ("Testing", "indeterminate"),
+    RESOLVED: ("Resolved", "done"),
 }
 
 # The transitions of the fake MDAPI workflow: the status -> (the id, the name, the status it goes to).
 WORKFLOW = {
     IN_DEVELOPMENT: [("71", "Pause development", CONFIRMED), ("151", "Send to review", WAITING_FOR_REVIEW)],
     WAITING_FOR_REVIEW: [("161", "Send to build", WAITING_FOR_BUILD)],
-    WAITING_FOR_BUILD: [("181", "Resolve", RESOLVED)],
+    WAITING_FOR_BUILD: [("171", "Send to test", WAITING_FOR_TEST), ("181", "Resolve", RESOLVED)],
+    WAITING_FOR_TEST: [("191", "Start testing", TESTING), ("201", "Done", RESOLVED)],
+    TESTING: [("211", "Pass", RESOLVED)],
 }
 
 # The resolutions that the fake transitions set (the merge sets "Waiting for build", as the real one does).
@@ -36,7 +46,8 @@ JIRA = "https://jira.test/rest/api/2/"
 
 
 def status(status_id):
-    return {"id": status_id, "name": NAMES[status_id]}
+    name, category = NAMES[status_id]
+    return {"id": status_id, "name": name, "statusCategory": {"key": category}}
 
 
 def pull_request(number, title, branch="feature/x", state="open", draft=False, merged_at=None, base="main",
@@ -350,8 +361,52 @@ class SyncTest(unittest.TestCase):
         self.assertEqual([], self.server.changes)
         output = self.out.getvalue()
         self.assertIn("[dry run] Send to review: In development -> Waiting for review", output)
-        self.assertIn(f"[dry run] then to the status {WAITING_FOR_BUILD}", output)
+        self.assertIn("[dry run] then to Waiting for build", output)
         self.assertNotIn("buildProblem", output)
+
+    def test_dry_run_keeps_the_status_it_has_moved_the_ticket_to(self):
+        # The first dry run of TeamCity: two merged PRs of MDAPI-427, the latest updated first.
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT)
+        self.server.pulls = [
+            pull_request(117, "[MDAPI-1] B", state="closed", merged_at="2026-10-04T20:36:57Z",
+                         updated_at="2026-10-04T20:37:04Z"),
+            pull_request(116, "[MDAPI-1] A", state="closed", merged_at="2026-10-04T14:31:20Z",
+                         updated_at="2026-10-04T14:31:24Z"),
+        ]
+
+        self.run_sync(dry_run=True)
+
+        output = self.out.getvalue()
+        self.assertEqual(1, output.count("then to Waiting for build"))
+        self.assertIn("stays in Waiting for build", output)
+        self.assertNotIn("stays in Waiting for review", output)
+
+    def test_pull_requests_are_applied_in_the_order_of_their_updates(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT)
+        self.server.pulls = [
+            pull_request(117, "[MDAPI-1] B", updated_at="2026-10-05T11:00:00Z"),
+            pull_request(116, "[MDAPI-1] A", updated_at="2026-10-05T10:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual({"opened": [116, 117]}, self.server.issues["MDAPI-1"]["property"])
+
+    def test_only_the_needed_permissions_are_logged(self):
+        self.server.permissions["ARCHIVE_ISSUES"] = False  # Jira returns all the permissions
+
+        self.run_sync()
+
+        self.assertNotIn("ARCHIVE_ISSUES", self.out.getvalue())
+
+    def test_no_new_release_is_logged(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.releases = [release("v8.0.0")]
+
+        self.run_sync()
+
+        self.assertIn("No GitHub releases after the last released Jira version graal-cxx-api v8.0.0",
+                      self.out.getvalue())
 
     def test_dry_run_checks_the_transition_of_a_merge(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
@@ -388,6 +443,49 @@ class SyncTest(unittest.TestCase):
         self.assertTrue(released["released"])
         self.assertEqual("2026-10-05", released["releaseDate"])
         self.assertIn("MDAPI-2 has the fix version v8.1.0 but no commits", self.out.getvalue())
+
+    def test_release_resolves_waiting_for_test_and_leaves_testing_and_aborted(self):
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_TEST, fix_versions=["101"])
+        self.server.issue("MDAPI-2", TESTING, fix_versions=["101"])
+        self.server.issue("MDAPI-3", ABORTED, fix_versions=["101"])
+        self.server.issue("MDAPI-4", WAITING_FOR_BUILD, fix_versions=["101"])
+        self.server.releases.append(release("v9.0.0"))
+        self.server.compare[("v8.0.0", "v9.0.0")] = ["[MDAPI-1] A", "[MDAPI-2] B", "[MDAPI-4] D"]
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-1"))
+        self.assertEqual(TESTING, self.status_of("MDAPI-2"))
+        self.assertEqual(ABORTED, self.status_of("MDAPI-3"))
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-4"))
+        self.assertEqual(["181"], [body["transition"]["id"] for method, path, body in self.server.changes
+                                   if path == "issue/MDAPI-4/transitions"])  # Resolve, not Send to test
+        for key in ("MDAPI-1", "MDAPI-2", "MDAPI-3", "MDAPI-4"):
+            self.assertEqual(["101"], self.server.issues[key]["fixVersions"], key)
+        names = {version["id"]: version["name"] for version in self.server.versions}
+        self.assertEqual("graal-cxx-api v9.0.0", names["101"])
+
+    def test_waiting_for_test_without_a_transition_to_resolved_is_a_warning(self):
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_TEST, fix_versions=["101"])
+        self.server.releases.append(release("v8.1.0"))
+        self.server.compare[("v8.0.0", "v8.1.0")] = ["[MDAPI-1] A"]
+        workflow = dict(WORKFLOW)
+        WORKFLOW[WAITING_FOR_TEST] = [("191", "Start testing", TESTING)]
+
+        try:
+            self.assertEqual(0, self.run_sync())
+        finally:
+            WORKFLOW.clear()
+            WORKFLOW.update(workflow)
+
+        self.assertEqual(WAITING_FOR_TEST, self.status_of("MDAPI-1"))  # not through Testing
+        self.assertIn("resolve it by hand", self.out.getvalue())
+        self.assertNotIn("buildProblem", self.out.getvalue())
+        self.assertTrue(next(version for version in self.server.versions if version["id"] == "101")["released"])
 
     def test_release_renames_the_placeholder(self):
         self.released_jira_and_github()
