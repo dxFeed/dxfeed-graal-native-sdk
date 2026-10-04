@@ -1290,12 +1290,13 @@ object BuildJreLibrariesForIOS : BuildType({
             name = "Build the SDK for iOS and the simulator with the libraries"
             scriptContent = "set -e\n" + Util.prepareMacOS() + """
                 mkdir -p out/jre-ios/sdk
+                # The next step checks both archives, so one build reports all the missing symbols.
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean package
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true -Dios.check.skip=true clean package
                 # The build for the simulator deletes the archive for iOS.
                 cp target/*-aarch64-ios.zip out/jre-ios/sdk/
                 export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true package
+                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true -Dios.check.skip=true package
                 cp target/*-ios-simulator.zip out/jre-ios/sdk/
             """.trimIndent()
             formatStderrAsError = true

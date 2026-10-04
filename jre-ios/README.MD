@@ -89,7 +89,27 @@ from the sources of its version (steps 5-6):
 `build.py check` links a dynamic library from `libDxFeedGraalNativeSdk.o` and the `.a` files of an archive for every
 architecture of the image with only what any application links (`-framework Foundation`), so every symbol that
 neither the libraries nor the system libraries that they name define is reported by the linker, as in the
-application.
+application. It also checks the platform that each architecture of the image declares (see below). The SDK build for
+iOS and for the simulator runs it before making the archive, so an archive that does not link is not published
+(`-Dios.check.skip=true` skips it: **Build JRE Libraries [iOS]** checks both archives in its own step).
+
+## The platform of the image
+
+native-image writes the object of the iOS image itself and declares no platform in it (`LC_BUILD_VERSION`), and the
+arm64 object of the simulator archive is the object of the device (GraalVM has no simulator platform: the build for
+the simulator adds the x86_64 object to it with `lipo`), so the linker could not check that the object is built for
+the platform of the application. The SDK build declares it with `build.py set-build-version`, as clang does for the
+objects of the libraries:
+
+| Archive                                | Architecture | Platform       | Minimum version |
+|----------------------------------------|--------------|----------------|-----------------|
+| `graal-native-sdk-*-aarch64-ios.zip`   | arm64        | `ios`          | 12.0            |
+| `graal-native-sdk-*-ios-simulator.zip` | arm64        | `iossimulator` | 14.0            |
+| `graal-native-sdk-*-ios-simulator.zip` | x86_64       | `iossimulator` | 12.0            |
+
+The SDK version is the one of Xcode (`xcrun --show-sdk-version`). The command is written into the free space after the
+load commands (the data of the sections starts at a page boundary), so no offset changes and the size of the object
+stays the same; `set-build-version` fails if there is no free space.
 
 ## When a new GraalVM version does not build
 

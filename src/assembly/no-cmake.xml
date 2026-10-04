@@ -1,0 +1,9 @@
+<!--SPDX-License-Identifier: MPL-2.0-->
+<!--
+  No CMake file: the iOS archives contain the object of the image and static libraries, not the dylib that
+  src/main/c/api/CMakeLists.txt imports.
+-->
+<component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1 http://maven.apache.org/xsd/assembly-component-2.1.1.xsd">
+</component>

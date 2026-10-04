@@ -48,6 +48,15 @@
     <macIos>false</macIos>
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
+    <!--
+      iOS: the python3 that runs jre-ios/build.py, which declares the platform of the native image (set-build-version)
+      and checks that it links (check, skipped with ios.check.skip=true: the build of the jre-ios libraries checks the
+      archives itself).
+    -->
+    <ios.python>/usr/bin/python3</ios.python>
+    <ios.check.skip>false</ios.check.skip>
+    <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
+    <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
     <auther-api.version>548</auther-api.version>
     <qd.version>3.355</qd.version>
@@ -579,6 +588,7 @@
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
         <macos.x64.check.skip>true</macos.x64.check.skip>
+        <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>ios-simulator</arch.name>
         <notIosSimulator>false</notIosSimulator>
       </properties>
@@ -659,6 +669,7 @@
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
         <macos.x64.check.skip>true</macos.x64.check.skip>
+        <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
       </properties>
@@ -884,7 +895,7 @@
             </goals>
             <configuration>
               <skip>${notMacIos}</skip>
-              <target>
+              <target xmlns:unless="ant:unless">
                 <copy todir="${project.build.directory}/arm64">
                   <fileset dir="${project.build.directory}/tmp_IOS">
                     <include name="**/*.o" />
@@ -908,6 +919,46 @@
                     <include name="**/*.o" />
                   </fileset>
                 </delete>
+                <!--
+                  native-image declares no platform in the object (LC_BUILD_VERSION), so the linker could not check
+                  it. target/arm64 keeps the object without it: the build for the simulator declares its own.
+                -->
+                <exec executable="${ios.python}" failonerror="true">
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="set-build-version" />
+                  <arg value="--file" />
+                  <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                  <arg value="--platform" />
+                  <arg value="ios" />
+                </exec>
+                <!-- The archive is not made if the image does not link with the libraries as an application does. -->
+                <exec executable="arch" failonerror="true" unless:true="${ios.check.skip}">
+                  <arg value="-arm64" />
+                  <arg value="${ios.python}" />
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="check" />
+                  <arg value="--dir" />
+                  <arg value="${native.image.path}" />
+                  <arg value="--platform" />
+                  <arg value="ios" />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              The build for the simulator runs after the build for iOS without clean (it uses target/arm64), so the
+              reports of that native image would get into the archive of the simulator.
+            -->
+            <id>clean-ios-simulator-reports</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${notIosSimulator}</skip>
+              <target>
+                <delete dir="${native.image.path}/reports" failonerror="false" />
               </target>
             </configuration>
           </execution>
@@ -919,7 +970,7 @@
             </goals>
             <configuration>
               <skip>${notIosSimulator}</skip>
-              <target>
+              <target xmlns:unless="ant:unless">
                 <copy todir="${project.build.directory}/amd64">
                   <fileset dir="${project.build.directory}/tmp_IOS">
                     <include name="**/*.o" />
@@ -943,6 +994,25 @@
                   <arg value="${project.build.directory}/amd64/libDxFeedGraalNativeSdk.o" />
                   <arg value="-output" />
                   <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                </exec>
+                <!-- The arm64 object is the object of the device (GraalVM has no simulator platform). -->
+                <exec executable="${ios.python}" failonerror="true">
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="set-build-version" />
+                  <arg value="--file" />
+                  <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
+                  <arg value="--platform" />
+                  <arg value="simulator" />
+                </exec>
+                <exec executable="arch" failonerror="true" unless:true="${ios.check.skip}">
+                  <arg value="-arm64" />
+                  <arg value="${ios.python}" />
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="check" />
+                  <arg value="--dir" />
+                  <arg value="${native.image.path}" />
+                  <arg value="--platform" />
+                  <arg value="simulator" />
                 </exec>
                 <delete failonerror="false">
                   <fileset dir="${project.build.directory}">

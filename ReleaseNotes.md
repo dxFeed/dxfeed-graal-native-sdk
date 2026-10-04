@@ -1,3 +1,11 @@
+* iOS and the iOS Simulator: `libDxFeedGraalNativeSdk.o` declares the platform of each architecture
+  (`LC_BUILD_VERSION`): `ios` 12.0 on arm64 in `aarch64-ios`, `iossimulator` 14.0 on arm64 and 12.0 on x86_64 in
+  `ios-simulator`, so the linker reports an object linked for the wrong platform. native-image declared none (the arm64
+  object of the simulator is the object of the device). The size of the object does not change. The build checks
+  that the object links with the libraries of its archive before the archive is published.
+* The archives for iOS and the iOS Simulator do not contain `CMakeLists.txt` any more: it imported a dynamic library
+  that they do not have. The `docs` of the simulator archive do not contain the reports of the build for iOS any more.
+
 ## v3.7.0
 
 * Fixed on macOS x64: the jvmstat support called the 32-bit inode `fdopendir` and `readdir` of the system (GraalVM

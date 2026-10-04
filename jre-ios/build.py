@@ -12,9 +12,11 @@ simulator has its own version, since GraalVM for macOS x64 is no longer publishe
 
     build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios
     build.py check --dir <unpacked graal-native-sdk-*-aarch64-ios.zip> --platform ios
+    build.py set-build-version --file libDxFeedGraalNativeSdk.o --platform simulator
 
-Needs macOS on arm64 with Xcode, git, curl, make and python3; autoconf (for the configure of the JDK) is installed
-into the work directory when it is missing.
+set-build-version needs only python3 (and Xcode for the default SDK version). The others need macOS on arm64 with
+Xcode, git, curl, make and python3; autoconf (for the configure of the JDK) is installed into the work directory when
+it is missing.
 """
 import argparse
 import concurrent.futures
@@ -25,6 +27,7 @@ import platform
 import re
 import shlex
 import shutil
+import struct
 import subprocess
 import sys
 
@@ -93,6 +96,33 @@ LIBRARY_DEPENDENCIES = {
 # The link check links only with what any application that uses the SDK links (Swift and Objective-C link Foundation),
 # so a system library missing from LIBRARY_DEPENDENCIES fails it, as it fails the link of the application.
 CHECK_LINK_FLAGS = ['-framework', 'Foundation']
+
+# The iOS Simulator on arm64 starts with iOS 14.0: clang raises a lower minimum version of an arm64 simulator target to
+# it, so the objects of the libraries declare it, and the native image declares it too.
+SIMULATOR_ARM64_MIN_VERSION = '14.0'
+
+# Mach-O (mach-o/loader.h, mach-o/fat.h).
+MH_MAGIC_64 = 0xfeedfacf
+FAT_MAGIC = 0xcafebabe
+FAT_MAGIC_64 = 0xcafebabf
+MACH_HEADER_64_SIZE = 32
+CPU_TYPES = {0x01000007: 'x86_64', 0x0100000c: 'arm64'}
+LC_SEGMENT_64 = 0x19
+LC_SYMTAB = 0x2
+LC_DYSYMTAB = 0xb
+LC_BUILD_VERSION = 0x32
+BUILD_VERSION_COMMAND_SIZE = 24
+# LC_VERSION_MIN_MACOSX, LC_VERSION_MIN_IPHONEOS, LC_VERSION_MIN_TVOS, LC_VERSION_MIN_WATCHOS.
+VERSION_MIN_COMMANDS = {0x24, 0x25, 0x2f, 0x30}
+# The linkedit_data_command commands (dataoff, datasize): LC_CODE_SIGNATURE, LC_SEGMENT_SPLIT_INFO,
+# LC_FUNCTION_STARTS, LC_DATA_IN_CODE, LC_DYLIB_CODE_SIGN_DRS, LC_LINKER_OPTIMIZATION_HINT, LC_DYLD_EXPORTS_TRIE,
+# LC_DYLD_CHAINED_FIXUPS (with LC_REQ_DYLD), LC_ATOM_INFO.
+LINKEDIT_DATA_COMMANDS = {0x1d, 0x1e, 0x26, 0x29, 0x2b, 0x2e, 0x80000033, 0x80000034, 0x36}
+# The commands without file offsets: LC_LINKER_OPTION, LC_UUID, LC_SOURCE_VERSION, LC_BUILD_VERSION,
+# LC_VERSION_MIN_*.
+COMMANDS_WITHOUT_DATA = {0x2d, 0x1b, 0x2a, LC_BUILD_VERSION} | VERSION_MIN_COMMANDS
+PLATFORMS = {1: 'macos', 2: 'ios', 7: 'iossimulator'}
+PLATFORM_IDS = {name: number for number, name in PLATFORMS.items()}
 
 
 def log(message):
@@ -499,10 +529,165 @@ def build(arguments):
     log(f'The libraries are in {out}')
 
 
+def encode_version(version):
+    """X.Y.Z as xxxx.yy.zz nibbles (the minos and sdk fields of LC_BUILD_VERSION)."""
+    parts = [int(part) for part in version.split('.')] + [0, 0]
+    return (parts[0] << 16) | (parts[1] << 8) | parts[2]
+
+
+def decode_version(value):
+    version = f'{value >> 16}.{(value >> 8) & 0xff}'
+    return version + (f'.{value & 0xff}' if value & 0xff else '')
+
+
+def macho_slices(data):
+    """The (architecture, offset) of each thin Mach-O of a fat or thin file."""
+    magic = struct.unpack_from('>I', data, 0)[0]
+    if magic in (FAT_MAGIC, FAT_MAGIC_64):
+        count = struct.unpack_from('>I', data, 4)[0]
+        entry, layout = (20, '>iiIII') if magic == FAT_MAGIC else (32, '>iiQQI')
+        slices = []
+        for index in range(count):
+            cpu_type, _, offset = struct.unpack_from(layout, data, 8 + index * entry)[:3]
+            slices.append((CPU_TYPES.get(cpu_type, hex(cpu_type)), offset))
+        return slices
+    if struct.unpack_from('<I', data, 0)[0] != MH_MAGIC_64:
+        fail('not a 64-bit Mach-O file')
+    return [(CPU_TYPES.get(struct.unpack_from('<i', data, 4)[0], 'unknown'), 0)]
+
+
+def load_commands(data, offset):
+    """The (command, offset in the file, size) of the load commands of the thin Mach-O at the offset, with the lowest
+    file offset of the data that the commands refer to (the sections, the symbols, the relocations, etc.)."""
+    if struct.unpack_from('<I', data, offset)[0] != MH_MAGIC_64:
+        fail(f'no 64-bit Mach-O at {offset}')
+    count, size_of_commands = struct.unpack_from('<II', data, offset + 16)
+    commands = []
+    data_offsets = []
+    position = offset + MACH_HEADER_64_SIZE
+    for _ in range(count):
+        command, size = struct.unpack_from('<II', data, position)
+        if command == LC_SEGMENT_64:
+            file_offset, file_size = struct.unpack_from('<QQ', data, position + 40)
+            if file_size:
+                data_offsets.append(file_offset)
+            for section in range(struct.unpack_from('<I', data, position + 64)[0]):
+                section_offset, _, relocations_offset, relocations = struct.unpack_from(
+                    '<IIII', data, position + 72 + section * 80 + 48)
+                section_size = struct.unpack_from('<Q', data, position + 72 + section * 80 + 40)[0]
+                if section_offset and section_size:
+                    data_offsets.append(section_offset)
+                if relocations:
+                    data_offsets.append(relocations_offset)
+        elif command == LC_SYMTAB:
+            symbols_offset, symbols, strings_offset, strings_size = struct.unpack_from('<IIII', data, position + 8)
+            data_offsets += [value for value, used in ((symbols_offset, symbols), (strings_offset, strings_size))
+                             if used]
+        elif command == LC_DYSYMTAB:
+            fields = struct.unpack_from('<18I', data, position + 8)
+            # tocoff, modtaboff, extrefsymoff, indirectsymoff, extreloff, locreloff with their counts.
+            data_offsets += [fields[index] for index in (6, 8, 10, 12, 14, 16) if fields[index + 1]]
+        elif command in LINKEDIT_DATA_COMMANDS:
+            data_offset, data_size = struct.unpack_from('<II', data, position + 8)
+            if data_size:
+                data_offsets.append(data_offset)
+        elif command not in COMMANDS_WITHOUT_DATA:
+            # The free space after the load commands cannot be found without knowing what the command refers to.
+            fail(f'unsupported load command {command:#x} at {position}')
+        commands.append((command, position, size))
+        position += size
+    if position != offset + MACH_HEADER_64_SIZE + size_of_commands:
+        fail(f'the load commands at {offset} do not match sizeofcmds')
+    return commands, offset + min(data_offsets) if data_offsets else len(data)
+
+
+def build_versions(data, offset):
+    """The (platform, minimum version, SDK version) of LC_BUILD_VERSION of the thin Mach-O at the offset."""
+    commands, _ = load_commands(data, offset)
+    versions = []
+    for command, position, _ in commands:
+        if command == LC_BUILD_VERSION:
+            platform_id, minimum, sdk = struct.unpack_from('<III', data, position + 8)
+            versions.append((PLATFORMS.get(platform_id, str(platform_id)), decode_version(minimum),
+                             decode_version(sdk)))
+        elif command in VERSION_MIN_COMMANDS:
+            versions.append((f'version-min {command:#x}', '', ''))
+    return versions
+
+
+def expected_build_version(platform_name, arch, ios_min_version):
+    """The platform and the minimum version that an object of the platform (ios or simulator) declares on the
+    architecture, as clang declares them for the libraries."""
+    if platform_name == 'ios':
+        return 'ios', ios_min_version
+    if arch == 'arm64' and tuple(map(int, ios_min_version.split('.'))) < (14, 0):
+        return 'iossimulator', SIMULATOR_ARM64_MIN_VERSION
+    return 'iossimulator', ios_min_version
+
+
+def sdk_version(platform_name):
+    sdk = 'iphoneos' if platform_name == 'ios' else 'iphonesimulator'
+    return run(['xcrun', '--sdk', sdk, '--show-sdk-version'], capture=True).strip()
+
+
+def set_build_version(arguments):
+    """Declares the platform of every architecture of the native image (LC_BUILD_VERSION), as clang does for an object:
+    native-image writes the object of the iOS image itself and declares none, and the arm64 object of the simulator is
+    the object of the device (GraalVM has no simulator platform), so the linker cannot check the platform otherwise.
+    The command is written into the free space after the load commands (the data of the sections starts at a page
+    boundary), so no offset changes and the size of the file stays the same; without free space the command fails."""
+    with open(arguments.file, 'rb') as file:
+        data = bytearray(file.read())
+    size = len(data)
+    sdk = arguments.sdk_version or sdk_version(arguments.platform)
+    for arch, offset in macho_slices(data):
+        platform_name, minimum = expected_build_version(arguments.platform, arch, arguments.ios_min_version)
+        command_data = struct.pack('<IIIIII', LC_BUILD_VERSION, BUILD_VERSION_COMMAND_SIZE,
+                                   PLATFORM_IDS[platform_name], encode_version(minimum), encode_version(sdk), 0)
+        commands, data_start = load_commands(data, offset)
+        existing = [(position, command_size) for command, position, command_size in commands
+                    if command in VERSION_MIN_COMMANDS or command == LC_BUILD_VERSION]
+        if existing:
+            position, command_size = existing[0]
+            if len(existing) > 1 or command_size != BUILD_VERSION_COMMAND_SIZE or \
+                    struct.unpack_from('<I', data, position)[0] != LC_BUILD_VERSION:
+                fail(f'{arch}: the object already declares its platform in another way: '
+                     f'{build_versions(data, offset)}')
+            data[position:position + BUILD_VERSION_COMMAND_SIZE] = command_data
+        else:
+            count, size_of_commands = struct.unpack_from('<II', data, offset + 16)
+            end = offset + MACH_HEADER_64_SIZE + size_of_commands
+            if end + BUILD_VERSION_COMMAND_SIZE > data_start or \
+                    any(data[end:end + BUILD_VERSION_COMMAND_SIZE]):
+                fail(f'{arch}: no free space after the load commands for LC_BUILD_VERSION')
+            data[end:end + BUILD_VERSION_COMMAND_SIZE] = command_data
+            struct.pack_into('<II', data, offset + 16, count + 1, size_of_commands + BUILD_VERSION_COMMAND_SIZE)
+        log(f'{arguments.file} {arch}: {build_versions(data, offset)}')
+    if len(data) != size:
+        fail('the size of the file changed')
+    with open(arguments.file, 'wb') as file:
+        file.write(data)
+
+
+def check_build_versions(image, platform_name, ios_min_version):
+    """The image declares the platform and the minimum version of each architecture (see set_build_version)."""
+    with open(image, 'rb') as file:
+        data = file.read()
+    errors = []
+    for arch, offset in macho_slices(data):
+        expected = expected_build_version(platform_name, arch, ios_min_version)
+        versions = build_versions(data, offset)
+        log(f'{os.path.basename(image)} {arch}: {versions or "no platform"}')
+        if [version[:2] for version in versions] != [expected]:
+            errors.append(f'{arch} declares {versions or "no platform"}, expected {expected}')
+    return errors
+
+
 def check(arguments):
     """Links a dynamic library from the native image and the libraries of an unpacked SDK archive for iOS or for the
     simulator, for every architecture of the image, as an application does (CHECK_LINK_FLAGS): any symbol that neither
-    the libraries nor the system libraries that they name define fails the link."""
+    the libraries nor the system libraries that they name define fails the link. The image must declare the platform
+    of each architecture (LC_BUILD_VERSION, see set-build-version), so the linker also checks the platform."""
     check_host()
     directory = os.path.abspath(arguments.dir)
     image = os.path.join(directory, 'libDxFeedGraalNativeSdk.o')
@@ -512,7 +697,7 @@ def check(arguments):
     sdk = 'iphoneos' if arguments.platform == 'ios' else 'iphonesimulator'
     architectures = run(['xcrun', 'lipo', '-archs', image], capture=True).split()
     root = sdk_path(sdk)
-    failed = []
+    failed = check_build_versions(image, arguments.platform, arguments.ios_min_version)
     for arch in architectures:
         slice_ = next(s for s in SLICES.values() if s.sdk == sdk and s.arch == arch)
         output = os.path.join(directory, f'link-check-{arch}.dylib')
@@ -522,11 +707,11 @@ def check(arguments):
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         log(result.stdout.rstrip() or 'linked')
         if result.returncode != 0:
-            failed.append(arch)
+            failed.append(f'{arch} does not link')
         if os.path.exists(output):
             os.remove(output)
     if failed:
-        fail(f'the image does not link with the libraries for {arguments.platform}: {", ".join(failed)}')
+        fail(f'the check of the image for {arguments.platform} failed: {"; ".join(failed)}')
 
 
 def main():
@@ -553,6 +738,16 @@ def main():
     check_parser.add_argument('--platform', required=True, choices=['ios', 'simulator'])
     check_parser.add_argument('--ios-min-version', default='12.0', help='the minimum iOS version (default 12.0)')
     check_parser.set_defaults(function=check)
+
+    version_parser = commands.add_parser('set-build-version',
+                                         help='declare the platform of each architecture of a native image')
+    version_parser.add_argument('--file', required=True,
+                                help='the native image (libDxFeedGraalNativeSdk.o), thin or fat')
+    version_parser.add_argument('--platform', required=True, choices=['ios', 'simulator'])
+    version_parser.add_argument('--ios-min-version', default='12.0', help='the minimum iOS version (default 12.0)')
+    version_parser.add_argument('--sdk-version',
+                                help='the SDK version to declare (default: the version of the SDK of Xcode)')
+    version_parser.set_defaults(function=set_build_version)
 
     arguments = parser.parse_args()
     arguments.function(arguments)

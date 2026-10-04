@@ -7,13 +7,10 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <files>
-    <file>
-      <source>${project.basedir}/src/main/c/api/CMakeLists${static.suffix}.txt</source>
-      <outputDirectory/>
-      <destName>CMakeLists.txt</destName>
-    </file>
-  </files>
+  <!-- The CMake file (cmake.xml; no-cmake.xml for iOS, see assembly.cmake.component in the pom). -->
+  <componentDescriptors>
+    <componentDescriptor>${assembly.cmake.component}</componentDescriptor>
+  </componentDescriptors>
   <fileSets>
     <fileSet>
       <directory>${native.image.path}</directory>
