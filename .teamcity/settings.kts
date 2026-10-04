@@ -1,7 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
-import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
@@ -13,7 +12,6 @@ import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
 import jetbrains.buildServer.configs.kotlin.triggers.finishBuildTrigger
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -94,83 +92,28 @@ object BuildPatchAndDeployForLinux : BuildType({
     name = "Build PATCH & Deploy [Linux, x64]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "release:prepend tag header to release notes"
-            id = "release_prepend_changelog_header"
-            scriptContent = Util.releaseNotesHeaderScript(
-                    """
-                    VERSION=${'$'}(mvn help:evaluate \
-                        -Dexpression=project.version \
-                        -q \
-                        -DforceStdout)
-                    VERSION=${'$'}{VERSION%-SNAPSHOT}
-                    echo "v${'$'}VERSION"
-                    """.trimIndent())
-            formatStderrAsError = true
-        }
-
-        script {
-            name = "release:prepare in docker"
-            id = "release_prepare_in_docker"
-            scriptContent = """
-                    git config --global user.name dxcity
-                    git config --global user.email dxcity@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% release:clean release:prepare -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket%
-                """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
-
-        script {
-            name = "release:perform in docker"
-            id = "release_perform_in_docker"
-            scriptContent = """
-                    git config --global user.name dxcity
-                    git config --global user.email dxcity@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% -Darguments=-Dc-api-docs release:perform
-                """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
-
-        script {
-            name = "release:checkout latest tag"
-            id = "release_checkout_latest_tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
-
-        script {
-            name = "release:deploy debug"
-            id = "release_deploy_debug"
-            scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
+        linuxReleaseSteps(
+            tagCommand = """
+                VERSION=${'$'}(mvn help:evaluate \
+                    -Dexpression=project.version \
+                    -q \
+                    -DforceStdout)
+                VERSION=${'$'}{VERSION%-SNAPSHOT}
+                echo "v${'$'}VERSION"
+            """.trimIndent(),
+            prepareArguments = ""
+        )
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -182,75 +125,21 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
         text("env.RELEASE_VERSION", "", allowEmpty = false)
     }
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "release:prepend tag header to release notes"
-            id = "release_prepend_changelog_header"
-            scriptContent = Util.releaseNotesHeaderScript("echo v%env.RELEASE_VERSION%")
-            formatStderrAsError = true
-        }
-
-        script {
-            name = "release:prepare in docker"
-            id = "release_prepare_in_docker"
-            scriptContent = """
-                    git config --global user.name dxcity
-                    git config --global user.email dxcity@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% release:clean release:prepare --batch-mode -DreleaseVersion=%env.RELEASE_VERSION%  -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket%
-                """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
-
-        script {
-            name = "release:perform in docker"
-            id = "release_perform_in_docker"
-            scriptContent = """
-                    git config --global user.name dxcity
-                    git config --global user.email dxcity@bots.devexperts.com
-                    mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% -Darguments=-Dc-api-docs release:perform
-                """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
-
-        script {
-            name = "release:checkout latest tag"
-            id = "release_checkout_latest_tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
-
-        script {
-            name = "release:deploy debug"
-            id = "release_deploy_debug"
-            scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
-            """.trimIndent()
-            formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
-        }
+        linuxReleaseSteps(
+            tagCommand = "echo v%env.RELEASE_VERSION%",
+            prepareArguments = "--batch-mode -DreleaseVersion=%env.RELEASE_VERSION% "
+        )
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -258,39 +147,27 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
     name = "Build & Deploy [Linux, aarch64][Release]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "Checkout Latest Tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
+        checkoutLatestTag()
 
         script {
             name = "Deploy"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} clean deploy
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm"
+            inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
         }
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        doesNotEqual("system.agent.name", "macbuilder23")
+        macAgentForLinuxAarch64()
     }
 })
 
@@ -298,39 +175,27 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
     name = "Build & Deploy [Linux, aarch64][Debug]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "Checkout Latest Tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
+        checkoutLatestTag()
 
         script {
             name = "Deploy Debug"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean deploy -P buildDebug
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm"
+            inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
         }
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        doesNotEqual("system.agent.name", "macbuilder23")
+        macAgentForLinuxAarch64()
     }
 })
 
@@ -341,10 +206,10 @@ object BuildAndDeployForLinuxAarch64 : BuildType({
 
     dependencies {
         snapshot(BuildAndDeployForLinuxAarch64Release) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForLinuxAarch64Debug) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.IGNORE
+            onDependencyFailure = FailureAction.IGNORE
         }
     }
 })
@@ -353,35 +218,15 @@ object BuildAndDeployForWindowsRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        powerShell {
-            name = "Checkout Latest Tag"
-            scriptMode = script {
-                content = """
-                    ${'$'}tag = git describe --abbrev=0
-                    git checkout ${'$'}tag
-                """.trimIndent()
-            }
-        }
-        powerShell {
-            name = "Deploy"
-            scriptMode = script {
-                content = Util.prepareWinLocal() + """
-
-                    mvn --settings ".teamcity/settings.xml" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Drepo.user=%dxcity.namecode.nexus%" "-Drepo.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean deploy
-                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-                """.trimIndent()
-            }
-            formatStderrAsError = true
-        }
+        checkoutLatestTagWithPowerShell()
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy")
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
 })
 
@@ -389,34 +234,15 @@ object BuildAndDeployForWindowsDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
-    steps {
-        powerShell {
-            name = "Checkout Latest Tag"
-            scriptMode = script {
-                content = """
-                    ${'$'}tag = git describe --abbrev=0
-                    git checkout ${'$'}tag
-                """.trimIndent()
-            }
-        }
-        powerShell {
-            name = "Deploy"
-            scriptMode = script {
-                content = Util.prepareWinLocal() + """
+    mainRepository()
 
-                    mvn --settings ".teamcity/settings.xml" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Drepo.user=%dxcity.namecode.nexus%" "-Drepo.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean deploy -P buildDebug
-                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-                """.trimIndent()
-            }
-            formatStderrAsError = true
-        }
+    steps {
+        checkoutLatestTagWithPowerShell()
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy -P buildDebug")
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
 })
 
@@ -427,10 +253,10 @@ object BuildAndDeployForWindows : BuildType({
 
     dependencies {
         snapshot(BuildAndDeployForWindowsRelease) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForWindowsDebug) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.IGNORE
+            onDependencyFailure = FailureAction.IGNORE
         }
     }
 })
@@ -439,32 +265,27 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
     name = "Build & Deploy [macOS, iOS]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "Checkout Latest Tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
+        checkoutLatestTag()
 
         script {
             name = "Deploy"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% clean deploy
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -DmacIos=true clean deploy
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} -DmacIos=true clean deploy
                 export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% -DmacIosSimulator=true deploy
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus% clean deploy
+                arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} -DmacIosSimulator=true deploy
+                arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy
             """.trimIndent()
             formatStderrAsError = true
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        macAgent()
     }
 })
 
@@ -473,15 +294,10 @@ object BuildAndDeployXCFramework : BuildType({
     description = "Makes DxFeedGraalNativeSdk.xcframework from the iOS, iOS Simulator and macOS archives of the release in Nexus and deploys it next to them (graal-native-sdk-<version>-xcframework.zip)"
     artifactRules = "out/xcframework/graal-native-sdk-*-xcframework.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        script {
-            name = "Checkout Latest Tag"
-            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
-        }
+        checkoutLatestTag()
 
         script {
             name = "Make the XCFramework"
@@ -513,7 +329,7 @@ object BuildAndDeployXCFramework : BuildType({
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 # The repository of distributionManagement of the pom (qd), with the credentials of .teamcity/settings.xml;
                 # Publish GitHub Release takes all the zips of the version from there.
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="out/xcframework/graal-native-sdk-${'$'}{VERSION}-xcframework.zip" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier=xcframework -Dpackaging=zip -DgeneratePom=false
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="out/xcframework/graal-native-sdk-${'$'}{VERSION}-xcframework.zip" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier=xcframework -Dpackaging=zip -DgeneratePom=false
             """.trimIndent()
             formatStderrAsError = true
         }
@@ -521,12 +337,12 @@ object BuildAndDeployXCFramework : BuildType({
 
     dependencies {
         snapshot(BuildAndDeployForMacOsAndIOS) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        macAgent()
     }
 })
 
@@ -549,16 +365,16 @@ object BuildAndDeployForAll : BuildType({
 
     dependencies {
         snapshot(BuildAndDeployForLinuxAarch64) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForWindows) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForMacOsAndIOS) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployXCFramework) {
-            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+            onDependencyFailure = FailureAction.CANCEL
         }
     }
 })
@@ -567,9 +383,7 @@ object DeployNuget : BuildType({
     name = "Deploy NuGet"
     artifactRules = "*.nupkg"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
@@ -628,9 +442,7 @@ object DeployNuget : BuildType({
                 nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate -Timeout 1800
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/nuget:6.9.1"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
+            inDocker(Images.NUGET, "--rm -m 8g")
         }
     }
 
@@ -643,11 +455,7 @@ object DeployNuget : BuildType({
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
         notifications {
             notifierSettings = slackNotifier {
                 connection = "PROJECT_EXT_137"
@@ -662,7 +470,7 @@ object DeployNuget : BuildType({
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -674,9 +482,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
         release-notes.md
     """.trimIndent()
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
@@ -923,7 +729,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -931,33 +737,25 @@ object BuildForLinux : BuildType({
     name = "Build [Linux, x64]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
             name = "Build"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
+            inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
         }
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -965,20 +763,16 @@ object TestForLinux : BuildType({
     name = "Test [Linux, x64]"
     description = "Builds the library and runs the C tests (src/main/c, CTest) for the pull requests to main and for main"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
             name = "Build the library"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 8g"
+            inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
         }
 
         script {
@@ -992,9 +786,7 @@ object TestForLinux : BuildType({
                 cmake --build --preset=build-release --config=Release -j${'$'}(nproc)
                 ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml
             """.trimIndent()
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm -m 4g"
+            inDocker(Images.CPP_TEST_LINUX_X64, "--rm -m 4g")
         }
     }
 
@@ -1037,51 +829,29 @@ object TestForLinux : BuildType({
             rules = "src/main/c/build/conf-release/ctest-junit.xml"
         }
 
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Docker Image [Linux, x64]"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
-
-    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-%env.GRAALVM_VERSION%"
+    mainRepository()
 
     steps {
-        script {
-            name = "Build"
-            scriptContent = """
-                cd .teamcity
-                docker images --all
-                docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-x64.Dockerfile .
-                docker push $image
-                docker rmi -f $image
-            """.trimIndent()
-            formatStderrAsError = true
-        }
+        buildAndPushDockerImage(Images.GRAALVM_LINUX_X64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f graalvm-linux-x64.Dockerfile .")
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
@@ -1089,72 +859,36 @@ object BuildAndPushTestDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Test Docker Image [Linux, x64]"
     description = "The image with the C/C++ tools for the tests (cpp-test-linux-x64.Dockerfile)"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
-
-    val image = "nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9"
+    mainRepository()
 
     steps {
-        script {
-            name = "Build"
-            scriptContent = """
-                cd .teamcity
-                docker images --all
-                docker build --pull -t $image -f cpp-test-linux-x64.Dockerfile .
-                docker push $image
-                docker rmi -f $image
-            """.trimIndent()
-            formatStderrAsError = true
-        }
+        buildAndPushDockerImage(Images.CPP_TEST_LINUX_X64, "-f cpp-test-linux-x64.Dockerfile .")
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Linux")
+        linuxAgent()
     }
 })
 
 object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     name = "Build & Push a Docker Image [Linux, aarch64]"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
-
-    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
+    mainRepository()
 
     steps {
-        script {
-            name = "Build"
-            scriptContent = """
-                cd .teamcity
-                docker images --all
-                docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-linux-aarch64.Dockerfile .
-                docker push $image
-                docker rmi -f $image
-            """.trimIndent()
-            formatStderrAsError = true
-        }
+        buildAndPushDockerImage(Images.GRAALVM_LINUX_AARCH64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f graalvm-linux-aarch64.Dockerfile .")
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        macAgent()
     }
 })
 
@@ -1162,45 +896,34 @@ object BuildForLinuxAarch64 : BuildType({
     name = "Build [Linux, aarch64]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
             name = "Build"
             scriptContent = """
-                mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
             """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-            dockerRunParameters = "--rm"
+            inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
         }
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
-        doesNotEqual("system.agent.name", "macbuilder23")
+        macAgentForLinuxAarch64()
     }
 })
 
 object BuildAndPushDockerImageForWindowsX64 : BuildType({
     name = "Build & Push a Docker Image [Windows, x64]"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
-    val image = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
+    val image = Images.GRAALVM_WINDOWS_X64
 
     steps {
         powerShell {
@@ -1221,15 +944,11 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
 })
 
@@ -1237,26 +956,14 @@ object BuildForWindows : BuildType({
     name = "Build [Windows, x64]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
-        powerShell {
-            name = "Build"
-            scriptMode = script {
-                content = Util.prepareWinLocal() + """
-
-                    mvn --settings ".teamcity/settings.xml" "-Dnexus.user=%dxcity.namecode.nexus%" "-Dnexus.password=%dxcity.passcode.nexus%" "-Dusername=dxcity" "-Dpassword=%dxcity.token.bitbucket%" clean package
-                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-                """.trimIndent()
-            }
-            formatStderrAsError = true
-        }
+        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package")
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
 })
 
@@ -1264,33 +971,25 @@ object BuildForWindowsInDocker : BuildType({
     name = "Build [Windows, x64] in Docker"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
             name = "Build"
             scriptContent = """
-            mvn --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -Dusername=dxcity -Dpassword=%dxcity.token.bitbucket% clean package
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
         """.trimIndent()
             formatStderrAsError = true
-            dockerImage = "nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-%env.GRAALVM_VERSION%"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Windows
-            dockerRunParameters = "--rm -m 8g"
+            inDocker(Images.GRAALVM_WINDOWS_X64, "--rm -m 8g", ScriptBuildStep.ImagePlatform.Windows)
         }
     }
 
     features {
-        dockerRegistryConnections {
-            loginToRegistry = on {
-                dockerRegistryId = "NEXUS"
-            }
-        }
+        nexusDockerLogin()
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
 })
 
@@ -1298,27 +997,25 @@ object BuildForMacOSAndIOS : BuildType({
     name = "Build [macOS, iOS]"
     artifactRules = "*.zip"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
             name = "Build"
             scriptContent = Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true clean package
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIos=true clean package
                 export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true package
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% clean package
+                arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIosSimulator=true package
+                arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
             """.trimIndent()
             formatStderrAsError = true
         }
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        macAgent()
     }
 })
 
@@ -1337,9 +1034,7 @@ object BuildJreLibrariesForIOS : BuildType({
         param("jre.ios.x64.graal.tag", "%env.GRAALVM_VERSION_MACOS_X64%")
     }
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
-    }
+    mainRepository()
 
     steps {
         script {
@@ -1358,11 +1053,11 @@ object BuildJreLibrariesForIOS : BuildType({
                 mkdir -p out/jre-ios/sdk
                 # The next step checks both archives, so one build reports all the missing symbols.
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
-                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIos=true -Dios.check.skip=true clean package
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIos=true -Dios.check.skip=true clean package
                 # The build for the simulator deletes the archive for iOS.
                 cp target/*-aarch64-ios.zip out/jre-ios/sdk/
                 export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
-                arch -x86_64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% -DmacIosSimulator=true -Dios.check.skip=true package
+                arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIosSimulator=true -Dios.check.skip=true package
                 cp target/*-ios-simulator.zip out/jre-ios/sdk/
             """.trimIndent()
             formatStderrAsError = true
@@ -1388,7 +1083,7 @@ object BuildJreLibrariesForIOS : BuildType({
     }
 
     requirements {
-        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+        macAgent()
     }
 })
 
@@ -1435,186 +1130,8 @@ object DetectVisualStudioVersion : BuildType({
     }
 
     requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
+        windowsAgent()
     }
-})
-
-object Util {
-    fun releaseNotesHeaderScript(tagCommand: String): String {
-        return """
-            set -eu
-
-            TAG=${'$'}(${tagCommand})
-            echo "Release tag: ${'$'}TAG"
-
-            if grep -qxF "## ${'$'}TAG" ReleaseNotes.md; then
-                echo "Header '## ${'$'}TAG' already present in ReleaseNotes.md, skipping."
-                exit 0
-            fi
-
-            # The headers of the pre-releases of the same version at the top (## v3.6.0-rc1 for v3.6.0-rc2 or v3.6.0)
-            # are replaced by the new header, so the section of the release lists all the changes since the previous
-            # release.
-            BASE=${'$'}{TAG%%-*}
-
-            : > ReleaseNotes.md.tmp
-            awk -v base="${'$'}BASE" -v tag="${'$'}TAG" -v out=ReleaseNotes.md.tmp '
-                BEGIN {
-                    top = 1
-                }
-
-                top && /^## / {
-                    header = substr(${'$'}0, 4)
-
-                    if (index(header, base "-") == 1 && header != tag) {
-                        print "Replacing the header of the pre-release: " ${'$'}0
-                        skipBlank = 1
-                        next
-                    }
-
-                    top = 0
-                }
-
-                skipBlank && ${'$'}0 == "" {
-                    skipBlank = 0
-                    next
-                }
-
-                {
-                    skipBlank = 0
-                    print > out
-                }
-            ' ReleaseNotes.md
-
-            { printf '## %s\n\n' "${'$'}TAG"; cat ReleaseNotes.md.tmp; } > ReleaseNotes.md
-            rm ReleaseNotes.md.tmp
-
-            git config user.name "dxcity"
-            git config user.email "dxcity@bots.devexperts.com"
-
-            git add ReleaseNotes.md
-            git commit -m "Add release notes header for ${'$'}TAG"
-        """.trimIndent()
-    }
-
-    fun prepareWin(): String {
-        return """
-            set TMP=C:\Users\ContainerAdministrator\AppData\Local\Temp
-            set TEMP=C:\Users\ContainerAdministrator\AppData\Local\Temp
-            call C:\BuildTools\Common7\Tools\VsDevCmd.bat -arch=amd64
-        """
-    }
-
-    fun prepareMacOS(): String {
-        return """
-            mvn_version=3.8.9
-            mvn_install_path=~/.graal/maven-${'$'}{mvn_version}
-
-            if [ ! -x "${'$'}{mvn_install_path}/bin/mvn" ]; then
-                rm -rf "${'$'}{mvn_install_path}"
-                .teamcity/install.sh maven "${'$'}{mvn_version}" "${'$'}{mvn_install_path}"
-            fi
-
-            mvn=${'$'}{mvn_install_path}/bin/mvn
-
-            # GraalVM for macOS x64 is no longer published after jdk-25.0.1,
-            # so the x64 (and iOS simulator) builds use their own version.
-            graalvm_arm64_path=~/.graal/%env.GRAALVM_VERSION%-osx-arm64
-            graalvm_x64_path=~/.graal/%env.GRAALVM_VERSION_MACOS_X64%-osx-x64
-            for entry in "%env.GRAALVM_VERSION% osx-arm64 ${'$'}{graalvm_arm64_path}" "%env.GRAALVM_VERSION_MACOS_X64% osx-x64 ${'$'}{graalvm_x64_path}"
-            do
-                set -- ${'$'}{entry}
-                if [ ! -x "${'$'}3/Contents/Home/bin/java" ]; then
-                    rm -rf "${'$'}3"
-                    .teamcity/install.sh graalvm "${'$'}1" "${'$'}2" "${'$'}3"
-                fi
-            done
-        """
-    }
-
-    fun waitForNexus(): String {
-        return """
-            for i in 1 2 3 4 5; do
-              getent hosts nexus.in.devexperts.com && break
-              echo "DNS not ready yet, retrying..."
-              sleep 2
-            done
-        """.trimIndent()
-    }
-
-    fun prepareWinLocal(): String {
-        return """
-            ${'$'}ErrorActionPreference = 'Stop'
-
-            . .teamcity\install.ps1
-
-            # --- 1. Download and cache VS Build Tools 2022 if not already installed ---
-            ${'$'}vsInstallPath = "C:\BuildCache\vs-buildtools-2022"
-            ${'$'}vsDevCmd = Join-Path ${'$'}vsInstallPath "Common7\Tools\VsDevCmd.bat"
-
-            if (-not (Test-Path ${'$'}vsDevCmd)) {
-                Write-Host "VS Build Tools 2022 not found in cache, installing..."
-                Install-VSBuildTools -Version "17" -InstallPath ${'$'}vsInstallPath
-            } else {
-                Write-Host "VS Build Tools 2022 found in cache, skipping installation"
-            }
-
-            if (-not (Test-Path ${'$'}vsDevCmd)) {
-                throw "VS Build Tools installation failed - VsDevCmd.bat still not found at ${'$'}vsDevCmd"
-            }
-
-            # --- 2. Import MSVC environment variables from the installed VS 2022 ---
-            ${'$'}envDump = cmd /c "`"${'$'}vsDevCmd`" -arch=amd64 && set"
-            foreach (${'$'}line in ${'$'}envDump) {
-                if (${'$'}line -match '^(?<k>[^=]+)=(?<v>.*)${'$'}') {
-                    [System.Environment]::SetEnvironmentVariable(${'$'}Matches.k, ${'$'}Matches.v, "Process")
-                }
-            }
-
-            # --- 3. Download Maven if not already cached ---
-            ${'$'}mvnVersion = "3.8.9"
-            ${'$'}mvnInstallPath = "C:\BuildCache\maven-${'$'}mvnVersion"
-            if (-not (Test-Path "${'$'}mvnInstallPath\bin\mvn.cmd")) {
-                Write-Host "Maven ${'$'}mvnVersion not found in cache, installing..."
-                Install-Maven -Version ${'$'}mvnVersion -InstallPath ${'$'}mvnInstallPath
-            } else {
-                Write-Host "Maven ${'$'}mvnVersion found in cache, skipping installation"
-            }
-            ${'$'}env:Path = "${'$'}mvnInstallPath\bin;${'$'}env:Path"
-
-            # --- 4. Download GraalVM if not already cached ---
-            ${'$'}graalVersion = "%env.GRAALVM_VERSION%"
-            ${'$'}graalInstallPath = "C:\BuildCache\graalvm-${'$'}graalVersion-win-x64"
-            if (-not (Test-Path "${'$'}graalInstallPath\bin\java.exe")) {
-                Write-Host "GraalVM ${'$'}graalVersion not found in cache, installing..."
-                Install-GraalVM -Version ${'$'}graalVersion -Platform "win-x64" -InstallPath ${'$'}graalInstallPath
-            } else {
-                Write-Host "GraalVM ${'$'}graalVersion found in cache, skipping installation"
-            }
-            ${'$'}env:JAVA_HOME = ${'$'}graalInstallPath
-            ${'$'}env:Path = "${'$'}graalInstallPath\bin;${'$'}env:Path"
-
-            where.exe cl
-            where.exe java
-            where.exe mvn
-        """.trimIndent()
-    }
-}
-
-object SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags : GitVcsRoot({
-    name = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git#refs/heads/main tags"
-    url = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git"
-    branch = "refs/heads/main"
-    branchSpec = """
-        +:refs/tags/*
-        +:refs/heads/*
-    """.trimIndent()
-    useTagsAsBranches = true
-    authMethod = uploadedKey {
-        userName = "git"
-        uploadedKey = "dxcity for GIT"
-    }
-    param("secure:password", "")
 })
 
 object CopyServiceImages : BuildType({
@@ -1626,9 +1143,7 @@ object CopyServiceImages : BuildType({
         param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
-    vcs {
-        root(RelativeId("SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags"))
-    }
+    mainRepository()
 
     steps {
         script {
@@ -1680,9 +1195,7 @@ object ListServiceImages : BuildType({
         param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
-    vcs {
-        root(RelativeId("SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags"))
-    }
+    mainRepository()
 
     steps {
         script {

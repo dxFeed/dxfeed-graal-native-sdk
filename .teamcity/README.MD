@@ -169,7 +169,7 @@ Documentation and examples of how to run the image can be found in the correspon
 Releases (not snapshots) are additionally deployed to the public repository
 https://repo.devexperts.com/repository/mdd-maven/ by the `deploy-mdd-maven` execution of
 `maven-deploy-plugin` in `pom.xml`. The deploy commands in `settings.kts` pass
-`-Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus%`,
+`-Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus%` (`Mvn.REPO` in `Common.kt`),
 `.teamcity/settings.xml` uses them for the `mdd-maven` server.
 `release:perform` passes the resolved settings to its forked build, so this works there as well.
 
