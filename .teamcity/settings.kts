@@ -1,3 +1,5 @@
+@file:Suppress("CanConvertToMultiDollarString")
+
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
