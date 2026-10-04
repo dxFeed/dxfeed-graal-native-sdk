@@ -471,7 +471,7 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
 object BuildAndDeployXCFramework : BuildType({
     name = "Build & Deploy [XCFramework]"
     description = "Makes DxFeedGraalNativeSdk.xcframework from the iOS, iOS Simulator and macOS archives of the release in Nexus and deploys it next to them (graal-native-sdk-<version>-xcframework.zip)"
-    artifactRules = "out/xcframework/*.zip"
+    artifactRules = "out/xcframework/graal-native-sdk-*-xcframework.zip"
 
     vcs {
         root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
