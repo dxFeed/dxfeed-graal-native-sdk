@@ -18,7 +18,8 @@
   archives): the isolate threads, the shutdown and the isolate arguments of `graal_create_isolate_params_t.argv`
   (`-D<name>=<value>`, `-Xmx`, `-XX:` options, `ignore_unrecognized_args`). The documentation described the parameters
   of GraalVM 22 (version 1, without `argc` and `argv`); the build fails if the declarations of the headers differ from
-  the ones that native-image generates.
+  the ones that native-image generates (the GraalVM of the x64 libraries declares version 4 of the parameters, with
+  the same fields).
 
 ## v3.7.0
 

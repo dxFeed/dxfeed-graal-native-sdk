@@ -57,6 +57,7 @@
     <apple.python>/usr/bin/python3</apple.python>
     <ios.check.skip>false</ios.check.skip>
     <macos.manifest.skip>true</macos.manifest.skip>
+    <graal.isolate.headers.check.skip>false</graal.isolate.headers.check.skip>
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
@@ -423,6 +424,14 @@
         -->
         <macos.x64.buildArg>-H:-PerfDataMemoryMappedFile</macos.x64.buildArg>
         <macos.x64.check.skip>false</macos.x64.check.skip>
+        <!--
+          GraalVM jdk-25.0.1 (the x64 builds) generates version 4 of graal_create_isolate_params_t: the same fields
+          and layout as version 5 of src/main/c/api/graal_isolate.h, named _reserved_1, _reserved_2 and _reserved_3
+          instead of argc, argv and ignore_unrecognized_args, so the archive gets the documented header and the check
+          runs in the builds with the main GraalVM. The x64 library takes the isolate arguments of version 5 (checked
+          with the Swift API on macOS x86_64 and in the iOS Simulator on x86_64).
+        -->
+        <graal.isolate.headers.check.skip>true</graal.isolate.headers.check.skip>
       </properties>
     </profile>
     <profile>
@@ -592,8 +601,11 @@
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
         <macos.x64.check.skip>true</macos.x64.check.skip>
+        <macos.manifest.skip>true</macos.manifest.skip>
         <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>ios-simulator</arch.name>
+        <!-- The native image of this build is the x86_64 one (jdk-25.0.1), see the mac-x86_64 profile. -->
+        <graal.isolate.headers.check.skip>true</graal.isolate.headers.check.skip>
         <notIosSimulator>false</notIosSimulator>
       </properties>
       <dependencies>
@@ -673,6 +685,7 @@
         <set-rpath.skip>true</set-rpath.skip>
         <macos.check.skip>true</macos.check.skip>
         <macos.x64.check.skip>true</macos.x64.check.skip>
+        <macos.manifest.skip>true</macos.manifest.skip>
         <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
@@ -1097,6 +1110,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
+              <skip>${graal.isolate.headers.check.skip}</skip>
               <target>
                 <macrodef name="load-declarations">
                   <attribute name="file" />

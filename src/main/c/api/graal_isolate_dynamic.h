@@ -6,10 +6,11 @@
  * the library of the SDK at run time (`dlopen` and `dlsym`, `LoadLibrary` and `GetProcAddress`) instead of linking it.
  *
  * native-image generates this header for the library of the SDK; the build of the SDK fails if the declarations here
- * differ from the generated ones. It has the same include guard as graal_isolate.h and the same types, so only the
- * one included first counts: include this one first to get the pointer types (dxfg_api.h, which includes
- * graal_isolate.h, can still be included after it; its functions are declared for linking, a program that loads them
- * at run time declares their pointer types itself). See graal_isolate.h for the functions and the isolate arguments.
+ * differ from the ones that its GraalVM generates (see graal_isolate.h). It has the same include guard as
+ * graal_isolate.h and the same types, so only the one included first counts: include this one first to get the
+ * pointer types (dxfg_api.h, which includes graal_isolate.h, can still be included after it; its functions are
+ * declared for linking, a program that loads them at run time declares their pointer types itself). See
+ * graal_isolate.h for the functions and the isolate arguments.
  *
  * @code{.c}
  * #include <dlfcn.h>

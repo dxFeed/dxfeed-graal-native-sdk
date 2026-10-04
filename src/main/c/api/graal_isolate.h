@@ -6,8 +6,11 @@
  * process: graal_create_isolate(), graal_attach_thread(), graal_tear_down_isolate(), etc.
  *
  * native-image generates this header for the library of the SDK; the build of the SDK fails if the declarations
- * here differ from the generated ones, so only the comments are the SDK's. graal_isolate_dynamic.h declares the
- * same functions as pointer types, for loading the library at run time.
+ * here differ from the ones that its GraalVM generates, so only the comments are the SDK's. The x64 libraries (macOS
+ * x64 and the x86_64 slice of the iOS Simulator) are built with an older GraalVM, which declares version 4 of
+ * graal_create_isolate_params_t: the same fields, named _reserved_1, _reserved_2 and _reserved_3 instead of argc,
+ * argv and ignore_unrecognized_args; these libraries take the parameters of this header too.
+ * graal_isolate_dynamic.h declares the same functions as pointer types, for loading the library at run time.
  *
  * An isolate has its own heap and its own Java state (the system properties, the endpoints, etc.): the handles of
  * one isolate cannot be used in another. Every thread that calls the SDK must be attached to the isolate, and every
