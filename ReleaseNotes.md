@@ -1,3 +1,9 @@
+* `graal_isolate.h` and `graal_isolate_dynamic.h` are documented (the C API documentation and the headers in the
+  archives): the isolate threads, the shutdown and the isolate arguments of `graal_create_isolate_params_t.argv`
+  (`-D<name>=<value>`, `-Xmx`, `-XX:` options, `ignore_unrecognized_args`). The documentation described the parameters
+  of GraalVM 22 (version 1, without `argc` and `argv`); the build fails if the declarations of the headers differ from
+  the ones that native-image generates.
+
 ## v3.7.0
 
 * Fixed on macOS x64: the jvmstat support called the 32-bit inode `fdopendir` and `readdir` of the system (GraalVM

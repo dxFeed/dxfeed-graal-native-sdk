@@ -966,6 +966,52 @@
             <phase>prepare-package</phase>
           </execution>
           <execution>
+            <!--
+              The archives contain the documented graal_isolate.h and graal_isolate_dynamic.h of src/main/c/api
+              (which the C API documentation is made from) instead of the ones that native-image generates: their
+              declarations, without the comments and the white space, must be the same, so a new GraalVM that
+              changes them fails the build until the headers are updated.
+            -->
+            <id>check-graal-isolate-headers</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <macrodef name="load-declarations">
+                  <attribute name="file" />
+                  <attribute name="property" />
+                  <sequential>
+                    <loadfile srcFile="@{file}" property="@{property}">
+                      <filterchain>
+                        <stripjavacomments />
+                        <deletecharacters chars=" &#9;&#10;&#13;" />
+                      </filterchain>
+                    </loadfile>
+                  </sequential>
+                </macrodef>
+                <macrodef name="check-header">
+                  <attribute name="name" />
+                  <sequential>
+                    <load-declarations file="${native.image.path}/@{name}" property="generated.@{name}" />
+                    <load-declarations file="${project.basedir}/src/main/c/api/@{name}" property="sdk.@{name}" />
+                    <fail message="src/main/c/api/@{name} differs from the generated @{name}: update its declarations">
+                      <condition>
+                        <not>
+                          <equals arg1="${generated.@{name}}" arg2="${sdk.@{name}}" />
+                        </not>
+                      </condition>
+                    </fail>
+                    <echo message="src/main/c/api/@{name} declares the same as the generated header" />
+                  </sequential>
+                </macrodef>
+                <check-header name="graal_isolate.h" />
+                <check-header name="graal_isolate_dynamic.h" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-artifact-file</id>
             <phase>install</phase>
             <configuration>

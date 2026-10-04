@@ -24,6 +24,7 @@ into your projects.
 - [Installation](#installation)
   * [Debug builds](#debug-builds)
 - [Using the C API](#using-the-c-api)
+  * [Isolates](#isolates)
   * [Listeners](#listeners)
   * [Shutdown](#shutdown)
   * [Network activity](#network-activity)
@@ -156,6 +157,42 @@ that is addressed by `rbp` (`previous frame inner to this frame`). To get the fu
 code with `-fomit-frame-pointer`.
 
 ## Using the C API
+
+### Isolates
+
+The SDK runs in an isolate (`graal_isolate.h`): a GraalVM instance with its own heap and Java state, created by
+`graal_create_isolate`. Every thread that calls the SDK must be attached to it (`graal_create_isolate` attaches the
+calling thread, `graal_attach_thread` the others) and passes its own `graal_isolatethread_t` to the SDK functions;
+a thread detaches with `graal_detach_thread` before it exits. The handles of one isolate cannot be used in another.
+
+The isolate arguments are passed in `graal_create_isolate_params_t.argv`, parsed like a command line (`argv[0]`, the
+program name, is skipped):
+
+```c
+char *argv[] = {"app", "-Dlog.level=OFF", "-Xmx512m", "-XX:TearDownWarningSeconds=10"};
+graal_create_isolate_params_t params;
+memset(&params, 0, sizeof(params));
+params.version = __graal_create_isolate_params_version;
+params.argc = 4;
+params.argv = argv;
+
+graal_isolate_t *isolate = NULL;
+graal_isolatethread_t *thread = NULL;
+if (graal_create_isolate(&params, &isolate, &thread) != 0) {
+    // the reason is printed to stderr
+}
+```
+
+- `-D<name>=<value>`: a system property, as `dxfg_system_set_property` sets it after the creation.
+- `-Xmx`, `-Xms`, `-Xmn`: the maximum, the initial and the young generation sizes of the heap.
+- `-XX:` options of the isolate: `-XX:TearDownWarningSeconds=<seconds>` (see [Shutdown](#shutdown)),
+  `-XX:-EnableSignalHandling` (on Linux and macOS the isolate does not install its no-op handlers of `SIGPIPE` and
+  `SIGXFSZ`).
+
+An unknown `-XX:` option or a wrong value fails `graal_create_isolate`, unless `ignore_unrecognized_args` is 1.
+`graal_isolate_dynamic.h` declares the same functions as pointer types (`graal_create_isolate_fn_t`, etc.) for loading
+the library at run time (`dlopen`/`dlsym`, `LoadLibrary`/`GetProcAddress`); include it before `dxfg_api.h`, as both
+headers have the same include guard. The C API documentation describes both headers.
 
 ### Listeners
 

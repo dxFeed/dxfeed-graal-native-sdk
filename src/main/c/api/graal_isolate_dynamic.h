@@ -1,19 +1,52 @@
 // SPDX-License-Identifier: MPL-2.0
 
+/**
+ * @file
+ * @brief The functions of graal_isolate.h as pointer types (graal_create_isolate_fn_t, etc.), for a program that loads
+ * the library of the SDK at run time (`dlopen` and `dlsym`, `LoadLibrary` and `GetProcAddress`) instead of linking it.
+ *
+ * native-image generates this header for the library of the SDK; the build of the SDK fails if the declarations here
+ * differ from the generated ones. It has the same include guard as graal_isolate.h and the same types, so only the
+ * one included first counts: include this one first to get the pointer types (dxfg_api.h, which includes
+ * graal_isolate.h, can still be included after it; its functions are declared for linking, a program that loads them
+ * at run time declares their pointer types itself). See graal_isolate.h for the functions and the isolate arguments.
+ *
+ * @code{.c}
+ * #include <dlfcn.h>
+ * #include "graal_isolate_dynamic.h"
+ *
+ * void *library = dlopen("libDxFeedGraalNativeSdk.so", RTLD_NOW); // .dylib on macOS
+ * graal_create_isolate_fn_t create_isolate = (graal_create_isolate_fn_t) dlsym(library, "graal_create_isolate");
+ * graal_tear_down_isolate_fn_t tear_down_isolate =
+ *     (graal_tear_down_isolate_fn_t) dlsym(library, "graal_tear_down_isolate");
+ *
+ * graal_isolate_t *isolate = NULL;
+ * graal_isolatethread_t *thread = NULL;
+ * if (create_isolate(NULL, &isolate, &thread) == 0) {
+ *     // ... the SDK functions, loaded the same way ...
+ *     tear_down_isolate(thread);
+ * }
+ * @endcode
+ *
+ * On Windows: `LoadLibraryA("DxFeedGraalNativeSdk.dll")` and `GetProcAddress`.
+ */
+
 #ifndef __GRAAL_ISOLATE_H
 #define __GRAAL_ISOLATE_H
 
-/*
- * Structure representing an isolate. A pointer to such a structure can be
- * passed to an entry point as the execution context.
+/**
+ * @brief An isolate: the instance of the SDK (its heap and Java state) in the process.
+ *
+ * The pointer is valid until the isolate is torn down; graal_attach_thread() and graal_get_current_thread() take it.
  */
 struct __graal_isolate_t;
 typedef struct __graal_isolate_t graal_isolate_t;
 
-/*
- * Structure representing a thread that is attached to an isolate. A pointer to
- * such a structure can be passed to an entry point as the execution context,
- * requiring that the calling thread has been attached to that isolate.
+/**
+ * @brief The state of one thread attached to an isolate: the first parameter (`thread`) of the SDK functions.
+ *
+ * It belongs to the thread that attached itself (graal_create_isolate(), graal_attach_thread()) and must not be used
+ * by other threads; it is valid until the thread detaches (graal_detach_thread()) or the isolate is torn down.
  */
 struct __graal_isolatethread_t;
 typedef struct __graal_isolatethread_t graal_isolatethread_t;
@@ -24,31 +57,80 @@ typedef unsigned long long __graal_uword;
 typedef unsigned long __graal_uword;
 #endif
 
-/*
- * These constants can be used for the pkey field in the
- * graal_create_isolate_params_t struct to either specify that the isolate is
- * not part of a protection domain or a new protection domain should be
- * created for it.
+/**
+ * @brief The values of graal_create_isolate_params_t.pkey (protection domains, internal: leave it 0).
  */
 #define NO_PROTECTION_DOMAIN 0
+/** @brief See #NO_PROTECTION_DOMAIN. */
 #define NEW_PROTECTION_DOMAIN -1
 
-/* Parameters for the creation of a new isolate. */
-enum { __graal_create_isolate_params_version = 1 };
+/**
+ * @brief The version of graal_create_isolate_params_t that this header declares (its `version` field).
+ */
+enum { __graal_create_isolate_params_version = 5 };
+
+/**
+ * @brief The parameters of graal_create_isolate().
+ *
+ * Zero the structure, then set `version` to #__graal_create_isolate_params_version and the fields to change; the
+ * fields that are 0 keep their defaults. The isolate reads only the fields of the given version, so a program built
+ * with an older header works with a newer library.
+ *
+ * The isolate arguments (`argc`, `argv`) are parsed like the command line of a native executable, and `argv[0]` (the
+ * program name) is skipped:
+ * - `-D<name>=<value>` sets a system property, as dxfg_system_set_property() does after the creation (for example the
+ *   properties that must be set before the first endpoint is created);
+ * - `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>` set the maximum, the initial and the young generation sizes of the heap
+ *   (`64m`, `1g`);
+ * - `-XX:<option>=<value>`, `-XX:+<option>`, `-XX:-<option>` set the runtime options of the isolate, for example
+ *   `-XX:TearDownWarningSeconds=<seconds>` (prints the threads that block graal_tear_down_isolate(); the debug builds
+ *   of the SDK use 10 seconds) or `-XX:-EnableSignalHandling` (on Linux and macOS the isolate does not install its
+ *   handlers of `SIGPIPE` and `SIGXFSZ`).
+ *
+ * An unknown `-XX:` option or a wrong value (`-Xmx64q`) fails graal_create_isolate() and prints the reason to stderr,
+ * unless `ignore_unrecognized_args` is 1. The other arguments are not checked.
+ *
+ * @code{.c}
+ * char *argv[] = {"app", "-Dlog.level=OFF", "-XX:TearDownWarningSeconds=10"};
+ * graal_create_isolate_params_t params;
+ * memset(&params, 0, sizeof(params));
+ * params.version = __graal_create_isolate_params_version;
+ * params.argc = 3;
+ * params.argv = argv;
+ * if (graal_create_isolate(&params, &isolate, &thread) != 0) { ... }
+ * @endcode
+ */
 struct __graal_create_isolate_params_t {
-    int version; /* Version of this struct */
+    /** @brief The version of this structure: #__graal_create_isolate_params_version, set after zeroing it. */
+    int version;
 
     /* Fields introduced in version 1 */
-    __graal_uword reserved_address_space_size; /* Size of address space to reserve */
+    /** @brief The size of the virtual address space to reserve for the heap (0: the default). */
+    __graal_uword  reserved_address_space_size;
 
-    /* Fields introduced in version 2 */
-    const char *auxiliary_image_path;                  /* Path to an auxiliary image to load. */
-    __graal_uword auxiliary_image_reserved_space_size; /* Reserved bytes for loading an auxiliary image. */
+    /* Fields introduced in version 2. Internal usage, do not use. */
+    /** @brief Internal: the path of an auxiliary image to load (leave it NULL). */
+    const char    *auxiliary_image_path;
+    /** @brief Internal: the bytes reserved for loading an auxiliary image (leave it 0). */
+    __graal_uword  auxiliary_image_reserved_space_size;
 
     /* Fields introduced in version 3 */
-    int _reserved_1;    /* Internal usage, do not use. */
-    char **_reserved_2; /* Internal usage, do not use. */
-    int pkey;           /* Isolate protection key or domain. */
+    /** @brief The number of the strings in `argv`, including `argv[0]`. */
+    int            argc;
+    /** @brief The isolate arguments, parsed like a command line (see graal_create_isolate_params_t). */
+    char         **argv;
+    /** @brief Internal: the protection key or domain of the isolate (leave it 0, #NO_PROTECTION_DOMAIN). */
+    int            pkey;
+
+    /* Fields introduced in version 4 */
+    /** @brief 1: unknown options in `argv` are ignored instead of failing graal_create_isolate(). */
+    char           ignore_unrecognized_args;
+    /** @brief Internal, leave it 0. */
+    char           _reserved_4;
+
+    /* Fields introduced in version 5 */
+    /** @brief Internal, leave it 0. */
+    char           _reserved_5;
 };
 typedef struct __graal_create_isolate_params_t graal_create_isolate_params_t;
 
@@ -56,67 +138,30 @@ typedef struct __graal_create_isolate_params_t graal_create_isolate_params_t;
 extern "C" {
 #endif
 
-/*
- * Create a new isolate, considering the passed parameters (which may be NULL).
- * Returns 0 on success, or a non-zero value on failure.
- * On success, the current thread is attached to the created isolate, and the
- * address of the isolate and the isolate thread are written to the passed pointers
- * if they are not NULL.
- */
-typedef int (*graal_create_isolate_fn_t)(graal_create_isolate_params_t *params, graal_isolate_t **isolate,
-                                         graal_isolatethread_t **thread);
+/** @brief The type of graal_isolate.h's graal_create_isolate() (`dlsym(library, "graal_create_isolate")`). */
+typedef int (*graal_create_isolate_fn_t)(graal_create_isolate_params_t* params, graal_isolate_t** isolate,
+                                         graal_isolatethread_t** thread);
 
-/*
- * Attaches the current thread to the passed isolate.
- * On failure, returns a non-zero value. On success, writes the address of the
- * created isolate thread structure to the passed pointer and returns 0.
- * If the thread has already been attached, the call succeeds and also provides
- * the thread's isolate thread structure.
- */
-typedef int (*graal_attach_thread_fn_t)(graal_isolate_t *isolate, graal_isolatethread_t **thread);
+/** @brief The type of graal_isolate.h's graal_attach_thread() (`dlsym(library, "graal_attach_thread")`). */
+typedef int (*graal_attach_thread_fn_t)(graal_isolate_t* isolate, graal_isolatethread_t** thread);
 
-/*
- * Given an isolate to which the current thread is attached, returns the address of
- * the thread's associated isolate thread structure.  If the current thread is not
- * attached to the passed isolate or if another error occurs, returns NULL.
- */
-typedef graal_isolatethread_t *(*graal_get_current_thread_fn_t)(graal_isolate_t *isolate);
+/** @brief The type of graal_isolate.h's graal_get_current_thread() (`dlsym(library, "graal_get_current_thread")`). */
+typedef graal_isolatethread_t* (*graal_get_current_thread_fn_t)(graal_isolate_t* isolate);
 
-/*
- * Given an isolate thread structure, determines to which isolate it belongs and returns
- * the address of its isolate structure. If an error occurs, returns NULL instead.
- */
-typedef graal_isolate_t *(*graal_get_isolate_fn_t)(graal_isolatethread_t *thread);
+/** @brief The type of graal_isolate.h's graal_get_isolate() (`dlsym(library, "graal_get_isolate")`). */
+typedef graal_isolate_t* (*graal_get_isolate_fn_t)(graal_isolatethread_t* thread);
 
-/*
- * Detaches the passed isolate thread from its isolate and discards any state or
- * context that is associated with it. At the time of the call, no code may still
- * be executing in the isolate thread's context.
- * Returns 0 on success, or a non-zero value on failure.
- */
-typedef int (*graal_detach_thread_fn_t)(graal_isolatethread_t *thread);
+/** @brief The type of graal_isolate.h's graal_detach_thread() (`dlsym(library, "graal_detach_thread")`). */
+typedef int (*graal_detach_thread_fn_t)(graal_isolatethread_t* thread);
 
-/*
- * Tears down the passed isolate, waiting for any attached threads to detach from
- * it, then discards the isolate's objects, threads, and any other state or context
- * that is associated with it.
- * Returns 0 on success, or a non-zero value on failure.
- */
-typedef int (*graal_tear_down_isolate_fn_t)(graal_isolatethread_t *isolateThread);
+/** @brief The type of graal_isolate.h's graal_tear_down_isolate() (`dlsym(library, "graal_tear_down_isolate")`). */
+typedef int (*graal_tear_down_isolate_fn_t)(graal_isolatethread_t* thread);
 
-/*
- * In the isolate of the passed isolate thread, detach all those threads that were
- * externally started (not within Java, which includes the "main thread") and were
- * attached to the isolate afterwards. Afterwards, all threads that were started
- * within Java undergo a regular shutdown process, followed by the tear-down of the
- * entire isolate, which detaches the current thread and discards the objects,
- * threads, and any other state or context associated with the isolate.
- * None of the manually attached threads targeted by this function may be executing
- * Java code at the time when this function is called or at any point in the future
- * or this will cause entirely undefined (and likely fatal) behavior.
- * Returns 0 on success, or a non-zero value on (non-fatal) failure.
+/**
+ * @brief The type of graal_isolate.h's graal_detach_all_threads_and_tear_down_isolate()
+ * (`dlsym(library, "graal_detach_all_threads_and_tear_down_isolate")`).
  */
-typedef int (*graal_detach_all_threads_and_tear_down_isolate_fn_t)(graal_isolatethread_t *isolateThread);
+typedef int (*graal_detach_all_threads_and_tear_down_isolate_fn_t)(graal_isolatethread_t* thread);
 
 #if defined(__cplusplus)
 }
