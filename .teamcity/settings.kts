@@ -91,7 +91,7 @@ object BuildPatchAndDeployForLinux : BuildType({
     steps {
         linuxReleaseSteps(
                 tagCommand = """
-                VERSION=${'$'}(mvn help:evaluate \
+                VERSION=$(mvn help:evaluate \
                     -Dexpression=project.version \
                     -q \
                     -DforceStdout)
@@ -297,7 +297,7 @@ object BuildAndDeployXCFramework : BuildType({
             name = "Make the XCFramework"
             scriptContent = """
                 set -eu
-                TAG=${'$'}(git describe --tags --abbrev=0)
+                TAG=$(git describe --tags --abbrev=0)
                 VERSION=${'$'}{TAG#v}
                 BASE_URL="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk/${'$'}{VERSION}"
                 rm -rf out/xcframework
@@ -318,7 +318,7 @@ object BuildAndDeployXCFramework : BuildType({
         script {
             name = "Deploy"
             scriptContent = "set -e\n" + Util.prepareMacOS() + """
-                TAG=${'$'}(git describe --tags --abbrev=0)
+                TAG=$(git describe --tags --abbrev=0)
                 VERSION=${'$'}{TAG#v}
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 # The repository of distributionManagement of the pom (qd), with the credentials of .teamcity/settings.xml;
@@ -384,11 +384,11 @@ object DeployNuget : BuildType({
             name = "Download Artifacts"
             scriptContent = """
                 download_file() {
-                  version=${'$'}1
-                  path_to_save=${'$'}2
-                  file_name=${'$'}3
-                  os=${'$'}4
-                  platform=${'$'}5
+                  version=$1
+                  path_to_save=$2
+                  file_name=$3
+                  os=$4
+                  platform=$5
                   extension="zip"
 
                   base_url="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk"
@@ -396,7 +396,7 @@ object DeployNuget : BuildType({
                   url="${'$'}{base_url}/${'$'}{version}/${'$'}{archive_name}"
 
                   mkdir -p "${'$'}path_to_save"
-                  tmp_dir=${'$'}(mktemp -d)
+                  tmp_dir=$(mktemp -d)
 
                   if ! (cd "${'$'}tmp_dir" && curl -LO -f "${'$'}url"); then
                     echo "Failed to download: ${'$'}url"
@@ -413,7 +413,7 @@ object DeployNuget : BuildType({
                   rm -rf "${'$'}tmp_dir"
                 }
 
-                version=${'$'}(git describe --abbrev=0)
+                version=$(git describe --abbrev=0)
                 version=${'$'}{version#"v"}
 
                 download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
@@ -428,7 +428,7 @@ object DeployNuget : BuildType({
             name = "NuGet Pack and Deploy"
             scriptContent = """
                 git config --global safe.directory '*'
-                VERSION=${'$'}(git describe --abbrev=0)
+                VERSION=$(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
                 # The package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
@@ -485,7 +485,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                 set -eu
 
                 REMOTE="git@github.com:dxFeed/dxfeed-graal-native-sdk.git"
-                TAG=${'$'}(git describe --tags --abbrev=0)
+                TAG=$(git describe --tags --abbrev=0)
 
                 echo "Pushing main..."
                 git push "${'$'}REMOTE" main
@@ -501,7 +501,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
             scriptContent = """
                 set -eu
 
-                TAG=${'$'}(git describe --tags --abbrev=0)
+                TAG=$(git describe --tags --abbrev=0)
                 VERSION=${'$'}{TAG#v}
 
                 NEXUS="https://maven.in.devexperts.com"
@@ -564,7 +564,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                 #
                 git show "${'$'}{TAG}:ReleaseNotes.md" | \
                     awk -v tag="${'$'}TAG" '
-                        ${'$'}0 == "## " tag {
+                        $0 == "## " tag {
                             found = 1
                             next
                         }
@@ -603,7 +603,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
             scriptContent = """
                 set -eu
 
-                TAG=${'$'}(git describe --tags --abbrev=0)
+                TAG=$(git describe --tags --abbrev=0)
 
                 export GH_REPO="dxFeed/dxfeed-graal-native-sdk"
 
@@ -777,7 +777,7 @@ object TestForLinux : BuildType({
                 cd src/main/c
                 rm -rf build bin
                 cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
-                cmake --build --preset=build-release --config=Release -j${'$'}(nproc)
+                cmake --build --preset=build-release --config=Release -j$(nproc)
                 ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml
             """.trimIndent()
             inDocker(Images.CPP_TEST_LINUX_X64, "--rm -m 4g")
@@ -1065,11 +1065,11 @@ object BuildJreLibrariesForIOS : BuildType({
                 status=0
                 for entry in "ios aarch64-ios" "simulator ios-simulator"; do
                     set -- ${'$'}{entry}
-                    directory=out/jre-ios/check/${'$'}1
+                    directory=out/jre-ios/check/$1
                     rm -rf "${'$'}{directory}"
                     mkdir -p "${'$'}{directory}"
-                    unzip -q out/jre-ios/sdk/*-${'$'}2.zip -d "${'$'}{directory}"
-                    arch -arm64 /usr/bin/python3 jre-ios/build.py check --dir "${'$'}{directory}" --platform ${'$'}1 || status=1
+                    unzip -q out/jre-ios/sdk/*-$2.zip -d "${'$'}{directory}"
+                    arch -arm64 /usr/bin/python3 jre-ios/build.py check --dir "${'$'}{directory}" --platform $1 || status=1
                 done
                 exit ${'$'}{status}
             """.trimIndent()
@@ -1109,14 +1109,14 @@ object DetectVisualStudioVersion : BuildType({
                     }
 
                     foreach (${'$'}vs in ${'$'}installations) {
-                        Write-Host "Name:    ${'$'}(${'$'}vs.displayName)"
-                        Write-Host "Version: ${'$'}(${'$'}vs.installationVersion)"
-                        Write-Host "Path:    ${'$'}(${'$'}vs.installationPath)"
+                        Write-Host "Name:    $(${'$'}vs.displayName)"
+                        Write-Host "Version: $(${'$'}vs.installationVersion)"
+                        Write-Host "Path:    $(${'$'}vs.installationPath)"
                         Write-Host "---"
                     }
 
                     ${'$'}primary = ${'$'}installations | Select-Object -First 1
-                    Write-Host "##teamcity[setParameter name='env.DETECTED_VS_VERSION' value='${'$'}(${'$'}primary.installationVersion)']"
+                    Write-Host "##teamcity[setParameter name='env.DETECTED_VS_VERSION' value='$(${'$'}primary.installationVersion)']"
                 """.trimIndent()
             }
             formatStderrAsError = true
@@ -1149,7 +1149,7 @@ object CopyServiceImages : BuildType({
                 apt-get install -y skopeo
                 apt-get install -y ca-certificates
 
-                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
+                image_tag=$(echo "%env.srcRepo%" | cut -d "/" -f 3)
                 echo "Image tag is ${'$'}image_tag"
                 echo "Source image - %env.srcRepo%:latest"
                 echo "Target image - %env.target.repo%/${'$'}image_tag"
@@ -1201,7 +1201,7 @@ object ListServiceImages : BuildType({
                 apt-get install -y skopeo
                 apt-get install -y ca-certificates
 
-                image_tag=${'$'}(echo "%env.srcRepo%" | cut -d "/" -f 3)
+                image_tag=$(echo "%env.srcRepo%" | cut -d "/" -f 3)
                 echo "Image tag is ${'$'}image_tag"
                 echo "Source image - %env.srcRepo%:latest"
                 echo "Target image - %env.target.repo%/${'$'}image_tag"

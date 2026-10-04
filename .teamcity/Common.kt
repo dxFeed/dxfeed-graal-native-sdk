@@ -71,7 +71,7 @@ fun BuildFeatures.nexusDockerLogin() {
 fun BuildSteps.checkoutLatestTag() {
     script {
         name = "Checkout Latest Tag"
-        scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
+        scriptContent = "git checkout $(git describe --abbrev=0)"
     }
 }
 
@@ -165,7 +165,7 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
     script {
         name = "release:checkout latest tag"
         id = "release_checkout_latest_tag"
-        scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
+        scriptContent = "git checkout $(git describe --abbrev=0)"
     }
 
     script {
@@ -215,7 +215,7 @@ object Util {
         return """
             set -eu
 
-            TAG=${'$'}(${tagCommand})
+            TAG=$(${tagCommand})
             echo "Release tag: ${'$'}TAG"
 
             if grep -qxF "## ${'$'}TAG" ReleaseNotes.md; then
@@ -235,10 +235,10 @@ object Util {
                 }
 
                 top && /^## / {
-                    header = substr(${'$'}0, 4)
+                    header = substr($0, 4)
 
                     if (index(header, base "-") == 1 && header != tag) {
-                        print "Replacing the header of the pre-release: " ${'$'}0
+                        print "Replacing the header of the pre-release: " $0
                         skipBlank = 1
                         next
                     }
@@ -246,7 +246,7 @@ object Util {
                     top = 0
                 }
 
-                skipBlank && ${'$'}0 == "" {
+                skipBlank && $0 == "" {
                     skipBlank = 0
                     next
                 }
@@ -287,9 +287,9 @@ object Util {
             for entry in "%env.GRAALVM_VERSION% osx-arm64 ${'$'}{graalvm_arm64_path}" "%env.GRAALVM_VERSION_MACOS_X64% osx-x64 ${'$'}{graalvm_x64_path}"
             do
                 set -- ${'$'}{entry}
-                if [ ! -x "${'$'}3/Contents/Home/bin/java" ]; then
-                    rm -rf "${'$'}3"
-                    .teamcity/install.sh graalvm "${'$'}1" "${'$'}2" "${'$'}3"
+                if [ ! -x "$3/Contents/Home/bin/java" ]; then
+                    rm -rf "$3"
+                    .teamcity/install.sh graalvm "$1" "$2" "$3"
                 fi
             done
         """
@@ -319,7 +319,7 @@ object Util {
             # --- 2. Import MSVC environment variables from the installed VS 2022 ---
             ${'$'}envDump = cmd /c "`"${'$'}vsDevCmd`" -arch=amd64 && set"
             foreach (${'$'}line in ${'$'}envDump) {
-                if (${'$'}line -match '^(?<k>[^=]+)=(?<v>.*)${'$'}') {
+                if (${'$'}line -match '^(?<k>[^=]+)=(?<v>.*)$') {
                     [System.Environment]::SetEnvironmentVariable(${'$'}Matches.k, ${'$'}Matches.v, "Process")
                 }
             }
