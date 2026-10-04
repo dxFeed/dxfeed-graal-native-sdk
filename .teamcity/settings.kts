@@ -1,11 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
-import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
-import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
-import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
-import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
-import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
-import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
+import jetbrains.buildServer.configs.kotlin.buildFeatures.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
@@ -96,7 +90,7 @@ object BuildPatchAndDeployForLinux : BuildType({
 
     steps {
         linuxReleaseSteps(
-            tagCommand = """
+                tagCommand = """
                 VERSION=${'$'}(mvn help:evaluate \
                     -Dexpression=project.version \
                     -q \
@@ -104,7 +98,7 @@ object BuildPatchAndDeployForLinux : BuildType({
                 VERSION=${'$'}{VERSION%-SNAPSHOT}
                 echo "v${'$'}VERSION"
             """.trimIndent(),
-            prepareArguments = ""
+                prepareArguments = ""
         )
     }
 
@@ -129,8 +123,8 @@ object BuildMajorMinorPatchAndDeployLinux : BuildType({
 
     steps {
         linuxReleaseSteps(
-            tagCommand = "echo v%env.RELEASE_VERSION%",
-            prepareArguments = "--batch-mode -DreleaseVersion=%env.RELEASE_VERSION% "
+                tagCommand = "echo v%env.RELEASE_VERSION%",
+                prepareArguments = "--batch-mode -DreleaseVersion=%env.RELEASE_VERSION% "
         )
     }
 
