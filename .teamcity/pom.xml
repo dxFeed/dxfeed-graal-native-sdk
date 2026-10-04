@@ -44,7 +44,15 @@
         <groupId>org.jetbrains.kotlin</groupId>
         <version>${kotlin.version}</version>
 
-        <configuration/>
+        <configuration>
+          <!--
+            The Kotlin of the DSL compiler of the TeamCity server (kotlin.version of configs-dsl-kotlin-parent),
+            so that IntelliJ IDEA does not suggest the features of a newer Kotlin (such as $$"..." strings), which
+            the server does not compile.
+          -->
+          <languageVersion>2.0</languageVersion>
+          <apiVersion>2.0</apiVersion>
+        </configuration>
         <executions>
           <execution>
             <id>compile</id>
