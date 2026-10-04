@@ -196,9 +196,12 @@ The C++ API (`dxfeed-graal-cxx-api`) is on GitHub, so the Jira triggers of Bitbu
 bot (`%dxcity.token.jira%`):
 
 - a pull request is opened (not a draft): In development -> Waiting for review;
-- a pull request is merged into `main` or `release/*`: Waiting for review -> Waiting for build, once no other pull
-  request of the ticket (a draft too) is open. Otherwise the ticket waits: the last of them merged, or closed without a
-  merge, moves it.
+- a draft pull request is opened (the work goes on): Confirmed -> In development, Waiting for build -> Waiting for
+  review -> In development (there is no direct transition), Waiting for review -> In development if no other pull
+  request of the ticket is in review;
+- a pull request is merged into `main` or `release/*`: Waiting for review -> Waiting for build once no other pull
+  request of the ticket is open, or -> In development if only drafts are open. While another pull request is in
+  review, the ticket waits: the last of them merged, or closed without a merge, moves it.
 
 The tickets are the MDAPI keys of the title and the branch of the pull request. Each pull request is applied to a
 ticket once (the ticket keeps the applied pull requests in the issue property `cxx-api-github-sync`), so a ticket moved

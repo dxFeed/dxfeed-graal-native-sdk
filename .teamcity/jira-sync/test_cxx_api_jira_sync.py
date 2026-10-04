@@ -30,9 +30,12 @@ NAMES = {
 
 # The transitions of the fake MDAPI workflow: the status -> (the id, the name, the status it goes to).
 WORKFLOW = {
+    CONFIRMED: [("61", "Start development", IN_DEVELOPMENT)],
     IN_DEVELOPMENT: [("71", "Pause development", CONFIRMED), ("151", "Send to review", WAITING_FOR_REVIEW)],
-    WAITING_FOR_REVIEW: [("161", "Send to build", WAITING_FOR_BUILD)],
-    WAITING_FOR_BUILD: [("171", "Send to test", WAITING_FOR_TEST), ("181", "Resolve", RESOLVED)],
+    WAITING_FOR_REVIEW: [("141", "Return to development", IN_DEVELOPMENT), ("161", "Wait for Build", WAITING_FOR_BUILD)],
+    # No direct transition to In development, as in MDAPI.
+    WAITING_FOR_BUILD: [("171", "Wait for Test", WAITING_FOR_TEST), ("181", "Resolve", RESOLVED),
+                        ("176", "Return to review", WAITING_FOR_REVIEW)],
     WAITING_FOR_TEST: [("191", "Start testing", TESTING), ("201", "Done", RESOLVED)],
     TESTING: [("211", "Pass", RESOLVED)],
 }
@@ -231,13 +234,91 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-2"))
 
-    def test_draft_does_nothing(self):
+    def test_draft_keeps_a_ticket_in_development(self):
         self.server.issue("MDAPI-1", IN_DEVELOPMENT)
         self.server.pulls = [pull_request(10, "[MDAPI-1] Draft", draft=True)]
 
         self.run_sync()
 
         self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
+        self.assertEqual({"drafted": [10]}, self.server.issues["MDAPI-1"]["property"])
+
+    def test_draft_starts_the_development_of_a_confirmed_ticket(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Draft", draft=True)]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+
+    def test_draft_returns_a_ticket_waiting_for_build_to_development_through_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Next part", draft=True)]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual(["176", "141"], [body["transition"]["id"] for method, path, body in self.server.changes
+                                          if path.endswith("/transitions")])
+
+    def test_draft_on_a_ticket_waiting_for_build_without_the_way_back_is_a_problem(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Next part", draft=True)]
+        workflow = dict(WORKFLOW)
+        WORKFLOW[WAITING_FOR_REVIEW] = [("161", "Wait for Build", WAITING_FOR_BUILD)]
+
+        try:
+            self.assertEqual(1, self.run_sync())
+        finally:
+            WORKFLOW.clear()
+            WORKFLOW.update(workflow)
+
+        self.assertIn("no transition from Waiting for review to In development", self.out.getvalue())
+        self.assertNotIn(11, self.server.issues["MDAPI-1"]["property"].get("drafted", []))  # not remembered
+
+    def test_draft_leaves_a_ticket_in_review_while_another_pull_request_is_in_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [
+            pull_request(11, "[MDAPI-1] Next part", draft=True),
+            pull_request(10, "[MDAPI-1] First", updated_at="2026-10-05T10:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertIn("the PRs #10 are in review", self.out.getvalue())
+
+    def test_merge_with_only_drafts_open_returns_to_development(self):
+        # The draft was opened while the first PR was in review; now the first PR is merged.
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10], "drafted": [11]})
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] First", state="closed", merged_at="2026-10-05T11:00:00Z"),
+            pull_request(11, "[MDAPI-1] Next part", draft=True, updated_at="2026-10-05T09:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+
+    def test_draft_marked_ready_goes_to_review(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT, prop={"drafted": [11]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Next part")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.server.links)  # linked as a draft
+
+    def test_dry_run_of_a_draft_on_a_ticket_waiting_for_build(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Next part", draft=True)]
+
+        self.run_sync(dry_run=True)
+
+        output = self.out.getvalue()
+        self.assertIn("[dry run] Return to review: Waiting for build -> Waiting for review", output)
+        self.assertIn("[dry run] then to In development", output)
         self.assertEqual([], self.server.changes)
 
     def test_applied_pull_request_is_not_applied_again(self):
@@ -319,9 +400,10 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
         self.assertEqual({"opened": [10, 11], "merged": [10]}, self.server.issues["MDAPI-1"]["property"])
-        self.assertIn("stays in Waiting for review: the PRs #11 are open", self.out.getvalue())
+        self.assertIn("stays in Waiting for review: the PRs #11 are in review", self.out.getvalue())
 
-    def test_open_draft_holds_the_ticket_too(self):
+    def test_open_draft_keeps_the_ticket_from_the_build(self):
+        # The draft of the next part (its key in the branch) is open when the first PR is merged.
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
         self.server.pulls = [
             pull_request(10, "[MDAPI-1] First", state="closed", merged_at="2026-10-05T10:00:00Z"),
@@ -331,7 +413,9 @@ class SyncTest(unittest.TestCase):
 
         self.run_sync()
 
-        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertNotIn("161", [body["transition"]["id"] for method, path, body in self.server.changes
+                                 if path.endswith("/transitions")])
 
     def test_merge_of_the_last_open_pull_request_moves_to_build(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11], "merged": [10]})
@@ -482,7 +566,7 @@ class SyncTest(unittest.TestCase):
 
         self.run_sync(dry_run=True)
 
-        self.assertIn("[dry run] Send to build: Waiting for review -> Waiting for build", self.out.getvalue())
+        self.assertIn("[dry run] Wait for Build: Waiting for review -> Waiting for build", self.out.getvalue())
 
     # The releases.
 

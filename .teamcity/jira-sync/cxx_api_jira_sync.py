@@ -4,10 +4,13 @@ Moves the MDAPI tickets of the C++ API (dxfeed-graal-cxx-api on GitHub) through 
 triggers of Bitbucket do for the internal repositories, and releases the Jira versions of its GitHub releases.
 
 The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MDAPI keys of the title and the branch):
-  - a PR is opened (not a draft): In development -> Waiting for review;
+  - a draft PR is opened (the work goes on): Confirmed -> In development, Waiting for build -> Waiting for review ->
+    In development (there is no direct transition), and Waiting for review -> In development if no other PR of the
+    ticket is in review (open and not a draft);
+  - a PR is opened (not a draft, or a draft is marked ready): In development -> Waiting for review;
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
-    another branch): Waiting for review -> Waiting for build, if a PR of the ticket has been merged and no other PR of
-    the ticket (a draft too) is open.
+    another branch), and a PR of the ticket has been merged: Waiting for review -> Waiting for build if no other PR of
+    the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review.
 Each PR is applied to a ticket once (the ticket keeps the numbers of the applied PRs in an issue property), so a
 ticket moved back by hand stays where it is. The opened and merged PRs are also linked from the ticket.
 
@@ -47,11 +50,13 @@ MERGE_BASE_PATTERN = re.compile(r"^(main|release/.+)$")
 TAG_PATTERN = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
 
 # The ids of the statuses of the MDAPI workflow.
+CONFIRMED = "10001"
 IN_DEVELOPMENT = "10003"
 WAITING_FOR_REVIEW = "10013"
 WAITING_FOR_BUILD = "10008"
 RESOLVED = "10011"
 STATUS_NAMES = {
+    CONFIRMED: "Confirmed",
     IN_DEVELOPMENT: "In development",
     WAITING_FOR_REVIEW: "Waiting for review",
     WAITING_FOR_BUILD: "Waiting for build",
@@ -280,6 +285,9 @@ class Sync:
             # A PR merged before a run saw it open is also opened: the ticket goes through Waiting for review.
             events = []
 
+            if pr["state"] == "open" and pr["draft"]:
+                events.append("drafted")
+
             if (pr["state"] == "open" and not pr["draft"]) or merged:
                 events.append("opened")
 
@@ -306,7 +314,9 @@ class Sync:
         self.log.info(f"{key}: PR #{number} {event} ({pr['html_url']})")
         state.setdefault(event, []).append(number)
 
-        if event == "opened":
+        if event == "drafted":
+            moved = self.to_development(key, number)
+        elif event == "opened":
             moved = self.advance(key, IN_DEVELOPMENT, WAITING_FOR_REVIEW)
         else:
             moved = self.to_build(key, state, number)
@@ -331,6 +341,33 @@ class Sync:
 
         return self.move(key, to_status)
 
+    def to_development(self, key, number):
+        """A draft PR: the work on the ticket goes on, so it goes back to (or starts) In development."""
+        status = self.status(key)
+
+        if status["id"] == CONFIRMED:
+            return self.move(key, IN_DEVELOPMENT)
+
+        if status["id"] == WAITING_FOR_BUILD:
+            # No direct transition: back to review, then to development.
+            return self.move(key, WAITING_FOR_REVIEW) and self.move(key, IN_DEVELOPMENT)
+
+        if status["id"] == WAITING_FOR_REVIEW:
+            in_review = [
+                other["number"] for other in self.open_pull_requests()
+                if key in pr_keys(other) and other["number"] != number and not other["draft"]
+            ]
+
+            if not in_review:
+                return self.move(key, IN_DEVELOPMENT)
+
+            numbers = ", ".join(f"#{other}" for other in in_review)
+            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are in review")
+            return True
+
+        self.log.info(f"  stays in {status['name']}")
+        return True
+
     def to_build(self, key, state, number):
         """Waiting for review -> Waiting for build once a PR is merged and the other PRs are closed."""
         status = self.status(key)
@@ -344,14 +381,21 @@ class Sync:
             return True
 
         still_open = [
-            other["number"] for other in self.open_pull_requests()
+            other for other in self.open_pull_requests()
             if key in pr_keys(other) and other["number"] != number
         ]
+        in_review = [other["number"] for other in still_open if not other["draft"]]
+
+        if in_review:
+            numbers = ", ".join(f"#{other}" for other in in_review)
+            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are in review")
+            return True
 
         if still_open:
-            numbers = ", ".join(f"#{other}" for other in still_open)
-            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are open")
-            return True
+            # Only drafts are open: the work goes on.
+            numbers = ", ".join(f"#{other['number']}" for other in still_open)
+            self.log.info(f"  the draft PRs {numbers} are open")
+            return self.move(key, IN_DEVELOPMENT)
 
         return self.move(key, WAITING_FOR_BUILD)
 
