@@ -21,6 +21,24 @@
   the ones that native-image generates (the GraalVM of the x64 libraries declares version 4 of the parameters, with
   the same fields).
 
+### For integrators
+
+* iOS and the iOS Simulator: an object of the SDK linked for the wrong platform now fails the link (it was a warning:
+  "no platform load command found"). The size of the object and of the linked application does not change.
+* `link-flags.txt` of the iOS, iOS Simulator and macOS archives lists the files and the system libraries to link
+  (`-framework Foundation -framework CFNetwork -lz`); with autolinking (the default of clang and Xcode) the files and
+  `-framework Foundation` are enough, `-lc++` is not needed.
+* The iOS archives do not contain `CMakeLists.txt`, the archives contain the documented `graal_isolate.h` (version 5 of
+  `graal_create_isolate_params_t`).
+* `graal-native-sdk-<version>-xcframework.zip` contains `DxFeedGraalNativeSdk.xcframework`: link it on all the platforms
+  instead of the files of the iOS and iOS Simulator archives and of the macOS libraries (Xcode takes the slice of the
+  platform); embed it on macOS only (the frameworks for iOS and the simulator are static). Unpack the zip with `ditto`
+  or `unzip`: Gradle's `zipTree` turns the links of the macOS framework (`Versions/Current`, ...) into files. A Clang
+  module map of the application cannot name the headers inside the framework (they belong to its module
+  `DxFeedGraalNativeSdk`): import the module, or copy the headers out. A test bundle that imports the module links a
+  second copy of the static SDK, unless autolinking is disabled for it
+  (`-Xfrontend -disable-autolink-framework -Xfrontend DxFeedGraalNativeSdk`).
+
 ## v3.7.0
 
 * Fixed on macOS x64: the jvmstat support called the 32-bit inode `fdopendir` and `readdir` of the system (GraalVM
