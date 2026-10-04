@@ -53,36 +53,102 @@ project {
         }
     }
 
+    // The builds started by hand to make a release; they start the release chain.
     buildType(BuildPatchAndDeployForLinux)
     buildType(BuildMajorMinorPatchAndDeployLinux)
+    buildTypesOrder = arrayListOf(BuildPatchAndDeployForLinux, BuildMajorMinorPatchAndDeployLinux)
+
+    // The groups of the other builds (the ids of the builds do not depend on the group).
+    subProject(ReleaseChain)
+    subProject(ImagesAndLibraries)
+    subProject(Checks)
+    subProject(Tests)
+    subProject(RarelyUsed)
+    subProjectsOrder = arrayListOf(ReleaseChain, ImagesAndLibraries, Checks, Tests, RarelyUsed)
+}
+
+object ReleaseChain : Project({
+    name = "Release chain"
+    description = "Started by the release builds: the archives of the platforms, the XCFramework, NuGet and the GitHub release"
+
+    buildType(BuildAndDeployForAll)
+    buildType(BuildAndDeployForLinuxAarch64)
     buildType(BuildAndDeployForLinuxAarch64Release)
     buildType(BuildAndDeployForLinuxAarch64Debug)
-    buildType(BuildAndDeployForLinuxAarch64)
+    buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForWindowsRelease)
     buildType(BuildAndDeployForWindowsDebug)
-    buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForMacOsAndIOS)
     buildType(BuildAndDeployXCFramework)
-    buildType(BuildAndDeployForAll)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
+    buildTypesOrder = arrayListOf(
+        BuildAndDeployForAll,
+        BuildAndDeployForLinuxAarch64,
+        BuildAndDeployForLinuxAarch64Release,
+        BuildAndDeployForLinuxAarch64Debug,
+        BuildAndDeployForWindows,
+        BuildAndDeployForWindowsRelease,
+        BuildAndDeployForWindowsDebug,
+        BuildAndDeployForMacOsAndIOS,
+        BuildAndDeployXCFramework,
+        DeployNuget,
+        SyncGitHubWithMainAndPublishRelease
+    )
+})
+
+object ImagesAndLibraries : Project({
+    name = "Images & Libraries"
+    description = "Build and push the Docker images of the builds, build the JRE libraries for iOS"
+
+    buildType(BuildAndPushDockerImageForLinuxX64)
+    buildType(BuildAndPushDockerImageForLinuxAarch64)
+    buildType(BuildAndPushDockerImageForWindowsX64)
+    buildType(BuildAndPushTestDockerImageForLinuxX64)
+    buildType(BuildJreLibrariesForIOS)
+    buildTypesOrder = arrayListOf(
+        BuildAndPushDockerImageForLinuxX64,
+        BuildAndPushDockerImageForLinuxAarch64,
+        BuildAndPushDockerImageForWindowsX64,
+        BuildAndPushTestDockerImageForLinuxX64,
+        BuildJreLibrariesForIOS
+    )
+})
+
+object Checks : Project({
+    name = "Checks"
+    description = "The builds of the SDK for a platform without a release, and the checks of the agents"
+
     buildType(BuildForLinux)
-    buildType(TestForLinux)
+    buildType(BuildForLinuxAarch64)
     buildType(BuildForWindows)
     buildType(BuildForWindowsInDocker)
     buildType(BuildForMacOSAndIOS)
-    buildType(BuildJreLibrariesForIOS)
-    buildType(BuildForLinuxAarch64)
-    buildType(BuildAndPushDockerImageForLinuxX64)
-    buildType(BuildAndPushTestDockerImageForLinuxX64)
-    buildType(BuildAndPushDockerImageForLinuxAarch64)
-    buildType(BuildAndPushDockerImageForWindowsX64)
+    buildType(DetectVisualStudioVersion)
+    buildType(ListServiceImages)
+    buildTypesOrder = arrayListOf(
+        BuildForLinux,
+        BuildForLinuxAarch64,
+        BuildForWindows,
+        BuildForWindowsInDocker,
+        BuildForMacOSAndIOS,
+        DetectVisualStudioVersion,
+        ListServiceImages
+    )
+})
+
+object Tests : Project({
+    name = "Tests"
+    description = "Started for the pull requests to main and for main"
+
+    buildType(TestForLinux)
+})
+
+object RarelyUsed : Project({
+    name = "Rarely used"
 
     buildType(CopyServiceImages)
-    buildType(ListServiceImages)
-
-    buildType(DetectVisualStudioVersion)
-}
+})
 
 object BuildPatchAndDeployForLinux : BuildType({
     name = "Build PATCH & Deploy [Linux, x64]"
