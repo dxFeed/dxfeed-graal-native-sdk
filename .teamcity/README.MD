@@ -201,7 +201,15 @@ bot (`%dxcity.token.jira%`):
   request of the ticket is in review;
 - a pull request is merged into `main` or `release/*`: Waiting for review -> Waiting for build once no other pull
   request of the ticket is open, or -> In development if only drafts are open. While another pull request is in
-  review, the ticket waits: the last of them merged, or closed without a merge, moves it.
+  review, the ticket waits: the last of them merged, or closed without a merge, moves it. A ticket moved to Waiting
+  for build gets the fix version of the next release of its line (see below), unless it has an unreleased one of that
+  line or a later one.
+
+The lines of the versions: `release/vN` collects the breaking changes of the next major, `main` has the patches of the
+current major until `release/vN` is merged into it and `vN.0.0` is released; the earlier majors are not maintained
+after that. A pull request merged into `release/vN` gives its ticket the unreleased `graal-cxx-api vN...` version
+(`vN.0.0` is created if there is none), one merged into `main` the unreleased version of the major of the last release
+(the patch after it is created if there is none). A ticket with parts in both gets the later line.
 
 The tickets are the MDAPI keys of the title and the branch of the pull request. Each pull request is applied to a
 ticket once (the ticket keeps the applied pull requests in the issue property `cxx-api-github-sync`), so a ticket moved
@@ -210,8 +218,9 @@ back by hand stays where it is. The pull request is linked from the ticket.
 A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases the Jira version
 `graal-cxx-api vX.Y.Z`:
 
-- if there is no version of that name, the only unreleased `graal-cxx-api` version (the placeholder of the next
-  release) is renamed to it;
+- if there is no version of that name, the only unreleased `graal-cxx-api` version of the major of the tag (the
+  placeholder of the next release of the line) is renamed to it, or else the version is created;
+- the unreleased versions of the earlier majors (a new major is released) give their tickets to it and are archived;
 - its tickets in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI do), as well
   as those in Waiting for test (left from the time with the testing step); the tickets in Testing stay as they are;
 - its unfinished tickets (In development, Waiting for review and the other statuses not of the category "done") move
@@ -220,8 +229,9 @@ A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases th
   used);
 - the build warns about the tickets of the commits of the release without the version, and the other way round.
 
-So a finished ticket gets the fix version of the placeholder in Waiting for build, and the tag of the release decides
-the number of the version.
+So a finished ticket gets the fix version of the placeholder of its line in Waiting for build (by the build, or by
+hand for a ticket moved there by hand), and the tag of the release decides the number of the version. A ticket that is not
+finished goes back to In development (by hand, or by a draft pull request): the release moves it to the next version.
 
 `env.DRY_RUN` of the build is `1`: the build reads GitHub and Jira (including the transitions available to `dxcity`)
 and only logs the changes. Set it to `0` to make them. The tests (no network): `python3 -m unittest` in `jira-sync`.

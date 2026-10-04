@@ -32,7 +32,8 @@ NAMES = {
 WORKFLOW = {
     CONFIRMED: [("61", "Start development", IN_DEVELOPMENT)],
     IN_DEVELOPMENT: [("71", "Pause development", CONFIRMED), ("151", "Send to review", WAITING_FOR_REVIEW)],
-    WAITING_FOR_REVIEW: [("141", "Return to development", IN_DEVELOPMENT), ("161", "Wait for Build", WAITING_FOR_BUILD)],
+    WAITING_FOR_REVIEW: [("141", "Return to development", IN_DEVELOPMENT),
+                         ("161", "Wait for Build", WAITING_FOR_BUILD)],
     # No direct transition to In development, as in MDAPI.
     WAITING_FOR_BUILD: [("171", "Wait for Test", WAITING_FOR_TEST), ("181", "Resolve", RESOLVED),
                         ("176", "Return to review", WAITING_FOR_REVIEW)],
@@ -157,6 +158,11 @@ class FakeServer:
 
         if rest == "?fields=status":
             return {"fields": {"status": issue["status"]}}
+
+        if rest == "?fields=fixVersions":
+            names = {version["id"]: version["name"] for version in self.versions}
+            return {"fields": {"fixVersions": [{"id": version_id, "name": names[version_id]}
+                                               for version_id in issue["fixVersions"]]}}
 
         if rest == "/transitions" and method == "GET":
             return {"transitions": [
@@ -349,7 +355,8 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
-        self.assertEqual({"opened": [10], "merged": [10]}, self.server.issues["MDAPI-1"]["property"])
+        self.assertEqual({"opened": [10], "merged": [10], "bases": {"10": "main"}},
+                         self.server.issues["MDAPI-1"]["property"])
         self.assertEqual(1, len(self.server.links))
 
     def test_merged_pull_request_after_review(self):
@@ -399,7 +406,8 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
-        self.assertEqual({"opened": [10, 11], "merged": [10]}, self.server.issues["MDAPI-1"]["property"])
+        self.assertEqual({"opened": [10, 11], "merged": [10], "bases": {"10": "main"}},
+                         self.server.issues["MDAPI-1"]["property"])
         self.assertIn("stays in Waiting for review: the PRs #11 are in review", self.out.getvalue())
 
     def test_open_draft_keeps_the_ticket_from_the_build(self):
@@ -424,6 +432,168 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+
+    def merged_into_review(self, fix_versions=()):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, fix_versions=fix_versions, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T10:00:00Z")]
+
+    def test_ticket_moved_to_build_gets_the_fix_version_of_the_next_release(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("200", "java-api-experimental v2.3.2", False)  # another component of MDAPI
+        self.merged_into_review()
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual(["101"], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_unreleased_fix_version_is_kept(self):
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+        self.merged_into_review(fix_versions=["102"])
+
+        self.run_sync()
+
+        self.assertEqual(["102"], self.server.issues["MDAPI-1"]["fixVersions"])
+        self.assertNotIn("WARNING", self.out.getvalue())
+
+    def test_released_fix_version_gets_the_next_release_too(self):
+        # A reopened ticket of an earlier release.
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.merged_into_review(fix_versions=["100"])
+
+        self.run_sync()
+
+        self.assertEqual(["100", "101"], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_no_single_next_release_is_a_warning(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("101", "graal-cxx-api v8.0.1", False)
+        self.server.version("102", "graal-cxx-api v8.1.0", False)
+        self.merged_into_review()
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.server.issues["MDAPI-1"]["fixVersions"])
+        self.assertIn("set the fix version by hand", self.out.getvalue())
+
+    def test_missing_next_release_is_created(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("99", "graal-cxx-api v7.0.0", True)
+        self.merged_into_review()
+
+        self.assertEqual(0, self.run_sync())
+
+        created = next(version for version in self.server.versions if version["name"] == "graal-cxx-api v8.0.1")
+        self.assertFalse(created["released"])
+        self.assertEqual([created["id"]], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_next_release_is_created_once_for_several_tickets(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.issue("MDAPI-2", WAITING_FOR_REVIEW, prop={"opened": [11]})
+        self.server.pulls = [
+            pull_request(11, "[MDAPI-2] Y", state="closed", merged_at="2026-10-05T11:00:00Z"),
+            pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T10:00:00Z",
+                         updated_at="2026-10-05T10:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(1, len([path for method, path, body in self.server.changes if path == "version"]))
+        self.assertEqual(self.server.issues["MDAPI-1"]["fixVersions"], self.server.issues["MDAPI-2"]["fixVersions"])
+
+    def test_dry_run_logs_the_creation_of_the_next_release(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.merged_into_review()
+
+        self.run_sync(dry_run=True)
+
+        output = self.out.getvalue()
+        self.assertIn("[dry run] create the version graal-cxx-api v8.0.1", output)
+        self.assertIn("[dry run] fix version graal-cxx-api v8.0.1", output)
+        self.assertEqual([], self.server.changes)
+
+    def test_dry_run_logs_the_fix_version(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.merged_into_review()
+
+        self.run_sync(dry_run=True)
+
+        self.assertIn("[dry run] fix version graal-cxx-api v8.1.0", self.out.getvalue())
+        self.assertEqual([], self.server.changes)
+
+    # The lines of the versions: main (the current major) and release/vN (the next one).
+
+    def merged_into(self, base, fix_versions=()):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, fix_versions=fix_versions, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T10:00:00Z",
+                                          base=base)]
+
+    def test_merge_into_main_gets_the_version_of_the_current_major(self):
+        self.merged_into("main")
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(["101"], self.server.issues["MDAPI-1"]["fixVersions"])
+        self.assertNotIn("WARNING", self.out.getvalue())
+
+    def test_merge_into_release_branch_gets_the_version_of_its_major(self):
+        self.merged_into("release/v9")
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+
+        self.run_sync()
+
+        self.assertEqual(["102"], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_merge_into_release_branch_creates_the_version_of_its_major(self):
+        self.merged_into("release/v9")
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+
+        self.run_sync()
+
+        created = next(version for version in self.server.versions if version["name"] == "graal-cxx-api v9.0.0")
+        self.assertEqual([created["id"]], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_part_merged_into_release_branch_moves_the_ticket_to_the_next_major(self):
+        # The ticket has got v8.1.0 for its part in main; its last part is breaking.
+        self.merged_into("release/v9", fix_versions=["101"])
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+        self.server.issues["MDAPI-1"]["property"] = {"opened": [9, 10], "merged": [9], "bases": {"9": "main"}}
+
+        self.run_sync()
+
+        self.assertEqual(["102"], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_part_merged_into_main_keeps_the_version_of_the_next_major(self):
+        self.merged_into("main", fix_versions=["102"])
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+
+        self.run_sync()
+
+        self.assertEqual(["102"], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_ticket_held_in_review_gets_no_fix_version(self):
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11]})
+        self.server.pulls = [
+            pull_request(11, "[MDAPI-1] Second", updated_at="2026-10-05T09:00:00Z"),
+            pull_request(10, "[MDAPI-1] First", state="closed", merged_at="2026-10-05T10:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual([], self.server.issues["MDAPI-1"]["fixVersions"])
 
     def test_closing_the_last_open_pull_request_without_merge_moves_to_build(self):
         # The first PR is merged, the second one is abandoned: the merged work waits for a build.
@@ -603,8 +773,8 @@ class SyncTest(unittest.TestCase):
         self.server.issue("MDAPI-2", TESTING, fix_versions=["101"])
         self.server.issue("MDAPI-3", ABORTED, fix_versions=["101"])
         self.server.issue("MDAPI-4", WAITING_FOR_BUILD, fix_versions=["101"])
-        self.server.releases.append(release("v9.0.0"))
-        self.server.compare[("v8.0.0", "v9.0.0")] = ["[MDAPI-1] A", "[MDAPI-2] B", "[MDAPI-4] D"]
+        self.server.releases.append(release("v8.1.0"))
+        self.server.compare[("v8.0.0", "v8.1.0")] = ["[MDAPI-1] A", "[MDAPI-2] B", "[MDAPI-4] D"]
 
         self.assertEqual(0, self.run_sync())
 
@@ -616,8 +786,58 @@ class SyncTest(unittest.TestCase):
                                    if path == "issue/MDAPI-4/transitions"])  # Resolve, not Send to test
         for key in ("MDAPI-1", "MDAPI-2", "MDAPI-3", "MDAPI-4"):
             self.assertEqual(["101"], self.server.issues[key]["fixVersions"], key)
-        names = {version["id"]: version["name"] for version in self.server.versions}
-        self.assertEqual("graal-cxx-api v9.0.0", names["101"])
+
+    def test_new_major_takes_the_tickets_of_the_earlier_line_and_archives_its_versions(self):
+        # Released v9.0.0 instead of v8.1.0: main had release/v9 merged.
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_TEST, fix_versions=["101"])
+        self.server.issue("MDAPI-2", IN_DEVELOPMENT, fix_versions=["101"])
+        self.server.issue("MDAPI-3", WAITING_FOR_BUILD, fix_versions=["102"])
+        self.server.releases.append(release("v9.0.0"))
+        self.server.compare[("v8.0.0", "v9.0.0")] = ["[MDAPI-1] A", "[MDAPI-3] C"]
+
+        self.assertEqual(0, self.run_sync())
+
+        versions = {version["name"]: version for version in self.server.versions}
+        self.assertTrue(versions["graal-cxx-api v8.1.0"]["archived"])
+        self.assertTrue(versions["graal-cxx-api v9.0.0"]["released"])
+        self.assertEqual(["102"], self.server.issues["MDAPI-1"]["fixVersions"])
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-1"))
+        self.assertEqual([versions["graal-cxx-api v9.0.1"]["id"]], self.server.issues["MDAPI-2"]["fixVersions"])
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-3"))
+
+    def test_new_major_without_its_version_creates_it(self):
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, fix_versions=["101"])
+        self.server.releases.append(release("v9.0.0"))
+        self.server.compare[("v8.0.0", "v9.0.0")] = ["[MDAPI-1] A"]
+
+        self.run_sync()
+
+        versions = {version["name"]: version for version in self.server.versions}
+        self.assertTrue(versions["graal-cxx-api v9.0.0"]["released"])
+        self.assertTrue(versions["graal-cxx-api v8.1.0"]["archived"])
+        self.assertEqual([versions["graal-cxx-api v9.0.0"]["id"]], self.server.issues["MDAPI-1"]["fixVersions"])
+
+    def test_release_of_the_current_major_leaves_the_next_one(self):
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.0.1", False)
+        self.server.version("102", "graal-cxx-api v9.0.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, fix_versions=["101"])
+        self.server.issue("MDAPI-2", WAITING_FOR_BUILD, fix_versions=["102"])
+        self.server.releases.append(release("v8.1.0"))
+        self.server.compare[("v8.0.0", "v8.1.0")] = ["[MDAPI-1] A"]
+
+        self.run_sync()
+
+        versions = {version["id"]: version for version in self.server.versions}
+        self.assertEqual("graal-cxx-api v8.1.0", versions["101"]["name"])  # the placeholder of the line, renamed
+        self.assertTrue(versions["101"]["released"])
+        self.assertFalse(versions["102"]["released"] or versions["102"]["archived"])
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-2"))
 
     def test_waiting_for_test_without_a_transition_to_resolved_is_a_warning(self):
         self.released_jira_and_github()
@@ -643,34 +863,34 @@ class SyncTest(unittest.TestCase):
         self.released_jira_and_github()
         self.server.version("101", "graal-cxx-api v8.0.1", False)
         self.server.issue("MDAPI-1", WAITING_FOR_BUILD, fix_versions=["101"])
-        self.server.releases.append(release("v9.0.0"))
-        self.server.compare[("v8.0.0", "v9.0.0")] = ["[MDAPI-1] Breaking (#20)"]
+        self.server.releases.append(release("v8.1.0"))
+        self.server.compare[("v8.0.0", "v8.1.0")] = ["[MDAPI-1] Minor (#20)"]
 
         self.run_sync()
 
         names = {version["id"]: version["name"] for version in self.server.versions}
-        self.assertEqual("graal-cxx-api v9.0.0", names["101"])
-        self.assertIn("graal-cxx-api v9.0.1", names.values())
+        self.assertEqual("graal-cxx-api v8.1.0", names["101"])
+        self.assertIn("graal-cxx-api v8.1.1", names.values())
         self.assertEqual(RESOLVED, self.status_of("MDAPI-1"))
 
-    def test_release_uses_the_version_of_the_name_and_keeps_the_placeholder(self):
+    def test_release_uses_the_version_of_the_name(self):
         self.released_jira_and_github()
         self.server.version("101", "graal-cxx-api v8.0.1", False)
-        self.server.version("102", "graal-cxx-api v9.0.0", False)
-        self.server.releases.append(release("v9.0.0"))
-        self.server.compare[("v8.0.0", "v9.0.0")] = []
+        self.server.version("102", "graal-cxx-api v8.0.2", False)
+        self.server.releases.append(release("v8.0.2"))
+        self.server.compare[("v8.0.0", "v8.0.2")] = []
 
         self.run_sync()
 
-        names = {version["id"]: version["name"] for version in self.server.versions}
-        self.assertEqual("graal-cxx-api v8.0.1", names["101"])
-        self.assertTrue(next(version for version in self.server.versions if version["id"] == "102")["released"])
+        versions = {version["id"]: version for version in self.server.versions}
+        self.assertEqual("graal-cxx-api v8.0.1", versions["101"]["name"])
+        self.assertTrue(versions["102"]["released"])
 
     def test_release_without_a_single_placeholder_is_a_problem(self):
         self.released_jira_and_github()
         self.server.version("101", "graal-cxx-api v8.0.1", False)
         self.server.version("102", "graal-cxx-api v8.1.0", False)
-        self.server.releases.append(release("v9.0.0"))
+        self.server.releases.append(release("v8.2.0"))
 
         self.assertEqual(1, self.run_sync())
 
@@ -704,7 +924,7 @@ class SyncTest(unittest.TestCase):
         output = self.out.getvalue()
         self.assertIn("[dry run] rename graal-cxx-api v8.0.1 -> graal-cxx-api v8.1.0", output)
         self.assertIn("[dry run] Resolve: Waiting for build -> Resolved", output)
-        self.assertIn("[dry run] create the next version graal-cxx-api v8.1.1", output)
+        self.assertIn("[dry run] create the version graal-cxx-api v8.1.1", output)
         self.assertIn("[dry run] MDAPI-2: fix version graal-cxx-api v8.1.0 -> graal-cxx-api v8.1.1", output)
         self.assertIn("[dry run] release graal-cxx-api v8.1.0 on 2026-10-05", output)
 

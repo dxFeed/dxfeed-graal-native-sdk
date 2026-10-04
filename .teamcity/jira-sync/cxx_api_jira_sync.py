@@ -11,13 +11,19 @@ The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MD
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
     another branch), and a PR of the ticket has been merged: Waiting for review -> Waiting for build if no other PR of
     the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review.
+    A ticket moved to Waiting for build gets the fix version of the next release of its line: the unreleased
+    graal-cxx-api version of the major of release/vN for a PR merged there (vN.0.0, created if needed), else of the
+    major of main (the patch after the last released version, created if needed).
+The lines: release/vN collects the breaking changes of the next major, main has the patches of the current one until
+release/vN is merged into it and vN.0.0 is released; the earlier majors are not maintained after that.
 Each PR is applied to a ticket once (the ticket keeps the numbers of the applied PRs in an issue property), so a
 ticket moved back by hand stays where it is. The opened and merged PRs are also linked from the ticket.
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
-  - the Jira version is the one of that name, or else the only unreleased graal-cxx-api version (the placeholder of the
-    next release), which is renamed;
+  - the Jira version is the one of that name, or else the only unreleased graal-cxx-api version of the major of the tag
+    (the placeholder of the next release of the line), which is renamed, or else a new one;
+  - the unreleased versions of the earlier majors (a new major is released) give their tickets to it and are archived;
   - its tickets in Waiting for build -> Resolved (the transition "Resolve", as the Release Steps of MDAPI do), and in
     Waiting for test (the tickets of the time with the testing step) -> Resolved if there is such a transition;
   - its tickets in Testing stay as they are;
@@ -67,6 +73,9 @@ STATUS_NAMES = {
 PERMISSIONS = ("BROWSE_PROJECTS", "TRANSITION_ISSUES", "EDIT_ISSUES", "ADMINISTER_PROJECTS")
 
 RELEASE_TRANSITION = "Resolve"
+
+# The events of a PR that the issue property of a ticket remembers (with the numbers of the PRs).
+EVENTS = ("drafted", "opened", "merged", "closed")
 
 # The statuses of the testing step, by name (their ids are not needed elsewhere).
 WAITING_FOR_TEST_NAME = "waiting for test"
@@ -189,6 +198,12 @@ class Jira:
             "update": {"fixVersions": [{"remove": {"id": old_id}}, {"add": {"id": new_id}}]}
         })
 
+    def fix_versions(self, key):
+        return self.call("GET", f"issue/{key}?fields=fixVersions")["fields"]["fixVersions"]
+
+    def add_fix_version(self, key, version_id):
+        self.call("PUT", f"issue/{key}", {"update": {"fixVersions": [{"add": {"id": version_id}}]}})
+
 
 class Log:
     """The output of the build: TeamCity service messages for the warnings and the problems."""
@@ -222,6 +237,12 @@ def jira_version_tuple(version):
     return version_tuple(name[len(VERSION_PREFIX):]) if name.startswith(VERSION_PREFIX) else None
 
 
+def line_major(base, main_major):
+    """The major of the versions of a branch: N of release/vN, else the major of main."""
+    match = re.fullmatch(r"release/v(\d+)", base)
+    return int(match.group(1)) if match else main_major
+
+
 def pr_keys(pr):
     """The tickets of the PR: the MDAPI keys of its title and its branch."""
     return sorted(set(KEY_PATTERN.findall(f"{pr['title']} {pr['head']['ref']}")))
@@ -243,6 +264,7 @@ class Sync:
         self.properties = {}
         self.simulated = set()  # the tickets that the dry run has moved
         self.open_prs = None
+        self.versions = None
 
     def change(self, description, action):
         """Makes a change in Jira, or only logs it in the dry run."""
@@ -310,9 +332,13 @@ class Sync:
         if state is None or number in state.get(event, []):
             return
 
-        new_pr = not any(number in numbers for numbers in state.values())
+        new_pr = not any(number in state.get(name, []) for name in EVENTS)
         self.log.info(f"{key}: PR #{number} {event} ({pr['html_url']})")
         state.setdefault(event, []).append(number)
+
+        if event == "merged":
+            # The branch that the PR is merged into decides the line of the fix version (main or release/vN).
+            state.setdefault("bases", {})[str(number)] = pr["base"]["ref"]
 
         if event == "drafted":
             moved = self.to_development(key, number)
@@ -323,6 +349,7 @@ class Sync:
 
         if not moved:
             state[event].remove(number)  # not remembered: the next run tries again
+            state.get("bases", {}).pop(str(number), None)
             return
 
         self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
@@ -397,7 +424,67 @@ class Sync:
             self.log.info(f"  the draft PRs {numbers} are open")
             return self.move(key, IN_DEVELOPMENT)
 
-        return self.move(key, WAITING_FOR_BUILD)
+        if not self.move(key, WAITING_FOR_BUILD):
+            return False
+
+        self.set_fix_version(key, state)
+        return True
+
+    def set_fix_version(self, key, state):
+        """
+        Gives the ticket the unreleased graal-cxx-api version of its line: the major of release/vN for a PR merged
+        there, else the major of main (of the last released version); the highest line of its merged PRs, as the
+        ticket is done when its last part is released. Creates the version if there is none: vN.0.0 for release/vN,
+        the patch after the last released version for main (the release renames it after its tag). Keeps an
+        unreleased version of the ticket of that line or a later one, and replaces one of an earlier line.
+        """
+        try:
+            versions = self.cxx_versions()
+            released = [jira_version_tuple(version) for version in versions if version["released"]]
+            last_released = max(released, default=(0, 0, 0))
+            bases = state.get("bases") or {"": "main"}  # the tickets remembered before the bases: main
+            major = max(line_major(base, last_released[0]) for base in bases.values())
+            unreleased = {
+                version["id"]: version for version in versions if not version["released"] and not version["archived"]
+            }
+            current = [
+                unreleased[version["id"]] for version in self.jira.fix_versions(key) if version["id"] in unreleased
+            ]
+
+            if any(jira_version_tuple(version)[0] >= major for version in current):
+                return
+
+            line = [version for version in unreleased.values() if jira_version_tuple(version)[0] == major]
+
+            if len(line) > 1:
+                names = ", ".join(version["name"] for version in line)
+                self.log.warning(f"{key}: the unreleased graal-cxx-api versions of v{major} ({names}) are not a "
+                                 f"single next release: set the fix version by hand")
+                return
+
+            if line:
+                version = line[0]
+            elif major == last_released[0]:
+                version = self.next_version(".".join(map(str, last_released)), versions)
+            else:
+                version = self.ensure_version(f"{VERSION_PREFIX}{major}.0.0", versions)
+
+            for earlier in current:
+                self.change(f"fix version {earlier['name']} -> {version['name']}",
+                            lambda earlier=earlier: self.jira.replace_fix_version(key, earlier["id"], version["id"]))
+
+            if not current:
+                self.change(f"fix version {version['name']}", lambda: self.jira.add_fix_version(key, version["id"]))
+        except HttpError as e:
+            # The ticket has been moved: the fix version alone is left to be set by hand.
+            self.log.problem(f"{key}: the fix version is not set: {e}")
+
+    def cxx_versions(self):
+        """The graal-cxx-api versions of Jira for the PRs (read once, with the versions created by the run)."""
+        if self.versions is None:
+            self.versions = [version for version in self.jira.versions() if jira_version_tuple(version) is not None]
+
+        return self.versions
 
     def open_pull_requests(self):
         """The open PRs (the drafts too), as GitHub has them now."""
@@ -492,25 +579,51 @@ class Sync:
         number = release["tag_name"][1:]
         name = VERSION_PREFIX + number
         self.log.info(f"GitHub release {release['tag_name']} -> Jira version {name}")
+        major = version_tuple(number)[0]
         version = next((version for version in versions if version["name"] == name), None)
+        unreleased = [
+            other for other in versions if not other["released"] and not other["archived"] and other is not version
+        ]
 
         if version is None:
-            unreleased = [version for version in versions if not version["released"] and not version["archived"]]
+            # The placeholder of the line (of the major of the tag), renamed after the tag, or a new version.
+            line = [other for other in unreleased if jira_version_tuple(other)[0] == major]
 
-            if len(unreleased) != 1:
-                names = ", ".join(version["name"] for version in unreleased) or "none"
+            if len(line) > 1:
+                names = ", ".join(other["name"] for other in line)
                 self.log.problem(
-                    f"No Jira version {name}, and the unreleased graal-cxx-api versions ({names}) are not a single "
-                    f"placeholder to rename: create or rename the version by hand"
+                    f"No Jira version {name}, and the unreleased graal-cxx-api versions of v{major} ({names}) are not "
+                    f"a single placeholder to rename: create or rename the version by hand"
                 )
                 return
 
-            version = unreleased[0]
-            self.change(f"rename {version['name']} -> {name}",
-                        lambda: self.jira.update_version(version["id"], {"name": name}))
-            version["name"] = name
+            if line:
+                version = line[0]
+                self.change(f"rename {version['name']} -> {name}",
+                            lambda: self.jira.update_version(version["id"], {"name": name}))
+                version["name"] = name
+                unreleased.remove(version)
+            else:
+                version = self.ensure_version(name, versions)
 
         tickets = self.jira.issues(f"fixVersion = {version['id']} ORDER BY key")
+
+        # The earlier lines end with this release (main has them all, and they are not maintained after it): their
+        # unreleased versions give their tickets to it and are archived.
+        for earlier in [other for other in unreleased if jira_version_tuple(other)[0] < major]:
+            for ticket in self.jira.issues(f"fixVersion = {earlier['id']} ORDER BY key"):
+                key = ticket["key"]
+                self.change(f"{key}: fix version {earlier['name']} -> {name}",
+                            lambda key=key, earlier=earlier: self.jira.replace_fix_version(
+                                key, earlier["id"], version["id"]))
+
+                if all(other["key"] != key for other in tickets):
+                    tickets.append(ticket)
+
+            self.change(f"archive {earlier['name']}",
+                        lambda earlier=earlier: self.jira.update_version(earlier["id"], {"archived": True}))
+            earlier["archived"] = True
+
         keys = [ticket["key"] for ticket in tickets]
         self.log.info(f"  tickets: {', '.join(keys) or 'none'}")
 
@@ -552,16 +665,21 @@ class Sync:
         version["released"] = True
 
     def next_version(self, number, versions):
+        """The version of the patch after the version number ("8.1.0"), created if needed."""
         major, minor, patch = version_tuple(number)
-        name = f"{VERSION_PREFIX}{major}.{minor}.{patch + 1}"
+        return self.ensure_version(f"{VERSION_PREFIX}{major}.{minor}.{patch + 1}", versions)
+
+    def ensure_version(self, name, versions):
+        """The Jira version of the name, created (and added to versions) if there is none."""
         existing = next((version for version in versions if version["name"] == name), None)
 
         if existing is not None:
             return existing
 
-        created = self.change(f"create the next version {name}", lambda: self.jira.create_version(name))
-        version = created if created is not None else {"id": "(new)", "name": name}
-        versions.append({**version, "released": False, "archived": False})
+        created = self.change(f"create the version {name}", lambda: self.jira.create_version(name))
+        version = {**(created if created is not None else {"id": "(new)", "name": name}),
+                   "released": False, "archived": False}
+        versions.append(version)
         return version
 
     def check_commits(self, previous_tag, tag, keys):
