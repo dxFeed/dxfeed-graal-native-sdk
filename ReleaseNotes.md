@@ -1,4 +1,4 @@
-## v3.8.0-rc1
+## v3.8.0-rc2
 
 * New artifact `graal-native-sdk-<version>-xcframework.zip` (the GitHub release, the Maven classifier `xcframework`):
   `DxFeedGraalNativeSdk.xcframework` with static frameworks for iOS and the iOS Simulator and a dynamic framework for
