@@ -49,12 +49,14 @@
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
     <!--
-      iOS: the python3 that runs jre-ios/build.py, which declares the platform of the native image (set-build-version)
-      and checks that it links (check, skipped with ios.check.skip=true: the build of the jre-ios libraries checks the
+      iOS and macOS: the python3 that runs jre-ios/build.py, which declares the platform of the iOS image
+      (set-build-version), writes the manifest of the linker flags of the archive (manifest, link-flags.txt) and checks
+      that the iOS image links (check, skipped with ios.check.skip=true: the build of the jre-ios libraries checks the
       archives itself).
     -->
-    <ios.python>/usr/bin/python3</ios.python>
+    <apple.python>/usr/bin/python3</apple.python>
     <ios.check.skip>false</ios.check.skip>
+    <macos.manifest.skip>true</macos.manifest.skip>
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
@@ -396,6 +398,7 @@
         <macos.min.version>14.0</macos.min.version>
         <macos.buildArg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.min.version}</macos.buildArg>
         <macos.check.skip>false</macos.check.skip>
+        <macos.manifest.skip>false</macos.manifest.skip>
       </properties>
     </profile>
     <profile>
@@ -410,6 +413,7 @@
         <macos.min.version>11.0</macos.min.version>
         <macos.buildArg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.min.version}</macos.buildArg>
         <macos.check.skip>false</macos.check.skip>
+        <macos.manifest.skip>false</macos.manifest.skip>
         <!--
           Substrate VM of jdk-25.0.1 for macOS x64 calls the 32-bit inode fdopendir and readdir (@CFunction without
           $INODE64) but reads the 64-bit inode layout of dirent, when the jvmstat support cleans up the hsperfdata
@@ -881,6 +885,28 @@
               </arguments>
             </configuration>
           </execution>
+          <execution>
+            <!-- The manifest of the archive (link-flags.txt): the library, its minimum version and what it loads. -->
+            <id>write-macos-manifest</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${macos.manifest.skip}</skip>
+              <executable>${apple.python}</executable>
+              <arguments>
+                <argument>${project.basedir}/jre-ios/build.py</argument>
+                <argument>manifest</argument>
+                <argument>--dir</argument>
+                <argument>${native.image.path}</argument>
+                <argument>--platform</argument>
+                <argument>macos</argument>
+                <argument>--version</argument>
+                <argument>${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -923,7 +949,7 @@
                   native-image declares no platform in the object (LC_BUILD_VERSION), so the linker could not check
                   it. target/arm64 keeps the object without it: the build for the simulator declares its own.
                 -->
-                <exec executable="${ios.python}" failonerror="true">
+                <exec executable="${apple.python}" failonerror="true">
                   <arg value="${project.basedir}/jre-ios/build.py" />
                   <arg value="set-build-version" />
                   <arg value="--file" />
@@ -931,10 +957,23 @@
                   <arg value="--platform" />
                   <arg value="ios" />
                 </exec>
-                <!-- The archive is not made if the image does not link with the libraries as an application does. -->
+                <exec executable="${apple.python}" failonerror="true">
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="manifest" />
+                  <arg value="--dir" />
+                  <arg value="${native.image.path}" />
+                  <arg value="--platform" />
+                  <arg value="ios" />
+                  <arg value="--version" />
+                  <arg value="${project.version}" />
+                </exec>
+                <!--
+                  The archive is not made if the image does not link with the libraries as an application does (with
+                  autolinking, and with the flags of the manifest only).
+                -->
                 <exec executable="arch" failonerror="true" unless:true="${ios.check.skip}">
                   <arg value="-arm64" />
-                  <arg value="${ios.python}" />
+                  <arg value="${apple.python}" />
                   <arg value="${project.basedir}/jre-ios/build.py" />
                   <arg value="check" />
                   <arg value="--dir" />
@@ -996,7 +1035,7 @@
                   <arg value="${native.image.path}/libDxFeedGraalNativeSdk.o" />
                 </exec>
                 <!-- The arm64 object is the object of the device (GraalVM has no simulator platform). -->
-                <exec executable="${ios.python}" failonerror="true">
+                <exec executable="${apple.python}" failonerror="true">
                   <arg value="${project.basedir}/jre-ios/build.py" />
                   <arg value="set-build-version" />
                   <arg value="--file" />
@@ -1004,9 +1043,19 @@
                   <arg value="--platform" />
                   <arg value="simulator" />
                 </exec>
+                <exec executable="${apple.python}" failonerror="true">
+                  <arg value="${project.basedir}/jre-ios/build.py" />
+                  <arg value="manifest" />
+                  <arg value="--dir" />
+                  <arg value="${native.image.path}" />
+                  <arg value="--platform" />
+                  <arg value="simulator" />
+                  <arg value="--version" />
+                  <arg value="${project.version}" />
+                </exec>
                 <exec executable="arch" failonerror="true" unless:true="${ios.check.skip}">
                   <arg value="-arm64" />
-                  <arg value="${ios.python}" />
+                  <arg value="${apple.python}" />
                   <arg value="${project.basedir}/jre-ios/build.py" />
                   <arg value="check" />
                   <arg value="--dir" />

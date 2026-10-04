@@ -68,6 +68,7 @@ project {
     buildType(BuildAndDeployForWindowsDebug)
     buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForMacOsAndIOS)
+    buildType(BuildAndDeployXCFramework)
     buildType(BuildAndDeployForAll)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
@@ -467,6 +468,68 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
     }
 })
 
+object BuildAndDeployXCFramework : BuildType({
+    name = "Build & Deploy [XCFramework]"
+    description = "Makes DxFeedGraalNativeSdk.xcframework from the iOS, iOS Simulator and macOS archives of the release in Nexus and deploys it next to them (graal-native-sdk-<version>-xcframework.zip)"
+    artifactRules = "out/xcframework/*.zip"
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
+    }
+
+    steps {
+        script {
+            name = "Checkout Latest Tag"
+            scriptContent = "git checkout ${'$'}(git describe --abbrev=0)"
+        }
+
+        script {
+            name = "Make the XCFramework"
+            scriptContent = """
+                set -eu
+                TAG=${'$'}(git describe --tags --abbrev=0)
+                VERSION=${'$'}{TAG#v}
+                BASE_URL="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk/${'$'}{VERSION}"
+                rm -rf out/xcframework
+                mkdir -p out/xcframework
+                # The archives that Build & Deploy [macOS, iOS] has just deployed.
+                for classifier in aarch64-ios ios-simulator aarch64-osx x86_64-osx; do
+                    curl --fail --location --silent --show-error --output "out/xcframework/${'$'}{classifier}.zip" \
+                        "${'$'}{BASE_URL}/graal-native-sdk-${'$'}{VERSION}-${'$'}{classifier}.zip"
+                    unzip -q "out/xcframework/${'$'}{classifier}.zip" -d "out/xcframework/${'$'}{classifier}"
+                done
+                arch -arm64 /usr/bin/python3 jre-ios/build.py xcframework \
+                    --ios out/xcframework/aarch64-ios --simulator out/xcframework/ios-simulator \
+                    --macos out/xcframework/aarch64-osx out/xcframework/x86_64-osx --version "${'$'}{VERSION}" \
+                    --work out/xcframework/work --zip "out/xcframework/graal-native-sdk-${'$'}{VERSION}-xcframework.zip"
+            """.trimIndent()
+        }
+
+        script {
+            name = "Deploy"
+            scriptContent = "set -e\n" + Util.prepareMacOS() + """
+                TAG=${'$'}(git describe --tags --abbrev=0)
+                VERSION=${'$'}{TAG#v}
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
+                # The repository of distributionManagement of the pom (qd), with the credentials of .teamcity/settings.xml;
+                # Publish GitHub Release takes all the zips of the version from there.
+                arch -arm64 ${'$'}{mvn} --settings ".teamcity/settings.xml" -Dnexus.user=%dxcity.namecode.nexus% -Dnexus.password=%dxcity.passcode.nexus% org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="out/xcframework/graal-native-sdk-${'$'}{VERSION}-xcframework.zip" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier=xcframework -Dpackaging=zip -DgeneratePom=false
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+    }
+
+    dependencies {
+        snapshot(BuildAndDeployForMacOsAndIOS) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+    }
+
+    requirements {
+        equals("teamcity.agent.jvm.os.name", "Mac OS X")
+    }
+})
+
 object BuildAndDeployForAll : BuildType({
     name = "Build & Deploy [All]"
     type = Type.COMPOSITE
@@ -492,6 +555,9 @@ object BuildAndDeployForAll : BuildType({
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForMacOsAndIOS) {
+            onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
+        }
+        snapshot(BuildAndDeployXCFramework) {
             onDependencyFailure = jetbrains.buildServer.configs.kotlin.FailureAction.CANCEL
         }
     }

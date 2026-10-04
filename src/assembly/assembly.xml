@@ -25,6 +25,8 @@
         <include>*.h</include>
         <!-- iOS: the JDK and Substrate VM libraries of jre-ios. -->
         <include>*.a</include>
+        <!-- iOS and macOS: the manifest of the linker flags (jre-ios/build.py manifest). -->
+        <include>link-flags.txt</include>
         <!-- Debug builds: the gdb helpers. -->
         <include>gdb-debughelpers.py</include>
       </includes>

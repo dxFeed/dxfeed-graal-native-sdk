@@ -136,6 +136,29 @@ You can find artifacts here:
 * https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/
 * https://dxfeed.jfrog.io/artifactory/nuget-open/com/dxfeed/graal-native/
 
+### iOS and macOS
+
+The archives for iOS (`aarch64-ios`), the iOS Simulator (`ios-simulator`) and macOS (`aarch64-osx`, `x86_64-osx`)
+contain `link-flags.txt`: the linker flags of an application (the files and the system libraries), the platforms and
+the minimum versions. The build makes it from the files of the archive and checks that the iOS image links with these
+flags only before the archive is published.
+
+`graal-native-sdk-<version>-xcframework.zip` (in the GitHub release and in the Maven repository, classifier
+`xcframework`) contains `DxFeedGraalNativeSdk.xcframework` made from these archives: static frameworks for iOS (arm64)
+and the iOS Simulator (arm64, x86_64), a dynamic framework for macOS (arm64, x86_64), with the headers and the Clang
+module `DxFeedGraalNativeSdk`. With Swift Package Manager:
+
+```swift
+.binaryTarget(
+    name: "DxFeedGraalNativeSdk",
+    url: "https://github.com/dxFeed/dxfeed-graal-native-sdk/releases/download/v<version>/graal-native-sdk-<version>-xcframework.zip",
+    checksum: "<swift package compute-checksum of the zip>"
+)
+```
+
+and `import DxFeedGraalNativeSdk` in Swift (`#include <DxFeedGraalNativeSdk/dxfg_api.h>` in C and Objective-C). The
+frameworks link the system libraries that they need themselves (autolinking).
+
 ### Debug builds
 
 The `*-debug.zip` archives contain the SDK built with `-g -O0`.

@@ -1,3 +1,10 @@
+* New artifact `graal-native-sdk-<version>-xcframework.zip` (the GitHub release, the Maven classifier `xcframework`):
+  `DxFeedGraalNativeSdk.xcframework` with static frameworks for iOS and the iOS Simulator and a dynamic framework for
+  macOS (arm64 and x86_64), each with the headers and the Clang module `DxFeedGraalNativeSdk`, for Swift Package Manager
+  (`binaryTarget`) and Xcode. The other archives do not change.
+* The archives for iOS, the iOS Simulator and macOS contain `link-flags.txt`: the linker flags of an application, the
+  platforms and the minimum versions, made from the files of the archive. The build checks that the iOS image links
+  with these flags only (without autolinking) before the archive is published.
 * iOS and the iOS Simulator: `libDxFeedGraalNativeSdk.o` declares the platform of each architecture
   (`LC_BUILD_VERSION`): `ios` 12.0 on arm64 in `aarch64-ios`, `iossimulator` 14.0 on arm64 and 12.0 on x86_64 in
   `ios-simulator`, so the linker reports an object linked for the wrong platform. native-image declared none (the arm64

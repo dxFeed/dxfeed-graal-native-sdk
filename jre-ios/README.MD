@@ -109,7 +109,51 @@ objects of the libraries:
 
 The SDK version is the one of Xcode (`xcrun --show-sdk-version`). The command is written into the free space after the
 load commands (the data of the sections starts at a page boundary), so no offset changes and the size of the object
-stays the same; `set-build-version` fails if there is no free space.
+stays the same; `set-build-version` fails if there is no free space. The linked application does not change either:
+the binary of the Swift API built with the declared object is the same size, section by section.
+
+## The manifest of the linker flags
+
+`build.py manifest` writes `link-flags.txt` into the archives for iOS, the simulator and macOS: a comment with the
+platform and the minimum version of each architecture (`LC_BUILD_VERSION`) and the linker flags of an application on
+the last line, relative to the directory of the archive:
+
+```
+libDxFeedGraalNativeSdk.o graal-svm-arm64-ios-r.a jdk-arm64-ios-r.a -framework Foundation -framework CFNetwork -lz
+```
+
+It is made from the files themselves: the system libraries are the ones that the objects name in `LC_LINKER_OPTION`
+(see `LIBRARY_DEPENDENCIES`), plus `-framework Foundation` (`CHECK_LINK_FLAGS`), so it cannot get out of date.
+`build.py check` links the image with these flags only, without autolinking (`-Wl,-ignore_auto_link`), as well as
+with autolinking, so an archive whose manifest is not enough is not published. The macOS manifest names the library,
+its install name (`@rpath/libDxFeedGraalNativeSdk.dylib`) and the system libraries that it loads.
+
+## The XCFramework
+
+`build.py xcframework` makes `DxFeedGraalNativeSdk.xcframework` from the files of the archives for iOS, the simulator
+and macOS (arm64 and x86_64), and zips it with `ditto` (which keeps the links of the macOS framework):
+
+| Library identifier           | Framework                                                                            |
+|------------------------------|--------------------------------------------------------------------------------------|
+| `ios-arm64`                  | static: `libtool -static` of the image object and the libraries                     |
+| `ios-arm64_x86_64-simulator` | static: the same for the simulator                                                   |
+| `macos-arm64_x86_64`         | dynamic: the libraries of the SDK for arm64 and x86_64 (`lipo`), re-signed ad hoc after `install_name_tool` |
+
+Each framework has the headers of the SDK and the Clang module `DxFeedGraalNativeSdk` (umbrella header `dxfg_api.h`,
+`link framework "Foundation"`); the objects of the static frameworks keep their `LC_BUILD_VERSION` and
+`LC_LINKER_OPTION`, so the frameworks link their system libraries themselves. The image object must declare its
+platform (see above).
+
+The TeamCity build configuration **Build & Deploy [XCFramework]** runs it after **Build & Deploy [macOS, iOS]**: it
+downloads the four archives of the release from Nexus, makes the XCFramework and deploys
+`graal-native-sdk-<version>-xcframework.zip` next to them (classifier `xcframework`), from where **Publish GitHub
+Release** takes it with the other archives. **Build & Deploy [All]** waits for it.
+
+```shell
+arch -arm64 python3 jre-ios/build.py xcframework --ios out/aarch64-ios --simulator out/ios-simulator \
+    --macos out/aarch64-osx out/x86_64-osx --version 3.7.1 --work out/xcframework \
+    --zip out/graal-native-sdk-3.7.1-xcframework.zip
+```
 
 ## When a new GraalVM version does not build
 

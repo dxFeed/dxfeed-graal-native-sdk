@@ -13,6 +13,8 @@ simulator has its own version, since GraalVM for macOS x64 is no longer publishe
     build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios
     build.py check --dir <unpacked graal-native-sdk-*-aarch64-ios.zip> --platform ios
     build.py set-build-version --file libDxFeedGraalNativeSdk.o --platform simulator
+    build.py manifest --dir <the files of an archive> --platform ios --version 3.7.1
+    build.py xcframework --ios <dir> --simulator <dir> --macos <arm64 dir> <x86_64 dir> --version 3.7.1 --zip <zip>
 
 set-build-version needs only python3 (and Xcode for the default SDK version). The others need macOS on arm64 with
 Xcode, git, curl, make and python3; autoconf (for the configure of the JDK) is installed into the work directory when
@@ -24,12 +26,14 @@ import glob
 import json
 import os
 import platform
+import plistlib
 import re
 import shlex
 import shutil
 import struct
 import subprocess
 import sys
+import textwrap
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -123,6 +127,17 @@ LINKEDIT_DATA_COMMANDS = {0x1d, 0x1e, 0x26, 0x29, 0x2b, 0x2e, 0x80000033, 0x8000
 COMMANDS_WITHOUT_DATA = {0x2d, 0x1b, 0x2a, LC_BUILD_VERSION} | VERSION_MIN_COMMANDS
 PLATFORMS = {1: 'macos', 2: 'ios', 7: 'iossimulator'}
 PLATFORM_IDS = {name: number for number, name in PLATFORMS.items()}
+
+IMAGE_OBJECT = 'libDxFeedGraalNativeSdk.o'
+IMAGE_DYLIB = 'libDxFeedGraalNativeSdk.dylib'
+# The manifest of the linker flags in the archives for iOS, the simulator and macOS (see manifest).
+MANIFEST = 'link-flags.txt'
+PLATFORM_TITLES = {'ios': 'iOS (iphoneos)', 'simulator': 'iOS Simulator (iphonesimulator)', 'macos': 'macOS'}
+# The XCFramework: one framework (and Clang module) per platform, static for iOS and the simulator (the archive of the
+# image object and of the libraries), dynamic for macOS (the library of the SDK).
+FRAMEWORK = 'DxFeedGraalNativeSdk'
+FRAMEWORK_IDENTIFIER = 'com.dxfeed.DxFeedGraalNativeSdk'
+MACOS_MIN_VERSION = '11.0'
 
 
 def log(message):
@@ -601,11 +616,24 @@ def load_commands(data, offset):
     return commands, offset + min(data_offsets) if data_offsets else len(data)
 
 
+def command_positions(data, offset):
+    """The (command, offset in the file, size) of the load commands of the thin Mach-O at the offset."""
+    if struct.unpack_from('<I', data, offset)[0] != MH_MAGIC_64:
+        fail(f'no 64-bit Mach-O at {offset}')
+    count = struct.unpack_from('<I', data, offset + 16)[0]
+    position = offset + MACH_HEADER_64_SIZE
+    commands = []
+    for _ in range(count):
+        command, size = struct.unpack_from('<II', data, position)
+        commands.append((command, position, size))
+        position += size
+    return commands
+
+
 def build_versions(data, offset):
     """The (platform, minimum version, SDK version) of LC_BUILD_VERSION of the thin Mach-O at the offset."""
-    commands, _ = load_commands(data, offset)
     versions = []
-    for command, position, _ in commands:
+    for command, position, _ in command_positions(data, offset):
         if command == LC_BUILD_VERSION:
             platform_id, minimum, sdk = struct.unpack_from('<III', data, position + 8)
             versions.append((PLATFORMS.get(platform_id, str(platform_id)), decode_version(minimum),
@@ -710,8 +738,199 @@ def check(arguments):
             failed.append(f'{arch} does not link')
         if os.path.exists(output):
             os.remove(output)
+        # The manifest: an application that links with its flags without autolinking.
+        command = ['xcrun', '--sdk', sdk, 'clang', '-target', slice_.triple(arguments.ios_min_version), '-isysroot',
+                   root, '-dynamiclib', '-o', output] + read_manifest(directory) + ['-Wl,-ignore_auto_link']
+        log(f'== {arguments.platform} {arch}: {MANIFEST}, without autolinking')
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        log(result.stdout.rstrip() or 'linked')
+        if result.returncode != 0:
+            failed.append(f'{arch} does not link with the flags of {MANIFEST}')
+        if os.path.exists(output):
+            os.remove(output)
     if failed:
         fail(f'the check of the image for {arguments.platform} failed: {"; ".join(failed)}')
+
+
+def linker_options(path):
+    """The options that the objects of a file (an object or a library, thin or fat) name for the linker
+    (LC_LINKER_OPTION), each as a list of strings ('-lz', or '-framework' and 'CFNetwork'), in their order."""
+    options = []
+    current = None
+    for line in run(['xcrun', 'otool', '-arch', 'all', '-l', path], capture=True).splitlines() + ['cmd']:
+        line = line.strip()
+        if line.startswith('cmd ') or line == 'cmd' or line.startswith('Load command'):
+            if current and current not in options:
+                options.append(current)
+            current = [] if line == 'cmd LC_LINKER_OPTION' else None
+        elif current is not None and line.startswith('string #'):
+            current.append(line.split(' ', 2)[2])
+    return options
+
+
+def file_build_versions(path):
+    """The (architecture, [(platform, minimum version, SDK version)]) of each architecture of a Mach-O file."""
+    with open(path, 'rb') as file:
+        data = file.read()
+    return [(arch, build_versions(data, offset)) for arch, offset in macho_slices(data)]
+
+
+def read_manifest(directory):
+    """The linker flags of the manifest of an archive, the files with their paths."""
+    path = os.path.join(directory, MANIFEST)
+    if not os.path.isfile(path):
+        fail(f'no {MANIFEST} in {directory}')
+    with open(path, encoding='utf-8') as file:
+        lines = [line.strip() for line in file if line.strip() and not line.startswith('#')]
+    if len(lines) != 1:
+        fail(f'{path} must have one line of flags')
+    return [os.path.join(directory, flag) if os.path.isfile(os.path.join(directory, flag)) else flag
+            for flag in lines[0].split()]
+
+
+def manifest(arguments):
+    """Writes the manifest of the linker flags (link-flags.txt) of the files of an archive: the files and the system
+    libraries that the application links with, made from the files themselves (the libraries that the objects name in
+    LC_LINKER_OPTION, the platforms and minimum versions of LC_BUILD_VERSION), so it cannot get out of date; check links
+    with these flags only."""
+    directory = os.path.abspath(arguments.dir)
+    lines = [f'# graal-native-sdk {arguments.version}: {PLATFORM_TITLES[arguments.platform]}']
+    if arguments.platform == 'macos':
+        library = os.path.join(directory, IMAGE_DYLIB)
+        if not os.path.isfile(library):
+            fail(f'no {IMAGE_DYLIB} in {directory}')
+        flags = [IMAGE_DYLIB]
+        image = library
+    else:
+        image = os.path.join(directory, IMAGE_OBJECT)
+        libraries = sorted(glob.glob(os.path.join(directory, '*.a')))
+        if not os.path.isfile(image) or not libraries:
+            fail(f'{directory} must contain {IMAGE_OBJECT} and the .a libraries')
+        system = []
+        for path in [image] + libraries:
+            for option in linker_options(path):
+                if option not in system:
+                    system.append(option)
+        flags = [IMAGE_OBJECT] + [os.path.basename(library) for library in libraries] + CHECK_LINK_FLAGS + \
+            [part for option in system for part in option]
+    for arch, versions in file_build_versions(image):
+        declared = ', '.join(f'{name} {minimum}' for name, minimum, _ in versions) or 'no platform'
+        lines.append(f'# {arch}: {declared}')
+    lines += ['#',
+              '# The linker flags of an application (the last line); the files are relative to this directory.',
+              '# Made from the files of the archive by jre-ios/build.py manifest.']
+    if arguments.platform == 'macos':
+        install_name = run(['xcrun', 'otool', '-D', image], capture=True).splitlines()[-1].strip()
+        loaded = [line.strip().split(' (')[0] for line in
+                  run(['xcrun', 'otool', '-L', image], capture=True).splitlines()[1:]]
+        loaded = [path for path in dict.fromkeys(loaded) if path and path != install_name]
+        lines += [f'# The install name of the library is {install_name}: add the directory of the library to the run',
+                  '# path of the application (-Wl,-rpath,<directory>), or put the library next to it',
+                  '# (-Wl,-rpath,@executable_path).',
+                  *textwrap.wrap('The library loads: ' + ', '.join(loaded) + '.', width=118, initial_indent='# ',
+                                 subsequent_indent='#   ', break_long_words=False, break_on_hyphens=False)]
+    else:
+        lines += ['# The SDK build links the files with these flags only (without autolinking) before publishing.',
+                  '# The objects also name their system libraries for the linker (LC_LINKER_OPTION), so with',
+                  '# autolinking (the default of clang and Xcode) the files and -framework Foundation are enough.']
+    lines.append(' '.join(flags))
+    path = os.path.join(directory, MANIFEST)
+    with open(path, 'w', encoding='utf-8') as file:
+        file.write('\n'.join(lines) + '\n')
+    log(f'{path}:\n' + '\n'.join(lines))
+
+
+def info_plist(path, platform_name, version, minimum):
+    """The Info.plist of a framework of the XCFramework."""
+    numeric = re.match(r'\d+(\.\d+)*', version).group(0)
+    info = {
+        'CFBundleDevelopmentRegion': 'en',
+        'CFBundleExecutable': FRAMEWORK,
+        'CFBundleIdentifier': FRAMEWORK_IDENTIFIER,
+        'CFBundleInfoDictionaryVersion': '6.0',
+        'CFBundleName': FRAMEWORK,
+        'CFBundlePackageType': 'FMWK',
+        'CFBundleShortVersionString': numeric,
+        'CFBundleVersion': numeric,
+        'CFBundleSupportedPlatforms': [{'ios': 'iPhoneOS', 'simulator': 'iPhoneSimulator',
+                                        'macos': 'MacOSX'}[platform_name]],
+    }
+    info['LSMinimumSystemVersion' if platform_name == 'macos' else 'MinimumOSVersion'] = minimum
+    with open(path, 'wb') as file:
+        plistlib.dump(info, file)
+
+
+def framework_contents(directory, headers):
+    """The headers and the module map (import DxFeedGraalNativeSdk) of a framework."""
+    os.makedirs(os.path.join(directory, 'Headers'))
+    os.makedirs(os.path.join(directory, 'Modules'))
+    for header in headers:
+        shutil.copy2(header, os.path.join(directory, 'Headers'))
+    with open(os.path.join(directory, 'Modules', 'module.modulemap'), 'w', encoding='utf-8') as file:
+        file.write(f'framework module {FRAMEWORK} {{\n'
+                   '    umbrella header "dxfg_api.h"\n'
+                   '    export *\n'
+                   '    module * { export * }\n'
+                   # The objects name their other system libraries themselves (LC_LINKER_OPTION).
+                   '    link framework "Foundation"\n'
+                   '}\n')
+
+
+def xcframework(arguments):
+    """Makes DxFeedGraalNativeSdk.xcframework from the files of the archives for iOS, the simulator and macOS: a static
+    framework for iOS and for the simulator (the image object and the libraries in one static library, which keeps
+    their LC_BUILD_VERSION and LC_LINKER_OPTION) and a dynamic framework for macOS (the library of the SDK for arm64 and
+    x86_64), each with the headers and a Clang module."""
+    check_host()
+    work = os.path.abspath(arguments.work)
+    shutil.rmtree(work, ignore_errors=True)
+    headers = sorted(glob.glob(os.path.join(arguments.ios, '*.h')))
+    if not headers:
+        fail(f'no headers in {arguments.ios}')
+    frameworks = []
+    for platform_name, directory in (('ios', arguments.ios), ('simulator', arguments.simulator)):
+        image = os.path.join(directory, IMAGE_OBJECT)
+        errors = check_build_versions(image, platform_name, arguments.ios_min_version)
+        if errors:
+            fail(f'{image}: {"; ".join(errors)} (see set-build-version)')
+        framework = os.path.join(work, platform_name, FRAMEWORK + '.framework')
+        framework_contents(framework, headers)
+        run(['xcrun', 'libtool', '-static', '-no_warning_for_no_symbols', '-o', os.path.join(framework, FRAMEWORK),
+             image] + sorted(glob.glob(os.path.join(directory, '*.a'))))
+        info_plist(os.path.join(framework, 'Info.plist'), platform_name, arguments.version, arguments.ios_min_version)
+        frameworks.append(framework)
+
+    # macOS frameworks have versions: Versions/A with the content and the links to Versions/Current.
+    framework = os.path.join(work, 'macos', FRAMEWORK + '.framework')
+    version_directory = os.path.join(framework, 'Versions', 'A')
+    framework_contents(version_directory, headers)
+    os.makedirs(os.path.join(version_directory, 'Resources'))
+    binary = os.path.join(version_directory, FRAMEWORK)
+    run(['xcrun', 'lipo', '-create'] + [os.path.join(directory, IMAGE_DYLIB) for directory in arguments.macos] +
+        ['-output', binary])
+    run(['xcrun', 'install_name_tool', '-id', f'@rpath/{FRAMEWORK}.framework/Versions/A/{FRAMEWORK}', binary])
+    # The new install name invalidates the ad hoc signature, without which macOS on arm64 does not load the library.
+    run(['codesign', '--force', '--sign', '-', binary])
+    info_plist(os.path.join(version_directory, 'Resources', 'Info.plist'), 'macos', arguments.version,
+               MACOS_MIN_VERSION)
+    os.symlink('A', os.path.join(framework, 'Versions', 'Current'))
+    for name in (FRAMEWORK, 'Headers', 'Modules', 'Resources'):
+        os.symlink(os.path.join('Versions', 'Current', name), os.path.join(framework, name))
+    frameworks.append(framework)
+
+    output = os.path.join(work, FRAMEWORK + '.xcframework')
+    command = ['xcodebuild', '-create-xcframework']
+    for framework in frameworks:
+        command += ['-framework', framework]
+    run(command + ['-output', output])
+    if arguments.zip:
+        zip_path = os.path.abspath(arguments.zip)
+        if os.path.exists(zip_path):
+            os.remove(zip_path)
+        # ditto keeps the links of the macOS framework.
+        run(['ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', output, zip_path])
+        log(f'{zip_path}: {os.path.getsize(zip_path)} bytes')
+    log(f'The XCFramework is {output}')
 
 
 def main():
@@ -748,6 +967,23 @@ def main():
     version_parser.add_argument('--sdk-version',
                                 help='the SDK version to declare (default: the version of the SDK of Xcode)')
     version_parser.set_defaults(function=set_build_version)
+
+    manifest_parser = commands.add_parser('manifest', help=f'write the manifest of the linker flags ({MANIFEST})')
+    manifest_parser.add_argument('--dir', required=True, help='the directory with the files of an archive')
+    manifest_parser.add_argument('--platform', required=True, choices=['ios', 'simulator', 'macos'])
+    manifest_parser.add_argument('--version', required=True, help='the version of the SDK')
+    manifest_parser.set_defaults(function=manifest)
+
+    xcframework_parser = commands.add_parser('xcframework', help=f'make {FRAMEWORK}.xcframework')
+    xcframework_parser.add_argument('--ios', required=True, help='the files of the archive for iOS')
+    xcframework_parser.add_argument('--simulator', required=True, help='the files of the archive for the simulator')
+    xcframework_parser.add_argument('--macos', required=True, nargs='+',
+                                    help='the files of the archives for macOS (arm64 and x86_64)')
+    xcframework_parser.add_argument('--version', required=True, help='the version of the SDK')
+    xcframework_parser.add_argument('--work', required=True, help='the directory of the XCFramework (recreated)')
+    xcframework_parser.add_argument('--zip', help='the zip of the XCFramework to make')
+    xcframework_parser.add_argument('--ios-min-version', default='12.0', help='the minimum iOS version (default 12.0)')
+    xcframework_parser.set_defaults(function=xcframework)
 
     arguments = parser.parse_args()
     arguments.function(arguments)
