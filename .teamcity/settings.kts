@@ -63,8 +63,8 @@ project {
     subProject(ImagesAndLibraries)
     subProject(Checks)
     subProject(Tests)
-    subProject(RarelyUsed)
-    subProjectsOrder = arrayListOf(ReleaseChain, ImagesAndLibraries, Checks, Tests, RarelyUsed)
+    subProject(Etc)
+    subProjectsOrder = arrayListOf(ReleaseChain, ImagesAndLibraries, Checks, Tests, Etc)
 }
 
 object ReleaseChain : Project({
@@ -144,8 +144,8 @@ object Tests : Project({
     buildType(TestForLinux)
 })
 
-object RarelyUsed : Project({
-    name = "Rarely used"
+object Etc : Project({
+    name = "Etc."
 
     buildType(CopyServiceImages)
 })
