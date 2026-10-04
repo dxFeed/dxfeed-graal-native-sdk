@@ -7,6 +7,7 @@ import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.projectFeatures.dockerRegistry
 import jetbrains.buildServer.configs.kotlin.triggers.finishBuildTrigger
+import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -149,6 +150,7 @@ object Etc : Project({
 
     buildType(CopyServiceImages)
     buildType(JiraAccessProbe)
+    buildType(CxxApiJiraSync)
 })
 
 object BuildPatchAndDeployForLinux : BuildType({
@@ -1274,6 +1276,63 @@ object JiraAccessProbe : BuildType({
                 probe cicdjirabot "%cicdjirabot.token.jira%"
             """.trimIndent()
         }
+    }
+
+    requirements {
+        linuxAgent()
+    }
+})
+
+/**
+ * Moves the MDAPI tickets of the C++ API (dxfeed-graal-cxx-api on GitHub) through the Jira workflow by its pull
+ * requests, as the Jira triggers of Bitbucket do for the internal repositories, and releases the Jira versions of its
+ * GitHub releases (see .teamcity/jira-sync/cxx_api_jira_sync.py).
+ */
+object CxxApiJiraSync : BuildType({
+    name = "C++ API: GitHub to Jira"
+    description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-cxx-api"
+
+    maxRunningBuilds = 1
+
+    params {
+        // "1": only logs the changes that it would make in Jira; "0": makes them.
+        param("env.DRY_RUN", "1")
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags, "+:.teamcity/jira-sync")
+    }
+
+    steps {
+        script {
+            name = "Sync"
+            // GH_TOKEN (env.GH_TOKEN of the project) raises the rate limit of the GitHub API.
+            scriptContent = """
+                export JIRA_URL="%jira.url%"
+                export JIRA_TOKEN="%dxcity.token.jira%"
+                python3 .teamcity/jira-sync/cxx_api_jira_sync.py
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        schedule {
+            schedulingPolicy = cron {
+                seconds = "0"
+                minutes = "0/10"
+                hours = "*"
+                dayOfMonth = "*"
+                month = "*"
+                dayOfWeek = "?"
+            }
+            branchFilter = "+:<default>"
+            triggerBuild = always()
+            withPendingChangesOnly = false
+        }
+    }
+
+    failureConditions {
+        executionTimeoutMin = 5
     }
 
     requirements {

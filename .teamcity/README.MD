@@ -11,6 +11,7 @@
 - [Creating and Publishing GraalVM Docker Image for Project Build](#creating-and-publishing-graalvm-docker-image-for-project-build)
 - [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 - [Deploying Artifacts](#deploying-artifacts)
+- [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
 
 # Building on Windows
 
@@ -187,3 +188,33 @@ Doxygen is installed from the Oracle Linux 7 repository in `graalvm-linux-x64.Do
 (the official Doxygen binaries require glibc 2.34+). The zip is deployed like the other artifacts,
 and "Publish GitHub Release" attaches all the zips of the version from `qd` to the GitHub release.
 To build the documentation locally: `mvn package -Dc-api-docs` (Doxygen must be in `PATH`).
+
+# Syncing the C++ API with Jira
+
+The C++ API (`dxfeed-graal-cxx-api`) is on GitHub, so the Jira triggers of Bitbucket do not move its MDAPI tickets. The
+`C++ API: GitHub to Jira` build (Etc.) does it every 10 minutes with `jira-sync/cxx_api_jira_sync.py`, as the `dxcity`
+bot (`%dxcity.token.jira%`):
+
+- a pull request is opened (not a draft): In development -> Waiting for review;
+- a pull request is merged into `main` or `release/*`: Waiting for review -> Waiting for build.
+
+The tickets are the MDAPI keys of the title and the branch of the pull request. Each pull request is applied to a
+ticket once (the ticket keeps the applied pull requests in the issue property `cxx-api-github-sync`), so a ticket moved
+back by hand stays where it is. The pull request is linked from the ticket.
+
+A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases the Jira version
+`graal-cxx-api vX.Y.Z`:
+
+- if there is no version of that name, the only unreleased `graal-cxx-api` version (the placeholder of the next
+  release) is renamed to it;
+- its tickets in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI do), and its
+  unresolved tickets move to the next version `graal-cxx-api vX.Y.(Z+1)`, which is created if needed;
+- the version is released with the date of the GitHub release (no release email: the Release Steps of MDAPI are not
+  used);
+- the build warns about the tickets of the commits of the release without the version, and the other way round.
+
+So a finished ticket gets the fix version of the placeholder in Waiting for build, and the tag of the release decides
+the number of the version.
+
+`env.DRY_RUN` of the build is `1`: the build reads GitHub and Jira (including the transitions available to `dxcity`)
+and only logs the changes. Set it to `0` to make them. The tests (no network): `python3 -m unittest` in `jira-sync`.
