@@ -1296,7 +1296,7 @@ object CxxApiJiraSync : BuildType({
 
     params {
         // "1": only logs the changes that it would make in Jira; "0": makes them.
-        param("env.DRY_RUN", "1")
+        param("env.DRY_RUN", "0")
     }
 
     vcs {
