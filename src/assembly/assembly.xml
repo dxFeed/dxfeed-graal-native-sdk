@@ -31,6 +31,9 @@
       <excludes>
         <exclude>${native.image.name}.h</exclude>
         <exclude>${native.image.name}_dynamic.h</exclude>
+        <!-- The documented copies of src/main/c/api (see check-graal-isolate-headers in the pom). -->
+        <exclude>graal_isolate.h</exclude>
+        <exclude>graal_isolate_dynamic.h</exclude>
       </excludes>
       <outputDirectory/>
     </fileSet>
