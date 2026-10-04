@@ -14,7 +14,8 @@
 #
 # BUILD
 #
-# docker build --pull -t <name:tag> -f cpp-test-linux-x64.Dockerfile .
+# Run from .teamcity (the build context).
+# docker build --pull -t <name:tag> -f docker/cpp-test-linux-x64.Dockerfile .
 #
 # RUN
 #

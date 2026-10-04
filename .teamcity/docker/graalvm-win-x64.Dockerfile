@@ -8,12 +8,13 @@
 #
 # BUILD
 #
+# Run from .teamcity (the build context, it has scripts/install.sh).
 # How to build an image:
-# docker build -m 8GB -t <name:tag> -f <Dockerfile> .
+# docker build -m 8GB -t <name:tag> -f docker/<Dockerfile> .
 #
 # For example:
-# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f graalvm-win-x64.Dockerfile .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f docker/graalvm-win-x64.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f docker/graalvm-win-x64.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #
@@ -52,7 +53,7 @@ RUN curl -SL --output msys2.exe %MSYS2_DOWNLOAD_URL% && \
     setx /M PATH "C:/msys64/usr/local/bin;C:/msys64/usr/bin;C:/msys64/bin;%PATH%"
 
 # Copy the helper script to the PATH directory with correct permissions.
-COPY install.sh "C:/msys64/usr/local/bin/"
+COPY scripts/install.sh "C:/msys64/usr/local/bin/"
 RUN C:/msys64/usr/bin/bash -lc "chmod +x /usr/local/bin/install.sh"
 
 # Download and install Build Tools for Visual Studio.

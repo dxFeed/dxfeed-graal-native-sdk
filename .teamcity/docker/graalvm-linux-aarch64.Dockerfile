@@ -8,14 +8,15 @@
 #
 # BUILD
 #
+# Run from .teamcity (the build context, it has scripts/install.sh).
 # How to build an image:
-# docker build -t <name:tag> -f <Dockerfile> .
+# docker build -t <name:tag> -f docker/<Dockerfile> .
 #
 # For example:
-# docker build --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:linux-x64-java11-22.3.1 -f graalvm-linux-x64.Dockerfile .
-# docker build --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:linux-x64-jdk-23.0.2 -f graalvm-linux-x64.Dockerfile .
-# docker build --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:linux-x64-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
-# docker build --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:linux-x64-oracle-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:linux-aarch64-java11-22.3.1 -f docker/graalvm-linux-aarch64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:linux-aarch64-jdk-23.0.2 -f docker/graalvm-linux-aarch64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:linux-aarch64-graal-25.4.4.1.1 -f docker/graalvm-linux-aarch64.Dockerfile .
+# docker build --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:linux-aarch64-oracle-graal-25.4.4.1.1 -f docker/graalvm-linux-aarch64.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #
@@ -42,8 +43,7 @@
 # Use Oracle Linux 7 (binary compatible with RHEL 7) for glibc 2.17.
 FROM oraclelinux:7-slim
 
-ARG GRAALVM_VERSION="java11-22.3.1"
-ARG TARGETPLATFORM="linux-x64"
+ARG TARGETPLATFORM="linux-aarch64"
 
 # Update and install dependencies.
 RUN yum update -y oraclelinux-release-el7 && \
@@ -51,7 +51,7 @@ RUN yum update -y oraclelinux-release-el7 && \
     yum-config-manager --enable ol7_developer && \
     yum-config-manager --enable ol7_developer_EPEL && \
     yum-config-manager --enable ol7_optional_latest && \
-    yum install -y bzip2-devel bsdtar doxygen ed gcc gcc-c++ gcc-gfortran git grep gzip file fontconfig less libcurl-devel make openssl openssl-devel readline-devel tar vi which xz-devel zlib-devel && \
+    yum install -y bzip2-devel bsdtar ed gcc gcc-c++ gcc-gfortran git grep gzip file fontconfig less libcurl-devel make openssl openssl-devel readline-devel tar vi which xz-devel zlib-devel && \
     yum install -y glibc-static libcxx libcxx-devel libstdc++-static zlib-static && \
     rm -rf /var/cache/yum
 
@@ -59,7 +59,7 @@ RUN yum update -y oraclelinux-release-el7 && \
 RUN fc-cache -f -v
 
 # Copy the helper script to the PATH directory.
-COPY install.sh "/usr/local/bin/"
+COPY scripts/install.sh "/usr/local/bin/"
 
 # Download and install Apache Maven.
 ARG MVN_VERSION="3.8.9"

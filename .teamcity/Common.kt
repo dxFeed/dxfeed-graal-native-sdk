@@ -179,7 +179,7 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
     }
 }
 
-/** Builds a Docker image with a Dockerfile of .teamcity and pushes it to the Docker registry of Nexus. */
+/** Builds a Docker image with a Dockerfile of .teamcity/docker (the build context is .teamcity) and pushes it to the Docker registry of Nexus. */
 fun BuildSteps.buildAndPushDockerImage(image: String, buildArguments: String) {
     script {
         name = "Build"
@@ -275,7 +275,7 @@ object Util {
 
             if [ ! -x "${'$'}{mvn_install_path}/bin/mvn" ]; then
                 rm -rf "${'$'}{mvn_install_path}"
-                .teamcity/install.sh maven "${'$'}{mvn_version}" "${'$'}{mvn_install_path}"
+                .teamcity/scripts/install.sh maven "${'$'}{mvn_version}" "${'$'}{mvn_install_path}"
             fi
 
             mvn=${'$'}{mvn_install_path}/bin/mvn
@@ -289,7 +289,7 @@ object Util {
                 set -- ${'$'}{entry}
                 if [ ! -x "$3/Contents/Home/bin/java" ]; then
                     rm -rf "$3"
-                    .teamcity/install.sh graalvm "$1" "$2" "$3"
+                    .teamcity/scripts/install.sh graalvm "$1" "$2" "$3"
                 fi
             done
         """
@@ -299,7 +299,7 @@ object Util {
         return """
             ${'$'}ErrorActionPreference = 'Stop'
 
-            . .teamcity\install.ps1
+            . .teamcity\scripts\install.ps1
 
             # --- 1. Download and cache VS Build Tools 2022 if not already installed ---
             ${'$'}vsInstallPath = "C:\BuildCache\vs-buildtools-2022"

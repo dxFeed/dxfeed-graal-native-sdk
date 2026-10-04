@@ -8,11 +8,12 @@
 #
 # BUILD
 #
+# Run from .teamcity (the build context).
 # How to build an image with the latest version of NuGet CLI:
-# docker build -t nuget:latest -f nuget.Dockerfile .
+# docker build -t nuget:latest -f docker/nuget.Dockerfile .
 #
 # How to build an image with the specified version of NuGet CLI:
-# docker build --build-arg="NUGET_VERSION=v6.8.1" -t nuget:6.8.1 -f nuget.Dockerfile .
+# docker build --build-arg="NUGET_VERSION=v6.8.1" -t nuget:6.8.1 -f docker/nuget.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #

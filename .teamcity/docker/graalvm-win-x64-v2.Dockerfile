@@ -14,14 +14,15 @@
 #
 # BUILD
 #
+# Run from .teamcity (the build context, it has scripts/install.ps1).
 # How to build an image:
-# docker build -m 8GB -t <name:tag> -f <Dockerfile> .
+# docker build -m 8GB -t <name:tag> -f docker/<Dockerfile> .
 #
 # For example:
-# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f graalvm-win-x64-v2.Dockerfile .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f graalvm-win-x64-v2.Dockerfile .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:win-x64-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
-# docker build -m 8GB --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:win-x64-oracle-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="java11-22.3.1" -t graalvm:win-x64-java11-22.3.1 -f docker/graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="jdk-23.0.2" -t graalvm:win-x64-jdk-23.0.2 -f docker/graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t graalvm:win-x64-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
+# docker build -m 8GB --build-arg GRAALVM_VERSION="oracle-graal-25.4.4.1.1" -t graalvm:win-x64-oracle-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
 #
 # MOUNTING DIRECTORIES
 #
@@ -76,7 +77,7 @@ ENV TARGETPLATFORM="${TARGETPLATFORM}" \
     VS_BUILD_TOOLS_INSTALL_PATH="C:/BuildTools"
 
 # Copy PowerShell helper script into the container
-COPY install.ps1 C:/install.ps1
+COPY scripts/install.ps1 C:/install.ps1
 
 # Run installation steps using PowerShell
 RUN powershell -Command \
@@ -102,9 +103,9 @@ ENV JAVA_HOME="${GRAALVM_INSTALL_PATH}"
 ENV PATH="${MVN_INSTALL_PATH}/bin;${GRAALVM_INSTALL_PATH}/bin;C:/Windows/System32;C:/Windows"
 
 # PowerShell wrapper
-COPY run-mvn-vs.ps1 C:/run-mvn-vs.ps1
-COPY build.ps1 C:/build.ps1
-COPY "docker-entrypoint.cmd" "C:/docker-entrypoint.cmd"
+COPY docker/run-mvn-vs.ps1 C:/run-mvn-vs.ps1
+COPY docker/build.ps1 C:/build.ps1
+COPY "docker/docker-entrypoint.cmd" "C:/docker-entrypoint.cmd"
 
 ENTRYPOINT ["C:/docker-entrypoint.cmd"]
 

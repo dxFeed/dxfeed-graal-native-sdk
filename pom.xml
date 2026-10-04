@@ -525,7 +525,7 @@
                 </goals>
                 <phase>compile</phase>
                 <configuration>
-                  <executable>rc</executable>
+                  <executable>${project.basedir}\scripts\rc.cmd</executable>
                   <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>-DDXFSDK_VERSION=${project.version}</argument>

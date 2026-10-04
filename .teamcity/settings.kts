@@ -907,7 +907,7 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
     mainRepository()
 
     steps {
-        buildAndPushDockerImage(Images.GRAALVM_LINUX_X64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f graalvm-linux-x64.Dockerfile .")
+        buildAndPushDockerImage(Images.GRAALVM_LINUX_X64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f docker/graalvm-linux-x64.Dockerfile .")
     }
 
     features {
@@ -921,12 +921,12 @@ object BuildAndPushDockerImageForLinuxX64 : BuildType({
 
 object BuildAndPushTestDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Test Docker Image [Linux, x64]"
-    description = "The image with the C/C++ tools for the tests (cpp-test-linux-x64.Dockerfile)"
+    description = "The image with the C/C++ tools for the tests (docker/cpp-test-linux-x64.Dockerfile)"
 
     mainRepository()
 
     steps {
-        buildAndPushDockerImage(Images.CPP_TEST_LINUX_X64, "-f cpp-test-linux-x64.Dockerfile .")
+        buildAndPushDockerImage(Images.CPP_TEST_LINUX_X64, "-f docker/cpp-test-linux-x64.Dockerfile .")
     }
 
     features {
@@ -944,7 +944,7 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     mainRepository()
 
     steps {
-        buildAndPushDockerImage(Images.GRAALVM_LINUX_AARCH64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f graalvm-linux-aarch64.Dockerfile .")
+        buildAndPushDockerImage(Images.GRAALVM_LINUX_AARCH64, "--build-arg GRAALVM_VERSION=\"%env.GRAALVM_VERSION%\" -f docker/graalvm-linux-aarch64.Dockerfile .")
     }
 
     features {
@@ -997,7 +997,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
                     ${'$'}ErrorActionPreference = 'Stop'
                     cd .teamcity
                     docker images --all
-                    docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f graalvm-win-x64-v2.Dockerfile .
+                    docker build --pull -t $image --build-arg GRAALVM_VERSION="%env.GRAALVM_VERSION%" -f docker/graalvm-win-x64-v2.Dockerfile .
                     if (${'$'}LASTEXITCODE -ne 0) { throw "docker build failed" }
                     docker push $image
                     if (${'$'}LASTEXITCODE -ne 0) { throw "docker push failed" }

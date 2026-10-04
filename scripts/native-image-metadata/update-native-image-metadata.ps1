@@ -24,10 +24,10 @@ Additional JVM arguments for the scenarios, e.g. "-Dtoken=...".
 Updates only reachability-metadata.json.
 
 .EXAMPLE
-.\update-native-image-metadata.ps1
+.\scripts\native-image-metadata\update-native-image-metadata.ps1
 
 .EXAMPLE
-.\update-native-image-metadata.ps1 -MainClass com.dxfeed.NewCases,com.dxfeed.NativeLibMain -JavaArgs "-Dtoken=<token>"
+.\scripts\native-image-metadata\update-native-image-metadata.ps1 -MainClass com.dxfeed.NewCases,com.dxfeed.NativeLibMain -JavaArgs "-Dtoken=<token>"
 #>
 param(
     [string[]]$MainClass = @("com.dxfeed.NewCases"),
@@ -36,11 +36,13 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-Set-Location $PSScriptRoot
+# The repository root: Maven runs there.
+$root = Resolve-Path (Join-Path $PSScriptRoot '../..')
+Set-Location $root
 
-$metadataDir = Join-Path $PSScriptRoot 'src/main/resources/META-INF/native-image'
-$workDir = Join-Path $PSScriptRoot 'target/native-image-agent'
-$classpathFile = Join-Path $PSScriptRoot 'target/classpath.txt'
+$metadataDir = Join-Path $root 'src/main/resources/META-INF/native-image'
+$workDir = Join-Path $root 'target/native-image-agent'
+$classpathFile = Join-Path $root 'target/classpath.txt'
 
 if (-not $env:JAVA_HOME) {
     throw "JAVA_HOME is not set, it must point to GraalVM 23+"

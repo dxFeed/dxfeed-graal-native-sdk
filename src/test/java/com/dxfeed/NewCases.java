@@ -39,7 +39,7 @@ import javax.management.ObjectName;
  * Scenarios for collecting Native Image metadata with the native-image-agent.
  * How to run (JAVA_HOME must point to GraalVM 23+):
  * ```powershell
- * ./update-native-image-metadata.ps1
+ * ./scripts/native-image-metadata/update-native-image-metadata.ps1
  * ```
  */
 public class NewCases {

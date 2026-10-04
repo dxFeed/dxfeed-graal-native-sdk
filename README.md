@@ -449,37 +449,37 @@ Find useful information in our self-service dxFeed Knowledge Base:
 
 ### Scripts
 
-**Native Image metadata**
+**Native Image metadata (`scripts/native-image-metadata`)**
 
-| Script                                             | Purpose                                                                                                                                                                                                                                                  |
-|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `update-native-image-metadata.ps1`                 | Collects the Native Image metadata with the native-image-agent (GraalVM 23+) by running the scenario classes (`NewCases` by default) and merges it into `src/main/resources/META-INF/native-image`. See [To regenerate META-INF/native-image](#to-regenerate-meta-infnative-image). |
-| `merge-agent-metadata.py`                          | Merges the agent output into `reachability-metadata.json` and the legacy `*-config.json` files (existing entries are never removed). Used by `update-native-image-metadata.ps1`.                                                                        |
-| `run-with-agent.ps1`                               | Legacy: runs a class under the agent, the output is written to `config/`.                                                                                                                                                                                |
-| `merge-json-files.ps1`, `merge-ser-json-files.ps1` | Legacy: merge two `reflect-config.json` / `serialization-config.json` files produced by the agent of GraalVM < 23.                                                                                                                                       |
+| Script                             | Purpose                                                                                                                                                                                                                                                                             |
+|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `update-native-image-metadata.ps1` | Collects the Native Image metadata with the native-image-agent (GraalVM 23+) by running the scenario classes (`NewCases` by default) and merges it into `src/main/resources/META-INF/native-image`. See [To regenerate META-INF/native-image](#to-regenerate-meta-infnative-image). |
+| `merge-agent-metadata.py`          | Merges the agent output into `reachability-metadata.json` and the legacy `*-config.json` files (existing entries are never removed). Used by `update-native-image-metadata.ps1`.                                                                                                    |
 
 **Build**
 
-| Script                                        | Purpose                                                                                                                                                                                                                                  |
-|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `rc.cmd`                                      | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`). |
-| `src/main/c/build.cmd`, `src/main/c/build.sh` | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                |
+| Script                                        | Purpose                                                                                                                                                                                                                                          |
+|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scripts/rc.cmd`                              | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`). |
+| `src/main/c/build.cmd`, `src/main/c/build.sh` | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                        |
+| `jre-ios/build.py`                            | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                |
 
 **CI (`.teamcity`)**, see also [.teamcity/README.MD](.teamcity/README.MD)
 
-| Script                                                             | Purpose                                                                                                                                                                              |
-|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `settings.kts`                                                     | TeamCity project configuration (Kotlin DSL).                                                                                                                                         |
-| `Common.kt`                                                        | Its shared parts: the Maven options with the credentials, the Docker images, the steps and the agents.                                                                               |
-| `install.sh`, `install.ps1`                                        | Download and install Maven, GraalVM (see the [supported version formats](.teamcity/README.MD#graalvm-versions)) and Build Tools for Visual Studio. Used by the Dockerfiles and the macOS and Windows builds. |
-| `graalvm-linux-x64.Dockerfile`, `graalvm-linux-aarch64.Dockerfile` | Linux build images (Oracle Linux 7, glibc 2.17).                                                                                                                                     |
-| `cpp-test-linux-x64.Dockerfile`                                    | Linux test image (Oracle Linux 9): CMake, GCC 13 and 11, Clang, the sanitizer runtimes, GDB, Valgrind. The "Test [Linux, x64]" build runs the C tests in it, see [Testing](.teamcity/README.MD#testing). |
-| `graalvm-win-x64-v2.Dockerfile`                                    | Windows build image.                                                                                                                                                                 |
-| `docker-entrypoint.cmd`                                            | Entry point of the Windows build image: initializes the Visual Studio environment and runs the passed command.                                                                      |
-| `graalvm-win-x64.Dockerfile`                                       | Previous Windows build image based on MSYS2 (not used by the CI).                                                                                                                    |
-| `run-mvn-vs.ps1`                                                   | Initializes the Visual Studio environment (`VsDevCmd.bat`) and runs Maven with the passed arguments; `-SetupOnly` only initializes the environment.                                 |
-| `build.ps1`                                                        | Diagnostic build in the Windows build image: prints the environment and runs `mvn clean package`.                                                                                    |
-| `nuget.Dockerfile`                                                 | Image with the NuGet CLI to pack and publish `NuGet/DxFeed.Graal.Native.nuspec`.                                                                                                     |
+| Script                                                                           | Purpose                                                                                                                                                                                                            |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `settings.kts`                                                                   | TeamCity project configuration (Kotlin DSL).                                                                                                                                                                       |
+| `Common.kt`                                                                      | Its shared parts: the Maven options with the credentials, the Docker images, the steps and the agents.                                                                                                             |
+| `scripts/install.sh`, `scripts/install.ps1`                                      | Download and install Maven, GraalVM (see the [supported version formats](.teamcity/README.MD#graalvm-versions)) and Build Tools for Visual Studio. Used by the Dockerfiles and the macOS and Windows builds.       |
+| `docker/graalvm-linux-x64.Dockerfile`, `docker/graalvm-linux-aarch64.Dockerfile` | Linux build images (Oracle Linux 7, glibc 2.17).                                                                                                                                                                   |
+| `docker/cpp-test-linux-x64.Dockerfile`                                           | Linux test image (Oracle Linux 9): CMake, GCC 13 and 11, Clang, the sanitizer runtimes, GDB, Valgrind. The "Test [Linux, x64]" build runs the C tests in it, see [Testing](.teamcity/README.MD#testing).           |
+| `docker/graalvm-win-x64-v2.Dockerfile`                                           | Windows build image.                                                                                                                                                                                               |
+| `docker/docker-entrypoint.cmd`                                                   | Entry point of the Windows build image: initializes the Visual Studio environment and runs the passed command.                                                                                                     |
+| `docker/graalvm-win-x64.Dockerfile`                                              | Previous Windows build image based on MSYS2 (not used by the CI).                                                                                                                                                  |
+| `docker/run-mvn-vs.ps1`                                                          | Initializes the Visual Studio environment (`VsDevCmd.bat`) and runs Maven with the passed arguments; `-SetupOnly` only initializes the environment.                                                                |
+| `docker/build.ps1`                                                               | Diagnostic build in the Windows build image: prints the environment and runs `mvn clean package`.                                                                                                                  |
+| `docker/nuget.Dockerfile`                                                        | Image with the NuGet CLI to pack and publish `NuGet/DxFeed.Graal.Native.nuspec`.                                                                                                                                   |
+| `jira-sync/cxx_api_jira_sync.py`                                                 | Moves the MDAPI tickets of the C++ API through the Jira workflow by its GitHub pull requests and releases its Jira versions, see [Syncing the C++ API with Jira](.teamcity/README.MD#syncing-the-c-api-with-jira). |
 
 ### Installation GraalVM JDK 11 with native-image
 
@@ -508,9 +508,9 @@ After changing dependency versions (e.g. `qd.version`), collect the metadata wit
 
 ```powershell
 # JAVA_HOME must point to GraalVM 23+, Maven and Python 3 are required.
-.\update-native-image-metadata.ps1
+.\scripts\native-image-metadata\update-native-image-metadata.ps1
 # Scenarios that need an address or credentials:
-.\update-native-image-metadata.ps1 -MainClass com.dxfeed.NewCases,com.dxfeed.NativeLibMain -JavaArgs "-Dtoken=<TOKEN>"
+.\scripts\native-image-metadata\update-native-image-metadata.ps1 -MainClass com.dxfeed.NewCases,com.dxfeed.NativeLibMain -JavaArgs "-Dtoken=<TOKEN>"
 ```
 
 The script runs the scenario classes (`src/test/java/com/dxfeed/NewCases.java` by default) under the agent,

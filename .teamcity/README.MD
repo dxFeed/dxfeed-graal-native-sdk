@@ -15,7 +15,7 @@
 
 # Building on Windows
 
-This project is built using Docker on Windows. The `graalvm-win-x64.Dockerfile` is utilized for
+This project is built using Docker on Windows. The `docker/graalvm-win-x64-v2.Dockerfile` is utilized for
 constructing the Docker image. Detailed documentation and usage examples for running the image are
 available in the corresponding Dockerfile.
 
@@ -64,7 +64,7 @@ available in the corresponding Dockerfile.
 
 # Building on Linux
 
-This project is built using Docker on Linux. The `graalvm-linux-x64.Dockerfile` is utilized for
+This project is built using Docker on Linux. The `docker/graalvm-linux-x64.Dockerfile` is utilized for
 constructing the Docker image. Detailed documentation and usage examples for running the image are
 available in the corresponding Dockerfile.
 
@@ -77,8 +77,8 @@ available in the corresponding Dockerfile.
 
 # Testing
 
-The `Test [Linux, x64]` build builds the library in the Linux build image (`graalvm-linux-x64.Dockerfile`) and runs
-the C tests of `src/main/c` (CTest) in the test image (`cpp-test-linux-x64.Dockerfile`, Oracle Linux 9). The library is
+The `Test [Linux, x64]` build builds the library in the Linux build image (`docker/graalvm-linux-x64.Dockerfile`) and runs
+the C tests of `src/main/c` (CTest) in the test image (`docker/cpp-test-linux-x64.Dockerfile`, Oracle Linux 9). The library is
 built for glibc 2.17, so the tests also check that it works on a newer distribution.
 
 - The build runs for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
@@ -89,14 +89,14 @@ built for glibc 2.17, so the tests also check that it works on a newer distribut
 One-time setup:
 
 1. Run `Build & Push a Test Docker Image [Linux, x64]` to publish `nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9`.
-   Run it again when `cpp-test-linux-x64.Dockerfile` changes.
+   Run it again when `docker/cpp-test-linux-x64.Dockerfile` changes.
 2. To block merging a pull request without a successful build, enable the `Minimum successful builds` merge check in the
    settings of the repository in Bitbucket.
 
 The same locally (after `mvn clean package` in the Linux build image):
 
 ```shell
-docker build --pull -t cpp-test:linux-x64-ol9 -f .teamcity/cpp-test-linux-x64.Dockerfile .teamcity
+docker build --pull -t cpp-test:linux-x64-ol9 -f .teamcity/docker/cpp-test-linux-x64.Dockerfile .teamcity
 docker run --rm -v "$(pwd):/mnt" cpp-test:linux-x64-ol9 "cd src/main/c && cmake --preset=conf-release . && cmake --build --preset=build-release -j\$(nproc) && ctest --test-dir build/conf-release --output-on-failure"
 ```
 
@@ -115,30 +115,33 @@ The project is built directly on the macOS host system.
 
 # Creating and Publishing GraalVM Docker Image for Project Build
 
+The Dockerfiles are in `docker`, the build context is `.teamcity` (the images take `scripts/install.sh` or
+`scripts/install.ps1` from it).
+
 ```shell
 # Authenticate with the Docker Registry
 docker login dxfeed-docker.jfrog.io
 # Build and push the Docker image
-docker build --build-arg GRAALVM_VERSION="<version>" -t graalvm:<os>-<arch>-<version> -f .\.teamcity\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
+docker build --build-arg GRAALVM_VERSION="<version>" -t graalvm:<os>-<arch>-<version> -f .\.teamcity\docker\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
 docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
 ```
 
-Example build Windows docker image:
+Example build Windows docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1 -f graalvm-win-x64-v2.Dockerfile .
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
 docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1
 ```
 
-Example build Linux docker image:
+Example build Linux docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1 -f graalvm-linux-x64.Dockerfile .
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1 -f docker/graalvm-linux-x64.Dockerfile .
 docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1
 ```
 
 ## GraalVM versions
 
 The `GRAALVM_VERSION` value (the `env.GRAALVM_VERSION` TeamCity parameter, the Docker build argument,
-and the argument of `install.sh graalvm` / `Install-GraalVM`) supports the following formats:
+and the argument of `scripts/install.sh graalvm` / `Install-GraalVM`) supports the following formats:
 
 | Format                         | Example                   | Distribution                                               |
 |--------------------------------|---------------------------|------------------------------------------------------------|
@@ -159,7 +162,7 @@ otherwise (e.g. `jdk-25.0.x` and older) the `svm-core` Maven profile and `src/ma
 
 # Creating and Publishing NuGet Package
 
-The `nuget.Dockerfile` is used to build the docker image to create and publish NuGet packages.
+The `docker/nuget.Dockerfile` is used to build the docker image to create and publish NuGet packages.
 Documentation and examples of how to run the image can be found in the corresponding Dockerfile.
 
 # Deploying Artifacts
@@ -184,7 +187,7 @@ Every platform build deploys the same pom, so the repository must allow redeploy
 The C API documentation (`graal-native-sdk-<version>-c-api-docs-html.zip`) is generated by Doxygen
 (`docs/Doxyfile`, the `c-api-docs` Maven profile) only in the Linux x64 release builds:
 their `release:perform` passes `-Darguments=-Dc-api-docs` to the forked release build.
-Doxygen is installed from the Oracle Linux 7 repository in `graalvm-linux-x64.Dockerfile`
+Doxygen is installed from the Oracle Linux 7 repository in `docker/graalvm-linux-x64.Dockerfile`
 (the official Doxygen binaries require glibc 2.34+). The zip is deployed like the other artifacts,
 and "Publish GitHub Release" attaches all the zips of the version from `qd` to the GitHub release.
 To build the documentation locally: `mvn package -Dc-api-docs` (Doxygen must be in `PATH`).
@@ -233,5 +236,6 @@ So a finished ticket gets the fix version of the placeholder of its line in Wait
 hand for a ticket moved there by hand), and the tag of the release decides the number of the version. A ticket that is not
 finished goes back to In development (by hand, or by a draft pull request): the release moves it to the next version.
 
-`env.DRY_RUN` of the build is `1`: the build reads GitHub and Jira (including the transitions available to `dxcity`)
-and only logs the changes. Set it to `0` to make them. The tests (no network): `python3 -m unittest` in `jira-sync`.
+`env.DRY_RUN` of the build is `0`: the build makes the changes. Set it to `1` to only read GitHub and Jira (including
+the transitions available to `dxcity`) and log the changes that it would make. The tests (no network):
+`python3 -m unittest` in `jira-sync`.
