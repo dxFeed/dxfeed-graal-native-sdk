@@ -1,3 +1,5 @@
+## v3.8.0-rc1
+
 * New artifact `graal-native-sdk-<version>-xcframework.zip` (the GitHub release, the Maven classifier `xcframework`):
   `DxFeedGraalNativeSdk.xcframework` with static frameworks for iOS and the iOS Simulator and a dynamic framework for
   macOS (arm64 and x86_64), each with the headers and the Clang module `DxFeedGraalNativeSdk`, for Swift Package Manager
