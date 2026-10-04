@@ -107,6 +107,9 @@ class FakeServer:
         return self.jira(method, path, body)
 
     def github(self, path):
+        if path.startswith("pulls?state=open"):
+            return [pr for pr in self.pulls if pr["state"] == "open"]
+
         if path.startswith("pulls?"):
             return self.pulls
 
@@ -199,7 +202,7 @@ class SyncTest(unittest.TestCase):
         log = sync.Log(self.out)
         github = sync.GitHub(self.server, None)
         jira = sync.Jira(self.server, "https://jira.test", "token")
-        return sync.Sync(github, jira, log, dry_run, NOW, 48).run()
+        return sync.Sync(github, jira, log, dry_run, since=NOW - datetime.timedelta(hours=48)).run()
 
     def transitions(self):
         return [path for method, path, body in self.server.changes if path.endswith("/transitions")]
@@ -295,13 +298,78 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
 
-    def test_closed_without_merge_does_nothing(self):
+    def test_closed_without_merge_does_not_move_the_ticket(self):
         self.server.issue("MDAPI-1", IN_DEVELOPMENT)
         self.server.pulls = [pull_request(10, "[MDAPI-1] Abandoned", state="closed")]
 
         self.run_sync()
 
-        self.assertEqual([], self.server.changes)
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
+        self.assertEqual([], self.server.links)
+
+    def test_merge_waits_for_the_other_open_pull_requests(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11]})
+        self.server.pulls = [
+            pull_request(11, "[MDAPI-1] Second", updated_at="2026-10-05T09:00:00Z"),
+            pull_request(10, "[MDAPI-1] First", state="closed", merged_at="2026-10-05T10:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual({"opened": [10, 11], "merged": [10]}, self.server.issues["MDAPI-1"]["property"])
+        self.assertIn("stays in Waiting for review: the PRs #11 are open", self.out.getvalue())
+
+    def test_open_draft_holds_the_ticket_too(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] First", state="closed", merged_at="2026-10-05T10:00:00Z"),
+            pull_request(12, "Next part", branch="feature/MDAPI-1-next", draft=True,
+                         updated_at="2026-10-05T09:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+    def test_merge_of_the_last_open_pull_request_moves_to_build(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Second", state="closed", merged_at="2026-10-05T11:00:00Z")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+
+    def test_closing_the_last_open_pull_request_without_merge_moves_to_build(self):
+        # The first PR is merged, the second one is abandoned: the merged work waits for a build.
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Second", state="closed")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual([11], self.server.issues["MDAPI-1"]["property"]["closed"])
+
+    def test_stacked_pull_request_waits_for_its_base(self):
+        # The second PR is merged into the branch of the first one, which is still open.
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11]})
+        self.server.pulls = [
+            pull_request(11, "[MDAPI-1] Stacked", state="closed", merged_at="2026-10-05T10:00:00Z",
+                         base="feature/MDAPI-1-base"),
+            pull_request(10, "[MDAPI-1] Base", branch="feature/MDAPI-1-base", updated_at="2026-10-05T09:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+        # The base is merged then.
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Base", branch="feature/MDAPI-1-base", state="closed",
+                                          merged_at="2026-10-05T11:30:00Z")]
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
 
     def test_pull_requests_older_than_the_lookback_are_ignored(self):
         self.server.issue("MDAPI-1", IN_DEVELOPMENT)

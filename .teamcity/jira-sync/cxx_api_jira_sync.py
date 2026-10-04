@@ -5,9 +5,11 @@ triggers of Bitbucket do for the internal repositories, and releases the Jira ve
 
 The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MDAPI keys of the title and the branch):
   - a PR is opened (not a draft): In development -> Waiting for review;
-  - a PR is merged into main or release/*: Waiting for review -> Waiting for build.
+  - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
+    another branch): Waiting for review -> Waiting for build, if a PR of the ticket has been merged and no other PR of
+    the ticket (a draft too) is open.
 Each PR is applied to a ticket once (the ticket keeps the numbers of the applied PRs in an issue property), so a
-ticket moved back by hand stays where it is. The PR is also linked from the ticket.
+ticket moved back by hand stays where it is. The opened and merged PRs are also linked from the ticket.
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
@@ -112,6 +114,9 @@ class GitHub:
         """The PRs, the recently updated first."""
         return self.get("pulls?state=all&sort=updated&direction=desc&per_page=50")
 
+    def open_pull_requests(self):
+        return self.get("pulls?state=open&per_page=100")
+
     def releases(self):
         return self.get("releases?per_page=30")
 
@@ -212,20 +217,27 @@ def jira_version_tuple(version):
     return version_tuple(name[len(VERSION_PREFIX):]) if name.startswith(VERSION_PREFIX) else None
 
 
+def pr_keys(pr):
+    """The tickets of the PR: the MDAPI keys of its title and its branch."""
+    return sorted(set(KEY_PATTERN.findall(f"{pr['title']} {pr['head']['ref']}")))
+
+
 def parse_time(text):
     return datetime.datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc)
 
 
 class Sync:
-    def __init__(self, github, jira, log, dry_run, now, lookback_hours):
+    def __init__(self, github, jira, log, dry_run, since):
+        """since: the PRs updated (and merged) earlier are ignored."""
         self.github = github
         self.jira = jira
         self.log = log
         self.dry_run = dry_run
-        self.since = now - datetime.timedelta(hours=lookback_hours)
+        self.since = since
         self.statuses = {}
         self.properties = {}
         self.simulated = set()  # the tickets that the dry run has moved
+        self.open_prs = None
 
     def change(self, description, action):
         """Makes a change in Jira, or only logs it in the dry run."""
@@ -263,26 +275,27 @@ class Sync:
             if pr["merged_at"] is not None and parse_time(pr["merged_at"]) < self.since:
                 continue  # an old PR with a new comment
 
-            keys = sorted(set(KEY_PATTERN.findall(f"{pr['title']} {pr['head']['ref']}")))
             merged = pr["merged_at"] is not None and MERGE_BASE_PATTERN.match(pr["base"]["ref"]) is not None
 
             # A PR merged before a run saw it open is also opened: the ticket goes through Waiting for review.
             events = []
 
             if (pr["state"] == "open" and not pr["draft"]) or merged:
-                events.append(("opened", IN_DEVELOPMENT, WAITING_FOR_REVIEW))
+                events.append("opened")
 
             if merged:
-                events.append(("merged", WAITING_FOR_REVIEW, WAITING_FOR_BUILD))
+                events.append("merged")
+            elif pr["state"] == "closed":
+                events.append("closed")  # without a merge, or merged into another branch (a stacked PR)
 
-            for key in keys:
-                for event, from_status, to_status in events:
+            for key in pr_keys(pr):
+                for event in events:
                     try:
-                        self.apply(key, pr, event, from_status, to_status)
+                        self.apply(key, pr, event)
                     except HttpError as e:
                         self.log.problem(f"{key}, PR #{pr['number']} {event}: {e}")
 
-    def apply(self, key, pr, event, from_status, to_status):
+    def apply(self, key, pr, event):
         number = pr["number"]
         state = self.state(key)
 
@@ -291,19 +304,63 @@ class Sync:
 
         new_pr = not any(number in numbers for numbers in state.values())
         self.log.info(f"{key}: PR #{number} {event} ({pr['html_url']})")
+        state.setdefault(event, []).append(number)
+
+        if event == "opened":
+            moved = self.advance(key, IN_DEVELOPMENT, WAITING_FOR_REVIEW)
+        else:
+            moved = self.to_build(key, state, number)
+
+        if not moved:
+            state[event].remove(number)  # not remembered: the next run tries again
+            return
+
+        self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
+
+        if new_pr and event != "closed":
+            title = f"PR #{number}: {pr['title']}"
+            self.change(f"link {title}", lambda: self.jira.link(key, pr["html_url"], title))
+
+    def advance(self, key, from_status, to_status):
+        """Moves the ticket to the status if it is in from_status; False if the transition is missing."""
         status = self.status(key)
 
         if status["id"] != from_status:
             self.log.info(f"  stays in {status['name']}")
-        elif not self.move(key, to_status):
-            return  # not remembered: the next run tries again
+            return True
 
-        state.setdefault(event, []).append(number)
-        self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
+        return self.move(key, to_status)
 
-        if new_pr:
-            title = f"PR #{number}: {pr['title']}"
-            self.change(f"link {title}", lambda: self.jira.link(key, pr["html_url"], title))
+    def to_build(self, key, state, number):
+        """Waiting for review -> Waiting for build once a PR is merged and the other PRs are closed."""
+        status = self.status(key)
+
+        if status["id"] != WAITING_FOR_REVIEW:
+            self.log.info(f"  stays in {status['name']}")
+            return True
+
+        if not state.get("merged"):
+            self.log.info(f"  stays in {status['name']}: no merged PR")
+            return True
+
+        still_open = [
+            other["number"] for other in self.open_pull_requests()
+            if key in pr_keys(other) and other["number"] != number
+        ]
+
+        if still_open:
+            numbers = ", ".join(f"#{other}" for other in still_open)
+            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are open")
+            return True
+
+        return self.move(key, WAITING_FOR_BUILD)
+
+    def open_pull_requests(self):
+        """The open PRs (the drafts too), as GitHub has them now."""
+        if self.open_prs is None:
+            self.open_prs = self.github.open_pull_requests()
+
+        return self.open_prs
 
     def state(self, key):
         """The PRs applied to the ticket, or None if there is no such ticket."""
@@ -482,13 +539,13 @@ def main():
     log = Log()
     log.info(f"Dry run: {dry_run}")
     http = Http()
+    lookback = datetime.timedelta(hours=int(os.environ.get("LOOKBACK_HOURS", "48")))
     sync = Sync(
-        GitHub(http, os.environ.get("GH_TOKEN")),
-        Jira(http, os.environ["JIRA_URL"], os.environ["JIRA_TOKEN"]),
-        log,
-        dry_run,
-        datetime.datetime.now(datetime.timezone.utc),
-        int(os.environ.get("LOOKBACK_HOURS", "48")),
+        github=GitHub(http, os.environ.get("GH_TOKEN")),
+        jira=Jira(http, os.environ["JIRA_URL"], os.environ["JIRA_TOKEN"]),
+        log=log,
+        dry_run=dry_run,
+        since=datetime.datetime.now(datetime.timezone.utc) - lookback,
     )
     return sync.run()
 
