@@ -148,6 +148,7 @@ object Etc : Project({
     name = "Etc."
 
     buildType(CopyServiceImages)
+    buildType(JiraAccessProbe)
 })
 
 object BuildPatchAndDeployForLinux : BuildType({
@@ -1245,6 +1246,38 @@ object CopyServiceImages : BuildType({
 
     features {
         perfmon {}
+    }
+})
+
+object JiraAccessProbe : BuildType({
+    name = "Jira access probe (temporary)"
+
+    params {
+        param("jira.probe.issue", "MDAPI-XXX")
+    }
+
+    steps {
+        script {
+            name = "Check the Jira tokens"
+            scriptContent = """
+                set -u
+                probe() {
+                  echo "=== ${'$'}1"
+                  curl -sS -H "Authorization: Bearer ${'$'}2" "%jira.url%/rest/api/2/myself" \
+                    | python3 -c 'import json,sys; d=json.load(sys.stdin); print("user:", d.get("name"), "/", d.get("displayName"))' \
+                    || echo "myself: failed"
+                  curl -sS -H "Authorization: Bearer ${'$'}2" "%jira.url%/rest/api/2/issue/%jira.probe.issue%/transitions" \
+                    | python3 -c 'import json,sys; [print(t["id"], t["name"], "->", t["to"]["id"], t["to"]["name"]) for t in json.load(sys.stdin).get("transitions", [])]' \
+                    || echo "transitions: failed"
+                }
+                probe dxcity      "%dxcity.token.jira%"
+                probe cicdjirabot "%cicdjirabot.token.jira%"
+            """.trimIndent()
+        }
+    }
+
+    requirements {
+        linuxAgent()
     }
 })
 
