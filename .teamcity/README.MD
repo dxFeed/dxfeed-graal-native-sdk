@@ -1,5 +1,7 @@
 # Table of Contents
 
+- [Editing the Settings](#editing-the-settings)
+  * [IntelliJ IDEA](#intellij-idea)
 - [Building on Windows](#building-on-windows)
   * [Requirements for a TeamCity Agent](#requirements-for-a-teamcity-agent)
   * [How to install docker on Windows](#how-to-install-docker-on-windows)
@@ -13,6 +15,45 @@
 - [Deploying Artifacts](#deploying-artifacts)
 - [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
 
+# Editing the Settings
+
+TeamCity takes the settings of the project from `.teamcity` of `main` (Kotlin DSL): the builds are in `settings.kts`,
+their shared parts (the Maven options with the credentials, the Docker images, the steps, the agents, the VCS root)
+are in `Common.kt`. A change takes effect when it gets to `main`. Make the changes there, not in the TeamCity UI: a
+change made in the UI is kept by TeamCity as a patch (`.teamcity/patches`) that has to be moved to `settings.kts`.
+
+- `mvn teamcity-configs:generate` in `.teamcity` (with JDK 21, see below) compiles the settings without a server and
+  writes the XML of the builds to `target/generated-configs`. Comparing it with the XML generated from `main` shows
+  what a change does to the builds (a refactoring must not change it).
+- The server compiles the DSL with Kotlin 2.0, so `pom.xml` sets the language and API versions to 2.0: the newer
+  syntax, such as the multi-dollar strings (`$$"..."`), does not compile on the server.
+- The id of a build is `RootProjectId_<object name>` in any subproject (Release chain, Images & Libraries, Checks,
+  Tests, Etc.), so moving a build to another subproject keeps it and its history. Renaming the object changes the
+  id; `id("<old name>")` in the build keeps it.
+- The functions declared in `settings.kts` capture the script, put the shared code in `Common.kt`.
+
+## IntelliJ IDEA
+
+`.teamcity` is a Maven project of its own (`.teamcity/pom.xml`), not a module of the root `pom.xml`. Until IntelliJ
+IDEA imports it, `settings.kts` and `Common.kt` are plain files: everything in them is red.
+
+1. Add the project: right-click `.teamcity/pom.xml` | Add as Maven Project (or the `+` of the Maven tool window). The
+   project `Mdapi_DxfeedGraalNativeSdk_dsl` appears in the Maven tool window next to `graal-native-sdk`.
+2. Set its module SDK to JDK 21 (File | Project Structure | Modules | `Mdapi_DxfeedGraalNativeSdk_dsl` | Dependencies).
+   The TeamCity plugin of the DSL is built for Java 21: with JDK 17 `teamcity-configs:generate` fails with
+   `UnsupportedClassVersionError`, with JDK 25 the Kotlin compiler fails to start (`processing of -javaagent failed`).
+   Run it from the command line with `JAVA_HOME` of JDK 21 as well.
+3. Reload the project (Reload All Maven Projects). The parent `configs-dsl-kotlin-parent` and the DSL of the plugins
+   of our server are downloaded from the server itself (`https://dxcity.in.devexperts.com/app/dsl-plugins-repository`,
+   no credentials, the internal network), the rest from the JetBrains repository. A mirror of `*` in
+   `~/.m2/settings.xml` hides them: exclude them in it (`<mirrorOf>*,!teamcity-server,!jetbrains-all</mirrorOf>`).
+   The DSL artifacts are snapshots: after an update of the server, reload with Update Snapshots (`mvn -U`).
+4. If IntelliJ IDEA shows "Load script configuration" over `settings.kts`, load it.
+
+The project compiles with the language and API versions of Kotlin 2.0 (see above), so IntelliJ IDEA does not suggest
+the features of a newer Kotlin. `@file:Suppress("CanConvertToMultiDollarString")` in `settings.kts` turns off the
+inspection that the language version does not turn off.
+
 # Building on Windows
 
 This project is built using Docker on Windows. The `docker/graalvm-win-x64-v2.Dockerfile` is utilized for
@@ -23,8 +64,8 @@ available in the corresponding Dockerfile.
 
 - The `docker` must be installed on the agent to containerize Windows environments.
 - The `dxcity` user should have permissions to run Docker containers without admin privileges.
-- Establish `TeamCity Connections` to the Docker Registry
-  at https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/.
+- The images are in the Docker registry of Nexus `nexus-docker-graalvm.in.devexperts.com`: the project feature
+  `Nexus` (`dockerRegistry` in `settings.kts`) logs the builds in to it.
 
 ## How to install docker on Windows
 
@@ -72,8 +113,8 @@ available in the corresponding Dockerfile.
 
 - The `docker` must be installed on the agent.
 - The `dxcity` user should be capable of running containers without sudo.
-- Establish `TeamCity Connections` to the Docker Registry
-  at https://dxfeed.jfrog.io/artifactory/docker/dxfeed-api/.
+- The images are in the Docker registry of Nexus `nexus-docker-graalvm.in.devexperts.com`: the project feature
+  `Nexus` (`dockerRegistry` in `settings.kts`) logs the builds in to it.
 
 # Testing
 
@@ -118,24 +159,28 @@ The project is built directly on the macOS host system.
 The Dockerfiles are in `docker`, the build context is `.teamcity` (the images take `scripts/install.sh` or
 `scripts/install.ps1` from it).
 
+The builds "Build & Push a Docker Image [Linux, x64]", "[Linux, aarch64]" and "[Windows, x64]" build the image of
+`env.GRAALVM_VERSION` and push it to `nexus-docker-graalvm.in.devexperts.com/graalvm:<os>-<arch>-<version>`, the
+tag that the other builds use. The same by hand:
+
 ```shell
 # Authenticate with the Docker Registry
-docker login dxfeed-docker.jfrog.io
+docker login nexus-docker-graalvm.in.devexperts.com
 # Build and push the Docker image
-docker build --build-arg GRAALVM_VERSION="<version>" -t graalvm:<os>-<arch>-<version> -f .\.teamcity\docker\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:<os>-<arch>-<version>
+docker build --build-arg GRAALVM_VERSION="<version>" -t nexus-docker-graalvm.in.devexperts.com/graalvm:<os>-<arch>-<version> -f .\.teamcity\docker\graalvm-<os>-<arch>.Dockerfile .\.teamcity\
+docker push nexus-docker-graalvm.in.devexperts.com/graalvm:<os>-<arch>-<version>
 ```
 
 Example build Windows docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:win-x64-graal-25.4.4.1.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
+docker push nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.4.4.1.1
 ```
 
 Example build Linux docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1 -f docker/graalvm-linux-x64.Dockerfile .
-docker push dxfeed-docker.jfrog.io/dxfeed-api/graalvm:linux-x64-graal-25.4.4.1.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.4.4.1.1 -f docker/graalvm-linux-x64.Dockerfile .
+docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.4.4.1.1
 ```
 
 ## GraalVM versions

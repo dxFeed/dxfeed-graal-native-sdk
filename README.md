@@ -3,7 +3,7 @@
 ![DXFEED-GRAAL-NATIVE-SDK](./docs/images/logo_light.svg#gh-light-mode-only)
 
 This package grants you access to [dxFeed market data](https://dxfeed.com/market-data/). The library
-is designed as a С-library and was
+is designed as a C library and was
 compiled using [GraalVM Native Image](https://www.graalvm.org/latest/reference-manual/native-image/)
 and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html), making
 it easily integrable
@@ -11,8 +11,8 @@ into your projects.
 
 ![qds](https://img.shields.io/badge/qds-v3.355-yellow)
 ![mdd](https://img.shields.io/badge/mdd-v548-red)
-![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx--x64%20%7C%20osx--arm64%20%7C%20ios-lightgrey)
-[![License](https://img.shields.io/badge/license-MPL--2.0-orange)](https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/master/LICENSE)
+![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20linux--arm64%20%7C%20osx--x64%20%7C%20osx--arm64%20%7C%20ios%20%7C%20ios--simulator-lightgrey)
+[![License](https://img.shields.io/badge/license-MPL--2.0-orange)](./LICENSE)
 
 ## Table of Contents
 
@@ -20,26 +20,36 @@ into your projects.
   * [Reasons](#reasons)
   * [Benefits](#benefits)
   * [Future development](#future-development)
-  * [Implementation details and usage](#Implementation-details-and-usage)
 - [Installation](#installation)
+  * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
 - [Using the C API](#using-the-c-api)
+  * [Conventions](#conventions)
+  * [Example](#example)
+  * [Samples and wrappers](#samples-and-wrappers)
   * [Isolates](#isolates)
   * [Listeners](#listeners)
   * [Shutdown](#shutdown)
   * [Network activity](#network-activity)
+- [Documentation](#documentation)
 - [Current State](#current-state)
-- [Contribution](#Contribution)
+- [Contribution](#contribution)
+  * [Requirements](#requirements)
+  * [Building](#building)
+  * [IntelliJ IDEA](#intellij-idea)
+  * [CLion](#clion)
   * [Scripts](#scripts)
-- [Support](#Support)
-- [License](#License)
+  * [To regenerate META-INF/native-image](#to-regenerate-meta-infnative-image)
+  * [To release a new version](#to-release-a-new-version)
+- [Support](#support)
+- [License](#license)
 
 ## Overview
 
 ### Reasons
 
 Our Java API serves as the cornerstone of our technology, and with our SDK, you can seamlessly
-integrate it into any language, leveraging it as a native library, even on IOS platforms.
+integrate it into any language, leveraging it as a native library, even on iOS platforms.
 
 ### Benefits
 
@@ -53,88 +63,37 @@ integrate it into any language, leveraging it as a native library, even on IOS p
 Our team is committed to continuously improving the library by regularly releasing updates to our
 Java API and implementing them in the native library.
 
-### Implementation details and usage
-
-To maintain consistency, we've established a naming convention for C functions that involves using
-the dxfg prefix followed by the java-class and method name. However, there may be situations where
-exceptions to this rule are necessary, such as when dealing with service functions or using generic
-names for java-class names. If a method name can be used for different types of arguments, we add a
-number to the end. It also helps to find the appropriate java-doc to get more information about the
-use of a particular function.
-
-C-structures can be classified into two categories: those that serve as reference holders for Java
-objects and those that act as field containers for data transferred between Java and C. Reference
-holders are only necessary for invoking methods of the associated Java object through corresponding
-C functions. Furthermore, it is ensured that the garbage collector will not collect the Java object
-until the appropriate release method for the reference holder is called.
-
-When a C function returns a pointer to a c-structure, it indicates that the object's memory was
-allocated in Java. It is essential to release this memory using the corresponding release method
-after using the object. All memory allocated in C should be released in C.
-
-It's important to keep in mind that if an object is passed to C code as a function parameter, it
-will be automatically released after the function is executed. Additionally, when a listener is
-added to dxFeed, it will be called from Java threads and the C code may be notified of its removal
-in Java. To account for this, a finalizer function can be passed when adding a listener. This
-ensures that the finalizer function will be called when the listener is no longer needed.
-
-In case of any exceptions occurring when calling the method, the method returns a null-pointer (in
-case of returned pointer type) or -1 (in case of returned int and long type). To retrieve and clear
-an exception from the thread-local variable, use the corresponding method:
-dxfg_get_and_clear_thread_exception_t.
-
-To return boolean values, we use int where 0 represents false and 1 represents true. The value -1 is
-reserved for exceptions in both int and long types.
-
-```
-    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "********");
-    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
-    dxfg_subscription_t* subscriptionQuote = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
-    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
-    dxfg_DXFeedSubscription_addEventListener(thread,subscriptionQuote, listener, finalize, nullptr);
-    dxfg_string_symbol_t symbolAAPL;
-    symbolAAPL.supper.type = STRING;
-    symbolAAPL.symbol = "AAPL";
-    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionQuote, &symbolAAPL.supper);
-    usleep(2000000);
-    dxfg_DXFeedSubscription_close(thread, subscriptionQuote);
-    dxfg_DXEndpoint_close(thread, endpoint);
-    dxfg_JavaObjectHandler_release(thread, &subscriptionQuote->handler);
-    dxfg_JavaObjectHandler_release(thread, &listener->handler);
-    dxfg_JavaObjectHandler_release(thread, &feed->handler);
-    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
-```
-
-There are the following usage [examples](src/main/c/src/apps/DxfgClient/main.cpp):
-
-* live IPF
-* reader IPF
-* finalize Listener
-* executor Base On Concurrent Linked Queue
-* dxEndpoint Subscription
-* dxEndpoint TimeSeriesSubscription
-* system Properties
-* exception
-* order Book Model
-* indexed Event Model
-* promise
-* last Event If Subscribed
-* promises All Of
-* indexed Events Promise
-* get Last Event
-* schedule
-
-Or our ready-made wrappers:
-
-* https://github.com/dxFeed/dxfeed-graal-net-api
-
 ## Installation
 
-You can find artifacts here:
+The archives of every version are attached to its
+[GitHub release](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases):
 
-* https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/
-* https://dxfeed.jfrog.io/artifactory/nuget-open/com/dxfeed/graal-native/
+| Archive                                          | Platform                                                                       |
+|--------------------------------------------------|--------------------------------------------------------------------------------|
+| `graal-native-sdk-<version>-amd64-linux.zip`     | Linux x64, glibc 2.17+                                                         |
+| `graal-native-sdk-<version>-aarch64-linux.zip`   | Linux arm64, glibc 2.17+                                                       |
+| `graal-native-sdk-<version>-amd64-windows.zip`   | Windows x64                                                                    |
+| `graal-native-sdk-<version>-x86_64-osx.zip`      | macOS x64, 11.0+                                                               |
+| `graal-native-sdk-<version>-aarch64-osx.zip`     | macOS arm64, 14.0+                                                             |
+| `graal-native-sdk-<version>-aarch64-ios.zip`     | iOS arm64, 12.0+                                                               |
+| `graal-native-sdk-<version>-ios-simulator.zip`   | iOS Simulator x64 (12.0+) and arm64 (14.0+)                                    |
+| `graal-native-sdk-<version>-xcframework.zip`     | `DxFeedGraalNativeSdk.xcframework` for iOS, the iOS Simulator and macOS        |
+| `graal-native-sdk-<version>-c-api-docs-html.zip` | The C API documentation (HTML)                                                 |
+
+The Linux and Windows archives have `-debug` variants, see [Debug builds](#debug-builds).
+
+An archive contains the library, the headers (`dxfg_api.h` includes the others) and the license. The desktop archives
+also contain `CMakeLists.txt`, which imports the library as the CMake target `DxFeedGraalNativeSdk`:
+
+```cmake
+add_subdirectory(<the unpacked archive> graal-native-sdk)
+target_link_libraries(<your target> PRIVATE DxFeedGraalNativeSdk)
+```
+
+The libraries for .NET are published to nuget.org as the package
+[DxFeed.Graal.Native](https://www.nuget.org/packages/DxFeed.Graal.Native). Inside Devexperts, the archives are also in
+the Maven repository `qd` of Nexus: `com.dxfeed:graal-native-sdk:<version>`, type `zip`, the classifier is the
+platform of the archive name (`amd64-linux`, `xcframework`, etc.).
 
 ### iOS and macOS
 
@@ -180,6 +139,144 @@ that is addressed by `rbp` (`previous frame inner to this frame`). To get the fu
 code with `-fomit-frame-pointer`.
 
 ## Using the C API
+
+### Conventions
+
+- **Names.** A function is named `dxfg_<Java class>_<method>` after the class and the method of the
+  [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html) that it calls, so the Java API
+  documentation describes what it does. A number at the end tells the overloads apart (`dxfg_DXFeed_getLastEvent2`).
+  The functions of the SDK itself have lower-case names (`dxfg_system_set_property`).
+- **Threads.** Every function takes the `graal_isolatethread_t *` of the calling thread first, see
+  [Isolates](#isolates).
+- **Handles.** The structures with the `handler` field (`dxfg_endpoint_t`, `dxfg_subscription_t`, the listeners, etc.)
+  are handles of Java objects: the Java object is not collected until its handle is released with
+  `dxfg_JavaObjectHandler_release(thread, &object->handler)`. The other structures (events, symbols, instrument
+  profiles, lists) are copies of the data of Java objects.
+- **Memory.** What a function returns belongs to the caller, who releases it with the function that its description
+  names: `dxfg_JavaObjectHandler_release` for handles, `dxfg_EventType_release` and `dxfg_CList_EventType_release`
+  for events, `dxfg_String_release` for strings, etc. What the caller passes stays the caller's: the SDK copies what it
+  needs during the call. The data passed to a callback (the events of a listener) belongs to the SDK and is released
+  when the callback returns, so copy what is needed later.
+- **Errors.** A function that returns a pointer returns `NULL` on error, the functions that return `int32_t` return
+  `DXFG_EXECUTE_SUCCESSFULLY` (0) or `DXFG_EXECUTE_FAIL` (-1), and the ones that return `int64_t` return -1 on error.
+  A boolean is an `int32_t`: 1 is true, 0 is false, -1 is an error. Results that are not returned are written to the
+  parameters marked `DXFG_OUT`. A failed call stores the Java exception in the calling thread:
+  `dxfg_get_and_clear_thread_exception_t` returns it (the class, the message, the stack trace and the cause) and
+  clears it, `dxfg_Exception_release` releases it.
+- **Deprecation.** The deprecated functions are marked `DXFG_DEPRECATED`: the compilers warn where they are used, and
+  their descriptions name the replacements.
+
+### Example
+
+Prints the quotes of AAPL until Enter is pressed:
+
+```c
+#include <stdio.h>
+
+#include "dxfg_api.h"
+
+// Called on the threads of the SDK. The events are valid only during the call.
+static void printQuotes(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *userData) {
+    (void)thread;
+    (void)userData;
+
+    for (int32_t i = 0; i < events->size; i++) {
+        if (events->elements[i]->clazz == DXFG_EVENT_QUOTE) {
+            const dxfg_quote_t *quote = (const dxfg_quote_t *)events->elements[i];
+
+            printf("%s bid %g x %g, ask %g x %g\n", quote->market_event.event_symbol, quote->bid_price,
+                   quote->bid_size, quote->ask_price, quote->ask_size);
+        }
+    }
+}
+
+// Prints and releases the exception of the last failed call on this thread.
+static int printException(graal_isolatethread_t *thread) {
+    dxfg_exception_t *exception = dxfg_get_and_clear_thread_exception_t(thread);
+
+    if (exception != NULL) {
+        fprintf(stderr, "%s: %s\n", exception->class_name, exception->message != NULL ? exception->message : "");
+        dxfg_Exception_release(thread, exception);
+    }
+
+    return 1;
+}
+
+int main(void) {
+    graal_isolate_t *isolate = NULL;
+    graal_isolatethread_t *thread = NULL;
+
+    if (graal_create_isolate(NULL, &isolate, &thread) != 0) {
+        return 1;
+    }
+
+    dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(thread);
+    if (endpoint == NULL ||
+        dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300") != DXFG_EXECUTE_SUCCESSFULLY) {
+        return printException(thread);
+    }
+
+    dxfg_feed_t *feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t *subscription = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
+    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &printQuotes, NULL);
+    if (feed == NULL || subscription == NULL || listener == NULL ||
+        dxfg_DXFeedSubscription_addEventListener(thread, subscription, listener) != DXFG_EXECUTE_SUCCESSFULLY) {
+        return printException(thread);
+    }
+
+    // The symbol is copied by the call, so it can be on the stack.
+    dxfg_string_symbol_t symbol = {{STRING}, "AAPL"};
+    if (dxfg_DXFeedSubscription_addSymbol(thread, subscription, &symbol.supper) != DXFG_EXECUTE_SUCCESSFULLY) {
+        return printException(thread);
+    }
+
+    printf("Press Enter to stop\n");
+    getchar();
+
+    // Releasing the last handle of the listener waits for its calls in progress: no calls after it.
+    dxfg_DXFeedSubscription_close(thread, subscription);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &subscription->handler);
+    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_DXEndpoint_close(thread, endpoint);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+
+    // Stops the endpoints that are still open, otherwise graal_tear_down_isolate waits for their threads.
+    dxfg_system_close_all_and_await_termination(thread);
+    graal_tear_down_isolate(thread);
+
+    return 0;
+}
+```
+
+Add the listeners before the symbols: adding a listener to an attached subscription that already has symbols fails
+(`IllegalStateException`).
+
+### Samples and wrappers
+
+[DxfgClient](src/main/c/src/apps/DxfgClient) is a console application with a sample for every part of the API:
+`DxfgClient --list` lists them with their options and examples, `DxfgClient <case> [-D<name>=<value>...] [<options>]`
+runs one (the `-D` options set system properties).
+
+| Area                       | Cases (short names)                                                                                                                    |
+|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoints, subscriptions   | `DxEndpointSubscriptionCase` (`es`), `DxEndpointTimeSeriesSubscriptionCase` (`ets`), `DxEndpointMonitoringCase` (`em`), `DxLinkCase` (`dxl`) |
+| Last events, promises      | `GetLastEventCase` (`gle`), `LastEventIfSubscribedCase` (`le`), `PromiseCase` (`p`), `PromisesAllOfCase` (`pao`), `IndexedEventsPromiseCase` (`iep`) |
+| Models                     | `OrderBookModelCase` (`obm`), `IndexedEventModelCase` (`iem`), `TxIndexedEventModelCase` (`txiem`), `IndexedEventTxModelCase` (`ietxm`) |
+| Historical data            | `OnDemandServiceCase` (`ods`), `HistoryEndpointCase` (`he`)                                                                            |
+| Instrument profiles        | `LiveIpfCase` (`li`), `ReaderIpfCase` (`ri`), `InstrumentProfileReaderBench` (`ipf`), `InstrumentProfileFieldCase` (`ipfi`), `InstrumentProfileCustomFieldsCase` (`ipcf`) |
+| Schedule                   | `ScheduleCase` (`sch`), `Schedule2Case` (`sch2`)                                                                                       |
+| Glossary                   | `AdditionalUnderlyingsCase` (`au`), `CfiCase` (`cfi`), `PriceIncrementsCase` (`pi`)                                                    |
+| Price levels (ORCS)        | `OrcsCase` (`orcs`)                                                                                                                    |
+| System                     | `SystemPropertiesCase` (`sp`), `LoggingCase` (`l`), `ExceptionCase` (`ex`), `ExecutorBaseOnConcurrentLinkedQueueCase` (`eb`), `FinalizeListenerCase` (`fl`) |
+| QDS tools                  | `Qds`: the QDS tools of the Java API (`DxfgClient qds connect demo.dxfeed.com:7300 Quote AAPL`)                                         |
+
+The [C tests](src/main/c/tests) are small programs too. Our ready-made wrappers:
+
+- .NET: [dxfeed-graal-net-api](https://github.com/dxFeed/dxfeed-graal-net-api)
+- C++: [dxfeed-graal-cxx-api](https://github.com/dxFeed/dxfeed-graal-cxx-api)
+- Swift: [dxfeed-graal-swift-api](https://github.com/dxFeed/dxfeed-graal-swift-api)
+- Go: [dxfeed-graal-go-api](https://github.com/dxFeed/dxfeed-graal-go-api)
 
 ### Isolates
 
@@ -251,6 +348,10 @@ by default. To enable it, set the system property `com.dxfeed.sdk.TimeSyncTracke
 `dxfg_system_set_property` before creating the first endpoint.
 
 ## Documentation
+
+The C API reference (generated from the headers by Doxygen) is attached to every
+[GitHub release](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases) as
+`graal-native-sdk-<version>-c-api-docs-html.zip`.
 
 Find useful information in our self-service dxFeed Knowledge Base:
 
@@ -330,6 +431,18 @@ Find useful information in our self-service dxFeed Knowledge Base:
   is an event with an application-specific text
 - [x] [TextMessage](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextMessage.html) is an event
   with an application-specific text
+- [x] [OtcMarketsOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OtcMarketsOrder.html) is
+  an extension of Order for the symbols traded on the OTC Markets
+- [x] [MarketMaker](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketMaker.html) is a
+  snapshot of the aggregated top quotes of the market participants (such as market makers) for a symbol
+- [x] [OrderImbalance](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html) is the
+  order book statistics during auctions: the imbalance between the buy and sell orders
+- [x] [NuamOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html),
+  [NuamTrade](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html),
+  [NuamTimeAndSale](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html) are
+  the extensions of Order, Trade and TimeAndSale for the symbols traded on the Nuam Exchange
+- [x] [DailyCandle](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/DailyCandle.html) (deprecated
+  in the Java API, use Candle)
 
 ### Subscription Symbols
 
@@ -393,6 +506,8 @@ Find useful information in our self-service dxFeed Knowledge Base:
   is a model of
   convenient Order Book
   management ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/ui/swing/DXFeedMarketDepth.java))
+- [x] IndexedTxModel and TimeSeriesTxModel (`com.dxfeed.api.experimental.model`) are the models of the indexed
+  and time series events that deliver the transactions and the snapshots in whole
 
 ### IPF & Schedule
 
@@ -407,13 +522,25 @@ Find useful information in our self-service dxFeed Knowledge Base:
   to retrieve and
   explore various exchanges’ trading schedules and different financial instrument
   classes ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/schedule/ScheduleSample.java))
+- [x] [InstrumentProfileReader](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ipf/InstrumentProfileReader.html)
+  and [InstrumentProfileConnection](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ipf/live/InstrumentProfileConnection.html)
+  read the instrument profiles from files and URLs, InstrumentProfileField and InstrumentProfileCustomFields
+  access their fields
+- [x] [PriceIncrements](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html),
+  [AdditionalUnderlyings](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html),
+  [CFI](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html): the price increments, the additional
+  underlyings of an option and the CFI code (ISO 10962) of an instrument
 
 ### Services
 
-- [ ] [OnDemandService](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ondemand/OnDemandService.html)
+- [x] [OnDemandService](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ondemand/OnDemandService.html)
   provides on-demand
   historical tick data replay
   controls ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/ondemand/OnDemandSample.java))
+- [x] PriceLevelService (`com.dxfeed.orcs.api`) requests the price levels of the order books from ORCS
+- [x] HistoryEndpoint requests the candles from the candle web service of dxFeed (`dxfg_candlewebservice.h`)
+- [x] [DXPublisher](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html) publishes the events
+  to an endpoint
 
 ### Endpoint Roles
 
@@ -446,6 +573,58 @@ Find useful information in our self-service dxFeed Knowledge Base:
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 [Semantic Versioning](https://semver.org/)
+
+### Requirements
+
+- GraalVM `graalvm.version` of `pom.xml` (now GraalVM 25 Innovation 4, `graal-25.4.4.1.1`) in `JAVA_HOME`. The
+  macOS x64 and iOS Simulator libraries are built with GraalVM `jdk-25.0.1`, the last one published for macOS x64.
+  See the [GraalVM versions](.teamcity/README.MD#graalvm-versions) that the build supports.
+- Maven 3.8 or later (the CI uses 3.8.9).
+- The C toolchain that Native Image needs: GCC with the glibc and zlib headers on Linux, the Xcode Command Line Tools on
+  macOS (Xcode with the iOS and iOS Simulator SDKs for iOS), Build Tools for Visual Studio 2022 on Windows (run Maven
+  from the Developer Command Prompt; the resource compiler is found by [scripts/rc.cmd](scripts/rc.cmd) itself).
+- Access to the Devexperts Maven repositories of `pom.xml`: QD and the other dependencies are taken from there.
+
+### Building
+
+```shell
+mvn clean package
+```
+
+builds the library of the current platform in `target/native-image` and its archive
+`target/graal-native-sdk-<platform>.zip`. Options:
+
+- `-P buildDebug`: the debug build, see [Debug builds](#debug-builds);
+- `-Dc-api-docs`: also the C API documentation in `target/docs/c-api` and its archive (Doxygen must be in
+  `PATH`);
+- `-DmacIos=true` on a Mac with Apple silicon: the iOS library. The iOS Simulator library is built after it without
+  `clean`, with the x64 GraalVM under Rosetta: `arch -x86_64 mvn -DmacIosSimulator=true package` (its arm64 slice is
+  the object of the iOS build). The JDK and Substrate VM libraries for iOS are in [jre-ios](jre-ios/README.MD).
+
+### IntelliJ IDEA
+
+- Open `pom.xml` as a project. Set the GraalVM of the [requirements](#requirements) as the project SDK, as the JDK for
+  the importer (Settings | Build, Execution, Deployment | Build Tools | Maven | Importing) and as the JRE of the runner
+  (... | Maven | Runner).
+- The TeamCity settings (`.teamcity/settings.kts`, Kotlin DSL) are a separate Maven project with JDK 21: until it is
+  added (right-click `.teamcity/pom.xml` | Add as Maven Project), everything in them is red. See
+  [IntelliJ IDEA](.teamcity/README.MD#intellij-idea) in `.teamcity/README.MD`.
+
+### CLion
+
+The C/C++ samples ([DxfgClient](#samples-and-wrappers)) and the C tests are a CMake project in `src/main/c` that links
+the library built by Maven:
+
+1. Build the library: `mvn clean package` (`-P buildDebug` to debug the SDK code too).
+2. Open `src/main/c` in CLion. It takes the presets of `CMakePresets.json`: enable `conf-debug` or `conf-release`
+   (Settings | Build, Execution, Deployment | CMake). On Windows, use the Visual Studio toolchain: the library is built
+   by MSVC.
+3. The project imports the library from `target/native-image` (`GRAAL_CUSTOM_BIN_LOCATION` in
+   `src/main/c/CMakeLists.txt`) and copies it next to the executables after the build, so they run and debug as they
+   are. CLion runs the tests with CTest.
+
+Rebuild the library with Maven after changing the Java code. [build.sh and build.cmd](src/main/c) configure, build,
+test, install and pack the project from the command line, as the CI does.
 
 ### Scripts
 
@@ -481,23 +660,6 @@ Find useful information in our self-service dxFeed Knowledge Base:
 | `docker/nuget.Dockerfile`                                                        | Image with the NuGet CLI to pack and publish `NuGet/DxFeed.Graal.Native.nuspec`.                                                                                                                                   |
 | `jira-sync/cxx_api_jira_sync.py`                                                 | Moves the MDAPI tickets of the C++ API through the Jira workflow by its GitHub pull requests and releases its Jira versions, see [Syncing the C++ API with Jira](.teamcity/README.MD#syncing-the-c-api-with-jira). |
 
-### Installation GraalVM JDK 11 with native-image
-
-[GraalVM Community Edition 22.3.1](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.1)
-
-[Install GraalVM](https://www.graalvm.org/22.3/docs/getting-started/#install-graalvm)
-
-[Install Native Image](https://www.graalvm.org/22.3/docs/getting-started/#native-image)
-
-### Settings IntelliJ Idea
-
-* File | Project structure | SDKs - add JDK graalvm-11
-* File | Project structure | Project / SDK - choose JDK graalvm-11
-* Preferences | Build, Execution, Deployment | Build Tools | Maven | Importing | JDK for importer -
-  choose JDK graalvm-11
-* Preferences | Build, Execution, Deployment | Build Tools | Maven | Runner | JRE - choose JDK
-  graalvm-11
-
 ### To regenerate META-INF/native-image
 
 `src/main/resources/META-INF/native-image` contains the metadata in both formats:
@@ -523,28 +685,29 @@ for `address[property=value]` (by reflection), so that all their setters get int
 
 ### To release a new version
 
-We use [teamcity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNativeSdk).
+The releases are built in [TeamCity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNativeSdk), see
+[.teamcity/README.MD](.teamcity/README.MD):
 
-1. Run the "build PATCH and deploy linux" configuration to release a version of PATCH or "build
-   MAJOR.MINOR.PATCH and deploy linux" (set env.RELEASE_VERSION in run parameters) to release a
-   version of MAJOR or MINOR. A linux version of the artifact will also be deployed.
-2. The "deploy osx", "deploy windows", "deploy nuget" builds will start automatically, after which
-   you can see the new artifacts
-   in [artifactory](https://dxfeed.jfrog.io/artifactory/maven-open/com/dxfeed/graal-native-sdk/).
-   The "deploy osx"
-   configuration builds and deploys artifacts under amd, arm architecture osx and arm under IOS.
+1. Run "Build PATCH & Deploy [Linux, x64]" to release the next patch version, or "Build MAJOR.MINOR.PATCH & Deploy
+   [Linux, x64]" with `env.RELEASE_VERSION` (`3.9.0`, `3.9.0-rc1`) to release another one. It tags the version and
+   deploys the Linux x64 archives and the C API documentation.
+2. Then "Build & Deploy [All]" builds and deploys the archives of the other platforms and the XCFramework from the
+   tag.
+3. Then "Deploy NuGet" publishes the `DxFeed.Graal.Native` package, and "Publish GitHub Release" pushes `main` and
+   the tag to GitHub and publishes the release with the archives and the notes of the version from
+   `ReleaseNotes.md`.
 
 #### Pre-releases
 
-A pre-release (e.g. a release candidate) is released by "build MAJOR.MINOR.PATCH and deploy linux" with a version
-with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
+A pre-release (e.g. a release candidate) is released by "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]" with a
+version with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
 
 - Use a qualifier that Maven orders before the release: `rc1`, `beta-1`, `alpha1`, `M1` (`3.6.0-rc1` < `3.6.0`).
   Maven orders unknown qualifiers such as `pre` or `draft` after the release (`3.6.0-pre` > `3.6.0`), so they look
   newer than the release in the repositories.
 - After a pre-release, the release plugin increments the number of the qualifier for the next development version:
-  `3.6.0-rc1` -> `3.6.0-rc2-SNAPSHOT` ("build PATCH and deploy linux" would release `3.6.0-rc2` then). Release the
-  final version with "build MAJOR.MINOR.PATCH and deploy linux" as well: `env.RELEASE_VERSION=3.6.0`, the next
+  `3.6.0-rc1` -> `3.6.0-rc2-SNAPSHOT` ("Build PATCH & Deploy [Linux, x64]" would release `3.6.0-rc2` then). Release
+  the final version with "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]" as well: `env.RELEASE_VERSION=3.6.0`, the next
   development version is `3.6.1-SNAPSHOT`.
 - `ReleaseNotes.md`: the header of the new version replaces the headers of the pre-releases of the same version at
   the top (`## v3.6.0-rc2` replaces `## v3.6.0-rc1`, `## v3.6.0` replaces both), so the section of the version, and
@@ -559,106 +722,11 @@ with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
   (`3.6.0-rc10` < `3.6.0-rc2`) and ignores their case (`rc1` and `RC1` are the same version). A qualifier after a dot
   (`3.6.0.rc1`) is not a valid NuGet version.
 
-#### Deploy iOS
-
-##### Install JDKs
-
-```shell
-cd ~
-# xcode command line tools
-xcode-select --install
-#ARCH64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-aarch64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install native-image
-#IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home/bin/gu install llvm-toolchain
-ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-arm64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-arm64
-#AMD64
-curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-sudo xattr -rd com.apple.quarantine graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-tar -xzvf graalvm-ce-java11-darwin-amd64-22.3.1.tar.gz
-sudo mv graalvm-ce-java11-22.3.1 /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install native-image
-#IOS https://www.graalvm.org/22.2/reference-manual/native-image/LLVMBackend/
-/Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home/bin/gu install llvm-toolchain
-ln -s /Library/Java/JavaVirtualMachines/graalvm-ce-java11-22.3.1-amd64/Contents/Home ~/.jenv/versions/graalvm-ce-java11-22.3.1-amd64
-```
-
-##### iOS
-
-```shell
-mvn clean
-jenv shell graalvm-ce-java11-22.3.1-arm64
-mvn -DmacIos=true deploy
-```
-
-##### iOS simulator
-
-For the simulator we need to support both amd64 and arm64 platforms. a-files are generated as fat-files for both platforms. To get an o-file also fat (for both platforms) we first build a regular iOS artifact and save the resulting o-file. Then we build o-file for amd64 and glue them with lipo utilities. In the final archive for the simulator we put a- and o-files as fat for both platforms.
-
-```shell
-mvn clean
-jenv shell graalvm-ce-java11-22.3.1-arm64
-mvn -DmacIos=true package
-jenv shell graalvm-ce-java11-22.3.1-amd64
-arch -x86_64 mvn -DmacIosSimulator=true deploy
-```
-
 ## Support
 
 Our support team on
 our [customer portal](https://jira.in.devexperts.com/servicedesk/customer/portal/1) is
 ready to answer any questions and help with the transition.
-
-## how to build jdk & svm a-files
-
-```shell
-cd ~
-curl -LO https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-22.3-b13/labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
-curl -LO https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-22.3-b13/labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
-sudo xattr -rd com.apple.quarantine labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
-sudo xattr -rd com.apple.quarantine labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
-tar -xzvf labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-amd64.tar.gz
-mv labsjdk-ce-11.0.18-jvmci-22.3-b13 labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
-tar -xzvf labsjdk-ce-11.0.18+10-jvmci-22.3-b13-darwin-aarch64.tar.gz
-mv labsjdk-ce-11.0.18-jvmci-22.3-b13 labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64
-sudo mv labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64 /Library/Java/JavaVirtualMachines/
-sudo mv labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64 /Library/Java/JavaVirtualMachines/
-ln -s /Library/Java/JavaVirtualMachines/labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64/Contents/Home ~/.jenv/versions/labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
-ln -s /Library/Java/JavaVirtualMachines/labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64/Contents/Home ~/.jenv/versions/labsjdk-ce-11.0.18-jvmci-22.3-b13_aarch64
-jenv shell labsjdk-ce-11.0.18-jvmci-22.3-b13_amd64
-java -version
-git clone https://github.com/dxFeed/labs-openjdk-11.git
-cd labs-openjdk-11
-git checkout -b jvmci/22.3-b13-fix-sun-management origin/release/jvmci/22.3-b13-fix-sun-management
-git remote add oracle https://github.com/graalvm/labs-openjdk-11.git
-git fetch oracle
-arch -x86_64 python3 build_labsjdk.py --jvmci-version 22.3-b13 --configure-option=--disable-warnings-as-errors
-xcodebuild -sdk iphoneos -arch arm64 -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
-xcodebuild -sdk iphonesimulator -project jdk-11-ios.xcodeproj -scheme jdk-arm64-release
-lipo -info xcode/jdk-arm64-ios-r.a
-#Non-fat file: xcode/jdk-arm64-ios-r.a is architecture: arm64
-lipo -info xcode/jdk-arm64-ios-simulator-r.a
-#Architectures in the fat file: xcode/jdk-arm64-ios-simulator-r.a are: arm64 x86_64
-ln -s ~/labs-openjdk-11/java_home ~/.jenv/versions/labs-openjdk-11_graal_amd64
-jenv shell labs-openjdk-11_graal_amd64
-cd ~
-git clone https://github.com/dxFeed/graal.git
-cd graal
-git checkout -b release/graal-vm/22.3.1 origin/release/graal-vm/22.3.1
-cd substratevm
-arch -x86_64 mx build
-mkdir xcode
-xcodebuild -sdk iphoneos -arch arm64 -project graal-svm-ios.xcodeproj -scheme graal-svm-arm64-release
-xcodebuild -sdk iphonesimulator -arch arm64 -project graal-svm-ios.xcodeproj -scheme graal-svm-arm64-release
-arch -x86_64 xcodebuild -sdk iphonesimulator -arch x86_64 -project graal-svm-ios.xcodeproj -scheme graal-svm-x86-64-release
-lipo -create xcode/graal-svm-arm64-ios-simulator-r.a xcode/graal-svm-x86-64-ios-simulator-r.a -output xcode/graal-svm-x86-64-ios-simulator-r-f.a
-lipo -info xcode/graal-svm-x86-64-ios-simulator-r-f.a
-#Architectures in the fat file: xcode/graal-svm-x86-64-ios-simulator-r-f.a are: x86_64 arm64
-```
 
 ## License
 
