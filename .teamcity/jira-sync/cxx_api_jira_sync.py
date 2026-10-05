@@ -27,7 +27,7 @@ follows them (passed, failed, running), and one comment per PR shows the result 
 changes; running checks change the icon only, so Jira mails the watchers for the results alone.
 Each PR and branch is applied to a ticket once (the ticket keeps the numbers of the applied PRs and the names of the
 branches in an issue property), so a ticket moved back by hand stays where it is. The opened and merged PRs are also
-linked from the ticket, grouped by the branch (the heading of a group is the name of the branch).
+linked from the ticket, grouped by the branch (the heading of a group is the distinct part of its name, see link_group).
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
@@ -296,6 +296,21 @@ def line_major(base, main_major):
     """The major of the versions of a branch: N of release/vN, else the major of main."""
     match = re.fullmatch(r"release/v(\d+)", base)
     return int(match.group(1)) if match else main_major
+
+
+def link_group(branch):
+    """
+    The heading of the group of the links of a branch in a ticket. Jira cuts it at about 20 characters, and the
+    branches of a ticket share the beginning (feature/MDAPI-427-), so it is the rest: feature/MDAPI-427-warnings ->
+    warnings, a branch without the rest keeps its key: bugfix/MDAPI-411 -> MDAPI-411.
+    """
+    return re.sub(r"^MDAPI-\d+-(?=.)", "", re.sub(r"^[\w.-]+/(?=MDAPI-\d+)", "", branch))
+
+
+def prs(numbers):
+    """For the log: "PR #118 is" or "PRs #1, #2 are"."""
+    listed = ", ".join(f"#{number}" for number in numbers)
+    return f"PR {listed} is" if len(numbers) == 1 else f"PRs {listed} are"
 
 
 def pr_keys(pr):
@@ -663,11 +678,11 @@ class Sync:
     # The links of the ticket, grouped by the branch: the group of a branch has its link and the links of its PRs.
 
     def link_pr(self, key, pr, status=None):
-        self.jira.link(key, pr["html_url"], f"PR #{pr['number']}: {pr['title']}", status, pr["head"]["ref"])
+        self.jira.link(key, pr["html_url"], f"PR #{pr['number']}: {pr['title']}", status, link_group(pr["head"]["ref"]))
 
     def link_branch(self, key, branch):
         url = f"https://github.com/{GITHUB_REPOSITORY}/tree/{urllib.parse.quote(branch)}"
-        self.jira.link(key, url, f"Branch {branch}", relationship=branch)
+        self.jira.link(key, url, f"Branch {branch}", relationship=link_group(branch))
 
     def relink(self, key):
         """Links the PRs and the branches that the ticket remembers again (RELINK): into the groups of the branches."""
@@ -737,8 +752,7 @@ class Sync:
             if not in_review:
                 return self.move(key, IN_DEVELOPMENT)
 
-            numbers = ", ".join(f"#{other}" for other in in_review)
-            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are in review")
+            self.log.info(f"  stays in {status['name']}: {prs(in_review)} in review")
             return True
 
         self.log.info(f"  stays in {status['name']}")
@@ -763,14 +777,12 @@ class Sync:
         in_review = [other["number"] for other in still_open if not other["draft"]]
 
         if in_review:
-            numbers = ", ".join(f"#{other}" for other in in_review)
-            self.log.info(f"  stays in {status['name']}: the PRs {numbers} are in review")
+            self.log.info(f"  stays in {status['name']}: {prs(in_review)} in review")
             return True
 
         if still_open:
             # Only drafts are open: the work goes on.
-            numbers = ", ".join(f"#{other['number']}" for other in still_open)
-            self.log.info(f"  the draft PRs {numbers} are open")
+            self.log.info(f"  only the drafts are open: {prs([other['number'] for other in still_open])}")
             return self.move(key, IN_DEVELOPMENT)
 
         if not state.get("merged"):

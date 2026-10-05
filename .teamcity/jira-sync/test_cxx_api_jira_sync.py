@@ -351,7 +351,7 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
-        self.assertIn("the PRs #10 are in review", self.out.getvalue())
+        self.assertIn("PR #10 is in review", self.out.getvalue())
 
     def test_merge_with_only_drafts_open_returns_to_development(self):
         # The draft was opened while the first PR was in review; now the first PR is merged.
@@ -475,7 +475,7 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
-        self.assertIn("the PRs #11 are in review", self.out.getvalue())
+        self.assertIn("PR #11 is in review", self.out.getvalue())
 
     def test_closed_without_merge_with_only_drafts_open_returns_to_development(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10], "drafted": [11]})
@@ -500,7 +500,7 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
         self.assertEqual({"opened": [10, 11], "merged": [10], "bases": {"10": "main"}},
                          self.server.issues["MDAPI-1"]["property"])
-        self.assertIn("stays in Waiting for review: the PRs #11 are in review", self.out.getvalue())
+        self.assertIn("stays in Waiting for review: PR #11 is in review", self.out.getvalue())
 
     def test_open_draft_keeps_the_ticket_from_the_build(self):
         # The draft of the next part (its key in the branch) is open when the first PR is merged.
@@ -954,8 +954,8 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual({
-            "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-x": "feature/MDAPI-1-x",
-            self.server.pulls[0]["html_url"]: "feature/MDAPI-1-x",
+            "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-x": "x",
+            self.server.pulls[0]["html_url"]: "x",
         }, self.server.link_groups)
 
     def test_relink_puts_the_remembered_links_into_the_groups_with_the_status_of_the_checks(self):
@@ -975,13 +975,24 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(0, result)
         urls = [pr["html_url"] for pr in self.server.pulls]
-        self.assertEqual("feature/MDAPI-1-a", self.server.link_groups[urls[0]])
-        self.assertEqual("feature/MDAPI-1-b", self.server.link_groups[urls[1]])
+        self.assertEqual("a", self.server.link_groups[urls[0]])
+        self.assertEqual("b", self.server.link_groups[urls[1]])
         self.assertEqual("Checks failed", self.server.link_statuses[urls[1]])
         self.assertIsNone(self.server.link_statuses[urls[0]])
-        self.assertEqual("feature/MDAPI-1-b", self.server.link_groups[
+        self.assertEqual("b", self.server.link_groups[
             "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-b"])
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))  # links only
+
+    def test_group_heading_is_the_distinct_part_of_the_branch(self):
+        # Jira cuts the heading at about 20 characters, and the branches of a ticket share feature/MDAPI-NNN-.
+        self.assertEqual("test-runtime-copy", sync.link_group("feature/MDAPI-427-test-runtime-copy"))
+        self.assertEqual("memory-pool", sync.link_group("spike/MDAPI-240-memory-pool"))
+        self.assertEqual("MDAPI-411", sync.link_group("bugfix/MDAPI-411"))
+        self.assertEqual("x", sync.link_group("MDAPI-5-x"))
+
+    def test_pull_requests_in_the_log(self):
+        self.assertEqual("PR #118 is", sync.prs([118]))
+        self.assertEqual("PRs #1, #2 are", sync.prs([1, 2]))
 
     # The checks of the PRs.
 

@@ -229,8 +229,10 @@ The tickets are the MDAPI keys of the title and the branch of a pull request, of
 branches come from the events of the repository (GitHub may show them with a delay). Each pull request and branch is
 applied to a ticket once (the ticket keeps them in the issue property `cxx-api-github-sync`), so a ticket moved back
 by hand stays where it is. The pull requests and the branches are linked from the ticket, grouped by the branch
-(the heading of a group is the name of the branch, with the branch and its pull requests under it). To regroup the
-links made before (or lost), run the build with `env.RELINK` set to the tickets (`MDAPI-427`) in the Run dialog.
+(the heading of a group is the distinct part of the name of the branch, as Jira cuts the heading at about 20
+characters: `feature/MDAPI-427-warnings` -> `warnings`, `bugfix/MDAPI-411` -> `MDAPI-411`; the branch and its pull
+requests are under it). To regroup the links made before (or lost), run the build with `env.RELINK` set to the
+tickets (`MDAPI-427`) in the Run dialog.
 
 A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases the Jira version
 `graal-cxx-api vX.Y.Z`:
