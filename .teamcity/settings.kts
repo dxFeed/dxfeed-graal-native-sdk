@@ -1261,14 +1261,40 @@ object CxxApiJiraSync : BuildType({
 
     maxRunningBuilds = 1
 
+    // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
     params {
-        // "1": only logs the changes that it would make in Jira; "0": makes them.
-        param("env.DRY_RUN", "0")
-        // The release mail: the comma-separated To and Cc (no To: no mail); the Run dialog can change them for a run.
-        param("env.MAIL_TO", "anatoly.kalin@devexperts.com")
-        param("env.MAIL_CC", "")
-        // A tag (v8.1.0) to send the mail of its release again: set it in the Run dialog.
-        param("env.RESEND_MAIL", "")
+        select(
+            "env.DRY_RUN", "0",
+            label = "Dry run",
+            description = "1: only read GitHub and Jira and log the changes that the build would make; 0: make them",
+            options = listOf("Make the changes" to "0", "Only log the changes" to "1"),
+        )
+        text(
+            "env.MAIL_TO", "anatoly.kalin@devexperts.com",
+            label = "Release mail: To",
+            description = "The comma-separated recipients of the release mail; empty: no mail. " +
+                "Example: dxfeed-team@devexperts.com, someone@devexperts.com",
+            allowEmpty = true,
+        )
+        text(
+            "env.MAIL_CC", "",
+            label = "Release mail: Cc",
+            description = "The comma-separated copies of the release mail. Example: someone@devexperts.com",
+            allowEmpty = true,
+        )
+        text(
+            "env.RESEND_MAIL", "",
+            label = "Resend the release mail",
+            description = "A tag to send the mail of its GitHub release again (to To and Cc above). Example: v8.1.0",
+            allowEmpty = true,
+        )
+        text(
+            "env.RELINK", "",
+            label = "Relink tickets",
+            description = "The comma-separated tickets to link their PRs and branches again, into the groups of the " +
+                "branches, with the status of the checks. Example: MDAPI-427, MDAPI-428",
+            allowEmpty = true,
+        )
     }
 
     vcs {

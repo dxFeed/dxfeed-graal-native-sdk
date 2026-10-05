@@ -3,11 +3,15 @@
 Moves the MDAPI tickets of the C++ API (dxfeed-graal-cxx-api on GitHub) through the Jira workflow, as the Jira
 triggers of Bitbucket do for the internal repositories, and releases the Jira versions of its GitHub releases.
 
-The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MDAPI keys of the title and the branch):
-  - a draft PR is opened (the work goes on): Confirmed -> In development, Waiting for build -> Waiting for review ->
-    In development (there is no direct transition), and Waiting for review -> In development if no other PR of the
-    ticket is in review (open and not a draft);
-  - a PR is opened (not a draft, or a draft is marked ready): In development -> Waiting for review;
+The pull requests updated and the branches created during the last LOOKBACK_HOURS, in the order of their times (the
+tickets are the MDAPI keys of the title and the branch of a PR, of the name of a branch). The development starts with
+Reported -> Confirmed (a forgotten confirmation) -> In development, or Confirmed -> In development:
+  - a branch is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-..., any name with the key) or a draft PR is opened
+    (the work starts or goes on): the development starts, Waiting for build -> Waiting for review -> In development
+    (there is no direct transition), and Waiting for review -> In development if no other PR of the ticket is in
+    review (open and not a draft);
+  - a PR is opened (not a draft, or a draft is marked ready): the development starts if needed, then In development ->
+    Waiting for review;
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
     another branch), and a PR of the ticket has been merged: Waiting for review -> Waiting for build if no other PR of
     the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review;
@@ -18,8 +22,12 @@ The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MD
     major of main (the patch after the last released version, created if needed).
 The lines: release/vN collects the breaking changes of the next major, main has the patches of the current one until
 release/vN is merged into it and vN.0.0 is released; the earlier majors are not maintained after that.
-Each PR is applied to a ticket once (the ticket keeps the numbers of the applied PRs in an issue property), so a
-ticket moved back by hand stays where it is. The opened and merged PRs are also linked from the ticket.
+The checks (GitHub Actions) of the latest commits of the open PRs: the status icon at the link of a PR in its ticket
+follows them (passed, failed, running), and one comment per PR shows the result (with the failed jobs), edited when it
+changes; running checks change the icon only, so Jira mails the watchers for the results alone.
+Each PR and branch is applied to a ticket once (the ticket keeps the numbers of the applied PRs and the names of the
+branches in an issue property), so a ticket moved back by hand stays where it is. The opened and merged PRs are also
+linked from the ticket, grouped by the branch (the heading of a group is the name of the branch).
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
@@ -39,7 +47,8 @@ A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than th
 The environment: JIRA_URL, JIRA_TOKEN (a personal access token), GH_TOKEN (optional, read-only access is enough),
 DRY_RUN ("1" by default: reads everything and logs the changes instead of making them), LOOKBACK_HOURS (48),
 MAIL_TO and MAIL_CC (the comma-separated recipients of the release mail; no MAIL_TO: no mail), RESEND_MAIL (a tag,
-v8.1.0: sends the mail of its release again), BUILD_URL (TeamCity sets it).
+v8.1.0: sends the mail of its release again), RELINK (comma-separated tickets: links their PRs and branches again,
+into the groups of the branches), BUILD_URL (TeamCity sets it).
 
 Python 3.10 (the TeamCity agents), the standard library only.
 """
@@ -88,9 +97,10 @@ RELEASE_TRANSITION = "Resolve"
 # The events of a PR that the issue property of a ticket remembers (with the numbers of the PRs).
 EVENTS = ("drafted", "opened", "merged", "closed")
 
-# The statuses of the testing step, by name (their ids are not needed elsewhere).
+# The statuses of the testing step and the first one, by name (their ids are not needed elsewhere).
 WAITING_FOR_TEST_NAME = "waiting for test"
 TESTING_NAME = "testing"
+REPORTED_NAME = "reported"
 
 
 class HttpError(Exception):
@@ -143,6 +153,20 @@ class GitHub:
     def open_pull_requests(self):
         return self.get("pulls?state=open&per_page=100")
 
+    def pull_request(self, number):
+        return self.get(f"pulls/{number}")
+
+    def check_runs(self, sha):
+        """The check runs of the commit (the jobs of GitHub Actions): name, status, conclusion, html_url."""
+        return self.get(f"commits/{sha}/check-runs?per_page=100")["check_runs"]
+
+    def created_branches(self):
+        """The branches created recently (the events of the repository, the latest first): (the time, the name)."""
+        return [
+            (event["created_at"], event["payload"]["ref"]) for event in self.get("events?per_page=100")
+            if event["type"] == "CreateEvent" and event["payload"].get("ref_type") == "branch"
+        ]
+
     def releases(self):
         """The releases with their notes as Markdown, text and the HTML of GitHub (body, body_text, body_html)."""
         return self.get("releases?per_page=30", accept="application/vnd.github.full+json")
@@ -185,13 +209,31 @@ class Jira:
     def set_property(self, key, value):
         self.call("PUT", f"issue/{key}/properties/{ISSUE_PROPERTY}", value)
 
-    def link(self, key, url, title):
+    def link(self, key, url, title, status=None, relationship=None):
+        """
+        Links the URL from the ticket; status: (the icon, its title) shown at the link; relationship: the heading of
+        the group of the link (by default "links to").
+        """
+        link = {"url": url, "title": title}
+
+        if status is not None:
+            icon, icon_title = status
+            link["status"] = {"icon": {"url16x16": f"{self.url}/images/icons/emoticons/{icon}", "title": icon_title}}
+
         # The same globalId updates the link instead of adding another one.
-        self.call("POST", f"issue/{key}/remotelink", {
-            "globalId": url,
-            "application": {"type": "com.github", "name": "GitHub"},
-            "object": {"url": url, "title": title},
-        })
+        body = {"globalId": url, "application": {"type": "com.github", "name": "GitHub"}, "object": link}
+
+        if relationship is not None:
+            body["relationship"] = relationship
+
+        self.call("POST", f"issue/{key}/remotelink", body)
+
+    def comment(self, key, body):
+        """Adds a comment (wiki markup) and returns its id."""
+        return self.call("POST", f"issue/{key}/comment", {"body": body})["id"]
+
+    def edit_comment(self, key, comment_id, body):
+        self.call("PUT", f"issue/{key}/comment/{comment_id}", {"body": body})
 
     def versions(self):
         return self.call("GET", f"project/{JIRA_PROJECT}/versions")
@@ -262,6 +304,44 @@ def pr_keys(pr):
 
 
 DOCUMENTATION_URL = "https://dxfeed.github.io/dxfeed-graal-cxx-api/"
+
+# The states of the checks of a PR: the icon of Jira at the link, its title, the emoticon of the comment.
+CHECKS = {
+    "success": ("check.png", "Checks passed", "(/)"),
+    "failure": ("error.png", "Checks failed", "(x)"),
+    "pending": ("warning.png", "Checks are running", "(!)"),
+}
+FAILED_CONCLUSIONS = ("failure", "timed_out", "cancelled", "action_required", "startup_failure")
+
+
+def checks_state(check_runs):
+    """success, failure (with the failed runs), pending, or None without checks: (the state, the failed runs)."""
+    if not check_runs:
+        return None, []
+
+    failed = [run for run in check_runs if run["status"] == "completed" and run["conclusion"] in FAILED_CONCLUSIONS]
+
+    if failed:
+        return "failure", failed
+
+    if any(run["status"] != "completed" for run in check_runs):
+        return "pending", []
+
+    return "success", []
+
+
+def checks_comment(pr, state, failed):
+    """The comment (wiki markup) of the checks of the PR in its ticket, edited when they change."""
+    # No commit in the text: the comment is edited when the result changes, not for every commit.
+    emoticon, title = CHECKS[state][2], CHECKS[state][1]
+    url = pr["html_url"]
+    lines = [f"{emoticon} [PR #{pr['number']}|{url}]: {title.lower()} ([the checks|{url}/checks])."]
+    lines += [f"* [{run['name']}|{run['html_url']}]: {run['conclusion']}" for run in failed[:20]]
+
+    if len(failed) > 20:
+        lines.append(f"* and {len(failed) - 20} more")
+
+    return "\n".join(lines)
 
 # The release mail: simple HTML with inline styles, as Outlook renders it.
 MAIL_STYLE = "font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.45; color: #1f2328;"
@@ -389,13 +469,23 @@ class Sync:
         self.log.info(f"  {description}")
         return action()
 
-    def run(self, resend_mail=None):
-        """Syncs the PRs and the releases; resend_mail: a tag (v8.1.0) to send the mail of its release again."""
+    def run(self, resend_mail=None, relink=()):
+        """
+        Syncs the PRs and the releases; resend_mail: a tag (v8.1.0) to send the mail of its release again; relink: the
+        tickets to link their PRs and branches again (into the groups of the branches).
+        """
         self.log_permissions()
-        steps = [("pull requests", self.sync_pull_requests), ("releases", self.sync_releases)]
+        steps = [
+            ("pull requests", self.sync_pull_requests),
+            ("checks", self.sync_checks),
+            ("releases", self.sync_releases),
+        ]
 
         if resend_mail:
             steps.append(("resent mail", lambda: self.resend_mail(resend_mail)))
+
+        for key in relink:
+            steps.append((f"links of {key}", lambda key=key: self.relink(key)))
 
         for name, step in steps:
             try:
@@ -415,34 +505,128 @@ class Sync:
     # The pull requests.
 
     def sync_pull_requests(self):
-        recent = [pr for pr in self.github.pull_requests() if parse_time(pr["updated_at"]) >= self.since]
+        """The PRs updated and the branches created during the lookback, in the order of their times."""
+        changes = [
+            (pr["updated_at"], lambda pr=pr: self.sync_pull_request(pr)) for pr in self.github.pull_requests()
+            if parse_time(pr["updated_at"]) >= self.since
+            # not an old PR with a new comment
+            and (pr["merged_at"] is None or parse_time(pr["merged_at"]) >= self.since)
+        ]
+        changes += [
+            (time, lambda branch=branch: self.sync_branch(branch)) for time, branch in self.github.created_branches()
+            if parse_time(time) >= self.since
+        ]
 
-        for pr in reversed(recent):  # the earliest updated first, as they happened
-            if pr["merged_at"] is not None and parse_time(pr["merged_at"]) < self.since:
-                continue  # an old PR with a new comment
+        for time, sync in sorted(changes, key=lambda change: change[0]):
+            sync()
 
-            merged = pr["merged_at"] is not None and MERGE_BASE_PATTERN.match(pr["base"]["ref"]) is not None
+    def sync_checks(self):
+        """
+        The checks (GitHub Actions) of the latest commits of the open PRs in their tickets: the status icon at the
+        link of a PR follows them, and one comment per PR and ticket shows the result, edited (not added again) when it
+        changes. Running checks change the icon only, so Jira mails the watchers for the results alone.
+        """
+        for pr in self.open_pull_requests():
+            keys = pr_keys(pr)
 
-            # A PR merged before a run saw it open is also opened: the ticket goes through Waiting for review.
-            events = []
+            if not keys:
+                continue
 
-            if pr["state"] == "open" and pr["draft"]:
-                events.append("drafted")
+            state, failed = checks_state(self.github.check_runs(pr["head"]["sha"]))
 
-            if (pr["state"] == "open" and not pr["draft"]) or merged:
-                events.append("opened")
+            if state is None:
+                continue
 
-            if merged:
-                events.append("merged")
-            elif pr["state"] == "closed":
-                events.append("closed")  # without a merge, or merged into another branch (a stacked PR)
+            for key in keys:
+                try:
+                    self.apply_checks(key, pr, state, failed)
+                except HttpError as e:
+                    self.log.problem(f"{key}, the checks of PR #{pr['number']}: {e}")
 
-            for key in pr_keys(pr):
-                for event in events:
-                    try:
-                        self.apply(key, pr, event)
-                    except HttpError as e:
-                        self.log.problem(f"{key}, PR #{pr['number']} {event}: {e}")
+    def apply_checks(self, key, pr, state, failed):
+        ticket = self.state(key)
+
+        if ticket is None:
+            return
+
+        number = str(pr["number"])
+        checks = ticket.setdefault("checks", {}).setdefault(number, {})
+        icon, title, _ = CHECKS[state]
+        result = state if state != "failure" else "failure: " + ", ".join(sorted(run["name"] for run in failed))
+        changed = False
+
+        if checks.get("state") != state:
+            self.log.info(f"{key}: PR #{number}: {title.lower()}")
+            self.change(f"link status: {title}", lambda: self.link_pr(key, pr, (icon, title)))
+            checks["state"] = state
+            changed = True
+
+        if state != "pending" and checks.get("result") != result:
+            body = checks_comment(pr, state, failed)
+            comment_id = checks.get("comment")
+
+            if comment_id is not None:
+                try:
+                    self.change("edit the comment of the checks", lambda: self.jira.edit_comment(key, comment_id, body))
+                except HttpError as e:
+                    if e.code != 404:
+                        raise
+
+                    comment_id = None  # deleted by hand: a new one
+
+            if comment_id is None:
+                comment_id = self.change("comment the checks", lambda: self.jira.comment(key, body))
+
+            checks["comment"] = comment_id
+            checks["result"] = result
+            changed = True
+
+        if changed:
+            self.change(f"remember the checks of PR #{number}", lambda: self.jira.set_property(key, ticket))
+
+    def sync_branch(self, branch):
+        """A branch of a ticket is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-...): its development starts."""
+        for key in sorted(set(KEY_PATTERN.findall(branch))):
+            try:
+                state = self.state(key)
+
+                if state is None or branch in state.get("branches", []):
+                    continue
+
+                self.log.info(f"{key}: branch {branch} created")
+
+                if not self.to_development(key, None):
+                    continue  # not remembered: the next run tries again
+
+                state.setdefault("branches", []).append(branch)
+                self.change(f"remember branch {branch}", lambda: self.jira.set_property(key, state))
+                self.change(f"link the branch {branch}", lambda: self.link_branch(key, branch))
+            except HttpError as e:
+                self.log.problem(f"{key}, branch {branch}: {e}")
+
+    def sync_pull_request(self, pr):
+        merged = pr["merged_at"] is not None and MERGE_BASE_PATTERN.match(pr["base"]["ref"]) is not None
+
+        # A PR merged before a run saw it open is also opened: the ticket goes through Waiting for review.
+        events = []
+
+        if pr["state"] == "open" and pr["draft"]:
+            events.append("drafted")
+
+        if (pr["state"] == "open" and not pr["draft"]) or merged:
+            events.append("opened")
+
+        if merged:
+            events.append("merged")
+        elif pr["state"] == "closed":
+            events.append("closed")  # without a merge, or merged into another branch (a stacked PR)
+
+        for key in pr_keys(pr):
+            for event in events:
+                try:
+                    self.apply(key, pr, event)
+                except HttpError as e:
+                    self.log.problem(f"{key}, PR #{pr['number']} {event}: {e}")
 
     def apply(self, key, pr, event):
         number = pr["number"]
@@ -462,7 +646,7 @@ class Sync:
         if event == "drafted":
             moved = self.to_development(key, number)
         elif event == "opened":
-            moved = self.advance(key, IN_DEVELOPMENT, WAITING_FOR_REVIEW)
+            moved = self.to_review(key)
         else:
             moved = self.to_build(key, state, number)
 
@@ -474,25 +658,71 @@ class Sync:
         self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
 
         if new_pr and event != "closed":
-            title = f"PR #{number}: {pr['title']}"
-            self.change(f"link {title}", lambda: self.jira.link(key, pr["html_url"], title))
+            self.change(f"link PR #{number}: {pr['title']}", lambda: self.link_pr(key, pr))
 
-    def advance(self, key, from_status, to_status):
-        """Moves the ticket to the status if it is in from_status; False if the transition is missing."""
+    # The links of the ticket, grouped by the branch: the group of a branch has its link and the links of its PRs.
+
+    def link_pr(self, key, pr, status=None):
+        self.jira.link(key, pr["html_url"], f"PR #{pr['number']}: {pr['title']}", status, pr["head"]["ref"])
+
+    def link_branch(self, key, branch):
+        url = f"https://github.com/{GITHUB_REPOSITORY}/tree/{urllib.parse.quote(branch)}"
+        self.jira.link(key, url, f"Branch {branch}", relationship=branch)
+
+    def relink(self, key):
+        """Links the PRs and the branches that the ticket remembers again (RELINK): into the groups of the branches."""
+        state = self.state(key)
+
+        if state is None:
+            self.log.problem(f"{key}: no such ticket to relink")
+            return
+
+        self.log.info(f"Relinking {key}")
+        checks = state.get("checks", {})
+
+        for number in sorted({number for name in EVENTS for number in state.get(name, [])}):
+            pr = self.github.pull_request(number)
+            checks_state = checks.get(str(number), {}).get("state")
+            status = (CHECKS[checks_state][0], CHECKS[checks_state][1]) if checks_state else None
+            self.change(f"link PR #{number}: {pr['title']}", lambda pr=pr, status=status: self.link_pr(key, pr, status))
+
+        for branch in state.get("branches", []):
+            self.change(f"link the branch {branch}", lambda branch=branch: self.link_branch(key, branch))
+
+    def not_started(self, key):
+        """Whether the development of the ticket has not started: it is Reported (not confirmed yet) or Confirmed."""
+        status = self.status(key)
+        return status["id"] == CONFIRMED or status["name"].lower() == REPORTED_NAME
+
+    def start_development(self, key):
+        """Reported -> Confirmed (a forgotten confirmation) -> In development; False if a transition is missing."""
+        if self.status(key)["name"].lower() == REPORTED_NAME and not self.move(key, CONFIRMED):
+            return False
+
+        return self.move(key, IN_DEVELOPMENT)
+
+    def to_review(self, key):
+        """A PR is opened: In development -> Waiting for review, after the start of the development if needed."""
+        if self.not_started(key) and not self.start_development(key):
+            return False
+
         status = self.status(key)
 
-        if status["id"] != from_status:
+        if status["id"] != IN_DEVELOPMENT:
             self.log.info(f"  stays in {status['name']}")
             return True
 
-        return self.move(key, to_status)
+        return self.move(key, WAITING_FOR_REVIEW)
 
     def to_development(self, key, number):
-        """A draft PR: the work on the ticket goes on, so it goes back to (or starts) In development."""
+        """
+        A draft PR (number) or a branch (None): the work on the ticket starts or goes on, so it goes (back) to In
+        development.
+        """
         status = self.status(key)
 
-        if status["id"] == CONFIRMED:
-            return self.move(key, IN_DEVELOPMENT)
+        if self.not_started(key):
+            return self.start_development(key)
 
         if status["id"] == WAITING_FOR_BUILD:
             # No direct transition: back to review, then to development.
@@ -860,7 +1090,7 @@ def main():
     log.info(f"Dry run: {dry_run}")
     http = Http()
     lookback = datetime.timedelta(hours=int(os.environ.get("LOOKBACK_HOURS", "48")))
-    def addresses(name):
+    def listed(name):
         return [address.strip() for address in os.environ.get(name, "").split(",") if address.strip()]
 
     sync = Sync(
@@ -869,10 +1099,10 @@ def main():
         log=log,
         dry_run=dry_run,
         since=datetime.datetime.now(datetime.timezone.utc) - lookback,
-        mailer=Mailer(addresses("MAIL_TO"), addresses("MAIL_CC")),
+        mailer=Mailer(listed("MAIL_TO"), listed("MAIL_CC")),
         build_url=os.environ.get("BUILD_URL"),
     )
-    return sync.run(resend_mail=os.environ.get("RESEND_MAIL", "").strip())
+    return sync.run(resend_mail=os.environ.get("RESEND_MAIL", "").strip(), relink=listed("RELINK"))
 
 
 if __name__ == "__main__":

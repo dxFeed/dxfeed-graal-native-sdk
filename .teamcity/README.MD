@@ -198,10 +198,13 @@ The C++ API (`dxfeed-graal-cxx-api`) is on GitHub, so the Jira triggers of Bitbu
 `C++ API: GitHub to Jira` build (Etc.) does it every 10 minutes with `jira-sync/cxx_api_jira_sync.py`, as the `dxcity`
 bot (`%dxcity.token.jira%`):
 
-- a pull request is opened (not a draft): In development -> Waiting for review;
-- a draft pull request is opened (the work goes on): Confirmed -> In development, Waiting for build -> Waiting for
-  review -> In development (there is no direct transition), Waiting for review -> In development if no other pull
-  request of the ticket is in review;
+- a branch with the MDAPI key is created (`feature/MDAPI-NNN-...`, `bugfix/MDAPI-NNN-...`, any name with the key) or a
+  draft pull request is opened (the work starts or goes on): the development starts (Reported -> Confirmed, for a
+  forgotten confirmation, -> In development; Confirmed -> In development), Waiting for build -> Waiting for review ->
+  In development (there is no direct transition), Waiting for review -> In development if no other pull request of
+  the ticket is in review;
+- a pull request is opened (not a draft): the development starts if needed, then In development -> Waiting for
+  review;
 - a pull request is merged into `main` or `release/*`: Waiting for review -> Waiting for build once no other pull
   request of the ticket is open, or -> In development if only drafts are open. While another pull request is in
   review, the ticket waits: the last of them merged, or closed without a merge, moves it. A ticket moved to Waiting
@@ -217,9 +220,17 @@ after that. A pull request merged into `release/vN` gives its ticket the unrelea
 (`vN.0.0` is created if there is none), one merged into `main` the unreleased version of the major of the last release
 (the patch after it is created if there is none). A ticket with parts in both gets the later line.
 
-The tickets are the MDAPI keys of the title and the branch of the pull request. Each pull request is applied to a
-ticket once (the ticket keeps the applied pull requests in the issue property `cxx-api-github-sync`), so a ticket moved
-back by hand stays where it is. The pull request is linked from the ticket.
+The checks (GitHub Actions) of the latest commits of the open pull requests are shown in their tickets: the status
+icon at the link of a pull request follows them (passed, failed, running), and one comment per pull request shows the
+result with the failed jobs, edited (not added again) when it changes. Running checks change the icon only, so Jira
+mails the watchers for the results alone.
+
+The tickets are the MDAPI keys of the title and the branch of a pull request, of the name of a branch; the created
+branches come from the events of the repository (GitHub may show them with a delay). Each pull request and branch is
+applied to a ticket once (the ticket keeps them in the issue property `cxx-api-github-sync`), so a ticket moved back
+by hand stays where it is. The pull requests and the branches are linked from the ticket, grouped by the branch
+(the heading of a group is the name of the branch, with the branch and its pull requests under it). To regroup the
+links made before (or lost), run the build with `env.RELINK` set to the tickets (`MDAPI-427`) in the Run dialog.
 
 A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases the Jira version
 `graal-cxx-api vX.Y.Z`:
@@ -236,8 +247,9 @@ A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases th
 - the build warns about the tickets of the commits of the release without the version, and the other way round.
 
 So a finished ticket gets the fix version of the placeholder of its line in Waiting for build (by the build, or by
-hand for a ticket moved there by hand), and the tag of the release decides the number of the version. A ticket that is not
-finished goes back to In development (by hand, or by a draft pull request): the release moves it to the next version.
+hand for a ticket moved there by hand), and the tag of the release decides the number of the version. A ticket that
+is not finished goes back to In development (by hand, by a draft pull request or a new branch): the release moves it
+to the next version.
 
 The release mail goes from `dxcity@bots.devexperts.com` through `mxeu0.devexperts.com` (the relay of the mail of Jira,
 which takes the mail of the agents without a login) to `env.MAIL_TO`, with a copy to `env.MAIL_CC` (comma-separated

@@ -12,6 +12,7 @@ import cxx_api_jira_sync as sync
 from cxx_api_jira_sync import IN_DEVELOPMENT, RESOLVED, WAITING_FOR_BUILD, WAITING_FOR_REVIEW, HttpError
 
 ABORTED = "10000"
+REPORTED = "1"
 CONFIRMED = "10001"
 WAITING_FOR_TEST = "20001"
 TESTING = "20002"
@@ -19,6 +20,7 @@ TESTING = "20002"
 # The names and the status categories of the fake MDAPI workflow.
 NAMES = {
     ABORTED: ("Aborted", "done"),
+    REPORTED: ("Reported", "new"),
     CONFIRMED: ("Confirmed", "new"),
     IN_DEVELOPMENT: ("In development", "indeterminate"),
     WAITING_FOR_REVIEW: ("Waiting for review", "indeterminate"),
@@ -30,6 +32,7 @@ NAMES = {
 
 # The transitions of the fake MDAPI workflow: the status -> (the id, the name, the status it goes to).
 WORKFLOW = {
+    REPORTED: [("11", "Confirm", CONFIRMED)],
     CONFIRMED: [("61", "Start development", IN_DEVELOPMENT)],
     IN_DEVELOPMENT: [("71", "Pause development", CONFIRMED), ("151", "Send to review", WAITING_FOR_REVIEW)],
     WAITING_FOR_REVIEW: [("141", "Return to development", IN_DEVELOPMENT),
@@ -59,7 +62,7 @@ def pull_request(number, title, branch="feature/x", state="open", draft=False, m
     return {
         "number": number,
         "title": title,
-        "head": {"ref": branch},
+        "head": {"ref": branch, "sha": f"{number:040d}"},
         "base": {"ref": base},
         "state": state,
         "draft": draft,
@@ -102,6 +105,11 @@ class FakeServer:
 
     def __init__(self):
         self.pulls = []
+        self.events = []
+        self.check_runs = {}  # the sha -> the check runs
+        self.comments = {}  # the id -> (the ticket, the body)
+        self.link_statuses = {}  # the URL -> the title of the status icon
+        self.link_groups = {}  # the URL -> the relationship (the heading of the group of the link)
         self.releases = []
         self.compare = {}
         self.issues = {}
@@ -140,6 +148,15 @@ class FakeServer:
 
         if path.startswith("pulls?"):
             return self.pulls
+
+        if path.startswith("pulls/"):
+            return next(pr for pr in self.pulls if pr["number"] == int(path[len("pulls/"):]))
+
+        if path.startswith("commits/") and "/check-runs" in path:
+            return {"check_runs": self.check_runs.get(path.split("/")[1], [])}
+
+        if path.startswith("events?"):
+            return self.events
 
         if path.startswith("releases?"):
             return self.releases
@@ -213,7 +230,23 @@ class FakeServer:
 
         if rest == "/remotelink":
             self.links.append((key, body["globalId"], body["object"]["title"]))
+            self.link_statuses[body["globalId"]] = body["object"].get("status", {}).get("icon", {}).get("title")
+            self.link_groups[body["globalId"]] = body.get("relationship", "links to")
             return {"id": 1}
+
+        if rest == "/comment" and method == "POST":
+            comment_id = str(500 + len(self.comments))
+            self.comments[comment_id] = (key, body["body"])
+            return {"id": comment_id}
+
+        if rest.startswith("/comment/") and method == "PUT":
+            comment_id = rest[len("/comment/"):]
+
+            if comment_id not in self.comments:
+                raise HttpError(method, path, 404, "No comment")
+
+            self.comments[comment_id] = (key, body["body"])
+            return None
 
         if rest == "" and method == "PUT":
             for operation in body["update"]["fixVersions"]:
@@ -796,6 +829,274 @@ class SyncTest(unittest.TestCase):
         self.run_sync(dry_run=True)
 
         self.assertIn("[dry run] Wait for Build: Waiting for review -> Waiting for build", self.out.getvalue())
+
+    # The branches and the start of the development.
+
+    def branch_created(self, branch, time="2026-10-05T11:00:00Z", ref_type="branch"):
+        self.server.events.append({"type": "CreateEvent", "created_at": time,
+                                   "payload": {"ref": branch, "ref_type": ref_type}})
+
+    def test_created_branch_starts_the_development(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.branch_created("feature/MDAPI-1-something")
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual({"branches": ["feature/MDAPI-1-something"]}, self.server.issues["MDAPI-1"]["property"])
+        self.assertEqual([("MDAPI-1", "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-something",
+                           "Branch feature/MDAPI-1-something")], self.server.links)
+
+    def test_created_branch_confirms_a_reported_ticket(self):
+        self.server.issue("MDAPI-1", REPORTED)
+        self.branch_created("bugfix/MDAPI-1")
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual(["11", "61"], [body["transition"]["id"] for method, path, body in self.server.changes
+                                        if path.endswith("/transitions")])
+
+    def test_any_branch_with_the_key_counts(self):
+        self.server.issue("MDAPI-12345", CONFIRMED)
+        self.branch_created("experiment/try-MDAPI-12345-quickly")
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-12345"))
+
+    def test_created_branch_returns_a_ticket_waiting_for_build_to_development(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.branch_created("feature/MDAPI-1-next-part")
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+
+    def test_created_branch_leaves_a_ticket_in_review_while_a_pull_request_is_in_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] First", updated_at="2026-10-05T09:00:00Z")]
+        self.branch_created("feature/MDAPI-1-next-part")
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+    def test_created_branch_is_applied_once(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.branch_created("feature/MDAPI-1")
+        self.run_sync()
+        self.server.issues["MDAPI-1"]["status"] = status(CONFIRMED)  # paused by hand
+
+        self.run_sync()
+
+        self.assertEqual(CONFIRMED, self.status_of("MDAPI-1"))
+
+    def test_old_branches_and_tags_are_ignored(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.branch_created("feature/MDAPI-1", time="2026-10-01T00:00:00Z")
+        self.branch_created("MDAPI-1-tag", ref_type="tag")
+
+        self.run_sync()
+
+        self.assertEqual(CONFIRMED, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.server.changes)
+
+    def test_branch_and_pull_request_are_applied_in_the_order_of_their_times(self):
+        # The branch is created, then its PR opened, between two runs: the ticket goes through development to review.
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] X", branch="feature/MDAPI-1", updated_at="2026-10-05T11:30:00Z"),
+        ]
+        self.branch_created("feature/MDAPI-1", time="2026-10-05T11:00:00Z")
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual("branch", self.out.getvalue().split("MDAPI-1: ")[1].split()[0])
+
+    def test_pull_request_opened_on_a_reported_ticket_goes_to_review(self):
+        self.server.issue("MDAPI-1", REPORTED)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(["11", "61", "151"], [body["transition"]["id"] for method, path, body in self.server.changes
+                                               if path.endswith("/transitions")])
+
+    def test_draft_on_a_reported_ticket_starts_the_development(self):
+        self.server.issue("MDAPI-1", REPORTED)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Draft", draft=True)]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+
+    def test_dry_run_of_the_start_of_a_reported_ticket(self):
+        self.server.issue("MDAPI-1", REPORTED)
+        self.branch_created("feature/MDAPI-1")
+
+        self.run_sync(dry_run=True)
+
+        output = self.out.getvalue()
+        self.assertIn("[dry run] Confirm: Reported -> Confirmed", output)
+        self.assertIn("[dry run] then to In development", output)
+        self.assertEqual([], self.server.changes)
+
+    # The groups of the links: a branch and its PRs.
+
+    def test_branch_and_its_pull_request_are_in_the_group_of_the_branch(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T10:00:00Z")
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", branch="feature/MDAPI-1-x")]
+
+        self.run_sync()
+
+        self.assertEqual({
+            "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-x": "feature/MDAPI-1-x",
+            self.server.pulls[0]["html_url"]: "feature/MDAPI-1-x",
+        }, self.server.link_groups)
+
+    def test_relink_puts_the_remembered_links_into_the_groups_with_the_status_of_the_checks(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={
+            "opened": [10, 11], "merged": [10], "branches": ["feature/MDAPI-1-b"],
+            "checks": {"11": {"state": "failure"}},
+        })
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] A", branch="feature/MDAPI-1-a", updated_at="2026-09-01T00:00:00Z"),
+            pull_request(11, "[MDAPI-1] B", branch="feature/MDAPI-1-b", updated_at="2026-09-01T00:00:00Z"),
+        ]
+        log = sync.Log(self.out)
+        github = sync.GitHub(self.server, None)
+        jira = sync.Jira(self.server, "https://jira.test", "token")
+
+        result = sync.Sync(github, jira, log, False, since=NOW).run(relink=["MDAPI-1"])
+
+        self.assertEqual(0, result)
+        urls = [pr["html_url"] for pr in self.server.pulls]
+        self.assertEqual("feature/MDAPI-1-a", self.server.link_groups[urls[0]])
+        self.assertEqual("feature/MDAPI-1-b", self.server.link_groups[urls[1]])
+        self.assertEqual("Checks failed", self.server.link_statuses[urls[1]])
+        self.assertIsNone(self.server.link_statuses[urls[0]])
+        self.assertEqual("feature/MDAPI-1-b", self.server.link_groups[
+            "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-b"])
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))  # links only
+
+    # The checks of the PRs.
+
+    def checks(self, number, *runs):
+        """The check runs of the PR: (the name, the status, the conclusion)."""
+        self.server.check_runs[f"{number:040d}"] = [
+            {"name": name, "status": run_status, "conclusion": conclusion, "html_url": f"https://ci/{name}"}
+            for name, run_status, conclusion in runs
+        ]
+
+    def open_pull_request_in_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", updated_at="2026-10-05T09:00:00Z")]
+        return self.server.pulls[0]["html_url"]
+
+    def check_comments(self):
+        return [body for key, body in self.server.comments.values()]
+
+    def test_passed_checks_mark_the_link_and_comment_once(self):
+        url = self.open_pull_request_in_review()
+        self.checks(10, ("linux", "completed", "success"), ("windows", "completed", "skipped"))
+
+        self.assertEqual(0, self.run_sync())
+        self.run_sync()  # nothing changed
+
+        self.assertEqual("Checks passed", self.server.link_statuses[url])
+        self.assertEqual(1, len(self.server.comments))
+        self.assertTrue(self.check_comments()[0].startswith(f"(/) [PR #10|{url}]: checks passed"))
+        self.assertEqual({"state": "success", "result": "success", "comment": "500"},
+                         self.server.issues["MDAPI-1"]["property"]["checks"]["10"])
+
+    def test_failed_checks_edit_the_same_comment_with_the_failed_jobs(self):
+        url = self.open_pull_request_in_review()
+        self.checks(10, ("linux", "completed", "success"))
+        self.run_sync()
+        self.checks(10, ("linux", "completed", "failure"), ("windows", "completed", "timed_out"))
+
+        self.run_sync()
+
+        self.assertEqual("Checks failed", self.server.link_statuses[url])
+        self.assertEqual(1, len(self.server.comments))  # edited, not added
+        comment = self.check_comments()[0]
+        self.assertTrue(comment.startswith("(x) "))
+        self.assertIn("* [linux|https://ci/linux]: failure", comment)
+        self.assertIn("* [windows|https://ci/windows]: timed_out", comment)
+
+    def test_running_checks_change_the_icon_only(self):
+        url = self.open_pull_request_in_review()
+        self.checks(10, ("linux", "completed", "success"))
+        self.run_sync()
+        comment = self.check_comments()[0]
+        self.checks(10, ("linux", "in_progress", None))
+
+        self.run_sync()
+
+        self.assertEqual("Checks are running", self.server.link_statuses[url])
+        self.assertEqual([comment], self.check_comments())
+
+        self.checks(10, ("linux", "completed", "success"))
+        changes = len(self.server.changes)
+        self.run_sync()
+
+        self.assertEqual("Checks passed", self.server.link_statuses[url])
+        self.assertEqual([comment], self.check_comments())  # the same result: no edit, no mail
+        self.assertNotIn("/comment/500", [path for method, path, body in self.server.changes[changes:]])
+
+    def test_first_running_checks_make_no_comment(self):
+        url = self.open_pull_request_in_review()
+        self.checks(10, ("linux", "queued", None))
+
+        self.run_sync()
+
+        self.assertEqual("Checks are running", self.server.link_statuses[url])
+        self.assertEqual({}, self.server.comments)
+
+    def test_deleted_comment_is_added_again(self):
+        self.open_pull_request_in_review()
+        self.checks(10, ("linux", "completed", "success"))
+        self.run_sync()
+        self.server.comments.clear()  # deleted by hand
+        self.checks(10, ("linux", "completed", "failure"))
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(1, len(self.server.comments))
+        self.assertTrue(self.check_comments()[0].startswith("(x) "))
+
+    def test_pull_request_without_checks_or_keys_is_skipped(self):
+        self.open_pull_request_in_review()
+        self.server.pulls.append(pull_request(11, "Bump something", branch="dependabot/x"))
+        self.checks(11, ("linux", "completed", "failure"))
+
+        self.run_sync()
+
+        self.assertEqual({}, self.server.comments)
+        self.assertEqual({}, self.server.link_statuses)
+
+    def test_dry_run_of_the_checks(self):
+        self.open_pull_request_in_review()
+        self.checks(10, ("linux", "completed", "failure"))
+
+        self.run_sync(dry_run=True)
+
+        output = self.out.getvalue()
+        self.assertIn("[dry run] link status: Checks failed", output)
+        self.assertIn("[dry run] comment the checks", output)
+        self.assertEqual([], self.server.changes)
+
+    def test_checks_state(self):
+        self.assertEqual((None, []), sync.checks_state([]))
+        runs = [{"name": "a", "status": "completed", "conclusion": "neutral"},
+                {"name": "b", "status": "completed", "conclusion": "cancelled"}]
+        self.assertEqual(("failure", [runs[1]]), sync.checks_state(runs))
+        queued = {"name": "c", "status": "queued", "conclusion": None}
+        self.assertEqual("pending", sync.checks_state([runs[0], queued])[0])
 
     # The releases.
 
