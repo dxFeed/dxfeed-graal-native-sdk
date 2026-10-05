@@ -70,7 +70,31 @@ def pull_request(number, title, branch="feature/x", state="open", draft=False, m
 
 
 def release(tag, prerelease=False, draft=False, published_at="2026-10-05T10:00:00Z"):
-    return {"tag_name": tag, "prerelease": prerelease, "draft": draft, "published_at": published_at}
+    return {
+        "tag_name": tag,
+        "prerelease": prerelease,
+        "draft": draft,
+        "published_at": published_at,
+        "html_url": f"https://github.com/dxFeed/dxfeed-graal-cxx-api/releases/tag/{tag}",
+        "body_html": "<ul>\n<li><strong>[MDAPI-1][C++]</strong> A wrapped<br>\nline</li>\n</ul>",
+        "body_text": "[MDAPI-1][C++] A wrapped line",
+    }
+
+
+class FakeMailer:
+    def __init__(self, to=("anatoly.kalin@devexperts.com",), cc=(), error=None):
+        self.to = list(to)
+        self.cc = list(cc)
+        self.error = error
+        self.sent = []
+
+    recipients = sync.Mailer.recipients
+
+    def send(self, subject, body_html, text):
+        if self.error:
+            raise self.error
+
+        self.sent.append((subject, body_html, text))
 
 
 class FakeServer:
@@ -207,11 +231,12 @@ class SyncTest(unittest.TestCase):
         self.server = FakeServer()
         self.out = io.StringIO()
 
-    def run_sync(self, dry_run=False):
+    def run_sync(self, dry_run=False, mailer=None):
         log = sync.Log(self.out)
         github = sync.GitHub(self.server, None)
         jira = sync.Jira(self.server, "https://jira.test", "token")
-        return sync.Sync(github, jira, log, dry_run, since=NOW - datetime.timedelta(hours=48)).run()
+        return sync.Sync(github, jira, log, dry_run, since=NOW - datetime.timedelta(hours=48), mailer=mailer,
+                         build_url="https://dxcity.test/build/1").run()
 
     def transitions(self):
         return [path for method, path, body in self.server.changes if path.endswith("/transitions")]
@@ -968,6 +993,144 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(0, self.run_sync())
 
         self.assertIn("status='WARNING'", self.out.getvalue())
+
+    # The release mail.
+
+    def release_v8_1_0(self):
+        self.released_jira_and_github()
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, fix_versions=["101"])
+        self.server.releases.append(release("v8.1.0"))
+        self.server.compare[("v8.0.0", "v8.1.0")] = ["[MDAPI-1] A"]
+
+    def test_release_is_mailed_once(self):
+        self.release_v8_1_0()
+        mailer = FakeMailer()
+
+        self.assertEqual(0, self.run_sync(mailer=mailer))
+        self.run_sync(mailer=mailer)  # the next run: the version is released
+
+        self.assertEqual(1, len(mailer.sent))
+        subject, body_html, text = mailer.sent[0]
+        self.assertEqual("[release] dxFeed Graal C++ API v8.1.0", subject)
+        self.assertIn('<a href="https://jira.test/projects/MDAPI/versions/101">Jira version graal-cxx-api v8.1.0</a>',
+                      body_html)
+        self.assertIn('<a href="https://jira.test/browse/MDAPI-1">MDAPI-1</a>', body_html)
+        self.assertIn("A wrapped\nline", body_html)  # no <br> of the wrapped lines
+        self.assertIn('href="https://dxcity.test/build/1"', body_html)
+        self.assertIn("[MDAPI-1][C++] A wrapped line", text)
+
+    def test_dry_run_does_not_mail(self):
+        self.release_v8_1_0()
+        mailer = FakeMailer()
+
+        self.run_sync(dry_run=True, mailer=mailer)
+
+        self.assertEqual([], mailer.sent)
+        self.assertIn("[dry run] mail [release] dxFeed Graal C++ API v8.1.0 to anatoly.kalin@devexperts.com",
+                      self.out.getvalue())
+
+    def test_no_recipients_no_mail(self):
+        self.release_v8_1_0()
+        mailer = FakeMailer(to=())
+
+        self.assertEqual(0, self.run_sync(mailer=mailer))
+
+        self.assertNotIn("mail", self.out.getvalue().replace("Jira permissions", ""))
+
+    def test_failed_mail_is_tried_again_by_the_next_run(self):
+        self.release_v8_1_0()
+
+        self.assertEqual(1, self.run_sync(mailer=FakeMailer(error=OSError("relay is down"))))
+
+        version = next(version for version in self.server.versions if version["id"] == "101")
+        self.assertFalse(version["released"])  # so the next run repeats the release
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-1"))
+        self.assertIn("the next run tries again", self.out.getvalue())
+
+        mailer = FakeMailer()
+        self.assertEqual(0, self.run_sync(mailer=mailer))
+
+        self.assertEqual(1, len(mailer.sent))
+        self.assertTrue(version["released"])
+        self.assertEqual(1, len([version for version in self.server.versions
+                                 if version["name"] == "graal-cxx-api v8.1.1"]))
+
+    def test_dry_run_logs_the_copies(self):
+        self.release_v8_1_0()
+
+        self.run_sync(dry_run=True, mailer=FakeMailer(cc=["team@devexperts.com", "lead@devexperts.com"]))
+
+        self.assertIn("to anatoly.kalin@devexperts.com (cc team@devexperts.com, lead@devexperts.com)",
+                      self.out.getvalue())
+
+    def test_mailer_puts_the_copies_into_cc(self):
+        sent = []
+
+        class Smtp:
+            def __init__(self, host, port, timeout):
+                sent.append((host, port))
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def starttls(self, context):
+                sent.append("starttls")
+
+            def send_message(self, message):
+                sent.append(message)
+
+        smtp = sync.smtplib.SMTP
+        sync.smtplib.SMTP = Smtp
+
+        try:
+            sync.Mailer(["a@devexperts.com"], ["b@devexperts.com", "c@devexperts.com"]).send("S", "<p>H</p>", "T")
+        finally:
+            sync.smtplib.SMTP = smtp
+
+        self.assertEqual(("mxeu0.devexperts.com", 25), sent[0])
+        self.assertEqual("starttls", sent[1])
+        self.assertEqual("a@devexperts.com", sent[2]["To"])
+        self.assertEqual("b@devexperts.com, c@devexperts.com", sent[2]["Cc"])
+        self.assertEqual("dxcity <dxcity@bots.devexperts.com>", sent[2]["From"])
+
+    def test_mail_is_resent_for_the_tag(self):
+        self.released_jira_and_github()
+        mailer = FakeMailer(to=["someone@devexperts.com"])
+        log = sync.Log(self.out)
+        github = sync.GitHub(self.server, None)
+        jira = sync.Jira(self.server, "https://jira.test", "token")
+
+        result = sync.Sync(github, jira, log, False, since=NOW, mailer=mailer).run(resend_mail="v8.0.0")
+
+        self.assertEqual(0, result)
+        self.assertEqual("[release] dxFeed Graal C++ API v8.0.0", mailer.sent[0][0])
+        self.assertIn('href="https://jira.test/projects/MDAPI/versions/100"', mailer.sent[0][1])
+
+    def test_resend_of_an_unknown_tag_is_a_problem(self):
+        self.released_jira_and_github()
+        log = sync.Log(self.out)
+        github = sync.GitHub(self.server, None)
+        jira = sync.Jira(self.server, "https://jira.test", "token")
+
+        result = sync.Sync(github, jira, log, False, since=NOW, mailer=FakeMailer()).run(resend_mail="v7.7.7")
+
+        self.assertEqual(1, result)
+        self.assertIn("No GitHub release v7.7.7", self.out.getvalue())
+
+    def test_ticket_keys_are_linked_in_the_text_only(self):
+        notes = ('<p><strong>[MDAPI-1]</strong> see <a href="https://x/MDAPI-2">MDAPI-2</a>, '
+                 '<code>MDAPI-3</code> and MDAPI-4.</p>')
+
+        linked = sync.link_tickets(notes, "https://jira.test")
+
+        self.assertIn('<strong>[<a href="https://jira.test/browse/MDAPI-1">MDAPI-1</a>]</strong>', linked)
+        self.assertIn('<a href="https://x/MDAPI-2">MDAPI-2</a>,', linked)
+        self.assertIn("<code>MDAPI-3</code>", linked)
+        self.assertIn('<a href="https://jira.test/browse/MDAPI-4">MDAPI-4</a>.', linked)
 
     def test_service_messages_are_escaped(self):
         self.assertEqual("a|'b|||[c|]|nd", sync.Log.escape("a'b|[c]\nd"))

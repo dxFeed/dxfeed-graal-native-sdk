@@ -31,18 +31,27 @@ A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than th
   - its tickets in Testing stay as they are;
   - its unfinished tickets (not of the status category "done": In development, Waiting for review...) -> the next
     version vX.Y.(Z+1), the placeholder, which is created if needed;
-  - the version is released with the date of the GitHub release.
+  - the version is released with the date of the GitHub release;
+  - the release mail goes to MAIL_TO and MAIL_CC: the notes of the GitHub release (as GitHub renders them, the
+    tickets linked), the links to the release, the documentation and the Jira version; it is sent before the version
+    is released, so a failed mail leaves the version unreleased and the next run tries again.
 
 The environment: JIRA_URL, JIRA_TOKEN (a personal access token), GH_TOKEN (optional, read-only access is enough),
-DRY_RUN ("1" by default: reads everything and logs the changes instead of making them), LOOKBACK_HOURS (48).
+DRY_RUN ("1" by default: reads everything and logs the changes instead of making them), LOOKBACK_HOURS (48),
+MAIL_TO and MAIL_CC (the comma-separated recipients of the release mail; no MAIL_TO: no mail), RESEND_MAIL (a tag,
+v8.1.0: sends the mail of its release again), BUILD_URL (TeamCity sets it).
 
 Python 3.10 (the TeamCity agents), the standard library only.
 """
 
 import datetime
+import email.message
+import html
 import json
 import os
 import re
+import smtplib
+import ssl
 import sys
 import urllib.error
 import urllib.parse
@@ -123,8 +132,9 @@ class GitHub:
         if token:
             self.headers["Authorization"] = f"Bearer {token}"
 
-    def get(self, path):
-        return self.http.request("GET", f"{self.API}/repos/{GITHUB_REPOSITORY}/{path}", self.headers)
+    def get(self, path, accept=None):
+        headers = {**self.headers, "Accept": accept} if accept else self.headers
+        return self.http.request("GET", f"{self.API}/repos/{GITHUB_REPOSITORY}/{path}", headers)
 
     def pull_requests(self):
         """The PRs, the recently updated first."""
@@ -134,7 +144,8 @@ class GitHub:
         return self.get("pulls?state=open&per_page=100")
 
     def releases(self):
-        return self.get("releases?per_page=30")
+        """The releases with their notes as Markdown, text and the HTML of GitHub (body, body_text, body_html)."""
+        return self.get("releases?per_page=30", accept="application/vnd.github.full+json")
 
     def commit_messages(self, base_tag, head_tag):
         compare = self.get(f"compare/{urllib.parse.quote(base_tag)}...{urllib.parse.quote(head_tag)}")
@@ -250,18 +261,119 @@ def pr_keys(pr):
     return sorted(set(KEY_PATTERN.findall(f"{pr['title']} {pr['head']['ref']}")))
 
 
+DOCUMENTATION_URL = "https://dxfeed.github.io/dxfeed-graal-cxx-api/"
+
+# The release mail: simple HTML with inline styles, as Outlook renders it.
+MAIL_STYLE = "font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.45; color: #1f2328;"
+MAIL_CODE_STYLE = (
+    "font-family: Consolas, 'Courier New', monospace; font-size: 13px; background: #eff1f3; padding: 0 3px;"
+)
+
+
+def link_tickets(notes_html, jira_url):
+    """Links the MDAPI keys of the text of the HTML to the tickets (not in the tags, the links and the code)."""
+    parts = re.split(r"(<[^>]+>)", notes_html)
+    inside = 0  # the depth of <a> and <code>
+
+    for index, part in enumerate(parts):
+        if part.startswith("<"):
+            tag = re.match(r"</?(\w+)", part)
+
+            if tag and tag.group(1).lower() in ("a", "code"):
+                inside += -1 if part.startswith("</") else 1
+        elif inside == 0:
+            parts[index] = KEY_PATTERN.sub(
+                lambda match: f'<a href="{jira_url}/browse/{match.group(0)}">{match.group(0)}</a>', part)
+
+    return "".join(parts)
+
+
+def release_mail(release, version_name, version_url, jira_url, build_url):
+    """The subject, the HTML and the text of the mail about a GitHub release (with its notes as GitHub renders them)."""
+    tag = release["tag_name"]
+    date = release["published_at"][:10]
+    title = f"dxFeed Graal C++ API {tag}"
+
+    # GitHub renders the line breaks of the Markdown of a release as <br>: the wrapped lines of ReleaseNotes.md.
+    notes = re.sub(r"<br>\s*\n", "\n", release.get("body_html") or "").strip() or "<p>No release notes.</p>"
+    notes = link_tickets(notes, jira_url).replace("<code>", f'<code style="{MAIL_CODE_STYLE}">')
+
+    links = [
+        f'<a href="{html.escape(release["html_url"])}">Release on GitHub</a> (downloads)',
+        f'<a href="{DOCUMENTATION_URL}">Documentation</a>',
+        f'<a href="{html.escape(version_url)}">Jira version {html.escape(version_name)}</a>',
+    ]
+    footer = f'Sent by the <a href="{html.escape(build_url)}">TeamCity build</a>.' if build_url else ""
+
+    body = f"""\
+<div style="{MAIL_STYLE}">
+<p><b>{html.escape(title)}</b> has been released on {date}.</p>
+<p>{" &nbsp;|&nbsp; ".join(links)}</p>
+<h3 style="font-size: 16px; margin: 18px 0 6px;">Release notes</h3>
+{notes}
+<hr style="border: none; border-top: 1px solid #d1d9e0; margin-top: 18px;">
+<p style="font-size: 12px; color: #59636e;">{footer}</p>
+</div>
+"""
+    text = "\n\n".join(filter(None, [
+        f"{title} has been released on {date}.",
+        f"Release on GitHub: {release['html_url']}\nDocumentation: {DOCUMENTATION_URL}\n"
+        f"Jira version {version_name}: {version_url}",
+        release.get("body_text") or release.get("body") or "",
+        f"Build: {build_url}" if build_url else "",
+    ]))
+    return f"[release] {title}", body, text
+
+
+class Mailer:
+    """Sends mail through the relay that Jira uses: it takes the mail of the agents by their addresses, no login."""
+
+    RELAY = "mxeu0.devexperts.com"
+    SENDER = "dxcity <dxcity@bots.devexperts.com>"
+
+    def __init__(self, to, cc=()):
+        self.to = list(to)
+        self.cc = list(cc)
+
+    def recipients(self):
+        """For the log: "a@x, b@x (cc c@x)"."""
+        return ", ".join(self.to) + (f" (cc {', '.join(self.cc)})" if self.cc else "")
+
+    def send(self, subject, body_html, text):
+        message = email.message.EmailMessage()
+        message["From"] = self.SENDER
+        message["To"] = ", ".join(self.to)
+
+        if self.cc:
+            message["Cc"] = ", ".join(self.cc)
+
+        message["Subject"] = subject
+        message["Auto-Submitted"] = "auto-generated"
+        message.set_content(text)
+        message.add_alternative(body_html, subtype="html")
+
+        with smtplib.SMTP(self.RELAY, 25, timeout=60) as smtp:
+            smtp.starttls(context=ssl.create_default_context())
+            smtp.send_message(message)
+
+
 def parse_time(text):
     return datetime.datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc)
 
 
 class Sync:
-    def __init__(self, github, jira, log, dry_run, since):
-        """since: the PRs updated (and merged) earlier are ignored."""
+    def __init__(self, github, jira, log, dry_run, since, mailer=None, build_url=None):
+        """
+        since: the PRs updated (and merged) earlier are ignored; mailer: sends the release mail (none: no mail);
+        build_url: the TeamCity build, for the mail.
+        """
         self.github = github
         self.jira = jira
         self.log = log
         self.dry_run = dry_run
         self.since = since
+        self.mailer = mailer
+        self.build_url = build_url
         self.statuses = {}
         self.properties = {}
         self.simulated = set()  # the tickets that the dry run has moved
@@ -277,10 +389,15 @@ class Sync:
         self.log.info(f"  {description}")
         return action()
 
-    def run(self):
+    def run(self, resend_mail=None):
+        """Syncs the PRs and the releases; resend_mail: a tag (v8.1.0) to send the mail of its release again."""
         self.log_permissions()
+        steps = [("pull requests", self.sync_pull_requests), ("releases", self.sync_releases)]
 
-        for name, step in (("pull requests", self.sync_pull_requests), ("releases", self.sync_releases)):
+        if resend_mail:
+            steps.append(("resent mail", lambda: self.resend_mail(resend_mail)))
+
+        for name, step in steps:
             try:
                 step()
             except HttpError as e:
@@ -666,10 +783,44 @@ class Sync:
             self.change(f"{key}: fix version {name} -> {next_version['name']}",
                         lambda key=key: self.jira.replace_fix_version(key, version["id"], next_version["id"]))
 
+        # The mail before the release of the version: a failed mail leaves the version unreleased, so the next run
+        # repeats the release (its steps are done already) and the mail.
+        if not self.mail(release, version):
+            return
+
         date = release["published_at"][:10]
         self.change(f"release {name} on {date}",
                     lambda: self.jira.update_version(version["id"], {"released": True, "releaseDate": date}))
         version["released"] = True
+
+    def mail(self, release, version):
+        """Sends the release mail to the recipients (if any); False if it fails."""
+        if self.mailer is None or not self.mailer.to:
+            return True
+
+        version_url = f"{self.jira.url}/projects/{JIRA_PROJECT}/versions/{version['id']}"
+        subject, body_html, text = release_mail(release, version["name"], version_url, self.jira.url, self.build_url)
+
+        try:
+            self.change(f"mail {subject} to {self.mailer.recipients()}",
+                        lambda: self.mailer.send(subject, body_html, text))
+            return True
+        except (OSError, smtplib.SMTPException) as e:
+            self.log.problem(f"The release mail is not sent (the next run tries again): {e}")
+            return False
+
+    def resend_mail(self, tag):
+        """Sends the mail of the release of the tag again (RESEND_MAIL, set in the Run dialog of the build)."""
+        release = next((release for release in self.github.releases() if release["tag_name"] == tag), None)
+        name = VERSION_PREFIX + tag[1:]
+        version = next((version for version in self.jira.versions() if version["name"] == name), None)
+
+        if release is None or version is None:
+            self.log.problem(f"No GitHub release {tag} or no Jira version {name} to resend the mail of")
+            return
+
+        self.log.info(f"Resending the mail of {tag}")
+        self.mail(release, version)
 
     def next_version(self, number, versions):
         """The version of the patch after the version number ("8.1.0"), created if needed."""
@@ -709,14 +860,19 @@ def main():
     log.info(f"Dry run: {dry_run}")
     http = Http()
     lookback = datetime.timedelta(hours=int(os.environ.get("LOOKBACK_HOURS", "48")))
+    def addresses(name):
+        return [address.strip() for address in os.environ.get(name, "").split(",") if address.strip()]
+
     sync = Sync(
         github=GitHub(http, os.environ.get("GH_TOKEN")),
         jira=Jira(http, os.environ["JIRA_URL"], os.environ["JIRA_TOKEN"]),
         log=log,
         dry_run=dry_run,
         since=datetime.datetime.now(datetime.timezone.utc) - lookback,
+        mailer=Mailer(addresses("MAIL_TO"), addresses("MAIL_CC")),
+        build_url=os.environ.get("BUILD_URL"),
     )
-    return sync.run()
+    return sync.run(resend_mail=os.environ.get("RESEND_MAIL", "").strip())
 
 
 if __name__ == "__main__":

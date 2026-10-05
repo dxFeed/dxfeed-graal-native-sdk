@@ -150,7 +150,6 @@ object Etc : Project({
 
     buildType(CopyServiceImages)
     buildType(CxxApiJiraSync)
-    buildType(MailRelayProbe)
 })
 
 object BuildPatchAndDeployForLinux : BuildType({
@@ -1252,64 +1251,6 @@ object CopyServiceImages : BuildType({
 })
 
 /**
- * Checks whether the agents may send mail through the relay that Jira uses (mxeu0.devexperts.com) for the release mail
- * of the C++ API: one test letter to mail.probe.to.
- */
-object MailRelayProbe : BuildType({
-    name = "Mail relay probe (temporary)"
-
-    params {
-        param("mail.probe.to", "anatoly.kalin@devexperts.com")
-    }
-
-    steps {
-        script {
-            name = "Send a test letter"
-            scriptContent = """
-                python3 - <<'EOF'
-                import smtplib, socket, ssl
-                from email.message import EmailMessage
-
-                RELAY = "mxeu0.devexperts.com"
-                message = EmailMessage()
-                message["From"] = "dxcity <dxcity@bots.devexperts.com>"
-                message["To"] = "%mail.probe.to%"
-                message["Subject"] = "[test] C++ API release mail"
-                message["Auto-Submitted"] = "auto-generated"
-                message.set_content("A test of the mail relay for the release mail of the C++ API (TeamCity, Etc.).")
-                message.add_alternative(
-                    "<p>A test of the mail relay for the release mail of the <b>C++ API</b> (TeamCity, Etc.).</p>"
-                    "<ul><li>HTML</li><li>from the agent " + socket.gethostname() + "</li></ul>",
-                    subtype="html",
-                )
-
-                def send(tls):
-                    with smtplib.SMTP(RELAY, 25, timeout=30) as smtp:
-                        smtp.set_debuglevel(1)
-                        smtp.ehlo()
-                        if tls and smtp.has_extn("starttls"):
-                            smtp.starttls(context=ssl.create_default_context())
-                            smtp.ehlo()
-                        print("Refused recipients:", smtp.send_message(message))
-
-                print("Agent:", socket.gethostname(), socket.gethostbyname(socket.gethostname()))
-                try:
-                    send(tls=True)
-                except ssl.SSLError as e:
-                    print("STARTTLS failed, trying without TLS:", e)
-                    send(tls=False)
-                print("Sent")
-                EOF
-            """.trimIndent()
-        }
-    }
-
-    requirements {
-        linuxAgent()
-    }
-})
-
-/**
  * Moves the MDAPI tickets of the C++ API (dxfeed-graal-cxx-api on GitHub) through the Jira workflow by its pull
  * requests, as the Jira triggers of Bitbucket do for the internal repositories, and releases the Jira versions of its
  * GitHub releases (see .teamcity/jira-sync/cxx_api_jira_sync.py).
@@ -1323,6 +1264,11 @@ object CxxApiJiraSync : BuildType({
     params {
         // "1": only logs the changes that it would make in Jira; "0": makes them.
         param("env.DRY_RUN", "0")
+        // The release mail: the comma-separated To and Cc (no To: no mail); the Run dialog can change them for a run.
+        param("env.MAIL_TO", "anatoly.kalin@devexperts.com")
+        param("env.MAIL_CC", "")
+        // A tag (v8.1.0) to send the mail of its release again: set it in the Run dialog.
+        param("env.RESEND_MAIL", "")
     }
 
     vcs {

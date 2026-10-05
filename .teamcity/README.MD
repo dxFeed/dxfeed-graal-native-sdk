@@ -231,13 +231,21 @@ A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases th
   as those in Waiting for test (left from the time with the testing step); the tickets in Testing stay as they are;
 - its unfinished tickets (In development, Waiting for review and the other statuses not of the category "done") move
   to the next version `graal-cxx-api vX.Y.(Z+1)`, which is created if needed;
-- the version is released with the date of the GitHub release (no release email: the Release Steps of MDAPI are not
-  used);
+- the release mail is sent (see below), then the version is released with the date of the GitHub release (the
+  Release Steps of MDAPI are not used, so there is no mail of Jira);
 - the build warns about the tickets of the commits of the release without the version, and the other way round.
 
 So a finished ticket gets the fix version of the placeholder of its line in Waiting for build (by the build, or by
 hand for a ticket moved there by hand), and the tag of the release decides the number of the version. A ticket that is not
 finished goes back to In development (by hand, or by a draft pull request): the release moves it to the next version.
+
+The release mail goes from `dxcity@bots.devexperts.com` through `mxeu0.devexperts.com` (the relay of the mail of Jira,
+which takes the mail of the agents without a login) to `env.MAIL_TO`, with a copy to `env.MAIL_CC` (comma-separated
+addresses; no `env.MAIL_TO`: no mail). It has the notes of the GitHub release as GitHub renders them, with the MDAPI
+keys linked to the tickets, and the links to the release, the documentation and the Jira version. A failed mail leaves
+the version unreleased: the next run tries again. To send the mail of a release again, run the build with
+`env.RESEND_MAIL` set to its tag (`v8.1.0`) in the Run dialog, where `env.MAIL_TO` and `env.MAIL_CC` can be changed
+for that run too; the recipients of every release are the values in `settings.kts`.
 
 `env.DRY_RUN` of the build is `0`: the build makes the changes. Set it to `1` to only read GitHub and Jira (including
 the transitions available to `dxcity`) and log the changes that it would make. The tests (no network):
