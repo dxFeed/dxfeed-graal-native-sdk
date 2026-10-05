@@ -14,8 +14,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <graalvm.version>25.4.4.1.1</graalvm.version>
-    <!-- Used only when building with GraalVM without svm-shared.jar (see the svm-core profile). -->
-    <svm-core.version>25.0.4</svm-core.version>
+    <!--
+      Used only when building with GraalVM without svm-shared.jar (see the svm-core profile): the CI builds the macOS x64
+      and iOS Simulator libraries with jdk-25.0.1 (env.GRAALVM_VERSION_MACOS_X64), so the code is compiled with its svm.
+    -->
+    <svm-core.version>25.0.1</svm-core.version>
     <native.image.path>${project.build.directory}/native-image</native.image.path>
     <native.image.name>libDxFeedGraalNativeSdk</native.image.name>
     <set-rpath.skip>true</set-rpath.skip>
