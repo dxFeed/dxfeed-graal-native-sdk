@@ -110,6 +110,7 @@ class FakeServer:
         self.comments = {}  # the id -> (the ticket, the body)
         self.link_statuses = {}  # the URL -> the title of the status icon
         self.link_groups = {}  # the URL -> the relationship (the heading of the group of the link)
+        self.link_resolved = {}  # the URL -> struck through
         self.releases = []
         self.compare = {}
         self.issues = {}
@@ -232,6 +233,7 @@ class FakeServer:
             self.links.append((key, body["globalId"], body["object"]["title"]))
             self.link_statuses[body["globalId"]] = body["object"].get("status", {}).get("icon", {}).get("title")
             self.link_groups[body["globalId"]] = body.get("relationship", "links to")
+            self.link_resolved[body["globalId"]] = body["object"].get("status", {}).get("resolved", False)
             return {"id": 1}
 
         if rest == "/comment" and method == "POST":
@@ -372,7 +374,7 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
-        self.assertEqual([], self.server.links)  # linked as a draft
+        self.assertEqual("PR #11: [MDAPI-1] Next part", self.server.links[-1][2])  # no longer a draft
 
     def test_dry_run_of_a_draft_on_a_ticket_waiting_for_build(self):
         self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
@@ -415,7 +417,8 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
         self.assertEqual({"opened": [10], "merged": [10], "bases": {"10": "main"}},
                          self.server.issues["MDAPI-1"]["property"])
-        self.assertEqual(1, len(self.server.links))
+        self.assertEqual("PR #10 (merged): [MDAPI-1] Fast", self.server.links[-1][2])
+        self.assertTrue(self.server.link_resolved[self.server.pulls[0]["html_url"]])
 
     def test_merged_pull_request_after_review(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
@@ -424,7 +427,8 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
-        self.assertEqual([], self.server.links)  # linked when it was opened
+        self.assertEqual([("MDAPI-1", self.server.pulls[0]["html_url"], "PR #10 (merged): [MDAPI-1] X")],
+                         self.server.links)  # the link of the opened PR updated
 
     def test_merge_into_release_branch_counts(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
@@ -982,6 +986,34 @@ class SyncTest(unittest.TestCase):
         self.assertEqual("b", self.server.link_groups[
             "https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/feature/MDAPI-1-b"])
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))  # links only
+
+    def test_draft_pull_request_is_linked_as_a_draft(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Draft", draft=True)]
+
+        self.run_sync()
+
+        self.assertEqual("PR #10 (draft): [MDAPI-1] Draft", self.server.links[-1][2])
+        self.assertFalse(self.server.link_resolved[self.server.pulls[0]["html_url"]])
+
+    def test_closed_pull_request_is_struck_through(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Abandoned", state="closed")]
+
+        self.run_sync()
+
+        self.assertEqual("PR #10 (closed): [MDAPI-1] Abandoned", self.server.links[-1][2])
+        self.assertTrue(self.server.link_resolved[self.server.pulls[0]["html_url"]])
+
+    def test_merged_pull_request_keeps_the_icon_of_its_checks(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10], "checks": {"10": {"state": "failure"}}})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T10:00:00Z")]
+
+        self.run_sync()
+
+        url = self.server.pulls[0]["html_url"]
+        self.assertEqual("Checks failed", self.server.link_statuses[url])
+        self.assertTrue(self.server.link_resolved[url])
 
     def test_group_heading_is_the_distinct_part_of_the_branch(self):
         # Jira cuts the heading at about 20 characters, and the branches of a ticket share feature/MDAPI-NNN-.

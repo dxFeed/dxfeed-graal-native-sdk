@@ -27,7 +27,8 @@ follows them (passed, failed, running), and one comment per PR shows the result 
 changes; running checks change the icon only, so Jira mails the watchers for the results alone.
 Each PR and branch is applied to a ticket once (the ticket keeps the numbers of the applied PRs and the names of the
 branches in an issue property), so a ticket moved back by hand stays where it is. The opened and merged PRs are also
-linked from the ticket, grouped by the branch (the heading of a group is the distinct part of its name, see link_group).
+linked from the ticket, grouped by the branch (the heading of a group is the distinct part of its name, see link_group);
+the link of a PR has its state in the title (draft, merged, closed) and is struck through when it is merged or closed.
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
@@ -209,16 +210,16 @@ class Jira:
     def set_property(self, key, value):
         self.call("PUT", f"issue/{key}/properties/{ISSUE_PROPERTY}", value)
 
-    def link(self, key, url, title, status=None, relationship=None):
+    def link(self, key, url, title, status=None, relationship=None, resolved=False):
         """
         Links the URL from the ticket; status: (the icon, its title) shown at the link; relationship: the heading of
-        the group of the link (by default "links to").
+        the group of the link (by default "links to"); resolved: Jira strikes the link through (a merged or closed PR).
         """
-        link = {"url": url, "title": title}
+        link = {"url": url, "title": title, "status": {"resolved": resolved}}
 
         if status is not None:
             icon, icon_title = status
-            link["status"] = {"icon": {"url16x16": f"{self.url}/images/icons/emoticons/{icon}", "title": icon_title}}
+            link["status"]["icon"] = {"url16x16": f"{self.url}/images/icons/emoticons/{icon}", "title": icon_title}
 
         # The same globalId updates the link instead of adding another one.
         body = {"globalId": url, "application": {"type": "com.github", "name": "GitHub"}, "object": link}
@@ -672,13 +673,32 @@ class Sync:
 
         self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
 
-        if new_pr and event != "closed":
+        # Every event updates the link (the state of the PR in its title), except for a PR closed before a run saw it.
+        if not (new_pr and event == "closed"):
             self.change(f"link PR #{number}: {pr['title']}", lambda: self.link_pr(key, pr))
 
     # The links of the ticket, grouped by the branch: the group of a branch has its link and the links of its PRs.
 
     def link_pr(self, key, pr, status=None):
-        self.jira.link(key, pr["html_url"], f"PR #{pr['number']}: {pr['title']}", status, link_group(pr["head"]["ref"]))
+        """
+        The link of the PR: its state in the title (draft, merged, closed), struck through when it is merged or
+        closed, with the icon of its checks (status: (the icon, its title); by default the remembered state).
+        """
+        if status is None:
+            remembered = ((self.properties.get(key) or {}).get("checks", {}).get(str(pr["number"]), {})).get("state")
+            status = CHECKS[remembered][:2] if remembered else None
+
+        if pr["merged_at"] is not None:
+            state = " (merged)"
+        elif pr["state"] == "closed":
+            state = " (closed)"
+        elif pr["draft"]:
+            state = " (draft)"
+        else:
+            state = ""
+
+        self.jira.link(key, pr["html_url"], f"PR #{pr['number']}{state}: {pr['title']}", status,
+                       link_group(pr["head"]["ref"]), resolved=pr["state"] == "closed")
 
     def link_branch(self, key, branch):
         url = f"https://github.com/{GITHUB_REPOSITORY}/tree/{urllib.parse.quote(branch)}"
@@ -693,13 +713,10 @@ class Sync:
             return
 
         self.log.info(f"Relinking {key}")
-        checks = state.get("checks", {})
 
         for number in sorted({number for name in EVENTS for number in state.get(name, [])}):
             pr = self.github.pull_request(number)
-            checks_state = checks.get(str(number), {}).get("state")
-            status = (CHECKS[checks_state][0], CHECKS[checks_state][1]) if checks_state else None
-            self.change(f"link PR #{number}: {pr['title']}", lambda pr=pr, status=status: self.link_pr(key, pr, status))
+            self.change(f"link PR #{number}: {pr['title']}", lambda pr=pr: self.link_pr(key, pr))
 
         for branch in state.get("branches", []):
             self.change(f"link the branch {branch}", lambda branch=branch: self.link_branch(key, branch))
