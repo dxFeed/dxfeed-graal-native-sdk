@@ -232,7 +232,8 @@ by hand stays where it is. The pull requests and the branches are linked from th
 (the heading of a group is the distinct part of the name of the branch, as Jira cuts the heading at about 20
 characters: `feature/MDAPI-427-warnings` -> `warnings`, `bugfix/MDAPI-411` -> `MDAPI-411`; the branch and its pull
 requests are under it, the groups in the alphabetical order of Jira). The link of a pull request has its state in
-the title (`(draft)`, `(merged)`, `(closed)`) and is struck through when it is merged or closed. To regroup the links
+the title (`(draft)`, `(merged)`, `(closed)`) and is struck through when it is merged or closed; the link of a branch
+is struck through (`(deleted)`) when the branch is deleted, by the same events of the repository. To regroup the links
 made before (or lost), run the build with `env.RELINK` set to the tickets (`MDAPI-427`) in the Run dialog.
 
 A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases the Jira version

@@ -28,7 +28,8 @@ changes; running checks change the icon only, so Jira mails the watchers for the
 Each PR and branch is applied to a ticket once (the ticket keeps the numbers of the applied PRs and the names of the
 branches in an issue property), so a ticket moved back by hand stays where it is. The opened and merged PRs are also
 linked from the ticket, grouped by the branch (the heading of a group is the distinct part of its name, see link_group);
-the link of a PR has its state in the title (draft, merged, closed) and is struck through when it is merged or closed.
+the link of a PR has its state in the title (draft, merged, closed) and is struck through when it is merged or closed,
+the link of a branch when the branch is deleted (the events of the repository again).
 
 A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than the last released Jira version
 "graal-cxx-api vX.Y.Z":
@@ -161,11 +162,16 @@ class GitHub:
         """The check runs of the commit (the jobs of GitHub Actions): name, status, conclusion, html_url."""
         return self.get(f"commits/{sha}/check-runs?per_page=100")["check_runs"]
 
-    def created_branches(self):
-        """The branches created recently (the events of the repository, the latest first): (the time, the name)."""
+    def branch_events(self):
+        """
+        The branches created and deleted recently (the events of the repository, the latest first): (the time,
+        "created" or "deleted", the name).
+        """
+        kinds = {"CreateEvent": "created", "DeleteEvent": "deleted"}
         return [
-            (event["created_at"], event["payload"]["ref"]) for event in self.get("events?per_page=100")
-            if event["type"] == "CreateEvent" and event["payload"].get("ref_type") == "branch"
+            (event["created_at"], kinds[event["type"]], event["payload"]["ref"])
+            for event in self.get("events?per_page=100")
+            if event["type"] in kinds and event["payload"].get("ref_type") == "branch"
         ]
 
     def releases(self):
@@ -529,8 +535,8 @@ class Sync:
             and (pr["merged_at"] is None or parse_time(pr["merged_at"]) >= self.since)
         ]
         changes += [
-            (time, lambda branch=branch: self.sync_branch(branch)) for time, branch in self.github.created_branches()
-            if parse_time(time) >= self.since
+            (time, lambda kind=kind, branch=branch: self.sync_branch(branch, deleted=kind == "deleted"))
+            for time, kind, branch in self.github.branch_events() if parse_time(time) >= self.since
         ]
 
         for time, sync in sorted(changes, key=lambda change: change[0]):
@@ -600,13 +606,31 @@ class Sync:
         if changed:
             self.change(f"remember the checks of PR #{number}", lambda: self.jira.set_property(key, ticket))
 
-    def sync_branch(self, branch):
-        """A branch of a ticket is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-...): its development starts."""
+    def sync_branch(self, branch, deleted=False):
+        """
+        A branch of a ticket is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-...): its development starts; or it
+        is deleted (after the merge of its PR): its link is struck through.
+        """
         for key in sorted(set(KEY_PATTERN.findall(branch))):
             try:
                 state = self.state(key)
 
-                if state is None or branch in state.get("branches", []):
+                if state is None:
+                    continue
+
+                if deleted:
+                    self.delete_branch(key, state, branch)
+                    continue
+
+                if branch in state.get("deleted_branches", []):
+                    # Created again with the same name: the link is not struck through any more.
+                    self.log.info(f"{key}: branch {branch} created again")
+                    state["deleted_branches"].remove(branch)
+                    self.change(f"remember branch {branch}", lambda: self.jira.set_property(key, state))
+                    self.change(f"link the branch {branch}", lambda: self.link_branch(key, branch))
+                    continue
+
+                if branch in state.get("branches", []):
                     continue
 
                 self.log.info(f"{key}: branch {branch} created")
@@ -700,9 +724,21 @@ class Sync:
         self.jira.link(key, pr["html_url"], f"PR #{pr['number']}{state}: {pr['title']}", status,
                        link_group(pr["head"]["ref"]), resolved=pr["state"] == "closed")
 
-    def link_branch(self, key, branch):
+    def delete_branch(self, key, state, branch):
+        """A linked branch is deleted: its link is struck through, once."""
+        if branch not in state.get("branches", []) or branch in state.get("deleted_branches", []):
+            return
+
+        self.log.info(f"{key}: branch {branch} deleted")
+        state.setdefault("deleted_branches", []).append(branch)
+        self.change(f"remember the deleted branch {branch}", lambda: self.jira.set_property(key, state))
+        self.change(f"link the branch {branch} (deleted)", lambda: self.link_branch(key, branch, deleted=True))
+
+    def link_branch(self, key, branch, deleted=False):
+        """The link of the branch, struck through when it is deleted."""
         url = f"https://github.com/{GITHUB_REPOSITORY}/tree/{urllib.parse.quote(branch)}"
-        self.jira.link(key, url, f"Branch {branch}", relationship=link_group(branch))
+        title = f"Branch {branch}" + (" (deleted)" if deleted else "")
+        self.jira.link(key, url, title, relationship=link_group(branch), resolved=deleted)
 
     def relink(self, key):
         """Links the PRs and the branches that the ticket remembers again (RELINK): into the groups of the branches."""
@@ -719,7 +755,9 @@ class Sync:
             self.change(f"link PR #{number}: {pr['title']}", lambda pr=pr: self.link_pr(key, pr))
 
         for branch in state.get("branches", []):
-            self.change(f"link the branch {branch}", lambda branch=branch: self.link_branch(key, branch))
+            deleted = branch in state.get("deleted_branches", [])
+            self.change(f"link the branch {branch}", lambda branch=branch, deleted=deleted: self.link_branch(
+                key, branch, deleted))
 
     def not_started(self, key):
         """Whether the development of the ticket has not started: it is Reported (not confirmed yet) or Confirmed."""

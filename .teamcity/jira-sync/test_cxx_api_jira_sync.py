@@ -840,6 +840,67 @@ class SyncTest(unittest.TestCase):
         self.server.events.append({"type": "CreateEvent", "created_at": time,
                                    "payload": {"ref": branch, "ref_type": ref_type}})
 
+    def branch_deleted(self, branch, time="2026-10-05T11:30:00Z"):
+        self.server.events.append({"type": "DeleteEvent", "created_at": time,
+                                   "payload": {"ref": branch, "ref_type": "branch"}})
+
+    def branch_url(self, branch):
+        return f"https://github.com/dxFeed/dxfeed-graal-cxx-api/tree/{branch}"
+
+    def test_deleted_branch_is_struck_through_once(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"branches": ["feature/MDAPI-1-x"]})
+        self.branch_deleted("feature/MDAPI-1-x")
+
+        self.assertEqual(0, self.run_sync())
+        self.run_sync()
+
+        url = self.branch_url("feature/MDAPI-1-x")
+        self.assertTrue(self.server.link_resolved[url])
+        self.assertEqual([("MDAPI-1", url, "Branch feature/MDAPI-1-x (deleted)")], self.server.links)
+        self.assertEqual(["feature/MDAPI-1-x"], self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))  # the status does not change
+
+    def test_deleted_branch_that_is_not_linked_is_ignored(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD)
+        self.branch_deleted("feature/MDAPI-1-x")
+
+        self.run_sync()
+
+        self.assertEqual([], self.server.changes)
+
+    def test_branch_created_and_deleted_between_two_runs(self):
+        self.server.issue("MDAPI-1", CONFIRMED)
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T10:00:00Z")
+        self.branch_deleted("feature/MDAPI-1-x", time="2026-10-05T11:00:00Z")
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual("Branch feature/MDAPI-1-x (deleted)", self.server.links[-1][2])
+
+    def test_branch_created_again_is_not_struck_through(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT,
+                          prop={"branches": ["feature/MDAPI-1-x"], "deleted_branches": ["feature/MDAPI-1-x"]})
+        self.branch_created("feature/MDAPI-1-x")
+
+        self.run_sync()
+
+        url = self.branch_url("feature/MDAPI-1-x")
+        self.assertFalse(self.server.link_resolved[url])
+        self.assertEqual("Branch feature/MDAPI-1-x", self.server.links[-1][2])
+        self.assertEqual([], self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
+
+    def test_relink_keeps_the_deleted_branches_struck_through(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD,
+                          prop={"branches": ["feature/MDAPI-1-x"], "deleted_branches": ["feature/MDAPI-1-x"]})
+        log = sync.Log(self.out)
+        github = sync.GitHub(self.server, None)
+        jira = sync.Jira(self.server, "https://jira.test", "token")
+
+        sync.Sync(github, jira, log, False, since=NOW).run(relink=["MDAPI-1"])
+
+        self.assertTrue(self.server.link_resolved[self.branch_url("feature/MDAPI-1-x")])
+
     def test_created_branch_starts_the_development(self):
         self.server.issue("MDAPI-1", CONFIRMED)
         self.branch_created("feature/MDAPI-1-something")
