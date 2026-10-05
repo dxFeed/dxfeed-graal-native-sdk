@@ -268,7 +268,8 @@ after that. A pull request merged into `release/vN` gives its ticket the unrelea
 The checks (GitHub Actions) of the latest commits of the open pull requests are shown in their tickets: the status
 icon at the link of a pull request follows them (passed, failed, running), and one comment per pull request shows the
 result with the failed jobs, edited (not added again) when it changes. Running checks change the icon only, so Jira
-mails the watchers for the results alone.
+mails the watchers for the results alone. A pull request merged (closed) right after its checks finished gets the
+final checks once more.
 
 The tickets are the MDAPI keys of the title and the branch of a pull request, of the name of a branch; the created
 branches come from the events of the repository (GitHub may show them with a delay). Each pull request and branch is

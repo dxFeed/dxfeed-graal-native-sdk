@@ -107,6 +107,7 @@ class FakeServer:
         self.pulls = []
         self.events = []
         self.check_runs = {}  # the sha -> the check runs
+        self.check_runs_read = 0
         self.comments = {}  # the id -> (the ticket, the body)
         self.link_statuses = {}  # the URL -> the title of the status icon
         self.link_groups = {}  # the URL -> the relationship (the heading of the group of the link)
@@ -154,6 +155,7 @@ class FakeServer:
             return next(pr for pr in self.pulls if pr["number"] == int(path[len("pulls/"):]))
 
         if path.startswith("commits/") and "/check-runs" in path:
+            self.check_runs_read += 1
             return {"check_runs": self.check_runs.get(path.split("/")[1], [])}
 
         if path.startswith("events?"):
@@ -857,7 +859,8 @@ class SyncTest(unittest.TestCase):
         url = self.branch_url("feature/MDAPI-1-x")
         self.assertTrue(self.server.link_resolved[url])
         self.assertEqual([("MDAPI-1", url, "Branch feature/MDAPI-1-x (deleted)")], self.server.links)
-        self.assertEqual(["feature/MDAPI-1-x"], self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
+        self.assertEqual({"feature/MDAPI-1-x": "2026-10-05T11:30:00Z"},
+                         self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))  # the status does not change
 
     def test_deleted_branch_that_is_not_linked_is_ignored(self):
@@ -878,17 +881,43 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
         self.assertEqual("Branch feature/MDAPI-1-x (deleted)", self.server.links[-1][2])
 
-    def test_branch_created_again_is_not_struck_through(self):
-        self.server.issue("MDAPI-1", IN_DEVELOPMENT,
+    def test_old_creation_of_a_deleted_branch_changes_nothing(self):
+        # Both events stay in the lookback: every run sees them again.
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={
+            "branches": ["feature/MDAPI-1-x"], "deleted_branches": {"feature/MDAPI-1-x": "2026-10-05T11:30:00Z"},
+        })
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T10:00:00Z")
+        self.branch_deleted("feature/MDAPI-1-x", time="2026-10-05T11:30:00Z")
+
+        self.run_sync()
+
+        self.assertEqual([], self.server.changes)
+
+    def test_deletions_of_the_first_version_get_their_times(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD,
                           prop={"branches": ["feature/MDAPI-1-x"], "deleted_branches": ["feature/MDAPI-1-x"]})
-        self.branch_created("feature/MDAPI-1-x")
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T10:00:00Z")
+        self.branch_deleted("feature/MDAPI-1-x", time="2026-10-05T11:30:00Z")
+        self.run_sync()
+        changes = len(self.server.changes)
+
+        self.run_sync()
+
+        self.assertEqual(changes, len(self.server.changes))  # settled after the first run
+        self.assertTrue(self.server.link_resolved[self.branch_url("feature/MDAPI-1-x")])
+
+    def test_branch_created_again_is_not_struck_through(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT, prop={
+            "branches": ["feature/MDAPI-1-x"], "deleted_branches": {"feature/MDAPI-1-x": "2026-10-05T10:00:00Z"},
+        })
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T11:00:00Z")
 
         self.run_sync()
 
         url = self.branch_url("feature/MDAPI-1-x")
         self.assertFalse(self.server.link_resolved[url])
         self.assertEqual("Branch feature/MDAPI-1-x", self.server.links[-1][2])
-        self.assertEqual([], self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
+        self.assertEqual({}, self.server.issues["MDAPI-1"]["property"]["deleted_branches"])
 
     def test_relink_keeps_the_deleted_branches_struck_through(self):
         self.server.issue("MDAPI-1", WAITING_FOR_BUILD,
@@ -1193,6 +1222,50 @@ class SyncTest(unittest.TestCase):
         self.assertIn("[dry run] link status: Checks failed", output)
         self.assertIn("[dry run] comment the checks", output)
         self.assertEqual([], self.server.changes)
+
+    def test_checks_of_a_pull_request_merged_after_they_passed_are_shown_once(self):
+        # The previous run saw the checks running; they passed, the PR was merged before this run.
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={
+            "opened": [10], "checks": {"10": {"state": "pending", "result": "failure: linux", "comment": "500"}},
+        })
+        self.server.comments["500"] = ("MDAPI-1", "(x) failed")
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T11:00:00Z")]
+        self.checks(10, ("linux", "completed", "success"))
+
+        self.assertEqual(0, self.run_sync())
+
+        url = self.server.pulls[0]["html_url"]
+        self.assertEqual("Checks passed", self.server.link_statuses[url])
+        self.assertTrue(self.server.link_resolved[url])  # still merged
+        self.assertTrue(self.check_comments()[0].startswith("(/) "))  # the same comment, edited
+        self.assertTrue(self.server.issues["MDAPI-1"]["property"]["checks"]["10"]["final"])
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+
+        read = self.server.check_runs_read
+        self.run_sync()
+
+        self.assertEqual(read, self.server.check_runs_read)  # a closed PR: its checks are taken once
+
+    def test_checks_of_a_pull_request_opened_and_merged_between_two_runs(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T11:00:00Z")]
+        self.checks(10, ("linux", "completed", "failure"))
+
+        self.run_sync()
+
+        self.assertEqual("Checks failed", self.server.link_statuses[self.server.pulls[0]["html_url"]])
+        self.assertTrue(self.check_comments()[0].startswith("(x) "))
+
+    def test_pull_request_closed_before_the_checks_were_shown_gets_no_comment(self):
+        # Merged before the checks were shown in the tickets, still in the lookback.
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T11:00:00Z")]
+        self.checks(10, ("linux", "completed", "failure"))
+
+        self.run_sync()
+
+        self.assertEqual({}, self.server.comments)
+        self.assertEqual(0, self.server.check_runs_read)
 
     def test_checks_state(self):
         self.assertEqual((None, []), sync.checks_state([]))

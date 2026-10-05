@@ -314,6 +314,19 @@ def link_group(branch):
     return re.sub(r"^MDAPI-\d+-(?=.)", "", re.sub(r"^[\w.-]+/(?=MDAPI-\d+)", "", branch))
 
 
+def deleted_branches(state):
+    """
+    The deleted branches of the ticket: the name -> the time of the deletion. The first version kept a list of the
+    names, which becomes the times "" (any event is later).
+    """
+    deletions = state.get("deleted_branches", {})
+
+    if isinstance(deletions, list):
+        deletions = state["deleted_branches"] = {branch: "" for branch in deletions}
+
+    return deletions
+
+
 def prs(numbers):
     """For the log: "PR #118 is" or "PRs #1, #2 are"."""
     listed = ", ".join(f"#{number}" for number in numbers)
@@ -480,6 +493,8 @@ class Sync:
         self.properties = {}
         self.simulated = set()  # the tickets that the dry run has moved
         self.open_prs = None
+        self.recent_prs = None
+        self.closed_now = set()  # the PRs closed (merged) in this run
         self.versions = None
 
     def change(self, description, action):
@@ -529,29 +544,41 @@ class Sync:
     def sync_pull_requests(self):
         """The PRs updated and the branches created during the lookback, in the order of their times."""
         changes = [
-            (pr["updated_at"], lambda pr=pr: self.sync_pull_request(pr)) for pr in self.github.pull_requests()
-            if parse_time(pr["updated_at"]) >= self.since
+            (pr["updated_at"], lambda pr=pr: self.sync_pull_request(pr)) for pr in self.recent_pull_requests()
             # not an old PR with a new comment
-            and (pr["merged_at"] is None or parse_time(pr["merged_at"]) >= self.since)
+            if pr["merged_at"] is None or parse_time(pr["merged_at"]) >= self.since
         ]
         changes += [
-            (time, lambda kind=kind, branch=branch: self.sync_branch(branch, deleted=kind == "deleted"))
+            (time, lambda time=time, kind=kind, branch=branch: self.sync_branch(branch, time, kind == "deleted"))
             for time, kind, branch in self.github.branch_events() if parse_time(time) >= self.since
         ]
 
         for time, sync in sorted(changes, key=lambda change: change[0]):
             sync()
 
+    def recent_pull_requests(self):
+        """The PRs updated during the lookback (read once)."""
+        if self.recent_prs is None:
+            self.recent_prs = [
+                pr for pr in self.github.pull_requests() if parse_time(pr["updated_at"]) >= self.since
+            ]
+
+        return self.recent_prs
+
     def sync_checks(self):
         """
         The checks (GitHub Actions) of the latest commits of the open PRs in their tickets: the status icon at the
         link of a PR follows them, and one comment per PR and ticket shows the result, edited (not added again) when it
-        changes. Running checks change the icon only, so Jira mails the watchers for the results alone.
+        changes. Running checks change the icon only, so Jira mails the watchers for the results alone. A PR closed
+        (merged) during the lookback gets its final checks once more: they may have passed after the previous run.
         """
-        for pr in self.open_pull_requests():
-            keys = pr_keys(pr)
+        closed = [pr for pr in self.recent_pull_requests() if pr["state"] == "closed"]
 
-            if not keys:
+        for pr in self.open_pull_requests() + closed:
+            keys = pr_keys(pr)
+            final = pr["state"] == "closed"
+
+            if not keys or (final and not any(self.needs_final_checks(key, pr) for key in keys)):
                 continue
 
             state, failed = checks_state(self.github.check_runs(pr["head"]["sha"]))
@@ -561,11 +588,26 @@ class Sync:
 
             for key in keys:
                 try:
-                    self.apply_checks(key, pr, state, failed)
+                    self.apply_checks(key, pr, state, failed, final)
                 except HttpError as e:
                     self.log.problem(f"{key}, the checks of PR #{pr['number']}: {e}")
 
-    def apply_checks(self, key, pr, state, failed):
+    def needs_final_checks(self, key, pr):
+        """
+        Whether the ticket is to get the final checks of the closed PR: it has shown its checks (not final yet), or the
+        PR is closed in this run (opened and merged between two runs). The PRs closed before the checks were shown get
+        no comment.
+        """
+        ticket = self.state(key)
+
+        if ticket is None:
+            return False
+
+        checks = ticket.get("checks", {}).get(str(pr["number"]))
+        return pr["number"] in self.closed_now if checks is None else not checks.get("final", False)
+
+    def apply_checks(self, key, pr, state, failed, final=False):
+        """Shows the checks of the PR in the ticket; final: the PR is closed, its checks are not taken again."""
         ticket = self.state(key)
 
         if ticket is None:
@@ -603,10 +645,14 @@ class Sync:
             checks["result"] = result
             changed = True
 
+        if final:
+            checks["final"] = True
+            changed = True
+
         if changed:
             self.change(f"remember the checks of PR #{number}", lambda: self.jira.set_property(key, ticket))
 
-    def sync_branch(self, branch, deleted=False):
+    def sync_branch(self, branch, time="", deleted=False):
         """
         A branch of a ticket is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-...): its development starts; or it
         is deleted (after the merge of its PR): its link is struck through.
@@ -618,14 +664,19 @@ class Sync:
                 if state is None:
                     continue
 
+                deletions = deleted_branches(state)
+
                 if deleted:
-                    self.delete_branch(key, state, branch)
+                    self.delete_branch(key, state, branch, time)
                     continue
 
-                if branch in state.get("deleted_branches", []):
+                if branch in deletions and time <= deletions[branch]:
+                    continue  # the creation before the deletion (the events stay in the lookback)
+
+                if branch in deletions:
                     # Created again with the same name: the link is not struck through any more.
                     self.log.info(f"{key}: branch {branch} created again")
-                    state["deleted_branches"].remove(branch)
+                    del deletions[branch]
                     self.change(f"remember branch {branch}", lambda: self.jira.set_property(key, state))
                     self.change(f"link the branch {branch}", lambda: self.link_branch(key, branch))
                     continue
@@ -697,6 +748,9 @@ class Sync:
 
         self.change(f"remember PR #{number} {event}", lambda: self.jira.set_property(key, state))
 
+        if event in ("merged", "closed"):
+            self.closed_now.add(number)
+
         # Every event updates the link (the state of the PR in its title), except for a PR closed before a run saw it.
         if not (new_pr and event == "closed"):
             self.change(f"link PR #{number}: {pr['title']}", lambda: self.link_pr(key, pr))
@@ -724,13 +778,21 @@ class Sync:
         self.jira.link(key, pr["html_url"], f"PR #{pr['number']}{state}: {pr['title']}", status,
                        link_group(pr["head"]["ref"]), resolved=pr["state"] == "closed")
 
-    def delete_branch(self, key, state, branch):
-        """A linked branch is deleted: its link is struck through, once."""
-        if branch not in state.get("branches", []) or branch in state.get("deleted_branches", []):
+    def delete_branch(self, key, state, branch, time):
+        """A linked branch is deleted: its link is struck through, once; the time of the deletion is remembered."""
+        deletions = deleted_branches(state)
+
+        if branch not in state.get("branches", []) or (branch in deletions and time <= deletions[branch]):
+            return
+
+        if branch in deletions:
+            deletions[branch] = time  # the later time of a deletion seen before (the first version kept no time)
+            self.change(f"remember the deleted branch {branch}", lambda: self.jira.set_property(key, state))
             return
 
         self.log.info(f"{key}: branch {branch} deleted")
-        state.setdefault("deleted_branches", []).append(branch)
+        deletions[branch] = time
+        state["deleted_branches"] = deletions
         self.change(f"remember the deleted branch {branch}", lambda: self.jira.set_property(key, state))
         self.change(f"link the branch {branch} (deleted)", lambda: self.link_branch(key, branch, deleted=True))
 
@@ -755,7 +817,7 @@ class Sync:
             self.change(f"link PR #{number}: {pr['title']}", lambda pr=pr: self.link_pr(key, pr))
 
         for branch in state.get("branches", []):
-            deleted = branch in state.get("deleted_branches", [])
+            deleted = branch in deleted_branches(state)
             self.change(f"link the branch {branch}", lambda branch=branch, deleted=deleted: self.link_branch(
                 key, branch, deleted))
 
