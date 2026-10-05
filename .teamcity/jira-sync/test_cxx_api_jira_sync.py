@@ -377,16 +377,18 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
 
-    def test_merge_into_another_feature_branch_does_not_count(self):
+    def test_merge_into_another_feature_branch_is_no_merge(self):
+        # No PR of the feature branch is open (see the stacked PR test for one): the work goes on there.
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
         self.server.pulls = [pull_request(10, "[MDAPI-1] Stacked", state="closed",
                                           merged_at="2026-10-05T10:00:00Z", base="feature/MDAPI-1-base")]
 
         self.run_sync()
 
-        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertNotIn("merged", self.server.issues["MDAPI-1"]["property"])
 
-    def test_closed_without_merge_does_not_move_the_ticket(self):
+    def test_closed_without_merge_does_not_move_a_ticket_in_development(self):
         self.server.issue("MDAPI-1", IN_DEVELOPMENT)
         self.server.pulls = [pull_request(10, "[MDAPI-1] Abandoned", state="closed")]
 
@@ -395,6 +397,38 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
         self.assertEqual([], self.transitions())
         self.assertEqual([], self.server.links)
+
+    def test_closed_without_merge_returns_a_ticket_in_review_to_development(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Abandoned", state="closed")]
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual({"opened": [10], "closed": [10]}, self.server.issues["MDAPI-1"]["property"])
+
+    def test_closed_without_merge_leaves_the_ticket_in_review_while_another_pull_request_is_in_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11]})
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] Abandoned", state="closed"),
+            pull_request(11, "[MDAPI-1] Other", updated_at="2026-10-05T09:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertIn("the PRs #11 are in review", self.out.getvalue())
+
+    def test_closed_without_merge_with_only_drafts_open_returns_to_development(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10], "drafted": [11]})
+        self.server.pulls = [
+            pull_request(10, "[MDAPI-1] Abandoned", state="closed"),
+            pull_request(11, "[MDAPI-1] Draft", draft=True, updated_at="2026-10-05T09:00:00Z"),
+        ]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
 
     def test_merge_waits_for_the_other_open_pull_requests(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10, 11]})

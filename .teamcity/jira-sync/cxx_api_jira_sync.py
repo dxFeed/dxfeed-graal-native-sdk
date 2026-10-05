@@ -10,7 +10,9 @@ The pull requests updated during the last LOOKBACK_HOURS (the tickets are the MD
   - a PR is opened (not a draft, or a draft is marked ready): In development -> Waiting for review;
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
     another branch), and a PR of the ticket has been merged: Waiting for review -> Waiting for build if no other PR of
-    the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review.
+    the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review;
+  - a PR is closed without a merge, and no PR of the ticket has been merged: Waiting for review -> In development
+    unless another PR of the ticket is in review;
     A ticket moved to Waiting for build gets the fix version of the next release of its line: the unreleased
     graal-cxx-api version of the major of release/vN for a PR merged there (vN.0.0, created if needed), else of the
     major of main (the patch after the last released version, created if needed).
@@ -396,15 +398,15 @@ class Sync:
         return True
 
     def to_build(self, key, state, number):
-        """Waiting for review -> Waiting for build once a PR is merged and the other PRs are closed."""
+        """
+        A PR is merged or closed: Waiting for review -> Waiting for build once a PR is merged and the other PRs are
+        closed; -> In development if only drafts are open, or if nothing has been merged and nothing is in review (the
+        PR has been closed without a merge).
+        """
         status = self.status(key)
 
         if status["id"] != WAITING_FOR_REVIEW:
             self.log.info(f"  stays in {status['name']}")
-            return True
-
-        if not state.get("merged"):
-            self.log.info(f"  stays in {status['name']}: no merged PR")
             return True
 
         still_open = [
@@ -422,6 +424,11 @@ class Sync:
             # Only drafts are open: the work goes on.
             numbers = ", ".join(f"#{other['number']}" for other in still_open)
             self.log.info(f"  the draft PRs {numbers} are open")
+            return self.move(key, IN_DEVELOPMENT)
+
+        if not state.get("merged"):
+            # The PR is closed without a merge, and nothing has been merged: the work goes back to development.
+            self.log.info("  no merged PR and no PR in review")
             return self.move(key, IN_DEVELOPMENT)
 
         if not self.move(key, WAITING_FOR_BUILD):

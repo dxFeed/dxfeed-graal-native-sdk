@@ -207,6 +207,9 @@ bot (`%dxcity.token.jira%`):
   review, the ticket waits: the last of them merged, or closed without a merge, moves it. A ticket moved to Waiting
   for build gets the fix version of the next release of its line (see below), unless it has an unreleased one of that
   line or a later one.
+- a pull request is closed without a merge (or merged into another feature branch), and no pull request of the
+  ticket has been merged: Waiting for review -> In development, unless another pull request of the ticket is in
+  review.
 
 The lines of the versions: `release/vN` collects the breaking changes of the next major, `main` has the patches of the
 current major until `release/vN` is merged into it and `vN.0.0` is released; the earlier majors are not maintained
