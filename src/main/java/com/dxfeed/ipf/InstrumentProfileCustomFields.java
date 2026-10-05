@@ -271,7 +271,7 @@ public class InstrumentProfileCustomFields {
         }
 
         static <T> T[] rehash(T[] old) {
-            //noinspection unchecked
+            @SuppressWarnings("unchecked")
             T[] a = (T[]) Array.newInstance(old.getClass().getComponentType(),
                     Math.max((old.length & ~1) * 2, 4));
             for (int i = old.length & ~1; (i -= 2) >= 0; ) {

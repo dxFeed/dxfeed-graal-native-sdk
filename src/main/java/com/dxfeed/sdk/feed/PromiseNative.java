@@ -4,9 +4,6 @@
 package com.dxfeed.sdk.feed;
 
 import com.dxfeed.event.EventType;
-import com.dxfeed.event.IndexedEvent;
-import com.dxfeed.event.LastingEvent;
-import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.promise.Promise;
 import com.dxfeed.promise.PromiseHandler;
 import com.dxfeed.promise.Promises;
@@ -34,6 +31,15 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 public class PromiseNative {
 
     /**
+     * The promise of the handle with the result type that the function names (an event or a list of events): the C
+     * code passes a promise of that kind, the type of the result cannot be checked.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Promise<T> toJava(final DxfgPromise dxfgPromise) {
+        return (Promise<T>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise);
+    }
+
+    /**
      * The result of {@code dxfg_Promise_awaitWithoutException} when the timeout elapsed
      * ({@code DXFG_PROMISE_AWAIT_TIMED_OUT} in {@code dxfg_feed.h}).
      */
@@ -51,7 +57,7 @@ public class PromiseNative {
     ) {
         return NativeUtils.MAPPER_PROMISE.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).getLastEventPromise(
-                        (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol)
                 )
         );
@@ -69,7 +75,7 @@ public class PromiseNative {
     ) {
         return NativeUtils.MAPPER_PROMISES.toNativeList(
                 NativeUtils.MAPPER_FEED.toJava(feed).getLastEventsPromises(
-                        (Class<? extends LastingEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOLS.toJavaList(dxfgSymbols)
                 )
         );
@@ -88,7 +94,7 @@ public class PromiseNative {
     ) {
         return NativeUtils.MAPPER_PROMISE.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).getIndexedEventsPromise(
-                        (Class<? extends IndexedEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol),
                         NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.toJava(source)
                 )
@@ -109,7 +115,7 @@ public class PromiseNative {
     ) {
         return NativeUtils.MAPPER_PROMISE.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).getTimeSeriesPromise(
-                        (Class<? extends TimeSeriesEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol),
                         fromTime,
                         toTime
@@ -196,7 +202,7 @@ public class PromiseNative {
             final DxfgPromise dxfgPromise
     ) {
         return NativeUtils.MAPPER_EVENTS.toNativeList(
-                (Collection<? extends EventType<?>>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise).getResult()
+                PromiseNative.<Collection<? extends EventType<?>>>toJava(dxfgPromise).getResult()
         );
     }
 
@@ -272,7 +278,7 @@ public class PromiseNative {
             final DxfgPromise dxfgPromise,
             final DxfgEventTypeListPointer events
     ) {
-        ((Promise<Collection<EventType<?>>>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise))
+        PromiseNative.<Collection<EventType<?>>>toJava(dxfgPromise)
                 .complete(NativeUtils.MAPPER_EVENTS.toJavaList(events));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -286,7 +292,7 @@ public class PromiseNative {
             final DxfgPromise dxfgPromise,
             final DxfgEventType dxfgEventType
     ) {
-        ((Promise<EventType<?>>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise))
+        PromiseNative.<EventType<?>>toJava(dxfgPromise)
                 .complete(NativeUtils.MAPPER_EVENT.toJava(dxfgEventType));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -364,11 +370,11 @@ public class PromiseNative {
     public static DxfgPromise dxfg_Promise_completed(
             final IsolateThread ignoredThread,
             final DxfgPromise dxfgPromise,
-            final JavaObjectHandler<?> javaObjectHandler
+            final JavaObjectHandler<Object> javaObjectHandler
     ) {
         return NativeUtils.MAPPER_PROMISE.toNative(
                 NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise).completed(
-                        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava((JavaObjectHandler<Object>) javaObjectHandler)
+                        NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(javaObjectHandler)
                 )
         );
     }

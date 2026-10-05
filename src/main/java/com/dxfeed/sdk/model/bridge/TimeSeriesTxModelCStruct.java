@@ -7,5 +7,5 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(TimeSeriesTxModelBridge.Directives.class)
 @CStruct("dxfg_time_series_tx_model_t")
-public interface TimeSeriesTxModelCStruct extends JavaObjectHandler<TimeSeriesTxModel> {
+public interface TimeSeriesTxModelCStruct extends JavaObjectHandler<TimeSeriesTxModel<?>> {
 }

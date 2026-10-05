@@ -7,7 +7,7 @@ import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeed;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.event.EventType;
-import com.dxfeed.event.IndexedEvent;
+import com.dxfeed.event.ListEventTypeMapper;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.market.OrderSource;
@@ -75,7 +75,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_SUBSCRIPTION.toNative(
                 NativeUtils.MAPPER_FEED.toJava(dxfgFeed).createSubscription(
-                        NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+                        ListEventTypeMapper.<EventType<?>>toArray(NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList))
                 )
         );
     }
@@ -91,7 +91,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_TIME_SERIES_SUBSCRIPTION.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed)
-                        .createTimeSeriesSubscription((Class<TimeSeriesEvent<?>>) dxfgClazz.clazz)
+                        .createTimeSeriesSubscription(dxfgClazz.eventClass())
         );
     }
 
@@ -106,7 +106,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_TIME_SERIES_SUBSCRIPTION.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).createTimeSeriesSubscription(
-                        NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])
+                        ListEventTypeMapper.<TimeSeriesEvent<?>>toArray(NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList))
                 )
         );
     }
@@ -176,7 +176,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_EVENT.toNative(
                 NativeUtils.MAPPER_FEED.toJava(feed).getLastEventIfSubscribed(
-                        (Class<LastingEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol)
                 )
         );
@@ -195,7 +195,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_EVENTS.toNativeList(
                 NativeUtils.MAPPER_FEED.toJava(feed).getIndexedEventsIfSubscribed(
-                        (Class<IndexedEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol),
                         OrderSource.valueOf(NativeUtils.MAPPER_STRING.toJava(source))
                 )
@@ -216,7 +216,7 @@ public class FeedNative {
     ) {
         return NativeUtils.MAPPER_EVENTS.toNativeList(
                 NativeUtils.MAPPER_FEED.toJava(feed).getTimeSeriesIfSubscribed(
-                        (Class<TimeSeriesEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol),
                         fromTime,
                         toTime

@@ -1,7 +1,7 @@
 package com.dxfeed.sdk.model.bridge;
 
 import com.dxfeed.api.experimental.model.IndexedTxModel;
-import com.dxfeed.event.IndexedEvent;
+import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
@@ -26,7 +26,7 @@ public class IndexedTxModelBridge {
   )
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_newBuilder(
       IsolateThread ignoredThread, DxfgEventClazz eventType) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModel.newBuilder((Class<IndexedEvent>) (Object) eventType.clazz);
+    IndexedTxModel.Builder<?> result = IndexedTxModel.newBuilder(eventType.eventClass());
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -36,7 +36,7 @@ public class IndexedTxModelBridge {
   )
   public static DxfgIndexedEventSourceList dxfg_IndexedTxModel_getSources(
       IsolateThread ignoredThread, IndexedTxModelCStruct source) {
-    Set result = (Set) IndexedTxModelUtils.MAPPER.toJava(source).getSources();
+    Set<IndexedEventSource> result = IndexedTxModelUtils.MAPPER.toJava(source).getSources();
     return NativeUtils.MAPPER_INDEXED_EVENT_SOURCES.toNativeList(result);
   }
 

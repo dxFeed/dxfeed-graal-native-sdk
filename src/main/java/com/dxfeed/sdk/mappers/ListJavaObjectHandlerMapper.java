@@ -19,6 +19,8 @@ public class ListJavaObjectHandlerMapper
         this.mapperJavaObjectHandler = mapperJavaObjectHandler;
     }
 
+    // The pointers of the list are typed by JavaObjectHandler<?>: the handles of any objects, as JavaObjectHandler<Object>.
+    @SuppressWarnings("unchecked")
     @Override
     protected Object toJava(final JavaObjectHandler<?> nativeObject) {
         return mapperJavaObjectHandler.toJava((JavaObjectHandler<Object>) nativeObject);
@@ -29,6 +31,7 @@ public class ListJavaObjectHandlerMapper
         return mapperJavaObjectHandler.toNative(javaObject);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void releaseNative(final JavaObjectHandler<?> nativeObject) {
         mapperJavaObjectHandler.release((JavaObjectHandler<Object>) nativeObject);

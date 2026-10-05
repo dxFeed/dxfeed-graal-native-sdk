@@ -3,7 +3,6 @@
 
 package com.dxfeed.sdk.candlewebservice;
 
-import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -52,10 +51,10 @@ public final class HistoryEndpointNative {
             throw new IllegalArgumentException("The `events` pointer is null");
         }
 
-        //noinspection DataFlowIssue,unchecked
+        //noinspection DataFlowIssue
         events.write(NativeUtils.MAPPER_EVENTS.toNativeList(
                 NativeUtils.MAPPER_HISTORY_ENDPOINT.toJava(historyEndpoint).getTimeSeries(
-                        (Class<TimeSeriesEvent<?>>) dxfgClazz.clazz,
+                        dxfgClazz.eventClass(),
                         NativeUtils.MAPPER_SYMBOL.toJava(dxfgSymbol),
                         fromTime,
                         toTime

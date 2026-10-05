@@ -1,14 +1,13 @@
 package com.dxfeed.sdk.model.bridge;
 
 import com.dxfeed.api.experimental.model.TxModelListener;
-import com.dxfeed.event.EventType;
+import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.graalvm.nativeimage.CurrentIsolate;
@@ -25,15 +24,15 @@ public class TxModelListenerBridge {
   )
   public static TxModelListenerCStruct dxfg_TxModelListener_new(IsolateThread ignoreThread,
       DxfgTxModelListenerFunctionEventsReceived functionEventsReceived, VoidPointer userData) {
-    final class Listener extends NativeListener implements TxModelListener {
+    final class Listener extends NativeListener implements TxModelListener<IndexedEvent<?>> {
       @Override
-      public void eventsReceived(final com.dxfeed.event.IndexedEventSource source, final List events, final boolean isSnapshot) {
+      public void eventsReceived(final com.dxfeed.event.IndexedEventSource source, final List<IndexedEvent<?>> events, final boolean isSnapshot) {
         if (!enter()) {
           return;
         }
         try {
           DxfgIndexedEventSourcePointer sourceNative = NativeUtils.MAPPER_INDEXED_EVENT_SOURCE.toNative(source);
-          DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList((Collection<? extends EventType<?>>) events);
+          DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList(events);
           boolean isSnapshotNative = isSnapshot;
           functionEventsReceived.invoke(
               CurrentIsolate.getCurrentThread(),

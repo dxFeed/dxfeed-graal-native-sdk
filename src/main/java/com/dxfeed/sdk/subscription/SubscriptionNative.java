@@ -8,6 +8,7 @@ import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
+import com.dxfeed.event.ListEventTypeMapper;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
@@ -48,7 +49,7 @@ public class SubscriptionNative {
     public static DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfg_DXFeedSubscription_new(
             final IsolateThread ignoredThread, final DxfgEventClazzList eventClazzList) {
         return NativeUtils.MAPPER_SUBSCRIPTION.toNative(new DXFeedSubscription<>(
-                NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList).toArray(new Class[0])));
+                ListEventTypeMapper.<EventType<?>>toArray(NativeUtils.MAPPER_EVENT_TYPES.toJavaList(eventClazzList))));
     }
 
     @CEntryPoint(name = "dxfg_DXFeedSubscription_getSubscriptionController", exceptionHandler = ExceptionHandlerReturnMinusOne.class)

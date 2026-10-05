@@ -25,26 +25,35 @@ public abstract class EventMapper<JavaObjectType extends EventType<?>, NativeObj
 
     protected abstract NativeObjectType createNativeObject();
 
+    // EventMappers chooses the mapper by the class of the event, so the events and the native structures passed to the
+    // methods "...WithCast" are of the types of this mapper.
+
+    @SuppressWarnings("unchecked")
     public NativeObjectType toNativeObjectWithCast(final EventType<?> javaEvent) {
         return toNative((JavaObjectType) javaEvent);
     }
 
+    @SuppressWarnings("unchecked")
     public JavaObjectType toJavaObjectWithCast(final DxfgEventType nativeEvent) {
         return toJava((NativeObjectType) nativeEvent);
     }
 
+    @SuppressWarnings("unchecked")
     public void fillNativeObjectWithCast(final EventType<?> javaEvent, final DxfgEventType nativeEvent) {
         fillNative((JavaObjectType) javaEvent, (NativeObjectType) nativeEvent, true);
     }
 
+    @SuppressWarnings("unchecked")
     public void cleanNativeObjectWithCast(final DxfgEventType nativeEvent) {
         cleanNative((NativeObjectType) nativeEvent);
     }
 
+    @SuppressWarnings("unchecked")
     public void fillJavaObjectWithCast(final DxfgEventType nativeEvent, final EventType<?> javaEvent) {
         fillJava((NativeObjectType) nativeEvent, (JavaObjectType) javaEvent);
     }
 
+    @SuppressWarnings("unchecked")
     public void releaseWithCast(final DxfgEventType nativeEvent) {
         release((NativeObjectType) nativeEvent);
     }

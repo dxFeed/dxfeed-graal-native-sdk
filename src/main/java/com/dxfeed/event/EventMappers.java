@@ -62,7 +62,7 @@ public class EventMappers extends Mapper<EventType<?>, DxfgEventType> {
 
     public static EventMappers createDefault(final Mapper<String, CCharPointer> stringMapper,
             Mapper<Object, DxfgSymbol> symbolMapper) {
-        return new EventMappers(stringMapper, new EventMapper[]{
+        return new EventMappers(stringMapper, new EventMapper<?, ?>[]{
                 //candle
                 new CandleMapper<>(stringMapper, symbolMapper),
                 new DailyCandleMapper(stringMapper, symbolMapper),

@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.indexedeventtxmodel;
 
+import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.model.IndexedEventTxModel;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import org.graalvm.nativeimage.c.CContext;
@@ -11,6 +12,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 @SuppressWarnings("rawtypes")
 @CContext(IndexedEventTxModelDirectives.class)
 @CStruct("dxfg_indexed_event_tx_model_listener_t")
-public interface DxfgIndexedEventTxModelListenerHandle extends JavaObjectHandler<IndexedEventTxModel.Listener> {
+public interface DxfgIndexedEventTxModelListenerHandle extends JavaObjectHandler<IndexedEventTxModel.Listener<IndexedEvent<?>>> {
 
 }

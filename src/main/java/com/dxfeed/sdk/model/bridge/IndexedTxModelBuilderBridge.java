@@ -24,7 +24,7 @@ public class IndexedTxModelBuilderBridge {
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withSources(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source,
       DxfgIndexedEventSourceList sources) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSources(NativeUtils.MAPPER_INDEXED_EVENT_SOURCES.toJavaList(sources));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSources(NativeUtils.MAPPER_INDEXED_EVENT_SOURCES.toJavaList(sources));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -34,7 +34,7 @@ public class IndexedTxModelBuilderBridge {
   )
   public static IndexedTxModelCStruct dxfg_IndexedTxModel_Builder_build(IsolateThread ignoredThread,
       IndexedTxModelBuilderCStruct source) {
-    IndexedTxModel result = (IndexedTxModel) IndexedTxModelBuilderUtils.MAPPER.toJava(source).build();
+    IndexedTxModel<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).build();
     return IndexedTxModelUtils.MAPPER.toNative(result);
   }
 
@@ -44,7 +44,7 @@ public class IndexedTxModelBuilderBridge {
   )
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withBatchProcessing(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source, boolean isBatchProcessing) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withBatchProcessing(isBatchProcessing);
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withBatchProcessing(isBatchProcessing);
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -55,7 +55,7 @@ public class IndexedTxModelBuilderBridge {
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withSnapshotProcessing(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source,
       boolean isSnapshotProcessing) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSnapshotProcessing(isSnapshotProcessing);
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSnapshotProcessing(isSnapshotProcessing);
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -65,7 +65,7 @@ public class IndexedTxModelBuilderBridge {
   )
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withFeed(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source, DxfgFeed feed) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withFeed(NativeUtils.MAPPER_FEED.toJava(feed));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withFeed(NativeUtils.MAPPER_FEED.toJava(feed));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -76,7 +76,7 @@ public class IndexedTxModelBuilderBridge {
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withAggregationPeriod(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source,
       DxfgTimePeriodHandle aggregationPeriod) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(aggregationPeriod));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(aggregationPeriod));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -86,7 +86,7 @@ public class IndexedTxModelBuilderBridge {
   )
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withSymbol(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source, DxfgSymbol symbol) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSymbol(NativeUtils.MAPPER_SYMBOL.toJava(symbol));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withSymbol(NativeUtils.MAPPER_SYMBOL.toJava(symbol));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -97,7 +97,7 @@ public class IndexedTxModelBuilderBridge {
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withListener(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source,
       TxModelListenerCStruct listener) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withListener(TxModelListenerUtils.MAPPER.toJava(listener));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withListener(TxModelListenerUtils.forModel(TxModelListenerUtils.MAPPER.toJava(listener)));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -108,7 +108,7 @@ public class IndexedTxModelBuilderBridge {
   public static IndexedTxModelBuilderCStruct dxfg_IndexedTxModel_Builder_withExecutor(
       IsolateThread ignoredThread, IndexedTxModelBuilderCStruct source,
       DxfgExecutorHandle executor) {
-    IndexedTxModel.Builder result = (IndexedTxModel.Builder) IndexedTxModelBuilderUtils.MAPPER.toJava(source).withExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
+    IndexedTxModel.Builder<?> result = IndexedTxModelBuilderUtils.MAPPER.toJava(source).withExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
     return IndexedTxModelBuilderUtils.MAPPER.toNative(result);
   }
 

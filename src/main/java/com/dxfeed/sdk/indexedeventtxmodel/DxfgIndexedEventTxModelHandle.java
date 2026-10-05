@@ -11,6 +11,6 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 @SuppressWarnings("rawtypes")
 @CContext(IndexedEventTxModelDirectives.class)
 @CStruct("dxfg_indexed_event_tx_model_t")
-public interface DxfgIndexedEventTxModelHandle extends JavaObjectHandler<IndexedEventTxModel> {
+public interface DxfgIndexedEventTxModelHandle extends JavaObjectHandler<IndexedEventTxModel<?>> {
 
 }

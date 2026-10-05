@@ -24,7 +24,7 @@ public class TimeSeriesTxModelBuilderBridge {
   )
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withFromTime(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source, long fromTime) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withFromTime(fromTime);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withFromTime(fromTime);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -35,7 +35,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withSorting(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       DxfgTimeSeriesTxModelSortOrder sortOrder) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSorting(sortOrder.sortOrder);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSorting(sortOrder.sortOrder);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -46,7 +46,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_ignoreRemoveEvents(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       boolean ignoreRemoveEvents) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).ignoreRemoveEvents(ignoreRemoveEvents);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).ignoreRemoveEvents(ignoreRemoveEvents);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -57,7 +57,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_ignoreEventsFromPast(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       boolean ignoreEventFromPast) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).ignoreEventsFromPast(ignoreEventFromPast);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).ignoreEventsFromPast(ignoreEventFromPast);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -68,7 +68,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withConfirmationTick(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       boolean confirmationTick) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withConfirmationTick(confirmationTick);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withConfirmationTick(confirmationTick);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -78,7 +78,7 @@ public class TimeSeriesTxModelBuilderBridge {
   )
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withEventPeek(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source, VoidPointer eventPeek) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withEventPeek(null /*eventPeek*/);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withEventPeek(null /*eventPeek*/);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -88,7 +88,7 @@ public class TimeSeriesTxModelBuilderBridge {
   )
   public static TimeSeriesTxModelCStruct dxfg_TimeSeriesTxModel_Builder_build(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source) {
-    TimeSeriesTxModel result = (TimeSeriesTxModel) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).build();
+    TimeSeriesTxModel<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).build();
     return TimeSeriesTxModelUtils.MAPPER.toNative(result);
   }
 
@@ -99,7 +99,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withBatchProcessing(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       boolean isBatchProcessing) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withBatchProcessing(isBatchProcessing);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withBatchProcessing(isBatchProcessing);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -110,7 +110,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withSnapshotProcessing(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       boolean isSnapshotProcessing) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSnapshotProcessing(isSnapshotProcessing);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSnapshotProcessing(isSnapshotProcessing);
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -120,7 +120,7 @@ public class TimeSeriesTxModelBuilderBridge {
   )
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withFeed(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source, DxfgFeed feed) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withFeed(NativeUtils.MAPPER_FEED.toJava(feed));
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withFeed(NativeUtils.MAPPER_FEED.toJava(feed));
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -131,7 +131,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withAggregationPeriod(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       DxfgTimePeriodHandle aggregationPeriod) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(aggregationPeriod));
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(aggregationPeriod));
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -141,7 +141,7 @@ public class TimeSeriesTxModelBuilderBridge {
   )
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withSymbol(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source, DxfgSymbol symbol) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSymbol(NativeUtils.MAPPER_SYMBOL.toJava(symbol));
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withSymbol(NativeUtils.MAPPER_SYMBOL.toJava(symbol));
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -152,7 +152,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withListener(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       TxModelListenerCStruct listener) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withListener(TxModelListenerUtils.MAPPER.toJava(listener));
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withListener(TxModelListenerUtils.forModel(TxModelListenerUtils.MAPPER.toJava(listener)));
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 
@@ -163,7 +163,7 @@ public class TimeSeriesTxModelBuilderBridge {
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_Builder_withExecutor(
       IsolateThread ignoredThread, TimeSeriesTxModelBuilderCStruct source,
       DxfgExecutorHandle executor) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModelBuilderUtils.MAPPER.toJava(source).withExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 

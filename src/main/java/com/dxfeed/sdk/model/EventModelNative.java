@@ -4,7 +4,6 @@
 package com.dxfeed.sdk.model;
 
 import com.dxfeed.event.IndexedEvent;
-import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.model.IndexedEventModel;
 import com.dxfeed.model.ObservableListModelListener;
 import com.dxfeed.model.TimeSeriesEventModel;
@@ -49,7 +48,7 @@ public class EventModelNative {
             final DxfgEventClazz clazz
     ) {
         return NativeUtils.MAPPER_INDEXED_EVENT_MODEL.toNative(
-                new IndexedEventModel<>((Class<? extends IndexedEvent<?>>) clazz.clazz));
+                new IndexedEventModel<>(clazz.eventClass()));
     }
 
     @CEntryPoint(
@@ -61,7 +60,7 @@ public class EventModelNative {
             final DxfgEventClazz clazz
     ) {
         return NativeUtils.MAPPER_TIME_SERIES_EVENT_MODEL.toNative(
-                new TimeSeriesEventModel<>((Class<? extends TimeSeriesEvent<?>>) clazz.clazz));
+                new TimeSeriesEventModel<>(clazz.eventClass()));
     }
 
     @CEntryPoint(

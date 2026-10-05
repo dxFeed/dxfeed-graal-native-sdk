@@ -61,7 +61,9 @@ public class CandleMapper<T extends Candle, V extends DxfgCandle> extends EventM
         this.stringMapper.release(nativeObject.getSymbol());
     }
 
+    // The mappers of the subclasses of Candle (DailyCandleMapper) override doToJava.
     @Override
+    @SuppressWarnings("unchecked")
     protected T doToJava(final V nativeObject) {
         final T javaObject = (T) new Candle();
         fillJava(nativeObject, javaObject);

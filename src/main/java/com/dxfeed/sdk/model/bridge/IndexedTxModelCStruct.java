@@ -7,5 +7,5 @@ import org.graalvm.nativeimage.c.struct.CStruct;
 
 @CContext(IndexedTxModelBridge.Directives.class)
 @CStruct("dxfg_indexed_tx_model_t")
-public interface IndexedTxModelCStruct extends JavaObjectHandler<IndexedTxModel> {
+public interface IndexedTxModelCStruct extends JavaObjectHandler<IndexedTxModel<?>> {
 }

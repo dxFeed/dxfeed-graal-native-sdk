@@ -278,12 +278,9 @@ public final class NativeUtils {
     public static final Mapper<HistoryEndpoint, DxfgHistoryEndpointHandle> MAPPER_HISTORY_ENDPOINT;
     public static final Mapper<HistoryEndpoint.Builder, DxfgHistoryEndpointBuilderHandle> MAPPER_HISTORY_ENDPOINT_BUILDER;
     public static final Mapper<SubscriptionController, DxfgSubscriptionControllerHandle> MAPPER_SUBSCRIPTION_CONTROLLER;
-    @SuppressWarnings("rawtypes")
-    public static final Mapper<IndexedEventTxModel, DxfgIndexedEventTxModelHandle> MAPPER_INDEXED_EVENT_TX_MODEL;
-    @SuppressWarnings("rawtypes")
-    public static final Mapper<IndexedEventTxModel.Builder, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
-    @SuppressWarnings("rawtypes")
-    public static final Mapper<IndexedEventTxModel.Listener, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
+    public static final Mapper<IndexedEventTxModel<?>, DxfgIndexedEventTxModelHandle> MAPPER_INDEXED_EVENT_TX_MODEL;
+    public static final Mapper<IndexedEventTxModel.Builder<?>, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
+    public static final Mapper<IndexedEventTxModel.Listener<IndexedEvent<?>>, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
 
     static {
         MAPPER_STRING = new StringMapper();

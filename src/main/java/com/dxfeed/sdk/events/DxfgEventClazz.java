@@ -111,6 +111,16 @@ public enum DxfgEventClazz {
         this.clazz = clazz;
     }
 
+    /**
+     * The class as the class of the events of type {@code E} that the calling function needs (lasting, indexed or time
+     * series events). The C code passes a suitable event type; the type of the parameter of the class cannot be
+     * checked, as in a cast of {@link #clazz}.
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends EventType<?>> Class<E> eventClass() {
+        return (Class<E>) clazz;
+    }
+
     public static DxfgEventClazz of(final Class<? extends EventType<?>> clazz) {
         return map.get(clazz);
     }

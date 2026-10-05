@@ -9,7 +9,7 @@ import org.graalvm.nativeimage.c.struct.SizeOf;
 
 @SuppressWarnings("rawtypes")
 public class IndexedEventTxModelMapper extends
-        JavaObjectHandlerMapper<IndexedEventTxModel, DxfgIndexedEventTxModelHandle> {
+        JavaObjectHandlerMapper<IndexedEventTxModel<?>, DxfgIndexedEventTxModelHandle> {
 
     @Override
     protected int getSizeJavaObjectHandler() {

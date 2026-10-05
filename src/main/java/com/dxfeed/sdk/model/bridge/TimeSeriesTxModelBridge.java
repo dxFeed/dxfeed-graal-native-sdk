@@ -1,7 +1,6 @@
 package com.dxfeed.sdk.model.bridge;
 
 import com.dxfeed.api.experimental.model.TimeSeriesTxModel;
-import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
@@ -23,7 +22,7 @@ public class TimeSeriesTxModelBridge {
   )
   public static TimeSeriesTxModelBuilderCStruct dxfg_TimeSeriesTxModel_newBuilder(
       IsolateThread ignoredThread, DxfgEventClazz eventType) {
-    TimeSeriesTxModel.Builder result = (TimeSeriesTxModel.Builder) TimeSeriesTxModel.newBuilder((Class<TimeSeriesEvent>) (Object) eventType.clazz);
+    TimeSeriesTxModel.Builder<?> result = TimeSeriesTxModel.newBuilder(eventType.eventClass());
     return TimeSeriesTxModelBuilderUtils.MAPPER.toNative(result);
   }
 

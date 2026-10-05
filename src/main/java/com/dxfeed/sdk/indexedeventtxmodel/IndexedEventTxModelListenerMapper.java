@@ -3,13 +3,14 @@
 
 package com.dxfeed.sdk.indexedeventtxmodel;
 
+import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.model.IndexedEventTxModel;
 import com.dxfeed.sdk.mappers.JavaObjectHandlerMapper;
 import org.graalvm.nativeimage.c.struct.SizeOf;
 
 @SuppressWarnings("rawtypes")
 public class IndexedEventTxModelListenerMapper extends
-        JavaObjectHandlerMapper<IndexedEventTxModel.Listener, DxfgIndexedEventTxModelListenerHandle> {
+        JavaObjectHandlerMapper<IndexedEventTxModel.Listener<IndexedEvent<?>>, DxfgIndexedEventTxModelListenerHandle> {
 
     @Override
     protected int getSizeJavaObjectHandler() {

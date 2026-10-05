@@ -5,7 +5,6 @@ package com.dxfeed.sdk.indexedeventtxmodel;
 
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
-import com.dxfeed.event.EventType;
 import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.model.IndexedEventTxModel;
 import com.dxfeed.model.IndexedEventTxModel.Builder;
@@ -25,7 +24,6 @@ import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandlePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolPointer;
-import java.util.Collection;
 import java.util.List;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -39,6 +37,15 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 @CContext(IndexedEventTxModelDirectives.class)
 public class IndexedEventTxModelNative {
 
+    /**
+     * The listener for a model of the events of type {@code E}. The listeners of dxfg_IndexedEventTxModel_Listener_new
+     * take the events of any type (they pass them to the C code), so they fit a model of any events.
+     */
+    @SuppressWarnings("unchecked")
+    private static <E extends IndexedEvent<?>> Listener<E> forModel(final Listener<IndexedEvent<?>> listener) {
+        return (Listener<E>) (Listener<?>) listener;
+    }
+
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_newBuilder", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_IndexedEventTxModel_newBuilder(final IsolateThread ignoredThread, DxfgEventClazz eventType,
             @DxfgOut final DxfgIndexedEventTxModelBuilderHandlePointer builder) {
@@ -46,9 +53,8 @@ public class IndexedEventTxModelNative {
             throw new IllegalArgumentException("The `builder` pointer is null");
         }
 
-        //noinspection rawtypes,unchecked
         builder.write(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER.toNative(
-                IndexedEventTxModel.newBuilder((Class<IndexedEvent>) (Object) eventType.clazz)));
+                IndexedEventTxModel.newBuilder(eventType.eventClass())));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -139,9 +145,8 @@ public class IndexedEventTxModelNative {
             throw new IllegalArgumentException("The `builder` pointer is null");
         }
 
-        //noinspection rawtypes,unchecked
         builder.write(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER.toNative(
-                new Builder((Class<IndexedEvent>) (Object) eventType.clazz)));
+                new Builder<>(eventType.eventClass())));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -159,7 +164,7 @@ public class IndexedEventTxModelNative {
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_Builder_withSymbol", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_IndexedEventTxModel_Builder_withSymbol(final IsolateThread ignoredThread,
             DxfgIndexedEventTxModelBuilderHandle builder, DxfgSymbol symbol) {
-        //noinspection DataFlowIssue,unchecked
+        //noinspection DataFlowIssue
         NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER.toJava(builder)
                 .withSymbol((IndexedEventSubscriptionSymbol<?>) NativeUtils.MAPPER_SYMBOL.toJava(symbol));
 
@@ -194,15 +199,14 @@ public class IndexedEventTxModelNative {
             throw new IllegalArgumentException("The `listener` pointer is null");
         }
 
-        final class NativeTxModelListener extends NativeListener implements Listener {
+        final class NativeTxModelListener extends NativeListener implements Listener<IndexedEvent<?>> {
             @Override
-            public void eventsReceived(final List events, final boolean isSnapshot) {
+            public void eventsReceived(final List<IndexedEvent<?>> events, final boolean isSnapshot) {
                 if (!enter()) {
                     return;
                 }
                 try {
-                    @SuppressWarnings("unchecked") DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList(
-                            (Collection<? extends EventType<?>>) events);
+                    DxfgEventTypeListPointer eventsNative = NativeUtils.MAPPER_EVENTS.toNativeList(events);
                     int isSnapshotNative = isSnapshot ? 1 : 0;
                     eventsReceived.invoke(CurrentIsolate.getCurrentThread(), eventsNative, isSnapshotNative, userData);
                     NativeUtils.MAPPER_EVENTS.release(eventsNative);
@@ -220,9 +224,9 @@ public class IndexedEventTxModelNative {
     @CEntryPoint(name = "dxfg_IndexedEventTxModel_Builder_withListener", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
     public static int dxfg_IndexedEventTxModel_Builder_withListener(final IsolateThread ignoredThread,
             DxfgIndexedEventTxModelBuilderHandle builder, DxfgIndexedEventTxModelListenerHandle listener) {
-        //noinspection DataFlowIssue,unchecked
+        //noinspection DataFlowIssue
         NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER.toJava(builder)
-                .withListener(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER.toJava(listener));
+                .withListener(forModel(NativeUtils.MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER.toJava(listener)));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
