@@ -68,19 +68,22 @@ Java API and implementing them in the native library.
 The archives of every version are attached to its
 [GitHub release](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases):
 
-| Archive                                          | Platform                                                                       |
-|--------------------------------------------------|--------------------------------------------------------------------------------|
-| `graal-native-sdk-<version>-amd64-linux.zip`     | Linux x64, glibc 2.17+                                                         |
-| `graal-native-sdk-<version>-aarch64-linux.zip`   | Linux arm64, glibc 2.17+                                                       |
-| `graal-native-sdk-<version>-amd64-windows.zip`   | Windows x64                                                                    |
-| `graal-native-sdk-<version>-x86_64-osx.zip`      | macOS x64, 11.0+                                                               |
-| `graal-native-sdk-<version>-aarch64-osx.zip`     | macOS arm64, 14.0+                                                             |
-| `graal-native-sdk-<version>-aarch64-ios.zip`     | iOS arm64, 12.0+                                                               |
-| `graal-native-sdk-<version>-ios-simulator.zip`   | iOS Simulator x64 (12.0+) and arm64 (14.0+)                                    |
-| `graal-native-sdk-<version>-xcframework.zip`     | `DxFeedGraalNativeSdk.xcframework` for iOS, the iOS Simulator and macOS        |
-| `graal-native-sdk-<version>-c-api-docs-html.zip` | The C API documentation (HTML)                                                 |
+| Archive                                                  | Platform                                                                     |
+|----------------------------------------------------------|------------------------------------------------------------------------------|
+| `graal-native-sdk-<version>-amd64-linux.zip`             | Linux x64, glibc 2.17+                                                       |
+| `graal-native-sdk-<version>-aarch64-linux.zip`           | Linux arm64, glibc 2.17+                                                     |
+| `graal-native-sdk-<version>-amd64-windows.zip`           | Windows x64, needs the Visual C++ Redistributable (VCRUNTIME140.dll)         |
+| `graal-native-sdk-<version>-amd64-windows-static-mt.zip` | Windows x64, linked with the static C runtime: no Visual C++ Redistributable |
+| `graal-native-sdk-<version>-x86_64-osx.zip`              | macOS x64, 11.0+                                                             |
+| `graal-native-sdk-<version>-aarch64-osx.zip`             | macOS arm64, 14.0+                                                           |
+| `graal-native-sdk-<version>-aarch64-ios.zip`             | iOS arm64, 12.0+                                                             |
+| `graal-native-sdk-<version>-ios-simulator.zip`           | iOS Simulator x64 (12.0+) and arm64 (14.0+)                                  |
+| `graal-native-sdk-<version>-xcframework.zip`             | `DxFeedGraalNativeSdk.xcframework` for iOS, the iOS Simulator and macOS      |
+| `graal-native-sdk-<version>-c-api-docs-html.zip`         | The C API documentation (HTML)                                               |
 
-The Linux and Windows archives have `-debug` variants, see [Debug builds](#debug-builds).
+The Linux and Windows archives have `-debug` variants (`amd64-windows-debug-static-mt` for the static C runtime),
+see [Debug builds](#debug-builds). The `-static-mt` archives contain the same files: the library does not share its
+C runtime with the application, so it fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`.
 
 An archive contains the library, the headers (`dxfg_api.h` includes the others) and the license. The desktop archives
 also contain `CMakeLists.txt`, which imports the library as the CMake target `DxFeedGraalNativeSdk`:

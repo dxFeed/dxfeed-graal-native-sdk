@@ -66,6 +66,12 @@ available in the corresponding Dockerfile.
 - The `dxcity` user should have permissions to run Docker containers without admin privileges.
 - The images are in the Docker registry of Nexus `nexus-docker-graalvm.in.devexperts.com`: the project feature
   `Nexus` (`dockerRegistry` in `settings.kts`) logs the builds in to it.
+- "Build & Deploy [Windows, x64][Release][Static MT]" and "[Debug][Static MT]" build the archives linked with the
+  static C runtime (`-DwindowsStaticRuntime=true`, see `scripts/windows-static-runtime`) and check them before the
+  deploy in `mcr.microsoft.com/windows/servercore:ltsc2019` (`Mvn.POWERSHELL_STATIC_RUNTIME` in `Common.kt`), which has
+  no Visual C++ Redistributable: the base image of the Windows build image, already on the agents. The agents run
+  Windows 11 (build 26300), so the container runs in Hyper-V isolation (process isolation only when the image has the
+  build of the agent); the image is pulled if it is missing.
 
 ## How to install docker on Windows
 

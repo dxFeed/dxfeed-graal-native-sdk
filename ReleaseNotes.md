@@ -1,3 +1,15 @@
+* **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
+  `graal-native-sdk-<version>-amd64-windows-static-mt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-mt.zip`
+  (the GitHub release, the Maven classifiers `amd64-windows-static-mt` and `amd64-windows-debug-static-mt`). Their
+  `DxFeedGraalNativeSdk.dll` does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`);
+  the C API and the other files are the same. The C runtime is inside the library, so it fits an application built with
+  `/MT`, `/MTd`, `/MD` or `/MDd`. Each archive is checked before the deploy, also in a Windows container without the
+  Redistributable.
+* **\[MDAPI-302]\[GRAAL]** The Windows library can be built with the static C runtime: `-DwindowsStaticRuntime=true`
+  (the Maven profile `windowsStaticRuntime`). The JDK libraries of GraalVM are built with `/MD`, so
+  `scripts/windows-static-runtime/New-CrtShim.ps1` assembles the pointers of their CRT imports to the static CRT, and
+  native-image links the image with them and `libcmt`, `libvcruntime`, `libucrt` instead of the dynamic CRT.
+
 ## v3.8.0
 
 * New artifact `graal-native-sdk-<version>-xcframework.zip` (the GitHub release, the Maven classifier `xcframework`):

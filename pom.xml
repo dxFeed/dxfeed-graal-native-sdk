@@ -628,6 +628,9 @@
       <properties>
         <runtime.suffix>-static-mt</runtime.suffix>
         <windows.static.runtime.dir>${project.build.directory}/windows-static-runtime</windows.static.runtime.dir>
+        <!-- The check of the archive (verify): none, auto (servercore of this Windows) or a Windows container image. -->
+        <windows.static.runtime.check.image>none</windows.static.runtime.check.image>
+        <windows.static.runtime.check.skip>false</windows.static.runtime.check.skip>
         <!-- The default dynamic CRT libraries are not linked, the static ones and crt_shim.obj are. -->
         <windows.static.runtime.buildArg1>-H:NativeLinkerOption=/NODEFAULTLIB:MSVCRT</windows.static.runtime.buildArg1>
         <windows.static.runtime.buildArg2>-H:NativeLinkerOption=/NODEFAULTLIB:vcruntime.lib</windows.static.runtime.buildArg2>
@@ -662,6 +665,37 @@
                     <argument>${java.home}</argument>
                     <argument>-OutputDirectory</argument>
                     <argument>${windows.static.runtime.dir}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <!--
+                Before the archive is deployed: its DLL and a program built with /MT against it do not import the dynamic
+                C runtime, and the program works (scripts/windows-static-runtime/Test-StaticRuntime.ps1), also in a
+                Windows container without the Visual C++ Redistributable with -Dwindows.static.runtime.check.image=<image>
+                (e.g. mcr.microsoft.com/windows/servercore:ltsc2019, as the CI passes; docker with Windows containers is
+                needed) or auto (servercore of the version of this Windows Server).
+              -->
+              <execution>
+                <id>check-windows-static-runtime</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>verify</phase>
+                <configuration>
+                  <skip>${windows.static.runtime.check.skip}</skip>
+                  <executable>powershell</executable>
+                  <arguments>
+                    <argument>-NoProfile</argument>
+                    <argument>-ExecutionPolicy</argument>
+                    <argument>Bypass</argument>
+                    <argument>-File</argument>
+                    <argument>${project.basedir}/scripts/windows-static-runtime/Test-StaticRuntime.ps1</argument>
+                    <argument>-Archive</argument>
+                    <argument>${project.build.directory}/${project.name}-${arch.name}${static.suffix}${debug.suffix}${runtime.suffix}.zip</argument>
+                    <argument>-WorkDirectory</argument>
+                    <argument>${windows.static.runtime.dir}/check</argument>
+                    <argument>-Image</argument>
+                    <argument>${windows.static.runtime.check.image}</argument>
                   </arguments>
                 </configuration>
               </execution>

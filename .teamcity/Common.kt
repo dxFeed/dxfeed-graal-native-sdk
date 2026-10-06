@@ -28,6 +28,10 @@ object Mvn {
     const val POWERSHELL_NEXUS = "\"-Dnexus.user=%dxcity.namecode.nexus%\" \"-Dnexus.password=%dxcity.passcode.nexus%\""
     const val POWERSHELL_REPO = "\"-Drepo.user=%dxcity.namecode.nexus%\" \"-Drepo.password=%dxcity.passcode.nexus%\""
     const val POWERSHELL_BITBUCKET = "\"-Dusername=dxcity\" \"-Dpassword=%dxcity.token.bitbucket%\""
+
+    // The Windows archive linked with the static C runtime, checked in a servercore container (the base image of the
+    // Windows build image, already on the agents; Hyper-V isolation on their Windows 11).
+    const val POWERSHELL_STATIC_RUNTIME = "\"-DwindowsStaticRuntime=true\" \"-Dwindows.static.runtime.check.image=mcr.microsoft.com/windows/servercore:ltsc2019\""
 }
 
 /** The Docker images of the builds, in the Docker registry of Nexus. */

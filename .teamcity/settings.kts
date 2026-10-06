@@ -79,6 +79,8 @@ object ReleaseChain : Project({
     buildType(BuildAndDeployForWindows)
     buildType(BuildAndDeployForWindowsRelease)
     buildType(BuildAndDeployForWindowsDebug)
+    buildType(BuildAndDeployForWindowsStaticRuntimeRelease)
+    buildType(BuildAndDeployForWindowsStaticRuntimeDebug)
     buildType(BuildAndDeployForMacOsAndIOS)
     buildType(BuildAndDeployXCFramework)
     buildType(DeployNuget)
@@ -91,6 +93,8 @@ object ReleaseChain : Project({
         BuildAndDeployForWindows,
         BuildAndDeployForWindowsRelease,
         BuildAndDeployForWindowsDebug,
+        BuildAndDeployForWindowsStaticRuntimeRelease,
+        BuildAndDeployForWindowsStaticRuntimeDebug,
         BuildAndDeployForMacOsAndIOS,
         BuildAndDeployXCFramework,
         DeployNuget,
@@ -310,6 +314,43 @@ object BuildAndDeployForWindowsDebug : BuildType({
     }
 })
 
+/**
+ * The archive linked with the static C runtime (amd64-windows-static-mt), without the Visual C++ Redistributable. The
+ * archive is checked before the deploy, also in a servercore container (scripts/windows-static-runtime).
+ */
+object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
+    name = "Build & Deploy [Windows, x64][Release][Static MT]"
+    artifactRules = "target/*.zip"
+
+    mainRepository()
+
+    steps {
+        checkoutLatestTagWithPowerShell()
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy ${Mvn.POWERSHELL_STATIC_RUNTIME}")
+    }
+
+    requirements {
+        windowsAgent()
+    }
+})
+
+/** The debug archive linked with the static C runtime (amd64-windows-debug-static-mt). */
+object BuildAndDeployForWindowsStaticRuntimeDebug : BuildType({
+    name = "Build & Deploy [Windows, x64][Debug][Static MT]"
+    artifactRules = "target/*.zip"
+
+    mainRepository()
+
+    steps {
+        checkoutLatestTagWithPowerShell()
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy -P buildDebug ${Mvn.POWERSHELL_STATIC_RUNTIME}")
+    }
+
+    requirements {
+        windowsAgent()
+    }
+})
+
 object BuildAndDeployForWindows : BuildType({
     name = "Build & Deploy [Windows]"
     type = Type.COMPOSITE
@@ -320,6 +361,12 @@ object BuildAndDeployForWindows : BuildType({
             onDependencyFailure = FailureAction.CANCEL
         }
         snapshot(BuildAndDeployForWindowsDebug) {
+            onDependencyFailure = FailureAction.IGNORE
+        }
+        snapshot(BuildAndDeployForWindowsStaticRuntimeRelease) {
+            onDependencyFailure = FailureAction.CANCEL
+        }
+        snapshot(BuildAndDeployForWindowsStaticRuntimeDebug) {
             onDependencyFailure = FailureAction.IGNORE
         }
     }
