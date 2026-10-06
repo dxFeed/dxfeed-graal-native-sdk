@@ -1018,12 +1018,23 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 
 object BuildForWindows : BuildType({
     name = "Build [Windows, x64]"
-    artifactRules = "*.zip"
+    // With -DwindowsStaticRuntime=true, also the generated CRT shim and its list of functions, to look at.
+    artifactRules = """
+        target/*.zip
+        target/windows-static-runtime/crt_shim.asm => windows-static-runtime
+        target/windows-static-runtime/crt-functions.txt => windows-static-runtime
+    """.trimIndent()
 
     mainRepository()
 
+    params {
+        // E.g. "-DwindowsStaticRuntime=true" (the archive without the Visual C++ Redistributable), "-P buildDebug".
+        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean package",
+            display = ParameterDisplay.NORMAL, allowEmpty = true)
+    }
+
     steps {
-        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package")
+        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package %maven.arguments%")
     }
 
     requirements {

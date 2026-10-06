@@ -26,6 +26,8 @@
     <arch.name>${os.arch}-${os.detected.name}</arch.name>
     <static.suffix />
     <debug.suffix />
+    <!-- The C runtime of the Windows image: -static-mt in the windowsStaticRuntime profile. -->
+    <runtime.suffix />
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
@@ -42,6 +44,13 @@
     <macos.check.skip>true</macos.check.skip>
     <macos.x64.buildArg>-DDXFG1=0</macos.x64.buildArg>
     <macos.x64.check.skip>true</macos.x64.check.skip>
+    <windows.static.runtime.buildArg1>-DDXFG1=0</windows.static.runtime.buildArg1>
+    <windows.static.runtime.buildArg2>-DDXFG1=0</windows.static.runtime.buildArg2>
+    <windows.static.runtime.buildArg3>-DDXFG1=0</windows.static.runtime.buildArg3>
+    <windows.static.runtime.buildArg4>-DDXFG1=0</windows.static.runtime.buildArg4>
+    <windows.static.runtime.buildArg5>-DDXFG1=0</windows.static.runtime.buildArg5>
+    <windows.static.runtime.buildArg6>-DDXFG1=0</windows.static.runtime.buildArg6>
+    <windows.static.runtime.buildArg7>-DDXFG1=0</windows.static.runtime.buildArg7>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
@@ -586,9 +595,77 @@
                 <buildArg>${debug.buildArg2}</buildArg>
                 <buildArg>${debug.buildArg3}</buildArg>
                 <buildArg>${debug.buildArg4}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg1}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg2}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg3}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg4}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg5}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg6}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg7}</buildArg>
               </buildArgs>
               <debug>${isDebug}</debug>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--
+      Windows: links DxFeedGraalNativeSdk.dll with the static C runtime (/MT), so that it does not need the Visual C++
+      Redistributable (VCRUNTIME140.dll, api-ms-win-crt-*.dll). The JDK libraries of GraalVM are compiled with /MD:
+      scripts/windows-static-runtime/New-CrtShim.ps1 assembles crt_shim.obj with their CRT import pointers, and the image
+      is linked with it and the static CRT instead of the dynamic one. The archives are amd64-windows-static-mt and,
+      with buildDebug, amd64-windows-debug-static-mt.
+      Activation: -DwindowsStaticRuntime=true, on Windows in the MSVC environment (dumpbin, ml64), as the windows profile.
+    -->
+    <profile>
+      <id>windowsStaticRuntime</id>
+      <activation>
+        <property>
+          <name>windowsStaticRuntime</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <runtime.suffix>-static-mt</runtime.suffix>
+        <windows.static.runtime.dir>${project.build.directory}/windows-static-runtime</windows.static.runtime.dir>
+        <!-- The default dynamic CRT libraries are not linked, the static ones and crt_shim.obj are. -->
+        <windows.static.runtime.buildArg1>-H:NativeLinkerOption=/NODEFAULTLIB:MSVCRT</windows.static.runtime.buildArg1>
+        <windows.static.runtime.buildArg2>-H:NativeLinkerOption=/NODEFAULTLIB:vcruntime.lib</windows.static.runtime.buildArg2>
+        <windows.static.runtime.buildArg3>-H:NativeLinkerOption=/NODEFAULTLIB:ucrt.lib</windows.static.runtime.buildArg3>
+        <windows.static.runtime.buildArg4>-H:NativeLinkerOption=libcmt.lib</windows.static.runtime.buildArg4>
+        <windows.static.runtime.buildArg5>-H:NativeLinkerOption=libvcruntime.lib</windows.static.runtime.buildArg5>
+        <windows.static.runtime.buildArg6>-H:NativeLinkerOption=libucrt.lib</windows.static.runtime.buildArg6>
+        <windows.static.runtime.buildArg7>-H:NativeLinkerOption=${windows.static.runtime.dir}/crt_shim.obj</windows.static.runtime.buildArg7>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>prepare-windows-static-runtime</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <executable>powershell</executable>
+                  <arguments>
+                    <argument>-NoProfile</argument>
+                    <argument>-ExecutionPolicy</argument>
+                    <argument>Bypass</argument>
+                    <argument>-File</argument>
+                    <argument>${project.basedir}/scripts/windows-static-runtime/New-CrtShim.ps1</argument>
+                    <argument>-GraalVmHome</argument>
+                    <argument>${java.home}</argument>
+                    <argument>-OutputDirectory</argument>
+                    <argument>${windows.static.runtime.dir}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

@@ -600,6 +600,11 @@ builds the library of the current platform in `target/native-image` and its arch
 - `-DmacIos=true` on a Mac with Apple silicon: the iOS library. The iOS Simulator library is built after it without
   `clean`, with the x64 GraalVM under Rosetta: `arch -x86_64 mvn -DmacIosSimulator=true package` (its arm64 slice is
   the object of the iOS build). The JDK and Substrate VM libraries for iOS are in [jre-ios](jre-ios/README.MD).
+- `-DwindowsStaticRuntime=true` on Windows: `DxFeedGraalNativeSdk.dll` is linked with the static C runtime (`/MT`) and
+  does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`); the archive is
+  `amd64-windows-static-mt` (`amd64-windows-debug-static-mt` with `-P buildDebug`). The JDK libraries of GraalVM are
+  built with `/MD`, so [New-CrtShim.ps1](scripts/windows-static-runtime/New-CrtShim.ps1) assembles the pointers of
+  their CRT imports to the static CRT (`dumpbin` and `ml64` of the MSVC environment).
 
 ### IntelliJ IDEA
 
@@ -637,11 +642,12 @@ test, install and pack the project from the command line, as the CI does.
 
 **Build**
 
-| Script                                        | Purpose                                                                                                                                                                                                                                          |
-|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scripts/rc.cmd`                              | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`). |
-| `src/main/c/build.cmd`, `src/main/c/build.sh` | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                        |
-| `jre-ios/build.py`                            | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                |
+| Script                                           | Purpose                                                                                                                                                                                                                                                   |
+|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scripts/rc.cmd`                                 | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`).          |
+| `scripts/windows-static-runtime/New-CrtShim.ps1` | Assembles the pointers of the CRT imports of the JDK libraries of GraalVM to the static CRT, so that the `windowsStaticRuntime` Maven profile links `DxFeedGraalNativeSdk.dll` without the Visual C++ Redistributable (`/MT`), see [Building](#building). |
+| `src/main/c/build.cmd`, `src/main/c/build.sh`    | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                                 |
+| `jre-ios/build.py`                               | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                         |
 
 **CI (`.teamcity`)**, see also [.teamcity/README.MD](.teamcity/README.MD)
 
