@@ -1,3 +1,5 @@
+## v3.9.0-rc1
+
 * **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
   `graal-native-sdk-<version>-amd64-windows-static-mt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-mt.zip`
   (the GitHub release, the Maven classifiers `amd64-windows-static-mt` and `amd64-windows-debug-static-mt`). Their
