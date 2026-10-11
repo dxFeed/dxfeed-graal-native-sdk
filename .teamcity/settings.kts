@@ -315,11 +315,13 @@ object BuildAndDeployForWindowsDebug : BuildType({
 })
 
 /**
- * The archive linked with the static C runtime (amd64-windows-static-mt), without the Visual C++ Redistributable. The
- * archive is checked before the deploy, also in a servercore container (scripts/windows-static-runtime).
+ * The archives of the static C runtime, without the Visual C++ Redistributable: the DLL linked with it
+ * (amd64-windows-static-crt) and the static library of the SDK for any C runtime of the application
+ * (amd64-windows-static-lib), from one build of the image. Both are checked before the deploy, the DLL also in a
+ * servercore container (scripts/windows-static-runtime).
  */
 object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
-    name = "Build & Deploy [Windows, x64][Release][Static MT]"
+    name = "Build & Deploy [Windows, x64][Release][Static CRT]"
     artifactRules = "target/*.zip"
 
     mainRepository()
@@ -334,9 +336,9 @@ object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
     }
 })
 
-/** The debug archive linked with the static C runtime (amd64-windows-debug-static-mt). */
+/** The debug archives of the static C runtime (amd64-windows-debug-static-crt, amd64-windows-debug-static-lib). */
 object BuildAndDeployForWindowsStaticRuntimeDebug : BuildType({
-    name = "Build & Deploy [Windows, x64][Debug][Static MT]"
+    name = "Build & Deploy [Windows, x64][Debug][Static CRT]"
     artifactRules = "target/*.zip"
 
     mainRepository()
@@ -1065,7 +1067,8 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 
 object BuildForWindows : BuildType({
     name = "Build [Windows, x64]"
-    // With -DwindowsStaticRuntime=true, also the generated CRT shim and its list of functions, to look at.
+    // With -DwindowsStaticRuntime=true, also the generated CRT shim and its list of functions, to look at. The archives
+    // are not checked (verify).
     artifactRules = """
         target/*.zip
         target/windows-static-runtime/crt_shim.asm => windows-static-runtime
@@ -1075,13 +1078,14 @@ object BuildForWindows : BuildType({
     mainRepository()
 
     params {
-        // E.g. "-DwindowsStaticRuntime=true" (the archive without the Visual C++ Redistributable), "-P buildDebug".
-        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean package",
+        // E.g. "-DwindowsStaticRuntime=true" (the archives without the Visual C++ Redistributable: -static-crt and
+        // -static-lib, which is packed at integration-test), "-P buildDebug".
+        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean integration-test",
             display = ParameterDisplay.NORMAL, allowEmpty = true)
     }
 
     steps {
-        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package %maven.arguments%")
+        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean integration-test %maven.arguments%")
     }
 
     requirements {

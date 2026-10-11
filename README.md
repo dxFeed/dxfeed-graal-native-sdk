@@ -21,6 +21,7 @@ into your projects.
   * [Benefits](#benefits)
   * [Future development](#future-development)
 - [Installation](#installation)
+  * [Windows archives](#windows-archives)
   * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
 - [Using the C API](#using-the-c-api)
@@ -68,22 +69,23 @@ Java API and implementing them in the native library.
 The archives of every version are attached to its
 [GitHub release](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases):
 
-| Archive                                                  | Platform                                                                     |
-|----------------------------------------------------------|------------------------------------------------------------------------------|
-| `graal-native-sdk-<version>-amd64-linux.zip`             | Linux x64, glibc 2.17+                                                       |
-| `graal-native-sdk-<version>-aarch64-linux.zip`           | Linux arm64, glibc 2.17+                                                     |
-| `graal-native-sdk-<version>-amd64-windows.zip`           | Windows x64, needs the Visual C++ Redistributable (VCRUNTIME140.dll)         |
-| `graal-native-sdk-<version>-amd64-windows-static-mt.zip` | Windows x64, linked with the static C runtime: no Visual C++ Redistributable |
-| `graal-native-sdk-<version>-x86_64-osx.zip`              | macOS x64, 11.0+                                                             |
-| `graal-native-sdk-<version>-aarch64-osx.zip`             | macOS arm64, 14.0+                                                           |
-| `graal-native-sdk-<version>-aarch64-ios.zip`             | iOS arm64, 12.0+                                                             |
-| `graal-native-sdk-<version>-ios-simulator.zip`           | iOS Simulator x64 (12.0+) and arm64 (14.0+)                                  |
-| `graal-native-sdk-<version>-xcframework.zip`             | `DxFeedGraalNativeSdk.xcframework` for iOS, the iOS Simulator and macOS      |
-| `graal-native-sdk-<version>-c-api-docs-html.zip`         | The C API documentation (HTML)                                               |
+| Archive                                                   | Platform                                                                      |
+|-----------------------------------------------------------|-------------------------------------------------------------------------------|
+| `graal-native-sdk-<version>-amd64-linux.zip`              | Linux x64, glibc 2.17+                                                        |
+| `graal-native-sdk-<version>-aarch64-linux.zip`            | Linux arm64, glibc 2.17+                                                      |
+| `graal-native-sdk-<version>-amd64-windows.zip`            | Windows x64, needs the Visual C++ Redistributable (VCRUNTIME140.dll)          |
+| `graal-native-sdk-<version>-amd64-windows-static-crt.zip` | Windows x64, linked with the static C runtime: no Visual C++ Redistributable  |
+| `graal-native-sdk-<version>-amd64-windows-static-lib.zip` | Windows x64, the static library: the SDK inside the executable, any C runtime |
+| `graal-native-sdk-<version>-x86_64-osx.zip`               | macOS x64, 11.0+                                                              |
+| `graal-native-sdk-<version>-aarch64-osx.zip`              | macOS arm64, 14.0+                                                            |
+| `graal-native-sdk-<version>-aarch64-ios.zip`              | iOS arm64, 12.0+                                                              |
+| `graal-native-sdk-<version>-ios-simulator.zip`            | iOS Simulator x64 (12.0+) and arm64 (14.0+)                                   |
+| `graal-native-sdk-<version>-xcframework.zip`              | `DxFeedGraalNativeSdk.xcframework` for iOS, the iOS Simulator and macOS       |
+| `graal-native-sdk-<version>-c-api-docs-html.zip`          | The C API documentation (HTML)                                                |
 
-The Linux and Windows archives have `-debug` variants (`amd64-windows-debug-static-mt` for the static C runtime),
-see [Debug builds](#debug-builds). The `-static-mt` archives contain the same files: the library does not share its
-C runtime with the application, so it fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`.
+The Linux and Windows archives have `-debug` variants (`amd64-windows-debug-static-crt`,
+`amd64-windows-debug-static-lib`), see [Debug builds](#debug-builds). Which Windows archive to take: see
+[Windows archives](#windows-archives).
 
 An archive contains the library, the headers (`dxfg_api.h` includes the others) and the license. The desktop archives
 also contain `CMakeLists.txt`, which imports the library as the CMake target `DxFeedGraalNativeSdk`:
@@ -97,6 +99,32 @@ The libraries for .NET are published to nuget.org as the package
 [DxFeed.Graal.Native](https://www.nuget.org/packages/DxFeed.Graal.Native). Inside Devexperts, the archives are also in
 the Maven repository `qd` of Nexus: `com.dxfeed:graal-native-sdk:<version>`, type `zip`, the classifier is the
 platform of the archive name (`amd64-linux`, `xcframework`, etc.).
+
+### Windows archives
+
+| Archive                    | The library                                                           | The application needs                      |
+|----------------------------|-----------------------------------------------------------------------|--------------------------------------------|
+| `amd64-windows`            | `DxFeedGraalNativeSdk.dll`, linked with the dynamic C runtime (`/MD`) | the DLL and the Visual C++ Redistributable |
+| `amd64-windows-static-crt` | `DxFeedGraalNativeSdk.dll`, linked with the static C runtime (`/MT`)  | the DLL                                    |
+| `amd64-windows-static-lib` | `DxFeedGraalNativeSdk_static.lib`, the static library                 | nothing: the SDK is inside the executable  |
+
+Each of them fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`: the DLLs do not share their C runtime with
+the application, and the static library uses the C runtime of the application (one library for all four, linked
+without `/NODEFAULTLIB`).
+
+The `-static-lib` archive contains `DxFeedGraalNativeSdk_static.lib`, the headers, `link-flags.txt` (the Windows
+libraries that the static library needs, one per line) and `CMakeLists.txt`, which imports it as the CMake target
+`DxFeedGraalNativeSdk` with these libraries: the same `add_subdirectory` and `target_link_libraries` as above link it.
+Without CMake, link the library and the libraries of `link-flags.txt`:
+
+```shell
+cl /MT /I <the unpacked archive> app.c <the unpacked archive>\DxFeedGraalNativeSdk_static.lib psapi.lib winhttp.lib ncrypt.lib crypt32.lib version.lib advapi32.lib ws2_32.lib secur32.lib iphlpapi.lib userenv.lib mswsock.lib
+```
+
+Only the `dxfg_*` and `graal_*` functions of the static library are visible to the application: the JDK inside it (its
+zlib, `JNU_*`) does not clash with the symbols of the application, and the executable exports nothing. The libraries
+of GraalVM in it are built with MSVC 19.43 (Visual Studio 2022 17.13): link the application with this toolset or a
+newer one.
 
 ### iOS and macOS
 
@@ -605,9 +633,12 @@ builds the library of the current platform in `target/native-image` and its arch
   the object of the iOS build). The JDK and Substrate VM libraries for iOS are in [jre-ios](jre-ios/README.MD).
 - `-DwindowsStaticRuntime=true` on Windows: `DxFeedGraalNativeSdk.dll` is linked with the static C runtime (`/MT`) and
   does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`); the archive is
-  `amd64-windows-static-mt` (`amd64-windows-debug-static-mt` with `-P buildDebug`). The JDK libraries of GraalVM are
+  `amd64-windows-static-crt` (`amd64-windows-debug-static-crt` with `-P buildDebug`). The JDK libraries of GraalVM are
   built with `/MD`, so [New-CrtShim.ps1](scripts/windows-static-runtime/New-CrtShim.ps1) assembles the pointers of
-  their CRT imports to the static CRT (`dumpbin` and `ml64` of the MSVC environment).
+  their CRT imports to the static CRT (`dumpbin` and `ml64` of the MSVC environment). With the phase
+  `integration-test` or a later one (`verify` checks the archives), the same build packs the image object into the
+  static library of the SDK, the archive `amd64-windows-static-lib` (`amd64-windows-debug-static-lib`), see
+  [Windows archives](#windows-archives).
 
 ### IntelliJ IDEA
 
@@ -645,12 +676,15 @@ test, install and pack the project from the command line, as the CI does.
 
 **Build**
 
-| Script                                           | Purpose                                                                                                                                                                                                                                                   |
-|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scripts/rc.cmd`                                 | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`).          |
-| `scripts/windows-static-runtime/New-CrtShim.ps1` | Assembles the pointers of the CRT imports of the JDK libraries of GraalVM to the static CRT, so that the `windowsStaticRuntime` Maven profile links `DxFeedGraalNativeSdk.dll` without the Visual C++ Redistributable (`/MT`), see [Building](#building). |
-| `src/main/c/build.cmd`, `src/main/c/build.sh`    | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                                 |
-| `jre-ios/build.py`                               | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                         |
+| Script                                                         | Purpose                                                                                                                                                                                                                                                     |
+|----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scripts/rc.cmd`                                               | Wrapper for the Windows resource compiler used by the `windows` Maven profile to compile `version.rc` (version info of `DxFeedGraalNativeSdk.dll`). If `rc.exe` is not in `PATH`, it initializes the Visual Studio environment (`vcvars64.bat`).            |
+| `scripts/windows-static-runtime/New-CrtShim.ps1`               | Assembles the pointers of the CRT imports of the JDK libraries of GraalVM to the static CRT, so that the `windowsStaticRuntime` Maven profile links `DxFeedGraalNativeSdk.dll` without the Visual C++ Redistributable (`/MT`), see [Building](#building).   |
+| `scripts/windows-static-runtime/New-StaticLibrary.ps1`         | Packs the image object of native-image and the libraries it is linked with into `DxFeedGraalNativeSdk_static.lib`, the static library of the `-static-lib` archive (the `windowsStaticRuntime` Maven profile, see [Windows archives](#windows-archives)).   |
+| `scripts/windows-static-runtime/Hide-StaticLibrarySymbols.ps1` | Hides the internal symbols of the static library (the prefix `__dxfg_`) and removes its export and C runtime directives, so that it links with any C runtime of the application. The COFF code is in `StaticLibrary.cs`, which Windows PowerShell compiles. |
+| `scripts/windows-static-runtime/Test-StaticLibrary.ps1`        | Checks the `-static-lib` archive before the deploy: a program links with it with `/MT`, `/MTd`, `/MD` and `/MDd`, with and without `/DEBUG`, without linker warnings, exports nothing and works.                                                            |
+| `src/main/c/build.cmd`, `src/main/c/build.sh`                  | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                                   |
+| `jre-ios/build.py`                                             | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                           |
 
 **CI (`.teamcity`)**, see also [.teamcity/README.MD](.teamcity/README.MD)
 

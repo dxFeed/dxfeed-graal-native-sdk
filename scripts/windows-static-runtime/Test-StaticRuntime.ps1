@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Checks a Windows archive of the SDK linked with the static C runtime (-static-mt): no Visual C++ Redistributable needed.
+Checks a Windows archive of the SDK with the static C runtime (-static-crt): no Visual C++ Redistributable needed.
 
 .DESCRIPTION
   1. DxFeedGraalNativeSdk.dll of the archive must not import the dynamic C runtime (VCRUNTIME*, MSVCP*,
@@ -18,7 +18,7 @@ Checks a Windows archive of the SDK linked with the static C runtime (-static-mt
 Requires the MSVC environment (cl, dumpbin); docker with Windows containers for -Image.
 
 .PARAMETER Archive
-The archive: graal-native-sdk-<version>-amd64-windows[-debug]-static-mt.zip (or the one in target).
+The archive: graal-native-sdk-<version>-amd64-windows[-debug]-static-crt.zip (or the one in target).
 
 .PARAMETER WorkDirectory
 Where the archive is unpacked and the check is built.

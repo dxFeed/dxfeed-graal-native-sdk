@@ -1,0 +1,75 @@
+<!--SPDX-License-Identifier: MPL-2.0-->
+<!--
+  The static library of the SDK for Windows (the windowsStaticRuntime profile of the pom): DxFeedGraalNativeSdk_static.lib
+  with the headers, the CMake file of its target and link-flags.txt, the Windows libraries it needs. No DLL.
+-->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 http://maven.apache.org/xsd/assembly-2.1.1.xsd">
+  <id>${arch.name}${debug.suffix}-static-lib</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>${project.basedir}/src/main/c/api/CMakeLists-static.txt</source>
+      <outputDirectory/>
+      <destName>CMakeLists.txt</destName>
+    </file>
+  </files>
+  <fileSets>
+    <fileSet>
+      <directory>${windows.static.library.dir}</directory>
+      <includes>
+        <include>DxFeedGraalNativeSdk_static.lib</include>
+        <include>link-flags.txt</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+    <!-- The same headers and docs as in the DLL archive (assembly.xml). -->
+    <fileSet>
+      <directory>${native.image.path}</directory>
+      <includes>
+        <include>*.h</include>
+      </includes>
+      <excludes>
+        <exclude>${native.image.name}.h</exclude>
+        <exclude>${native.image.name}_dynamic.h</exclude>
+        <exclude>graal_isolate.h</exclude>
+        <exclude>graal_isolate_dynamic.h</exclude>
+      </excludes>
+      <outputDirectory/>
+    </fileSet>
+    <fileSet>
+      <directory>${native.image.path}/reports</directory>
+      <includes>
+        <include>*.txt</include>
+      </includes>
+      <outputDirectory>docs</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/src/main/c/api</directory>
+      <excludes>
+        <exclude>.idea/**</exclude>
+        <exclude>cmake-**/**</exclude>
+        <exclude>*.txt</exclude>
+      </excludes>
+      <outputDirectory/>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/docs</directory>
+      <includes>
+        <include>${project.name}-version.inc</include>
+      </includes>
+      <outputDirectory>docs</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <includes>
+        <include>LICENSE</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+  </fileSets>
+</assembly>

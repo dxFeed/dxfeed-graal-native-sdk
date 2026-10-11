@@ -24,9 +24,8 @@
     <set-rpath.skip>true</set-rpath.skip>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <arch.name>${os.arch}-${os.detected.name}</arch.name>
-    <static.suffix />
     <debug.suffix />
-    <!-- The C runtime of the Windows image: -static-mt in the windowsStaticRuntime profile. -->
+    <!-- The C runtime of the Windows image: -static-crt in the windowsStaticRuntime profile. -->
     <runtime.suffix />
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
@@ -51,10 +50,10 @@
     <windows.static.runtime.buildArg5>-DDXFG1=0</windows.static.runtime.buildArg5>
     <windows.static.runtime.buildArg6>-DDXFG1=0</windows.static.runtime.buildArg6>
     <windows.static.runtime.buildArg7>-DDXFG1=0</windows.static.runtime.buildArg7>
+    <windows.static.runtime.buildArg8>-DDXFG1=0</windows.static.runtime.buildArg8>
     <initialize-at-build-time>
       org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.api.experimental.model.TimeSeriesTxModel$SortOrder
     </initialize-at-build-time>
-    <isShared>true</isShared>
     <isRelease>true</isRelease>
     <isDebug>false</isDebug>
     <macIos>false</macIos>
@@ -349,14 +348,6 @@
       </build>
     </profile>
     <profile>
-      <id>buildStatic</id>
-      <!-- TODO: implement static library building-->
-      <properties>
-        <isShared />
-        <static.suffix>-static</static.suffix>
-      </properties>
-    </profile>
-    <profile>
       <id>buildDebug</id>
       <properties>
         <isRelease>false</isRelease>
@@ -575,7 +566,7 @@
               </metadataRepository>
               <skip>false</skip>
               <imageName>${native.image.name}</imageName>
-              <sharedLibrary>${isShared}</sharedLibrary>
+              <sharedLibrary>true</sharedLibrary>
               <buildArgs>
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>${url.protocols.buildArg}</buildArg>
@@ -602,6 +593,7 @@
                 <buildArg>${windows.static.runtime.buildArg5}</buildArg>
                 <buildArg>${windows.static.runtime.buildArg6}</buildArg>
                 <buildArg>${windows.static.runtime.buildArg7}</buildArg>
+                <buildArg>${windows.static.runtime.buildArg8}</buildArg>
               </buildArgs>
               <debug>${isDebug}</debug>
             </configuration>
@@ -613,8 +605,12 @@
       Windows: links DxFeedGraalNativeSdk.dll with the static C runtime (/MT), so that it does not need the Visual C++
       Redistributable (VCRUNTIME140.dll, api-ms-win-crt-*.dll). The JDK libraries of GraalVM are compiled with /MD:
       scripts/windows-static-runtime/New-CrtShim.ps1 assembles crt_shim.obj with their CRT import pointers, and the image
-      is linked with it and the static CRT instead of the dynamic one. The archives are amd64-windows-static-mt and,
-      with buildDebug, amd64-windows-debug-static-mt.
+      is linked with it and the static CRT instead of the dynamic one. The archives are amd64-windows-static-crt and,
+      with buildDebug, amd64-windows-debug-static-crt.
+      The same build packs the image object (kept with -H:TempDirectory) into the static library of the SDK
+      (scripts/windows-static-runtime/New-StaticLibrary.ps1), for the applications with any C runtime: the archives
+      amd64-windows-static-lib and amd64-windows-debug-static-lib. The order is set by the phases: the image (package),
+      the static library (pre-integration-test), its archive (integration-test), the checks (verify).
       Activation: -DwindowsStaticRuntime=true, on Windows in the MSVC environment (dumpbin, ml64), as the windows profile.
     -->
     <profile>
@@ -626,7 +622,7 @@
         </property>
       </activation>
       <properties>
-        <runtime.suffix>-static-mt</runtime.suffix>
+        <runtime.suffix>-static-crt</runtime.suffix>
         <windows.static.runtime.dir>${project.build.directory}/windows-static-runtime</windows.static.runtime.dir>
         <!-- The check of the archive (verify): none, auto (servercore of this Windows) or a Windows container image. -->
         <windows.static.runtime.check.image>none</windows.static.runtime.check.image>
@@ -639,6 +635,10 @@
         <windows.static.runtime.buildArg5>-H:NativeLinkerOption=libvcruntime.lib</windows.static.runtime.buildArg5>
         <windows.static.runtime.buildArg6>-H:NativeLinkerOption=libucrt.lib</windows.static.runtime.buildArg6>
         <windows.static.runtime.buildArg7>-H:NativeLinkerOption=${windows.static.runtime.dir}/crt_shim.obj</windows.static.runtime.buildArg7>
+        <!-- The image object stays there for the static library, which removes the directory. -->
+        <windows.static.temp.dir>${project.build.directory}/tmp_windows</windows.static.temp.dir>
+        <windows.static.runtime.buildArg8>-H:TempDirectory=${windows.static.temp.dir}</windows.static.runtime.buildArg8>
+        <windows.static.library.dir>${windows.static.runtime.dir}/static-lib</windows.static.library.dir>
       </properties>
       <build>
         <plugins>
@@ -668,6 +668,31 @@
                   </arguments>
                 </configuration>
               </execution>
+              <execution>
+                <id>make-windows-static-library</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+                <configuration>
+                  <executable>powershell</executable>
+                  <arguments>
+                    <argument>-NoProfile</argument>
+                    <argument>-ExecutionPolicy</argument>
+                    <argument>Bypass</argument>
+                    <argument>-File</argument>
+                    <argument>${project.basedir}/scripts/windows-static-runtime/New-StaticLibrary.ps1</argument>
+                    <argument>-GraalVmHome</argument>
+                    <argument>${java.home}</argument>
+                    <argument>-TempDirectory</argument>
+                    <argument>${windows.static.temp.dir}</argument>
+                    <argument>-CrtShim</argument>
+                    <argument>${windows.static.runtime.dir}/crt_shim.obj</argument>
+                    <argument>-OutputDirectory</argument>
+                    <argument>${windows.static.library.dir}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
               <!--
                 Before the archive is deployed: its DLL and a program built with /MT against it do not import the dynamic
                 C runtime, and the program works (scripts/windows-static-runtime/Test-StaticRuntime.ps1), also in a
@@ -691,12 +716,59 @@
                     <argument>-File</argument>
                     <argument>${project.basedir}/scripts/windows-static-runtime/Test-StaticRuntime.ps1</argument>
                     <argument>-Archive</argument>
-                    <argument>${project.build.directory}/${project.name}-${arch.name}${static.suffix}${debug.suffix}${runtime.suffix}.zip</argument>
+                    <argument>${project.build.directory}/${project.name}-${arch.name}${debug.suffix}${runtime.suffix}.zip</argument>
                     <argument>-WorkDirectory</argument>
                     <argument>${windows.static.runtime.dir}/check</argument>
                     <argument>-Image</argument>
                     <argument>${windows.static.runtime.check.image}</argument>
                   </arguments>
+                </configuration>
+              </execution>
+              <!--
+                Before the archive is deployed: the static library links with /MT, /MTd, /MD and /MDd without linker
+                warnings, also with /DEBUG and next to the application's own zlib and JNU_* symbols; the program exports
+                nothing, with /MT and /MTd it does not import the dynamic C runtime, and it works
+                (scripts/windows-static-runtime/Test-StaticLibrary.ps1).
+              -->
+              <execution>
+                <id>check-windows-static-library</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>verify</phase>
+                <configuration>
+                  <skip>${windows.static.runtime.check.skip}</skip>
+                  <executable>powershell</executable>
+                  <arguments>
+                    <argument>-NoProfile</argument>
+                    <argument>-ExecutionPolicy</argument>
+                    <argument>Bypass</argument>
+                    <argument>-File</argument>
+                    <argument>${project.basedir}/scripts/windows-static-runtime/Test-StaticLibrary.ps1</argument>
+                    <argument>-Archive</argument>
+                    <argument>${project.build.directory}/${project.name}-${arch.name}${debug.suffix}-static-lib.zip</argument>
+                    <argument>-WorkDirectory</argument>
+                    <argument>${windows.static.runtime.dir}/check-static-lib</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-static-library-assembly</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.name}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/static-lib.xml</descriptor>
+                  </descriptors>
                 </configuration>
               </execution>
             </executions>
@@ -918,7 +990,7 @@
           </metadataRepository>
           <skip>false</skip>
           <imageName>${native.image.name}</imageName>
-          <sharedLibrary>${isShared}</sharedLibrary>
+          <sharedLibrary>true</sharedLibrary>
           <buildArgs>
             <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
             <buildArg>${url.protocols.buildArg}</buildArg>
@@ -1332,39 +1404,7 @@
         <version>3.0.0-M7</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
-          <scmShallowClone>false
-          </scmShallowClone> <!--it should use git to create a change log (see git-changelog-maven-plugin)-->
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>se.bjurr.gitchangelog</groupId>
-        <artifactId>git-changelog-maven-plugin</artifactId>
-        <version>1.101.0</version>
-        <configuration>
-          <file>${project.build.directory}/docs/changelog.txt</file>
-          <ignoreCommitsIfMessageMatches>^\[maven-release-plugin\].*</ignoreCommitsIfMessageMatches>
-          <ignoreCommitsOlderThan>2022-12-12 23:59:59</ignoreCommitsOlderThan>
-          <templateContent>
-            <![CDATA[
-# Changelog
-{{#tags}}
-## {{name}}
-  {{#commits}}
-    * {{{message}}}
-  {{/commits}}
-{{/tags}}
-]]>
-          </templateContent>
-        </configuration>
-        <executions>
-          <execution>
-            <id>GenerateGitChangelog</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>git-changelog</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

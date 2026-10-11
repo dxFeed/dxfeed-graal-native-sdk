@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1 http://maven.apache.org/xsd/assembly-component-2.1.1.xsd">
   <files>
     <file>
-      <source>${project.basedir}/src/main/c/api/CMakeLists${static.suffix}.txt</source>
+      <source>${project.basedir}/src/main/c/api/CMakeLists.txt</source>
       <outputDirectory/>
       <destName>CMakeLists.txt</destName>
     </file>

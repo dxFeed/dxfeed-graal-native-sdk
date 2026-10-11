@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
+# The static library of the SDK for Windows (the -static-lib archives): target_link_libraries(<app> DxFeedGraalNativeSdk)
+# links it with the Windows libraries it needs (link-flags.txt), with any C runtime of the application.
 cmake_minimum_required(VERSION 3.21)
 
 # Set project
@@ -21,44 +23,31 @@ endif ()
 
 option(GRAAL_NATIVE_SDK_INSTALL "Prepare install" ON)
 
-# Add imported library
-add_library(${PROJECT_NAME} STATIC IMPORTED GLOBAL)
-
-# Set empty library prefix
-set(DXFG_LIB_PREFIX "")
-# Set empty library extension
-set(DXFG_LIB_EXTENSION "")
-
-# Add platform specific variable
-if (WIN32)
-    set(DXFG_LIB_PREFIX "")
-    set(DXFG_LIB_EXTENSION "lib")
-elseif (APPLE)
-    set(DXFG_LIB_PREFIX "lib")
-    set(DXFG_LIB_EXTENSION "a")
-elseif (UNIX)
-    set(DXFG_LIB_PREFIX "lib")
-    set(DXFG_LIB_EXTENSION "a")
-else ()
-    message(ERROR "Unknown platform!")
+if (NOT WIN32)
+    message(FATAL_ERROR "The static library of ${PROJECT_NAME} is for Windows only")
 endif ()
 
+set(DXFG_STATIC_LIBRARY "${DXFG_BIN_LOCATION}/${PROJECT_NAME}_static.lib")
+# The Windows libraries that the static library needs, one per line
+file(STRINGS "${DXFG_BIN_LOCATION}/link-flags.txt" DXFG_SYSTEM_LIBRARIES)
 
-#
-# Project options
-#
+# Add imported library
+add_library(${PROJECT_NAME} STATIC IMPORTED GLOBAL)
 
 # Target properties
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES "${DXFG_SRC_LOCATION}"
         # Path to static library
-        IMPORTED_LOCATION "${DXFG_BIN_LOCATION}/${DXFG_LIB_PREFIX}${PROJECT_NAME}.${DXFG_LIB_EXTENSION}"
+        IMPORTED_LOCATION "${DXFG_STATIC_LIBRARY}"
+        INTERFACE_LINK_LIBRARIES "${DXFG_SYSTEM_LIBRARIES}"
         )
 
 if (GRAAL_NATIVE_SDK_INSTALL)
-    # Deployment
-    install(IMPORTED_RUNTIME_ARTIFACTS ${PROJECT_NAME}
-            ARCHIVE DESTINATION ${INSTALL_STATIC_LIBRARIES} COMPONENT runtime
-            )
+    # Deployment (install(IMPORTED_RUNTIME_ARTIFACTS) does not take a static library)
+    if (NOT "${INSTALL_STATIC_LIBRARIES}" STREQUAL "")
+        install(FILES "${DXFG_STATIC_LIBRARY}" DESTINATION "${INSTALL_STATIC_LIBRARIES}" COMPONENT runtime)
+    else ()
+        install(FILES "${DXFG_STATIC_LIBRARY}" TYPE LIB COMPONENT runtime)
+    endif ()
 endif ()

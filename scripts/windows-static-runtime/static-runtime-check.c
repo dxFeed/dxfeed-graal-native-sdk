@@ -1,7 +1,7 @@
 /*
- * Checks DxFeedGraalNativeSdk.dll without the network: a local hub publishes a profile, a listener receives it, the
- * last event is read back, a system property is set and read, the isolate is torn down. Prints OK and exits with 0, or
- * prints the failed step and exits with 1.
+ * Checks the SDK (DxFeedGraalNativeSdk.dll or the static library) without the network: a local hub publishes a profile,
+ * a listener receives it, the last event is read back, a system property is set and read, the isolate is torn down.
+ * Prints OK and exits with 0, or prints the failed step and exits with 1.
  */
 #include <stdio.h>
 #include <string.h>

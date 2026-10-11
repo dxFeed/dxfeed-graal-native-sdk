@@ -1,12 +1,23 @@
 ## v3.9.0-rc1
 
+* **\[GRAAL]** The archives no longer contain `docs/changelog.txt` (a list of the commit messages by tags); the
+  changes are described in this file.
+* **\[GRAAL]** New Windows archives with the static library of the SDK:
+  `graal-native-sdk-<version>-amd64-windows-static-lib.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-lib.zip`
+  (the GitHub release, the Maven classifiers `amd64-windows-static-lib` and `amd64-windows-debug-static-lib`).
+  `DxFeedGraalNativeSdk_static.lib` links the SDK into the executable: no DLL, no Visual C++ Redistributable. One
+  library fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`, without `/NODEFAULTLIB`; only the `dxfg_*` and
+  `graal_*` functions are visible to the application, so the JDK inside (zlib, `JNU_*`) does not clash with its
+  symbols, and the executable exports nothing. The archive also contains the headers, `link-flags.txt` (the Windows
+  libraries to link) and `CMakeLists.txt` with the target `DxFeedGraalNativeSdk`. The builds of the `-static-crt`
+  archives make it from the same image and check it before the deploy with the four C runtimes.
 * **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
-  `graal-native-sdk-<version>-amd64-windows-static-mt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-mt.zip`
-  (the GitHub release, the Maven classifiers `amd64-windows-static-mt` and `amd64-windows-debug-static-mt`). Their
+  `graal-native-sdk-<version>-amd64-windows-static-crt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-crt.zip`
+  (the GitHub release, the Maven classifiers `amd64-windows-static-crt` and `amd64-windows-debug-static-crt`). Their
   `DxFeedGraalNativeSdk.dll` does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`);
   the C API and the other files are the same. The C runtime is inside the library, so it fits an application built with
   `/MT`, `/MTd`, `/MD` or `/MDd`. Each archive is checked before the deploy, also in a Windows container without the
-  Redistributable.
+  Redistributable. In 3.9.0-rc1 these archives were named `-static-mt`.
 * **\[MDAPI-302]\[GRAAL]** The Windows library can be built with the static C runtime: `-DwindowsStaticRuntime=true`
   (the Maven profile `windowsStaticRuntime`). The JDK libraries of GraalVM are built with `/MD`, so
   `scripts/windows-static-runtime/New-CrtShim.ps1` assembles the pointers of their CRT imports to the static CRT, and
