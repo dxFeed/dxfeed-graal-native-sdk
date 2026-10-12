@@ -55,9 +55,9 @@ project {
     }
 
     // The builds started by hand to make a release; they start the release chain.
-    buildType(BuildPatchAndDeployForLinux)
-    buildType(BuildMajorMinorPatchAndDeployLinux)
-    buildTypesOrder = arrayListOf(BuildPatchAndDeployForLinux, BuildMajorMinorPatchAndDeployLinux)
+    buildType(ReleaseTheNextPatch)
+    buildType(ReleaseMajorMinorPatchOrRc)
+    buildTypesOrder = arrayListOf(ReleaseTheNextPatch, ReleaseMajorMinorPatchOrRc)
 
     // The groups of the other builds (the ids of the builds do not depend on the group).
     subProject(ReleaseChain)
@@ -130,7 +130,7 @@ object Checks : Project({
     buildType(BuildForWindowsInDocker)
     buildType(BuildForMacOSAndIOS)
     buildType(DetectVisualStudioVersion)
-    buildType(ListServiceImages)
+    buildType(ListDockerImages)
     buildTypesOrder = arrayListOf(
         BuildForLinux,
         BuildForLinuxAarch64,
@@ -138,7 +138,7 @@ object Checks : Project({
         BuildForWindowsInDocker,
         BuildForMacOSAndIOS,
         DetectVisualStudioVersion,
-        ListServiceImages
+        ListDockerImages
     )
 })
 
@@ -152,12 +152,11 @@ object Tests : Project({
 object Etc : Project({
     name = "Etc."
 
-    buildType(CopyServiceImages)
-    buildType(CxxApiJiraSync)
+    buildType(CxxApiGitGubJiraSync)
 })
 
-object BuildPatchAndDeployForLinux : BuildType({
-    name = "Build PATCH & Deploy [Linux, x64]"
+object ReleaseTheNextPatch : BuildType({
+    name = "Release The Next Patch\\RC: Prepare The Release & Build & Deploy [Linux, x64][Release][Debug]"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -185,8 +184,8 @@ object BuildPatchAndDeployForLinux : BuildType({
     }
 })
 
-object BuildMajorMinorPatchAndDeployLinux : BuildType({
-    name = "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]"
+object ReleaseMajorMinorPatchOrRc : BuildType({
+    name = "Release (Major.Minor.Patch[-rcN]): Prepare The Release & Build & Deploy [Linux, x64][Release][Debug]"
     artifactRules = "*.zip"
 
     params {
@@ -467,11 +466,11 @@ object BuildAndDeployForAll : BuildType({
 
     triggers {
         finishBuildTrigger {
-            buildType = "${BuildPatchAndDeployForLinux.id}"
+            buildType = "${ReleaseTheNextPatch.id}"
             successfulOnly = true
         }
         finishBuildTrigger {
-            buildType = "${BuildMajorMinorPatchAndDeployLinux.id}"
+            buildType = "${ReleaseMajorMinorPatchOrRc.id}"
             successfulOnly = true
         }
     }
@@ -1032,7 +1031,7 @@ object BuildForLinuxAarch64 : BuildType({
 })
 
 object BuildAndPushDockerImageForWindowsX64 : BuildType({
-    name = "Build & Push a Docker Image [Windows, x64]"
+    name = "Build & Push a Docker Image [Win, x64]"
 
     mainRepository()
 
@@ -1066,7 +1065,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 })
 
 object BuildForWindows : BuildType({
-    name = "Build [Windows, x64]"
+    name = "Build [Win, x64]"
     // With -DwindowsStaticRuntime=true, also the generated CRT shim and its list of functions, to look at. The archives
     // are not checked (verify).
     artifactRules = """
@@ -1094,7 +1093,7 @@ object BuildForWindows : BuildType({
 })
 
 object BuildForWindowsInDocker : BuildType({
-    name = "Build [Windows, x64] in Docker"
+    name = "Build [Win, x64] in Docker"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -1260,65 +1259,13 @@ object DetectVisualStudioVersion : BuildType({
     }
 })
 
-object CopyServiceImages : BuildType({
-    name = "Copy service images"
-
-    params {
-        password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.srcRepo", "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1")
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
-    }
-
-    mainRepository()
-
-    steps {
-        script {
-            name = "test"
-            id = "test"
-            scriptContent = """
-                echo "Installing Skopeo"
-                apt-get update
-                apt-get install -y skopeo
-                apt-get install -y ca-certificates
-
-                image_tag=$(echo "%env.srcRepo%" | cut -d "/" -f 3)
-                echo "Image tag is ${'$'}image_tag"
-                echo "Source image - %env.srcRepo%:latest"
-                echo "Target image - %env.target.repo%/${'$'}image_tag"
-
-
-                #skopeo copy \
-                #  --src-creds amordovskii:%env.jfrogPass% \
-                #  --dest-creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
-                #  docker://%env.srcRepo% docker://%env.target.repo%/${'$'}image_tag
-
-                echo "List images nuget:"
-                skopeo list-tags \
-                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
-                docker://%env.target.repo%/nuget
-
-                echo "List images graal:"
-                skopeo list-tags \
-                  --creds %dxcity.namecode.nexus%:%dxcity.passcode.nexus% \
-                docker://%env.target.repo%/graalvm
-            """.trimIndent()
-            dockerImage = "ubuntu:latest"
-            dockerImagePlatform = ScriptBuildStep.ImagePlatform.Linux
-        }
-    }
-
-    features {
-        perfmon {}
-    }
-})
-
 /**
  * Moves the MDAPI tickets of the C++ API (dxfeed-graal-cxx-api on GitHub) through the Jira workflow by its pull
  * requests, as the Jira triggers of Bitbucket do for the internal repositories, and releases the Jira versions of its
  * GitHub releases (see .teamcity/jira-sync/cxx_api_jira_sync.py).
  */
-object CxxApiJiraSync : BuildType({
-    name = "C++ API: GitHub to Jira"
+object CxxApiGitGubJiraSync : BuildType({
+    name = "[DXFCXX]: GitHub -> Jira Sync & EMail On Release"
     description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-cxx-api"
 
     maxRunningBuilds = 1
@@ -1400,12 +1347,10 @@ object CxxApiJiraSync : BuildType({
     }
 })
 
-object ListServiceImages : BuildType({
-    name = "List service images"
+object ListDockerImages : BuildType({
+    name = "List Docker Images"
 
     params {
-        password("env.jfrogPass", "credentialsJSON:d288798f-47b9-4fbb-8463-a68be694481d")
-        param("env.srcRepo", "dxfeed-docker.jfrog.io/dxfeed-api/nuget:6.9.1")
         param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
     }
 
@@ -1420,11 +1365,6 @@ object ListServiceImages : BuildType({
                 apt-get update
                 apt-get install -y skopeo
                 apt-get install -y ca-certificates
-
-                image_tag=$(echo "%env.srcRepo%" | cut -d "/" -f 3)
-                echo "Image tag is ${'$'}image_tag"
-                echo "Source image - %env.srcRepo%:latest"
-                echo "Target image - %env.target.repo%/${'$'}image_tag"
 
                 echo "List images nuget:"
                 skopeo list-tags \
