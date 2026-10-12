@@ -859,7 +859,7 @@ object ReleaseInJira : BuildType({
     // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
     params {
         select(
-            "env.DRY_RUN", "1",
+            "env.DRY_RUN", "0",
             label = "Dry run",
             description = "1: only read GitHub and Jira, log the changes that the build would make and write the " +
                 "mail to the artifact release-mail.html; 0: make them",
