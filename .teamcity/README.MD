@@ -14,6 +14,7 @@
 - [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 - [Deploying Artifacts](#deploying-artifacts)
 - [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
+- [Releasing the SDK in Jira](#releasing-the-sdk-in-jira)
 
 # Editing the Settings
 
@@ -320,3 +321,51 @@ for that run too; the recipients of every release are the values in `settings.kt
 `env.DRY_RUN` of the build is `0`: the build makes the changes. Set it to `1` to only read GitHub and Jira (including
 the transitions available to `dxcity`) and log the changes that it would make. The tests (no network):
 `python3 -m unittest` in `jira-sync`.
+The code that the build shares with `Release in Jira` (below) is in `jira-sync/jira_sync_common.py`: the clients of
+GitHub and Jira, the log, the mail, the dry run and the transitions.
+
+# Releasing the SDK in Jira
+
+`Release in Jira` (Release chain) runs after a successful `Publish GitHub Release` and releases the Jira version of the
+SDK with `jira-sync/sdk_jira_release.py`, as the `dxcity` bot (`%dxcity.token.jira%`). It takes the release of `env.TAG`
+(`v3.9.0`), or else the latest published GitHub release (the one the chain has just published); a pre-release (an rc),
+a draft, or a version released in Jira already changes nothing, so the build after an rc, or a rerun, does nothing. The
+earlier releases are never caught up: after an rc, an earlier release is completed only by a run with `env.TAG`. For the
+release `vX.Y.Z`:
+
+- the Jira version `graal-native-sdk vX.Y.Z` of MDAPI is created if there is none;
+- the SDK tickets in Waiting for build and Waiting for test get it: added if a ticket has no fix version, or in place of
+  its earlier unreleased `graal-native-sdk` versions;
+- the tickets of the version in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI
+  do), and those in Waiting for test if there is such a transition (else a warning); the ones in Testing and the
+  unfinished ones (with a warning) stay as they are, in the version;
+- the release mail is sent, then the version is released with the date of the GitHub release.
+
+A ticket is of the SDK when its MDAPI key is in the commits of the release (from the previous release `vX.Y.Z`), its
+summary has `[GRAAL]`, it has the component `dxfeed-graal-api` or `dxfeed-graal-native-sdk`, or it has the version
+already (epics are not a sign: they hold the tickets of the other APIs too). MDAPI is shared with the other APIs, so a
+ticket is left as it is, with a warning, when it has a fix version of another product (`graal-cxx-api v...`), a tag of
+another API in the summary (`[C++]`, `[C#]`, `[.NET]`, `[Go]`, `[Swift]`) or a component of another API
+(`dxfeed-graal-cxx-api`: any `dxfeed-graal-...` but the two above) and no commit of the release, or a released earlier
+or a later `graal-native-sdk` version. The keys of the commits that are neither of the version nor waiting for
+build or test are warnings.
+
+The release mail goes as the one of the C++ API (see above) to `env.MAIL_TO` and `env.MAIL_CC`: the notes of the GitHub
+release with the MDAPI and QD keys linked to the tickets, the tickets of the version with their statuses, and the links
+to the release, the Jira version and the APIs built on the SDK. It is also the artifact `release-mail.html`. A ticket
+that cannot be resolved from Waiting for build, a failed request or a failed mail leaves the version unreleased and fails
+the build, which mails the problems to the same recipients; after the fix, a rerun (Run, with `env.TAG` if a later
+release is out) completes the release, the tickets that are resolved already are not changed again. To send the mail of
+a release again, run the build with `env.RESEND_MAIL` set to its tag.
+
+`env.DRY_RUN` of the build is `1` until the first release is checked: the build only reads GitHub and Jira, logs the
+changes that it would make and writes the mail to the artifact (no mail, `env.RESEND_MAIL` too, and no failure mail).
+The check of a release (the first one: `v3.9.0`), in the Run dialog of the build (Run with the "..." button, the
+values are of this run only):
+
+1. `env.TAG` = `v3.9.0`, Dry run = "Only log the changes": the log lists the changes (`[dry run] ...`) and the warnings,
+   the artifact `release-mail.html` is the mail;
+2. the same with Dry run = "Make the changes": the tickets are resolved, the version is released, the mail is sent.
+
+Then set `env.DRY_RUN` to `0` in `settings.kts`, so that the build after `Publish GitHub Release` makes the changes.
+The tests (no network): `python3 -m unittest` in `jira-sync`.

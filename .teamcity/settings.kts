@@ -70,7 +70,7 @@ project {
 
 object ReleaseChain : Project({
     name = "Release chain"
-    description = "Started by the release builds: the archives of the platforms, the XCFramework, NuGet and the GitHub release"
+    description = "Started by the release builds: the archives of the platforms, the XCFramework, NuGet, the GitHub release and the Jira release"
 
     buildType(BuildAndDeployForAll)
     buildType(BuildAndDeployForLinuxAarch64)
@@ -85,6 +85,7 @@ object ReleaseChain : Project({
     buildType(BuildAndDeployXCFramework)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
+    buildType(ReleaseInJira)
     buildTypesOrder = arrayListOf(
         BuildAndDeployForAll,
         BuildAndDeployForLinuxAarch64,
@@ -98,7 +99,8 @@ object ReleaseChain : Project({
         BuildAndDeployForMacOsAndIOS,
         BuildAndDeployXCFramework,
         DeployNuget,
-        SyncGitHubWithMainAndPublishRelease
+        SyncGitHubWithMainAndPublishRelease,
+        ReleaseInJira
     )
 })
 
@@ -838,6 +840,84 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
         sshAgent {
             teamcitySshKey = "sshkey_ed25519"
         }
+    }
+
+    requirements {
+        linuxAgent()
+    }
+})
+
+object ReleaseInJira : BuildType({
+    name = "Release in Jira"
+    description = "After the GitHub release vX.Y.Z: the SDK tickets resolved, the release mail, the Jira version " +
+        "graal-native-sdk vX.Y.Z released"
+
+    maxRunningBuilds = 1
+
+    artifactRules = "release-mail.html"
+
+    // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
+    params {
+        select(
+            "env.DRY_RUN", "1",
+            label = "Dry run",
+            description = "1: only read GitHub and Jira, log the changes that the build would make and write the " +
+                "mail to the artifact release-mail.html; 0: make them",
+            options = listOf("Make the changes" to "0", "Only log the changes" to "1"),
+        )
+        text(
+            "env.TAG", "",
+            label = "Release",
+            description = "The tag of the GitHub release; empty: the latest one (an rc: nothing to do). Example: v3.9.0",
+            allowEmpty = true,
+        )
+        text(
+            "env.MAIL_TO", "anatoly.kalin@devexperts.com",
+            label = "Release mail: To",
+            description = "The comma-separated recipients of the release mail and of the mail about a failed " +
+                "release; empty: no mail. Example: dxfeed-team@devexperts.com, someone@devexperts.com",
+            allowEmpty = true,
+        )
+        text(
+            "env.MAIL_CC", "",
+            label = "Release mail: Cc",
+            description = "The comma-separated copies of the release mail. Example: someone@devexperts.com",
+            allowEmpty = true,
+        )
+        text(
+            "env.RESEND_MAIL", "",
+            label = "Resend the release mail",
+            description = "A tag to send the mail of its GitHub release again (to To and Cc above), changing " +
+                "nothing else. Example: v3.9.0",
+            allowEmpty = true,
+        )
+    }
+
+    vcs {
+        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags, "+:.teamcity/jira-sync")
+    }
+
+    steps {
+        script {
+            name = "Release"
+            // GH_TOKEN (env.GH_TOKEN of the project) raises the rate limit of the GitHub API.
+            scriptContent = """
+                export JIRA_URL="%jira.url%"
+                export JIRA_TOKEN="%dxcity.token.jira%"
+                python3 .teamcity/jira-sync/sdk_jira_release.py
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${SyncGitHubWithMainAndPublishRelease.id}"
+            successfulOnly = true
+        }
+    }
+
+    failureConditions {
+        executionTimeoutMin = 5
     }
 
     requirements {
