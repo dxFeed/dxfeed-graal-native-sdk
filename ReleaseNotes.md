@@ -1,34 +1,53 @@
 ## v3.9.0-rc1
 
-* **\[GRAAL]** The archives no longer contain `docs/changelog.txt` (a list of the commit messages by tags); the
-  changes are described in this file.
+* **\[GRAAL]** The archives no longer contain `docs/changelog.txt` (a list of the commit messages by tags).
 * **\[GRAAL]** New Windows archives with the static library of the SDK:
   `graal-native-sdk-<version>-amd64-windows-static-lib.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-lib.zip`
   (the GitHub release, the Maven classifiers `amd64-windows-static-lib` and `amd64-windows-debug-static-lib`).
-  `DxFeedGraalNativeSdk_static.lib` links the SDK into the executable: no DLL, no Visual C++ Redistributable. One
-  library fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`, without `/NODEFAULTLIB`; only the `dxfg_*` and
-  `graal_*` functions are visible to the application, so the JDK inside (zlib, `JNU_*`) does not clash with its
-  symbols, and the executable exports nothing. The archive also contains the headers, `link-flags.txt` (the Windows
-  libraries to link) and `CMakeLists.txt` with the target `DxFeedGraalNativeSdk`. The builds of the `-static-crt`
-  archives make it from the same image and check it before the deploy with the four C runtimes.
+  `DxFeedGraalNativeSdk_static.lib` links the SDK into the executable: no DLL, no Visual C++ Redistributable. The
+  builds of the `-static-crt` archives make it from the same image and check it before the deploy with the four C
+  runtimes.
 * **\[GRAAL]** Migrated to QDS 3.356
   (see the [QD release notes](https://github.com/devexperts/QD/blob/master/ReleaseNotes.txt)) and `orcs-api` /
   `auther-api` 549. The event structures stay the same; the only change of the C API is the executor of the endpoint,
   see the next item.
 * **\[GRAAL]** New `dxfg_DXEndpoint_Builder_withExecutor()` sets the executor of the endpoint's notifications (events,
-  state changes, etc.) when the endpoint is built. **Deprecated:** `dxfg_DXEndpoint_executor()`.
-  * Why: QDS 3.356 deprecated `DXEndpoint.executor(Executor)` in favour of `DXEndpoint.Builder.withExecutor(Executor)`
-    (QD-1795). Changing the executor of an endpoint that already works is unsafe: called after
-    `dxfg_DXEndpoint_getFeed()` (or another function that uses the feed, e.g. `dxfg_OnDemandService_getInstance2()`),
-    it leaves the feed with the default executor, which is shut down, and the last events requests
-    (`dxfg_DXFeed_getLastEventPromise()`, etc.) never complete. The builder sets the executor before the endpoint
-    exists, so the order cannot be wrong.
-  * What changes: `dxfg_DXEndpoint_executor()` still works as before and stays in the library. The compilers warn where
-    it is used (`DXFG_DEPRECATED`: C4996 in MSVC, `-Wdeprecated-declarations` in GCC and Clang), so a build that treats
-    warnings as errors fails until the call is replaced. Its first call in an isolate logs
-    `WARNING: DEPRECATED use of executor() method. Set executor in the DXEndpoint.Builder`.
-  * What to do: create the endpoint with the builder and pass the executor to it. Wrappers (C++, .NET, Swift, Go) that
-    have a method to change the executor of an endpoint should move it to their endpoint builder.
+  state changes, etc.) when the endpoint is built. **Deprecated:** `dxfg_DXEndpoint_executor()`: QDS 3.356 deprecated
+  `DXEndpoint.executor(Executor)` in favour of `DXEndpoint.Builder.withExecutor(Executor)` (QD-1795). Changing the
+  executor of an endpoint that already works is unsafe: called after `dxfg_DXEndpoint_getFeed()` (or another function
+  that uses the feed, e.g. `dxfg_OnDemandService_getInstance2()`), it leaves the feed with the default executor, which
+  is shut down, and the last events requests (`dxfg_DXFeed_getLastEventPromise()`, etc.) never complete. The builder
+  sets the executor before the endpoint exists, so the order cannot be wrong. `dxfg_DXEndpoint_executor()` still works
+  as before and stays in the library.
+* **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
+  `graal-native-sdk-<version>-amd64-windows-static-crt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-crt.zip`
+  (the GitHub release, the Maven classifiers `amd64-windows-static-crt` and `amd64-windows-debug-static-crt`). Their
+  `DxFeedGraalNativeSdk.dll` does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`);
+  the C API and the other files are the same. Each archive is checked before the deploy, also in a Windows container
+  without the Redistributable.
+* **\[MDAPI-302]\[GRAAL]** The Windows library can be built with the static C runtime: `-DwindowsStaticRuntime=true`
+  (the Maven profile `windowsStaticRuntime`). The JDK libraries of GraalVM are built with `/MD`, so
+  `scripts/windows-static-runtime/New-CrtShim.ps1` assembles the pointers of their CRT imports to the static CRT, and
+  native-image links the image with them and `libcmt`, `libvcruntime`, `libucrt` instead of the dynamic CRT.
+
+### For integrators
+
+* The archives with the static C runtime were named `-static-mt` in 3.9.0-rc1, now `-static-crt`: download
+  `graal-native-sdk-<version>-amd64-windows[-debug]-static-crt.zip` (the Maven classifiers
+  `amd64-windows-static-crt` and `amd64-windows-debug-static-crt`).
+* The `DxFeedGraalNativeSdk.dll` of the `-static-crt` archives fits an application built with `/MT`, `/MTd`, `/MD` or
+  `/MDd`: the C runtime is inside the library.
+* The static library of the `-static-lib` archives fits an application built with `/MT`, `/MTd`, `/MD` or `/MDd`,
+  without `/NODEFAULTLIB`. Link it with the Windows libraries listed in `link-flags.txt`, or use `CMakeLists.txt` of
+  the archive (the target `DxFeedGraalNativeSdk`). Only the `dxfg_*` and `graal_*` functions are visible to the
+  application, so the JDK inside (zlib, `JNU_*`) does not clash with its symbols, and the executable exports nothing.
+* The changes are described in this file (and in the description of the GitHub release), not in `docs/changelog.txt`.
+* The compilers warn where `dxfg_DXEndpoint_executor()` is used (`DXFG_DEPRECATED`: C4996 in MSVC,
+  `-Wdeprecated-declarations` in GCC and Clang), so a build that treats warnings as errors fails until the call is
+  replaced. Its first call in an isolate logs
+  `WARNING: DEPRECATED use of executor() method. Set executor in the DXEndpoint.Builder`.
+* Create the endpoint with the builder and pass the executor to it. Wrappers (C++, .NET, Swift, Go) that have a method
+  to change the executor of an endpoint should move it to their endpoint builder.
   ```c
   // Before
   dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(thread);
@@ -40,23 +59,12 @@
   dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_Builder_build(thread, builder);
   dxfg_JavaObjectHandler_release(thread, &builder->handler);
   ```
-  * When a custom executor is not needed: the size of the default thread pool is set by the properties
-    `dxfeed.threadPoolSize` (the FEED and ON_DEMAND_FEED roles) and `dxpublisher.threadPoolSize` (PUBLISHER), e.g. with
-    `dxfg_DXEndpoint_Builder_withProperty()`; the listeners of one subscription can get their own executor with
-    `dxfg_DXFeedSubscription_setExecutor()`.
-  * Until the migration: call `dxfg_DXEndpoint_executor()` right after the endpoint is created, before
-    `dxfg_DXEndpoint_getFeed()` and `dxfg_DXEndpoint_getPublisher()`.
-* **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
-  `graal-native-sdk-<version>-amd64-windows-static-crt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-crt.zip`
-  (the GitHub release, the Maven classifiers `amd64-windows-static-crt` and `amd64-windows-debug-static-crt`). Their
-  `DxFeedGraalNativeSdk.dll` does not need the Visual C++ Redistributable (no `VCRUNTIME140.dll`, `api-ms-win-crt-*.dll`);
-  the C API and the other files are the same. The C runtime is inside the library, so it fits an application built with
-  `/MT`, `/MTd`, `/MD` or `/MDd`. Each archive is checked before the deploy, also in a Windows container without the
-  Redistributable. In 3.9.0-rc1 these archives were named `-static-mt`.
-* **\[MDAPI-302]\[GRAAL]** The Windows library can be built with the static C runtime: `-DwindowsStaticRuntime=true`
-  (the Maven profile `windowsStaticRuntime`). The JDK libraries of GraalVM are built with `/MD`, so
-  `scripts/windows-static-runtime/New-CrtShim.ps1` assembles the pointers of their CRT imports to the static CRT, and
-  native-image links the image with them and `libcmt`, `libvcruntime`, `libucrt` instead of the dynamic CRT.
+* A custom executor is often not needed: the size of the default thread pool is set by the properties
+  `dxfeed.threadPoolSize` (the FEED and ON_DEMAND_FEED roles) and `dxpublisher.threadPoolSize` (PUBLISHER), e.g. with
+  `dxfg_DXEndpoint_Builder_withProperty()`; the listeners of one subscription can get their own executor with
+  `dxfg_DXFeedSubscription_setExecutor()`.
+* Until the migration, call `dxfg_DXEndpoint_executor()` right after the endpoint is created, before
+  `dxfg_DXEndpoint_getFeed()` and `dxfg_DXEndpoint_getPublisher()`.
 
 ## v3.8.0
 
