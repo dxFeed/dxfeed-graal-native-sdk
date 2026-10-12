@@ -313,10 +313,10 @@ to the next version.
 The release mail goes from `dxcity@bots.devexperts.com` through `mxeu0.devexperts.com` (the relay of the mail of Jira,
 which takes the mail of the agents without a login) to `env.MAIL_TO`, with a copy to `env.MAIL_CC` (comma-separated
 addresses; no `env.MAIL_TO`: no mail). It has the notes of the GitHub release as GitHub renders them, with the MDAPI
-keys linked to the tickets, and the links to the release, the documentation and the Jira version. A failed mail leaves
-the version unreleased: the next run tries again. To send the mail of a release again, run the build with
-`env.RESEND_MAIL` set to its tag (`v8.1.0`) in the Run dialog, where `env.MAIL_TO` and `env.MAIL_CC` can be changed
-for that run too; the recipients of every release are the values in `settings.kts`.
+keys linked to the tickets and the code highlighted as on GitHub, and the links to the release, the documentation and
+the Jira version. A failed mail leaves the version unreleased: the next run tries again. To send the mail of a release
+again, run the build with `env.RESEND_MAIL` set to its tag (`v8.1.0`) in the Run dialog, where `env.MAIL_TO` and
+`env.MAIL_CC` can be changed for that run too; the recipients of every release are the values in `settings.kts`.
 
 `env.DRY_RUN` of the build is `0`: the build makes the changes. Set it to `1` to only read GitHub and Jira (including
 the transitions available to `dxcity`) and log the changes that it would make. The tests (no network):
@@ -347,16 +347,17 @@ already (epics are not a sign: they hold the tickets of the other APIs too). MDA
 ticket is left as it is, with a warning, when it has a fix version of another product (`graal-cxx-api v...`), a tag of
 another API in the summary (`[C++]`, `[C#]`, `[.NET]`, `[Go]`, `[Swift]`) or a component of another API
 (`dxfeed-graal-cxx-api`: any `dxfeed-graal-...` but the two above) and no commit of the release, or a released earlier
-or a later `graal-native-sdk` version. The keys of the commits that are neither of the version nor waiting for
-build or test are warnings.
+or a later `graal-native-sdk` version. A ticket whose only sign is the shared component `dxfeed-graal-api` is, as a
+rule, of another API, so it is left with a line of the log instead of a warning. The keys of the commits that are
+neither of the version nor waiting for build or test are warnings.
 
 The release mail goes as the one of the C++ API (see above) to `env.MAIL_TO` and `env.MAIL_CC`: the notes of the GitHub
-release with the MDAPI and QD keys linked to the tickets, the tickets of the version with their statuses, and the links
-to the release, the Jira version and the APIs built on the SDK. It is also the artifact `release-mail.html`. A ticket
-that cannot be resolved from Waiting for build, a failed request or a failed mail leaves the version unreleased and fails
-the build, which mails the problems to the same recipients; after the fix, a rerun (Run, with `env.TAG` if a later
-release is out) completes the release, the tickets that are resolved already are not changed again. To send the mail of
-a release again, run the build with `env.RESEND_MAIL` set to its tag.
+release with the MDAPI and QD keys linked to the tickets and the code highlighted as on GitHub, and the links to the
+release, the Jira version and the APIs built on the SDK (the Swift API with its Stash repository). It is also the
+artifact `release-mail.html`. A ticket that cannot be resolved from Waiting for build, a failed request or a failed mail
+leaves the version unreleased and fails the build, which mails the problems to the same recipients; after the fix, a
+rerun (Run, with `env.TAG` if a later release is out) completes the release, the tickets that are resolved already are
+not changed again. To send the mail of a release again, run the build with `env.RESEND_MAIL` set to its tag.
 
 `env.DRY_RUN` of the build is `1` until the first release is checked: the build only reads GitHub and Jira, logs the
 changes that it would make and writes the mail to the artifact (no mail, `env.RESEND_MAIL` too, and no failure mail).

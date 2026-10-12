@@ -19,8 +19,8 @@ release vX.Y.Z:
     MDAPI do), in Waiting for test -> Resolved if there is such a transition; the ones in the other statuses are
     reported (the unfinished ones with a warning) and stay;
   - the release mail goes to MAIL_TO and MAIL_CC: the notes of the GitHub release (as GitHub renders them, the
-    tickets linked), the tickets of the version, the links to the release, the Jira version and the APIs built on the
-    SDK; it is sent before the version is released, so a failed mail leaves the version unreleased and a rerun repeats
+    tickets linked, the code highlighted), the links to the release, the Jira version and the APIs built on the SDK;
+    it is sent before the version is released, so a failed mail leaves the version unreleased and a rerun repeats
     the release (its ticket changes are done already) and the mail. The mail is written to release-mail.html too;
   - the version is released with the date of the GitHub release.
 A live run that ends with build problems mails them to MAIL_TO and MAIL_CC.
@@ -61,6 +61,7 @@ NOTES_KEY_PATTERN = re.compile(r"\b(?:MDAPI|QD)-\d+\b")
 # The signs of a ticket of the SDK, and the tags of the summaries of the tickets of the other APIs.
 SDK_TAG = "[graal]"
 SDK_COMPONENTS = {"dxfeed-graal-api", "dxfeed-graal-native-sdk"}
+SHARED_COMPONENT = "dxfeed-graal-api"  # of the tickets of the other APIs too
 OTHER_API_TAGS = ("[c++]", "[c#]", "[.net]", "[go]", "[swift]")
 OTHER_API_COMPONENT_PREFIX = "dxfeed-graal-"  # the components of the APIs other than SDK_COMPONENTS
 
@@ -78,12 +79,13 @@ TESTING_NAME = "testing"
 WAITING_JQL = f'project = {JIRA_PROJECT} AND status in ("Waiting for build", "Waiting for test") ORDER BY key'
 TICKET_FIELDS = "status,summary,components,fixVersions"
 
-# The APIs built on the SDK, for the mail: (the name, the repository).
+# The APIs built on the SDK, for the mail: (the name, the repository, its repository on Stash or None).
 APIS = [
-    ("C++ API", "https://github.com/dxFeed/dxfeed-graal-cxx-api"),
-    (".NET API", "https://github.com/dxFeed/dxfeed-graal-net-api"),
-    ("Go API", "https://github.com/dxFeed/dxfeed-graal-go-api"),
-    ("Swift API", "https://stash.in.devexperts.com/projects/MDAPI/repos/dxfeed-graal-swift-api"),
+    ("C++ API", "https://github.com/dxFeed/dxfeed-graal-cxx-api", None),
+    (".NET API", "https://github.com/dxFeed/dxfeed-graal-net-api", None),
+    ("Go API", "https://github.com/dxFeed/dxfeed-graal-go-api", None),
+    ("Swift API", "https://github.com/dxFeed/dxfeed-graal-swift-api",
+     "https://stash.in.devexperts.com/projects/MDAPI/repos/dxfeed-graal-swift-api"),
 ]
 
 
@@ -109,10 +111,10 @@ def sdk_version_tuple(version):
     return prefixed_version_tuple(version, VERSION_PREFIX)
 
 
-def release_mail(release, version_name, version_url, tickets, jira_url, build_url):
+def release_mail(release, version_name, version_url, jira_url, build_url):
     """
-    The subject, the HTML and the text of the mail about a GitHub release (with its notes as GitHub renders them);
-    tickets: (the key, the summary, the status) of the version.
+    The subject, the HTML and the text of the mail about a GitHub release: its notes as GitHub renders them, the
+    tickets linked, the code highlighted.
     """
     tag = release["tag_name"]
     date = release["published_at"][:10]
@@ -121,25 +123,20 @@ def release_mail(release, version_name, version_url, tickets, jira_url, build_ur
         f'<a href="{html.escape(release["html_url"])}">Release on GitHub</a> (downloads)',
         f'<a href="{html.escape(version_url)}">Jira version {html.escape(version_name)}</a>',
     ]
-    cell = 'style="padding: 2px 12px 2px 0; vertical-align: top;"'
-    rows = "\n".join(
-        f'<tr><td {cell}><a href="{jira_url}/browse/{key}">{key}</a></td><td {cell}>{html.escape(summary)}</td>'
-        f"<td {cell}>{html.escape(status)}</td></tr>"
-        for key, summary, status in tickets
-    )
+    apis = " &nbsp;|&nbsp; ".join(
+        f'<a href="{url}">{html.escape(name)}</a>' + (f' (<a href="{mirror}">Stash</a>)' if mirror else "")
+        for name, url, mirror in APIS)
     sections = [
         ("Release notes", release_notes_html(release, jira_url, NOTES_KEY_PATTERN)),
-        ("Tickets", f'<table style="border-collapse: collapse;">\n{rows}\n</table>' if tickets else "<p>None.</p>"),
-        ("APIs built on the SDK", "<p>" + " &nbsp;|&nbsp; ".join(
-            f'<a href="{url}">{html.escape(name)}</a>' for name, url in APIS) + "</p>"),
+        ("APIs built on the SDK", f"<p>{apis}</p>"),
     ]
     body = release_mail_html(title, date, links, sections, build_url)
     text = "\n\n".join(filter(None, [
         f"{title} has been released on {date}.",
         f"Release on GitHub: {release['html_url']}\nJira version {version_name}: {version_url}",
         release.get("body_text") or release.get("body") or "",
-        "Tickets:\n" + "\n".join(f"{key} {summary} ({status})" for key, summary, status in tickets) if tickets else "",
-        "APIs built on the SDK:\n" + "\n".join(f"{name}: {url}" for name, url in APIS),
+        "APIs built on the SDK:\n" + "\n".join(
+            f"{name}: {url}" + (f" (Stash: {mirror})" if mirror else "") for name, url, mirror in APIS),
         f"Build: {build_url}" if build_url else "",
     ]))
     return f"[release] {title}", body, text
@@ -246,15 +243,12 @@ class Release(Workflow):
             for ticket in self.jira.issues(f"fixVersion = {version['id']} ORDER BY key", TICKET_FIELDS):
                 tickets.setdefault(ticket["key"], ticket)
 
-        released = []  # the tickets of the version: (the key, the summary, the status) for the mail
-
         for key, ticket in sorted(tickets.items(), key=lambda item: key_number(item[0])):
             status = ticket["fields"]["status"]
             self.statuses[key] = status
 
             if self.take(ticket, version, number, committed):
                 self.finish(key, status, name)
-                released.append((key, ticket["fields"]["summary"], self.statuses[key]["name"]))
 
         for key in sorted(committed - set(tickets), key=key_number):
             self.log.warning(
@@ -266,7 +260,7 @@ class Release(Workflow):
             self.log.info(f"Jira version {name} is not released: there are build problems")
             return
 
-        if not self.mail(release, version, released):
+        if not self.mail(release, version):
             return
 
         date = release["published_at"][:10]
@@ -296,11 +290,14 @@ class Release(Workflow):
         if not signs:
             return False  # a ticket of another API
 
+        # Only the shared component: as a rule, a ticket of another API, so a line of the log, not a warning.
+        weak = signs == ["an SDK component"] and components & SDK_COMPONENTS == {SHARED_COMPONENT}
+        report = self.log.info if weak else self.log.warning
         foreign = [other["name"] for other in fix_versions if sdk_version_tuple(other) is None]
 
         if foreign:
-            self.log.warning(f"{key} ({', '.join(signs)}) has the fix version {', '.join(foreign)} of another "
-                             f"product: it is left as it is")
+            report(f"{key} ({', '.join(signs)}) has the fix version {', '.join(foreign)} of another product: it is "
+                   f"left as it is")
             return False
 
         # The tags of the other APIs in the summary and their components (dxfeed-graal-cxx-api): the component
@@ -309,8 +306,8 @@ class Release(Workflow):
         others += sorted(name for name in components - SDK_COMPONENTS if name.startswith(OTHER_API_COMPONENT_PREFIX))
 
         if others and not in_commits:
-            self.log.warning(f"{key} ({', '.join(signs)}) is of another API ({', '.join(others)}) and is not in the "
-                             f"commits: it is left as it is")
+            report(f"{key} ({', '.join(signs)}) is of another API ({', '.join(others)}) and is not in the commits: it "
+                   f"is left as it is")
             return False
 
         if fields["status"]["id"] != WAITING_FOR_BUILD and not is_waiting_for_test(fields["status"]):
@@ -347,11 +344,11 @@ class Release(Workflow):
         elif status["statusCategory"]["key"] != "done":
             self.log.warning(f"{key} of {name} is not finished ({status['name']}): it stays in {name}, move it by hand")
 
-    def mail(self, release, version, tickets):
+    def mail(self, release, version):
         """Writes the release mail to the file and sends it to the recipients (if any); False if it fails."""
         version_url = f"{self.jira.url}/projects/{JIRA_PROJECT}/versions/{version['id']}"
         subject, body_html, text = release_mail(
-            release, version["name"], version_url, tickets, self.jira.url, self.build_url)
+            release, version["name"], version_url, self.jira.url, self.build_url)
 
         if self.mail_file:
             with open(self.mail_file, "w", encoding="utf-8") as file:
@@ -373,11 +370,7 @@ class Release(Workflow):
             return
 
         self.log.info(f"Resending the mail of {tag}")
-        tickets = [
-            (ticket["key"], ticket["fields"]["summary"], ticket["fields"]["status"]["name"])
-            for ticket in self.jira.issues(f"fixVersion = {version['id']} ORDER BY key")
-        ]
-        self.mail(release, version, tickets)
+        self.mail(release, version)
 
 
 def main():

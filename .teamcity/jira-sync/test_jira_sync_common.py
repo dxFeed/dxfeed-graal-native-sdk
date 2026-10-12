@@ -7,7 +7,9 @@ import re
 import unittest
 import urllib.parse
 
-from jira_sync_common import Jira, Log, Workflow, link_tickets, prefixed_version_tuple
+from jira_sync_common import (
+    MAIL_PRE_STYLE, Jira, Log, Workflow, highlight_code_blocks, link_tickets, prefixed_version_tuple,
+)
 from test_cxx_api_jira_sync import IN_DEVELOPMENT, RESOLVED, WAITING_FOR_BUILD, FakeServer
 
 KEYS = re.compile(r"\b(?:MDAPI|QD)-\d+\b")
@@ -33,6 +35,15 @@ class CommonTest(unittest.TestCase):
             '<a href="https://jira.test/browse/QD-1795">QD-1795</a>, <code>MDAPI-1</code>, '
             '<a href="x">MDAPI-2</a>, UTF-8, Visual C++</p>',
             link_tickets(notes, "https://jira.test", KEYS))
+
+    def test_highlight_code_blocks_styles_a_block_without_highlighting_and_keeps_the_inline_code(self):
+        notes = ('<pre class="notranslate"><code class="language-text">a &lt; b</code></pre><p><code>x</code></p>'
+                 "<pre>c</pre>")
+
+        self.assertEqual(
+            f'<pre style="{MAIL_PRE_STYLE}"><code>a &lt; b</code></pre><p><code>x</code></p>'
+            f'<pre style="{MAIL_PRE_STYLE}">c</pre>',
+            highlight_code_blocks(notes))
 
     def test_prefixed_version_tuple_takes_only_the_versions_of_the_prefix(self):
         prefix = "graal-native-sdk v"

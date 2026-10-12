@@ -156,6 +156,41 @@ MAIL_CODE_STYLE = (
 )
 
 
+MAIL_PRE_STYLE = (
+    "font-family: Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.4; background: #f6f8fa; "
+    "padding: 8px 12px; border: 1px solid #d1d9e0; white-space: pre-wrap;"
+)
+# The colors of the classes that GitHub marks the highlighted code with (its light theme); the others keep the color of
+# the text.
+CODE_COLORS = {
+    "pl-c": "#59636e",  # a comment
+    "pl-c1": "#0550ae",  # a constant, a number
+    "pl-k": "#cf222e",  # a keyword
+    "pl-s": "#0a3069",  # a string
+    "pl-pds": "#0a3069",  # the quotes of a string
+    "pl-sr": "#0a3069",  # a regular expression
+    "pl-en": "#6639ba",  # the name of a function, a type
+    "pl-e": "#6639ba",
+    "pl-v": "#953800",  # a variable
+    "pl-smw": "#953800",
+    "pl-ent": "#116329",  # a tag
+}
+
+
+def highlight_code_blocks(notes_html):
+    """
+    The code blocks of the HTML that GitHub renders, for a mail: the classes of the highlighted code (the mail clients
+    drop the styles of GitHub) as the inline colors, the blocks styled.
+    """
+    notes = re.sub(r'<div class="highlight[^"]*"[^>]*>', "<div>", notes_html)
+    notes = re.sub(r"<pre\b[^>]*>", "<pre>", notes)  # <pre class="notranslate">
+    notes = re.sub(r"<pre>(\s*)<code[^>]*>", r"<pre>\1<code>", notes)  # no inline style of the code inside a block
+    notes = notes.replace("<pre>", f'<pre style="{MAIL_PRE_STYLE}">')
+    return re.sub(r'<span class="(pl-[\w-]+)">',
+                  lambda match: f'<span style="color: {CODE_COLORS[match.group(1)]};">'
+                  if match.group(1) in CODE_COLORS else "<span>", notes)
+
+
 def link_tickets(notes_html, jira_url, key_pattern):
     """Links the keys of the text of the HTML to the tickets (not in the tags, the links and the code)."""
     parts = re.split(r"(<[^>]+>)", notes_html)
@@ -175,10 +210,14 @@ def link_tickets(notes_html, jira_url, key_pattern):
 
 
 def release_notes_html(release, jira_url, key_pattern):
-    """The notes of the GitHub release as GitHub renders them, for the mail: the tickets linked, the code styled."""
+    """
+    The notes of the GitHub release as GitHub renders them, for the mail: the tickets linked, the code styled and
+    highlighted.
+    """
     # GitHub renders the line breaks of the Markdown of a release as <br>: the wrapped lines of ReleaseNotes.md.
     notes = re.sub(r"<br>\s*\n", "\n", release.get("body_html") or "").strip() or "<p>No release notes.</p>"
-    return link_tickets(notes, jira_url, key_pattern).replace("<code>", f'<code style="{MAIL_CODE_STYLE}">')
+    return highlight_code_blocks(
+        link_tickets(notes, jira_url, key_pattern).replace("<code>", f'<code style="{MAIL_CODE_STYLE}">'))
 
 
 def release_mail_html(title, date, links, sections, build_url):

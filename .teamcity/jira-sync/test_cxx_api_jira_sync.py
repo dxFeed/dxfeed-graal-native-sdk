@@ -1498,6 +1498,17 @@ class SyncTest(unittest.TestCase):
         self.assertIn('href="https://dxcity.test/build/1"', body_html)
         self.assertIn("[MDAPI-1][C++] A wrapped line", text)
 
+    def test_release_mail_highlights_the_code_of_the_notes(self):
+        notes = release("v8.1.0")
+        notes["body_html"] = ('<div class="highlight highlight-source-c++ notranslate" dir="auto"><pre>'
+                              '<span class="pl-k">auto</span> x = <span class="pl-c1">1</span>;</pre></div>')
+
+        body_html = sync.release_mail(notes, "graal-cxx-api v8.1.0", "https://jira.test/v", "https://jira.test", "")[1]
+
+        self.assertIn('<div><pre style="font-family: Consolas', body_html)
+        self.assertIn('<span style="color: #cf222e;">auto</span> x = <span style="color: #0550ae;">1</span>;</pre>',
+                      body_html)
+
     def test_dry_run_does_not_mail(self):
         self.release_v8_1_0()
         mailer = FakeMailer()

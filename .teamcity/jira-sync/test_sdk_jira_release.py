@@ -12,7 +12,7 @@ import urllib.error
 import urllib.parse
 
 import sdk_jira_release as sdk
-from jira_sync_common import GitHub, HttpError, Jira, Log
+from jira_sync_common import MAIL_PRE_STYLE, GitHub, HttpError, Jira, Log
 from test_cxx_api_jira_sync import (
     CONFIRMED, IN_DEVELOPMENT, RESOLVED, TESTING, WAITING_FOR_BUILD, WAITING_FOR_TEST, FakeMailer, FakeServer,
 )
@@ -275,15 +275,31 @@ class ReleaseTest(unittest.TestCase):
         self.assertIn("MDAPI-306 ([GRAAL]) is of another API ([C++]) and is not in the commits", self.warnings()[0])
 
     def test_a_ticket_with_a_component_of_another_api_is_left_alone(self):
-        # The component dxfeed-graal-api is shared by the APIs.
+        # The component dxfeed-graal-api is shared by the APIs: the only sign, so a line of the log, not a warning.
         self.server.ticket("MDAPI-308", WAITING_FOR_BUILD, "Untagged fix",
                            components=["dxfeed-graal-api", "dxfeed-graal-cxx-api"])
+        self.server.ticket("MDAPI-310", WAITING_FOR_BUILD, "[Swift] Fix", components=["dxfeed-graal-api"])
+        self.server.ticket("MDAPI-311", WAITING_FOR_BUILD, "[Swift] SDK fix", components=["dxfeed-graal-native-sdk"])
 
         self.assertEqual(0, self.run_release())
 
-        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-308"))
-        self.assertEqual([], self.server.issues["MDAPI-308"]["fixVersions"])
-        self.assertIn("MDAPI-308 (an SDK component) is of another API (dxfeed-graal-cxx-api)", self.warnings()[0])
+        for key in ("MDAPI-308", "MDAPI-310", "MDAPI-311"):
+            self.assertEqual(WAITING_FOR_BUILD, self.status_of(key))
+            self.assertEqual([], self.server.issues[key]["fixVersions"])
+
+        self.assertIn("MDAPI-308 (an SDK component) is of another API (dxfeed-graal-cxx-api)", self.out.getvalue())
+        self.assertIn("MDAPI-310 (an SDK component) is of another API ([SWIFT])", self.out.getvalue())
+        self.assertEqual(1, len(self.warnings()))
+        self.assertIn("MDAPI-311 (an SDK component) is of another API ([SWIFT])", self.warnings()[0])
+
+    def test_a_ticket_with_the_shared_component_and_a_foreign_version_is_logged(self):
+        self.server.ticket("MDAPI-312", WAITING_FOR_BUILD, "Fix", ["200"], components=["dxfeed-graal-api"])
+
+        self.assertEqual(0, self.run_release())
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-312"))
+        self.assertIn("MDAPI-312 (an SDK component) has the fix version graal-cxx-api v4.1.0", self.out.getvalue())
+        self.assertEqual([], self.warnings())
 
     def test_a_ticket_with_the_version_only_is_of_the_sdk(self):
         self.server.ticket("MDAPI-309", WAITING_FOR_BUILD, "Version set by hand", ["101"])
@@ -291,7 +307,6 @@ class ReleaseTest(unittest.TestCase):
         self.assertEqual(0, self.run_release())
 
         self.assertEqual(RESOLVED, self.status_of("MDAPI-309"))
-        self.assertIn("MDAPI-309 Version set by hand (Resolved)", self.mailer.sent[0][2])
 
     def test_a_ticket_of_another_api_in_the_commits_is_of_the_sdk(self):
         self.server.compare[("v3.8.0", "v3.9.0")].append("[MDAPI-307] Both")
@@ -457,16 +472,32 @@ class ReleaseTest(unittest.TestCase):
         self.assertNotIn("browse/UTF-8", body_html)
         self.assertIn("Visual C++ 2022", body_html)
         self.assertIn("wrapped\nline", body_html)
-        self.assertIn('<td style="padding: 2px 12px 2px 0; vertical-align: top;">[GRAAL] Events</td>', body_html)
-        self.assertIn("Resolved", body_html)
         self.assertIn('href="https://github.com/dxFeed/dxfeed-graal-native-sdk/releases/tag/v3.9.0"', body_html)
         self.assertIn('href="https://jira.test/projects/MDAPI/versions/101"', body_html)
 
-        for name, url in sdk.APIS:
+        for name, url, mirror in sdk.APIS:
             self.assertIn(f'<a href="{url}">{name}</a>', body_html)
             self.assertIn(url, text)
 
-        self.assertIn("MDAPI-304 [GRAAL] Events (Resolved)", text)
+        swift = "https://stash.in.devexperts.com/projects/MDAPI/repos/dxfeed-graal-swift-api"
+        self.assertIn(f'<a href="https://github.com/dxFeed/dxfeed-graal-swift-api">Swift API</a> '
+                      f'(<a href="{swift}">Stash</a>)', body_html)
+        self.assertIn(f"Swift API: https://github.com/dxFeed/dxfeed-graal-swift-api (Stash: {swift})", text)
+        # The tickets are in the notes, no list of them.
+        self.assertNotIn("Tickets", body_html)
+        self.assertNotIn("MDAPI-304", body_html)
+
+    def test_the_mail_highlights_the_code_of_the_notes(self):
+        self.server.releases[0]["body_html"] = (
+            '<div class="highlight highlight-source-c notranslate position-relative overflow-auto" dir="auto">'
+            '<pre><span class="pl-k">int</span> <span class="pl-en">main</span>() <span class="pl-smi">x</span>'
+            "</pre></div>")
+
+        self.assertEqual(0, self.run_release())
+
+        body_html = self.mailer.sent[0][1]
+        self.assertIn(f'<div><pre style="{MAIL_PRE_STYLE}"><span style="color: #cf222e;">int</span> '
+                      '<span style="color: #6639ba;">main</span>() <span>x</span></pre></div>', body_html)
 
     def test_the_mail_is_resent_without_other_changes(self):
         self.version("101")["released"] = True
@@ -475,7 +506,7 @@ class ReleaseTest(unittest.TestCase):
 
         self.assertEqual(["[release] dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertEqual([], self.server.changes)
-        self.assertIn("MDAPI-304 [GRAAL] Events (Waiting for build)", self.mailer.sent[0][2])
+        self.assertIn("Jira version graal-native-sdk v3.9.0", self.mailer.sent[0][2])
 
     def test_resending_the_mail_of_an_unknown_release_is_a_problem(self):
         self.assertEqual(1, self.run_release(tag="", resend_mail="v3.7.0"))
