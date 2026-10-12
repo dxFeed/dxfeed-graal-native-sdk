@@ -72,6 +72,12 @@ function Assert-NoExports([string]$File) {
 
 # The program prints "OK: ..." last: an exit code 0 without it is not a passed check (e.g. a command that did not run).
 function Assert-Passed([string]$File) {
+    # On a machine short of memory, an executable run right after link.exe wrote it was seen mapped with zero pages
+    # instead of the written ones (0xC0000005 at the entry point, 0xC000001D, a hang or a Java exception, while the
+    # file is correct). Opening the file for writing drops the cached image, so the run maps what is on the disk.
+    $stream = [IO.File]::Open($File, 'Open', 'ReadWrite', 'None')
+    $stream.Flush($true)
+    $stream.Dispose()
     $output = & $File
     $exitCode = $LASTEXITCODE
     $output | Out-Host
