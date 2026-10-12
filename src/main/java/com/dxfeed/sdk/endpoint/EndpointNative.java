@@ -83,7 +83,7 @@ public final class EndpointNative {
             final IsolateThread ignoredThread,
             final DxfgEndpoint dxfgEndpoint
     ) {
-        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).close();
+        EndpointCloser.close(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
@@ -95,7 +95,7 @@ public final class EndpointNative {
             final IsolateThread ignoredThread,
             final DxfgEndpoint dxfgEndpoint
     ) throws InterruptedException {
-        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).closeAndAwaitTermination();
+        EndpointCloser.closeAndAwaitTermination(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
@@ -309,6 +309,9 @@ public final class EndpointNative {
                 NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getPublisher());
     }
 
+    // DXEndpoint.executor(Executor) is deprecated since QDS 3.356 (use dxfg_DXEndpoint_Builder_withExecutor);
+    // the function stays for the existing callers.
+    @SuppressWarnings("deprecation")
     @CEntryPoint(
             name = "dxfg_DXEndpoint_executor",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class

@@ -33,10 +33,14 @@ inline Command executorBaseOnConcurrentLinkedQueueCase{
         std::size_t argIndex = 0;
         auto address = dxfg::CommandLineParser::parseAddress(args, argIndex, context.getDefaultAddress());
 
-        dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(isolateThread);
         dxfg_executor_t *executor = dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(isolateThread);
+        dxfg_endpoint_builder_t *builder = dxfg_DXEndpoint_newBuilder(isolateThread);
 
-        dxfg_DXEndpoint_executor(isolateThread, endpoint, executor);
+        dxfg_DXEndpoint_Builder_withExecutor(isolateThread, builder, executor);
+
+        dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_Builder_build(isolateThread, builder);
+
+        dxfg_JavaObjectHandler_release(isolateThread, &builder->handler);
         dxfg_DXEndpoint_connect(isolateThread, endpoint, address.c_str());
 
         dxfg_feed_t *feed = dxfg_DXEndpoint_getFeed(isolateThread, endpoint);

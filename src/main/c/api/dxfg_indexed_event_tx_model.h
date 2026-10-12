@@ -312,7 +312,7 @@ int32_t dxfg_IndexedEventTxModel_Builder_withAggregationPeriodMillis(graal_isola
 
 /**
  * Sets the executor for processing listener notifications.
- * The default executor for all models is configured with the dxfg_DXEndpoint_executor() function.
+ * The default executor for all models is the endpoint's one (see dxfg_DXEndpoint_Builder_withExecutor()).
  * This executor can be changed later, after the model has been built using the
  * @ref dxfg_IndexedEventTxModel_getSubscriptionController() "subscription controller".
  *

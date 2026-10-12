@@ -111,6 +111,24 @@ int32_t                     dxfg_DXEndpoint_Builder_withRole(graal_isolatethread
 int32_t                     dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *name);
 int32_t                     dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *key, const char *value);
 int32_t                     dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *file_path);
+
+/**
+ * Sets the executor of the notifications of the endpoints built by this builder: event processing, state changes, etc.
+ * (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html">DXEndpoint.Builder.withExecutor(executor)</a>).
+ * Use it instead of the deprecated dxfg_DXEndpoint_executor().
+ *
+ * By default, the endpoint uses a thread pool with the size equal to the number of available processors
+ * (the `dxfeed.threadPoolSize` property for the feed roles and `dxpublisher.threadPoolSize` for the publisher).
+ * The executor must not reject the submitted tasks.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] builder The builder.
+ * @param[in] executor The executor (e.g. from dxfg_Executors_newFixedThreadPool()) or NULL to use the default one.
+ * The builder does not take the handle: free it with dxfg_JavaObjectHandler_release() when it is no longer needed.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on success or #DXFG_EXECUTE_FAIL (-1) on error.
+ * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ */
+int32_t                     dxfg_DXEndpoint_Builder_withExecutor(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, dxfg_executor_t *executor);
 int32_t                     dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *key);
 
 /**
@@ -242,12 +260,15 @@ dxfg_publisher_t*               dxfg_DXEndpoint_getPublisher(graal_isolatethread
  * and the last events requests (dxfg_DXFeed_getLastEventPromise(), etc.) never complete
  * (a `RejectedExecutionException` is logged).
  *
+ * @deprecated Use dxfg_DXEndpoint_Builder_withExecutor(). The first call logs a deprecation warning.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] executor The executor.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on success or #DXFG_EXECUTE_FAIL (-1) on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_DXEndpoint_Builder_withExecutor()")
 int32_t                         dxfg_DXEndpoint_executor(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_executor_t *executor);
 
 /**

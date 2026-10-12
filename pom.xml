@@ -72,9 +72,9 @@
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
-    <auther-api.version>548</auther-api.version>
-    <qd.version>3.355</qd.version>
-    <orcs-api.version>548</orcs-api.version>
+    <auther-api.version>549</auther-api.version>
+    <qd.version>3.356</qd.version>
+    <orcs-api.version>549</orcs-api.version>
     <dxfeed.api.experimental.model.version>2.3.0</dxfeed.api.experimental.model.version>
     <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
     <mdd-maven.url>https://repo.devexperts.com/repository/mdd-maven/</mdd-maven.url>

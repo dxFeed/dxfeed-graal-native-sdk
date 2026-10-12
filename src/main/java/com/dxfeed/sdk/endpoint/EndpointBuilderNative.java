@@ -7,6 +7,7 @@ import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
+import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.system.IsolateResources;
 import com.dxfeed.sdk.system.QdPropertyDefaults;
 import java.io.FileInputStream;
@@ -85,6 +86,19 @@ public final class EndpointBuilderNative {
         final Properties properties = new Properties();
         properties.load(new FileInputStream(NativeUtils.MAPPER_STRING.toJava(pathToFile)));
         NativeUtils.MAPPER_ENDPOINT_BUILDER.toJava(builder).withProperties(properties);
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_Builder_withExecutor",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_Builder_withExecutor(
+            final IsolateThread ignoreThread,
+            final DxfgEndpointBuilder builder,
+            final DxfgExecutorHandle executor
+    ) {
+        NativeUtils.MAPPER_ENDPOINT_BUILDER.toJava(builder).withExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

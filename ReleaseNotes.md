@@ -11,6 +11,41 @@
   symbols, and the executable exports nothing. The archive also contains the headers, `link-flags.txt` (the Windows
   libraries to link) and `CMakeLists.txt` with the target `DxFeedGraalNativeSdk`. The builds of the `-static-crt`
   archives make it from the same image and check it before the deploy with the four C runtimes.
+* **\[GRAAL]** Migrated to QDS 3.356
+  (see the [QD release notes](https://github.com/devexperts/QD/blob/master/ReleaseNotes.txt)) and `orcs-api` /
+  `auther-api` 549. The event structures stay the same; the only change of the C API is the executor of the endpoint,
+  see the next item.
+* **\[GRAAL]** New `dxfg_DXEndpoint_Builder_withExecutor()` sets the executor of the endpoint's notifications (events,
+  state changes, etc.) when the endpoint is built. **Deprecated:** `dxfg_DXEndpoint_executor()`.
+  * Why: QDS 3.356 deprecated `DXEndpoint.executor(Executor)` in favour of `DXEndpoint.Builder.withExecutor(Executor)`
+    (QD-1795). Changing the executor of an endpoint that already works is unsafe: called after
+    `dxfg_DXEndpoint_getFeed()` (or another function that uses the feed, e.g. `dxfg_OnDemandService_getInstance2()`),
+    it leaves the feed with the default executor, which is shut down, and the last events requests
+    (`dxfg_DXFeed_getLastEventPromise()`, etc.) never complete. The builder sets the executor before the endpoint
+    exists, so the order cannot be wrong.
+  * What changes: `dxfg_DXEndpoint_executor()` still works as before and stays in the library. The compilers warn where
+    it is used (`DXFG_DEPRECATED`: C4996 in MSVC, `-Wdeprecated-declarations` in GCC and Clang), so a build that treats
+    warnings as errors fails until the call is replaced. Its first call in an isolate logs
+    `WARNING: DEPRECATED use of executor() method. Set executor in the DXEndpoint.Builder`.
+  * What to do: create the endpoint with the builder and pass the executor to it. Wrappers (C++, .NET, Swift, Go) that
+    have a method to change the executor of an endpoint should move it to their endpoint builder.
+  ```c
+  // Before
+  dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(thread);
+  dxfg_DXEndpoint_executor(thread, endpoint, executor);
+
+  // After (dxfg_DXEndpoint_Builder_withRole() for a role other than FEED)
+  dxfg_endpoint_builder_t *builder = dxfg_DXEndpoint_newBuilder(thread);
+  dxfg_DXEndpoint_Builder_withExecutor(thread, builder, executor);
+  dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_Builder_build(thread, builder);
+  dxfg_JavaObjectHandler_release(thread, &builder->handler);
+  ```
+  * When a custom executor is not needed: the size of the default thread pool is set by the properties
+    `dxfeed.threadPoolSize` (the FEED and ON_DEMAND_FEED roles) and `dxpublisher.threadPoolSize` (PUBLISHER), e.g. with
+    `dxfg_DXEndpoint_Builder_withProperty()`; the listeners of one subscription can get their own executor with
+    `dxfg_DXFeedSubscription_setExecutor()`.
+  * Until the migration: call `dxfg_DXEndpoint_executor()` right after the endpoint is created, before
+    `dxfg_DXEndpoint_getFeed()` and `dxfg_DXEndpoint_getPublisher()`.
 * **\[MDAPI-304]\[GRAAL]** New Windows archives linked with the static C runtime (`/MT`):
   `graal-native-sdk-<version>-amd64-windows-static-crt.zip` and `graal-native-sdk-<version>-amd64-windows-debug-static-crt.zip`
   (the GitHub release, the Maven classifiers `amd64-windows-static-crt` and `amd64-windows-debug-static-crt`). Their
