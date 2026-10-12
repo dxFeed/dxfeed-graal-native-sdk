@@ -12,7 +12,7 @@ import urllib.error
 import urllib.parse
 
 import sdk_jira_release as sdk
-from jira_sync_common import MAIL_PRE_STYLE, GitHub, HttpError, Jira, Log
+from jira_sync_common import MAIL_CODE_BLOCK_STYLE, GitHub, HttpError, Jira, Log
 from test_cxx_api_jira_sync import (
     CONFIRMED, IN_DEVELOPMENT, RESOLVED, TESTING, WAITING_FOR_BUILD, WAITING_FOR_TEST, FakeMailer, FakeServer,
 )
@@ -496,8 +496,9 @@ class ReleaseTest(unittest.TestCase):
         self.assertEqual(0, self.run_release())
 
         body_html = self.mailer.sent[0][1]
-        self.assertIn(f'<div><pre style="{MAIL_PRE_STYLE}"><span style="color: #cf222e;">int</span> '
-                      '<span style="color: #6639ba;">main</span>() <span>x</span></pre></div>', body_html)
+        self.assertIn(f'<td style="{MAIL_CODE_BLOCK_STYLE}"><span style="color: #cf222e;">int</span> '
+                      '<span style="color: #6639ba;">main</span>() <span>x</span></td></tr></table></div>', body_html)
+        self.assertNotIn("<pre", body_html)
 
     def test_the_mail_is_resent_without_other_changes(self):
         self.version("101")["released"] = True

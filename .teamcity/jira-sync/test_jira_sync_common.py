@@ -8,7 +8,7 @@ import unittest
 import urllib.parse
 
 from jira_sync_common import (
-    MAIL_PRE_STYLE, Jira, Log, Workflow, highlight_code_blocks, link_tickets, prefixed_version_tuple,
+    MAIL_CODE_BLOCK_STYLE, Jira, Log, Workflow, highlight_code_blocks, link_tickets, prefixed_version_tuple,
 )
 from test_cxx_api_jira_sync import IN_DEVELOPMENT, RESOLVED, WAITING_FOR_BUILD, FakeServer
 
@@ -36,13 +36,15 @@ class CommonTest(unittest.TestCase):
             '<a href="x">MDAPI-2</a>, UTF-8, Visual C++</p>',
             link_tickets(notes, "https://jira.test", KEYS))
 
-    def test_highlight_code_blocks_styles_a_block_without_highlighting_and_keeps_the_inline_code(self):
-        notes = ('<pre class="notranslate"><code class="language-text">a &lt; b</code></pre><p><code>x</code></p>'
-                 "<pre>c</pre>")
+    def test_highlight_code_blocks_makes_a_block_a_table_cell_and_keeps_the_inline_code(self):
+        notes = ('<pre class="notranslate"><code class="language-text">a &lt; b\n  c  d\n\ne\n</code></pre>'
+                 "<p><code>x</code></p><pre>f g</pre>")
+        cell = ('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+                f'style="border-collapse: collapse; margin: 8px 0;"><tr><td style="{MAIL_CODE_BLOCK_STYLE}">')
 
         self.assertEqual(
-            f'<pre style="{MAIL_PRE_STYLE}"><code>a &lt; b</code></pre><p><code>x</code></p>'
-            f'<pre style="{MAIL_PRE_STYLE}">c</pre>',
+            f"{cell}a &lt; b<br>\n&nbsp;&nbsp;c&nbsp;&nbsp;d<br>\n<br>\ne</td></tr></table><p><code>x</code></p>"
+            f"{cell}f g</td></tr></table>",
             highlight_code_blocks(notes))
 
     def test_prefixed_version_tuple_takes_only_the_versions_of_the_prefix(self):

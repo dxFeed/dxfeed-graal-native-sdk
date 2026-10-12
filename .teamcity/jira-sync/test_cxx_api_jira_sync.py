@@ -1505,8 +1505,9 @@ class SyncTest(unittest.TestCase):
 
         body_html = sync.release_mail(notes, "graal-cxx-api v8.1.0", "https://jira.test/v", "https://jira.test", "")[1]
 
-        self.assertIn('<div><pre style="font-family: Consolas', body_html)
-        self.assertIn('<span style="color: #cf222e;">auto</span> x = <span style="color: #0550ae;">1</span>;</pre>',
+        self.assertNotIn("<pre", body_html)
+        self.assertIn('<td style="font-family: Consolas', body_html)
+        self.assertIn('<span style="color: #cf222e;">auto</span> x = <span style="color: #0550ae;">1</span>;</td>',
                       body_html)
 
     def test_dry_run_does_not_mail(self):
