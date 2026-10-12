@@ -1,4 +1,4 @@
-## v3.9.0-rc3
+## v3.9.0
 
 * **\[GRAAL]** The archives no longer contain `docs/changelog.txt` (a list of the commit messages by tags).
 * **\[GRAAL]** New Windows archives with the static library of the SDK:
