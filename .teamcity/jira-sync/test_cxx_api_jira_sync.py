@@ -1490,7 +1490,7 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(1, len(mailer.sent))
         subject, body_html, text = mailer.sent[0]
-        self.assertEqual("[release] dxFeed Graal C++ API v8.1.0", subject)
+        self.assertEqual("[release][DXFCXX] dxFeed Graal C++ API v8.1.0", subject)
         self.assertIn('<a href="https://jira.test/projects/MDAPI/versions/101">Jira version graal-cxx-api v8.1.0</a>',
                       body_html)
         self.assertIn('<a href="https://jira.test/browse/MDAPI-1">MDAPI-1</a>', body_html)
@@ -1516,7 +1516,7 @@ class SyncTest(unittest.TestCase):
         self.run_sync(dry_run=True, mailer=mailer)
 
         self.assertEqual([], mailer.sent)
-        self.assertIn("[dry run] mail [release] dxFeed Graal C++ API v8.1.0 to anatoly.kalin@devexperts.com",
+        self.assertIn("[dry run] mail [release][DXFCXX] dxFeed Graal C++ API v8.1.0 to anatoly.kalin@devexperts.com",
                       self.out.getvalue())
 
     def test_no_recipients_no_mail(self):
@@ -1596,7 +1596,7 @@ class SyncTest(unittest.TestCase):
         result = sync.Sync(github, jira, log, False, since=NOW, mailer=mailer).run(resend_mail="v8.0.0")
 
         self.assertEqual(0, result)
-        self.assertEqual("[release] dxFeed Graal C++ API v8.0.0", mailer.sent[0][0])
+        self.assertEqual("[release][DXFCXX] dxFeed Graal C++ API v8.0.0", mailer.sent[0][0])
         self.assertIn('href="https://jira.test/projects/MDAPI/versions/100"', mailer.sent[0][1])
 
     def test_resend_of_an_unknown_tag_is_a_problem(self):

@@ -141,7 +141,7 @@ class ReleaseTest(unittest.TestCase):
 
         self.assertEqual(RESOLVED, self.status_of("MDAPI-302"))
         self.assertEqual(RESOLVED, self.status_of("MDAPI-304"))
-        self.assertEqual(["[release] dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertEqual({"released": True, "releaseDate": "2026-10-01"},
                          {key: self.version("101")[key] for key in ("released", "releaseDate")})
         self.assertEqual(("PUT", "version/101", {"released": True, "releaseDate": "2026-10-01"}),
@@ -355,7 +355,7 @@ class ReleaseTest(unittest.TestCase):
         self.assertEqual(1, self.run_release())
 
         self.assertFalse(self.version("101")["released"])
-        self.assertEqual(["[release] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
         subject, body_html, text = self.mailer.sent[0]
         self.assertIn("MDAPI-304: no transition from Waiting for build to Resolved", body_html)
         self.assertIn("https://dxcity.test/build/1", body_html)
@@ -398,7 +398,7 @@ class ReleaseTest(unittest.TestCase):
         self.assertEqual([], self.server.changes)
         self.assertEqual([], self.mailer.sent)
         self.assertIn("[dry run] Resolve: Waiting for build -> Resolved", self.out.getvalue())
-        self.assertIn("[dry run] mail [release] dxFeed Graal Native SDK v3.9.0", self.out.getvalue())
+        self.assertIn("[dry run] mail [release][DXFG] dxFeed Graal Native SDK v3.9.0", self.out.getvalue())
         self.assertIn("[dry run] release graal-native-sdk v3.9.0 on 2026-10-01", self.out.getvalue())
 
     def test_the_dry_run_with_a_missing_version_does_not_search_its_tickets(self):
@@ -437,7 +437,7 @@ class ReleaseTest(unittest.TestCase):
 
         self.assertEqual(0, self.run_release())
 
-        self.assertEqual(["[release] dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertEqual(["version/101"], [path for method, path, body in self.server.changes])
 
     def test_without_recipients_the_version_is_released_without_a_mail(self):
@@ -453,14 +453,14 @@ class ReleaseTest(unittest.TestCase):
 
         self.assertEqual(1, self.run_release())
 
-        self.assertEqual(["[release] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertIn("HTTP 500", self.mailer.sent[0][2])
 
     def test_a_network_error_is_mailed(self):
         with unittest.mock.patch.object(self.server, "jira", side_effect=urllib.error.URLError("timed out")):
             self.assertEqual(1, self.run_release())
 
-        self.assertEqual(["[release] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] FAILED: dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertIn("URLError", self.mailer.sent[0][2])
 
     def test_the_mail_links_the_tickets_the_release_the_version_and_the_apis(self):
@@ -504,7 +504,7 @@ class ReleaseTest(unittest.TestCase):
 
         self.assertEqual(0, self.run_release(tag="", resend_mail="v3.9.0"))
 
-        self.assertEqual(["[release] dxFeed Graal Native SDK v3.9.0"], self.subjects())
+        self.assertEqual(["[release][DXFG] dxFeed Graal Native SDK v3.9.0"], self.subjects())
         self.assertEqual([], self.server.changes)
         self.assertIn("Jira version graal-native-sdk v3.9.0", self.mailer.sent[0][2])
 

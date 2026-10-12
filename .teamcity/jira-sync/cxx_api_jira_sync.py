@@ -300,7 +300,7 @@ def release_mail(release, version_name, version_url, jira_url, build_url):
         release.get("body_text") or release.get("body") or "",
         f"Build: {build_url}" if build_url else "",
     ]))
-    return f"[release] {title}", body, text
+    return f"[release][DXFCXX] {title}", body, text
 
 
 def parse_time(text):

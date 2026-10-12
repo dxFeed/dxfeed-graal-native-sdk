@@ -139,7 +139,7 @@ def release_mail(release, version_name, version_url, jira_url, build_url):
             f"{name}: {url}" + (f" (Stash: {mirror})" if mirror else "") for name, url, mirror in APIS),
         f"Build: {build_url}" if build_url else "",
     ]))
-    return f"[release] {title}", body, text
+    return f"[release][DXFG] {title}", body, text
 
 
 def failure_mail(tag, problems, build_url):
@@ -153,7 +153,7 @@ def failure_mail(tag, problems, build_url):
         "\n".join(f"- {problem}" for problem in problems),
         f"Build: {build_url}" if build_url else "",
     ]))
-    return f"[release] FAILED: {title}", body, text
+    return f"[release][DXFG] FAILED: {title}", body, text
 
 
 class Release(Workflow):
