@@ -1,3 +1,7 @@
+* **\[GRAAL]** The release chain releases the SDK in Jira after `Publish GitHub Release`: the new build `Release in Jira`
+  creates the version `graal-native-sdk vX.Y.Z` of MDAPI, sets it on the SDK tickets in Waiting for build / Waiting for
+  test, resolves them, sends the release mail and releases the version. An rc release changes nothing in Jira.
+
 ## v3.9.0
 
 * **\[GRAAL]** The archives no longer contain `docs/changelog.txt` (a list of the commit messages by tags).
