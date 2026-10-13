@@ -16,6 +16,7 @@ REPORTED = "1"
 CONFIRMED = "10001"
 WAITING_FOR_TEST = "20001"
 TESTING = "20002"
+TASK_DONE = "10100"
 
 # The names and the status categories of the fake MDAPI workflow.
 NAMES = {
@@ -28,6 +29,7 @@ NAMES = {
     WAITING_FOR_TEST: ("Waiting for test", "done"),
     TESTING: ("Testing", "indeterminate"),
     RESOLVED: ("Resolved", "done"),
+    TASK_DONE: ("Done", "done"),
 }
 
 # The transitions of the fake MDAPI workflow: the status -> (the id, the name, the status it goes to).
@@ -45,7 +47,14 @@ WORKFLOW = {
 }
 
 # The resolutions that the fake transitions set (the merge sets "Waiting for build", as the real one does).
-RESOLUTIONS = {WAITING_FOR_BUILD: "Waiting for build", RESOLVED: "Done"}
+RESOLUTIONS = {WAITING_FOR_BUILD: "Waiting for build", RESOLVED: "Done", TASK_DONE: "Done"}
+
+# The workflow of a Task: Waiting for review -> Done instead of Waiting for build, Aborted from any status.
+TASK_WORKFLOW = {
+    WAITING_FOR_REVIEW: [("141", "Return to development", IN_DEVELOPMENT), ("21", "Abort", ABORTED),
+                         ("221", "Done", TASK_DONE)],
+    TASK_DONE: [("231", "Reopen", WAITING_FOR_REVIEW), ("21", "Abort", ABORTED)],
+}
 
 NOW = datetime.datetime(2026, 10, 5, 12, 0, tzinfo=datetime.timezone.utc)
 GITHUB = "https://api.github.com/repos/dxFeed/dxfeed-graal-cxx-api/"
@@ -278,6 +287,9 @@ class SyncTest(unittest.TestCase):
     def transitions(self):
         return [path for method, path, body in self.server.changes if path.endswith("/transitions")]
 
+    def transition_ids(self):
+        return [body["transition"]["id"] for method, path, body in self.server.changes if path.endswith("/transitions")]
+
     def status_of(self, key):
         return self.server.issues[key]["status"]["id"]
 
@@ -431,6 +443,50 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
         self.assertEqual([("MDAPI-1", self.server.pulls[0]["html_url"], "PR #10 (merged): [MDAPI-1] X")],
                          self.server.links)  # the link of the opened PR updated
+
+    def run_sync_of_task(self):
+        """A run with the workflow of a Task."""
+        workflow = dict(WORKFLOW)
+        WORKFLOW.pop(WAITING_FOR_BUILD)
+        WORKFLOW.update(TASK_WORKFLOW)
+
+        try:
+            return self.run_sync()
+        finally:
+            WORKFLOW.clear()
+            WORKFLOW.update(workflow)
+
+    def test_merged_task_goes_to_done_with_the_fix_version(self):
+        self.server.version("100", "graal-cxx-api v8.0.0", True)
+        self.server.version("101", "graal-cxx-api v8.1.0", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", state="closed", merged_at="2026-10-05T10:00:00Z")]
+
+        self.assertEqual(0, self.run_sync_of_task())
+
+        self.assertEqual(TASK_DONE, self.status_of("MDAPI-1"))
+        self.assertEqual(["221"], self.transition_ids())
+        self.assertEqual(["101"], self.server.issues["MDAPI-1"]["fixVersions"])
+        self.assertEqual({"opened": [10], "merged": [10], "bases": {"10": "main"}},
+                         self.server.issues["MDAPI-1"]["property"])
+
+    def test_task_opened_and_merged_between_two_runs_goes_through_review_to_done(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT)
+        self.server.pulls = [pull_request(10, "[MDAPI-1] Fast", state="closed", merged_at="2026-10-05T10:00:00Z")]
+
+        self.assertEqual(0, self.run_sync_of_task())
+
+        self.assertEqual(TASK_DONE, self.status_of("MDAPI-1"))
+        self.assertEqual(["151", "221"], self.transition_ids())
+
+    def test_draft_returns_a_done_task_to_development_through_review(self):
+        self.server.issue("MDAPI-1", TASK_DONE, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(11, "[MDAPI-1] Next part", draft=True)]
+
+        self.run_sync_of_task()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual(["231", "141"], self.transition_ids())
 
     def test_merge_into_release_branch_counts(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})

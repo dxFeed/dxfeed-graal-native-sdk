@@ -17,6 +17,8 @@ Reported -> Confirmed (a forgotten confirmation) -> In development, or Confirmed
     the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review;
   - a PR is closed without a merge, and no PR of the ticket has been merged: Waiting for review -> In development
     unless another PR of the ticket is in review;
+    A Task has no Waiting for build in its workflow (Waiting for review -> Done): it goes to Done instead, gets the fix
+    version as well, and goes back from Done as from Waiting for build.
     A ticket moved to Waiting for build gets the fix version of the next release of its line: the unreleased
     graal-cxx-api version of the major of release/vN for a PR merged there (vN.0.0, created if needed), else of the
     major of main (the patch after the last released version, created if needed).
@@ -104,6 +106,9 @@ EVENTS = ("drafted", "opened", "merged", "closed")
 WAITING_FOR_TEST_NAME = "waiting for test"
 TESTING_NAME = "testing"
 REPORTED_NAME = "reported"
+# The last status of the workflow of a Task (instead of Waiting for build), by name: its id is not the one of a DONE
+# status of another workflow, and the status Aborted is of the category "done" too.
+DONE_NAME = "done"
 
 
 class GitHub(common.GitHub):
@@ -673,7 +678,7 @@ class Sync(Workflow):
         if self.not_started(key):
             return self.start_development(key)
 
-        if status["id"] == WAITING_FOR_BUILD:
+        if status["id"] == WAITING_FOR_BUILD or status["name"].lower() == DONE_NAME:
             # No direct transition: back to review, then to development.
             return self.move(key, WAITING_FOR_REVIEW) and self.move(key, IN_DEVELOPMENT)
 
@@ -724,11 +729,25 @@ class Sync(Workflow):
             self.log.info("  no merged PR and no PR in review")
             return self.move(key, IN_DEVELOPMENT)
 
-        if not self.move(key, WAITING_FOR_BUILD):
+        if not self.move_to_build(key):
             return False
 
         self.set_fix_version(key, state)
         return True
+
+    def move_to_build(self, key):
+        """Waiting for review -> Waiting for build, or -> Done for a Task (its workflow has no Waiting for build)."""
+        if key not in self.simulated:
+            transitions = self.jira.transitions(key)
+
+            if not any(transition["to"]["id"] == WAITING_FOR_BUILD for transition in transitions):
+                done = next((transition["to"]["id"] for transition in transitions
+                             if transition["to"]["name"].lower() == DONE_NAME), None)
+
+                if done is not None:
+                    return self.move(key, done)
+
+        return self.move(key, WAITING_FOR_BUILD)
 
     def set_fix_version(self, key, state):
         """
