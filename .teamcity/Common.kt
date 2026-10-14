@@ -104,10 +104,9 @@ fun Requirements.windowsAgent() {
     startsWith("teamcity.agent.jvm.os.name", "Windows")
 }
 
-/** The Linux aarch64 builds run in Docker on the Mac agents (colima); macbuilder23 failed them most often. */
+/** The Linux aarch64 builds run in Docker on the Mac agents (colima). */
 fun Requirements.macAgentForLinuxAarch64() {
     macAgent()
-    doesNotEqual("system.agent.name", "macbuilder23")
 }
 
 /** The repository of the SDK: the main branch and the tags (the name of the object is its id in TeamCity). */
