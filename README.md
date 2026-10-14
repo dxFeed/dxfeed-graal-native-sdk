@@ -537,7 +537,7 @@ Find useful information in our self-service dxFeed Knowledge Base:
   is a model of
   convenient Order Book
   management ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/ui/swing/DXFeedMarketDepth.java))
-- [x] IndexedTxModel and TimeSeriesTxModel (`com.dxfeed.api.experimental.model`) are the models of the indexed
+- [x] IndexedTxModel and TimeSeriesTxModel (`com.dxfeed.sdk.model.tx`) are the models of the indexed
   and time series events that deliver the transactions and the snapshots in whole
 
 ### IPF & Schedule

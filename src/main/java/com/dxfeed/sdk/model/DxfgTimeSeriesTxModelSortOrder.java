@@ -3,7 +3,7 @@
 
 package com.dxfeed.sdk.model;
 
-import com.dxfeed.api.experimental.model.TimeSeriesTxModel;
+import com.dxfeed.sdk.model.tx.TimeSeriesTxModel;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.constant.CEnum;
 import org.graalvm.nativeimage.c.constant.CEnumLookup;

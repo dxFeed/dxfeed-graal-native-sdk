@@ -129,6 +129,8 @@ import com.dxfeed.sdk.mappers.FeedMapper;
 import com.dxfeed.sdk.mappers.HistoryEndpointBuilderMapper;
 import com.dxfeed.sdk.mappers.HistoryEndpointMapper;
 import com.dxfeed.sdk.mappers.IndexedEventModelMapper;
+import com.dxfeed.sdk.mappers.IndexedTxModelBuilderMapper;
+import com.dxfeed.sdk.mappers.IndexedTxModelMapper;
 import com.dxfeed.sdk.mappers.InputStreamMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfile2ListMapper;
 import com.dxfeed.sdk.mappers.InstrumentProfile2Mapper;
@@ -167,13 +169,24 @@ import com.dxfeed.sdk.mappers.TimeFormatMapper;
 import com.dxfeed.sdk.mappers.TimePeriodMapper;
 import com.dxfeed.sdk.mappers.TimeSeriesEventModelMapper;
 import com.dxfeed.sdk.mappers.TimeSeriesSubscriptionMapper;
+import com.dxfeed.sdk.mappers.TimeSeriesTxModelBuilderMapper;
+import com.dxfeed.sdk.mappers.TimeSeriesTxModelMapper;
 import com.dxfeed.sdk.mappers.TimeZoneMapper;
+import com.dxfeed.sdk.mappers.TxModelListenerMapper;
 import com.dxfeed.sdk.model.DxfgIndexedEventModel;
+import com.dxfeed.sdk.model.DxfgIndexedTxModelBuilderHandle;
+import com.dxfeed.sdk.model.DxfgIndexedTxModelHandle;
 import com.dxfeed.sdk.model.DxfgObservableListModel;
 import com.dxfeed.sdk.model.DxfgObservableListModelListener;
 import com.dxfeed.sdk.model.DxfgOrderBookModel;
 import com.dxfeed.sdk.model.DxfgOrderBookModelListener;
 import com.dxfeed.sdk.model.DxfgTimeSeriesEventModel;
+import com.dxfeed.sdk.model.DxfgTimeSeriesTxModelBuilderHandle;
+import com.dxfeed.sdk.model.DxfgTimeSeriesTxModelHandle;
+import com.dxfeed.sdk.model.DxfgTxModelListenerHandle;
+import com.dxfeed.sdk.model.tx.IndexedTxModel;
+import com.dxfeed.sdk.model.tx.TimeSeriesTxModel;
+import com.dxfeed.sdk.model.tx.TxModelListener;
 import com.dxfeed.sdk.ondemand.DxfgOnDemandService;
 import com.dxfeed.sdk.publisher.DxfgObservableSubscription;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
@@ -281,6 +294,11 @@ public final class NativeUtils {
     public static final Mapper<IndexedEventTxModel<?>, DxfgIndexedEventTxModelHandle> MAPPER_INDEXED_EVENT_TX_MODEL;
     public static final Mapper<IndexedEventTxModel.Builder<?>, DxfgIndexedEventTxModelBuilderHandle> MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER;
     public static final Mapper<IndexedEventTxModel.Listener<IndexedEvent<?>>, DxfgIndexedEventTxModelListenerHandle> MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER;
+    public static final Mapper<IndexedTxModel<?>, DxfgIndexedTxModelHandle> MAPPER_INDEXED_TX_MODEL;
+    public static final Mapper<IndexedTxModel.Builder<?>, DxfgIndexedTxModelBuilderHandle> MAPPER_INDEXED_TX_MODEL_BUILDER;
+    public static final Mapper<TimeSeriesTxModel<?>, DxfgTimeSeriesTxModelHandle> MAPPER_TIME_SERIES_TX_MODEL;
+    public static final Mapper<TimeSeriesTxModel.Builder<?>, DxfgTimeSeriesTxModelBuilderHandle> MAPPER_TIME_SERIES_TX_MODEL_BUILDER;
+    public static final Mapper<TxModelListener<IndexedEvent<?>>, DxfgTxModelListenerHandle> MAPPER_TX_MODEL_LISTENER;
 
     static {
         MAPPER_STRING = new StringMapper();
@@ -362,6 +380,11 @@ public final class NativeUtils {
         MAPPER_INDEXED_EVENT_TX_MODEL = new IndexedEventTxModelMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_BUILDER = new IndexedEventTxModelBuilderMapper();
         MAPPER_INDEXED_EVENT_TX_MODEL_LISTENER = new IndexedEventTxModelListenerMapper();
+        MAPPER_INDEXED_TX_MODEL = new IndexedTxModelMapper();
+        MAPPER_INDEXED_TX_MODEL_BUILDER = new IndexedTxModelBuilderMapper();
+        MAPPER_TIME_SERIES_TX_MODEL = new TimeSeriesTxModelMapper();
+        MAPPER_TIME_SERIES_TX_MODEL_BUILDER = new TimeSeriesTxModelBuilderMapper();
+        MAPPER_TX_MODEL_LISTENER = new TxModelListenerMapper();
     }
 
     public static class Finalizer {

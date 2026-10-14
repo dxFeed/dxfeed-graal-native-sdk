@@ -1,3 +1,8 @@
+* **\[MDAPI-439]\[GRAAL]** IndexedTxModel and TimeSeriesTxModel are part of the SDK now (`com.dxfeed.sdk.model.tx`,
+  copied from `dxfeed-model` 2.3.1 without changes): the build no longer needs the artifact
+  `com.dxfeed.api.experimental.model:dxfeed-model`. The functions `dxfg_IndexedTxModel_*`, `dxfg_TimeSeriesTxModel_*`
+  and `dxfg_TxModelListener_new()` and their types are the same and are described in `dxfg_event_model.h`; the listener
+  frees the copies of the source and the events even if its call fails.
 * **\[GRAAL]** The release chain releases the SDK in Jira after `Publish GitHub Release`: the new build `Release in Jira`
   creates the version `graal-native-sdk vX.Y.Z` of MDAPI, sets it on the SDK tickets in Waiting for build / Waiting for
   test, resolves them, sends the release mail and releases the version. An rc release changes nothing in Jira.
