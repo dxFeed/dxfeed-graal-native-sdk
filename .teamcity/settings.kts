@@ -1086,15 +1086,21 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
 
 object BuildForLinuxAarch64 : BuildType({
     name = "Build [Linux, aarch64]"
-    artifactRules = "*.zip"
+    artifactRules = "target/*.zip"
 
     mainRepository()
+
+    params {
+        // E.g. "-P buildDebug".
+        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean package",
+            display = ParameterDisplay.NORMAL, allowEmpty = true)
+    }
 
     steps {
         script {
             name = "Build"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package %maven.arguments%
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
