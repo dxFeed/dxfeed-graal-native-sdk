@@ -937,7 +937,7 @@ object PublishCApiDocsToGitHubPages : BuildType({
     // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
     params {
         select(
-            "env.DRY_RUN", "1",
+            "env.DRY_RUN", "0",
             label = "Dry run",
             description = "1: lay out the pages and log the changes, push nothing; 0: push them to gh-pages",
             options = listOf("Push the pages" to "0", "Only log the changes" to "1"),
@@ -1016,7 +1016,7 @@ object BuildForLinux : BuildType({
 
 object TestForLinux : BuildType({
     name = "Test [Linux, x64]"
-    description = "Builds the library and runs the C tests (src/main/c, CTest) for the pull requests to main and for main"
+    description = "Builds the library, checks the C API documentation (report only) and runs the C tests (src/main/c, CTest) for the pull requests to main and for main"
 
     mainRepository()
 
@@ -1028,6 +1028,25 @@ object TestForLinux : BuildType({
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
+        }
+
+        script {
+            // Report only (MDAPI-443): logs the warnings and never fails the build until all the headers are described.
+            name = "Check the C API documentation"
+            scriptContent = """
+                set -u
+                doxygen --version
+                rm -rf target/c-api-docs-check
+                mkdir -p target/c-api-docs-check
+                doxygen docs/Doxyfile.check || echo "Doxygen failed with exit code ${'$'}?"
+                if [ -f target/c-api-docs-check/warnings.log ]; then
+                    echo "Warnings: ${'$'}(grep -c -E ': (warning|error):' target/c-api-docs-check/warnings.log)"
+                    cat target/c-api-docs-check/warnings.log
+                else
+                    echo "Doxygen wrote no warnings log"
+                fi
+            """.trimIndent()
+            inDocker(Images.GRAALVM_LINUX_X64, "--rm")
         }
 
         script {

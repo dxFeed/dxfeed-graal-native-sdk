@@ -22,11 +22,11 @@ extern "C" {
 #include "graal_isolate.h"
 
 /**
- * @defgroup Glossary
+ * @defgroup Glossary Glossary
  */
 
 /**
- * @defgroup AdditionalUnderlyings
+ * @defgroup AdditionalUnderlyings AdditionalUnderlyings
  * @ingroup Glossary
  * @{
  */
@@ -36,22 +36,23 @@ extern "C" {
  *
  * @see AdditionalUnderlyingsFunctions
  *
- * Use **@ref dxfg_Object_toString** function to retrieve a string representation.
+ * Use dxfg_Object_toString() to retrieve a string representation.
  *
- * Use **@ref dxfg_Object_equals** function to compare for equality.
+ * Use dxfg_Object_equals() to compare for equality.
  *
- * Use **@ref dxfg_Object_hashCode** function to get the hash code.
+ * Use dxfg_Object_hashCode() to get the hash code.
  *
  * @see Javac
  */
 typedef struct dxfg_additional_underlyings_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_additional_underlyings_t;
 
 /// @} end of AdditionalUnderlyings
 
 /**
- * @defgroup CFI
+ * @defgroup CFI CFI
  * @ingroup Glossary
  * @{
  */
@@ -68,6 +69,7 @@ typedef struct dxfg_additional_underlyings_t {
  * @see CFIFunctions
  */
 typedef struct dxfg_cfi_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_cfi_t;
 
@@ -85,6 +87,7 @@ typedef struct dxfg_cfi_t {
  * @see CFIAttributeFunctions
  */
 typedef struct dxfg_cfi_attribute_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_cfi_attribute_t;
 
@@ -104,6 +107,7 @@ typedef struct dxfg_cfi_attribute_t {
  * @see CFIValueFunctions
  */
 typedef struct dxfg_cfi_value_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_cfi_value_t;
 
@@ -112,7 +116,7 @@ typedef struct dxfg_cfi_value_t {
 /// @} end of CFI
 
 /**
- * @defgroup PriceIncrements
+ * @defgroup PriceIncrements PriceIncrements
  * @ingroup Glossary
  * @{
  */
@@ -141,6 +145,7 @@ typedef struct dxfg_cfi_value_t {
  * @see PriceIncrementsFunctions
  */
 typedef struct dxfg_price_increments_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_price_increments_t;
 

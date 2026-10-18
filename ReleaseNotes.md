@@ -1,6 +1,8 @@
 * **\[MDAPI-443]\[GRAAL]** The C API reference is online: https://dxfeed.github.io/dxfeed-graal-native-sdk/latest/ (the
   latest release), every release from 3.9.0 on at `https://dxfeed.github.io/dxfeed-graal-native-sdk/<version>/`. The
   new build `Publish C API Docs to GitHub Pages` of the release chain publishes it after `Publish GitHub Release`.
+  `dxfg_events.h`, `dxfg_event_model.h`, `dxfg_glossary.h` and `dxfg_indexed_event_tx_model.h` describe every type,
+  field and function: what a function returns on error, who releases its result and how, and the Java method it calls.
 * **\[MDAPI-439]\[GRAAL]** IndexedTxModel and TimeSeriesTxModel are part of the SDK now (`com.dxfeed.sdk.model.tx`,
   copied from `dxfeed-model` 2.3.1 without changes): the build no longer needs the artifact
   `com.dxfeed.api.experimental.model:dxfeed-model`. The functions `dxfg_IndexedTxModel_*`, `dxfg_TimeSeriesTxModel_*`

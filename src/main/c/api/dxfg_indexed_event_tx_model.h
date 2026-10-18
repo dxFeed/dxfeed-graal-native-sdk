@@ -23,12 +23,15 @@ extern "C" {
 #include "dxfg_javac.h"
 #include "graal_isolate.h"
 
-/** @defgroup IndexedEventTxModel
+/** @defgroup IndexedEventTxModel IndexedEventTxModel
  *  @{
  */
 
+/// @cond
+// Forward declarations: the types are described in dxfg_feed.h and dxfg_subscription_controller.h.
 typedef struct dxfg_feed_t dxfg_feed_t;
 typedef struct dxfg_subscription_controller_t dxfg_subscription_controller_t;
+/// @endcond
 
 /**
  * The IndexedEventTxModel instance's handle.
@@ -36,6 +39,7 @@ typedef struct dxfg_subscription_controller_t dxfg_subscription_controller_t;
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/model/IndexedEventTxModel.html">Javadoc</a>
  */
 typedef struct dxfg_indexed_event_tx_model_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_indexed_event_tx_model_t;
 
@@ -45,6 +49,7 @@ typedef struct dxfg_indexed_event_tx_model_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/model/IndexedEventTxModel.Builder.html">Javadoc</a>
  */
 typedef struct dxfg_indexed_event_tx_model_builder_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_indexed_event_tx_model_builder_t;
 
@@ -54,6 +59,7 @@ typedef struct dxfg_indexed_event_tx_model_builder_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/model/IndexedEventTxModel.Listener.html">Javadoc</a>
  */
 typedef struct dxfg_indexed_event_tx_model_listener_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_indexed_event_tx_model_listener_t;
 

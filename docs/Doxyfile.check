@@ -1,0 +1,16 @@
+# The documentation check of the C API: docs/Doxyfile that reports every undocumented declaration and parameter.
+# Run from the project root (the step "Check the C API documentation" of the build "Test [Linux, x64]"):
+#   mkdir -p target/c-api-docs-check && doxygen docs/Doxyfile.check
+# The check passes when target/c-api-docs-check/warnings.log is empty. The XML output is only there because Doxygen
+# needs one output format; nothing reads it.
+
+@INCLUDE               = docs/Doxyfile
+OUTPUT_DIRECTORY       = target/c-api-docs-check
+EXTRACT_ALL            = NO
+WARN_IF_UNDOCUMENTED   = YES
+WARN_NO_PARAMDOC       = YES
+WARN_LOGFILE           = target/c-api-docs-check/warnings.log
+GENERATE_HTML          = NO
+GENERATE_TREEVIEW      = NO
+GENERATE_XML           = YES
+XML_PROGRAMLISTING     = NO

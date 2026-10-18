@@ -132,6 +132,10 @@ The `Test [Linux, x64]` build builds the library in the Linux build image (`dock
 the C tests of `src/main/c` (CTest) in the test image (`docker/cpp-test-linux-x64.Dockerfile`, Oracle Linux 9). The library is
 built for glibc 2.17, so the tests also check that it works on a newer distribution.
 
+Between the two, the step `Check the C API documentation` runs Doxygen with `docs/Doxyfile.check` in the build image
+and logs its version, the number of warnings and the warnings (undocumented declarations and parameters, broken
+references). Until all the headers are described (MDAPI-443), the step only reports and never fails the build.
+
 - The build runs for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
 - The status of the build is published to the pull request in Bitbucket (with a link to the build). The results of the
   tests are in the build in TeamCity (the JUnit report of CTest).
@@ -391,15 +395,9 @@ is not in `qd` fails the build before `gh-pages` is read. Only one build runs at
 push. The Pages of the mirror are built from the branch `gh-pages`, `/` (Settings | Pages of the GitHub repository; its
 administrator sets it once).
 
-`env.DRY_RUN` of the build is `1` until the first run is checked: the build lays out the pages and logs the changed
-directories, but pushes nothing. The check (the first one: `v3.9.0`), in the Run dialog of the build (Run with the
-"..." button, the values are of this run only):
-
-1. `env.TAG` = `v3.9.0`, Dry run = "Only log the changes": the log shows the orphan branch and the changed `3.9.0`,
-   `latest`, `index.html` and `.nojekyll`;
-2. the same with Dry run = "Push the pages": the branch `gh-pages` of the mirror has `3.9.0/`; once the administrator
-   has set the Pages source to `gh-pages`, the pages are at https://dxfeed.github.io/dxfeed-graal-native-sdk/3.9.0/.
-
-Then set `env.DRY_RUN` to `0` in `settings.kts`, so that the build after `Publish GitHub Release` publishes the pages.
-An older release is published the same way, by a run with its `env.TAG`.
+`env.DRY_RUN` of the build is `0`, so the build after `Publish GitHub Release` publishes the pages. A release is
+published again, or an older one for the first time, by a run with its tag (the Run dialog of the build: Run with the
+"..." button, the values are of this run only): Release (`env.TAG`) = `v3.9.0`; Dry run (`env.DRY_RUN`) = "Only log
+the changes" lays out the pages and logs the changed directories, but pushes nothing. The first release on the pages,
+`3.9.0`, was published so, by hand.
 The tests (no network, a local repository in place of the mirror): `python3 -m unittest` in `gh-pages`.

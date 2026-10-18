@@ -630,7 +630,9 @@ builds the library of the current platform in `target/native-image` and its arch
 
 - `-P buildDebug`: the debug build, see [Debug builds](#debug-builds);
 - `-Dc-api-docs`: also the C API documentation in `target/docs/c-api` and its archive (Doxygen must be in
-  `PATH`);
+  `PATH`). The check of the documentation, as in the pull request build, is
+  `mkdir -p target/c-api-docs-check && doxygen docs/Doxyfile.check`: every undocumented declaration or parameter is a
+  warning in `target/c-api-docs-check/warnings.log`;
 - `-DmacIos=true` on a Mac with Apple silicon: the iOS library. The iOS Simulator library is built after it without
   `clean`, with the x64 GraalVM under Rosetta: `arch -x86_64 mvn -DmacIosSimulator=true package` (its arm64 slice is
   the object of the iOS build). The JDK and Substrate VM libraries for iOS are in [jre-ios](jre-ios/README.MD).
