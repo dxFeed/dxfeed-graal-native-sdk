@@ -380,7 +380,10 @@ by default. To enable it, set the system property `com.dxfeed.sdk.TimeSyncTracke
 
 ## Documentation
 
-The C API reference (generated from the headers by Doxygen) is attached to every
+The C API reference (generated from the headers by Doxygen) of the latest release is at
+https://dxfeed.github.io/dxfeed-graal-native-sdk/latest/, the reference of every release from 3.9.0 on at
+`https://dxfeed.github.io/dxfeed-graal-native-sdk/<version>/` (the list of the versions:
+https://dxfeed.github.io/dxfeed-graal-native-sdk/). It is also attached to every
 [GitHub release](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases) as
 `graal-native-sdk-<version>-c-api-docs-html.zip`.
 

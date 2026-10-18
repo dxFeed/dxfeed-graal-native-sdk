@@ -31,6 +31,8 @@ The libraries are in `runtimes/<runtime identifier>/native`. The Linux libraries
 ## Links
 
 * [The C API, the samples and the build](https://github.com/dxFeed/dxfeed-graal-native-sdk)
+* [The C API reference](https://dxfeed.github.io/dxfeed-graal-native-sdk/latest/) of the latest release (every release
+  from 3.9.0 on: `https://dxfeed.github.io/dxfeed-graal-native-sdk/<version>/`)
 * [The release notes](https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/ReleaseNotes.md)
 * [The releases](https://github.com/dxFeed/dxfeed-graal-native-sdk/releases): the archives of the libraries with the
   C headers for every platform (including iOS) and the HTML documentation of the C API

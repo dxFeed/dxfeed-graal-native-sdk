@@ -86,6 +86,7 @@ object ReleaseChain : Project({
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(ReleaseInJira)
+    buildType(PublishCApiDocsToGitHubPages)
     buildTypesOrder = arrayListOf(
         BuildAndDeployForAll,
         BuildAndDeployForLinuxAarch64,
@@ -100,7 +101,8 @@ object ReleaseChain : Project({
         BuildAndDeployXCFramework,
         DeployNuget,
         SyncGitHubWithMainAndPublishRelease,
-        ReleaseInJira
+        ReleaseInJira,
+        PublishCApiDocsToGitHubPages
     )
 })
 
@@ -918,6 +920,67 @@ object ReleaseInJira : BuildType({
 
     failureConditions {
         executionTimeoutMin = 5
+    }
+
+    requirements {
+        linuxAgent()
+    }
+})
+
+object PublishCApiDocsToGitHubPages : BuildType({
+    name = "Publish C API Docs to GitHub Pages"
+    description = "After the GitHub release vX.Y.Z[-rcN]: its C API reference in gh-pages of the GitHub mirror, " +
+        "https://dxfeed.github.io/dxfeed-graal-native-sdk/"
+
+    maxRunningBuilds = 1
+
+    // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
+    params {
+        select(
+            "env.DRY_RUN", "1",
+            label = "Dry run",
+            description = "1: lay out the pages and log the changes, push nothing; 0: push them to gh-pages",
+            options = listOf("Push the pages" to "0", "Only log the changes" to "1"),
+        )
+        text(
+            "env.TAG", "",
+            label = "Release",
+            description = "The release tag; empty: the latest tag of main (the release just published). " +
+                "Example: v3.9.0",
+            allowEmpty = true,
+        )
+    }
+
+    // The whole repository: an empty env.TAG is resolved by git describe.
+    mainRepository()
+
+    steps {
+        script {
+            name = "Publish"
+            scriptContent = """
+                export GIT_AUTHOR_NAME=dxcity GIT_COMMITTER_NAME=dxcity
+                export GIT_AUTHOR_EMAIL=dxcity@bots.devexperts.com GIT_COMMITTER_EMAIL=dxcity@bots.devexperts.com
+                python3 .teamcity/gh-pages/publish_c_api_docs.py
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        finishBuildTrigger {
+            buildType = "${SyncGitHubWithMainAndPublishRelease.id}"
+            successfulOnly = true
+        }
+    }
+
+    // The key that pushes main and the tags to the mirror in Publish GitHub Release.
+    features {
+        sshAgent {
+            teamcitySshKey = "sshkey_ed25519"
+        }
+    }
+
+    failureConditions {
+        executionTimeoutMin = 10
     }
 
     requirements {

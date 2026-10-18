@@ -15,6 +15,7 @@
 - [Deploying Artifacts](#deploying-artifacts)
 - [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
 - [Releasing the SDK in Jira](#releasing-the-sdk-in-jira)
+- [Publishing the C API Reference to GitHub Pages](#publishing-the-c-api-reference-to-github-pages)
 
 # Editing the Settings
 
@@ -243,7 +244,8 @@ The C API documentation (`graal-native-sdk-<version>-c-api-docs-html.zip`) is ge
 their `release:perform` passes `-Darguments=-Dc-api-docs` to the forked release build.
 Doxygen is installed from the Oracle Linux 7 repository in `docker/graalvm-linux-x64.Dockerfile`
 (the official Doxygen binaries require glibc 2.34+). The zip is deployed like the other artifacts,
-and "Publish GitHub Release" attaches all the zips of the version from `qd` to the GitHub release.
+and "Publish GitHub Release" attaches all the zips of the version from `qd` to the GitHub release;
+"Publish C API Docs to GitHub Pages" puts the reference online (see below).
 To build the documentation locally: `mvn package -Dc-api-docs` (Doxygen must be in `PATH`).
 
 # Syncing the C++ API with Jira
@@ -370,3 +372,34 @@ values are of this run only):
 
 Then set `env.DRY_RUN` to `0` in `settings.kts`, so that the build after `Publish GitHub Release` makes the changes.
 The tests (no network): `python3 -m unittest` in `jira-sync`.
+
+# Publishing the C API Reference to GitHub Pages
+
+`Publish C API Docs to GitHub Pages` (Release chain) runs after a successful `Publish GitHub Release` and puts the C API
+reference of the release on GitHub Pages of the mirror (https://dxfeed.github.io/dxfeed-graal-native-sdk/) with
+`gh-pages/publish_c_api_docs.py`. It takes the release of `env.TAG` (`v3.9.0`), or else the latest tag of `main` (the
+one the chain has just published), downloads `html/` of `graal-native-sdk-<version>-c-api-docs-html.zip` from `qd` and
+pushes the branch `gh-pages` of the mirror with the SSH key of `Publish GitHub Release`:
+
+- `<version>/` (`3.9.0/`, `3.10.0-rc1/`) is replaced with the reference of the release;
+- `latest/` is a copy of the highest `X.Y.Z` directory, never of an rc: a later patch of an older line (`3.9.1` after
+  `3.10.0`) or an rc leaves it as it is;
+- `index.html` at the root redirects to `latest/` and lists the versions; `.nojekyll` turns off Jekyll.
+
+The branch is created as an orphan on the first run. A rerun for the same release changes nothing; a release whose zip
+is not in `qd` fails the build before `gh-pages` is read. Only one build runs at a time, so two runs never race for the
+push. The Pages of the mirror are built from the branch `gh-pages`, `/` (Settings | Pages of the GitHub repository; its
+administrator sets it once).
+
+`env.DRY_RUN` of the build is `1` until the first run is checked: the build lays out the pages and logs the changed
+directories, but pushes nothing. The check (the first one: `v3.9.0`), in the Run dialog of the build (Run with the
+"..." button, the values are of this run only):
+
+1. `env.TAG` = `v3.9.0`, Dry run = "Only log the changes": the log shows the orphan branch and the changed `3.9.0`,
+   `latest`, `index.html` and `.nojekyll`;
+2. the same with Dry run = "Push the pages": the branch `gh-pages` of the mirror has `3.9.0/`; once the administrator
+   has set the Pages source to `gh-pages`, the pages are at https://dxfeed.github.io/dxfeed-graal-native-sdk/3.9.0/.
+
+Then set `env.DRY_RUN` to `0` in `settings.kts`, so that the build after `Publish GitHub Release` publishes the pages.
+An older release is published the same way, by a run with its `env.TAG`.
+The tests (no network, a local repository in place of the mirror): `python3 -m unittest` in `gh-pages`.
