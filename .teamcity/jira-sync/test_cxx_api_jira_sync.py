@@ -1015,13 +1015,45 @@ class SyncTest(unittest.TestCase):
 
         self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-12345"))
 
+    def merged_ticket(self, status_id):
+        """A ticket with PR #10 of feature/MDAPI-1-x merged at 10:00 and applied by an earlier run."""
+        self.server.issue("MDAPI-1", status_id, prop={"opened": [10], "merged": [10], "bases": {"10": "main"}})
+        self.server.pulls = [pull_request(10, "[MDAPI-1] X", branch="feature/MDAPI-1-x", state="closed",
+                                          merged_at="2026-10-05T10:00:00Z", updated_at="2026-10-05T10:05:00Z")]
+
     def test_created_branch_returns_a_ticket_waiting_for_build_to_development(self):
-        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
-        self.branch_created("feature/MDAPI-1-next-part")
+        self.merged_ticket(WAITING_FOR_BUILD)
+        self.branch_created("feature/MDAPI-1-next-part")  # at 11:00, after the merge
 
         self.run_sync()
 
         self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+
+    def test_late_creation_of_a_merged_branch_keeps_the_status(self):
+        # GitHub delivers the events of the branch after the merge of its PR (seen on 2026-10-14).
+        self.merged_ticket(WAITING_FOR_BUILD)
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T09:00:00Z")
+        self.branch_deleted("feature/MDAPI-1-x", time="2026-10-05T10:05:00Z")
+
+        self.assertEqual(0, self.run_sync())
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
+        self.assertEqual(["feature/MDAPI-1-x"], self.server.issues["MDAPI-1"]["property"]["branches"])
+        self.assertTrue(self.server.link_resolved[self.branch_url("feature/MDAPI-1-x")])
+        self.assertIn("branch feature/MDAPI-1-x created before the merge (PR #10 is merged)", self.out.getvalue())
+
+    def test_late_creation_of_a_branch_of_a_merged_task_keeps_it_done(self):
+        # The same for a Task in Done; the branch is not deleted yet.
+        self.merged_ticket(TASK_DONE)
+        self.branch_created("feature/MDAPI-1-x", time="2026-10-05T09:00:00Z")
+
+        self.assertEqual(0, self.run_sync_of_task())
+
+        self.assertEqual(TASK_DONE, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
+        self.assertEqual("Branch feature/MDAPI-1-x", self.server.links[-1][2])
 
     def test_created_branch_leaves_a_ticket_in_review_while_a_pull_request_is_in_review(self):
         self.server.issue("MDAPI-1", WAITING_FOR_REVIEW, prop={"opened": [10]})

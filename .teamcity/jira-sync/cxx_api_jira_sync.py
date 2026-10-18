@@ -9,7 +9,8 @@ Reported -> Confirmed (a forgotten confirmation) -> In development, or Confirmed
   - a branch is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-..., any name with the key) or a draft PR is opened
     (the work starts or goes on): the development starts, Waiting for build -> Waiting for review -> In development
     (there is no direct transition), and Waiting for review -> In development if no other PR of the ticket is in
-    review (open and not a draft);
+    review (open and not a draft); a branch created before the merge of a PR of the ticket is only linked (GitHub
+    delivers some events hours late, after the PR of the branch is merged);
   - a PR is opened (not a draft, or a draft is marked ready): the development starts if needed, then In development ->
     Waiting for review;
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
@@ -506,10 +507,17 @@ class Sync(Workflow):
                 if branch in state.get("branches", []):
                     continue
 
-                self.log.info(f"{key}: branch {branch} created")
+                merged_later = self.merged_after(state, time)
 
-                if not self.to_development(key, None):
-                    continue  # not remembered: the next run tries again
+                if merged_later:
+                    # A late event (GitHub delivers some events hours late): the work on the branch is merged already.
+                    self.log.info(f"{key}: branch {branch} created before the merge ({prs(merged_later)} merged), "
+                                  f"the status stays")
+                else:
+                    self.log.info(f"{key}: branch {branch} created")
+
+                    if not self.to_development(key, None):
+                        continue  # not remembered: the next run tries again
 
                 state.setdefault("branches", []).append(branch)
                 self.change(f"remember branch {branch}", lambda: self.jira.set_property(key, state))
@@ -617,6 +625,13 @@ class Sync(Workflow):
         state["deleted_branches"] = deletions
         self.change(f"remember the deleted branch {branch}", lambda: self.jira.set_property(key, state))
         self.change(f"link the branch {branch} (deleted)", lambda: self.link_branch(key, branch, deleted=True))
+
+    def merged_after(self, state, time):
+        """The merged PRs of the ticket merged after the time (of the creation of a branch)."""
+        return [
+            number for number in state.get("merged", [])
+            if (self.github.pull_request(number)["merged_at"] or "") > time
+        ]
 
     def link_branch(self, key, branch, deleted=False):
         """The link of the branch, struck through when it is deleted."""
