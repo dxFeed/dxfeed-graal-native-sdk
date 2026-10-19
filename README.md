@@ -632,7 +632,9 @@ builds the library of the current platform in `target/native-image` and its arch
 - `-Dc-api-docs`: also the C API documentation in `target/docs/c-api` and its archive (Doxygen must be in
   `PATH`). The check of the documentation, as in the pull request build, is
   `mkdir -p target/c-api-docs-check && doxygen docs/Doxyfile.check`: every undocumented declaration or parameter is a
-  warning in `target/c-api-docs-check/warnings.log`;
+  warning in `target/c-api-docs-check/warnings.log`, and any warning fails the pull request build. The check needs
+  Doxygen 1.13 or later (older versions report the described parameters as undocumented); the pull request build runs
+  Doxygen 1.18.0 in the image of [.teamcity/README.MD](.teamcity/README.MD#testing);
 - `-DmacIos=true` on a Mac with Apple silicon: the iOS library. The iOS Simulator library is built after it without
   `clean`, with the x64 GraalVM under Rosetta: `arch -x86_64 mvn -DmacIosSimulator=true package` (its arm64 slice is
   the object of the iOS build). The JDK and Substrate VM libraries for iOS are in [jre-ios](jre-ios/README.MD).

@@ -1018,7 +1018,7 @@ object BuildForLinux : BuildType({
 
 object TestForLinux : BuildType({
     name = "Test [Linux, x64]"
-    description = "Builds the library, checks the C API documentation (report only) and runs the C tests (src/main/c, CTest) for the pull requests to main and for main"
+    description = "Builds the library, runs the C tests (src/main/c, CTest) and checks the C API documentation for the pull requests to main and for main"
 
     mainRepository()
 
@@ -1033,25 +1033,6 @@ object TestForLinux : BuildType({
         }
 
         script {
-            // Report only (MDAPI-443): logs the warnings and never fails the build until all the headers are described.
-            name = "Check the C API documentation"
-            scriptContent = """
-                set -u
-                doxygen --version
-                rm -rf target/c-api-docs-check
-                mkdir -p target/c-api-docs-check
-                doxygen docs/Doxyfile.check || echo "Doxygen failed with exit code ${'$'}?"
-                if [ -f target/c-api-docs-check/warnings.log ]; then
-                    echo "Warnings: ${'$'}(grep -c -E ': (warning|error):' target/c-api-docs-check/warnings.log)"
-                    cat target/c-api-docs-check/warnings.log
-                else
-                    echo "Doxygen wrote no warnings log"
-                fi
-            """.trimIndent()
-            inDocker(Images.GRAALVM_LINUX_X64, "--rm")
-        }
-
-        script {
             // The library is built for glibc 2.17 (Oracle Linux 7); the tests are built and run on Oracle Linux 9.
             name = "Build and run the C tests"
             scriptContent = """
@@ -1063,6 +1044,32 @@ object TestForLinux : BuildType({
                 ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml
             """.trimIndent()
             inDocker(Images.CPP_TEST_LINUX_X64, "--rm -m 4g")
+        }
+
+        script {
+            // Fails the build on any Doxygen warning (MDAPI-443). It needs only the headers, so it runs after a failed
+            // step too: a documentation warning does not hide the results of the tests, nor a failed build the warnings.
+            name = "Check the C API documentation"
+            executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
+            scriptContent = """
+                set -u
+                log=target/c-api-docs-check/warnings.log
+                doxygen --version
+                rm -rf target/c-api-docs-check
+                mkdir -p target/c-api-docs-check
+                doxygen docs/Doxyfile.check || { echo "Doxygen failed with exit code ${'$'}?"; exit 1; }
+                if [ ! -f "${'$'}log" ]; then
+                    echo "Doxygen wrote no warnings log"
+                    exit 1
+                fi
+                echo "Warnings: ${'$'}(grep -c -E ': (warning|error):' "${'$'}log")"
+                if [ -s "${'$'}log" ]; then
+                    cat "${'$'}log"
+                    echo "Describe the declarations above: the build fails until docs/Doxyfile.check reports no warning"
+                    exit 1
+                fi
+            """.trimIndent()
+            inDocker(Images.DOCS_CHECK_LINUX_X64, "--rm")
         }
     }
 

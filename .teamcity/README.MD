@@ -132,9 +132,11 @@ The `Test [Linux, x64]` build builds the library in the Linux build image (`dock
 the C tests of `src/main/c` (CTest) in the test image (`docker/cpp-test-linux-x64.Dockerfile`, Oracle Linux 9). The library is
 built for glibc 2.17, so the tests also check that it works on a newer distribution.
 
-Between the two, the step `Check the C API documentation` runs Doxygen with `docs/Doxyfile.check` in the build image
-and logs its version, the number of warnings and the warnings (undocumented declarations and parameters, broken
-references). Until all the headers are described (MDAPI-443), the step only reports and never fails the build.
+Then the step `Check the C API documentation` runs Doxygen with `docs/Doxyfile.check` in the docs check image
+(`docker/docs-check-linux-x64.Dockerfile`, the official Doxygen binary; the Doxygen of the build image reports the
+described parameters as undocumented) and logs its version, the number of warnings and the warnings (undocumented
+declarations and parameters, broken references). It fails the build on any warning, when Doxygen fails and when it
+writes no log. It needs only the headers, so it runs also after a failed step.
 
 - The build runs for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
 - The status of the build is published to the pull request in Bitbucket (with a link to the build). The results of the
