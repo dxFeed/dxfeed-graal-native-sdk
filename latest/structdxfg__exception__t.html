@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -108,11 +108,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ex
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">dxfg_exception_t Struct Reference</div></div>
+  <div class="headertitle"><div class="title">dxfg_exception_t Struct Reference<div class="ingroups"><a class="el" href="group__Exceptions.html">Exceptions</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>The Exception. <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html">Javadoc</a>.  
+<p>An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__catch__exception_8h_source.html">dxfg_catch_exception.h</a>&gt;</code></p>
@@ -126,7 +126,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ac7c0a216d00278b0d35eaccbfdb4dbc0" id="r_ac7c0a216d00278b0d35eaccbfdb4dbc0"><td class="memItemLeft">struct <a class="el" href="structdxfg__exception__t.html">dxfg_exception_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ac7c0a216d00278b0d35eaccbfdb4dbc0">cause</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The Exception. <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html">Javadoc</a>. </p>
+<div class="textblock"><p>An exception that was thrown by the Java side: the class, the message, the stack trace and the cause. </p>
+<p>It is returned by <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> and owned by the caller: release it with <a class="el" href="group__Exceptions.html#ga8f097e8b38f9787c8111cb565fe211f1" title="Releases an exception that was returned by dxfg_get_and_clear_thread_exception_t().">dxfg_Exception_release()</a>, which frees the structure, its strings, its stack trace and the whole chain of causes. Every pointer inside the structure belongs to it; copy what has to outlive the structure.</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ac7c0a216d00278b0d35eaccbfdb4dbc0" name="ac7c0a216d00278b0d35eaccbfdb4dbc0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac7c0a216d00278b0d35eaccbfdb4dbc0">&#9670;&#160;</a></span>cause</h2>
@@ -139,6 +141,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The exception that caused this one, NULL if there is no cause. The cause has its own cause, and so on. </p>
 
 </div>
 </div>
@@ -153,6 +156,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The canonical name of the exception class (for example <span class="tt">java.lang.IllegalArgumentException</span>), a UTF-8 null-terminated string; NULL if the class has no canonical name (for example, an anonymous class). </p>
 
 </div>
 </div>
@@ -167,6 +171,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The detail message of the exception (a UTF-8 null-terminated string), NULL if the exception has no message. </p>
 
 </div>
 </div>
@@ -181,6 +186,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The printed stack trace of the exception (a UTF-8 null-terminated string): the output of Java's <span class="tt">printStackTrace()</span> without its first line (the class name and the message, see <span class="tt"><a class="el" href="#ae117162dd2900ccf92b44b78447727cd">class_name</a></span> and <span class="tt"><a class="el" href="#a354d2e683c6e01e94233d5ba2fb8087b">message</a></span>). The lines of the frames and the "Caused by" sections of the causes follow. </p>
 
 </div>
 </div>
@@ -195,6 +201,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The stack trace of this exception (not of its causes); never NULL, an empty list if the exception has no stack trace. </p>
 
 </div>
 </div>

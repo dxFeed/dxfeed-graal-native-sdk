@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,20 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ob
 </div><!--header-->
 <div class="contents">
 
+<p>A handle of a Java ObservableSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__publisher_8h_source.html">dxfg_publisher.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a35ad632bf843326b8d9667a0e380d5ca" id="r_a35ad632bf843326b8d9667a0e380d5ca"><td class="memItemLeft"><a class="el" href="group__Publisher.html#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#a35ad632bf843326b8d9667a0e380d5ca">handler</a></td></tr>
+<tr class="memitem:a35ad632bf843326b8d9667a0e380d5ca" id="r_a35ad632bf843326b8d9667a0e380d5ca"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#a35ad632bf843326b8d9667a0e380d5ca">handler</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A handle of a Java ObservableSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>It is the observable set of the symbols that the feeds are subscribed to, for one event type. Get it with <a class="el" href="group__Publisher.html#ga35f5ea326d57a73c13f38e750585bcf3">dxfg_DXPublisher_getSubscription()</a>. The subscription is closed when the endpoint of the publisher is closed.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/ObservableSubscription.html">Javadoc</a> </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a35ad632bf843326b8d9667a0e380d5ca" name="a35ad632bf843326b8d9667a0e380d5ca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a35ad632bf843326b8d9667a0e380d5ca">&#9670;&#160;</a></span>handler</h2>
 
@@ -126,10 +133,11 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__Publisher.html#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a> dxfg_observable_subscription_t::handler</td>
+          <td class="memname"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a> dxfg_observable_subscription_t::handler</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

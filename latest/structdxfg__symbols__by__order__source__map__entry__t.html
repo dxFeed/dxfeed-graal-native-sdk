@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__sy
 </div><!--header-->
 <div class="contents">
 
+<p>An entry of the symbols by an order source (Java <span class="tt">Map.Entry&lt;? extends IndexedEventSource, Set&lt;String&gt;&gt;</span>).  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__orcs_8h_source.html">dxfg_orcs.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab8088179b071a06ac5b06067835879aa" id="r_ab8088179b071a06ac5b06067835879aa"><td class="memItemLeft"><a class="el" href="structdxfg__indexed__event__source__t.html">dxfg_indexed_event_source_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ab8088179b071a06ac5b06067835879aa">order_source</a></td></tr>
 <tr class="memitem:a10048b7333112e9dfa355504b79e09a9" id="r_a10048b7333112e9dfa355504b79e09a9"><td class="memItemLeft"><a class="el" href="structdxfg__string__list.html">dxfg_string_list</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a10048b7333112e9dfa355504b79e09a9">symbols</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>An entry of the symbols by an order source (Java <span class="tt">Map.Entry&lt;? extends IndexedEventSource, Set&lt;String&gt;&gt;</span>). </p>
+<p>The structure belongs to the list <a class="el" href="structdxfg__symbols__by__order__source__map__entry__list__t.html" title="A list of the entries of the symbols by an order source (Java Collection&lt;? extends Map....">dxfg_symbols_by_order_source_map_entry_list_t</a> that contains it. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ab8088179b071a06ac5b06067835879aa" name="ab8088179b071a06ac5b06067835879aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab8088179b071a06ac5b06067835879aa">&#9670;&#160;</a></span>order_source</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The order source, a <a class="el" href="structdxfg__indexed__event__source__t.html" title="The source of indexed events.">dxfg_indexed_event_source_t</a> of the type ORDER_SOURCE; it belongs to the entry and is freed with it. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbols that are available to the client for the order source (UTF-8 null-terminated strings, in an unspecified order); the list belongs to the entry and is freed with it. </p>
 
 </div>
 </div>

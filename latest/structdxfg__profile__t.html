@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__pr
 </div><!--header-->
 <div class="contents">
 
+<p>The profile event: a snapshot of the description of a security instrument.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -135,7 +138,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a3c0bb2a629796cb68ecc47613911cde1" id="r_a3c0bb2a629796cb68ecc47613911cde1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a3c0bb2a629796cb68ecc47613911cde1">flags</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Profile.html">Javadoc</a> </p>
+<div class="textblock"><p>The profile event: a snapshot of the description of a security instrument. </p>
+<p>It is a lasting event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64af67d6f19060d1a8072758aafc585e80b" title="Profile, a lasting event: the description of an instrument.">DXFG_EVENT_PROFILE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Profile.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="abe147f3330ec686d130728e0cca23e94" name="abe147f3330ec686d130728e0cca23e94"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe147f3330ec686d130728e0cca23e94">&#9670;&#160;</a></span>beta</h2>
@@ -148,6 +153,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The correlation coefficient of the instrument to the S&amp;P500 index, NaN if unknown. </p>
 
 </div>
 </div>
@@ -162,6 +168,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The description of the instrument (a UTF-8 string, NULL if none) that belongs to the event. </p>
 
 </div>
 </div>
@@ -176,6 +183,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The frequency of cash dividend payments per year (calculated), NaN if unknown. </p>
 
 </div>
 </div>
@@ -190,6 +198,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The earnings per share (the profits of the company divided by the number of shares), NaN if unknown. </p>
 
 </div>
 </div>
@@ -204,6 +213,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The amount of the last paid dividend, NaN if unknown. </p>
 
 </div>
 </div>
@@ -218,6 +228,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The identifier of the day of the last dividend payment (the ex-dividend date): the days since 1 Jan 1970. </p>
 
 </div>
 </div>
@@ -232,6 +243,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags: the trading status in bits 0 and 1 and the short sale restriction in bits 2 and 3; see Profile.getTradingStatus() and Profile.getShortSaleRestriction() in Java. </p>
 
 </div>
 </div>
@@ -246,6 +258,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The free float: the number of shares outstanding that are available to the public for trade, NaN if unknown. </p>
 
 </div>
 </div>
@@ -260,6 +273,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The end of the trading halt interval, in milliseconds since the Unix epoch (UTC), 0 if not set. </p>
 
 </div>
 </div>
@@ -274,6 +288,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The start of the trading halt interval, in milliseconds since the Unix epoch (UTC), 0 if not set. </p>
 
 </div>
 </div>
@@ -288,6 +303,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The maximal (high) price in the last 52 weeks, NaN if unknown. </p>
 
 </div>
 </div>
@@ -302,6 +318,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The maximal (high) allowed price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -316,6 +333,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The minimal (low) price in the last 52 weeks, NaN if unknown. </p>
 
 </div>
 </div>
@@ -330,6 +348,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The minimal (low) allowed price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -344,6 +363,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -358,6 +378,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of shares outstanding, NaN if unknown. </p>
 
 </div>
 </div>
@@ -372,6 +393,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The reason that trading was halted (a UTF-8 string, NULL if none) that belongs to the event. </p>
 
 </div>
 </div>

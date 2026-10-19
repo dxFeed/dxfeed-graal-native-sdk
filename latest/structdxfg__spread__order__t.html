@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__sp
 </div><!--header-->
 <div class="contents">
 
+<p>The spread order event: a snapshot of the market depth of the spreads on an underlying symbol.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -120,7 +123,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aeb4262d455d5d547ffc1ee6676993cd9" id="r_aeb4262d455d5d547ffc1ee6676993cd9"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#aeb4262d455d5d547ffc1ee6676993cd9">spread_symbol</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html">Javadoc</a> </p>
+<div class="textblock"><p>The spread order event: a snapshot of the market depth of the spreads on an underlying symbol. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a1e10a489a09da65616d8569804b3ba13" title="SpreadOrder (extends OrderBase), an indexed event: a spread order.">DXFG_EVENT_SPREAD_ORDER</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a90e82cc247751377ac21aff5db446cb9" name="a90e82cc247751377ac21aff5db446cb9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90e82cc247751377ac21aff5db446cb9">&#9670;&#160;</a></span>order_base</h2>
@@ -133,6 +138,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__order__base__t.html" title="The common fields of the order events: dxfg_order_t, dxfg_spread_order_t and the structures built on ...">dxfg_order_base_t</a>. </p>
 
 </div>
 </div>
@@ -147,6 +153,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbol of the spread that the order represents (a UTF-8 string, NULL if none) that belongs to the event and is freed with it. The event symbol is the underlying symbol of the subscription. </p>
 
 </div>
 </div>

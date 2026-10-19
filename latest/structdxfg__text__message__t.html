@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__te
 </div><!--header-->
 <div class="contents">
 
+<p>The text message event: a notification with a text.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -123,7 +126,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a199243c06d3600bc955e9701b6912e09" id="r_a199243c06d3600bc955e9701b6912e09"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#a199243c06d3600bc955e9701b6912e09">text</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextMessage.html">Javadoc</a> </p>
+<div class="textblock"><p>The text message event: a notification with a text. </p>
+<p>It is neither a lasting nor an indexed event: messages are never conflated, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a41e754977c155448b2b39394ec071e85" title="TextMessage: a notification with a text (neither lasting nor indexed).">DXFG_EVENT_TEXT_MESSAGE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextMessage.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a43fce1f30c03356e55d949a36a082acd" name="a43fce1f30c03356e55d949a36a082acd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a43fce1f30c03356e55d949a36a082acd">&#9670;&#160;</a></span>event_symbol</h2>
@@ -136,6 +141,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbol of the event (a UTF-8 null-terminated string) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -150,6 +156,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the event was created, in milliseconds since the Unix epoch (UTC), or 0 if not available. </p>
 
 </div>
 </div>
@@ -164,6 +171,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__event__type__t.html" title="The base structure of every event: the first field of all the event structures.">dxfg_event_type_t</a>. </p>
 
 </div>
 </div>
@@ -178,6 +186,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The text (a UTF-8 string, NULL if none) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -192,6 +201,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the message and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see TextMessage.getTimeSequence() in Java. </p>
 
 </div>
 </div>

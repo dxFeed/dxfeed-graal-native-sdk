@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__en
 </div><!--header-->
 <div class="contents">
 
-<p>The PropertyChangeListener. <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>.  
+<p>A handle of a Java PropertyChangeListener object that reports the state changes of an endpoint; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__endpoint_8h_source.html">dxfg_endpoint.h</a>&gt;</code></p>
@@ -122,7 +122,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aaa1a97a22dd4c2bcf64f7027668ac7fb" id="r_aaa1a97a22dd4c2bcf64f7027668ac7fb"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#aaa1a97a22dd4c2bcf64f7027668ac7fb">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The PropertyChangeListener. <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>. </p>
+<div class="textblock"><p>A handle of a Java PropertyChangeListener object that reports the state changes of an endpoint; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>The listener calls a <a class="el" href="group__Endpoint.html#gaab2286f59fb9f6feefadf07c626c7439" title="The function of a dxfg_endpoint_state_change_listener_t: called when the state of the endpoint change...">dxfg_endpoint_state_change_listener_func</a> when the state of an endpoint to which it is added changes. Create it with <a class="el" href="group__Endpoint.html#gaa55c29c38e0908906238fe37c4dd15b1" title="Creates a new endpoint state change listener.">dxfg_PropertyChangeListener_new()</a> and add it with <a class="el" href="group__Endpoint.html#ga91cb7055be8f8d17ec7493fd675da6e5" title="Adds the state change listener (see dxfg_PropertyChangeListener_new()).">dxfg_DXEndpoint_addStateChangeListener()</a>. The last handle of the listener that is released deactivates the listener: its function is not called anymore.</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="aaa1a97a22dd4c2bcf64f7027668ac7fb" name="aaa1a97a22dd4c2bcf64f7027668ac7fb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaa1a97a22dd4c2bcf64f7027668ac7fb">&#9670;&#160;</a></span>handler</h2>
@@ -135,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

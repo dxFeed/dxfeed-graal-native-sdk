@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__nu
 </div><!--header-->
 <div class="contents">
 
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html</a>  
+<p>The Nuam order event: an order with the data of the Nuam Exchange matching engine.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
@@ -140,7 +140,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa8bec2b795c5b36c72b7b4a3ea539dd9" id="r_aa8bec2b795c5b36c72b7b4a3ea539dd9"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#aa8bec2b795c5b36c72b7b4a3ea539dd9">nuam_flags</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html</a> </p>
+<div class="textblock"><p>The Nuam order event: an order with the data of the Nuam Exchange matching engine. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a262b869bf8452626c8ce57fb0208fdcd" title="NuamOrder (extends Order), an indexed event: an order of the Nuam Exchange.">DXFG_EVENT_NUAM_ORDER</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a6011b9fbd2bb47b7d7ab3b80efd47922" name="a6011b9fbd2bb47b7d7ab3b80efd47922"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6011b9fbd2bb47b7d7ab3b80efd47922">&#9670;&#160;</a></span>actor_id</h2>
@@ -153,6 +155,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The actor owning the order: the one that entered it or the owner appointed for an order entered on behalf. </p>
 
 </div>
 </div>
@@ -167,6 +170,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The client generated order identity (ClOrdID of the FIX protocol), a UTF-8 string that belongs to the event. </p>
 
 </div>
 </div>
@@ -181,6 +185,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The account to use for the order, a UTF-8 string that belongs to the event. </p>
 
 </div>
 </div>
@@ -195,6 +200,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The free text filled in by the client entering the transaction, a UTF-8 string that belongs to the event. </p>
 
 </div>
 </div>
@@ -209,6 +215,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The actual display quantity of a reserve order at the end of the transaction, NaN if not a reserve order. </p>
 
 </div>
 </div>
@@ -223,6 +230,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The exchange-specific information (may contain unprintable characters), a UTF-8 string of the event. </p>
 
 </div>
 </div>
@@ -237,6 +245,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The remaining (open) quantity of the order, NaN if unknown. </p>
 
 </div>
 </div>
@@ -251,6 +260,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The quantity matched within the transaction that updated the order, NaN if unknown. </p>
 
 </div>
 </div>
@@ -265,6 +275,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags that hold the order type and the time in force type; see NuamOrder in Java. </p>
 
 </div>
 </div>
@@ -279,6 +290,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The actor submitting an order message on behalf of someone else. </p>
 
 </div>
 </div>
@@ -293,6 +305,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__order__t.html" title="The order event: a snapshot of the market depth (an order or a price level) of a symbol.">dxfg_order_t</a>. </p>
 
 </div>
 </div>
@@ -307,6 +320,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The actual full order quantity (it does not change when the order is matched), NaN if unknown. </p>
 
 </div>
 </div>
@@ -321,6 +335,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The participant owning the order. </p>
 
 </div>
 </div>
@@ -335,6 +350,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The initial display quantity of a reserve order, NaN if not a reserve order. </p>
 
 </div>
 </div>
@@ -349,6 +365,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The actor submitting the message that changed the order. </p>
 
 </div>
 </div>
@@ -363,6 +380,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The additional information that defines the validity period of the order; see NuamOrder.getTimeInForceData(). </p>
 
 </div>
 </div>
@@ -377,6 +395,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The order book ID the order triggers on (only for the trigger on price orders). </p>
 
 </div>
 </div>
@@ -391,6 +410,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trigger price of the order, NaN if unknown. </p>
 
 </div>
 </div>
@@ -405,6 +425,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The session type to trigger on. </p>
 
 </div>
 </div>

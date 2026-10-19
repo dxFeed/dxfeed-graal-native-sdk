@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__or
 </div><!--header-->
 <div class="contents">
 
+<p>The common fields of the order events: <a class="el" href="structdxfg__order__t.html" title="The order event: a snapshot of the market depth (an order or a price level) of a symbol.">dxfg_order_t</a>, <a class="el" href="structdxfg__spread__order__t.html" title="The spread order event: a snapshot of the market depth of the spreads on an underlying symbol.">dxfg_spread_order_t</a> and the structures built on them.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -134,7 +137,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab66616fc920d9ca0733327652b315362" id="r_ab66616fc920d9ca0733327652b315362"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#ab66616fc920d9ca0733327652b315362">trade_size</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a> </p>
+<div class="textblock"><p>The common fields of the order events: <a class="el" href="structdxfg__order__t.html" title="The order event: a snapshot of the market depth (an order or a price level) of a symbol.">dxfg_order_t</a>, <a class="el" href="structdxfg__spread__order__t.html" title="The spread order event: a snapshot of the market depth of the spreads on an underlying symbol.">dxfg_spread_order_t</a> and the structures built on them. </p>
+<p>It is an indexed event: a snapshot of the market depth of a symbol. Its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64aa9313815552327676053d98817b9942b" title="OrderBase, an indexed event: the common fields of the order events.">DXFG_EVENT_ORDER_BASE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a9275c0b7cc2f8f99073e766f3931d655" name="a9275c0b7cc2f8f99073e766f3931d655"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9275c0b7cc2f8f99073e766f3931d655">&#9670;&#160;</a></span>action_time</h2>
@@ -147,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last order action, in milliseconds since the Unix epoch (UTC), 0 if not available. </p>
 
 </div>
 </div>
@@ -161,6 +167,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The auxiliary order ID (for example, the ID of the order replaced by this new order), 0 if not available. </p>
 
 </div>
 </div>
@@ -175,6 +182,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the individual orders in this aggregate order. </p>
 
 </div>
 </div>
@@ -189,6 +197,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -203,6 +212,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The executed size of the order, NaN if unknown. </p>
 
 </div>
 </div>
@@ -217,6 +227,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags: the scope in bits 0 and 1, the side in bits 2 and 3, the exchange code in bits 4 to 10 and the order action in bits 11 to 14; see the getters of OrderBase in Java (getScope(), getOrderSide(), getExchangeCode(), getAction()). </p>
 
 </div>
 </div>
@@ -231,6 +242,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the order, a non-negative number. The source of the order is stored in its highest bits, <a class="el" href="dxfg__events_8h.html#a78c08504e8e5a66de8c632e4ced014cb">dxfg_IndexedEvent_getSource()</a> returns it; see OrderBase.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -245,6 +257,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -259,6 +272,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The order ID, 0 if not available (some actions, such as a trade or a bust, have no order ID). </p>
 
 </div>
 </div>
@@ -273,6 +287,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The price of the order, NaN if unknown. </p>
 
 </div>
 </div>
@@ -287,6 +302,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The size of the order (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -301,6 +317,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The microseconds and nanoseconds part of the time of the order. </p>
 
 </div>
 </div>
@@ -315,6 +332,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the order and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see OrderBase.getTimeSequence() in Java. </p>
 
 </div>
 </div>
@@ -329,6 +347,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trade (order execution) ID for the events that contain a trade-related action, 0 if not available. </p>
 
 </div>
 </div>
@@ -343,6 +362,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trade price for the events that contain a trade-related action, NaN if unknown. </p>
 
 </div>
 </div>
@@ -357,6 +377,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trade size for the events that contain a trade-related action, NaN if unknown. </p>
 
 </div>
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -119,7 +119,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a6ea87e485b0628f6af33d975ea22d4e0" id="r_a6ea87e485b0628f6af33d975ea22d4e0"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a6ea87e485b0628f6af33d975ea22d4e0">size</a></td></tr>
 <tr class="memitem:a47ac7c7ac5993cfc81493f429ed6f38c" id="r_a47ac7c7ac5993cfc81493f429ed6f38c"><td class="memItemLeft"><a class="el" href="structdxfg__session__t.html">dxfg_session_t</a> **&#160;</td><td class="memItemRight"><a class="el" href="#a47ac7c7ac5993cfc81493f429ed6f38c">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of session handles, returned by <a class="el" href="group__Schedule.html#gac7e5669f86f9d7df4775f31cab0802ac">dxfg_Day_getSessions()</a>.</p>
+<p>Release the sessions with <a class="el" href="group__Schedule.html#ga0de7f8fa276f0bbf3242c2a920a03ca2">dxfg_Session_release()</a> one by one and then the list itself with <a class="el" href="group__Schedule.html#ga8a92a638e3da0592068c53f7196baed2">dxfg_SessionList_wrapper_release()</a>. There is no function that releases the list and its sessions together. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a47ac7c7ac5993cfc81493f429ed6f38c" name="a47ac7c7ac5993cfc81493f429ed6f38c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a47ac7c7ac5993cfc81493f429ed6f38c">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +134,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of <span class="tt"><a class="el" href="#a6ea87e485b0628f6af33d975ea22d4e0">size</a></span> session handles; NULL for an empty list. Each element is owned by the caller. </p>
 
 </div>
 </div>
@@ -145,6 +149,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of elements; 0 for an empty list. </p>
 
 </div>
 </div>

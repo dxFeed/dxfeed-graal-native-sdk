@@ -11,8 +11,6 @@ var group__Subscription =
     ] ],
     [ "dxfg_feed_event_listener_function", "group__Subscription.html#ga09ccdfd07f71538fb870edba35ef64e9", null ],
     [ "dxfg_feed_event_listener_t", "group__Subscription.html#ga7af2dc72b742c873280d3ea605906c4d", null ],
-    [ "dxfg_feed_t", "group__Subscription.html#ga7baa1d526b3c650baf22aef7261c5648", null ],
-    [ "dxfg_subscription_controller_t", "group__Subscription.html#ga9c38fb298b515b7526cfeb82bf542d01", null ],
     [ "dxfg_subscription_t", "group__Subscription.html#ga4649b52981e22beb55561e9285514e74", null ],
     [ "dxfg_time_series_subscription_t", "group__Subscription.html#ga933ffd1e3309a54b96a478163c7d8887", null ],
     [ "dxfg_DXFeedEventListener_new", "group__Subscription.html#ga171884000fc4d8af4ca288f8955854b1", null ],

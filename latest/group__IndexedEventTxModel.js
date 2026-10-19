@@ -9,12 +9,10 @@ var group__IndexedEventTxModel =
     [ "dxfg_indexed_event_tx_model_listener_t", "structdxfg__indexed__event__tx__model__listener__t.html", [
       [ "handler", "structdxfg__indexed__event__tx__model__listener__t.html#abd06f41a9ba6e5b41c95f89fed083608", null ]
     ] ],
-    [ "dxfg_feed_t", "group__IndexedEventTxModel.html#ga7baa1d526b3c650baf22aef7261c5648", null ],
     [ "dxfg_indexed_event_tx_model_builder_t", "group__IndexedEventTxModel.html#gaa88535522a860927b3b67dc10ffb316f", null ],
     [ "dxfg_indexed_event_tx_model_listener_t", "group__IndexedEventTxModel.html#ga8545a5ba2ba11129f35dba4bb48f6225", null ],
     [ "dxfg_indexed_event_tx_model_t", "group__IndexedEventTxModel.html#ga70603b6aa89259cac1f2033bff1dbead", null ],
     [ "dxfg_IndexedEventTxModel_Listener_eventsReceived_f", "group__IndexedEventTxModel.html#gaa0c367cef6edd8f6a65f8c3ab42b1ef5", null ],
-    [ "dxfg_subscription_controller_t", "group__IndexedEventTxModel.html#ga9c38fb298b515b7526cfeb82bf542d01", null ],
     [ "dxfg_IndexedEventTxModel_Builder_build", "group__IndexedEventTxModel.html#ga43520d7ca8ae42b9c143432ba9ff2de5", null ],
     [ "dxfg_IndexedEventTxModel_Builder_new", "group__IndexedEventTxModel.html#ga81b8b82e524f08d6a6486900addca43d", null ],
     [ "dxfg_IndexedEventTxModel_Builder_withAggregationPeriod", "group__IndexedEventTxModel.html#ga6cdb99204db8fed71476d98a1f0d23f0", null ],

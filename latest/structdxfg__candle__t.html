@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ca
 </div><!--header-->
 <div class="contents">
 
+<p>The candle event: OHLC prices and other information for a specific period.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -134,7 +137,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a39354b0116bf5d5a701985d6f63a91bc" id="r_a39354b0116bf5d5a701985d6f63a91bc"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a39354b0116bf5d5a701985d6f63a91bc">open_interest</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html">Javadoc</a> </p>
+<div class="textblock"><p>The candle event: OHLC prices and other information for a specific period. </p>
+<p>It is a lasting event and a time series event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a6aa8eaf159a22ff2326963c06893779e" title="Candle, a lasting event and a time series event: OHLC and other values of a period.">DXFG_EVENT_CANDLE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a36021fae63105de9c102b5d6199b7a80" name="a36021fae63105de9c102b5d6199b7a80"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36021fae63105de9c102b5d6199b7a80">&#9670;&#160;</a></span>ask_volume</h2>
@@ -147,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask volume of the candle (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -161,6 +167,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid volume of the candle (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -175,6 +182,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The last (close) price of the candle, NaN if unknown. </p>
 
 </div>
 </div>
@@ -189,6 +197,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The total number of the original trade (or quote) events in the candle. </p>
 
 </div>
 </div>
@@ -203,6 +212,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -217,6 +227,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The candle symbol in its string form, as CandleSymbol.toString() returns it (a UTF-8 null-terminated string); it belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -231,6 +242,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the event was created, in milliseconds since the Unix epoch (UTC), or 0 if not available. </p>
 
 </div>
 </div>
@@ -245,6 +257,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__event__type__t.html" title="The base structure of every event: the first field of all the event structures.">dxfg_event_type_t</a>. </p>
 
 </div>
 </div>
@@ -259,6 +272,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The maximal (high) price of the candle, NaN if unknown. </p>
 
 </div>
 </div>
@@ -273,6 +287,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied volatility, NaN if unknown. </p>
 
 </div>
 </div>
@@ -287,6 +302,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the candle: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see Candle.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -301,6 +317,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The minimal (low) price of the candle, NaN if unknown. </p>
 
 </div>
 </div>
@@ -315,6 +332,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The first (open) price of the candle, NaN if unknown. </p>
 
 </div>
 </div>
@@ -329,6 +347,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The open interest (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -343,6 +362,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The total volume of the candle (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -357,6 +377,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The volume-weighted average price of the candle, NaN if unknown. </p>
 
 </div>
 </div>

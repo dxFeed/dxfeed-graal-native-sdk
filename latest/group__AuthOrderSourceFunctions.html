@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -111,16 +111,24 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__AuthOrd
   <div class="headertitle"><div class="title">AuthOrderSource' functions <div class="ingroups"><a class="el" href="group__OrcsApi.html">ORCS API</a> &raquo; <a class="el" href="group__AuthOrderSource.html">AuthOrderSource</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The functions that read an AuthOrderSource and free the lists that they return.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga0738bfc62a0770f823d143e513f8521a" id="r_ga0738bfc62a0770f823d143e513f8521a"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga0738bfc62a0770f823d143e513f8521a">dxfg_AuthOrderSource_getByIds</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__auth__order__source__t.html">dxfg_auth_order_source_t</a> *authOrderSource, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__symbols__by__order__source__id__map__entry__list__t.html">dxfg_symbols_by_order_source_id_map_entry_list_t</a> **symbolsByOrderSourceIdMapEntryList)</td></tr>
+<tr class="memdesc:ga0738bfc62a0770f823d143e513f8521a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.  <br /></td></tr>
 <tr class="memitem:gab439e8b8d882092ed881fb7ba726e988" id="r_gab439e8b8d882092ed881fb7ba726e988"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab439e8b8d882092ed881fb7ba726e988">dxfg_symbols_by_order_source_id_map_entry_list_free</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__symbols__by__order__source__id__map__entry__list__t.html">dxfg_symbols_by_order_source_id_map_entry_list_t</a> *list)</td></tr>
+<tr class="memdesc:gab439e8b8d882092ed881fb7ba726e988"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a list of the entries (the identifier of an order source, the symbols).  <br /></td></tr>
 <tr class="memitem:ga7834a740661320c91fcaacb16420195c" id="r_ga7834a740661320c91fcaacb16420195c"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga7834a740661320c91fcaacb16420195c">dxfg_AuthOrderSource_getByOrderSources</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__auth__order__source__t.html">dxfg_auth_order_source_t</a> *authOrderSource, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__symbols__by__order__source__map__entry__list__t.html">dxfg_symbols_by_order_source_map_entry_list_t</a> **symbolsByOrderSourceMapEntryList)</td></tr>
+<tr class="memdesc:ga7834a740661320c91fcaacb16420195c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entries (an order source, the symbols) of an AuthOrderSource.  <br /></td></tr>
 <tr class="memitem:gab551d98bdfc4be141b5fb877b445aa55" id="r_gab551d98bdfc4be141b5fb877b445aa55"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab551d98bdfc4be141b5fb877b445aa55">dxfg_symbols_by_order_source_map_entry_list_free</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__symbols__by__order__source__map__entry__list__t.html">dxfg_symbols_by_order_source_map_entry_list_t</a> *list)</td></tr>
+<tr class="memdesc:gab551d98bdfc4be141b5fb877b445aa55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a list of the entries (an order source, the symbols).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"></div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<div class="textblock"><p>The functions that read an AuthOrderSource and free the lists that they return. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="ga0738bfc62a0770f823d143e513f8521a" name="ga0738bfc62a0770f823d143e513f8521a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga0738bfc62a0770f823d143e513f8521a">&#9670;&#160;</a></span>dxfg_AuthOrderSource_getByIds()</h2>
 
@@ -144,16 +152,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of map entries (OrderSource::id, [Symbol, ...]).</p>
+
+<p>Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource. </p>
+<p>The list is a copy: it does not depend on the handle of the AuthOrderSource.</p>
+<p>Java: <span class="tt">AuthOrderSource.getByIds()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">authOrderSource</td><td>The AuthOrderSource. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">symbolsByOrderSourceIdMapEntryList</td><td>The pointer to the list of entries. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">symbolsByOrderSourceIdMapEntryList</td><td>The list of the entries. Release it with <a class="el" href="#gab439e8b8d882092ed881fb7ba726e988" title="Frees a list of the entries (the identifier of an order source, the symbols).">dxfg_symbols_by_order_source_id_map_entry_list_free()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="#gab439e8b8d882092ed881fb7ba726e988">dxfg_symbols_by_order_source_id_map_entry_list_free()</a> to free the list of entries. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -180,16 +191,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of map entries (OrderSource, [Symbol, ...]).</p>
+
+<p>Returns the entries (an order source, the symbols) of an AuthOrderSource. </p>
+<p>The list is a copy: it does not depend on the handle of the AuthOrderSource.</p>
+<p>Java: <span class="tt">AuthOrderSource.getByOrderSources()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">authOrderSource</td><td>The AuthOrderSource. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">symbolsByOrderSourceMapEntryList</td><td>The pointer to the list of entries. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">symbolsByOrderSourceMapEntryList</td><td>The list of the entries. Release it with <a class="el" href="#gab551d98bdfc4be141b5fb877b445aa55" title="Frees a list of the entries (an order source, the symbols).">dxfg_symbols_by_order_source_map_entry_list_free()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="#gab551d98bdfc4be141b5fb877b445aa55">dxfg_symbols_by_order_source_map_entry_list_free()</a> to free the list of entries. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -211,15 +225,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Frees the list of map entries (OrderSource::id, [Symbol, ...]).</p>
+
+<p>Frees a list of the entries (the identifier of an order source, the symbols). </p>
+<p>Frees the list, its entries and their symbol lists. A NULL list is ignored.</p>
+<p>Java: not applicable (the list is allocated by the SDK outside the Java heap).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
-    <tr><td class="paramname">list</td><td>The list of entries. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The list of the entries that <a class="el" href="#ga0738bfc62a0770f823d143e513f8521a" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByIds()</a> returned. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -241,15 +258,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Frees the list of map entries (OrderSource, [Symbol, ...]).</p>
+
+<p>Frees a list of the entries (an order source, the symbols). </p>
+<p>Frees the list, its entries, their order sources and their symbol lists. A NULL list is ignored.</p>
+<p>Java: not applicable (the list is allocated by the SDK outside the Java heap).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The list of entries. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The list of the entries that <a class="el" href="#ga7834a740661320c91fcaacb16420195c" title="Returns the entries (an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByOrderSources()</a> returned. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>

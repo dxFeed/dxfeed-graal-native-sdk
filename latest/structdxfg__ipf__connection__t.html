@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ip
 </div><!--header-->
 <div class="contents">
 
-<p>The InstrumentProfileConnection. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ipf/live/InstrumentProfileConnection.html">Javadoc</a>.  
+<p>A handle of a Java InstrumentProfileConnection object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__ipf_8h_source.html">dxfg_ipf.h</a>&gt;</code></p>
@@ -122,7 +122,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ad3ea27f36414e6f34856a23955da1ac8" id="r_ad3ea27f36414e6f34856a23955da1ac8"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad3ea27f36414e6f34856a23955da1ac8">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The InstrumentProfileConnection. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ipf/live/InstrumentProfileConnection.html">Javadoc</a>. </p>
+<div class="textblock"><p>A handle of a Java InstrumentProfileConnection object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>Create it with <a class="el" href="group__InstrumentProfile.html#gae05579643a94aea4ddbbde44a55214e1" title="Creates an instrument profile connection to an address that pushes the profiles into a collector.">dxfg_InstrumentProfileConnection_createConnection()</a>. Releasing the handle does not close the connection: call <a class="el" href="group__InstrumentProfile.html#ga5ccdece5706127fe7d4eb845a27418cb" title="Closes the connection.">dxfg_InstrumentProfileConnection_close()</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ipf/live/InstrumentProfileConnection.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ad3ea27f36414e6f34856a23955da1ac8" name="ad3ea27f36414e6f34856a23955da1ac8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3ea27f36414e6f34856a23955da1ac8">&#9670;&#160;</a></span>handler</h2>
@@ -135,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

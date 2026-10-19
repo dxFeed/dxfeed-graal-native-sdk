@@ -1,6 +1,7 @@
 var topics =
 [
     [ "CandleWebService", "group__CandleWebService.html", "group__CandleWebService" ],
+    [ "Exceptions", "group__Exceptions.html", "group__Exceptions" ],
     [ "Common", "group__Common.html", "group__Common" ],
     [ "Endpoint", "group__Endpoint.html", "group__Endpoint" ],
     [ "EventModel", "group__EventModel.html", "group__EventModel" ],

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ma
 </div><!--header-->
 <div class="contents">
 
+<p>The base structure of the market events: the event symbol and the event time.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -121,7 +124,8 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa8eebb92788be779a60f32d3f1884bd7" id="r_aa8eebb92788be779a60f32d3f1884bd7"><td class="memItemLeft">int64_t&#160;</td><td class="memItemRight"><a class="el" href="#aa8eebb92788be779a60f32d3f1884bd7">event_time</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketEvent.html">Javadoc</a> </p>
+<div class="textblock"><p>The base structure of the market events: the event symbol and the event time. </p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketEvent.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ac66652e38ece78f5898b3916a7f3d2c0" name="ac66652e38ece78f5898b3916a7f3d2c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac66652e38ece78f5898b3916a7f3d2c0">&#9670;&#160;</a></span>event_symbol</h2>
@@ -134,6 +138,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbol of the event (a UTF-8 null-terminated string) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -148,6 +153,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the event was created, in milliseconds since the Unix epoch (UTC), or 0 if not available. It is available only if the endpoint is created with the event time property and the data source has embedded event times, which is typically the case for historical tape files and OnDemandService only. </p>
 
 </div>
 </div>
@@ -162,6 +168,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__event__type__t.html" title="The base structure of every event: the first field of all the event structures.">dxfg_event_type_t</a>. </p>
 
 </div>
 </div>

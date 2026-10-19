@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__th
 </div><!--header-->
 <div class="contents">
 
+<p>The theo price event: a snapshot of the theoretical option price computation.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -127,7 +130,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a8cbbd28ecee33fd11f84db89f28f7cae" id="r_a8cbbd28ecee33fd11f84db89f28f7cae"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a8cbbd28ecee33fd11f84db89f28f7cae">interest</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/TheoPrice.html">Javadoc</a> </p>
+<div class="textblock"><p>The theo price event: a snapshot of the theoretical option price computation. </p>
+<p>It is a lasting event and a time series event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64ae7b67d3c2b56cc098a88bac8be90a970" title="TheoPrice, a lasting event and a time series event: the theoretical option price.">DXFG_EVENT_THEO_PRICE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/TheoPrice.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ad0e0ec6c045a8e1c9682d92dcaa4e53e" name="ad0e0ec6c045a8e1c9682d92dcaa4e53e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0e0ec6c045a8e1c9682d92dcaa4e53e">&#9670;&#160;</a></span>delta</h2>
@@ -140,6 +145,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The delta of the theoretical price: its first derivative by the underlying price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -154,6 +160,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied simple dividend return of the corresponding option series, NaN if unknown. </p>
 
 </div>
 </div>
@@ -168,6 +175,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -182,6 +190,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The gamma of the theoretical price: its second derivative by the underlying price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -196,6 +205,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the event: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see TheoPrice.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -210,6 +220,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied simple interest return of the corresponding option series, NaN if unknown. </p>
 
 </div>
 </div>
@@ -224,6 +235,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -238,6 +250,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The theoretical option price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -252,6 +265,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The underlying price at the time of the computation, NaN if unknown. </p>
 
 </div>
 </div>

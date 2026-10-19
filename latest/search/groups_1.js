@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['builder_0',['Builder',['../group__Builder.html',1,'']]]
+  ['builder_0',['Endpoint builder',['../group__Builder.html',1,'']]]
 ];

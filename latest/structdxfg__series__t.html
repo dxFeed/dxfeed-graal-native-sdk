@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__se
 </div><!--header-->
 <div class="contents">
 
+<p>The series event: a snapshot of the values computed for an option series of an underlying symbol.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -130,7 +133,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a42bb0f36ec1060075a203c2c116be2b6" id="r_a42bb0f36ec1060075a203c2c116be2b6"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a42bb0f36ec1060075a203c2c116be2b6">interest</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Series.html">Javadoc</a> </p>
+<div class="textblock"><p>The series event: a snapshot of the values computed for an option series of an underlying symbol. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a569b4de69bb2c92aef9820835fa71128" title="Series, an indexed event: the values of an option series.">DXFG_EVENT_SERIES</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Series.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a39486ba2b2e8a654f18327e647255385" name="a39486ba2b2e8a654f18327e647255385"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a39486ba2b2e8a654f18327e647255385">&#9670;&#160;</a></span>call_volume</h2>
@@ -143,6 +148,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The traded volume of the call options for a day, NaN if unknown. </p>
 
 </div>
 </div>
@@ -157,6 +163,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied simple dividend return of the series, NaN if unknown. </p>
 
 </div>
 </div>
@@ -171,6 +178,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -185,6 +193,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The day ID of the expiration: the number of days since 1 Jan 1970. </p>
 
 </div>
 </div>
@@ -199,6 +208,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied forward price of the series, NaN if unknown. </p>
 
 </div>
 </div>
@@ -213,6 +223,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the series, see Series.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -227,6 +238,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied simple interest return of the series, NaN if unknown. </p>
 
 </div>
 </div>
@@ -241,6 +253,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -255,6 +268,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ratio of the traded volume of the put options to the traded volume of the call options, NaN if unknown. </p>
 
 </div>
 </div>
@@ -269,6 +283,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The traded volume of the put options for a day, NaN if unknown. </p>
 
 </div>
 </div>
@@ -283,6 +298,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the series and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see Series.getTimeSequence() in Java. </p>
 
 </div>
 </div>
@@ -297,6 +313,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implied volatility index of the series based on the VIX methodology, NaN if unknown. </p>
 
 </div>
 </div>

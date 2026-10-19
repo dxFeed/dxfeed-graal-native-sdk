@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__op
 </div><!--header-->
 <div class="contents">
 
+<p>The option sale event: a trade or another market event with a price for an option of an underlying.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -134,7 +137,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a67b3704eb2f082dc0e4a24ffbd3f402d" id="r_a67b3704eb2f082dc0e4a24ffbd3f402d"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#a67b3704eb2f082dc0e4a24ffbd3f402d">option_symbol</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html">Javadoc</a> </p>
+<div class="textblock"><p>The option sale event: a trade or another market event with a price for an option of an underlying. </p>
+<p>It is an indexed event with the default source, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64ab65e0aca0c6887b68d83f37600cccc74" title="OptionSale, an indexed event: a trade of an option.">DXFG_EVENT_OPTION_SALE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a13b1d9b15051cff5217f68d229e14cf2" name="a13b1d9b15051cff5217f68d229e14cf2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a13b1d9b15051cff5217f68d229e14cf2">&#9670;&#160;</a></span>ask_price</h2>
@@ -147,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask price on the market at the time of the event, NaN if unknown. </p>
 
 </div>
 </div>
@@ -161,6 +167,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid price on the market at the time of the event, NaN if unknown. </p>
 
 </div>
 </div>
@@ -175,6 +182,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The delta of the option at the time of the event, NaN if unknown. </p>
 
 </div>
 </div>
@@ -189,6 +197,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -203,6 +212,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The exchange code: the character code (Java <span class="tt">char</span>) of the exchange, 0 if not set. </p>
 
 </div>
 </div>
@@ -217,6 +227,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The sale conditions provided by the data feed (a UTF-8 string, its format is specific for the feed, NULL if none) that belong to the event and are freed with it. </p>
 
 </div>
 </div>
@@ -231,6 +242,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags, the same as in <a class="el" href="structdxfg__time__and__sale__t.html" title="The time and sale event: a trade or another market event with a price, in a continuous time slice.">dxfg_time_and_sale_t</a>: the type (new, correction, cancellation), the valid tick, extended trading hours and spread leg indicators, the aggressor side and the TradeThroughExempt character; see the getters of OptionSale in Java. </p>
 
 </div>
 </div>
@@ -245,6 +257,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the event, see OptionSale.getIndex() in Java. It identifies the event for a later correction or cancellation. </p>
 
 </div>
 </div>
@@ -259,6 +272,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -273,6 +287,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The option symbol of the event (a UTF-8 string, NULL if none) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -287,6 +302,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -301,6 +317,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The size, NaN if unknown. </p>
 
 </div>
 </div>
@@ -315,6 +332,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The microseconds and nanoseconds part of the time of the event. </p>
 
 </div>
 </div>
@@ -329,6 +347,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the event and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see OptionSale.getTimeSequence() in Java. </p>
 
 </div>
 </div>
@@ -343,6 +362,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The underlying price at the time of the event, NaN if unknown. </p>
 
 </div>
 </div>
@@ -357,6 +377,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Black-Scholes implied volatility of the option at the time of the event, NaN if unknown. </p>
 
 </div>
 </div>

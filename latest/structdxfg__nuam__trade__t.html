@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__nu
 </div><!--header-->
 <div class="contents">
 
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html</a>  
+<p>The Nuam trade event: a trade with the trade statistics of the Nuam Exchange.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
@@ -127,7 +127,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a338afbd4b4628146296a9eda567503e4" id="r_a338afbd4b4628146296a9eda567503e4"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a338afbd4b4628146296a9eda567503e4">vwap</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html</a> </p>
+<div class="textblock"><p>The Nuam trade event: a trade with the trade statistics of the Nuam Exchange. </p>
+<p>It is a lasting event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64abd8cd1ed104d574c5872cc61e25fe659" title="NuamTrade (extends Trade), a lasting event: Nuam Exchange trade statistics.">DXFG_EVENT_NUAM_TRADE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a32de4624203f190f5fe5472f556624e4" name="a32de4624203f190f5fe5472f556624e4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a32de4624203f190f5fe5472f556624e4">&#9670;&#160;</a></span>last_price_for_all</h2>
@@ -140,6 +142,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The price of the last trade (for all deals) reported by the exchange, NaN if unknown. </p>
 
 </div>
 </div>
@@ -154,6 +157,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The price of the last trade reported by the exchange as significant, NaN if unknown. </p>
 
 </div>
 </div>
@@ -168,6 +172,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the trades reported by the exchange. </p>
 
 </div>
 </div>
@@ -182,6 +187,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__trade__t.html" title="The trade event: the last trade during the regular trading hours (RTH) and the volume and turnover of...">dxfg_trade_t</a>. </p>
 
 </div>
 </div>
@@ -196,6 +202,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the trade statistics were updated, in milliseconds since the Unix epoch (UTC). </p>
 
 </div>
 </div>
@@ -210,6 +217,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The volume-weighted average price (VWAP) reported by the exchange, NaN if unknown. </p>
 
 </div>
 </div>

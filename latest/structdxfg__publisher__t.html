@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,17 +112,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__pu
 </div><!--header-->
 <div class="contents">
 
-<p>The DXPublisher. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>.  
+<p>A handle of a Java DXPublisher object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__publisher_8h_source.html">dxfg_publisher.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:ae80a9d37c2b443dd910a0d537dc3e4a9" id="r_ae80a9d37c2b443dd910a0d537dc3e4a9"><td class="memItemLeft"><a class="el" href="group__Publisher.html#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae80a9d37c2b443dd910a0d537dc3e4a9">handler</a></td></tr>
+<tr class="memitem:ae80a9d37c2b443dd910a0d537dc3e4a9" id="r_ae80a9d37c2b443dd910a0d537dc3e4a9"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae80a9d37c2b443dd910a0d537dc3e4a9">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The DXPublisher. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>. </p>
+<div class="textblock"><p>A handle of a Java DXPublisher object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>Get it with <a class="el" href="group__Publisher.html#ga294c17b259ea2e1f93dd6c64bd7a9221">dxfg_DXPublisher_getInstance()</a> or <a class="el" href="group__Endpoint.html#ga2f67e4dc6864aea4ea14cde570056ae5" title="Returns the publisher of the endpoint.">dxfg_DXEndpoint_getPublisher()</a>. Releasing the handle does not close the endpoint of the publisher.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ae80a9d37c2b443dd910a0d537dc3e4a9" name="ae80a9d37c2b443dd910a0d537dc3e4a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae80a9d37c2b443dd910a0d537dc3e4a9">&#9670;&#160;</a></span>handler</h2>
@@ -131,10 +133,11 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__Publisher.html#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a> dxfg_publisher_t::handler</td>
+          <td class="memname"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a> dxfg_publisher_t::handler</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

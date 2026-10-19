@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__qu
 </div><!--header-->
 <div class="contents">
 
+<p>The quote event: a snapshot of the best bid and ask prices and sizes.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -129,12 +132,15 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a522bfe566db5d3699c01bed9e9ce9883" id="r_a522bfe566db5d3699c01bed9e9ce9883"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a522bfe566db5d3699c01bed9e9ce9883">ask_size</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment"> &lt;a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/LastingEvent.html"&gt;Javadoc&lt;/a&gt;
+<div class="textblock"><p>The quote event: a snapshot of the best bid and ask prices and sizes. </p>
+<pre class="fragment"> &lt;a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/LastingEvent.html"&gt;Javadoc&lt;/a&gt;
 &amp;zwj;/
 </pre><p> typedef struct dxfg_lasting_event_t { } dxfg_lasting_event_t;</p>
-<p>/** <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/IndexedEvent.html">Javadoc</a> &zwj;/ typedef struct dxfg_indexed_event_t { // <a class="el" href="structdxfg__indexed__event__source__t.html">dxfg_indexed_event_source_t</a> source; // int32_t event_flags; // int64_t index; } dxfg_indexed_event_t;</p>
+<p>/** <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/IndexedEvent.html">Javadoc</a> &zwj;/ typedef struct dxfg_indexed_event_t { // <a class="el" href="structdxfg__indexed__event__source__t.html" title="The source of indexed events.">dxfg_indexed_event_source_t</a> source; // int32_t event_flags; // int64_t index; } dxfg_indexed_event_t;</p>
 <p>/** <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/TimeSeriesEvent.html">Javadoc</a> &zwj;/ typedef struct dxfg_time_series_event_t { dxfg_indexed_event_t indexed_event; // int64_t time; } dxfg_time_series_event_t;</p>
-<p>/** <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html">Javadoc</a> </p>
+<p>/** </p>
+<p>It is a lasting event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a0c6a845fd5db565be8561cf1e65bd37d" title="Quote, a lasting event: the best bid and ask.">DXFG_EVENT_QUOTE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a6462f67423c6700a5ef7fb34a198baea" name="a6462f67423c6700a5ef7fb34a198baea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6462f67423c6700a5ef7fb34a198baea">&#9670;&#160;</a></span>ask_exchange_code</h2>
@@ -147,6 +153,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask exchange code: the character code (Java <span class="tt">char</span>) of the exchange, 0 if not set. </p>
 
 </div>
 </div>
@@ -161,6 +168,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -175,6 +183,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask size (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -189,6 +198,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last ask change, in milliseconds since the Unix epoch (UTC). By default it has a precision of seconds, so it is usually a multiple of 1000. </p>
 
 </div>
 </div>
@@ -203,6 +213,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid exchange code: the character code (Java <span class="tt">char</span>) of the exchange, 0 if not set. </p>
 
 </div>
 </div>
@@ -217,6 +228,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -231,6 +243,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid size (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -245,6 +258,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last bid change, in milliseconds since the Unix epoch (UTC). By default it has a precision of seconds, so it is usually a multiple of 1000. </p>
 
 </div>
 </div>
@@ -259,6 +273,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -273,6 +288,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The milliseconds part of the time of the last bid or ask change (bits 22 to 31) and the sequence (bits 0 to 21) packed into one number; see Quote.getTime() and Quote.getSequence() in Java. </p>
 
 </div>
 </div>
@@ -287,6 +303,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The microseconds and nanoseconds part of the time of the last bid or ask change. </p>
 
 </div>
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__an
 </div><!--header-->
 <div class="contents">
 
+<p>The analytic order event: an order with the iceberg information.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -123,7 +126,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a9c7e80cc2823b8c0276e1c846c542a55" id="r_a9c7e80cc2823b8c0276e1c846c542a55"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a9c7e80cc2823b8c0276e1c846c542a55">iceberg_flags</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html">Javadoc</a> </p>
+<div class="textblock"><p>The analytic order event: an order with the iceberg information. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a77c4f06566683ebe8cd8a0caf8b036f2" title="AnalyticOrder (extends Order), an indexed event: an Order with iceberg data.">DXFG_EVENT_ANALYTIC_ORDER</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a9911df5670bba6d0c0c5b7be284a2721" name="a9911df5670bba6d0c0c5b7be284a2721"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9911df5670bba6d0c0c5b7be284a2721">&#9670;&#160;</a></span>iceberg_executed_size</h2>
@@ -136,6 +141,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The executed size of the iceberg, NaN if unknown. </p>
 
 </div>
 </div>
@@ -150,6 +156,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags that hold the iceberg type; see AnalyticOrder.getIcebergType() in Java. </p>
 
 </div>
 </div>
@@ -164,6 +171,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The hidden size of the iceberg, NaN if unknown. </p>
 
 </div>
 </div>
@@ -178,6 +186,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The size of the peak: the visible part of the iceberg, NaN if unknown. </p>
 
 </div>
 </div>
@@ -192,6 +201,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__order__t.html" title="The order event: a snapshot of the market depth (an order or a price level) of a symbol.">dxfg_order_t</a>. </p>
 
 </div>
 </div>

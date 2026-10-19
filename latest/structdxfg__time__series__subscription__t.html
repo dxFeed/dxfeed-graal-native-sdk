@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ti
 </div><!--header-->
 <div class="contents">
 
+<p>A handle of a Java DXFeedTimeSeriesSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__subscription_8h_source.html">dxfg_subscription.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a5687d00e536dd8cb449b50aea9d426f5" id="r_a5687d00e536dd8cb449b50aea9d426f5"><td class="memItemLeft"><a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#a5687d00e536dd8cb449b50aea9d426f5">sub</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedTimeSeriesSubscription.html">Javadoc</a> </p>
+<div class="textblock"><p>A handle of a Java DXFeedTimeSeriesSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>A time series subscription is a subscription (<a class="el" href="structdxfg__subscription__t.html" title="A handle of a Java DXFeedSubscription object; release it with dxfg_JavaObjectHandler_release().">dxfg_subscription_t</a>) for the events that are time series: pass <span class="tt">&amp;sub-&gt;<a class="el" href="#a5687d00e536dd8cb449b50aea9d426f5">sub</a></span> to the functions of this header. The symbols that are set are wrapped, for the listeners of the changes, with the time from which the events are subscribed (see <a class="el" href="group__Feed.html#ga2c023c1292e9259af1179b4ffbc58438" title="Sets the earliest time from which the time series subscription receives the events.">dxfg_DXFeedTimeSeriesSubscription_setFromTime()</a>). Create it with <a class="el" href="group__Feed.html#ga34048c3d8cc6e2611d80780eed05c4d8" title="Creates a time series subscription for the events of one class and attaches it to the feed.">dxfg_DXFeed_createTimeSeriesSubscription()</a> or <a class="el" href="group__Feed.html#gaecef9c4bafd6dec476888f7ad62b48f1" title="Creates a time series subscription for the events of several classes and attaches it to the feed.">dxfg_DXFeed_createTimeSeriesSubscription2()</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedTimeSeriesSubscription.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a5687d00e536dd8cb449b50aea9d426f5" name="a5687d00e536dd8cb449b50aea9d426f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5687d00e536dd8cb449b50aea9d426f5">&#9670;&#160;</a></span>sub</h2>
@@ -132,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__subscription__t.html" title="A handle of a Java DXFeedSubscription object; release it with dxfg_JavaObjectHandler_release().">dxfg_subscription_t</a>. </p>
 
 </div>
 </div>

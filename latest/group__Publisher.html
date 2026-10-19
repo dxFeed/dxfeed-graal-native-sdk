@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -111,20 +111,23 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__Publish
   <div class="headertitle"><div class="title">Publisher </div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Publishing of events to the local and remote feeds, and the observable subscriptions that tell which symbols the feeds are subscribed to.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:dxfg_5Fpublisher_5Ft" id="r_dxfg_5Fpublisher_5Ft"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__publisher__t.html">dxfg_publisher_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The DXPublisher. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>.  <a href="structdxfg__publisher__t.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java DXPublisher object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <a href="structdxfg__publisher__t.html#details">More...</a><br /></td></tr>
 <tr class="memitem:dxfg_5Fobservable_5Fsubscription_5Ft" id="r_dxfg_5Fobservable_5Fsubscription_5Ft"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__observable__subscription__t.html">dxfg_observable_subscription_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java ObservableSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <a href="structdxfg__observable__subscription__t.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ga495957e4f0a684874157eba28c9964ff" id="r_ga495957e4f0a684874157eba28c9964ff"><td class="memItemLeft">typedef struct dxfg_java_object_handler&#160;</td><td class="memItemRight"><a class="el" href="#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a></td></tr>
-<tr class="memdesc:ga495957e4f0a684874157eba28c9964ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward declarations.  <br /></td></tr>
 <tr class="memitem:ga0479ad389a8eeb58bf080c9be5a03a84" id="r_ga0479ad389a8eeb58bf080c9be5a03a84"><td class="memItemLeft">typedef struct dxfg_publisher_t&#160;</td><td class="memItemRight"><a class="el" href="#ga0479ad389a8eeb58bf080c9be5a03a84">dxfg_publisher_t</a></td></tr>
-<tr class="memdesc:ga0479ad389a8eeb58bf080c9be5a03a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">The DXPublisher. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>.  <br /></td></tr>
+<tr class="memdesc:ga0479ad389a8eeb58bf080c9be5a03a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java DXPublisher object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <br /></td></tr>
 <tr class="memitem:gaa4accd06a5947742b43fa34ae64e898e" id="r_gaa4accd06a5947742b43fa34ae64e898e"><td class="memItemLeft">typedef struct dxfg_observable_subscription_t&#160;</td><td class="memItemRight"><a class="el" href="#gaa4accd06a5947742b43fa34ae64e898e">dxfg_observable_subscription_t</a></td></tr>
+<tr class="memdesc:gaa4accd06a5947742b43fa34ae64e898e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java ObservableSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -138,23 +141,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ga0f80511cf0d1edb05e5a2404bcaa3d4d" id="r_ga0f80511cf0d1edb05e5a2404bcaa3d4d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga0f80511cf0d1edb05e5a2404bcaa3d4d">dxfg_ObservableSubscription_removeChangeListener</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__observable__subscription__t.html">dxfg_observable_subscription_t</a> *sub, <a class="el" href="structdxfg__observable__subscription__change__listener__t.html">dxfg_observable_subscription_change_listener_t</a> *listener)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"></div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
-<a id="ga495957e4f0a684874157eba28c9964ff" name="ga495957e4f0a684874157eba28c9964ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga495957e4f0a684874157eba28c9964ff">&#9670;&#160;</a></span>dxfg_java_object_handler</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct dxfg_java_object_handler dxfg_java_object_handler</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Forward declarations. </p>
-
-</div>
-</div>
+<div class="textblock"><p>Publishing of events to the local and remote feeds, and the observable subscriptions that tell which symbols the feeds are subscribed to. </p>
+<p>The publisher (<a class="el" href="structdxfg__publisher__t.html" title="A handle of a Java DXPublisher object; release it with dxfg_JavaObjectHandler_release().">dxfg_publisher_t</a>) publishes events to the feeds that are connected to it locally or over the network. The observable subscription of the publisher (<a class="el" href="structdxfg__observable__subscription__t.html" title="A handle of a Java ObservableSubscription object; release it with dxfg_JavaObjectHandler_release().">dxfg_observable_subscription_t</a>) is the set of symbols that the feeds are subscribed to for one event type: add a change listener (<a class="el" href="dxfg__events_8h.html#a9f12efba29d2d95c16a02a0bf5b39947">dxfg_ObservableSubscriptionChangeListener_new()</a>) to know when to publish the events.</p>
+<p>The ownership rules (handles, lists) are the ones of the group <a class="el" href="group__Javac.html" title="Javac">Javac</a>. A list that is passed to a function is only read by the SDK: the caller keeps its ownership. A list that a function returns is released by the caller with the function given in the description of the function. The value that a function returns on error is given in its <span class="tt">@return</span>. <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> gives the exception. </p>
+</div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
 <a id="gaa4accd06a5947742b43fa34ae64e898e" name="gaa4accd06a5947742b43fa34ae64e898e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaa4accd06a5947742b43fa34ae64e898e">&#9670;&#160;</a></span>dxfg_observable_subscription_t</h2>
 
@@ -166,6 +156,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>A handle of a Java ObservableSubscription object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>It is the observable set of the symbols that the feeds are subscribed to, for one event type. Get it with <a class="el" href="#ga35f5ea326d57a73c13f38e750585bcf3">dxfg_DXPublisher_getSubscription()</a>. The subscription is closed when the endpoint of the publisher is closed.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/ObservableSubscription.html">Javadoc</a> </p>
 
 </div>
 </div>
@@ -181,7 +175,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The DXPublisher. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>. </p>
+<p>A handle of a Java DXPublisher object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>Get it with <a class="el" href="#ga294c17b259ea2e1f93dd6c64bd7a9221">dxfg_DXPublisher_getInstance()</a> or <a class="el" href="group__Endpoint.html#ga2f67e4dc6864aea4ea14cde570056ae5" title="Returns the publisher of the endpoint.">dxfg_DXEndpoint_getPublisher()</a>. Releasing the handle does not close the endpoint of the publisher.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a> </p>
 
 </div>
 </div>
@@ -200,6 +196,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the default application-wide singleton publisher (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html#getInstance--">DXPublisher.getInstance()</a>): the publisher of the default endpoint with the publisher role. It is configured by the system properties (see <a class="el" href="group__System.html#ga62a2c7ceaf1cc0eb9560a3c4a5e44f39" title="Sets the Java system property indicated by the specified key.">dxfg_system_set_property()</a>) when it is first used.</p>
+<p>All callers share this publisher and its endpoint: closing the endpoint closes it for everyone in the process.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The publisher (release the handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception.</dd></dl>
+<p>Java: <span class="tt">DXPublisher.getInstance()</span>. </p>
 
 </div>
 </div>
@@ -226,6 +232,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the observable set of the subscribed symbols for the event type.</p>
+<p>The symbols of the set are the symbols that the feeds are subscribed to; the set contains the wildcard symbol if there is a subscription to all symbols, and, for a time series subscription, the symbols wrapped with the time of the subscription (<a class="el" href="structdxfg__time__series__subscription__symbol__t.html" title="The subscription to the time series of events from a time.">dxfg_time_series_subscription_symbol_t</a>). The set may notify its change listeners of the same symbols several times without a removal between the notifications: it happens when the subscription disappears, the cached data is lost and the subscription appears again. On each such notification the data provider is to publish the most recent events of the symbols (<a class="el" href="#ga3e16206c40030e305f290532ba1e1013">dxfg_DXPublisher_publishEvents()</a>).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">publisher</td><td>The publisher handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">eventClazz</td><td>The event type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The observable subscription (release the handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception.</dd></dl>
+<p>Java: <span class="tt">DXPublisher.getSubscription(Class)</span>. </p>
 
 </div>
 </div>
@@ -252,6 +270,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Publishes the events to the corresponding feeds.</p>
+<p>If the endpoint of the publisher has the publisher role and is connected, the events are delivered to the remote endpoints. The local feed of the endpoint always receives them. A feed receives an event only if it is subscribed to its symbol (or to all symbols with a wildcard, or, for a time series event, with a time series subscription for the time of the event). The published events are not stored and are lost if there is no subscription; the last events of the lasting event types are kept while the subscription to their symbol exists.</p>
+<p>The events are serialized by the function: the list and the events are only read, the caller keeps its ownership and can reuse or release them after the function returns.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">publisher</td><td>The publisher handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">events</td><td>The events to publish. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">DXPublisher.publishEvents(Collection)</span>. </p>
 
 </div>
 </div>
@@ -278,6 +309,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Adds the change listener to the observable subscription.</p>
+<p>Create the listener with <a class="el" href="dxfg__events_8h.html#a9f12efba29d2d95c16a02a0bf5b39947">dxfg_ObservableSubscriptionChangeListener_new()</a>; see its description for the callbacks of the listener: they are called on a Java thread, not necessarily the one that added the listener, and the symbols belong to the SDK. If the listener is added to an open subscription, it is notified immediately of the existing subscription state (its <span class="tt">symbolsAdded</span> function) before the function returns, and after that of every change. The calls of the listener for one subscription do not overlap. Adding a listener that is already added, or to a closed subscription, does nothing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The observable subscription handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">listener</td><td>The change listener. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">ObservableSubscription.addChangeListener(ObservableSubscriptionChangeListener)</span>. </p>
 
 </div>
 </div>
@@ -304,6 +347,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Checks whether the observable subscription contains the event type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The observable subscription handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">eventClazz</td><td>The event type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if the subscription contains the event type, 0 if it does not, or -1 on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">ObservableSubscription.containsEventType(Class)</span>. </p>
 
 </div>
 </div>
@@ -325,6 +379,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the event types of the observable subscription.</p>
+<p>The subscription of a publisher (<a class="el" href="#ga35f5ea326d57a73c13f38e750585bcf3">dxfg_DXPublisher_getSubscription()</a>) has the single event type that was requested.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The observable subscription handle. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The list of the event types (release it with <a class="el" href="dxfg__events_8h.html#ad3bb5a2ac82b7c84aa534d290831faf0">dxfg_CList_EventClazz_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception.</dd></dl>
+<p>Java: <span class="tt">ObservableSubscription.getEventTypes()</span>. </p>
 
 </div>
 </div>
@@ -346,6 +411,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Checks whether the observable subscription is closed.</p>
+<p>The subscription of a publisher is closed when its endpoint is closed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The observable subscription handle. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if the subscription is closed, 0 if it is not, or -1 on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">ObservableSubscription.isClosed()</span>. </p>
 
 </div>
 </div>
@@ -372,6 +448,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Removes the change listener from the observable subscription.</p>
+<p>If the listener was added, it is notified of the removal (its <span class="tt">subscriptionClosed</span> function) before the function returns. Removing a listener that is not added does nothing. To be sure that the functions of the listener are not called anymore, release it (<a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>) or deactivate it (<a class="el" href="group__Javac.html#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a>).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The observable subscription handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">listener</td><td>The change listener. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">ObservableSubscription.removeChangeListener(ObservableSubscriptionChangeListener)</span>. </p>
 
 </div>
 </div>

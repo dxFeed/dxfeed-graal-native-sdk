@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__or
 </div><!--header-->
 <div class="contents">
 
+<p>The order event: a snapshot of the market depth (an order or a price level) of a symbol.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -120,7 +123,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab7406fcc440b60e39ee843d8f329678e" id="r_ab7406fcc440b60e39ee843d8f329678e"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#ab7406fcc440b60e39ee843d8f329678e">market_maker</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Order.html">Javadoc</a> </p>
+<div class="textblock"><p>The order event: a snapshot of the market depth (an order or a price level) of a symbol. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a6c69ab248e9d07475c4f36c0fe0545e8" title="Order (extends OrderBase), an indexed event: an order or a price level.">DXFG_EVENT_ORDER</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Order.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ab7406fcc440b60e39ee843d8f329678e" name="ab7406fcc440b60e39ee843d8f329678e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab7406fcc440b60e39ee843d8f329678e">&#9670;&#160;</a></span>market_maker</h2>
@@ -133,6 +138,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The market maker or another aggregate identifier of the order (a UTF-8 string, NULL if none) that belongs to the event and is freed with it. It is defined for the aggregate and individual orders. </p>
 
 </div>
 </div>
@@ -147,6 +153,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__order__base__t.html" title="The common fields of the order events: dxfg_order_t, dxfg_spread_order_t and the structures built on ...">dxfg_order_base_t</a>. </p>
 
 </div>
 </div>

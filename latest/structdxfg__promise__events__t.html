@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__pr
 </div><!--header-->
 <div class="contents">
 
+<p>A handle of a Java Promise object whose result is a list of events; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__feed_8h_source.html">dxfg_feed.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a0ee07c84e75e0b3304badb4a6a01c5c6" id="r_a0ee07c84e75e0b3304badb4a6a01c5c6"><td class="memItemLeft"><a class="el" href="structdxfg__promise__t.html">dxfg_promise_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0ee07c84e75e0b3304badb4a6a01c5c6">base</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A handle of a Java Promise object whose result is a list of events; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>It is returned by <a class="el" href="group__Feed.html#ga5630c8ad52a1f28f9b3c5040cc0d830a" title="Requests the indexed events for the event class, symbol and source and returns the promise of the res...">dxfg_DXFeed_getIndexedEventsPromise()</a> and <a class="el" href="group__Feed.html#ga0deeb9e48c807b8adf3f18b30ec191a0" title="Requests the time series events for the event class, symbol and time range and returns the promise of...">dxfg_DXFeed_getTimeSeriesPromise()</a>. Read the result with <a class="el" href="group__Feed.html#gacb7f452936270ff4ecfd2b8eb44d6e9b" title="Returns the result of a promise of a list of events.">dxfg_Promise_List_EventType_getResult()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a0ee07c84e75e0b3304badb4a6a01c5c6" name="a0ee07c84e75e0b3304badb4a6a01c5c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ee07c84e75e0b3304badb4a6a01c5c6">&#9670;&#160;</a></span>base</h2>
 
@@ -130,6 +136,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the promise. Pass <span class="tt">&amp;promise-&gt;<a class="el" href="#a0ee07c84e75e0b3304badb4a6a01c5c6">base</a></span> to the functions that take a <a class="el" href="structdxfg__promise__t.html" title="A handle of a Java Promise object; release it with dxfg_JavaObjectHandler_release().">dxfg_promise_t</a>. </p>
 
 </div>
 </div>

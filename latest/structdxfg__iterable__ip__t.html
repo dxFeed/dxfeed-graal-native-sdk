@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__it
 </div><!--header-->
 <div class="contents">
 
+<p>A handle of a Java Iterator object over instrument profiles; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__ipf_8h_source.html">dxfg_ipf.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:af8697b71d0ed9ded77267201041b635a" id="r_af8697b71d0ed9ded77267201041b635a"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#af8697b71d0ed9ded77267201041b635a">handler</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A handle of a Java Iterator object over instrument profiles; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>It is returned by <a class="el" href="group__InstrumentProfile.html#ga213cc28643d58f4ec115f8521f0da3d4" title="Returns an iterator over the instrument profiles of the collector.">dxfg_InstrumentProfileCollector_view()</a> and passed to a <a class="el" href="group__InstrumentProfile.html#gad4de3b9ea03f5d6677ffb4d3ca873ebe" title="The function of a dxfg_ipf_update_listener_t: called when the set of the instrument profiles of the c...">dxfg_ipf_update_listener_function</a>. Read it with <a class="el" href="group__InstrumentProfile.html#ga64b6e3a9ecf06dd914d287243eb0aa13" title="Checks whether the iterator has a next instrument profile.">dxfg_Iterable_InstrumentProfile_hasNext()</a> and <a class="el" href="group__InstrumentProfile.html#gaeb25828faf2bd36d1a9344db18cbf1da" title="Returns the next instrument profile of the iterator as a handle.">dxfg_Iterable_InstrumentProfile_next()</a> or <a class="el" href="group__InstrumentProfile.html#gab869c8e0e5a741ff746402646dbbcd25" title="Returns the next instrument profile of the iterator as a structure.">dxfg_Iterable_InstrumentProfile_next2()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="af8697b71d0ed9ded77267201041b635a" name="af8697b71d0ed9ded77267201041b635a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8697b71d0ed9ded77267201041b635a">&#9670;&#160;</a></span>handler</h2>
 
@@ -130,6 +136,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

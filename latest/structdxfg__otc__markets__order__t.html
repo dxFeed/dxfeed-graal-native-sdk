@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ot
 </div><!--header-->
 <div class="contents">
 
+<p>The OTC Markets order event: an order with the OTC Markets specific quote data.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -121,7 +124,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a53b3a9efb5d2048b6d5cfe53977a3403" id="r_a53b3a9efb5d2048b6d5cfe53977a3403"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a53b3a9efb5d2048b6d5cfe53977a3403">otc_markets_flags</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OtcMarketsOrder.html">Javadoc</a> </p>
+<div class="textblock"><p>The OTC Markets order event: an order with the OTC Markets specific quote data. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64abb9a1b1f0c8267c03c569217d1ce398b" title="OtcMarketsOrder (extends Order), an indexed event: an OTC Markets quote.">DXFG_EVENT_OTC_MARKETS_ORDER</a>. The original OTC quote is presented as two events: the bid and the ask side.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OtcMarketsOrder.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="aa4eec4c76e7e7d0c0fa00c98d74c2060" name="aa4eec4c76e7e7d0c0fa00c98d74c2060"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4eec4c76e7e7d0c0fa00c98d74c2060">&#9670;&#160;</a></span>order_base</h2>
@@ -134,6 +139,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__order__t.html" title="The order event: a snapshot of the market depth (an order or a price level) of a symbol.">dxfg_order_t</a>. </p>
 
 </div>
 </div>
@@ -148,6 +154,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags: the OTC Markets price type and the open, unsolicited, saturated, auto execution and NMS conditional indicators; see the getters of OtcMarketsOrder in Java (getOtcMarketsPriceType(), isOpen(), isUnsolicited() and so on). </p>
 
 </div>
 </div>
@@ -162,6 +169,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Quote Access Payment (QAP): from 1 to 30 is a rebate, from -1 to -30 is an access fee, 0 is neither. </p>
 
 </div>
 </div>

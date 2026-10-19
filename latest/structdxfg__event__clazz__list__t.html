@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ev
 </div><!--header-->
 <div class="contents">
 
+<p>A list of event classes.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a95d4fad6312fdcae8a86e22bd2d39bd4" id="r_a95d4fad6312fdcae8a86e22bd2d39bd4"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a95d4fad6312fdcae8a86e22bd2d39bd4">size</a></td></tr>
 <tr class="memitem:a506e0150eef7d5ebd23061a03400f72d" id="r_a506e0150eef7d5ebd23061a03400f72d"><td class="memItemLeft"><a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64">dxfg_event_clazz_t</a> **&#160;</td><td class="memItemRight"><a class="el" href="#a506e0150eef7d5ebd23061a03400f72d">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of event classes. </p>
+<p>The list returned by the SDK is released with <a class="el" href="dxfg__events_8h.html#ad3bb5a2ac82b7c84aa534d290831faf0">dxfg_CList_EventClazz_release()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a506e0150eef7d5ebd23061a03400f72d" name="a506e0150eef7d5ebd23061a03400f72d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a506e0150eef7d5ebd23061a03400f72d">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of <span class="tt"><a class="el" href="#a95d4fad6312fdcae8a86e22bd2d39bd4">size</a></span> pointers to the event classes; NULL when <span class="tt"><a class="el" href="#a95d4fad6312fdcae8a86e22bd2d39bd4">size</a></span> is 0 in a list created by the SDK. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the elements. </p>
 
 </div>
 </div>

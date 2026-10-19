@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__or
 </div><!--header-->
 <div class="contents">
 
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html</a>  
+<p>The order imbalance event: the order book statistics during an auction.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
@@ -130,7 +130,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a7f2b4fc1d8af296faea6740b938dac1c" id="r_a7f2b4fc1d8af296faea6740b938dac1c"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a7f2b4fc1d8af296faea6740b938dac1c">flags</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html</a> </p>
+<div class="textblock"><p>The order imbalance event: the order book statistics during an auction. </p>
+<p>It is a market event (neither lasting nor indexed), its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a527e5696324aa5b0f46572b4dd303bad" title="OrderImbalance, a market event (neither lasting nor indexed): auction imbalance.">DXFG_EVENT_ORDER_IMBALANCE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ad1984780956c8a264d68742e612b34f8" name="ad1984780956c8a264d68742e612b34f8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad1984780956c8a264d68742e612b34f8">&#9670;&#160;</a></span>far_price</h2>
@@ -143,6 +145,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The far price: the hypothetical price at which only the auction interest could trade now, NaN if unknown. </p>
 
 </div>
 </div>
@@ -157,6 +160,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags: the imbalance side in bits 0 to 2 and the auction type in bits 3 to 5; see OrderImbalance.getImbalanceSide() and OrderImbalance.getAuctionType() in Java. </p>
 
 </div>
 </div>
@@ -171,6 +175,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The imbalance size: the number of shares that are not matched at the reference price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -185,6 +190,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -199,6 +205,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The near price: the hypothetical price at which all the interest on the book could trade now, NaN if unknown. </p>
 
 </div>
 </div>
@@ -213,6 +220,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The paired size: the number of shares that can be matched at the reference price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -227,6 +235,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The reference price: the price for which the paired and imbalance sizes are calculated, NaN if unknown. </p>
 
 </div>
 </div>
@@ -241,6 +250,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The identifier of the source of the event (OrderImbalance.getSource() in Java). </p>
 
 </div>
 </div>
@@ -255,6 +265,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the event and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21). </p>
 
 </div>
 </div>

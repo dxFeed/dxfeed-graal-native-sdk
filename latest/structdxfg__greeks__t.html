@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__gr
 </div><!--header-->
 <div class="contents">
 
+<p>The Greeks event: a snapshot of the option price, the Black-Scholes volatility and the greeks.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -128,7 +131,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a0ef133db23bd0cae0651f881345bd5df" id="r_a0ef133db23bd0cae0651f881345bd5df"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a0ef133db23bd0cae0651f881345bd5df">vega</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Greeks.html">Javadoc</a> </p>
+<div class="textblock"><p>The Greeks event: a snapshot of the option price, the Black-Scholes volatility and the greeks. </p>
+<p>It is a lasting event and a time series event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64ae654fd9de325921c365f027f88722e19" title="Greeks, a lasting event and a time series event: the option price and greeks.">DXFG_EVENT_GREEKS</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Greeks.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="aaee729ddb3aa81b39e09e2aac9193d69" name="aaee729ddb3aa81b39e09e2aac9193d69"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaee729ddb3aa81b39e09e2aac9193d69">&#9670;&#160;</a></span>delta</h2>
@@ -141,6 +146,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The delta of the option: the first derivative of the option price by the underlying price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -155,6 +161,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -169,6 +176,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The gamma of the option: the second derivative of the option price by the underlying price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -183,6 +191,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the event: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see Greeks.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -197,6 +206,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -211,6 +221,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The option market price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -225,6 +236,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The rho of the option: the first derivative of the option price by the percentage interest rate, NaN if unknown. </p>
 
 </div>
 </div>
@@ -239,6 +251,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The theta of the option: the first derivative of the option price by the days to expiration, NaN if unknown. </p>
 
 </div>
 </div>
@@ -253,6 +266,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The vega of the option: the first derivative of the option price by the percentage volatility, NaN if unknown. </p>
 
 </div>
 </div>
@@ -267,6 +281,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Black-Scholes implied volatility of the option, NaN if unknown. </p>
 
 </div>
 </div>

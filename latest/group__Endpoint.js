@@ -1,6 +1,6 @@
 var group__Endpoint =
 [
-    [ "Builder", "group__Builder.html", "group__Builder" ],
+    [ "Endpoint builder", "group__Builder.html", "group__Builder" ],
     [ "dxfg_endpoint_t", "structdxfg__endpoint__t.html", [
       [ "handler", "structdxfg__endpoint__t.html#a6e77ce22fe95ee6b7fdfd703dc8c10bf", null ]
     ] ],

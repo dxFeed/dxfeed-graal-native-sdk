@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -111,21 +111,28 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__PriceLe
   <div class="headertitle"><div class="title">PriceLevelService <div class="ingroups"><a class="el" href="group__OrcsApi.html">ORCS API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The handle of the client of the price level service.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-groups" class="groupheader"><a id="groups" name="groups"></a>
 Topics</h2></td></tr>
 <tr class="memitem:PriceLevelServiceFunctions" id="r_PriceLevelServiceFunctions"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="group__PriceLevelServiceFunctions.html">PriceLevelService' functions</a></td></tr>
+<tr class="memdesc:group__PriceLevelServiceFunctions"><td class="mdescLeft">&#160;</td><td class="mdescRight">The functions that create, query and close the client of the price level service. <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:dxfg_5Fprice_5Flevel_5Fservice_5Ft" id="r_dxfg_5Fprice_5Flevel_5Fservice_5Ft"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a client of the price level service; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <a href="structdxfg__price__level__service__t.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga00d25cce1ebbcb06ab9bbd6e3ffacd06" id="r_ga00d25cce1ebbcb06ab9bbd6e3ffacd06"><td class="memItemLeft">typedef struct dxfg_price_level_service_t&#160;</td><td class="memItemRight"><a class="el" href="#ga00d25cce1ebbcb06ab9bbd6e3ffacd06">dxfg_price_level_service_t</a></td></tr>
+<tr class="memdesc:ga00d25cce1ebbcb06ab9bbd6e3ffacd06"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a client of the price level service; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__PriceLevelServiceFunctions.html">PriceLevelService' functions</a> </dd></dl>
+<div class="textblock"><p>The handle of the client of the price level service. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__PriceLevelServiceFunctions.html" title="The functions that create, query and close the client of the price level service.">PriceLevelService' functions</a> </dd></dl>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
 <a id="ga00d25cce1ebbcb06ab9bbd6e3ffacd06" name="ga00d25cce1ebbcb06ab9bbd6e3ffacd06"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga00d25cce1ebbcb06ab9bbd6e3ffacd06">&#9670;&#160;</a></span>dxfg_price_level_service_t</h2>
@@ -138,6 +145,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>A handle of a client of the price level service; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>Create it with <a class="el" href="group__PriceLevelServiceFunctions.html#ga37645bc383e11a77c64985e0140fd6e8" title="Creates a client of the price level service and connects it to an RMI endpoint.">dxfg_PriceLevelService_new()</a>, which connects it to an RMI endpoint. Releasing the handle does not close the connection: call <a class="el" href="group__PriceLevelServiceFunctions.html#gadfcf77aec9af20b6b2c90e0b41f9bb6d" title="Closes the client of the price level service and its RMI endpoint.">dxfg_PriceLevelService_close()</a>.</p>
 <p><a href="https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/PriceLevelService.html">https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/PriceLevelService.html</a> </p>
 
 </div>

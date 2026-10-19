@@ -6,7 +6,6 @@ var group__Publisher =
     [ "dxfg_observable_subscription_t", "structdxfg__observable__subscription__t.html", [
       [ "handler", "structdxfg__observable__subscription__t.html#a35ad632bf843326b8d9667a0e380d5ca", null ]
     ] ],
-    [ "dxfg_java_object_handler", "group__Publisher.html#ga495957e4f0a684874157eba28c9964ff", null ],
     [ "dxfg_observable_subscription_t", "group__Publisher.html#gaa4accd06a5947742b43fa34ae64e898e", null ],
     [ "dxfg_publisher_t", "group__Publisher.html#ga0479ad389a8eeb58bf080c9be5a03a84", null ],
     [ "dxfg_DXPublisher_getInstance", "group__Publisher.html#ga294c17b259ea2e1f93dd6c64bd7a9221", null ],

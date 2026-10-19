@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__in
 </div><!--header-->
 <div class="contents">
 
+<p>The fields of an instrument profile in a plain C structure, with the handle of its custom fields.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__ipf_8h_source.html">dxfg_ipf.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -151,7 +154,11 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ac8ef941eb58576402c6065e447ba313e" id="r_ac8ef941eb58576402c6065e447ba313e"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ac8ef941eb58576402c6065e447ba313e">instrument_profile_custom_fields_hash</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A structure that contains the instrument profile fields, as well as a computed hash of the custom fields (InstrumentProfileCustomFields). If the custom fields pointer handle is NULL, the fields are empty. The hash will then be 0. </p>
+<div class="textblock"><p>The fields of an instrument profile in a plain C structure, with the handle of its custom fields. </p>
+<p>The strings are UTF-8 null-terminated strings that belong to the structure (an empty string if the field is not set). A structure that the SDK fills is released with <a class="el" href="group__InstrumentProfile.html#gad65347196f6c004f088b7a2f6e19e083" title="Frees the structure of an instrument profile that the SDK has filled, and releases its custom fields ...">dxfg_instrument_profile_free()</a> (a single profile, see <a class="el" href="group__InstrumentProfile.html#gab869c8e0e5a741ff746402646dbbcd25" title="Returns the next instrument profile of the iterator as a structure.">dxfg_Iterable_InstrumentProfile_next2()</a>), <a class="el" href="group__InstrumentProfile.html#ga21358a3131519a648e7ff060108e6899" title="Frees an array of the structures of instrument profiles that the SDK has filled, with the strings of ...">dxfg_instrument_profiles_array_free()</a> (an array) or <a class="el" href="group__InstrumentProfile.html#ga745f26a02739773bbbf947eeb482404b" title="Frees a list of the structures of instrument profiles that the SDK has filled, with the structures in...">dxfg_instrument_profile2_list_free()</a> (a list): that frees the strings and releases the custom fields handle.</p>
+<p>A structure that is passed to the SDK, e.g. to <a class="el" href="group__InstrumentProfile.html#ga21da39fa86fcca76bcbbd57a69dc08c0" title="Updates one instrument profile in the collector from a structure.">dxfg_InstrumentProfileCollector_updateInstrumentProfile2()</a>, is only read: the SDK copies the strings, does not keep or free the pointers, treats a NULL string as an empty one and ignores instrument_profile_custom_fields_hash.</p>
+<p>The custom fields are not copied: the Java instrument profile and the custom fields handle of the structure share the same storage of the fields, both in a structure that the SDK fills and in a structure passed to the SDK. A change made with <a class="el" href="group__InstrumentProfile.html#gaefa1de6b50acf3f06ff0af7d0ec41fae" title="Sets the value of a custom field by the name.">dxfg_InstrumentProfileCustomFields_setField()</a> and the like through that handle may change the profile (e.g. the profile in a collector). To change the custom fields independently, make a copy with <a class="el" href="group__InstrumentProfile.html#ga024f146cfb09e33c2732d75024c3a5b2" title="Creates custom fields as a copy of other custom fields.">dxfg_InstrumentProfileCustomFields_new3()</a> first.</p>
+<p>Every field is described with the corresponding dxfg_InstrumentProfile_get*() function. </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ad1fcc307a75196ac8ba37abc46c7d5b4" name="ad1fcc307a75196ac8ba37abc46c7d5b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad1fcc307a75196ac8ba37abc46c7d5b4">&#9670;&#160;</a></span>additional_underlyings</h2>
@@ -164,6 +171,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The additional underlyings for options, see <a class="el" href="group__InstrumentProfile.html#ga0e31d9461f94a1d12a8e7ce4d331a9ac" title="Returns the additional underlyings for options, including additional cash of the instrument profile.">dxfg_InstrumentProfile_getAdditionalUnderlyings()</a>. </p>
 
 </div>
 </div>
@@ -178,6 +186,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base currency of a currency pair, see <a class="el" href="group__InstrumentProfile.html#ga4f14d3993d81d8b18042224bf690ba45" title="Returns the base currency of a currency pair (FOREX instruments) of the instrument profile.">dxfg_InstrumentProfile_getBaseCurrency()</a>. </p>
 
 </div>
 </div>
@@ -192,6 +201,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Classification of Financial Instruments code, see <a class="el" href="group__InstrumentProfile.html#ga08048a21c6e1f8d65ecea3189199d4e1" title="Returns the Classification of Financial Instruments code of the instrument profile.">dxfg_InstrumentProfile_getCFI()</a>. </p>
 
 </div>
 </div>
@@ -206,6 +216,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The country of origin (ISO 3166-1 code), see <a class="el" href="group__InstrumentProfile.html#ga7a2d1af407b42f1dc8c65360b67c38fe" title="Returns the country of origin (incorporation) of the corresponding company or parent entity of the in...">dxfg_InstrumentProfile_getCountry()</a>. </p>
 
 </div>
 </div>
@@ -220,6 +231,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The currency of quotation, pricing and trading (ISO 4217 code), see <a class="el" href="group__InstrumentProfile.html#ga8c33acf2be3b6fdc74e5dafc77a7362e" title="Returns the currency of quotation, pricing and trading of the instrument profile.">dxfg_InstrumentProfile_getCurrency()</a>. </p>
 
 </div>
 </div>
@@ -234,6 +246,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The CUSIP code, see <a class="el" href="group__InstrumentProfile.html#ga15870fb2267fe854e887183de03578e4" title="Returns the Committee on Uniform Security Identification Procedures code of the instrument profile.">dxfg_InstrumentProfile_getCUSIP()</a>. </p>
 
 </div>
 </div>
@@ -248,6 +261,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The description of the instrument, see <a class="el" href="group__InstrumentProfile.html#ga88086000837a29929bbe379a07a880b4" title="Returns the description of the instrument of the instrument profile.">dxfg_InstrumentProfile_getDescription()</a>. </p>
 
 </div>
 </div>
@@ -262,6 +276,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The exchange-specific data, see <a class="el" href="group__InstrumentProfile.html#ga75eeb9b79089029a5237c489877faebd" title="Returns the exchange-specific data required to identify the instrument when communicating with the ex...">dxfg_InstrumentProfile_getExchangeData()</a>. </p>
 
 </div>
 </div>
@@ -276,6 +291,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The list of the exchanges where the instrument is traded, see <a class="el" href="group__InstrumentProfile.html#ga5fc209828ac899beff3ca07741baba84" title="Returns the list of the exchanges where the instrument is quoted or traded of the instrument profile.">dxfg_InstrumentProfile_getExchanges()</a>. </p>
 
 </div>
 </div>
@@ -290,6 +306,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The day id of the expiration (days since January 1, 1970, 00:00:00 GMT; 0 if not set). </p>
 
 </div>
 </div>
@@ -304,6 +321,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The expiration cycle style, see <a class="el" href="group__InstrumentProfile.html#gaecf66c614baf557beb2565397124275f" title="Returns the expiration cycle style of the instrument profile.">dxfg_InstrumentProfile_getExpirationStyle()</a>. </p>
 
 </div>
 </div>
@@ -318,6 +336,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Industry Classification Benchmark number, see <a class="el" href="group__InstrumentProfile.html#gaf92f474313dab37f34700d4bb0a0f156" title="Returns the Industry Classification Benchmark of the instrument profile.">dxfg_InstrumentProfile_getICB()</a>. </p>
 
 </div>
 </div>
@@ -332,6 +351,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the custom fields (the fields that are not standard fields), or NULL if there are none. It belongs to the structure and is released with it: clone it with <a class="el" href="group__Javac.html#gac1d3eab12de62c11215a1686ad6abc7c">dxfg_JavaObjectHandler_clone()</a> to keep it. If the structure is passed to the SDK, the custom fields of the handle are assigned to the profile. </p>
 
 </div>
 </div>
@@ -346,6 +366,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The hash code of the custom fields, 0 if they are empty (the handle is then NULL). Equal custom fields give equal hash codes. </p>
 
 </div>
 </div>
@@ -360,6 +381,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The International Securities Identifying Number, see <a class="el" href="group__InstrumentProfile.html#ga3d3db43b73a68dadf8e343b3e3c6e507" title="Returns the International Securities Identifying Number of the instrument profile.">dxfg_InstrumentProfile_getISIN()</a>. </p>
 
 </div>
 </div>
@@ -374,6 +396,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The day id of the last trading day (days since January 1, 1970, 00:00:00 GMT; 0 if not set). </p>
 
 </div>
 </div>
@@ -388,6 +411,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The description in the national language, see <a class="el" href="group__InstrumentProfile.html#ga2b92e57187c43b0590aa7719ea808ace" title="Returns the description of the instrument in the national language of the instrument profile.">dxfg_InstrumentProfile_getLocalDescription()</a>. </p>
 
 </div>
 </div>
@@ -402,6 +426,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The identifier of the instrument in the national language, see <a class="el" href="group__InstrumentProfile.html#ga0fcc3170bd7ffb39e7d31f62add99fc1" title="Returns the identifier of the instrument in the national language of the instrument profile.">dxfg_InstrumentProfile_getLocalSymbol()</a>. </p>
 
 </div>
 </div>
@@ -416,6 +441,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The maturity month-year, see <a class="el" href="group__InstrumentProfile.html#ga31d5c279397c5c484970a1af5123389b" title="Returns the maturity month-year as provided for the corresponding FIX tag (200) of the instrument pro...">dxfg_InstrumentProfile_getMMY()</a>. </p>
 
 </div>
 </div>
@@ -430,6 +456,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The market value multiplier, see <a class="el" href="group__InstrumentProfile.html#ga0f2c76d66f3f3f2ef09c69fdeb6a784b" title="Returns the market value multiplier of the instrument profile.">dxfg_InstrumentProfile_getMultiplier()</a>. </p>
 
 </div>
 </div>
@@ -444,6 +471,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The official Place Of Listing (MIC), see <a class="el" href="group__InstrumentProfile.html#ga9510cdac3e42f09f60850f0a684f9622" title="Returns the official Place Of Listing, the organization that has listed the instrument of the instrum...">dxfg_InstrumentProfile_getOPOL()</a>. </p>
 
 </div>
 </div>
@@ -458,6 +486,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The type of the option, see <a class="el" href="group__InstrumentProfile.html#gaac518a32277bec22fd434d99bd263334" title="Returns the type of the option of the instrument profile.">dxfg_InstrumentProfile_getOptionType()</a>. </p>
 
 </div>
 </div>
@@ -472,6 +501,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The minimum allowed price increments, see <a class="el" href="group__InstrumentProfile.html#ga67f1f0c010a2981020d392a1189e543a" title="Returns the minimum allowed price increments with the corresponding price ranges of the instrument pr...">dxfg_InstrumentProfile_getPriceIncrements()</a>. </p>
 
 </div>
 </div>
@@ -486,6 +516,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The product for futures and options on futures, see <a class="el" href="group__InstrumentProfile.html#ga9dd2ee88418f35cd92a55f599674b96d" title="Returns the product for futures and options on futures (the name of the underlying asset) of the inst...">dxfg_InstrumentProfile_getProduct()</a>. </p>
 
 </div>
 </div>
@@ -500,6 +531,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Stock Exchange Daily Official List code, see <a class="el" href="group__InstrumentProfile.html#ga7ea6012f70fc1afa9ce454cd36a146f2" title="Returns the Stock Exchange Daily Official List code of the instrument profile.">dxfg_InstrumentProfile_getSEDOL()</a>. </p>
 
 </div>
 </div>
@@ -514,6 +546,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The settlement price determination style, see <a class="el" href="group__InstrumentProfile.html#ga52a70120bc667d3fbd16c0c72925637f" title="Returns the settlement price determination style of the instrument profile.">dxfg_InstrumentProfile_getSettlementStyle()</a>. </p>
 
 </div>
 </div>
@@ -528,6 +561,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The Standard Industrial Classification number, see <a class="el" href="group__InstrumentProfile.html#ga1c4a61572ad87f109d0fee661409c686" title="Returns the Standard Industrial Classification of the instrument profile.">dxfg_InstrumentProfile_getSIC()</a>. </p>
 
 </div>
 </div>
@@ -542,6 +576,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The shares per contract for options, see <a class="el" href="group__InstrumentProfile.html#ga146848836d21ab47bc27d6c543c9408d" title="Returns the shares per contract for options of the instrument profile.">dxfg_InstrumentProfile_getSPC()</a>. </p>
 
 </div>
 </div>
@@ -556,6 +591,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The strike price for options, see <a class="el" href="group__InstrumentProfile.html#ga5013f44048b606d2b2316842eb008dcb" title="Returns the strike price for options of the instrument profile.">dxfg_InstrumentProfile_getStrike()</a>. </p>
 
 </div>
 </div>
@@ -570,6 +606,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The identifier of the instrument, see <a class="el" href="group__InstrumentProfile.html#ga7c07760f5f3f0c7168134869e1bc8ef3" title="Returns the identifier of the instrument of the instrument profile.">dxfg_InstrumentProfile_getSymbol()</a>. </p>
 
 </div>
 </div>
@@ -584,6 +621,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trading hours specification, see <a class="el" href="group__InstrumentProfile.html#ga5ea1aa413e15edba10710ad01a562ae9" title="Returns the trading hours specification of the instrument profile.">dxfg_InstrumentProfile_getTradingHours()</a>. </p>
 
 </div>
 </div>
@@ -598,6 +636,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The type of the instrument, see <a class="el" href="group__InstrumentProfile.html#gae6bcd383beb01cd8dec48dc97e5d654b" title="Returns the type of the instrument of the instrument profile.">dxfg_InstrumentProfile_getType()</a>. </p>
 
 </div>
 </div>
@@ -612,6 +651,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The primary underlying symbol for options, see <a class="el" href="group__InstrumentProfile.html#ga7b636e7ab62f48aae451929eddae3bbb" title="Returns the primary underlying symbol for options of the instrument profile.">dxfg_InstrumentProfile_getUnderlying()</a>. </p>
 
 </div>
 </div>

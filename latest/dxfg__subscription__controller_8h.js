@@ -1,6 +1,5 @@
 var dxfg__subscription__controller_8h =
 [
-    [ "dxfg_feed_t", "group__SubscriptionController.html#ga7baa1d526b3c650baf22aef7261c5648", null ],
     [ "dxfg_subscription_controller_t", "group__SubscriptionController.html#ga9c38fb298b515b7526cfeb82bf542d01", null ],
     [ "dxfg_SubscriptionController_attach", "group__SubscriptionController.html#gacb2ac7d55fb982e32dae33dca2ebd041", null ],
     [ "dxfg_SubscriptionController_detach", "group__SubscriptionController.html#gab2b2ddbebc35a604ed827efdb86ba4e0", null ],

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -108,9 +108,12 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__st
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">dxfg_stack_trace_element_t Struct Reference</div></div>
+  <div class="headertitle"><div class="title">dxfg_stack_trace_element_t Struct Reference<div class="ingroups"><a class="el" href="group__Exceptions.html">Exceptions</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>An element of the stack trace of an exception: one frame, the same data as a Java StackTraceElement.  
+ <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__catch__exception_8h_source.html">dxfg_catch_exception.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -125,7 +128,11 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab239e74fb5e49f17e09fcb0635a8cfdb" id="r_ab239e74fb5e49f17e09fcb0635a8cfdb"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#ab239e74fb5e49f17e09fcb0635a8cfdb">module_name</a></td></tr>
 <tr class="memitem:a1a22ed9ed2d4aeba1aabd8306a82f390" id="r_a1a22ed9ed2d4aeba1aabd8306a82f390"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#a1a22ed9ed2d4aeba1aabd8306a82f390">module_version</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>An element of the stack trace of an exception: one frame, the same data as a Java StackTraceElement. </p>
+<p>The structure and its strings belong to the <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> that contains it and are freed with it by <a class="el" href="group__Exceptions.html#ga8f097e8b38f9787c8111cb565fe211f1" title="Releases an exception that was returned by dxfg_get_and_clear_thread_exception_t().">dxfg_Exception_release()</a>. A string that the Java side has no value for is NULL.</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html">Javadoc</a> </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a05caef99d6ff4440e34da734f3f6834f" name="a05caef99d6ff4440e34da734f3f6834f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a05caef99d6ff4440e34da734f3f6834f">&#9670;&#160;</a></span>class_loader_name</h2>
 
@@ -137,6 +144,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The name of the class loader of that class, NULL if the class loader has no name. </p>
 
 </div>
 </div>
@@ -151,6 +159,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The fully qualified name of the class that contains the execution point (a UTF-8 null-terminated string). </p>
 
 </div>
 </div>
@@ -165,6 +174,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The name of the source file of that class, NULL if the information is not available. </p>
 
 </div>
 </div>
@@ -179,6 +189,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>1 if the method is a native method, 0 otherwise. </p>
 
 </div>
 </div>
@@ -193,6 +204,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The line number in the source file, a negative number if the information is not available (-2 for a native method). </p>
 
 </div>
 </div>
@@ -207,6 +219,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The name of the method that contains the execution point (a UTF-8 null-terminated string). </p>
 
 </div>
 </div>
@@ -221,6 +234,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The name of the module that contains the class, NULL if the class is not in a named module. </p>
 
 </div>
 </div>
@@ -235,6 +249,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The version of that module, NULL if the module has no version. </p>
 
 </div>
 </div>

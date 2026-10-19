@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -111,19 +111,30 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__PriceLe
   <div class="headertitle"><div class="title">PriceLevelService' functions <div class="ingroups"><a class="el" href="group__OrcsApi.html">ORCS API</a> &raquo; <a class="el" href="group__PriceLevelService.html">PriceLevelService</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The functions that create, query and close the client of the price level service.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga37645bc383e11a77c64985e0140fd6e8" id="r_ga37645bc383e11a77c64985e0140fd6e8"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga37645bc383e11a77c64985e0140fd6e8">dxfg_PriceLevelService_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *address, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> **service)</td></tr>
+<tr class="memdesc:ga37645bc383e11a77c64985e0140fd6e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a client of the price level service and connects it to an RMI endpoint.  <br /></td></tr>
 <tr class="memitem:ga66ef13e93a82e11d4f0ec52d6d0e3357" id="r_ga66ef13e93a82e11d4f0ec52d6d0e3357"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga66ef13e93a82e11d4f0ec52d6d0e3357">dxfg_PriceLevelService_getOrders</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service, <a class="el" href="structdxfg__symbol__t.html">dxfg_symbol_t</a> *candleSymbol, <a class="el" href="structdxfg__indexed__event__source__t.html">dxfg_indexed_event_source_t</a> *orderSource, int64_t from, int64_t to, const char *caller, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__event__type__list.html">dxfg_event_type_list</a> **orders)</td></tr>
+<tr class="memdesc:ga66ef13e93a82e11d4f0ec52d6d0e3357"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the price levels (orders) of a candle symbol within a time range.  <br /></td></tr>
 <tr class="memitem:ga369daacfad4fe2dd4f1743b6d521ae88" id="r_ga369daacfad4fe2dd4f1743b6d521ae88"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga369daacfad4fe2dd4f1743b6d521ae88">dxfg_PriceLevelService_getOrders2</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service, <a class="el" href="structdxfg__symbol__t.html">dxfg_symbol_t</a> *candleSymbol, <a class="el" href="structdxfg__indexed__event__source__t.html">dxfg_indexed_event_source_t</a> *orderSource, int64_t from, int64_t to, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__event__type__list.html">dxfg_event_type_list</a> **orders)</td></tr>
+<tr class="memdesc:ga369daacfad4fe2dd4f1743b6d521ae88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the price levels (orders) of a candle symbol within a time range for the default caller.  <br /></td></tr>
 <tr class="memitem:ga90e7cf16e965fd26e619144531dd08a7" id="r_ga90e7cf16e965fd26e619144531dd08a7"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga90e7cf16e965fd26e619144531dd08a7">dxfg_PriceLevelService_getAuthOrderSource</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__auth__order__source__t.html">dxfg_auth_order_source_t</a> **authOrderSource)</td></tr>
+<tr class="memdesc:ga90e7cf16e965fd26e619144531dd08a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the order sources and the symbols of each order source that are available to the client.  <br /></td></tr>
 <tr class="memitem:gaa74cd060b53e22990ead0019fce403c8" id="r_gaa74cd060b53e22990ead0019fce403c8"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaa74cd060b53e22990ead0019fce403c8">dxfg_PriceLevelService_getQuotes</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service, <a class="el" href="structdxfg__symbol__t.html">dxfg_symbol_t</a> *candleSymbol, int64_t from, int64_t to, const char *caller, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__event__type__list.html">dxfg_event_type_list</a> **quotes)</td></tr>
+<tr class="memdesc:gaa74cd060b53e22990ead0019fce403c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the quotes of a candle symbol within a time range.  <br /></td></tr>
 <tr class="memitem:gac9fb989b866f71895cbf9abd3592fb3b" id="r_gac9fb989b866f71895cbf9abd3592fb3b"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gac9fb989b866f71895cbf9abd3592fb3b">dxfg_PriceLevelService_getQuotes2</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service, <a class="el" href="structdxfg__symbol__t.html">dxfg_symbol_t</a> *candleSymbol, int64_t from, int64_t to, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__event__type__list.html">dxfg_event_type_list</a> **quotes)</td></tr>
+<tr class="memdesc:gac9fb989b866f71895cbf9abd3592fb3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the quotes of a candle symbol within a time range for the default caller.  <br /></td></tr>
 <tr class="memitem:gadfcf77aec9af20b6b2c90e0b41f9bb6d" id="r_gadfcf77aec9af20b6b2c90e0b41f9bb6d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gadfcf77aec9af20b6b2c90e0b41f9bb6d">dxfg_PriceLevelService_close</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__price__level__service__t.html">dxfg_price_level_service_t</a> *service)</td></tr>
+<tr class="memdesc:gadfcf77aec9af20b6b2c90e0b41f9bb6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the client of the price level service and its RMI endpoint.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"></div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<div class="textblock"><p>The functions that create, query and close the client of the price level service. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="gadfcf77aec9af20b6b2c90e0b41f9bb6d" name="gadfcf77aec9af20b6b2c90e0b41f9bb6d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gadfcf77aec9af20b6b2c90e0b41f9bb6d">&#9670;&#160;</a></span>dxfg_PriceLevelService_close()</h2>
 
@@ -142,7 +153,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Closes the PriceLevelService and its RMI endpoint.</p>
+
+<p>Closes the client of the price level service and its RMI endpoint. </p>
+<p>Do not use the client after the call; release its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.</p>
+<p>Java: <span class="tt">PriceLevelServiceHolder.close()</span> (the SDK class that closes its <span class="tt">RMIEndpoint</span>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -150,7 +164,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -177,16 +191,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns available to the client order sources and symbols for each OrderSource. Order source and symbols are filtered according to the client permissions. Symbols and order sources view is built as of now, e.g. the response contains only existing data (for example, no symbols that were delisted)</p>
+
+<p>Returns the order sources and the symbols of each order source that are available to the client. </p>
+<p>The order sources and the symbols are filtered according to the permissions of the client. The view is built as of now: the result contains only the existing data (for example, no symbols that were delisted). Read the result with <a class="el" href="group__AuthOrderSourceFunctions.html#ga0738bfc62a0770f823d143e513f8521a" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByIds()</a> or <a class="el" href="group__AuthOrderSourceFunctions.html#ga7834a740661320c91fcaacb16420195c" title="Returns the entries (an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByOrderSources()</a>.</p>
+<p>Java: <span class="tt">PriceLevelService.getAuthOrderSource()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">service</td><td>The PriceLevelService. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">authOrderSource</td><td>The pointer to the AuthOrderSource. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">authOrderSource</td><td>The AuthOrderSource (release the handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the AuthOrderSource handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -238,23 +255,25 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of price levels for the specified CandleSymbol within passed <span class="tt">from</span> and <span class="tt">to</span> times. The events are ordered by time in the collection.</p>
-<p>Passed candle symbol shall contain supported CandlePeriod and a custom attribute called granularity with the key <span class="tt">GRANULARITY_ATTRIBUTE_KEY</span> ("gr"). Granularity value shall be represented by an integer value in seconds. The minimal value for granularity is 1 second.</p>
-<p>If passed CandlePeriod or granularity value are not supported by the service, the empty list will be returned.</p>
+
+<p>Returns the price levels (orders) of a candle symbol within a time range. </p>
+<p>The orders are sorted in ascending order by time.</p>
+<p>The candle symbol shall contain a supported CandlePeriod and a custom attribute called granularity with the key <span class="tt">GRANULARITY_ATTRIBUTE_KEY</span> ("gr"). The granularity value shall be an integer in seconds; the minimal value is 1 second. If the CandlePeriod or the granularity is not supported by the service, the result is an empty list.</p>
+<p>Java: <span class="tt">PriceLevelService.getOrders(CandleSymbol, int, long, long, String)</span>, the order source is passed by its id.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">service</td><td>The PriceLevelService. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The CandleSymbol to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">orderSource</td><td>The OrderSource to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">caller</td><td>The caller identifier. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">orders</td><td>The pointer to the orders list. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The candle symbol to request: a <a class="el" href="structdxfg__candle__symbol__t.html" title="A candle symbol.">dxfg_candle_symbol_t</a> (type <a class="el" href="dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3a76da3d3afc12f99cd6dfcd78800c1ad0">CANDLE</a>); the call fails for another kind of symbol. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">orderSource</td><td>The order source to request: a <a class="el" href="structdxfg__indexed__event__source__t.html" title="The source of indexed events.">dxfg_indexed_event_source_t</a> of the type ORDER_SOURCE; the call fails for another kind of source. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">caller</td><td>The caller identifier: a UTF-8 null-terminated string that is passed to the service as is. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">orders</td><td>The list of the order events (<a class="el" href="structdxfg__event__type__list.html" title="A list of events.">dxfg_event_type_list</a>), possibly empty. Release it with <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a> to free the orders list. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -301,23 +320,23 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of price levels for the specified CandleSymbol within passed <span class="tt">from</span> and <span class="tt">to</span> times. The events are ordered by time in the collection.</p>
-<p>Passed candle symbol shall contain supported CandlePeriod and a custom attribute called granularity with the key <span class="tt">GRANULARITY_ATTRIBUTE_KEY</span> ("gr"). Granularity value shall be represented by an integer value in seconds. The minimal value for granularity is 1 second.</p>
-<p>If passed CandlePeriod or granularity value are not supported by the service, the empty list will be returned.</p>
-<p>The caller is set to a default value = "dxfg".</p>
+
+<p>Returns the price levels (orders) of a candle symbol within a time range for the default caller. </p>
+<p>It is the same as <a class="el" href="#ga66ef13e93a82e11d4f0ec52d6d0e3357" title="Returns the price levels (orders) of a candle symbol within a time range.">dxfg_PriceLevelService_getOrders()</a> with the caller identifier "dxfg": see that function for the requirements on the candle symbol and the granularity, and for the empty list.</p>
+<p>Java: <span class="tt">PriceLevelService.getOrders(CandleSymbol, int, long, long, String)</span> with the caller "dxfg" (the SDK method <span class="tt">PriceLevelServiceHolder.getOrders(CandleSymbol, OrderSource, long, long)</span>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">service</td><td>The PriceLevelService. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The CandleSymbol to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">orderSource</td><td>The OrderSource to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">orders</td><td>The pointer to the orders list. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The candle symbol to request: a <a class="el" href="structdxfg__candle__symbol__t.html" title="A candle symbol.">dxfg_candle_symbol_t</a> (type <a class="el" href="dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3a76da3d3afc12f99cd6dfcd78800c1ad0">CANDLE</a>); the call fails for another kind of symbol. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">orderSource</td><td>The order source to request: a <a class="el" href="structdxfg__indexed__event__source__t.html" title="The source of indexed events.">dxfg_indexed_event_source_t</a> of the type ORDER_SOURCE; the call fails for another kind of source. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">orders</td><td>The list of the order events (<a class="el" href="structdxfg__event__type__list.html" title="A list of events.">dxfg_event_type_list</a>), possibly empty. Release it with <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a> to free the orders list. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -364,20 +383,23 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of quotes for the specified CandleSymbol within passed <span class="tt">from</span> and <span class="tt">to</span> times. The quotes are ordered by time in the collection.</p>
+
+<p>Returns the quotes of a candle symbol within a time range. </p>
+<p>The quotes are sorted in ascending order by time (see the Java documentation).</p>
+<p>Java: <span class="tt">PriceLevelService.getQuotes(CandleSymbol, long, long, String)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">service</td><td>The PriceLevelService. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The CandleSymbol to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">caller</td><td>The caller identifier. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">quotes</td><td>The pointer to the quotes list. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The candle symbol to request: a <a class="el" href="structdxfg__candle__symbol__t.html" title="A candle symbol.">dxfg_candle_symbol_t</a> (type <a class="el" href="dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3a76da3d3afc12f99cd6dfcd78800c1ad0">CANDLE</a>); the call fails for another kind of symbol. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">caller</td><td>The caller identifier: a UTF-8 null-terminated string that is passed to the service as is. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">quotes</td><td>The list of the quote events (<a class="el" href="structdxfg__event__type__list.html" title="A list of events.">dxfg_event_type_list</a>), possibly empty. Release it with <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a> to free the quotes list. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -419,20 +441,22 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a list of quotes for the specified CandleSymbol within passed <span class="tt">from</span> and <span class="tt">to</span> times. The quotes are ordered by time in the collection.</p>
-<p>The caller is set to a default value = "dxfg".</p>
+
+<p>Returns the quotes of a candle symbol within a time range for the default caller. </p>
+<p>It is the same as <a class="el" href="#gaa74cd060b53e22990ead0019fce403c8" title="Returns the quotes of a candle symbol within a time range.">dxfg_PriceLevelService_getQuotes()</a> with the caller identifier "dxfg".</p>
+<p>Java: <span class="tt">PriceLevelService.getQuotes(CandleSymbol, long, long, String)</span> with the caller "dxfg" (the SDK method <span class="tt">PriceLevelServiceHolder.getQuotes(CandleSymbol, long, long)</span>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">service</td><td>The PriceLevelService. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The CandleSymbol to request. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">quotes</td><td>The pointer to the quotes list. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">candleSymbol</td><td>The candle symbol to request: a <a class="el" href="structdxfg__candle__symbol__t.html" title="A candle symbol.">dxfg_candle_symbol_t</a> (type <a class="el" href="dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3a76da3d3afc12f99cd6dfcd78800c1ad0">CANDLE</a>); the call fails for another kind of symbol. The caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td>The "from" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">to</td><td>The "to" time in UTC (the unit is not stated by the Java documentation). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">quotes</td><td>The list of the quote events (<a class="el" href="structdxfg__event__type__list.html" title="A list of events.">dxfg_event_type_list</a>), possibly empty. Release it with <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a> to free the quotes list. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -459,16 +483,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a new PriceLevelService instance and connects it to an RMI endpoint. The handle of this instance will be written to the passed pointer.</p>
+
+<p>Creates a client of the price level service and connects it to an RMI endpoint. </p>
+<p>The client is an RMI client endpoint that is connected to the address; the service is its proxy. The handle of the client is written to <span class="tt">service</span>. Close the connection with <a class="el" href="#gadfcf77aec9af20b6b2c90e0b41f9bb6d" title="Closes the client of the price level service and its RMI endpoint.">dxfg_PriceLevelService_close()</a>.</p>
+<p>Java: <span class="tt">new PriceLevelServiceHolder(String)</span> (the SDK class that wraps <span class="tt">RMIEndpoint</span> and <span class="tt"><a class="el" href="group__PriceLevelService.html" title="The handle of the client of the price level service.">PriceLevelService</a></span>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">address</td><td>The RMI endpoint's address. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">service</td><td>The pointer to the service's handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">address</td><td>The RMI endpoint's address: a UTF-8 null-terminated string; the caller keeps its ownership. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">service</td><td>The new client (release the handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the service handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>

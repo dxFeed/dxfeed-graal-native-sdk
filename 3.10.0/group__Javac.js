@@ -1,0 +1,125 @@
+var group__Javac =
+[
+    [ "dxfg_java_object_handler", "structdxfg__java__object__handler.html", [
+      [ "java_object_handle", "structdxfg__java__object__handler.html#a2ff74c5ede378e9e00db11564a9a68f9", null ]
+    ] ],
+    [ "dxfg_java_object_t", "structdxfg__java__object__t.html", [
+      [ "java_object_handle", "structdxfg__java__object__t.html#ae4acecfa064b8e04964a83d0a41ed508", null ]
+    ] ],
+    [ "dxfg_list", "structdxfg__list.html", [
+      [ "elements", "structdxfg__list.html#acfe3f7cc1f8047b3ea8cdd54344ffcea", null ],
+      [ "size", "structdxfg__list.html#ad29f6fadde4d072696c7ccbe921f8be7", null ]
+    ] ],
+    [ "dxfg_java_object_handler_list", "structdxfg__java__object__handler__list.html", [
+      [ "elements", "structdxfg__java__object__handler__list.html#a4f2b699be729e9719ad19541111c5dd8", null ],
+      [ "size", "structdxfg__java__object__handler__list.html#a256bcbea98a2084db9c3384d729b2074", null ]
+    ] ],
+    [ "dxfg_string_list", "structdxfg__string__list.html", [
+      [ "elements", "structdxfg__string__list.html#af93ebbe5c03f0c26dc32551b1d8bf832", null ],
+      [ "size", "structdxfg__string__list.html#a44b4f14987e23dd9a3ec8e31eae281f1", null ]
+    ] ],
+    [ "dxfg_executor_t", "structdxfg__executor__t.html", [
+      [ "handler", "structdxfg__executor__t.html#a384c8285d6465b9fae43597aef02c458", null ]
+    ] ],
+    [ "dxfg_input_stream_t", "structdxfg__input__stream__t.html", [
+      [ "handler", "structdxfg__input__stream__t.html#a52c31853079628d170ce4a47de6bbcff", null ]
+    ] ],
+    [ "dxfg_time_period_t", "structdxfg__time__period__t.html", [
+      [ "handler", "structdxfg__time__period__t.html#a23faaca172d157b9a2fb03b7f662968b", null ]
+    ] ],
+    [ "dxfg_time_format_t", "structdxfg__time__format__t.html", [
+      [ "handler", "structdxfg__time__format__t.html#af702984fc5f518b8789ee28c62eb7d3a", null ]
+    ] ],
+    [ "dxfg_time_zone_t", "structdxfg__time__zone__t.html", [
+      [ "handler", "structdxfg__time__zone__t.html#a9003effb84229c235563953987a8d554", null ]
+    ] ],
+    [ "dxfg_auth_token_t", "structdxfg__auth__token__t.html", [
+      [ "handler", "structdxfg__auth__token__t.html#a90a484c915bcb991317ca33dce4b7daf", null ]
+    ] ],
+    [ "dxfg_auth_token_t", "group__Javac.html#ga2eb9b232220ac071d43951f151d91131", null ],
+    [ "dxfg_executor_t", "group__Javac.html#gade97034d240b28697c940e4e8f1112f5", null ],
+    [ "dxfg_finalize_function", "group__Javac.html#gaab2eef0e31bb9bdf47f3c0d5c5817217", null ],
+    [ "dxfg_input_stream_t", "group__Javac.html#ga8f5d0beaf3636a043edc8142bff5994d", null ],
+    [ "dxfg_java_object_handler", "group__Javac.html#ga495957e4f0a684874157eba28c9964ff", null ],
+    [ "dxfg_java_object_handler_list", "group__Javac.html#ga4dc1aaadbc34496d1801f0928bcfb488", null ],
+    [ "dxfg_java_object_t", "group__Javac.html#gaad3e377b7e2f4127f17a7148b31610ec", null ],
+    [ "dxfg_list", "group__Javac.html#ga7a18fafed73146357683528d3840639b", null ],
+    [ "dxfg_rounding_mode_t", "group__Javac.html#ga3bb35c66673c0e41b2370593d9a2a849", null ],
+    [ "dxfg_string_list", "group__Javac.html#ga94970c512cded47a1c1865343fb42efd", null ],
+    [ "dxfg_time_format_t", "group__Javac.html#gaa26650bbfdc20c28ef0c4b919f5e38f9", null ],
+    [ "dxfg_time_period_t", "group__Javac.html#gad3e171d5e4be4dec5f93a4de9cd2fe63", null ],
+    [ "dxfg_time_zone_t", "group__Javac.html#ga1fd565dffc9a45684eb0debba9d0f51e", null ],
+    [ "dxfg_rounding_mode_t", "group__Javac.html#ga7dda4ec062f2491773e988db78293bcf", [
+      [ "DXFG_ROUNDING_MODE_UP", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfa3921f3ac33b5151ff82cae73467987b1", null ],
+      [ "DXFG_ROUNDING_MODE_DOWN", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfacb1ae21d2d831a3200be92e50a503435", null ],
+      [ "DXFG_ROUNDING_MODE_CEILING", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d", null ],
+      [ "DXFG_ROUNDING_MODE_FLOOR", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfa1ff94027560fdda4c9252aa01936b9a6", null ],
+      [ "DXFG_ROUNDING_MODE_HALF_UP", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfa8cee412cecc583b73dcbf04453feb0a1", null ],
+      [ "DXFG_ROUNDING_MODE_HALF_DOWN", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfa475d70560527055b5da16c67e3e94d2e", null ],
+      [ "DXFG_ROUNDING_MODE_HALF_EVEN", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfa6a7d3da3289938196a2de7c6f19957e1", null ],
+      [ "DXFG_ROUNDING_MODE_UNNECESSARY", "group__Javac.html#gga7dda4ec062f2491773e988db78293bcfabb06600046c731f23f197396f8eb7787", null ]
+    ] ],
+    [ "dxfg_AuthToken_createBasicToken", "group__Javac.html#ga3ac768826e91e26db7c957ceccb02a5f", null ],
+    [ "dxfg_AuthToken_createBasicToken2", "group__Javac.html#gaf6a5c6e9cef5d17bba0b5c4ef6cb2690", null ],
+    [ "dxfg_AuthToken_createBasicTokenOrNull", "group__Javac.html#gadc05b4b052f331f4fc66d6b6fdc2ec8c", null ],
+    [ "dxfg_AuthToken_createBearerToken", "group__Javac.html#ga03bfbb879ddd49c3795c8f2da9e74784", null ],
+    [ "dxfg_AuthToken_createBearerTokenOrNull", "group__Javac.html#gaeaf6ad44574447ddf0211cdf4f34169e", null ],
+    [ "dxfg_AuthToken_createCustomToken", "group__Javac.html#ga0a8cf7c15268bbff1513978302494f83", null ],
+    [ "dxfg_AuthToken_getHttpAuthorization", "group__Javac.html#gaefc306aa710add41e751a0775aaf312a", null ],
+    [ "dxfg_AuthToken_getPassword", "group__Javac.html#ga335a0dfe9155874e73c444a63c9b12e9", null ],
+    [ "dxfg_AuthToken_getScheme", "group__Javac.html#gaec8cf095b942f1fd09c1095cc4ae2fce", null ],
+    [ "dxfg_AuthToken_getUser", "group__Javac.html#ga3341d6634157479537418a5f599b2ee3", null ],
+    [ "dxfg_AuthToken_getValue", "group__Javac.html#gaa1d52614e5deb132e95381bef4b311b3", null ],
+    [ "dxfg_AuthToken_valueOf", "group__Javac.html#gadf44bdae3e6bcab404387c633b6fe931", null ],
+    [ "dxfg_ByteArrayInputStream_new", "group__Javac.html#ga8fb295ac21e5c126ea6fc09722438f8f", null ],
+    [ "dxfg_CList_JavaObjectHandler_release", "group__Javac.html#ga4f7478ea9014f612e5faf17ba892b5a4", null ],
+    [ "dxfg_CList_String_release", "group__Javac.html#gad20babc2ba3d6e425c2ba5d70200b7ae", null ],
+    [ "dxfg_Comparable_compareTo", "group__Javac.html#gaa633b970c6203dcea8bfd18e92006185", null ],
+    [ "dxfg_ExecutorBaseOnConcurrentLinkedQueue_new", "group__Javac.html#ga1b0ba078c3eabbf330fcad172a2b2500", null ],
+    [ "dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks", "group__Javac.html#ga7267712f307836080063b03445f84e90", null ],
+    [ "dxfg_Executors_newFixedThreadPool", "group__Javac.html#ga83ea0d43abadfe4b96fe8c4e0e0ef8e9", null ],
+    [ "dxfg_Executors_newScheduledThreadPool", "group__Javac.html#ga5117626cd734072bd54c90118abbeb21", null ],
+    [ "dxfg_gc", "group__Javac.html#ga875cfe42404c809648f74c5fee579d8b", null ],
+    [ "dxfg_JavaObjectHandler_array_release", "group__Javac.html#ga99c171e09b0177aa75b0c46be576f0ae", null ],
+    [ "dxfg_JavaObjectHandler_clone", "group__Javac.html#gac1d3eab12de62c11215a1686ad6abc7c", null ],
+    [ "dxfg_JavaObjectHandler_release", "group__Javac.html#ga923b84ec33ec668fc59c89168c832dac", null ],
+    [ "dxfg_NativeListener_deactivate", "group__Javac.html#gaf0d9313b8ffa7dffb08b86c9a27999b5", null ],
+    [ "dxfg_Object_equals", "group__Javac.html#ga1837c76d55d3561f990852e52c22a24e", null ],
+    [ "dxfg_Object_finalize", "group__Javac.html#gae7cdf15be27f52b1169629db33367df7", null ],
+    [ "dxfg_Object_hashCode", "group__Javac.html#ga979478d879205066fb70b7f8d0e755fb", null ],
+    [ "dxfg_Object_new", "group__Javac.html#ga6a53fb6fd7b51bd9a7b91b8075c80280", null ],
+    [ "dxfg_Object_toString", "group__Javac.html#gac744677a9cb5d8d19196b1007afab5b0", null ],
+    [ "dxfg_String_release", "group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873", null ],
+    [ "dxfg_throw_exception", "group__Javac.html#ga4d1f3816664113ab2ffa0dc44aa07852", null ],
+    [ "dxfg_TimeFormat_asFullIso", "group__Javac.html#gadf701824dff504d7e4bbf2c873f97133", null ],
+    [ "dxfg_TimeFormat_DEFAULT", "group__Javac.html#gaa0e8b86dc26d08a7051a562baef94af4", null ],
+    [ "dxfg_TimeFormat_format", "group__Javac.html#gaae7f6ea99fc75f1eb6d6ab8e152ab5ed", null ],
+    [ "dxfg_TimeFormat_getInstance", "group__Javac.html#ga5c739163050cf1168a0a190a75939358", null ],
+    [ "dxfg_TimeFormat_getTimeZone", "group__Javac.html#gafe89b0cdf46608611aa88a37fdb77fff", null ],
+    [ "dxfg_TimeFormat_GMT", "group__Javac.html#ga3cf83deee6a6d54ca7c74d5388973f26", null ],
+    [ "dxfg_TimeFormat_parse", "group__Javac.html#gaabc98a6733456fa6bddc7c8c53f4838d", null ],
+    [ "dxfg_TimeFormat_withMillis", "group__Javac.html#ga25afe93b04314d8fe93bf76f0af758a5", null ],
+    [ "dxfg_TimeFormat_withTimeZone", "group__Javac.html#ga5eba26c86f7a4f42856ea7f627fbabc8", null ],
+    [ "dxfg_TimePeriod_getNanos", "group__Javac.html#ga8c0ee4ca9a0c91a9adc7c9ac80b46464", null ],
+    [ "dxfg_TimePeriod_getSeconds", "group__Javac.html#gab783093238a544928f0a729ad282c093", null ],
+    [ "dxfg_TimePeriod_getTime", "group__Javac.html#gaf34f4e7e27aa7acbc3e7a55963fe9619", null ],
+    [ "dxfg_TimePeriod_UNLIMITED", "group__Javac.html#ga77e7e62b9d51019238ebbf450312ee18", null ],
+    [ "dxfg_TimePeriod_valueOf", "group__Javac.html#ga64f72174dda6d32a8803056032f9aae5", null ],
+    [ "dxfg_TimePeriod_valueOf2", "group__Javac.html#ga56ee9218489c8f27eaad9b55debdc235", null ],
+    [ "dxfg_TimePeriod_ZERO", "group__Javac.html#gaad9bb4cb33f9a1aeb792f613e3d0a238", null ],
+    [ "dxfg_TimeZone_getDefault", "group__Javac.html#ga57b38cc24dca734ca9ab1550725f2a7d", null ],
+    [ "dxfg_TimeZone_getDisplayName", "group__Javac.html#ga34ef03bfd519dae8cacaefc3e568d0ea", null ],
+    [ "dxfg_TimeZone_getDisplayName2", "group__Javac.html#ga7bee4ee5ed0b8fd3d0475ae1def51bdb", null ],
+    [ "dxfg_TimeZone_getDSTSavings", "group__Javac.html#gac75391b0328d6ea62f40c3ed97f1ff2b", null ],
+    [ "dxfg_TimeZone_getID", "group__Javac.html#gafe0669c6ac6a71fdc2c8312a87a29b91", null ],
+    [ "dxfg_TimeZone_getOffset", "group__Javac.html#gab542e2c9ad633a00c96ee6a11a7fbc4a", null ],
+    [ "dxfg_TimeZone_getOffset2", "group__Javac.html#gace601369f12f03071a7ad618f8f4348f", null ],
+    [ "dxfg_TimeZone_getRawOffset", "group__Javac.html#ga18090f3719233c7b210bee45c81670f7", null ],
+    [ "dxfg_TimeZone_getTimeZone", "group__Javac.html#ga97de114caadcf4471e4c85d4f0ace38e", null ],
+    [ "dxfg_TimeZone_hasSameRules", "group__Javac.html#gabaac40ba22ef8d08f01f237b0762a15a", null ],
+    [ "dxfg_TimeZone_inDaylightTime", "group__Javac.html#ga12b892ce5331faa0b9ee637ea1be57dd", null ],
+    [ "dxfg_TimeZone_observesDaylightTime", "group__Javac.html#gabe9a617d53e0ad234795794364c528fe", null ],
+    [ "dxfg_TimeZone_setID", "group__Javac.html#ga8e65f58898df8ba5696ba14f2af6b74a", null ],
+    [ "dxfg_TimeZone_setRawOffset", "group__Javac.html#gadf7fc2d1537de8f828d159e23a6e0a35", null ],
+    [ "dxfg_TimeZone_useDaylightTime", "group__Javac.html#ga161a620693af1f1262a9d8fa93d72936", null ]
+];

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__au
 </div><!--header-->
 <div class="contents">
 
+<p>A handle of Java AuthOrderSource: the information about the symbols that are available to the client for the entitled collection of order sources; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__orcs_8h_source.html">dxfg_orcs.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,8 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ae8666c608597404b914d86404af65979" id="r_ae8666c608597404b914d86404af65979"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae8666c608597404b914d86404af65979">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Represents information about available symbols to the client for the entitled collection of OrderSource.</p>
+<div class="textblock"><p>A handle of Java AuthOrderSource: the information about the symbols that are available to the client for the entitled collection of order sources; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>Get it with <a class="el" href="group__PriceLevelServiceFunctions.html#ga90e7cf16e965fd26e619144531dd08a7" title="Returns the order sources and the symbols of each order source that are available to the client.">dxfg_PriceLevelService_getAuthOrderSource()</a>; read it with <a class="el" href="group__AuthOrderSourceFunctions.html#ga0738bfc62a0770f823d143e513f8521a" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByIds()</a> or <a class="el" href="group__AuthOrderSourceFunctions.html#ga7834a740661320c91fcaacb16420195c" title="Returns the entries (an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByOrderSources()</a>.</p>
 <p><a href="https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/AuthOrderSource.html">https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/AuthOrderSource.html</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ae8666c608597404b914d86404af65979" name="ae8666c608597404b914d86404af65979"></a>
@@ -133,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

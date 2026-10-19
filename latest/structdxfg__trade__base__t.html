@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__tr
 </div><!--header-->
 <div class="contents">
 
+<p>The common fields of the trade events: <a class="el" href="structdxfg__trade__t.html" title="The trade event: the last trade during the regular trading hours (RTH) and the volume and turnover of...">dxfg_trade_t</a> and <a class="el" href="structdxfg__trade__eth__t.html" title="The TradeETH event: the last trade during the extended trading hours (ETH) and their volume and turno...">dxfg_trade_eth_t</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -130,7 +133,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a5a7520e87f2c1cac9bcbf5a13d498b81" id="r_a5a7520e87f2c1cac9bcbf5a13d498b81"><td class="memItemLeft">int64_t&#160;</td><td class="memItemRight"><a class="el" href="#a5a7520e87f2c1cac9bcbf5a13d498b81">trade_id</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeBase.html">Javadoc</a> </p>
+<div class="textblock"><p>The common fields of the trade events: <a class="el" href="structdxfg__trade__t.html" title="The trade event: the last trade during the regular trading hours (RTH) and the volume and turnover of...">dxfg_trade_t</a> and <a class="el" href="structdxfg__trade__eth__t.html" title="The TradeETH event: the last trade during the extended trading hours (ETH) and their volume and turno...">dxfg_trade_eth_t</a>. </p>
+<p>It is a lasting event, the information about the last trade. There is no event class of its own in the C API.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeBase.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a98a443683f34cf4133f1c13569f0122f" name="a98a443683f34cf4133f1c13569f0122f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98a443683f34cf4133f1c13569f0122f">&#9670;&#160;</a></span>change</h2>
@@ -143,6 +148,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The change of the last trade, NaN if unknown. </p>
 
 </div>
 </div>
@@ -157,6 +163,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The identifier of the current trading day: the number of days since 1 Jan 1970. </p>
 
 </div>
 </div>
@@ -171,6 +178,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The total turnover traded for the day, NaN if unknown. </p>
 
 </div>
 </div>
@@ -185,6 +193,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The total volume traded for the day (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -199,6 +208,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The exchange code of the last trade: the character code (Java <span class="tt">char</span>) of the exchange, 0 if not set. </p>
 
 </div>
 </div>
@@ -213,6 +223,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The implementation-specific flags: the extended trading hours indicator in bit 0 and the tick direction in bits 1 to 3; see TradeBase.getTickDirection() and TradeBase.isExtendedTradingHours() in Java. </p>
 
 </div>
 </div>
@@ -227,6 +238,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -241,6 +253,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The price of the last trade, NaN if unknown. </p>
 
 </div>
 </div>
@@ -255,6 +268,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The size of the last trade (with fractions), NaN if unknown. </p>
 
 </div>
 </div>
@@ -269,6 +283,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The microseconds and nanoseconds part of the time of the last trade. </p>
 
 </div>
 </div>
@@ -283,6 +298,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last trade and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see TradeBase.getTimeSequence() in Java. </p>
 
 </div>
 </div>
@@ -297,6 +313,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The trade ID for the events with a trade-related action (execution, correction, cancellation), 0 if none. </p>
 
 </div>
 </div>

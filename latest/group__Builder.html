@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>dxFeed Graal Native SDK: Builder</title>
+<title>dxFeed Graal Native SDK: Endpoint builder</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="codefolding.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -108,23 +108,35 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__Builder
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">Builder <div class="ingroups"><a class="el" href="group__Endpoint.html">Endpoint</a></div></div></div>
+  <div class="headertitle"><div class="title">Endpoint builder <div class="ingroups"><a class="el" href="group__Endpoint.html">Endpoint</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The builder of endpoints (Java <span class="tt">DXEndpoint.Builder</span>).  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga33a650b9c38510d9aee24b6f625c7cc7" id="r_ga33a650b9c38510d9aee24b6f625c7cc7"><td class="memItemLeft"><a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ga33a650b9c38510d9aee24b6f625c7cc7">dxfg_DXEndpoint_newBuilder</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread)</td></tr>
+<tr class="memdesc:ga33a650b9c38510d9aee24b6f625c7cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new endpoint builder.  <br /></td></tr>
 <tr class="memitem:ga3b5599436d5898b51ed15bef63cb70bb" id="r_ga3b5599436d5898b51ed15bef63cb70bb"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga3b5599436d5898b51ed15bef63cb70bb">dxfg_DXEndpoint_Builder_withRole</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, <a class="el" href="group__Endpoint.html#gaec83860f86076b8cabecbd13a0d16445">dxfg_endpoint_role_t</a> role)</td></tr>
+<tr class="memdesc:ga3b5599436d5898b51ed15bef63cb70bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the role of the endpoints built by the builder.  <br /></td></tr>
 <tr class="memitem:ga40adb5fa8443471c4ee750a89cf2fc8c" id="r_ga40adb5fa8443471c4ee750a89cf2fc8c"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga40adb5fa8443471c4ee750a89cf2fc8c">dxfg_DXEndpoint_Builder_withName</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, const char *name)</td></tr>
+<tr class="memdesc:ga40adb5fa8443471c4ee750a89cf2fc8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the name of the endpoints built by the builder.  <br /></td></tr>
 <tr class="memitem:ga5d35d081dba1a8897c64af8aeb8658c2" id="r_ga5d35d081dba1a8897c64af8aeb8658c2"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2">dxfg_DXEndpoint_Builder_withProperty</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, const char *key, const char *value)</td></tr>
+<tr class="memdesc:ga5d35d081dba1a8897c64af8aeb8658c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a property of the endpoints built by the builder.  <br /></td></tr>
 <tr class="memitem:ga8faa6f0237546a58112fd46885cf9320" id="r_ga8faa6f0237546a58112fd46885cf9320"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga8faa6f0237546a58112fd46885cf9320">dxfg_DXEndpoint_Builder_withProperties</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, const char *file_path)</td></tr>
+<tr class="memdesc:ga8faa6f0237546a58112fd46885cf9320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the properties of the endpoints built by the builder from a properties file.  <br /></td></tr>
 <tr class="memitem:gab8af6641e2e36955f84b384a23b64ccf" id="r_gab8af6641e2e36955f84b384a23b64ccf"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab8af6641e2e36955f84b384a23b64ccf">dxfg_DXEndpoint_Builder_withExecutor</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, <a class="el" href="structdxfg__executor__t.html">dxfg_executor_t</a> *executor)</td></tr>
+<tr class="memdesc:gab8af6641e2e36955f84b384a23b64ccf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the executor of the notifications of the endpoints built by this builder: event processing, state changes, etc.  <br /></td></tr>
 <tr class="memitem:gae7c56153da199b9b2241ae4ecc44e93c" id="r_gae7c56153da199b9b2241ae4ecc44e93c"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gae7c56153da199b9b2241ae4ecc44e93c">dxfg_DXEndpoint_Builder_supportsProperty</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder, const char *key)</td></tr>
+<tr class="memdesc:gae7c56153da199b9b2241ae4ecc44e93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the builder supports a property.  <br /></td></tr>
 <tr class="memitem:ga922895085c041100ed4545b194b7f4a9" id="r_ga922895085c041100ed4545b194b7f4a9"><td class="memItemLeft"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ga922895085c041100ed4545b194b7f4a9">dxfg_DXEndpoint_Builder_build</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__builder__t.html">dxfg_endpoint_builder_t</a> *builder)</td></tr>
+<tr class="memdesc:ga922895085c041100ed4545b194b7f4a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a new endpoint with the builder's settings.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The recommended way to create an endpoint: the builder allows to set the role, the name and the properties (see <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html">DXEndpoint.Builder</a>). Every <a class="el" href="#ga922895085c041100ed4545b194b7f4a9">dxfg_DXEndpoint_Builder_build()</a> call creates a new endpoint. </p>
+<div class="textblock"><p>The builder of endpoints (Java <span class="tt">DXEndpoint.Builder</span>). </p>
+<p>The recommended way to create an endpoint: the builder allows to set the role, the name, the executor and the properties (see <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html">DXEndpoint.Builder</a>). Every <a class="el" href="#ga922895085c041100ed4545b194b7f4a9" title="Builds a new endpoint with the builder&#39;s settings.">dxfg_DXEndpoint_Builder_build()</a> call creates a new endpoint. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="ga922895085c041100ed4545b194b7f4a9" name="ga922895085c041100ed4545b194b7f4a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga922895085c041100ed4545b194b7f4a9">&#9670;&#160;</a></span>dxfg_DXEndpoint_Builder_build()</h2>
@@ -144,7 +156,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Builds a new endpoint with the builder's settings.</p>
+
+<p>Builds a new endpoint with the builder's settings. </p>
+<p>Every call builds a new endpoint. An endpoint with the role <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> or <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a7537d002f5683499246ae2b2b7126a43">DXFG_ENDPOINT_ROLE_PUBLISHER</a> connects automatically on creation if <span class="tt">dxfeed.address</span> (feed) or <span class="tt">dxpublisher.address</span> (publisher) is set; the endpoints of the other roles do not.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.build()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -152,7 +167,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The new endpoint or NULL on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. The caller owns the endpoint: close it with <a class="el" href="group__Endpoint.html#ga467e5d113b98aef8fc23110c760b2b30">dxfg_DXEndpoint_close()</a> or <a class="el" href="group__Endpoint.html#ga93bab72bdb63978dcf867cc619a1e65d">dxfg_DXEndpoint_closeAndAwaitTermination()</a> and free its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> (releasing the handle does not close the endpoint). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The new endpoint, or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. The caller owns the endpoint: close it with <a class="el" href="group__Endpoint.html#ga467e5d113b98aef8fc23110c760b2b30" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_DXEndpoint_close()</a> or <a class="el" href="group__Endpoint.html#ga93bab72bdb63978dcf867cc619a1e65d" title="Closes the endpoint and waits until all the data processing and the scheduled notifications are compl...">dxfg_DXEndpoint_closeAndAwaitTermination()</a> and free its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> (releasing the handle does not close the endpoint). </dd></dl>
 
 </div>
 </div>
@@ -180,6 +195,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Checks whether the builder supports a property. </p>
+<p>The properties that are not supported are ignored by <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a>.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.supportsProperty(String)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">builder</td><td>The builder. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The name of the property, a NUL-terminated UTF-8 string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if the property is supported, 0 if it is not supported, or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
 </div>
 </div>
 <a id="gab8af6641e2e36955f84b384a23b64ccf" name="gab8af6641e2e36955f84b384a23b64ccf"></a>
@@ -205,8 +233,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets the executor of the notifications of the endpoints built by this builder: event processing, state changes, etc. (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Builder.html">DXEndpoint.Builder.withExecutor(executor)</a>). Use it instead of the deprecated <a class="el" href="group__Endpoint.html#ga1d78f9dc111d39f789b84c39e6f65ad5">dxfg_DXEndpoint_executor()</a>.</p>
+
+<p>Sets the executor of the notifications of the endpoints built by this builder: event processing, state changes, etc. </p>
+<p>Use it instead of the deprecated <a class="el" href="group__Endpoint.html#ga1d78f9dc111d39f789b84c39e6f65ad5" title="Changes the executor of the endpoint&#39;s notifications.">dxfg_DXEndpoint_executor()</a>.</p>
 <p>By default, the endpoint uses a thread pool with the size equal to the number of available processors (the <span class="tt">dxfeed.threadPoolSize</span> property for the feed roles and <span class="tt">dxpublisher.threadPoolSize</span> for the publisher). The executor must not reject the submitted tasks.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.withExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -215,7 +246,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on success or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -243,6 +274,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Sets the name of the endpoints built by the builder. </p>
+<p>The name distinguishes several endpoints in the same process in the logs and other diagnostics. It is the same as <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a> with the key <span class="tt">name</span>. A short name that describes the role of the endpoint in the application is recommended.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.withName(String)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">builder</td><td>The builder. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name, a NUL-terminated UTF-8 string; the SDK copies it. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
 </div>
 </div>
 <a id="ga8faa6f0237546a58112fd46885cf9320" name="ga8faa6f0237546a58112fd46885cf9320"></a>
@@ -268,6 +312,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sets the properties of the endpoints built by the builder from a properties file. </p>
+<p>The file is read in the format of a Java properties file (<span class="tt">java.util.Properties.load</span>) and every property that the builder supports is set as by <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a>. The unsupported properties are ignored. An error is reported if the file cannot be read.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.withProperties(Properties)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">builder</td><td>The builder. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">file_path</td><td>The path of the properties file, a NUL-terminated UTF-8 string; the SDK copies it. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -300,6 +357,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Sets a property of the endpoints built by the builder. </p>
+<p>A property that the builder does not support is ignored: check it with <a class="el" href="#gae7c56153da199b9b2241ae4ecc44e93c" title="Checks whether the builder supports a property.">dxfg_DXEndpoint_Builder_supportsProperty()</a>. A property that is set here takes precedence over the same property from the properties file and from the system properties (see <a class="el" href="group__System.html#ga62a2c7ceaf1cc0eb9560a3c4a5e44f39" title="Sets the Java system property indicated by the specified key.">dxfg_system_set_property()</a>).</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.withProperty(String, String)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">builder</td><td>The builder. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The name of the property, a NUL-terminated UTF-8 string; the SDK copies it. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The value of the property, a NUL-terminated UTF-8 string; the SDK copies it. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
 </div>
 </div>
 <a id="ga3b5599436d5898b51ed15bef63cb70bb" name="ga3b5599436d5898b51ed15bef63cb70bb"></a>
@@ -326,6 +397,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Sets the role of the endpoints built by the builder. </p>
+<p>The default role is <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a>.</p>
+<p>Java: <span class="tt">DXEndpoint.Builder.withRole(DXEndpoint.Role)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">builder</td><td>The builder. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">role</td><td>The role of the endpoints. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
 </div>
 </div>
 <a id="ga33a650b9c38510d9aee24b6f625c7cc7" name="ga33a650b9c38510d9aee24b6f625c7cc7"></a>
@@ -342,14 +426,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a new endpoint builder.</p>
+
+<p>Creates a new endpoint builder. </p>
+<p>The builder has the <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> role and the default executor until they are changed.</p>
+<p>Java: <span class="tt">DXEndpoint.newBuilder()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The builder or NULL on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the builder's handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The builder (release its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. </dd></dl>
 
 </div>
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -125,13 +125,16 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dxfg__logging_
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:dxfg_5Flogging_5Flistener_5Ft" id="r_dxfg_5Flogging_5Flistener_5Ft"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__logging__listener__t.html">dxfg_logging_listener_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java InterceptableLoggingListener object, a wrapper of a listener that allows to intercept the logged messages; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <a href="structdxfg__logging__listener__t.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gafbf6e34a08ac91a33f6c4ed930bb798d" id="r_gafbf6e34a08ac91a33f6c4ed930bb798d"><td class="memItemLeft">typedef enum <a class="el" href="group__Logging.html#gad073e2926c039c31b133b9c278e97fc1">dxfg_logging_level_t</a>&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#gafbf6e34a08ac91a33f6c4ed930bb798d">dxfg_logging_level_t</a></td></tr>
+<tr class="memdesc:gafbf6e34a08ac91a33f6c4ed930bb798d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The logging levels that can be used to control the logging output.  <br /></td></tr>
 <tr class="memitem:gabbc63dcab578b2d7c156eebff64e586d" id="r_gabbc63dcab578b2d7c156eebff64e586d"><td class="memItemLeft">typedef struct dxfg_logging_listener_t&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#gabbc63dcab578b2d7c156eebff64e586d">dxfg_logging_listener_t</a></td></tr>
+<tr class="memdesc:gabbc63dcab578b2d7c156eebff64e586d"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java InterceptableLoggingListener object, a wrapper of a listener that allows to intercept the logged messages; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  <br /></td></tr>
 <tr class="memitem:ga4d5799b62ce4c03da38da085b81fa35e" id="r_ga4d5799b62ce4c03da38da085b81fa35e"><td class="memItemLeft">typedef void(*)&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#ga4d5799b62ce4c03da38da085b81fa35e">dxfg_logging_listener_function_t</a>(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Logging.html#gad073e2926c039c31b133b9c278e97fc1">dxfg_logging_level_t</a> level, int64_t timestamp, const char *thread_name, int64_t thread_id, const char *logger_name, const char *message, <a class="el" href="structdxfg__exception__t.html">dxfg_exception_t</a> *exception, const char *formatted_message, void *user_data)</td></tr>
-<tr class="memdesc:ga4d5799b62ce4c03da38da085b81fa35e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A callback type for the logging listener.  <br /></td></tr>
+<tr class="memdesc:ga4d5799b62ce4c03da38da085b81fa35e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function of a <a class="el" href="structdxfg__logging__listener__t.html" title="A handle of a Java InterceptableLoggingListener object, a wrapper of a listener that allows to interc...">dxfg_logging_listener_t</a>: called for every message that is logged while the listener is installed and the level of the message is not below the logging level (see <a class="el" href="group__Logging.html#ga1369a7a767c57ff7f232ddada51bc62d" title="Sets the logging level for the listener or the console or the log file.">dxfg_logging_set_log_level()</a>).  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -146,13 +149,18 @@ Enumerations</h2></td></tr>
 , <a class="el" href="group__Logging.html#ggad073e2926c039c31b133b9c278e97fc1a2111bec1aff54d218c6e3dc8e1593fa5">DXFG_LOGGING_LEVEL_OFF</a>
 <br />
  }</td></tr>
+<tr class="memdesc:gad073e2926c039c31b133b9c278e97fc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The logging levels that can be used to control the logging output.  <a href="group__Logging.html#gad073e2926c039c31b133b9c278e97fc1">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga14996becad822b762317156ce8415e71" id="r_ga14996becad822b762317156ce8415e71"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#ga14996becad822b762317156ce8415e71">dxfg_logging_listener_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Logging.html#ga4d5799b62ce4c03da38da085b81fa35e">dxfg_logging_listener_function_t</a> user_func, void *user_data, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__logging__listener__t.html">dxfg_logging_listener_t</a> **listener)</td></tr>
+<tr class="memdesc:ga14996becad822b762317156ce8415e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new logging listener.  <br /></td></tr>
 <tr class="memitem:gabb3b147f0fd2b435a6e8553b40e0e9b9" id="r_gabb3b147f0fd2b435a6e8553b40e0e9b9"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#gabb3b147f0fd2b435a6e8553b40e0e9b9">dxfg_logging_set_listener</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__logging__listener__t.html">dxfg_logging_listener_t</a> *listener)</td></tr>
+<tr class="memdesc:gabb3b147f0fd2b435a6e8553b40e0e9b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Installs the logging listener.  <br /></td></tr>
 <tr class="memitem:ga1369a7a767c57ff7f232ddada51bc62d" id="r_ga1369a7a767c57ff7f232ddada51bc62d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#ga1369a7a767c57ff7f232ddada51bc62d">dxfg_logging_set_log_level</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Logging.html#gad073e2926c039c31b133b9c278e97fc1">dxfg_logging_level_t</a> level)</td></tr>
+<tr class="memdesc:ga1369a7a767c57ff7f232ddada51bc62d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the logging level for the listener or the console or the log file.  <br /></td></tr>
 <tr class="memitem:ga12f71d28f01c13009c6c26b202b1db95" id="r_ga12f71d28f01c13009c6c26b202b1db95"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__Logging.html#ga12f71d28f01c13009c6c26b202b1db95">dxfg_logging_set_err_level</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Logging.html#gad073e2926c039c31b133b9c278e97fc1">dxfg_logging_level_t</a> level)</td></tr>
+<tr class="memdesc:ga12f71d28f01c13009c6c26b202b1db95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the logging level for the err file.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>dxFeed Graal Native SDK Logging functions and types declarations </p>

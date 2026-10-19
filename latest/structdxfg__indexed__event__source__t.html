@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__in
 </div><!--header-->
 <div class="contents">
 
+<p>The source of indexed events.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -120,7 +123,11 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a265be3cfcf3d39aca75faf325e8e0cb1" id="r_a265be3cfcf3d39aca75faf325e8e0cb1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a265be3cfcf3d39aca75faf325e8e0cb1">id</a></td></tr>
 <tr class="memitem:ad74825a90d9a48a377922f7307f2d4b2" id="r_ad74825a90d9a48a377922f7307f2d4b2"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#ad74825a90d9a48a377922f7307f2d4b2">name</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The source of indexed events. </p>
+<p>Create it with <a class="el" href="dxfg__events_8h.html#aef5916b26a49b424fd2164b28ed0124c">dxfg_IndexedEventSource_new()</a> or <a class="el" href="dxfg__events_8h.html#a9139842d1c53d589f008a71feacf724d">dxfg_IndexedEventSource_new2()</a>, release it with <a class="el" href="dxfg__events_8h.html#adbc82edf3e5c0adf4d30bf3448580f92">dxfg_IndexedEventSource_release()</a>. The sources that the SDK returns (for example, by <a class="el" href="dxfg__events_8h.html#a78c08504e8e5a66de8c632e4ced014cb">dxfg_IndexedEvent_getSource()</a>) are released the same way.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/IndexedEventSource.html">Javadoc</a> </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a265be3cfcf3d39aca75faf325e8e0cb1" name="a265be3cfcf3d39aca75faf325e8e0cb1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a265be3cfcf3d39aca75faf325e8e0cb1">&#9670;&#160;</a></span>id</h2>
 
@@ -132,6 +139,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The source identifier, a non-negative number; 0 is the default source. </p>
 
 </div>
 </div>
@@ -146,6 +154,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The name of the source (a UTF-8 null-terminated string) that belongs to the structure and is freed with it. </p>
 
 </div>
 </div>
@@ -160,6 +169,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The kind of the source. </p>
 
 </div>
 </div>

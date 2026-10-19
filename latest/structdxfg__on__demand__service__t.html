@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__on
 </div><!--header-->
 <div class="contents">
 
-<p>The onDemandService. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ondemand/onDemandService.html">Javadoc</a>.  
+<p>A handle of a Java OnDemandService object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__ondemand_8h_source.html">dxfg_ondemand.h</a>&gt;</code></p>
@@ -122,7 +122,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa01355f7a7f585cff428b6bd223cd409" id="r_aa01355f7a7f585cff428b6bd223cd409"><td class="memItemLeft"><a class="el" href="group__OnDemand.html#ga495957e4f0a684874157eba28c9964ff">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa01355f7a7f585cff428b6bd223cd409">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The onDemandService. <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ondemand/onDemandService.html">Javadoc</a>. </p>
+<div class="textblock"><p>A handle of a Java OnDemandService object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>One service is associated with each endpoint that has the role <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> or <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445af04b3deaa2904fe7bebf833c1f5292e8">DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED</a>: get it with <a class="el" href="group__OnDemand.html#ga2eb4459c14fe1256e4df000c0037e5ae" title="Returns the on-demand service of the default endpoint with the DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED role...">dxfg_OnDemandService_getInstance()</a> or <a class="el" href="group__OnDemand.html#ga1a7a5c2910e7925717e62c41f92b5552" title="Returns the on-demand service of the specified endpoint.">dxfg_OnDemandService_getInstance2()</a>. Releasing the handle does not stop the replay and does not close the endpoint.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/ondemand/OnDemandService.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="aa01355f7a7f585cff428b6bd223cd409" name="aa01355f7a7f585cff428b6bd223cd409"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa01355f7a7f585cff428b6bd223cd409">&#9670;&#160;</a></span>handler</h2>
@@ -135,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ma
 </div><!--header-->
 <div class="contents">
 
+<p>The market maker event: a snapshot of the aggregated top quotes of a market participant.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -129,7 +132,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a9b5375341937d8d9e745e81bc6dd5337" id="r_a9b5375341937d8d9e745e81bc6dd5337"><td class="memItemLeft">int64_t&#160;</td><td class="memItemRight"><a class="el" href="#a9b5375341937d8d9e745e81bc6dd5337">ask_count</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketMaker.html">Javadoc</a> </p>
+<div class="textblock"><p>The market maker event: a snapshot of the aggregated top quotes of a market participant. </p>
+<p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64abd7d9f8c20ffb3385b2d60df6894cc24" title="MarketMaker, an indexed event: the top quotes of a market participant.">DXFG_EVENT_MARKET_MAKER</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketMaker.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a9b5375341937d8d9e745e81bc6dd5337" name="a9b5375341937d8d9e745e81bc6dd5337"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b5375341937d8d9e745e81bc6dd5337">&#9670;&#160;</a></span>ask_count</h2>
@@ -142,6 +147,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the individual ask orders in the event. </p>
 
 </div>
 </div>
@@ -156,6 +162,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -170,6 +177,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ask size, NaN if unknown. </p>
 
 </div>
 </div>
@@ -184,6 +192,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last ask change, in milliseconds since the Unix epoch (UTC). By default it has a precision of seconds, so it is usually a multiple of 1000. </p>
 
 </div>
 </div>
@@ -198,6 +207,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the individual bid orders in the event. </p>
 
 </div>
 </div>
@@ -212,6 +222,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid price, NaN if unknown. </p>
 
 </div>
 </div>
@@ -226,6 +237,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The bid size, NaN if unknown. </p>
 
 </div>
 </div>
@@ -240,6 +252,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the last bid change, in milliseconds since the Unix epoch (UTC). By default it has a precision of seconds, so it is usually a multiple of 1000. </p>
 
 </div>
 </div>
@@ -254,6 +267,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -268,6 +282,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the event, a non-negative number; see MarketMaker.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -282,6 +297,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>

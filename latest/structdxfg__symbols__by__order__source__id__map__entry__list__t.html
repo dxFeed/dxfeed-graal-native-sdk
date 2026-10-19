@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__sy
 </div><!--header-->
 <div class="contents">
 
+<p>A list of the entries of the symbols by the identifier of an order source (Java <span class="tt">Collection&lt;? extends Map.Entry&lt;Integer, Set&lt;String&gt;&gt;&gt;</span>).  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__orcs_8h_source.html">dxfg_orcs.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a24adc45124e60f3c3e9d9ec98ef80ad7" id="r_a24adc45124e60f3c3e9d9ec98ef80ad7"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a24adc45124e60f3c3e9d9ec98ef80ad7">size</a></td></tr>
 <tr class="memitem:ac97cf7f1b0b8f7d273228caf5e569c26" id="r_ac97cf7f1b0b8f7d273228caf5e569c26"><td class="memItemLeft"><a class="el" href="structdxfg__symbols__by__order__source__id__map__entry__t.html">dxfg_symbols_by_order_source_id_map_entry_t</a> **&#160;</td><td class="memItemRight"><a class="el" href="#ac97cf7f1b0b8f7d273228caf5e569c26">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of the entries of the symbols by the identifier of an order source (Java <span class="tt">Collection&lt;? extends Map.Entry&lt;Integer, Set&lt;String&gt;&gt;&gt;</span>). </p>
+<p>Returned by <a class="el" href="group__AuthOrderSourceFunctions.html#ga0738bfc62a0770f823d143e513f8521a" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByIds()</a>; release it with <a class="el" href="group__AuthOrderSourceFunctions.html#gab439e8b8d882092ed881fb7ba726e988" title="Frees a list of the entries (the identifier of an order source, the symbols).">dxfg_symbols_by_order_source_id_map_entry_list_free()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ac97cf7f1b0b8f7d273228caf5e569c26" name="ac97cf7f1b0b8f7d273228caf5e569c26"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac97cf7f1b0b8f7d273228caf5e569c26">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of <span class="tt"><a class="el" href="#a24adc45124e60f3c3e9d9ec98ef80ad7">size</a></span> pointers to the entries; NULL for an empty list. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the entries; 0 for an empty list. </p>
 
 </div>
 </div>

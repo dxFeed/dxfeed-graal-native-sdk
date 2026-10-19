@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__un
 </div><!--header-->
 <div class="contents">
 
+<p>The underlying event: a snapshot of the values computed for an option underlying symbol.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -127,7 +130,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab08b5ae463a40aa8f91d40013a460af2" id="r_ab08b5ae463a40aa8f91d40013a460af2"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#ab08b5ae463a40aa8f91d40013a460af2">put_call_ratio</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Underlying.html">Javadoc</a> </p>
+<div class="textblock"><p>The underlying event: a snapshot of the values computed for an option underlying symbol. </p>
+<p>It is a lasting event and a time series event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64aa5cfe43f26cd194f68ec91699541ef90" title="Underlying, a lasting event and a time series event: the values of an underlying.">DXFG_EVENT_UNDERLYING</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Underlying.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a6944fb4df31f33688952d6e558e46d74" name="a6944fb4df31f33688952d6e558e46d74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6944fb4df31f33688952d6e558e46d74">&#9670;&#160;</a></span>back_volatility</h2>
@@ -140,6 +145,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The back month implied volatility of the underlying based on the VIX methodology, NaN if unknown. </p>
 
 </div>
 </div>
@@ -154,6 +160,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The traded volume of the call options for a day, NaN if unknown. </p>
 
 </div>
 </div>
@@ -168,6 +175,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The transactional event flags (TX_PENDING, REMOVE_EVENT, SNAPSHOT_BEGIN and so on), see IndexedEvent in Java. </p>
 
 </div>
 </div>
@@ -182,6 +190,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The front month implied volatility of the underlying based on the VIX methodology, NaN if unknown. </p>
 
 </div>
 </div>
@@ -196,6 +205,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The unique per-symbol index of the event: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21); see Underlying.getIndex() in Java. </p>
 
 </div>
 </div>
@@ -210,6 +220,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__market__event__t.html" title="The base structure of the market events: the event symbol and the event time.">dxfg_market_event_t</a>. </p>
 
 </div>
 </div>
@@ -224,6 +235,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The ratio of the traded volume of the put options to the traded volume of the call options, NaN if unknown. </p>
 
 </div>
 </div>
@@ -238,6 +250,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The traded volume of the put options for a day, NaN if unknown. </p>
 
 </div>
 </div>
@@ -252,6 +265,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The 30-day implied volatility of the underlying based on the VIX methodology, NaN if unknown. </p>
 
 </div>
 </div>

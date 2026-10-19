@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__st
 </div><!--header-->
 <div class="contents">
 
+<p>A list of strings.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__javac_8h_source.html">dxfg_javac.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a44b4f14987e23dd9a3ec8e31eae281f1" id="r_a44b4f14987e23dd9a3ec8e31eae281f1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a44b4f14987e23dd9a3ec8e31eae281f1">size</a></td></tr>
 <tr class="memitem:af93ebbe5c03f0c26dc32551b1d8bf832" id="r_af93ebbe5c03f0c26dc32551b1d8bf832"><td class="memItemLeft">const char **&#160;</td><td class="memItemRight"><a class="el" href="#af93ebbe5c03f0c26dc32551b1d8bf832">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of strings. </p>
+<p>A list that a function returns is allocated by the SDK: release it with <a class="el" href="group__Javac.html#gad20babc2ba3d6e425c2ba5d70200b7ae">dxfg_CList_String_release()</a>, which frees every string, the array of the strings and the list itself. A list that is passed to a function is only read by the SDK: the caller keeps its ownership. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="af93ebbe5c03f0c26dc32551b1d8bf832" name="af93ebbe5c03f0c26dc32551b1d8bf832"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af93ebbe5c03f0c26dc32551b1d8bf832">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of <span class="tt"><a class="el" href="#a44b4f14987e23dd9a3ec8e31eae281f1">size</a></span> pointers to the NUL-terminated UTF-8 strings; NULL for an empty list that the SDK created. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of strings; 0 for an empty list. </p>
 
 </div>
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__me
 </div><!--header-->
 <div class="contents">
 
+<p>The message event: a notification with an application-specific attachment.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -122,15 +125,17 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ae28ea46affac94fc21a02cd24bd2b45b" id="r_ae28ea46affac94fc21a02cd24bd2b45b"><td class="memItemLeft">void *&#160;</td><td class="memItemRight"><a class="el" href="#ae28ea46affac94fc21a02cd24bd2b45b">attachment</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html">Javadoc</a></p>
-<p>The <span class="tt"><a class="el" href="#ae28ea46affac94fc21a02cd24bd2b45b">attachment</a></span> (the same for <a class="el" href="structdxfg__configuration__t.html">dxfg_configuration_t</a>) is a UTF-8 null-terminated string (<span class="tt">const char *</span>, declared as <span class="tt">void *</span>) or NULL when there is no attachment:</p><ul>
+<div class="textblock"><p>The message event: a notification with an application-specific attachment. </p>
+<p>It is neither a lasting nor an indexed event: messages are never conflated, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64aa8bf4f582f6a3e26e8841d76894952e4" title="Message: a notification with an attachment (neither lasting nor indexed).">DXFG_EVENT_MESSAGE</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html">Javadoc</a></p>
+<p>The <span class="tt"><a class="el" href="#ae28ea46affac94fc21a02cd24bd2b45b">attachment</a></span> (the same for <a class="el" href="structdxfg__configuration__t.html" title="The configuration event: an application-specific attachment with a version.">dxfg_configuration_t</a>) is a UTF-8 null-terminated string (<span class="tt">const char *</span>, declared as <span class="tt">void *</span>) or NULL when there is no attachment:</p><ul>
 <li>Java -&gt; C: a <span class="tt">String</span> attachment is passed as is, the other objects are passed as their string representation (<span class="tt">toString()</span>), no attachment is NULL. An attachment that Java cannot deserialize (e.g. its class is not registered for the native image) is NULL too, the SDK logs a warning then.</li>
 <li>C -&gt; Java: the attachment becomes a <span class="tt">String</span>, NULL is no attachment.</li>
 </ul>
 <p>So a non-string attachment loses its type when it passes through C: if the event is published back (or forwarded to another endpoint), the Java receivers get the string instead of the original object.</p>
-<p>The C API does not support arbitrary Java attachments: C can neither create nor read them. For a string payload prefer <a class="el" href="structdxfg__text__message__t.html">dxfg_text_message_t</a> and <a class="el" href="structdxfg__text__configuration__t.html">dxfg_text_configuration_t</a> (TextMessage, TextConfiguration): their <span class="tt">text</span> is a plain string that passes both ways without loss.</p>
+<p>The C API does not support arbitrary Java attachments: C can neither create nor read them. For a string payload prefer <a class="el" href="structdxfg__text__message__t.html" title="The text message event: a notification with a text.">dxfg_text_message_t</a> and <a class="el" href="structdxfg__text__configuration__t.html" title="The text configuration event: a text with a version.">dxfg_text_configuration_t</a> (TextMessage, TextConfiguration): their <span class="tt">text</span> is a plain string that passes both ways without loss.</p>
 <p>Memory:</p><ul>
-<li>The events that the SDK gives to the caller (to a listener, from <a class="el" href="group__Feed.html#gad089809007fbcfc3e8f6c1e72f8c82fc">dxfg_DXFeed_getLastEvent()</a>, a promise, etc.) own their strings: the SDK frees them with the event (after the listener returns, or with <a class="el" href="dxfg__events_8h.html#abc759b9ca2cdec617b5ce1ddeec24d08">dxfg_EventType_release()</a> and <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>). Copy the attachment to keep it longer.</li>
+<li>The events that the SDK gives to the caller (to a listener, from <a class="el" href="group__Feed.html#gad089809007fbcfc3e8f6c1e72f8c82fc" title="Fills the given event with the last event for its type and symbol.">dxfg_DXFeed_getLastEvent()</a>, a promise, etc.) own their strings: the SDK frees them with the event (after the listener returns, or with <a class="el" href="dxfg__events_8h.html#abc759b9ca2cdec617b5ce1ddeec24d08">dxfg_EventType_release()</a> and <a class="el" href="dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850">dxfg_CList_EventType_release()</a>). Copy the attachment to keep it longer.</li>
 <li>The events that the caller allocates itself and passes to the SDK (<a class="el" href="group__Publisher.html#ga3e16206c40030e305f290532ba1e1013">dxfg_DXPublisher_publishEvents()</a>, etc.) are only read: the SDK copies the attachment during the call, the caller allocates and frees it.</li>
 <li><a class="el" href="dxfg__events_8h.html#abc759b9ca2cdec617b5ce1ddeec24d08">dxfg_EventType_release()</a> of an event created by <a class="el" href="dxfg__events_8h.html#a2a9cb02c8962cf82b8e5308c003272c8">dxfg_EventType_new()</a> frees its strings with the SDK's allocator. If the caller sets the attachment of such an event to its own string, it resets the attachment to NULL before the release and frees the string itself (the allocators of the caller and of the SDK may differ, e.g. on Windows). </li>
 </ul>
@@ -146,7 +151,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The attachment: a UTF-8 null-terminated string (<span class="tt">const char *</span>) or NULL, see <a class="el" href="structdxfg__message__t.html">dxfg_message_t</a>. </p>
+<p>The attachment: a UTF-8 null-terminated string (<span class="tt">const char *</span>) or NULL, see <a class="el" href="structdxfg__message__t.html" title="The message event: a notification with an application-specific attachment.">dxfg_message_t</a>. </p>
 
 </div>
 </div>
@@ -161,6 +166,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbol of the event (a UTF-8 null-terminated string) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -175,6 +181,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the event was created, in milliseconds since the Unix epoch (UTC), or 0 if not available. </p>
 
 </div>
 </div>
@@ -189,6 +196,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__event__type__t.html" title="The base structure of every event: the first field of all the event structures.">dxfg_event_type_t</a>. </p>
 
 </div>
 </div>

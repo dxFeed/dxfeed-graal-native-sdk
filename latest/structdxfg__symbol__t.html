@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,20 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__sy
 </div><!--header-->
 <div class="contents">
 
+<p>The base structure of every symbol: the first field of all the symbol structures.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a0263e42addca77b3a0f872cd04b0abb7" id="r_a0263e42addca77b3a0f872cd04b0abb7"><td class="memItemLeft"><a class="el" href="dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3">dxfg_symbol_type_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0263e42addca77b3a0f872cd04b0abb7">type</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The base structure of every symbol: the first field of all the symbol structures. </p>
+<p><span class="tt"><a class="el" href="#a0263e42addca77b3a0f872cd04b0abb7">type</a></span> tells which of the structures <a class="el" href="structdxfg__string__symbol__t.html" title="A string symbol (for example, a ticker).">dxfg_string_symbol_t</a>, <a class="el" href="structdxfg__candle__symbol__t.html" title="A candle symbol.">dxfg_candle_symbol_t</a>, <a class="el" href="structdxfg__wildcard__symbol__t.html" title="The wildcard symbol: the subscription to all symbols of an event type.">dxfg_wildcard_symbol_t</a>, <a class="el" href="structdxfg__indexed__event__subscription__symbol__t.html" title="The subscription to the indexed events of one source.">dxfg_indexed_event_subscription_symbol_t</a> and <a class="el" href="structdxfg__time__series__subscription__symbol__t.html" title="The subscription to the time series of events from a time.">dxfg_time_series_subscription_symbol_t</a> the pointer really points to; cast the pointer to it to read the other fields.</p>
+<p>A symbol created by <a class="el" href="dxfg__events_8h.html#a0df46f798b1c53537b4ba3f10a2d5fb5">dxfg_Symbol_new()</a> or returned by the SDK is released with <a class="el" href="dxfg__events_8h.html#a86d3c80ee28ca8024605fd0031691359">dxfg_Symbol_release()</a> (a list of symbols with <a class="el" href="dxfg__events_8h.html#a8b6c748571e5250fe02ca1f9aa5565a5">dxfg_CList_symbol_release()</a>): that frees the structure, its strings and the nested symbols and sources. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a0263e42addca77b3a0f872cd04b0abb7" name="a0263e42addca77b3a0f872cd04b0abb7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0263e42addca77b3a0f872cd04b0abb7">&#9670;&#160;</a></span>type</h2>
 
@@ -130,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The kind of the symbol. </p>
 
 </div>
 </div>

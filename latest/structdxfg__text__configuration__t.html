@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__te
 </div><!--header-->
 <div class="contents">
 
+<p>The text configuration event: a text with a version.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__events_8h_source.html">dxfg_events.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -124,7 +127,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a4e37ba5361b95d191350a0f594de15fd" id="r_a4e37ba5361b95d191350a0f594de15fd"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#a4e37ba5361b95d191350a0f594de15fd">text</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextConfiguration.html">Javadoc</a> </p>
+<div class="textblock"><p>The text configuration event: a text with a version. </p>
+<p>It is a lasting event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64abbecd1772190bf51d348d301bdda0a2a" title="TextConfiguration, a lasting event: a text with a version.">DXFG_EVENT_TEXT_CONFIGURATION</a>.</p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/TextConfiguration.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="ae276afc39f82347ab247c3d6211b44a4" name="ae276afc39f82347ab247c3d6211b44a4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae276afc39f82347ab247c3d6211b44a4">&#9670;&#160;</a></span>event_symbol</h2>
@@ -137,6 +142,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The symbol of the event (a UTF-8 null-terminated string) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -151,6 +157,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time when the event was created, in milliseconds since the Unix epoch (UTC), or 0 if not available. </p>
 
 </div>
 </div>
@@ -165,6 +172,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The base structure: the fields of <a class="el" href="structdxfg__event__type__t.html" title="The base structure of every event: the first field of all the event structures.">dxfg_event_type_t</a>. </p>
 
 </div>
 </div>
@@ -179,6 +187,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The text (a UTF-8 string, NULL if none) that belongs to the event and is freed with it. </p>
 
 </div>
 </div>
@@ -193,6 +202,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The time of the configuration and the sequence packed into one number: the time in seconds since the Unix epoch in the higher 32 bits, then the milliseconds part of the time (bits 22 to 31) and the sequence (bits 0 to 21). </p>
 
 </div>
 </div>
@@ -207,6 +217,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The version of the event: a higher value is a more recent update. </p>
 
 </div>
 </div>

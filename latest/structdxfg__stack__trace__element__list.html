@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -108,9 +108,12 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__st
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">dxfg_stack_trace_element_list Struct Reference</div></div>
+  <div class="headertitle"><div class="title">dxfg_stack_trace_element_list Struct Reference<div class="ingroups"><a class="el" href="group__Exceptions.html">Exceptions</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The stack trace of an exception: a list of its frames, the innermost call first.  
+ <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__catch__exception_8h_source.html">dxfg_catch_exception.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a0854e3598ddc27c01cce5cb57e7a0044" id="r_a0854e3598ddc27c01cce5cb57e7a0044"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#a0854e3598ddc27c01cce5cb57e7a0044">size</a></td></tr>
 <tr class="memitem:a194617388978d691d9fb342ca11e9fe8" id="r_a194617388978d691d9fb342ca11e9fe8"><td class="memItemLeft"><a class="el" href="structdxfg__stack__trace__element__t.html">dxfg_stack_trace_element_t</a> **&#160;</td><td class="memItemRight"><a class="el" href="#a194617388978d691d9fb342ca11e9fe8">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The stack trace of an exception: a list of its frames, the innermost call first. </p>
+<p>The structure belongs to the <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> that contains it and is freed with it by <a class="el" href="group__Exceptions.html#ga8f097e8b38f9787c8111cb565fe211f1" title="Releases an exception that was returned by dxfg_get_and_clear_thread_exception_t().">dxfg_Exception_release()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a194617388978d691d9fb342ca11e9fe8" name="a194617388978d691d9fb342ca11e9fe8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a194617388978d691d9fb342ca11e9fe8">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of <span class="tt"><a class="el" href="#a0854e3598ddc27c01cce5cb57e7a0044">size</a></span> pointers to the frames; NULL for an empty stack trace. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the frames; 0 for an empty stack trace. </p>
 
 </div>
 </div>

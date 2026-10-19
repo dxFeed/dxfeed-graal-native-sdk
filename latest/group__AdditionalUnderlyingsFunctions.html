@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -154,10 +154,10 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_gacd5bb5baf286aa5a6f83e2b0fb7ac366"><div class="ttname"><a href="#gacd5bb5baf286aa5a6f83e2b0fb7ac366">dxfg_AdditionalUnderlyings_EMPTY</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_additional_underlyings_t **emptyAdditionalUnderlyings)</div></div>
-<div class="ttc" id="agroup__Common_html_ga1f963123e29eb44994e0b7e10161527a"><div class="ttname"><a href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a></div><div class="ttdeci">#define DXFG_EXECUTE_SUCCESSFULLY</div><div class="ttdef"><b>Definition</b> dxfg_common.h:50</div></div>
+<div class="ttc" id="agroup__Common_html_ga1f963123e29eb44994e0b7e10161527a"><div class="ttname"><a href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a></div><div class="ttdeci">#define DXFG_EXECUTE_SUCCESSFULLY</div><div class="ttdef"><b>Definition</b> dxfg_common.h:61</div></div>
 <div class="ttc" id="agroup__Javac_html_ga923b84ec33ec668fc59c89168c832dac"><div class="ttname"><a href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler)</div></div>
 <div class="ttc" id="astructdxfg__additional__underlyings__t_html"><div class="ttname"><a href="structdxfg__additional__underlyings__t.html">dxfg_additional_underlyings_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:47</div></div>
-<div class="ttc" id="astructdxfg__additional__underlyings__t_html_a3af761aaabbbe167033ac08429756697"><div class="ttname"><a href="structdxfg__additional__underlyings__t.html#a3af761aaabbbe167033ac08429756697">dxfg_additional_underlyings_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:48</div></div>
+<div class="ttc" id="astructdxfg__additional__underlyings__t_html_a3af761aaabbbe167033ac08429756697"><div class="ttname"><a href="structdxfg__additional__underlyings__t.html#a3af761aaabbbe167033ac08429756697">dxfg_additional_underlyings_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:49</div></div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -165,7 +165,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
 
 </div>
 </div>
@@ -214,8 +214,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_gae4b09ecd9dd40393baeb03f4ea1c8678"><div class="ttname"><a href="#gae4b09ecd9dd40393baeb03f4ea1c8678">dxfg_AdditionalUnderlyings_getMap</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_getMap(graal_isolatethread_t *thread, dxfg_additional_underlyings_t *additionalUnderlyings, DXFG_OUT dxfg_string_to_double_map_entry_t **mapEntries, DXFG_OUT int32_t *size)</div></div>
-<div class="ttc" id="agroup__Common_html_ga89679b7394b02f500b65a39414712aed"><div class="ttname"><a href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a></div><div class="ttdeci">int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread, dxfg_string_to_double_map_entry_t *mapEntries, int32_t size)</div></div>
-<div class="ttc" id="astructdxfg__string__to__double__map__entry__t_html"><div class="ttname"><a href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a></div><div class="ttdoc">Single map entry. A pair of string and double.</div><div class="ttdef"><b>Definition</b> dxfg_common.h:59</div></div>
+<div class="ttc" id="agroup__Common_html_ga89679b7394b02f500b65a39414712aed"><div class="ttname"><a href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a></div><div class="ttdeci">int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread, dxfg_string_to_double_map_entry_t *mapEntries, int32_t size)</div><div class="ttdoc">Frees an array of string to double map entries that a function of the SDK returned.</div></div>
+<div class="ttc" id="astructdxfg__string__to__double__map__entry__t_html"><div class="ttname"><a href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a></div><div class="ttdoc">A map entry that consists of a string and a double: an element of an array that represents a map from...</div><div class="ttdef"><b>Definition</b> dxfg_common.h:79</div></div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -225,7 +225,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries()</a> to free the array of map entries. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Common.html#ga89679b7394b02f500b65a39414712aed" title="Frees an array of string to double map entries that a function of the SDK returned.">dxfg_free_string_to_double_map_entries()</a> to free the array of map entries. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getMap&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getMap&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -277,7 +277,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-java.lang.String-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-java.lang.String-</a> </dd></dl>
 
 </div>
@@ -329,7 +329,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-</a> </dd></dl>
 
 </div>
@@ -380,7 +380,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release()</a> to free the textual representation. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release()</a> to free the textual representation. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getText&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getText&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -429,7 +429,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.lang.String-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.lang.String-</a> </dd></dl>
 
 </div>
@@ -486,7 +486,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the additional underlyings handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.util.Map-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.util.Map-</a> </dd></dl>
 
 </div>

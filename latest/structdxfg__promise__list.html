@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__pr
 </div><!--header-->
 <div class="contents">
 
+<p>A list of promise handles.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__feed_8h_source.html">dxfg_feed.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a29689b6edb71e5420144e6332dbc6175" id="r_a29689b6edb71e5420144e6332dbc6175"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler__list.html">dxfg_java_object_handler_list</a>&#160;</td><td class="memItemRight"><a class="el" href="#a29689b6edb71e5420144e6332dbc6175">list</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of promise handles. </p>
+<p>A list that a function returns is allocated by the SDK: release it with <a class="el" href="group__Javac.html#ga4f7478ea9014f612e5faf17ba892b5a4">dxfg_CList_JavaObjectHandler_release()</a>, passing the field <span class="tt"><a class="el" href="#a29689b6edb71e5420144e6332dbc6175">list</a></span> (there is no release function specific to this list). That releases every promise handle, the array of the handles and the list itself. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a29689b6edb71e5420144e6332dbc6175" name="a29689b6edb71e5420144e6332dbc6175"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a29689b6edb71e5420144e6332dbc6175">&#9670;&#160;</a></span>list</h2>
 
@@ -130,6 +136,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The list of the promise handles: the number of the handles and the array of the pointers to them. </p>
 
 </div>
 </div>

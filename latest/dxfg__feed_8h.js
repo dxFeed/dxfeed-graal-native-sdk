@@ -1,15 +1,12 @@
 var dxfg__feed_8h =
 [
     [ "DXFG_PROMISE_AWAIT_TIMED_OUT", "group__Feed.html#gac629c9d2f443fda8187749c18cfffabf", null ],
-    [ "dxfg_executor_t", "group__Feed.html#gade97034d240b28697c940e4e8f1112f5", null ],
     [ "dxfg_feed_t", "group__Feed.html#ga7baa1d526b3c650baf22aef7261c5648", null ],
     [ "dxfg_promise_event_t", "group__Feed.html#gaab9ed43c613509771a4614f588dec809", null ],
     [ "dxfg_promise_events_t", "group__Feed.html#ga24e3957e082464e0439c7c90d72ccd06", null ],
     [ "dxfg_promise_handler_function", "group__Feed.html#ga1cfd35ac0fdd0e79a25f2923f3223c1d", null ],
     [ "dxfg_promise_list", "group__Feed.html#ga42df407643aebe5ee3b29463b505b7c3", null ],
     [ "dxfg_promise_t", "group__Feed.html#gabb837dccc1dd401f0380ae8d6c2bb1bf", null ],
-    [ "dxfg_subscription_t", "group__Feed.html#ga4649b52981e22beb55561e9285514e74", null ],
-    [ "dxfg_time_series_subscription_t", "group__Feed.html#ga933ffd1e3309a54b96a478163c7d8887", null ],
     [ "dxfg_DXFeed_attachSubscription", "group__Feed.html#ga502109cbd4ca05cf081f80ac6ad63873", null ],
     [ "dxfg_DXFeed_createSubscription", "group__Feed.html#gadfb1ba52f79171442ff09619d13a5305", null ],
     [ "dxfg_DXFeed_createSubscription2", "group__Feed.html#ga36b07899ffd487874a70d0920bb3e38b", null ],

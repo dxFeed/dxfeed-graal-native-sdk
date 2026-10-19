@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -132,15 +132,19 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a0cf7023f0e3929858271e4e3aab8e991" id="r_a0cf7023f0e3929858271e4e3aab8e991"><td class="memItemLeft">typedef struct __graal_isolate_t&#160;</td><td class="memItemRight"><a class="el" href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></td></tr>
+<tr class="memdesc:a0cf7023f0e3929858271e4e3aab8e991"><td class="mdescLeft">&#160;</td><td class="mdescRight">An isolate: the instance of the SDK (its heap and Java state) in the process.  <br /></td></tr>
 <tr class="memitem:aa00ad74821ed5cfab0f750c01e7255b2" id="r_aa00ad74821ed5cfab0f750c01e7255b2"><td class="memItemLeft">typedef struct __graal_isolatethread_t&#160;</td><td class="memItemRight"><a class="el" href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></td></tr>
+<tr class="memdesc:aa00ad74821ed5cfab0f750c01e7255b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The state of one thread attached to an isolate: the first parameter (<span class="tt">thread</span>) of the SDK functions.  <br /></td></tr>
 <tr class="memitem:a60b2dbeba2e20d4cb44de0ad74db841c" id="r_a60b2dbeba2e20d4cb44de0ad74db841c"><td class="memItemLeft">typedef unsigned long&#160;</td><td class="memItemRight"><a class="el" href="#a60b2dbeba2e20d4cb44de0ad74db841c">__graal_uword</a></td></tr>
+<tr class="memdesc:a60b2dbeba2e20d4cb44de0ad74db841c"><td class="mdescLeft">&#160;</td><td class="mdescRight">An unsigned integer of the size of a pointer: the type of the sizes in <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a>.  <br /></td></tr>
 <tr class="memitem:a0bb5e939e94e7a24de483816c4315ee7" id="r_a0bb5e939e94e7a24de483816c4315ee7"><td class="memItemLeft">typedef struct <a class="el" href="struct____graal__create__isolate__params__t.html">__graal_create_isolate_params_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7">graal_create_isolate_params_t</a></td></tr>
+<tr class="memdesc:a0bb5e939e94e7a24de483816c4315ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The parameters of <a class="el" href="#a3dffaccf18b0f6c777c247b22947ae62" title="Creates a new isolate and attaches the current thread to it.">graal_create_isolate()</a>: see struct <a class="el" href="struct____graal__create__isolate__params__t.html" title="The parameters of graal_create_isolate().">__graal_create_isolate_params_t</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a51fa370dbf43a9446e83bce7a1c052ee" id="r_a51fa370dbf43a9446e83bce7a1c052ee"><td class="memItemLeft"><a class="el" href="#a51fa370dbf43a9446e83bce7a1c052ee">enum </a>&#160;</td><td class="memItemRight">{ <a class="el" href="#a51fa370dbf43a9446e83bce7a1c052eea0c45f51697d100aee57cfd48c5f6146d">__graal_create_isolate_params_version</a> = 5
  }</td></tr>
-<tr class="memdesc:a51fa370dbf43a9446e83bce7a1c052ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">The version of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7">graal_create_isolate_params_t</a> that this header declares (its <span class="tt">version</span> field).  <a href="#a51fa370dbf43a9446e83bce7a1c052ee">More...</a><br /></td></tr>
+<tr class="memdesc:a51fa370dbf43a9446e83bce7a1c052ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">The version of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a> that this header declares (its <span class="tt">version</span> field).  <a href="#a51fa370dbf43a9446e83bce7a1c052ee">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -161,8 +165,8 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The functions of GraalVM that create, attach to and tear down an isolate, the instance of the SDK in the process: <a class="el" href="#a3dffaccf18b0f6c777c247b22947ae62" title="Creates a new isolate and attaches the current thread to it.">graal_create_isolate()</a>, <a class="el" href="#adaaf0f534a87e0f43bf50b67a1c6da82" title="Attaches the current thread to the isolate.">graal_attach_thread()</a>, <a class="el" href="#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a>, etc. </p>
-<p>native-image generates this header for the library of the SDK; the build of the SDK fails if the declarations here differ from the ones that its GraalVM generates, so only the comments are the SDK's. The x64 libraries (macOS x64 and the x86_64 slice of the iOS Simulator) are built with an older GraalVM, which declares version 4 of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7">graal_create_isolate_params_t</a>: the same fields, named _reserved_1, _reserved_2 and _reserved_3 instead of argc, argv and ignore_unrecognized_args; these libraries take the parameters of this header too. <a class="el" href="graal__isolate__dynamic_8h.html" title="The functions of graal_isolate.h as pointer types (graal_create_isolate_fn_t, etc....">graal_isolate_dynamic.h</a> declares the same functions as pointer types, for loading the library at run time.</p>
-<p>An isolate has its own heap and its own Java state (the system properties, the endpoints, etc.): the handles of one isolate cannot be used in another. Every thread that calls the SDK must be attached to the isolate, and every function of the SDK takes the <a class="el" href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> of the calling thread:</p>
+<p>native-image generates this header for the library of the SDK; the build of the SDK fails if the declarations here differ from the ones that its GraalVM generates, so only the comments are the SDK's. The x64 libraries (macOS x64 and the x86_64 slice of the iOS Simulator) are built with an older GraalVM, which declares version 4 of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a>: the same fields, named _reserved_1, _reserved_2 and _reserved_3 instead of argc, argv and ignore_unrecognized_args; these libraries take the parameters of this header too. <a class="el" href="graal__isolate__dynamic_8h.html" title="The functions of graal_isolate.h as pointer types (graal_create_isolate_fn_t, etc....">graal_isolate_dynamic.h</a> declares the same functions as pointer types, for loading the library at run time.</p>
+<p>An isolate has its own heap and its own Java state (the system properties, the endpoints, etc.): the handles of one isolate cannot be used in another. Every thread that calls the SDK must be attached to the isolate, and every function of the SDK takes the <a class="el" href="#aa00ad74821ed5cfab0f750c01e7255b2" title="The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.">graal_isolatethread_t</a> of the calling thread:</p>
 <div class="fragment"><div class="line"><a class="code hl_typedef" href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a> *isolate = NULL;</div>
 <div class="line"><a class="code hl_typedef" href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread = NULL;</div>
 <div class="line"><span class="keywordflow">if</span> (<a class="code hl_function" href="#a3dffaccf18b0f6c777c247b22947ae62">graal_create_isolate</a>(NULL, &amp;isolate, &amp;thread) != 0) { <span class="comment">// the current thread is attached</span></div>
@@ -181,11 +185,11 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// At the end (see dxfg_system_close_all_and_await_termination()):</span></div>
 <div class="line"><a class="code hl_function" href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc">dxfg_system_close_all_and_await_termination</a>(thread);</div>
 <div class="line"><a class="code hl_function" href="#a93f3ba0c5302eb2304934c5f819a671b">graal_tear_down_isolate</a>(thread);</div>
-<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdef"><b>Definition</b> graal_isolate.h:50</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdoc">An isolate: the instance of the SDK (its heap and Java state) in the process.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:50</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a3dffaccf18b0f6c777c247b22947ae62"><div class="ttname"><a href="#a3dffaccf18b0f6c777c247b22947ae62">graal_create_isolate</a></div><div class="ttdeci">int graal_create_isolate(graal_create_isolate_params_t *params, graal_isolate_t **isolate, graal_isolatethread_t **thread)</div><div class="ttdoc">Creates a new isolate and attaches the current thread to it.</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a92cf5dfbd4276b09fe00ee091ded000b"><div class="ttname"><a href="#a92cf5dfbd4276b09fe00ee091ded000b">graal_detach_thread</a></div><div class="ttdeci">int graal_detach_thread(graal_isolatethread_t *thread)</div><div class="ttdoc">Detaches the isolate thread from its isolate and discards its state.</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a93f3ba0c5302eb2304934c5f819a671b"><div class="ttname"><a href="#a93f3ba0c5302eb2304934c5f819a671b">graal_tear_down_isolate</a></div><div class="ttdeci">int graal_tear_down_isolate(graal_isolatethread_t *thread)</div><div class="ttdoc">Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...</div></div>
-<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdef"><b>Definition</b> graal_isolate.h:59</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:59</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_adaaf0f534a87e0f43bf50b67a1c6da82"><div class="ttname"><a href="#adaaf0f534a87e0f43bf50b67a1c6da82">graal_attach_thread</a></div><div class="ttdeci">int graal_attach_thread(graal_isolate_t *isolate, graal_isolatethread_t **thread)</div><div class="ttdoc">Attaches the current thread to the isolate.</div></div>
 <div class="ttc" id="agroup__System_html_ga636a2efa1d17090bbf624185eb37acdc"><div class="ttname"><a href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc">dxfg_system_close_all_and_await_termination</a></div><div class="ttdeci">int32_t dxfg_system_close_all_and_await_termination(graal_isolatethread_t *thread)</div><div class="ttdoc">Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...</div></div>
 </div><!-- fragment --> </div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
@@ -234,6 +238,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>An unsigned integer of the size of a pointer: the type of the sizes in <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a>. </p>
+
 </div>
 </div>
 <a id="a0bb5e939e94e7a24de483816c4315ee7" name="a0bb5e939e94e7a24de483816c4315ee7"></a>
@@ -247,6 +253,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The parameters of <a class="el" href="#a3dffaccf18b0f6c777c247b22947ae62" title="Creates a new isolate and attaches the current thread to it.">graal_create_isolate()</a>: see struct <a class="el" href="struct____graal__create__isolate__params__t.html" title="The parameters of graal_create_isolate().">__graal_create_isolate_params_t</a>. </p>
 
 </div>
 </div>
@@ -262,6 +270,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>An isolate: the instance of the SDK (its heap and Java state) in the process. </p>
+<p>The pointer is valid until the isolate is torn down; <a class="el" href="#adaaf0f534a87e0f43bf50b67a1c6da82" title="Attaches the current thread to the isolate.">graal_attach_thread()</a> and <a class="el" href="#aa750d98024e07a8f8993a5020fc7be47" title="Returns the isolate thread of the current thread in the isolate.">graal_get_current_thread()</a> take it. </p>
+
 </div>
 </div>
 <a id="aa00ad74821ed5cfab0f750c01e7255b2" name="aa00ad74821ed5cfab0f750c01e7255b2"></a>
@@ -275,6 +286,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The state of one thread attached to an isolate: the first parameter (<span class="tt">thread</span>) of the SDK functions. </p>
+<p>It belongs to the thread that attached itself (<a class="el" href="#a3dffaccf18b0f6c777c247b22947ae62" title="Creates a new isolate and attaches the current thread to it.">graal_create_isolate()</a>, <a class="el" href="#adaaf0f534a87e0f43bf50b67a1c6da82" title="Attaches the current thread to the isolate.">graal_attach_thread()</a>) and must not be used by other threads; it is valid until the thread detaches (<a class="el" href="#a92cf5dfbd4276b09fe00ee091ded000b" title="Detaches the isolate thread from its isolate and discards its state.">graal_detach_thread()</a>) or the isolate is torn down. </p>
 
 </div>
 </div>
@@ -291,7 +305,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The version of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7">graal_create_isolate_params_t</a> that this header declares (its <span class="tt">version</span> field). </p>
+<p>The version of <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a> that this header declares (its <span class="tt">version</span> field). </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a51fa370dbf43a9446e83bce7a1c052eea0c45f51697d100aee57cfd48c5f6146d" name="a51fa370dbf43a9446e83bce7a1c052eea0c45f51697d100aee57cfd48c5f6146d"></a>__graal_create_isolate_params_version&#160;</td><td class="fielddoc"></td></tr>
 </table>
@@ -358,7 +372,7 @@ Functions</h2></td></tr>
 <p>Creates a new isolate and attaches the current thread to it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">params</td><td>The parameters (see <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7">graal_create_isolate_params_t</a>), or NULL for the defaults. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">params</td><td>The parameters (see <a class="el" href="#a0bb5e939e94e7a24de483816c4315ee7" title="The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t.">graal_create_isolate_params_t</a>), or NULL for the defaults. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">isolate</td><td>Receives the isolate, if not NULL. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">thread</td><td>Receives the isolate thread of the current thread, if not NULL. </td></tr>
   </table>

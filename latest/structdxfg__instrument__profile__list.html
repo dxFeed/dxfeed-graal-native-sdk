@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__in
 </div><!--header-->
 <div class="contents">
 
+<p>A list of instrument profile handles.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__ipf_8h_source.html">dxfg_ipf.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -119,7 +122,10 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab130ca22387c4a893cc19a2c9f6e4b58" id="r_ab130ca22387c4a893cc19a2c9f6e4b58"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ab130ca22387c4a893cc19a2c9f6e4b58">size</a></td></tr>
 <tr class="memitem:a64f45543ed405d381f66e532e79a12a9" id="r_a64f45543ed405d381f66e532e79a12a9"><td class="memItemLeft"><a class="el" href="structdxfg__instrument__profile__t.html">dxfg_instrument_profile_t</a> **&#160;</td><td class="memItemRight"><a class="el" href="#a64f45543ed405d381f66e532e79a12a9">elements</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A list of instrument profile handles. </p>
+<p>Release the list and all the profile handles in it with <a class="el" href="group__InstrumentProfile.html#gac998eddb1692d38686c75adbad915a73" title="Releases the list and all the instrument profile handles in it.">dxfg_CList_InstrumentProfile_release()</a>, or only the list with <a class="el" href="group__InstrumentProfile.html#ga06e856f431b1bd13a06b9964d1649553" title="Releases the list structure only and keeps the instrument profile handles in it.">dxfg_CList_InstrumentProfile_wrapper_release()</a>. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a64f45543ed405d381f66e532e79a12a9" name="a64f45543ed405d381f66e532e79a12a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a64f45543ed405d381f66e532e79a12a9">&#9670;&#160;</a></span>elements</h2>
 
@@ -131,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The array of size pointers to the instrument profile handles; NULL if the list is empty. </p>
 
 </div>
 </div>
@@ -145,6 +152,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The number of the elements. </p>
 
 </div>
 </div>

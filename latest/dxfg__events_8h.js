@@ -133,7 +133,7 @@ var dxfg__events_8h =
     [ "dxfg_CList_EventClazz_release", "dxfg__events_8h.html#ad3bb5a2ac82b7c84aa534d290831faf0", null ],
     [ "dxfg_CList_EventType_release", "dxfg__events_8h.html#a7041220ca29d0ac47b69e7f253e07850", null ],
     [ "dxfg_CList_IndexedEventSource_release", "dxfg__events_8h.html#ab56f2e16e3502ee57d385c612e892468", null ],
-    [ "dxfg_CList_symbol_release", "dxfg__events_8h.html#ae2c0cbd905f09d4f56cc794075e8623f", null ],
+    [ "dxfg_CList_symbol_release", "dxfg__events_8h.html#a8b6c748571e5250fe02ca1f9aa5565a5", null ],
     [ "dxfg_EventType_new", "dxfg__events_8h.html#a2a9cb02c8962cf82b8e5308c003272c8", null ],
     [ "dxfg_EventType_release", "dxfg__events_8h.html#abc759b9ca2cdec617b5ce1ddeec24d08", null ],
     [ "dxfg_IndexedEvent_getSource", "dxfg__events_8h.html#a78c08504e8e5a66de8c632e4ced014cb", null ],

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ip
 </div><!--header-->
 <div class="contents">
 
-<p>The PropertyChangeListener. <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>.  
+<p>A handle of a Java PropertyChangeListener object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dxfg__ipf_8h_source.html">dxfg_ipf.h</a>&gt;</code></p>
@@ -122,7 +122,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a3d7c170b05dc75b5eb8480a4c3683770" id="r_a3d7c170b05dc75b5eb8480a4c3683770"><td class="memItemLeft"><a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#a3d7c170b05dc75b5eb8480a4c3683770">handler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The PropertyChangeListener. <a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a>. </p>
+<div class="textblock"><p>A handle of a Java PropertyChangeListener object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>. </p>
+<p>The listener calls a <a class="el" href="group__InstrumentProfile.html#ga9ddc23d6c198ca3c944fe5eef1a16629" title="The function of a dxfg_ipf_connection_state_change_listener_t: called when the state of the connectio...">dxfg_ipf_connection_state_change_listener_func</a> when the state of an instrument profile connection changes. Create it with <a class="el" href="group__InstrumentProfile.html#ga9e34c21674b0b8ce3c1c0b474bd1babe" title="Creates a listener of the state changes of a connection that calls a C function.">dxfg_IpfPropertyChangeListener_new()</a>. The last handle of the listener that is released deactivates the listener: its function is not called anymore.</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/beans/PropertyChangeListener.html">Javadoc</a> </p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a3d7c170b05dc75b5eb8480a4c3683770" name="a3d7c170b05dc75b5eb8480a4c3683770"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3d7c170b05dc75b5eb8480a4c3683770">&#9670;&#160;</a></span>handler</h2>
@@ -135,6 +137,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The handle of the Java object. </p>
 
 </div>
 </div>

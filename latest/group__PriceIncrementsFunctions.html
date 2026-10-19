@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -162,11 +162,11 @@ Functions</h2></td></tr>
 <div class="line">} <span class="keywordflow">else</span> {</div>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__Common_html_ga1f963123e29eb44994e0b7e10161527a"><div class="ttname"><a href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a></div><div class="ttdeci">#define DXFG_EXECUTE_SUCCESSFULLY</div><div class="ttdef"><b>Definition</b> dxfg_common.h:50</div></div>
+<div class="ttc" id="agroup__Common_html_ga1f963123e29eb44994e0b7e10161527a"><div class="ttname"><a href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a></div><div class="ttdeci">#define DXFG_EXECUTE_SUCCESSFULLY</div><div class="ttdef"><b>Definition</b> dxfg_common.h:61</div></div>
 <div class="ttc" id="agroup__Javac_html_ga923b84ec33ec668fc59c89168c832dac"><div class="ttname"><a href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler)</div></div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga151d1f921d1d1c272d6bc58e29332046"><div class="ttname"><a href="#ga151d1f921d1d1c272d6bc58e29332046">dxfg_PriceIncrements_EMPTY</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_price_increments_t **emptyPriceIncrements)</div></div>
-<div class="ttc" id="astructdxfg__price__increments__t_html"><div class="ttname"><a href="structdxfg__price__increments__t.html">dxfg_price_increments_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:143</div></div>
-<div class="ttc" id="astructdxfg__price__increments__t_html_a34198ceaa999a7e23eac27a1d992dc09"><div class="ttname"><a href="structdxfg__price__increments__t.html#a34198ceaa999a7e23eac27a1d992dc09">dxfg_price_increments_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:144</div></div>
+<div class="ttc" id="astructdxfg__price__increments__t_html"><div class="ttname"><a href="structdxfg__price__increments__t.html">dxfg_price_increments_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:147</div></div>
+<div class="ttc" id="astructdxfg__price__increments__t_html_a34198ceaa999a7e23eac27a1d992dc09"><div class="ttname"><a href="structdxfg__price__increments__t.html#a34198ceaa999a7e23eac27a1d992dc09">dxfg_price_increments_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:149</div></div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -174,7 +174,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#EMPTY">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#EMPTY</a> </dd></dl>
 
 </div>
@@ -220,7 +220,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -272,7 +272,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-</a> </dd></dl>
 
 </div>
@@ -331,7 +331,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-int-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-int-</a> </dd></dl>
 
 </div>
@@ -376,7 +376,7 @@ Functions</h2></td></tr>
 <div class="line">} <span class="keywordflow">else</span> {</div>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__Common_html_ga4e4d9157846f96d084b3f581f9222e85"><div class="ttname"><a href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a></div><div class="ttdeci">int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer)</div></div>
+<div class="ttc" id="agroup__Common_html_ga4e4d9157846f96d084b3f581f9222e85"><div class="ttname"><a href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a></div><div class="ttdeci">int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer)</div><div class="ttdoc">Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated,...</div></div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gaabf9dac2b53c31e6e1d045ddfd03b653"><div class="ttname"><a href="#gaabf9dac2b53c31e6e1d045ddfd03b653">dxfg_PriceIncrements_getPriceIncrements</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPriceIncrements(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, DXFG_OUT double **increments, DXFG_OUT int32_t *size)</div></div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -387,7 +387,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free()</a> to free the array of increments. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85" title="Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated,...">dxfg_free()</a> to free the array of increments. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrements&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrements&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -433,7 +433,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -485,7 +485,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision-double-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision-double-</a> </dd></dl>
 
 </div>
@@ -538,7 +538,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release()</a> to free the textual representation. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release()</a> to free the textual representation. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getText&amp;ndash;">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getText&amp;ndash;</a> </dd></dl>
 
 </div>
@@ -597,7 +597,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Throws IllegalArgumentException if direction is 0. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Throws IllegalArgumentException if direction is 0. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-</a> </dd></dl>
 
 </div>
@@ -662,7 +662,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Throws IllegalArgumentException if direction is 0 or step uses invalid value. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Throws IllegalArgumentException if direction is 0 or step uses invalid value. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-double-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-double-</a> </dd></dl>
 
 </div>
@@ -714,7 +714,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-</a> </dd></dl>
 
 </div>
@@ -771,7 +771,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-int-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-int-</a> </dd></dl>
 
 </div>
@@ -819,7 +819,7 @@ Functions</h2></td></tr>
 <div class="line">} <span class="keywordflow">else</span> {</div>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__Javac_html_gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d"><div class="ttname"><a href="group__Javac.html#gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d">DXFG_ROUNDING_MODE_CEILING</a></div><div class="ttdeci">@ DXFG_ROUNDING_MODE_CEILING</div><div class="ttdef"><b>Definition</b> dxfg_javac.h:152</div></div>
+<div class="ttc" id="agroup__Javac_html_gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d"><div class="ttname"><a href="group__Javac.html#gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d">DXFG_ROUNDING_MODE_CEILING</a></div><div class="ttdeci">@ DXFG_ROUNDING_MODE_CEILING</div><div class="ttdef"><b>Definition</b> dxfg_javac.h:270</div></div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -830,7 +830,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-java.math.RoundingMode-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-java.math.RoundingMode-</a> </dd></dl>
 
 </div>
@@ -879,7 +879,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-java.lang.String-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-java.lang.String-</a> </dd></dl>
 
 </div>
@@ -927,7 +927,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double-</a> </dd></dl>
 
 </div>
@@ -983,7 +983,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="dxfg__catch__exception_8h.html#a69ce665610067e7e6cf0ba5aa0cfb9a0">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. Use <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> to free the price increments handle. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double:A-">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double:A-</a> </dd></dl>
 
 </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.9.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
    </div>
   </td>
  </tr>
@@ -112,13 +112,21 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('structdxfg__ja
 </div><!--header-->
 <div class="contents">
 
+<p>The handle of a Java object: the reference by which the C code refers to an object that lives in Java.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="dxfg__javac_8h_source.html">dxfg_javac.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a2ff74c5ede378e9e00db11564a9a68f9" id="r_a2ff74c5ede378e9e00db11564a9a68f9"><td class="memItemLeft">void *&#160;</td><td class="memItemRight"><a class="el" href="#a2ff74c5ede378e9e00db11564a9a68f9">java_object_handle</a></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The handle of a Java object: the reference by which the C code refers to an object that lives in Java. </p>
+<p>The handle is allocated by the SDK and owned by the caller: release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>, which frees the structure and drops the reference to the Java object. As long as any handle of an object exists, the object is not garbage collected. Use <a class="el" href="group__Javac.html#gac1d3eab12de62c11215a1686ad6abc7c">dxfg_JavaObjectHandler_clone()</a> to get another handle of the same object.</p>
+<p>The typed handle structures (e.g. <a class="el" href="structdxfg__executor__t.html" title="A handle of a Java Executor object; release it with dxfg_JavaObjectHandler_release().">dxfg_executor_t</a>, <a class="el" href="structdxfg__time__zone__t.html" title="A handle of a Java TimeZone object; release it with dxfg_JavaObjectHandler_release().">dxfg_time_zone_t</a>) consist of this structure only (the field <span class="tt">handler</span>), so a pointer to a typed handle is passed to the functions that take a <a class="el" href="structdxfg__java__object__handler.html" title="The handle of a Java object: the reference by which the C code refers to an object that lives in Java...">dxfg_java_object_handler</a> * as <span class="tt">&amp;typed-&gt;handler</span> (or by a cast).</p>
+<p>Use <a class="el" href="group__Javac.html#gac744677a9cb5d8d19196b1007afab5b0">dxfg_Object_toString()</a> to get the string representation of the object, <a class="el" href="group__Javac.html#ga1837c76d55d3561f990852e52c22a24e">dxfg_Object_equals()</a> to compare objects and <a class="el" href="group__Javac.html#ga979478d879205066fb70b7f8d0e755fb">dxfg_Object_hashCode()</a> to get the hash code. </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a2ff74c5ede378e9e00db11564a9a68f9" name="a2ff74c5ede378e9e00db11564a9a68f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ff74c5ede378e9e00db11564a9a68f9">&#9670;&#160;</a></span>java_object_handle</h2>
 
@@ -130,6 +138,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The reference to the Java object (an opaque value of the SDK): do not interpret or change it. </p>
 
 </div>
 </div>
