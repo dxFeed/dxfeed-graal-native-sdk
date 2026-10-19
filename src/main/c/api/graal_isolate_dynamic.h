@@ -35,26 +35,28 @@
 #ifndef __GRAAL_ISOLATE_H
 #define __GRAAL_ISOLATE_H
 
+struct __graal_isolate_t;
 /**
  * @brief An isolate: the instance of the SDK (its heap and Java state) in the process.
  *
  * The pointer is valid until the isolate is torn down; graal_attach_thread() and graal_get_current_thread() take it.
  */
-struct __graal_isolate_t;
 typedef struct __graal_isolate_t graal_isolate_t;
 
+struct __graal_isolatethread_t;
 /**
  * @brief The state of one thread attached to an isolate: the first parameter (`thread`) of the SDK functions.
  *
  * It belongs to the thread that attached itself (graal_create_isolate(), graal_attach_thread()) and must not be used
  * by other threads; it is valid until the thread detaches (graal_detach_thread()) or the isolate is torn down.
  */
-struct __graal_isolatethread_t;
 typedef struct __graal_isolatethread_t graal_isolatethread_t;
 
 #ifdef _WIN64
+/** @brief An unsigned integer of the size of a pointer: the type of the sizes in graal_create_isolate_params_t. */
 typedef unsigned long long __graal_uword;
 #else
+/** @brief An unsigned integer of the size of a pointer: the type of the sizes in graal_create_isolate_params_t. */
 typedef unsigned long __graal_uword;
 #endif
 
@@ -133,6 +135,7 @@ struct __graal_create_isolate_params_t {
     /** @brief Internal, leave it 0. */
     char           _reserved_5;
 };
+/** @brief The parameters of graal_create_isolate(): see struct __graal_create_isolate_params_t. */
 typedef struct __graal_create_isolate_params_t graal_create_isolate_params_t;
 
 #if defined(__cplusplus)

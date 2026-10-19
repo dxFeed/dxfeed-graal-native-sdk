@@ -22,58 +22,113 @@ extern "C" {
 #include "dxfg_javac.h"
 #include "graal_isolate.h"
 
-/** @defgroup Logging
+/** @defgroup Logging Logging
+ *  @brief Interception of the messages that the QD library and the SDK log, and the logging levels.
+ *
+ *  The messages are logged by the Java `com.devexperts.logging` system of the isolate. Instead of the console and the
+ *  log files the messages can be given to a C function: create a listener with dxfg_logging_listener_new() and
+ *  install it with dxfg_logging_set_listener(). The logging implementation is chosen when the first message is logged,
+ *  so the property `log.className` (see dxfg_system_set_property()) must be set before that, as in the sample of
+ *  dxfg_logging_listener_new().
+ *
+ *  The classes `InterceptableLogging` and `InterceptableLoggingListener` that the functions of this group call belong
+ *  to the SDK (package `com.devexperts.logging`), not to the QD library.
+ *
+ *  The ownership rules of the handles are described in the group @ref Javac.
  *  @{
  */
 
 /**
- * Defines a set of standard logging levels that can be used to control logging output.
+ * @brief The logging levels that can be used to control the logging output.
+ *
+ * The values correspond to the levels of `java.util.logging.Level` that the logging system uses.
+ *
+ * Java: `java.util.logging.Level`.
  */
 typedef enum dxfg_logging_level_t {
-    /// Indicates that all messages should be logged.
+    /** Indicates that all messages should be logged (`Level.ALL`). */
     DXFG_LOGGING_LEVEL_ALL = 0,
 
-    /// Indicates a highly detailed tracing message.
+    /** Indicates a highly detailed tracing message (`Level.FINEST`). */
     DXFG_LOGGING_LEVEL_TRACE,
 
-    /// It is a message level providing tracing debug information.
+    /** A message level providing tracing debug information (`Level.FINE`). */
     DXFG_LOGGING_LEVEL_DEBUG,
 
-    /// It is a message level for informational messages.
+    /** A message level for informational messages (`Level.INFO`). */
     DXFG_LOGGING_LEVEL_INFO,
 
-    /// It is a message level indicating a potential problem.
+    /** A message level indicating a potential problem (`Level.WARNING`). */
     DXFG_LOGGING_LEVEL_WARN,
 
-    /// It is a message level indicating a serious failure.
+    /** A message level indicating a serious failure (`Level.SEVERE`). */
     DXFG_LOGGING_LEVEL_ERROR,
 
-    /// It is a special level that can be used to turn off logging.
+    /** A special level that can be used to turn off logging (`Level.OFF`). */
     DXFG_LOGGING_LEVEL_OFF,
 } dxfg_logging_level_t;
 
 /**
- * A handle of a wrapper class for a listener that allows to intercept logged messages.
+ * @brief A handle of a Java InterceptableLoggingListener object, a wrapper of a listener that allows to intercept the
+ * logged messages; release it with dxfg_JavaObjectHandler_release().
+ *
+ * Create it with dxfg_logging_listener_new() and install it with dxfg_logging_set_listener(). The last handle of the
+ * listener that is released deactivates the listener: its function is not called anymore.
  */
 typedef struct dxfg_logging_listener_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_logging_listener_t;
 
-/// A callback type for the logging listener.
+/**
+ * @brief The function of a dxfg_logging_listener_t: called for every message that is logged while the listener is
+ * installed and the level of the message is not below the logging level (see dxfg_logging_set_log_level()).
+ *
+ * The function is called synchronously by the Java thread that logs the message, which may be any thread of the
+ * isolate (including the threads of the endpoints), not the thread that installed the listener. The calls are
+ * serialized by a lock of the logging system: the function is never called concurrently, and while it runs the other
+ * threads that log wait. So it should return quickly and should not block.
+ *
+ * The strings and the exception are allocated by the SDK for the call and released by the SDK after the function
+ * returns: copy what is needed, do not keep the pointers and do not release them. A string or the exception is NULL
+ * when the corresponding value is absent.
+ *
+ * Java: `InterceptableLoggingListener.onLog(Level, long, String, long, String, String, Throwable, String)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] level The level of the message.
+ * @param[in] timestamp The time of the message in milliseconds since the Unix epoch (UTC).
+ * @param[in] thread_name The name of the Java thread that logged the message, a NUL-terminated UTF-8 string.
+ * @param[in] thread_id The identifier of the Java thread that logged the message.
+ * @param[in] logger_name The name of the logger, a NUL-terminated UTF-8 string (NULL if the logger has no name).
+ * @param[in] message The text of the message without the time, the level and other parts of the layout, a
+ * NUL-terminated UTF-8 string.
+ * @param[in] exception The exception that is logged with the message, or NULL if there is none. See
+ * dxfg_exception_t.
+ * @param[in] formatted_message The whole line that the logging system would write: the message with the time, the
+ * level, the thread and the exception formatted with the layout of the logging system, a NUL-terminated UTF-8
+ * string.
+ * @param[in] user_data The pointer that was passed to dxfg_logging_listener_new(); the SDK does not use it.
+ */
 typedef void (*dxfg_logging_listener_function_t)(graal_isolatethread_t *thread, dxfg_logging_level_t level,
                                                  int64_t timestamp, const char *thread_name, int64_t thread_id,
                                                  const char *logger_name, const char *message,
                                                  dxfg_exception_t *exception, const char *formatted_message,
                                                  void *user_data);
 
-// dxfg_JavaObjectHandler_release
-
 /**
- * Creates a new listener.
+ * @brief Creates a new logging listener.
  *
+ * The listener does nothing until it is installed with dxfg_logging_set_listener(). The function is called as
+ * described at dxfg_logging_listener_function_t.
+ *
+ * Releasing the last handle of the listener with dxfg_JavaObjectHandler_release() (or dxfg_NativeListener_deactivate())
+ * stops the calls of the function: after the release returns the function is not running and is not called anymore,
+ * so the user data can be freed. An installed listener cannot be replaced or removed (see
+ * dxfg_logging_set_listener()), it can only be deactivated this way.
+ *
+ * Sample:
  * ```c
- * //
- *
  * void callback(graal_isolatethread_t *thread, dxfg_logging_level_t level, int64_t timestamp, const char *thread_name,
  *     int64_t thread_id, const char *logger_name, const char *message, dxfg_exception_t *exception,
  *     const char *formatted_message, void *user_data) {
@@ -101,29 +156,49 @@ typedef void (*dxfg_logging_listener_function_t)(graal_isolatethread_t *thread, 
  * dxfg_JavaObjectHandler_release(isolate_thread, &ep->handler);
  * ```
  *
+ * Java: `InterceptableLoggingListener.onLog(Level, long, String, long, String, String, Throwable, String)`.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The listener callback.
- * @param[in] user_data The user data that will be passed to the callback.
- * @param[out] listener The new listener.
+ * @param[in] user_data The user data that will be passed to the callback; the SDK does not use it. It must stay valid
+ * until the listener is deactivated.
+ * @param[out] listener The pointer to the variable that receives the new listener (release its handle with
+ * dxfg_JavaObjectHandler_release()). It is written only on success. A NULL pointer is an error.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the listener handle.
  */
 int32_t dxfg_logging_listener_new(graal_isolatethread_t *thread, dxfg_logging_listener_function_t user_func,
                                   void *user_data, DXFG_OUT dxfg_logging_listener_t **listener);
 
 /**
- * Sets the logging listener. This function will toggle logging. Messages will not be logged to console and files.
+ * @brief Installs the logging listener.
+ *
+ * It toggles the logging: the existing handlers of the logging system are removed, so the messages are not logged to
+ * the console and to files anymore, and the messages are given to the listener. The level of the messages that reach
+ * the listener is taken from the system property `log.level` (all messages by default) and can be changed with
+ * dxfg_logging_set_log_level().
+ *
+ * Only the first installed listener works: if a listener is already installed, the function does nothing. A NULL
+ * listener does nothing as well. In both cases the function returns #DXFG_EXECUTE_SUCCESSFULLY. The installed
+ * listener cannot be removed; release its handle (see dxfg_logging_listener_new()) to stop its calls.
+ *
+ * Java: `InterceptableLogging.setListener(InterceptableLoggingListener)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] listener The logging listener.
+ * @param[in] listener The logging listener. The caller keeps its handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
 int32_t dxfg_logging_set_listener(graal_isolatethread_t *thread, dxfg_logging_listener_t *listener);
 
 /**
- * Sets the logging level for the listener or console or log file.
+ * @brief Sets the logging level for the listener or the console or the log file.
+ *
+ * The level is set for the first handler of the logging system: the handler of the listener if one is installed
+ * (see dxfg_logging_set_listener()), otherwise the console or the log file (`log.file`). If there is no such handler,
+ * the function does nothing and returns #DXFG_EXECUTE_SUCCESSFULLY.
+ *
+ * Java: `InterceptableLogging.setLogLevel(Level)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] level The new logging level.
@@ -133,7 +208,14 @@ int32_t dxfg_logging_set_listener(graal_isolatethread_t *thread, dxfg_logging_li
 int32_t dxfg_logging_set_log_level(graal_isolatethread_t *thread, dxfg_logging_level_t level);
 
 /**
- * Sets the logging level for the err file.
+ * @brief Sets the logging level for the err file.
+ *
+ * The level is set for the second handler of the logging system: the file of the errors (`err.file`). If there is no
+ * such handler (e.g. a listener is installed or `err.file` is not set), the function does nothing and returns
+ * #DXFG_EXECUTE_SUCCESSFULLY. The default level of the err file is taken from the system property `err.level`
+ * (warnings and errors by default).
+ *
+ * Java: `InterceptableLogging.setErrLevel(Level)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] level The new logging level.

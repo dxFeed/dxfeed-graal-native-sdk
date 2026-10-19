@@ -20,27 +20,57 @@ extern "C" {
 
 #include "graal_isolate.h"
 
-/** @defgroup System
+/** @defgroup System System
+ *  @brief The Java system properties of the isolate and the shutdown of the SDK's resources.
+ *
+ *  The ownership rules of the strings are described in the group @ref Javac.
  *  @{
  */
 
 /**
- * @brief Sets the system property indicated by the specified key.
+ * @brief Sets the Java system property indicated by the specified key.
  *
- * The properties that configure endpoints must be set before the first endpoint is created. For example:
+ * The property is a property of the Java system of the isolate (`System.setProperty`): the QD library and the SDK
+ * read their settings from it, e.g. the properties of the endpoints (`dxfeed.address`, `dxfeed.threadPoolSize`, ...)
+ * and of the logging (`log.className`, `log.level`, see the group @ref Logging). The properties that configure
+ * endpoints must be set before the first endpoint is created. For example:
  * - `com.dxfeed.sdk.TimeSyncTracker.enable` = `true` enables the QD `TimeSyncTracker`, which sends UDP multicast
  *   packets (239.192.51.45:5145 by default, see `com.devexperts.qd.tools.TimeSyncTracker.addr` and `.port`)
  *   to compare the clocks of the hosts. The SDK disables it by default.
+ *
+ * Java: `System.setProperty(String, String)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] key The name of the property, a NUL-terminated UTF-8 string; the SDK copies it. It must not be NULL or
+ * empty.
+ * @param[in] value The value of the property, a NUL-terminated UTF-8 string; the SDK copies it. It must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
 int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key, const char *value);
 
 /**
- * @brief Gets the system property indicated by the specified key.
+ * @brief Gets the Java system property indicated by the specified key.
+ *
+ * Java: `System.getProperty(String)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] key The name of the property, a NUL-terminated UTF-8 string. It must not be NULL or empty.
+ * @return The value of the property as a NUL-terminated UTF-8 string allocated by the SDK (release it with
+ * dxfg_system_release_property()), or NULL if the property is not set. NULL is also returned on error: use
+ * dxfg_get_and_clear_thread_exception_t() to get the exception, it returns NULL if there was none.
  */
 const char *dxfg_system_get_property(graal_isolatethread_t *thread, const char *key);
 
 /**
- * @brief Frees pointer that was previously allocated in Java method (by UnmanagedMemory).
+ * @brief Releases a property value that dxfg_system_get_property() returned.
+ *
+ * The string is freed: do not use it after that. Passing NULL does nothing.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] value The value returned by dxfg_system_get_property().
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
 int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *value);
 
@@ -64,9 +94,14 @@ int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *
  * 3. Release the remaining handles.
  * 4. graal_tear_down_isolate().
  *
+ * The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an
+ * endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the
+ * call are not closed by it. The function is a function of the SDK: there is no QD method that it calls.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on success or #DXFG_EXECUTE_FAIL (-1) on error.
- * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
+ * the waiting thread is interrupted). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
+ * thrown.
  */
 int32_t dxfg_system_close_all_and_await_termination(graal_isolatethread_t *thread);
 

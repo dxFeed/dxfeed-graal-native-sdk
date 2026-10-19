@@ -1,6 +1,14 @@
 // Copyright (c) 2025 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
+/**
+ * @file
+ * @brief The header to include for the whole C API of the SDK: it includes every header of the API, graal_isolate.h
+ * among them.
+ *
+ * A program that loads the library at run time includes graal_isolate_dynamic.h before it (see there).
+ */
+
 #ifndef DXFG_API_H
 #define DXFG_API_H
 

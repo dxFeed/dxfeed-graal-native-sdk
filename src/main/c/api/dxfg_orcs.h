@@ -24,10 +24,19 @@ extern "C" {
 
 /**
  * @defgroup OrcsApi ORCS API
+ * @brief The client of the ORCS (order and quote history) service: price levels and quotes of a candle symbol within a
+ * time range, the order sources and symbols that are available to the client, and the checker of an order list.
+ *
+ * All the functions of this API return #DXFG_EXECUTE_SUCCESSFULLY (0) or #DXFG_EXECUTE_FAIL (-1) on error, and the
+ * result is passed through an `[out]` parameter; it is not changed on error. A NULL `[out]` pointer is an error too.
+ * dxfg_get_and_clear_thread_exception_t() gives the exception. A handle that a function returns is owned by the
+ * caller: release it with dxfg_JavaObjectHandler_release() (see the group Javac for the ownership rules). A list of
+ * events is released with dxfg_CList_EventType_release(), the other lists have their own `_free` functions.
  */
 
 /**
- * @defgroup PriceLevelService
+ * @defgroup PriceLevelService PriceLevelService
+ * @brief The handle of the client of the price level service.
  * @ingroup OrcsApi
  *
  * @see PriceLevelServiceFunctions
@@ -35,16 +44,23 @@ extern "C" {
  */
 
 /**
+ * @brief A handle of a client of the price level service; release it with dxfg_JavaObjectHandler_release().
+ *
+ * Create it with dxfg_PriceLevelService_new(), which connects it to an RMI endpoint. Releasing the handle does not
+ * close the connection: call dxfg_PriceLevelService_close().
+ *
  * https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/PriceLevelService.html
  */
 typedef struct dxfg_price_level_service_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_price_level_service_t;
 
 /// @} end of PriceLevelService
 
 /**
- * @defgroup AuthOrderSource
+ * @defgroup AuthOrderSource AuthOrderSource
+ * @brief The order sources and symbols that are available to the client, and the structures that describe them.
  * @ingroup OrcsApi
  *
  * @see AuthOrderSourceFunctions
@@ -52,36 +68,70 @@ typedef struct dxfg_price_level_service_t {
  */
 
 /**
- * Represents information about available symbols to the client for the
- * entitled collection of OrderSource.
+ * @brief A handle of Java AuthOrderSource: the information about the symbols that are available to the client for the
+ * entitled collection of order sources; release it with dxfg_JavaObjectHandler_release().
+ *
+ * Get it with dxfg_PriceLevelService_getAuthOrderSource(); read it with dxfg_AuthOrderSource_getByIds() or
+ * dxfg_AuthOrderSource_getByOrderSources().
  *
  * https://docs.dxfeed.com/orcs/com/dxfeed/orcs/api/AuthOrderSource.html
  */
 typedef struct dxfg_auth_order_source_t {
+    /** The handle of the Java object. */
     dxfg_java_object_handler handler;
 } dxfg_auth_order_source_t;
 
-// Map.Entry<Integer, Set<String>
+/**
+ * @brief An entry of the symbols by the identifier of an order source (Java `Map.Entry<Integer, Set<String>>`).
+ *
+ * The structure belongs to the list dxfg_symbols_by_order_source_id_map_entry_list_t that contains it.
+ */
 typedef struct dxfg_symbols_by_order_source_id_map_entry_t {
+    /** The identifier of the order source (the `id` of a dxfg_indexed_event_source_t of the type ORDER_SOURCE). */
     int32_t order_source_id;
+    /** The symbols that are available to the client for the order source (UTF-8 null-terminated strings, in an
+     * unspecified order); the list belongs to the entry and is freed with it. */
     dxfg_string_list *symbols;
 } dxfg_symbols_by_order_source_id_map_entry_t;
 
-// Collection<? extends Map.Entry<Integer, Set<String>>
+/**
+ * @brief A list of the entries of the symbols by the identifier of an order source (Java
+ * `Collection<? extends Map.Entry<Integer, Set<String>>>`).
+ *
+ * Returned by dxfg_AuthOrderSource_getByIds(); release it with dxfg_symbols_by_order_source_id_map_entry_list_free().
+ */
 typedef struct dxfg_symbols_by_order_source_id_map_entry_list_t {
+    /** The number of the entries; 0 for an empty list. */
     int32_t size;
+    /** The array of `size` pointers to the entries; NULL for an empty list. */
     dxfg_symbols_by_order_source_id_map_entry_t **elements;
 } dxfg_symbols_by_order_source_id_map_entry_list_t;
 
-// Map.Entry<? extends IndexedEventSource, Set<String>
+/**
+ * @brief An entry of the symbols by an order source (Java `Map.Entry<? extends IndexedEventSource, Set<String>>`).
+ *
+ * The structure belongs to the list dxfg_symbols_by_order_source_map_entry_list_t that contains it.
+ */
 typedef struct dxfg_symbols_by_order_source_map_entry_t {
+    /** The order source, a dxfg_indexed_event_source_t of the type ORDER_SOURCE; it belongs to the entry and is freed
+     * with it. */
     dxfg_indexed_event_source_t *order_source;
+    /** The symbols that are available to the client for the order source (UTF-8 null-terminated strings, in an
+     * unspecified order); the list belongs to the entry and is freed with it. */
     dxfg_string_list *symbols;
 } dxfg_symbols_by_order_source_map_entry_t;
 
-// Collection<? extends Map.Entry<? extends IndexedEventSource, Set<String>>
+/**
+ * @brief A list of the entries of the symbols by an order source (Java
+ * `Collection<? extends Map.Entry<? extends IndexedEventSource, Set<String>>>`).
+ *
+ * Returned by dxfg_AuthOrderSource_getByOrderSources(); release it with
+ * dxfg_symbols_by_order_source_map_entry_list_free().
+ */
 typedef struct dxfg_symbols_by_order_source_map_entry_list_t {
+    /** The number of the entries; 0 for an empty list. */
     int32_t size;
+    /** The array of `size` pointers to the entries; NULL for an empty list. */
     dxfg_symbols_by_order_source_map_entry_t **elements;
 } dxfg_symbols_by_order_source_map_entry_list_t;
 
@@ -89,45 +139,52 @@ typedef struct dxfg_symbols_by_order_source_map_entry_list_t {
 
 /**
  * @defgroup PriceLevelServiceFunctions PriceLevelService' functions
+ * @brief The functions that create, query and close the client of the price level service.
  * @ingroup PriceLevelService
  * @{
  */
 
 /**
- * Creates a new PriceLevelService instance and connects it to an RMI endpoint.
- * The handle of this instance will be written to the passed pointer.
+ * @brief Creates a client of the price level service and connects it to an RMI endpoint.
+ *
+ * The client is an RMI client endpoint that is connected to the address; the service is its proxy. The handle of the
+ * client is written to `service`. Close the connection with dxfg_PriceLevelService_close().
+ *
+ * Java: `new PriceLevelServiceHolder(String)` (the SDK class that wraps `RMIEndpoint` and `PriceLevelService`).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] address The RMI endpoint's address.
- * @param[out] service The pointer to the service's handle.
+ * @param[in] address The RMI endpoint's address: a UTF-8 null-terminated string; the caller keeps its ownership.
+ * @param[out] service The new client (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the service handle.
  */
 int32_t dxfg_PriceLevelService_new(graal_isolatethread_t *thread, const char *address,
                                    DXFG_OUT dxfg_price_level_service_t **service);
 
 /**
- * Returns a list of price levels for the specified CandleSymbol within passed `from` and `to` times.
- * The events are ordered by time in the collection.
+ * @brief Returns the price levels (orders) of a candle symbol within a time range.
  *
- * Passed candle symbol shall contain supported CandlePeriod and a custom attribute called granularity with the
- * key `GRANULARITY_ATTRIBUTE_KEY` ("gr"). Granularity value shall be represented by an integer value in seconds.
- * The minimal value for granularity is 1 second.
+ * The orders are sorted in ascending order by time.
  *
- * If passed CandlePeriod or granularity value are not supported by the service, the empty list will be returned.
+ * The candle symbol shall contain a supported CandlePeriod and a custom attribute called granularity with the key
+ * `GRANULARITY_ATTRIBUTE_KEY` ("gr"). The granularity value shall be an integer in seconds; the minimal value is 1
+ * second. If the CandlePeriod or the granularity is not supported by the service, the result is an empty list.
+ *
+ * Java: `PriceLevelService.getOrders(CandleSymbol, int, long, long, String)`, the order source is passed by its id.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
- * @param[in] candleSymbol The CandleSymbol to request.
- * @param[in] orderSource The OrderSource to request.
- * @param[in] from The "from" time in UTC.
- * @param[in] to The "to" time in UTC.
- * @param[in] caller The caller identifier.
- * @param[out] orders The pointer to the orders list.
+ * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
+ * another kind of symbol. The caller keeps its ownership.
+ * @param[in] orderSource The order source to request: a dxfg_indexed_event_source_t of the type ORDER_SOURCE; the call
+ * fails for another kind of source. The caller keeps its ownership.
+ * @param[in] from The "from" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] to The "to" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] caller The caller identifier: a UTF-8 null-terminated string that is passed to the service as is.
+ * @param[out] orders The list of the order events (dxfg_event_type_list), possibly empty. Release it with
+ * dxfg_CList_EventType_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_CList_EventType_release() to free the orders list.
  */
 int32_t dxfg_PriceLevelService_getOrders(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                          dxfg_symbol_t *candleSymbol, dxfg_indexed_event_source_t *orderSource,
@@ -135,88 +192,101 @@ int32_t dxfg_PriceLevelService_getOrders(graal_isolatethread_t *thread, dxfg_pri
                                          DXFG_OUT dxfg_event_type_list **orders);
 
 /**
- * Returns a list of price levels for the specified CandleSymbol within passed `from` and `to` times.
- * The events are ordered by time in the collection.
+ * @brief Returns the price levels (orders) of a candle symbol within a time range for the default caller.
  *
- * Passed candle symbol shall contain supported CandlePeriod and a custom attribute called granularity with the
- * key `GRANULARITY_ATTRIBUTE_KEY` ("gr"). Granularity value shall be represented by an integer value in seconds.
- * The minimal value for granularity is 1 second.
+ * It is the same as dxfg_PriceLevelService_getOrders() with the caller identifier "dxfg": see that function for the
+ * requirements on the candle symbol and the granularity, and for the empty list.
  *
- * If passed CandlePeriod or granularity value are not supported by the service, the empty list will be returned.
- *
- * The caller is set to a default value = "dxfg".
+ * Java: `PriceLevelService.getOrders(CandleSymbol, int, long, long, String)` with the caller "dxfg" (the SDK method
+ * `PriceLevelServiceHolder.getOrders(CandleSymbol, OrderSource, long, long)`).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
- * @param[in] candleSymbol The CandleSymbol to request.
- * @param[in] orderSource The OrderSource to request.
- * @param[in] from The "from" time in UTC.
- * @param[in] to The "to" time in UTC.
- * @param[out] orders The pointer to the orders list.
+ * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
+ * another kind of symbol. The caller keeps its ownership.
+ * @param[in] orderSource The order source to request: a dxfg_indexed_event_source_t of the type ORDER_SOURCE; the call
+ * fails for another kind of source. The caller keeps its ownership.
+ * @param[in] from The "from" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] to The "to" time in UTC (the unit is not stated by the Java documentation).
+ * @param[out] orders The list of the order events (dxfg_event_type_list), possibly empty. Release it with
+ * dxfg_CList_EventType_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_CList_EventType_release() to free the orders list.
  */
 int32_t dxfg_PriceLevelService_getOrders2(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                           dxfg_symbol_t *candleSymbol, dxfg_indexed_event_source_t *orderSource,
                                           int64_t from, int64_t to, DXFG_OUT dxfg_event_type_list **orders);
 
 /**
- * Returns available to the client order sources and symbols for each OrderSource. Order source and symbols
- * are filtered according to the client permissions. Symbols and order sources view is built as of now, e.g.
- * the response contains only existing data (for example, no symbols that were delisted)
+ * @brief Returns the order sources and the symbols of each order source that are available to the client.
+ *
+ * The order sources and the symbols are filtered according to the permissions of the client. The view is built as of
+ * now: the result contains only the existing data (for example, no symbols that were delisted). Read the result with
+ * dxfg_AuthOrderSource_getByIds() or dxfg_AuthOrderSource_getByOrderSources().
+ *
+ * Java: `PriceLevelService.getAuthOrderSource()`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
- * @param[out] authOrderSource The pointer to the AuthOrderSource.
+ * @param[out] authOrderSource The AuthOrderSource (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_JavaObjectHandler_release() to free the AuthOrderSource handle.
  */
 int32_t dxfg_PriceLevelService_getAuthOrderSource(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                                   DXFG_OUT dxfg_auth_order_source_t **authOrderSource);
 
 /**
- * Returns a list of quotes for the specified CandleSymbol within passed `from` and `to` times.
- * The quotes are ordered by time in the collection.
+ * @brief Returns the quotes of a candle symbol within a time range.
+ *
+ * The quotes are sorted in ascending order by time (see the Java documentation).
+ *
+ * Java: `PriceLevelService.getQuotes(CandleSymbol, long, long, String)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
- * @param[in] candleSymbol The CandleSymbol to request.
- * @param[in] from The "from" time in UTC.
- * @param[in] to The "to" time in UTC.
- * @param[in] caller The caller identifier.
- * @param[out] quotes The pointer to the quotes list.
+ * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
+ * another kind of symbol. The caller keeps its ownership.
+ * @param[in] from The "from" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] to The "to" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] caller The caller identifier: a UTF-8 null-terminated string that is passed to the service as is.
+ * @param[out] quotes The list of the quote events (dxfg_event_type_list), possibly empty. Release it with
+ * dxfg_CList_EventType_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_CList_EventType_release() to free the quotes list.
  */
 int32_t dxfg_PriceLevelService_getQuotes(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                          dxfg_symbol_t *candleSymbol, int64_t from, int64_t to, const char *caller,
                                          DXFG_OUT dxfg_event_type_list **quotes);
 
 /**
- * Returns a list of quotes for the specified CandleSymbol within passed `from` and `to` times.
- * The quotes are ordered by time in the collection.
+ * @brief Returns the quotes of a candle symbol within a time range for the default caller.
  *
- * The caller is set to a default value = "dxfg".
+ * It is the same as dxfg_PriceLevelService_getQuotes() with the caller identifier "dxfg".
+ *
+ * Java: `PriceLevelService.getQuotes(CandleSymbol, long, long, String)` with the caller "dxfg" (the SDK method
+ * `PriceLevelServiceHolder.getQuotes(CandleSymbol, long, long)`).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
- * @param[in] candleSymbol The CandleSymbol to request.
- * @param[in] from The "from" time in UTC.
- * @param[in] to The "to" time in UTC.
- * @param[out] quotes The pointer to the quotes list.
+ * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
+ * another kind of symbol. The caller keeps its ownership.
+ * @param[in] from The "from" time in UTC (the unit is not stated by the Java documentation).
+ * @param[in] to The "to" time in UTC (the unit is not stated by the Java documentation).
+ * @param[out] quotes The list of the quote events (dxfg_event_type_list), possibly empty. Release it with
+ * dxfg_CList_EventType_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_CList_EventType_release() to free the quotes list.
  */
 int32_t dxfg_PriceLevelService_getQuotes2(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                           dxfg_symbol_t *candleSymbol, int64_t from, int64_t to,
                                           DXFG_OUT dxfg_event_type_list **quotes);
 
 /**
- * Closes the PriceLevelService and its RMI endpoint.
+ * @brief Closes the client of the price level service and its RMI endpoint.
+ *
+ * Do not use the client after the call; release its handle with dxfg_JavaObjectHandler_release().
+ *
+ * Java: `PriceLevelServiceHolder.close()` (the SDK class that closes its `RMIEndpoint`).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
@@ -229,29 +299,38 @@ int32_t dxfg_PriceLevelService_close(graal_isolatethread_t *thread, dxfg_price_l
 
 /**
  * @defgroup AuthOrderSourceFunctions AuthOrderSource' functions
+ * @brief The functions that read an AuthOrderSource and free the lists that they return.
  * @ingroup AuthOrderSource
  * @{
  */
 
 /**
- * Returns a list of map entries (OrderSource::id, [Symbol, ...]).
+ * @brief Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.
+ *
+ * The list is a copy: it does not depend on the handle of the AuthOrderSource.
+ *
+ * Java: `AuthOrderSource.getByIds()`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authOrderSource The AuthOrderSource.
- * @param[out] symbolsByOrderSourceIdMapEntryList The pointer to the list of entries.
+ * @param[out] symbolsByOrderSourceIdMapEntryList The list of the entries. Release it with
+ * dxfg_symbols_by_order_source_id_map_entry_list_free().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_symbols_by_order_source_id_map_entry_list_free() to free the list of entries.
  */
 int32_t dxfg_AuthOrderSource_getByIds(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_id_map_entry_list_t **symbolsByOrderSourceIdMapEntryList);
 
 /**
- * Frees the list of map entries (OrderSource::id, [Symbol, ...]).
+ * @brief Frees a list of the entries (the identifier of an order source, the symbols).
  *
- * @param thread The current GraalVM Isolate's thread.
- * @param list The list of entries.
+ * Frees the list, its entries and their symbol lists. A NULL list is ignored.
+ *
+ * Java: not applicable (the list is allocated by the SDK outside the Java heap).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] list The list of the entries that dxfg_AuthOrderSource_getByIds() returned.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
@@ -259,24 +338,32 @@ int32_t dxfg_symbols_by_order_source_id_map_entry_list_free(graal_isolatethread_
                                                             dxfg_symbols_by_order_source_id_map_entry_list_t *list);
 
 /**
- * Returns a list of map entries (OrderSource, [Symbol, ...]).
+ * @brief Returns the entries (an order source, the symbols) of an AuthOrderSource.
+ *
+ * The list is a copy: it does not depend on the handle of the AuthOrderSource.
+ *
+ * Java: `AuthOrderSource.getByOrderSources()`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authOrderSource The AuthOrderSource.
- * @param[out] symbolsByOrderSourceMapEntryList The pointer to the list of entries.
+ * @param[out] symbolsByOrderSourceMapEntryList The list of the entries. Release it with
+ * dxfg_symbols_by_order_source_map_entry_list_free().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- * Use dxfg_symbols_by_order_source_map_entry_list_free() to free the list of entries.
  */
 int32_t dxfg_AuthOrderSource_getByOrderSources(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_map_entry_list_t **symbolsByOrderSourceMapEntryList);
 
 /**
- * Frees the list of map entries (OrderSource, [Symbol, ...]).
+ * @brief Frees a list of the entries (an order source, the symbols).
+ *
+ * Frees the list, its entries, their order sources and their symbol lists. A NULL list is ignored.
+ *
+ * Java: not applicable (the list is allocated by the SDK outside the Java heap).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] list The list of entries.
+ * @param[in] list The list of the entries that dxfg_AuthOrderSource_getByOrderSources() returned.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
@@ -287,35 +374,43 @@ int32_t dxfg_symbols_by_order_source_map_entry_list_free(graal_isolatethread_t *
 
 /**
  * @defgroup PriceLevelCheckerFunctions PriceLevelChecker' functions
+ * @brief The checker of the consistency of a list of orders.
  * @ingroup OrcsApi
  * @{
  */
 
 /**
- * Validates the order list.
+ * @brief Checks the consistency of a list of orders.
  *
-* PriceLevelChecker:  utility class to check the consistency of an Order list in terms that in each time bid price is lower than ask price.
- * There is additional information may be gathered during the check:
- * <ul>
- *     <li>Gap detection for subsequent events. In other words, if there was a pause between orders greater than {@code timeGapBound}.</li>
- *     <li>Last bid and ask change with the minimal period of 1 second.</li>
- *     <li>Spike in quotes.</li>
- * </ul>
+ * PriceLevelChecker is a utility to check that in each moment of time the bid price of the orders is lower than the
+ * ask price. The check goes through the orders in the order of the list, so pass a list that is sorted by time, as
+ * dxfg_PriceLevelService_getOrders() returns it. Besides the result, the check reports to the Java log (not to the
+ * caller) the additional information:
+ * - a gap between two subsequent orders that is greater than `timeGapBound`;
+ * - the last bid and ask, changed with the minimal period of 1 second, when `printQuotes` is enabled;
+ * - a spike in the quotes, when `printQuotes` is enabled.
  *
- * Frees the list of map entries (OrderSource, [Symbol, ...]).
+ * The orders are not valid if the check finds a crossing of the bid and ask prices, or if the greatest gap between two
+ * subsequent orders is greater than `timeGapBound`. A list without orders is valid. Note that in some cases it is
+ * normal when the bid is greater than or equal to the ask.
+ *
+ * Java: `PriceLevelChecker.validate(List, long, boolean)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] orders The list of orders.
- * @param[in] timeGapBound The gap bound to check.
- * @param[in] printQuotes Enable a quotes logging during the check.
- * @param[out] isValid Set to 1 if orders are valid, 0 otherwise.
+ * @param[in] orders The list of the orders (events that are orders, for example the list that
+ * dxfg_PriceLevelService_getOrders() returned); the call fails for another kind of event. The caller keeps its
+ * ownership.
+ * @param[in] timeGapBound The greatest allowed gap between the times of two subsequent orders, in milliseconds (the
+ * unit of the time of an order).
+ * @param[in] printQuotes Non-zero to log the quotes during the check, 0 not to.
+ * @param[out] isValid Set to 1 if the orders are valid, 0 otherwise.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
 int32_t dxfg_PriceLevelChecker_validate(graal_isolatethread_t *thread, dxfg_event_type_list *orders,
                                         int64_t timeGapBound, int32_t /*bool*/ printQuotes, DXFG_OUT int32_t *isValid);
 
-/// @} end of AuthOrderSourceFunctions
+/// @} end of PriceLevelCheckerFunctions
 
 #ifdef __cplusplus
 }
