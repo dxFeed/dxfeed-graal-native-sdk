@@ -3,9 +3,9 @@ var group__Logging =
     [ "dxfg_logging_listener_t", "structdxfg__logging__listener__t.html", [
       [ "handler", "structdxfg__logging__listener__t.html#aa87188093c8871bd23f662242879f3f8", null ]
     ] ],
-    [ "dxfg_logging_level_t", "group__Logging.html#ga8e9b07dcc93b62d42d0b223f76147684", null ],
-    [ "dxfg_logging_listener_function_t", "group__Logging.html#gaf69b51fa5ab2897c944c2bc2f94543e4", null ],
-    [ "dxfg_logging_listener_t", "group__Logging.html#gae8c00fd8bcb4992550a9f8ce16598887", null ],
+    [ "dxfg_logging_level_t", "group__Logging.html#gafbf6e34a08ac91a33f6c4ed930bb798d", null ],
+    [ "dxfg_logging_listener_function_t", "group__Logging.html#ga4d5799b62ce4c03da38da085b81fa35e", null ],
+    [ "dxfg_logging_listener_t", "group__Logging.html#gabbc63dcab578b2d7c156eebff64e586d", null ],
     [ "dxfg_logging_level_t", "group__Logging.html#gad073e2926c039c31b133b9c278e97fc1", [
       [ "DXFG_LOGGING_LEVEL_ALL", "group__Logging.html#ggad073e2926c039c31b133b9c278e97fc1aff3191bbff9afd43f5a84b8bf4f35f6a", null ],
       [ "DXFG_LOGGING_LEVEL_TRACE", "group__Logging.html#ggad073e2926c039c31b133b9c278e97fc1ab5d9c795f6fb94b0258af08e77834be7", null ],

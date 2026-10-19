@@ -20,9 +20,9 @@ var group__AuthOrderSource =
       [ "elements", "structdxfg__symbols__by__order__source__map__entry__list__t.html#aa33d92a5e350ff0fd5718c34434aa0b9", null ],
       [ "size", "structdxfg__symbols__by__order__source__map__entry__list__t.html#ad0cd58c73b7db07cb962cbb0a6ca262a", null ]
     ] ],
-    [ "dxfg_auth_order_source_t", "group__AuthOrderSource.html#ga96f4a9b7c8e1c5e7467fae10a3ddbf8f", null ],
-    [ "dxfg_symbols_by_order_source_id_map_entry_list_t", "group__AuthOrderSource.html#ga279d62ea2c350cb5228f09d6f33721f3", null ],
-    [ "dxfg_symbols_by_order_source_id_map_entry_t", "group__AuthOrderSource.html#ga58496e82978681a6c582709dfa8b0d71", null ],
-    [ "dxfg_symbols_by_order_source_map_entry_list_t", "group__AuthOrderSource.html#gacdd05ee4c37975012abe22ce593e1fd3", null ],
-    [ "dxfg_symbols_by_order_source_map_entry_t", "group__AuthOrderSource.html#ga0e385060a796abdc1bd73ad7ad7f820c", null ]
+    [ "dxfg_auth_order_source_t", "group__AuthOrderSource.html#gaf9fed15fb37495bd03f9123b2600bd9a", null ],
+    [ "dxfg_symbols_by_order_source_id_map_entry_list_t", "group__AuthOrderSource.html#ga9cf1a7a6d189d93b6032d813f0023499", null ],
+    [ "dxfg_symbols_by_order_source_id_map_entry_t", "group__AuthOrderSource.html#gaa226225c4129096141fc0b92e6190704", null ],
+    [ "dxfg_symbols_by_order_source_map_entry_list_t", "group__AuthOrderSource.html#gaf7bd3b1bc0610850465ba5feca8fdb24", null ],
+    [ "dxfg_symbols_by_order_source_map_entry_t", "group__AuthOrderSource.html#gaed95802d60ebf260c4c406ac210254a4", null ]
 ];

@@ -1,0 +1,13 @@
+var searchData=
+[
+  ['market_5fevent_0',['market_event',['../structdxfg__quote__t.html#a74e257d30749c53db812726798f95547',1,'dxfg_quote_t::market_event'],['../structdxfg__profile__t.html#ae4fb7d89d30d33d88dd1092ab0d5a52d',1,'dxfg_profile_t::market_event'],['../structdxfg__summary__t.html#a64889e5658dd2d63871a62b0ffeec0a7',1,'dxfg_summary_t::market_event'],['../structdxfg__greeks__t.html#a3b085f0f05be152152166f80bf116d49',1,'dxfg_greeks_t::market_event'],['../structdxfg__underlying__t.html#a3e8896e2d586c3498c373559489cf445',1,'dxfg_underlying_t::market_event'],['../structdxfg__theo__price__t.html#a88d9ec3289a8fde4d70d48148952723b',1,'dxfg_theo_price_t::market_event'],['../structdxfg__trade__base__t.html#a706084bc5d642b1e2d7e00e6e74f1d07',1,'dxfg_trade_base_t::market_event'],['../structdxfg__time__and__sale__t.html#aa55ae4dd206252c6ab0bf16121374fc3',1,'dxfg_time_and_sale_t::market_event'],['../structdxfg__option__sale__t.html#a50191bbb1a1a46e7fa676a673f0bf470',1,'dxfg_option_sale_t::market_event'],['../structdxfg__market__maker__t.html#a289dc67771564365a0b4f3bc70ecaae4',1,'dxfg_market_maker_t::market_event'],['../structdxfg__order__base__t.html#a71a2efe7a165f40814589bf61eddda55',1,'dxfg_order_base_t::market_event'],['../structdxfg__series__t.html#ae95d1b94ce90b3d09e1119f573162b0c',1,'dxfg_series_t::market_event'],['../structdxfg__order__imbalance__t.html#a73f0c7b8b3359380f88737ca5b741e35',1,'dxfg_order_imbalance_t::market_event']]],
+  ['market_5fmaker_1',['market_maker',['../structdxfg__order__t.html#ab7406fcc440b60e39ee843d8f329678e',1,'dxfg_order_t']]],
+  ['match_5fid_2',['match_id',['../structdxfg__nuam__time__and__sale__t.html#a04e81735f8dcdd42b4204d81044b4fe9',1,'dxfg_nuam_time_and_sale_t']]],
+  ['matched_5fquantity_3',['matched_quantity',['../structdxfg__nuam__order__t.html#aa8712324c5b9ac2c581d2108e86739ad',1,'dxfg_nuam_order_t']]],
+  ['message_4',['message',['../structdxfg__exception__t.html#a354d2e683c6e01e94233d5ba2fb8087b',1,'dxfg_exception_t']]],
+  ['method_5fname_5',['method_name',['../structdxfg__stack__trace__element__t.html#a1660560f183c8e0ae08a0e3842d03748',1,'dxfg_stack_trace_element_t']]],
+  ['mmy_6',['mmy',['../structdxfg__instrument__profile2__t.html#afe487c4063e7f8b4e2e0050a590b5fd5',1,'dxfg_instrument_profile2_t']]],
+  ['module_5fname_7',['module_name',['../structdxfg__stack__trace__element__t.html#ab239e74fb5e49f17e09fcb0635a8cfdb',1,'dxfg_stack_trace_element_t']]],
+  ['module_5fversion_8',['module_version',['../structdxfg__stack__trace__element__t.html#a1a22ed9ed2d4aeba1aabd8306a82f390',1,'dxfg_stack_trace_element_t']]],
+  ['multiplier_9',['multiplier',['../structdxfg__instrument__profile2__t.html#a178ad4dfc4d032d62b6148522d97ac2f',1,'dxfg_instrument_profile2_t']]]
+];

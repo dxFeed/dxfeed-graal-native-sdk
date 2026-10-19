@@ -6,10 +6,10 @@ var group__CandleWebService =
     [ "dxfg_history_endpoint_builder_t", "structdxfg__history__endpoint__builder__t.html", [
       [ "handler", "structdxfg__history__endpoint__builder__t.html#a354339393df1433b6bb296e95dcb06f4", null ]
     ] ],
-    [ "dxfg_history_endpoint_builder_t", "group__CandleWebService.html#ga8f55aed2de53cd64199d57ad09786ef3", null ],
-    [ "dxfg_history_endpoint_compression_t", "group__CandleWebService.html#ga0249fc412cc66d66919374d93872f00c", null ],
-    [ "dxfg_history_endpoint_format_t", "group__CandleWebService.html#ga3c3719d211b8fe9d07db67f8074e5779", null ],
-    [ "dxfg_history_endpoint_t", "group__CandleWebService.html#ga8d382eab07c965dcdffbcf4f477b1bd4", null ],
+    [ "dxfg_history_endpoint_builder_t", "group__CandleWebService.html#ga1e29005f8a1c485e931f4ef7d8ae8214", null ],
+    [ "dxfg_history_endpoint_compression_t", "group__CandleWebService.html#ga502462de042b1ffdc1cf91d7c441547a", null ],
+    [ "dxfg_history_endpoint_format_t", "group__CandleWebService.html#ga795879aa3258ee2fa0e7a8f709319364", null ],
+    [ "dxfg_history_endpoint_t", "group__CandleWebService.html#ga9bb07a8782dd58741fe924b8ab117d95", null ],
     [ "dxfg_history_endpoint_compression_t", "group__CandleWebService.html#ga1c84d427fec17baad60ea800c3982c15", [
       [ "DXFG_HISTORY_ENDPOINT_COMPRESSION_NONE", "group__CandleWebService.html#gga1c84d427fec17baad60ea800c3982c15ad3406543e0950b08cdb32d6d28a41241", null ],
       [ "DXFG_HISTORY_ENDPOINT_COMPRESSION_ZIP", "group__CandleWebService.html#gga1c84d427fec17baad60ea800c3982c15a61b2229e0b03bef8344dd43da1ba60f0", null ],

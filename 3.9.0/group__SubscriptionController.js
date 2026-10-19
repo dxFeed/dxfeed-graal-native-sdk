@@ -4,7 +4,7 @@ var group__SubscriptionController =
       [ "handler", "structdxfg__subscription__controller__t.html#a74a41dbb9b5a612f9c5258f11d3a59cc", null ]
     ] ],
     [ "dxfg_feed_t", "group__SubscriptionController.html#ga7baa1d526b3c650baf22aef7261c5648", null ],
-    [ "dxfg_subscription_controller_t", "group__SubscriptionController.html#ga5fbbe1efed6bc2789e2554a6fa54073c", null ],
+    [ "dxfg_subscription_controller_t", "group__SubscriptionController.html#ga9c38fb298b515b7526cfeb82bf542d01", null ],
     [ "dxfg_SubscriptionController_attach", "group__SubscriptionController.html#gacb2ac7d55fb982e32dae33dca2ebd041", null ],
     [ "dxfg_SubscriptionController_detach", "group__SubscriptionController.html#gab2b2ddbebc35a604ed827efdb86ba4e0", null ],
     [ "dxfg_SubscriptionController_getAggregationPeriod", "group__SubscriptionController.html#ga47fbae4e5f259eec49d6e2ec5455cede", null ],
