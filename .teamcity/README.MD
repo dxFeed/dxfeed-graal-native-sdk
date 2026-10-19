@@ -145,7 +145,12 @@ One-time setup:
 
 1. Run `Build & Push a Test Docker Image [Linux, x64]` to publish `nexus-docker-graalvm.in.devexperts.com/cpp-test:linux-x64-ol9`.
    Run it again when `docker/cpp-test-linux-x64.Dockerfile` changes.
-2. To block merging a pull request without a successful build, enable the `Minimum successful builds` merge check in the
+2. Run `Build & Push a Docs Check Docker Image [Linux, x64]` to publish
+   `nexus-docker-graalvm.in.devexperts.com/docs-check:linux-x64-doxygen-<version>`, the image with the official Doxygen
+   binary for the check of the C API documentation (`docker/docs-check-linux-x64.Dockerfile`; the version and the SHA-256
+   of the release archive are `Doxygen` in `Common.kt`). Run it again when the Dockerfile changes, and right after a new
+   Doxygen version gets to `main`: the image of a new version has a new tag, which the check finds only once it is built.
+3. To block merging a pull request without a successful build, enable the `Minimum successful builds` merge check in the
    settings of the repository in Bitbucket.
 
 The same locally (after `mvn clean package` in the Linux build image):
@@ -153,6 +158,13 @@ The same locally (after `mvn clean package` in the Linux build image):
 ```shell
 docker build --pull -t cpp-test:linux-x64-ol9 -f .teamcity/docker/cpp-test-linux-x64.Dockerfile .teamcity
 docker run --rm -v "$(pwd):/mnt" cpp-test:linux-x64-ol9 "cd src/main/c && cmake --preset=conf-release . && cmake --build --preset=build-release -j\$(nproc) && ctest --test-dir build/conf-release --output-on-failure"
+```
+
+The check of the C API documentation locally (the version and the SHA-256 from `Doxygen` in `Common.kt`):
+
+```shell
+docker build --pull --build-arg DOXYGEN_VERSION=<version> --build-arg DOXYGEN_SHA256=<sha256> -t docs-check -f .teamcity/docker/docs-check-linux-x64.Dockerfile .teamcity
+docker run --rm -v "$(pwd):/mnt" docs-check "mkdir -p target/c-api-docs-check && doxygen docs/Doxyfile.check"
 ```
 
 # Building on macOS

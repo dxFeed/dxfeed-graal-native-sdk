@@ -41,7 +41,16 @@ object Images {
     const val GRAALVM_LINUX_AARCH64 = "$REGISTRY/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
     const val GRAALVM_WINDOWS_X64 = "$REGISTRY/graalvm:win-x64-%env.GRAALVM_VERSION%"
     const val CPP_TEST_LINUX_X64 = "$REGISTRY/cpp-test:linux-x64-ol9"
+    const val DOCS_CHECK_LINUX_X64 = "$REGISTRY/docs-check:linux-x64-doxygen-${Doxygen.VERSION}"
     const val NUGET = "$REGISTRY/nuget:6.9.1"
+}
+
+/** The Doxygen release of the image that checks the C API documentation (docker/docs-check-linux-x64.Dockerfile). */
+object Doxygen {
+    const val VERSION = "1.18.0"
+
+    // The SHA-256 of doxygen-<VERSION>.linux.bin.tar.gz of the release on GitHub.
+    const val SHA256 = "14fa81bdc34171edb5f1f02b1d60e74802f0439b77fa44e592565d517d72df90"
 }
 
 /** The repository of the SDK (the name of its object is its id in TeamCity). */

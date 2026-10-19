@@ -114,12 +114,14 @@ object ImagesAndLibraries : Project({
     buildType(BuildAndPushDockerImageForLinuxAarch64)
     buildType(BuildAndPushDockerImageForWindowsX64)
     buildType(BuildAndPushTestDockerImageForLinuxX64)
+    buildType(BuildAndPushDocsCheckDockerImageForLinuxX64)
     buildType(BuildJreLibrariesForIOS)
     buildTypesOrder = arrayListOf(
         BuildAndPushDockerImageForLinuxX64,
         BuildAndPushDockerImageForLinuxAarch64,
         BuildAndPushDockerImageForWindowsX64,
         BuildAndPushTestDockerImageForLinuxX64,
+        BuildAndPushDocsCheckDockerImageForLinuxX64,
         BuildJreLibrariesForIOS
     )
 })
@@ -1137,6 +1139,28 @@ object BuildAndPushTestDockerImageForLinuxX64 : BuildType({
 
     steps {
         buildAndPushDockerImage(Images.CPP_TEST_LINUX_X64, "-f docker/cpp-test-linux-x64.Dockerfile .")
+    }
+
+    features {
+        nexusDockerLogin()
+    }
+
+    requirements {
+        linuxAgent()
+    }
+})
+
+object BuildAndPushDocsCheckDockerImageForLinuxX64 : BuildType({
+    name = "Build & Push a Docs Check Docker Image [Linux, x64]"
+    description = "The image with Doxygen for the check of the C API documentation (docker/docs-check-linux-x64.Dockerfile)"
+
+    mainRepository()
+
+    steps {
+        buildAndPushDockerImage(
+            Images.DOCS_CHECK_LINUX_X64,
+            "--build-arg DOXYGEN_VERSION=${Doxygen.VERSION} --build-arg DOXYGEN_SHA256=${Doxygen.SHA256} -f docker/docs-check-linux-x64.Dockerfile ."
+        )
     }
 
     features {
