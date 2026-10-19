@@ -5,7 +5,7 @@
 
   <groupId>com.dxfeed</groupId>
   <artifactId>graal-native-sdk</artifactId>
-  <version>3.9.1-SNAPSHOT</version>
+  <version>3.10.0</version>
 
   <properties>
     <maven.plugin.validation>VERBOSE</maven.plugin.validation>
@@ -217,7 +217,7 @@
     <url>https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</url>
     <connection>scm:git:https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</connection>
 <!--    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git</connection>-->
-    <tag>HEAD</tag>
+    <tag>v3.10.0</tag>
   </scm>
 
   <distributionManagement>
@@ -405,8 +405,7 @@
                         <not>
                           <and>
                             <available file="${c-api-docs.html.directory}/index.html" />
-                            <resourcecontains resource="${c-api-docs.html.directory}/index.html"
-                              substring="projectnumber&quot;&gt;&amp;#160;${project.version}&lt;/span&gt;" />
+                            <resourcecontains resource="${c-api-docs.html.directory}/index.html" substring="projectnumber&quot;&gt;&amp;#160;${project.version}&lt;/span&gt;" />
                           </and>
                         </not>
                       </condition>
