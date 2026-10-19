@@ -299,6 +299,9 @@
           <name>c-api-docs</name>
         </property>
       </activation>
+      <properties>
+        <c-api-docs.html.directory>${project.build.directory}/docs/c-api/html</c-api-docs.html.directory>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -360,6 +363,66 @@
                     <descriptor>src/assembly/c-api-docs.xml</descriptor>
                   </descriptors>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--
+      With the c-api-docs profile: packs a prebuilt C API documentation instead of running Doxygen.
+      The release builds generate it with the Doxygen of the docs-check image (.teamcity/Common.kt).
+      The build fails unless <directory>/index.html has the project number ${project.version}.
+      Activation: -Dc-api-docs -Dc-api-docs.html=<absolute path of the html directory>
+    -->
+    <profile>
+      <id>c-api-docs-prebuilt</id>
+      <activation>
+        <property>
+          <name>c-api-docs.html</name>
+        </property>
+      </activation>
+      <properties>
+        <c-api-docs.html.directory>${c-api-docs.html}</c-api-docs.html.directory>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-prebuilt-c-api-docs</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <!-- Doxygen writes the project number as projectnumber">&#160;3.9.0</span>. -->
+                    <fail message="${c-api-docs.html.directory}/index.html is not the C API documentation of ${project.version}">
+                      <condition>
+                        <not>
+                          <and>
+                            <available file="${c-api-docs.html.directory}/index.html" />
+                            <resourcecontains resource="${c-api-docs.html.directory}/index.html"
+                              substring="projectnumber&quot;&gt;&amp;#160;${project.version}&lt;/span&gt;" />
+                          </and>
+                        </not>
+                      </condition>
+                    </fail>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-c-api-docs</id>
+                <phase>none</phase>
               </execution>
             </executions>
           </plugin>

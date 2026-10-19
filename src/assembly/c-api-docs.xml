@@ -10,7 +10,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/docs/c-api/html</directory>
+      <directory>${c-api-docs.html.directory}</directory>
       <outputDirectory>html</outputDirectory>
     </fileSet>
   </fileSets>

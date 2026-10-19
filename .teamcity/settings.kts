@@ -951,17 +951,34 @@ object PublishCApiDocsToGitHubPages : BuildType({
                 "Example: v3.9.0",
             allowEmpty = true,
         )
+        select(
+            "env.C_API_DOCS_SOURCE", "nexus",
+            label = "Reference",
+            description = "nexus: the c-api-docs-html zip of the release in Nexus; tag: generate the reference of " +
+                "the tag with the Doxygen of the docs-check image (to publish a release again, e.g. one built by an " +
+                "older Doxygen)",
+            options = listOf("The zip in Nexus" to "nexus", "Generate from the tag" to "tag"),
+        )
     }
 
     // The whole repository: an empty env.TAG is resolved by git describe.
     mainRepository()
 
     steps {
+        cApiReferenceSteps(
+            """if [ -n "${'$'}{TAG:-}" ]; then echo "${'$'}TAG"; else git describe --tags --abbrev=0; fi"""
+        ) {
+            equals("env.C_API_DOCS_SOURCE", "tag")
+        }
+
         script {
             name = "Publish"
             scriptContent = """
                 export GIT_AUTHOR_NAME=dxcity GIT_COMMITTER_NAME=dxcity
                 export GIT_AUTHOR_EMAIL=dxcity@bots.devexperts.com GIT_COMMITTER_EMAIL=dxcity@bots.devexperts.com
+                if [ "${'$'}C_API_DOCS_SOURCE" = tag ]; then
+                    export C_API_DOCS_HTML="${CApiReference.HTML}"
+                fi
                 python3 .teamcity/gh-pages/publish_c_api_docs.py
             """.trimIndent()
         }
@@ -974,11 +991,13 @@ object PublishCApiDocsToGitHubPages : BuildType({
         }
     }
 
-    // The key that pushes main and the tags to the mirror in Publish GitHub Release.
+    // The key that pushes main and the tags to the mirror in Publish GitHub Release; the login for the image of
+    // docs-check.
     features {
         sshAgent {
             teamcitySshKey = "sshkey_ed25519"
         }
+        nexusDockerLogin()
     }
 
     failureConditions {

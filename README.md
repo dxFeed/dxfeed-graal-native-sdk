@@ -630,7 +630,10 @@ builds the library of the current platform in `target/native-image` and its arch
 
 - `-P buildDebug`: the debug build, see [Debug builds](#debug-builds);
 - `-Dc-api-docs`: also the C API documentation in `target/docs/c-api` and its archive (Doxygen must be in
-  `PATH`). The check of the documentation, as in the pull request build, is
+  `PATH`); with `-Dc-api-docs.html=<absolute path>`, the archive packs that prebuilt `html` directory instead, and the
+  build fails unless its `index.html` has the version of the project (the release builds pack the reference generated
+  by the Doxygen of the pull request check, see [.teamcity/README.MD](.teamcity/README.MD#deploying-artifacts)). The
+  check of the documentation, as in the pull request build, is
   `mkdir -p target/c-api-docs-check && doxygen docs/Doxyfile.check`: every undocumented declaration or parameter is a
   warning in `target/c-api-docs-check/warnings.log`, and any warning fails the pull request build. The check needs
   Doxygen 1.13 or later (older versions report the described parameters as undocumented); the pull request build runs

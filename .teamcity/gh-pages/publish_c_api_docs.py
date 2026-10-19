@@ -13,10 +13,15 @@ Nexus, where the release chain deploys it) goes to the branch gh-pages of the mi
 The branch is created as an orphan when there is none. A run commits and pushes only when the tree changed, so a rerun
 for the same release changes nothing. A missing zip fails the run before gh-pages is read.
 
+With C_API_DOCS_HTML, the reference is that directory instead of the zip (the build generates it from the tag with the
+Doxygen of the docs-check image, to publish a release again); a directory without index.html fails the run the same
+way.
+
 The environment: TAG (v3.9.0; empty: `git describe --tags --abbrev=0` in the current directory, the release that
 "Publish GitHub Release" has just published), DRY_RUN ("1" by default: lays out the pages and logs the changes, pushes
-nothing), REMOTE (the mirror by default), NEXUS_URL (https://maven.in.devexperts.com by default). The commit takes the
-git identity of the agent, or GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL.
+nothing), REMOTE (the mirror by default), NEXUS_URL (https://maven.in.devexperts.com by default), C_API_DOCS_HTML (empty
+by default: the zip in Nexus). The commit takes the git identity of the agent, or GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL,
+GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL.
 
 Python 3.10 (the TeamCity agents), the standard library and git only.
 """
@@ -172,11 +177,24 @@ def lay_out(site, version, html):
     return latest
 
 
-def publish(tag, dry_run, remote, nexus_url, work):
-    """Publishes the reference of tag to gh-pages of remote, using the empty directory work; True when pushed."""
+def generated_html(html):
+    if not os.path.isfile(os.path.join(html, "index.html")):
+        raise Failure(f"{html} has no index.html")
+    log(f"The reference generated from the tag: {html}")
+    return html
+
+
+def publish(tag, dry_run, remote, nexus_url, work, html=None):
+    """
+    Publishes the reference of tag to gh-pages of remote, using the empty directory work; True when pushed. The
+    reference is the directory html when given, else html/ of the zip in nexus_url.
+    """
     version = release_version(tag)
     log(f"Release {tag}{' (dry run)' if dry_run else ''}")
-    html = extract_html(download_docs(nexus_url, version, work), work)
+    if html:
+        html = generated_html(html)
+    else:
+        html = extract_html(download_docs(nexus_url, version, work), work)
 
     site = os.path.join(work, "site")
     if check_out(remote, site):
@@ -209,8 +227,9 @@ def main():
         dry_run = os.environ.get("DRY_RUN", "1").strip() != "0"
         remote = os.environ.get("REMOTE", "").strip() or DEFAULT_REMOTE
         nexus_url = os.environ.get("NEXUS_URL", "").strip() or DEFAULT_NEXUS_URL
+        html = os.environ.get("C_API_DOCS_HTML", "").strip() or None
         with tempfile.TemporaryDirectory(prefix="c-api-docs-") as work:
-            publish(tag, dry_run, remote, nexus_url, work)
+            publish(tag, dry_run, remote, nexus_url, work, html)
     except Failure as failure:
         print(failure, file=sys.stderr, flush=True)
         return 1

@@ -41,10 +41,19 @@ class PublishTest(unittest.TestCase):
             for path, text in files.items():
                 zip.writestr(f"html/{path}", text)
 
-    def publish(self, tag, dry_run=False):
-        """Runs a publication of tag; returns its result and its log."""
+    def generate(self, files):
+        """Writes a reference generated from a tag (C_API_DOCS_HTML); files: {path: text}; returns its directory."""
+        html = os.path.join(self.root, "generated", "html")
+        for path, text in files.items():
+            os.makedirs(os.path.dirname(os.path.join(html, path)), exist_ok=True)
+            with open(os.path.join(html, path), "w", encoding="utf-8") as file:
+                file.write(text)
+        return html
+
+    def publish(self, tag, dry_run=False, html=None):
+        """Runs a publication of tag (of html when given); returns its result and its log."""
         with tempfile.TemporaryDirectory() as work, contextlib.redirect_stdout(io.StringIO()) as output:
-            pushed = docs.publish(tag, dry_run, self.remote, pathlib.Path(self.nexus).as_uri(), work)
+            pushed = docs.publish(tag, dry_run, self.remote, pathlib.Path(self.nexus).as_uri(), work, html)
         return pushed, output.getvalue()
 
     def has_branch(self):
@@ -145,6 +154,25 @@ class PublishTest(unittest.TestCase):
         self.deploy("3.9.0", {"../readme.txt": "no html"})
         with self.assertRaisesRegex(docs.Failure, "has no html/index.html"):
             self.publish("v3.9.0")
+        self.assertFalse(self.has_branch())
+
+    def test_a_reference_generated_from_the_tag_is_published_without_a_download(self):
+        # No zip in the fake Nexus: a download would fail the run.
+        html = self.generate({"index.html": "<p>3.9.0 by Doxygen 1.18</p>", "search/search.js": "// search"})
+        pushed, output = self.publish("v3.9.0", html=html)
+        self.assertTrue(pushed)
+        self.assertNotIn("Downloading", output)
+        self.assertIn(html, output)
+        self.assertEqual(
+            {"3.9.0/index.html", "3.9.0/search/search.js", "latest/index.html", "latest/search/search.js",
+             "index.html", ".nojekyll"},
+            self.files())
+        self.assertEqual("<p>3.9.0 by Doxygen 1.18</p>", self.show("3.9.0/index.html"))
+
+    def test_a_generated_reference_without_index_html_fails(self):
+        html = self.generate({"search/search.js": "// search"})
+        with self.assertRaisesRegex(docs.Failure, "has no index.html"):
+            self.publish("v3.9.0", html=html)
         self.assertFalse(self.has_branch())
 
     def test_not_a_release_tag_fails(self):

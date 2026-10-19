@@ -2,6 +2,7 @@
 // settings.kts belong to the script class, and the objects of the configurations cannot use them.
 
 import jetbrains.buildServer.configs.kotlin.BuildFeatures
+import jetbrains.buildServer.configs.kotlin.BuildStepConditions
 import jetbrains.buildServer.configs.kotlin.BuildSteps
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.Requirements
@@ -135,9 +136,66 @@ object SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTa
     param("secure:password", "")
 })
 
+/** The C API reference that cApiReferenceSteps generates: the build temp directory belongs to the agent user. */
+object CApiReference {
+    const val WORK = "%system.teamcity.build.tempDir%/c-api-reference"
+
+    /** The HTML of the reference (the c-api-docs.html property of pom.xml, C_API_DOCS_HTML of the Pages script). */
+    const val HTML = "$WORK/html"
+}
+
 /**
- * The steps of the release builds of Linux x64: the header of the release notes, release:prepare and release:perform
- * (which deploys the release archive), then the debug archive of the tag that the release has made.
+ * Generates the C API reference of a tag with the Doxygen of the docs-check image (the one the pull request check
+ * runs) into CApiReference.HTML: the agent takes docs and the headers of the tag with git archive (the image has no
+ * git), then Doxygen runs in the image. The work directory is emptied first, so the reference has only the pages of
+ * this tag.
+ *
+ * @param tagCommand the shell command that prints the tag (v3.9.0); the version of the reference is the tag without v
+ * @param stepConditions the conditions of both steps, none by default
+ */
+fun BuildSteps.cApiReferenceSteps(tagCommand: String, stepConditions: BuildStepConditions.() -> Unit = {}) {
+    script {
+        name = "C API reference: sources of the tag"
+        id = "c_api_reference_sources"
+        conditions(stepConditions)
+        scriptContent = """
+            set -eu
+            work="${CApiReference.WORK}"
+            TAG=$(${tagCommand})
+            echo "C API reference of ${'$'}TAG"
+            rm -rf "${'$'}work"
+            mkdir -p "${'$'}work/src"
+            git archive -o "${'$'}work/src.tar" "${'$'}TAG" docs src/main/c/api
+            tar -x -f "${'$'}work/src.tar" -C "${'$'}work/src"
+            echo "${'$'}{TAG#v}" > "${'$'}work/version"
+        """.trimIndent()
+        formatStderrAsError = true
+    }
+
+    script {
+        name = "C API reference: Doxygen in docs-check"
+        id = "c_api_reference_doxygen"
+        conditions(stepConditions)
+        scriptContent = """
+            set -eu
+            work="${CApiReference.WORK}"
+            # The container runs as root: the files go back to the agent user, who created the work directory, so the
+            # later steps and the cleanup of the build temp directory can overwrite and delete them.
+            owner="${'$'}(stat -c '%u:%g' "${'$'}work")"
+            trap 'chown -R "${'$'}owner" "${'$'}work"' EXIT
+            doxygen --version
+            cd "${'$'}work/src"
+            DXFG_DOCS_VERSION="${'$'}(cat "${'$'}work/version")" DXFG_DOCS_OUTPUT="${'$'}work" doxygen docs/Doxyfile
+            test -f "${'$'}work/html/index.html"
+        """.trimIndent()
+        inDocker(Images.DOCS_CHECK_LINUX_X64, "--rm")
+    }
+}
+
+/**
+ * The steps of the release builds of Linux x64: the header of the release notes, release:prepare, the C API reference
+ * of the new tag (cApiReferenceSteps), release:perform (which deploys the release archive and packs that reference),
+ * then the debug archive of the tag that the release has made.
  *
  * @param tagCommand the shell command that prints the tag of the release (v3.8.0)
  * @param prepareArguments the arguments of release:prepare before the credentials, with a trailing space if any
@@ -162,13 +220,17 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
     }
 
+    // The tag that release:prepare has pushed, as in release:checkout latest tag.
+    cApiReferenceSteps("git describe --abbrev=0")
+
     script {
         name = "release:perform in docker"
         id = "release_perform_in_docker"
         scriptContent = """
             git config --global user.name dxcity
             git config --global user.email dxcity@bots.devexperts.com
-            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} -Darguments=-Dc-api-docs release:perform
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} \
+                -Darguments="-Dc-api-docs -Dc-api-docs.html=${CApiReference.HTML}" release:perform
         """.trimIndent()
         formatStderrAsError = true
         inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
