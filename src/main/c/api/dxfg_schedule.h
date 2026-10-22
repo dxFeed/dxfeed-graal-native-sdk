@@ -478,6 +478,21 @@ const char*           dxfg_Schedule_getTimeZone(graal_isolatethread_t *thread, d
  * Java: `Schedule.getTimeZone()`, `TimeZone.getID()`.
  */
 const char*           dxfg_Schedule_getTimeZone_getID(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
+/**
+ * Returns the definition of a schedule: its name and its properties in parentheses, e.g. `NYSE(...)`. It is the part
+ * of the string given to dxfg_Schedule_getInstance2(), or of the trading hours of the instrument profile, that defines
+ * this schedule.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] schedule The schedule.
+ * @param[out] definition The definition, a null-terminated UTF-8 string (release it with dxfg_String_release()). It is
+ * written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `definition` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ *
+ * Java: `Schedule.getDefinition()`.
+ */
+int32_t               dxfg_Schedule_getDefinition(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, DXFG_OUT char **definition);
 
 
 /**

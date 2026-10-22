@@ -699,6 +699,94 @@ int32_t                         dxfg_DXEndpoint_executor(graal_isolatethread_t *
 dxfg_event_clazz_list_t *dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
+ * @brief Returns the aggregation period that the endpoint requests from the server.
+ *
+ * Java: `DXEndpoint.getRequestedAggregationPeriod()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @param[out] period The requested aggregation period (release the handle with dxfg_JavaObjectHandler_release()), or
+ * NULL if no period is requested. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `period` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXEndpoint_getRequestedAggregationPeriod(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                      DXFG_OUT dxfg_time_period_t **period);
+
+/**
+ * @brief Returns the aggregation period (in millis) that the endpoint requests from the server.
+ *
+ * Java: `DXEndpoint.getRequestedAggregationPeriod()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @param[out] period The requested aggregation period in millis, or -1 if no period is requested. It is written on
+ * success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `period` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXEndpoint_getRequestedAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                            DXFG_OUT int64_t *period);
+
+/**
+ * @brief Sets the aggregation period that the endpoint requests from the server.
+ *
+ * The server keeps the period within its own bounds and reports the period it applies: see
+ * dxfg_DXEndpoint_getAggregationPeriodInfo(). The period can also be requested with the
+ * `dxfeed.requestedAggregationPeriod` property or the `[requestedAggregationPeriod=5s]` address option.
+ *
+ * Java: `DXEndpoint.setRequestedAggregationPeriod(TimePeriod)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @param[in] period The requested aggregation period: zero (dxfg_TimePeriod_ZERO()) requests real-time delivery, NULL
+ * clears the request (the server uses its default period). It must not exceed 24 hours. The endpoint does not take the
+ * handle: release it with dxfg_JavaObjectHandler_release() when it is no longer needed.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (for
+ * example, when the period exceeds 24 hours). Use dxfg_get_and_clear_thread_exception_t() to determine if an
+ * exception was thrown.
+ */
+int32_t dxfg_DXEndpoint_setRequestedAggregationPeriod(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                      dxfg_time_period_t *period);
+
+/**
+ * @brief Sets the aggregation period (in millis) that the endpoint requests from the server.
+ *
+ * The same as dxfg_DXEndpoint_setRequestedAggregationPeriod(), without a time period handle.
+ *
+ * Java: `DXEndpoint.setRequestedAggregationPeriod(TimePeriod)`, called with `TimePeriod.valueOf(long)`, or with `null`
+ * for a negative period.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @param[in] period The requested aggregation period in millis: 0 requests real-time delivery, a negative value clears
+ * the request (the server uses its default period). It must not exceed 24 hours (86400000).
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (for
+ * example, when the period exceeds 24 hours). Use dxfg_get_and_clear_thread_exception_t() to determine if an
+ * exception was thrown.
+ */
+int32_t dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                            int64_t period);
+
+/**
+ * @brief Returns the aggregation period that the servers apply, over all connections of the endpoint.
+ *
+ * The servers report the period when the connection is established. Both bounds are negative (unknown) until then,
+ * and when no server reports the period (e.g. a local hub, a publisher or an older server).
+ *
+ * Java: `DXEndpoint.getAggregationPeriodInfo()`, `TimePeriodInfo.getMin()`, `TimePeriodInfo.getMax()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint.
+ * @param[out] min The minimum aggregation period in millis, negative if unknown. It is written on success only.
+ * @param[out] max The maximum aggregation period in millis, negative if unknown. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `min` or `max` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXEndpoint_getAggregationPeriodInfo(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                 DXFG_OUT int64_t *min, DXFG_OUT int64_t *max);
+
+/**
  * @brief Creates a new endpoint state change listener.
  *
  * The listener does nothing until it is added to an endpoint with dxfg_DXEndpoint_addStateChangeListener(). The

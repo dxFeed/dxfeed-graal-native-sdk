@@ -3,15 +3,20 @@
 
 package com.dxfeed.sdk.endpoint;
 
+import com.devexperts.util.TimePeriod;
+import com.devexperts.util.TimePeriodInfo;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXEndpoint.State;
 import com.dxfeed.sdk.NativeUtils;
+import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
+import com.dxfeed.sdk.javac.DxfgTimePeriodHandlePointer;
 import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.publisher.DxfgPublisher;
 import com.dxfeed.sdk.system.IsolateResources;
@@ -24,6 +29,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(EndpointDirectives.class)
@@ -338,5 +344,97 @@ public final class EndpointNative {
                 NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getEventTypes().stream()
                         .filter(c -> DxfgEventClazz.of(c) != null)
                         .collect(Collectors.toSet()));
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_getRequestedAggregationPeriod",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_getRequestedAggregationPeriod(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint dxfgEndpoint,
+            @DxfgOut final DxfgTimePeriodHandlePointer period
+    ) {
+        if (period.isNull()) {
+            throw new IllegalArgumentException("The `period` pointer is null");
+        }
+
+        period.write(NativeUtils.MAPPER_TIME_PERIOD.toNative(
+                NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getRequestedAggregationPeriod()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_getRequestedAggregationPeriodMillis",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_getRequestedAggregationPeriodMillis(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint dxfgEndpoint,
+            @DxfgOut final CLongPointer period
+    ) {
+        if (period.isNull()) {
+            throw new IllegalArgumentException("The `period` pointer is null");
+        }
+
+        final TimePeriod requestedPeriod =
+                NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getRequestedAggregationPeriod();
+
+        period.write(requestedPeriod == null ? -1 : requestedPeriod.getTime());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_setRequestedAggregationPeriod",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_setRequestedAggregationPeriod(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint dxfgEndpoint,
+            final DxfgTimePeriodHandle period
+    ) {
+        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+                .setRequestedAggregationPeriod(NativeUtils.MAPPER_TIME_PERIOD.toJava(period));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_setRequestedAggregationPeriodMillis",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint dxfgEndpoint,
+            final long period
+    ) {
+        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint)
+                .setRequestedAggregationPeriod(period < 0 ? null : TimePeriod.valueOf(period));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_DXEndpoint_getAggregationPeriodInfo",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_DXEndpoint_getAggregationPeriodInfo(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint dxfgEndpoint,
+            @DxfgOut final CLongPointer min,
+            @DxfgOut final CLongPointer max
+    ) {
+        if (min.isNull() || max.isNull()) {
+            throw new IllegalArgumentException("The `min` or `max` pointer is null");
+        }
+
+        final TimePeriodInfo info = NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).getAggregationPeriodInfo();
+
+        min.write(info.getMin());
+        max.write(info.getMax());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 }

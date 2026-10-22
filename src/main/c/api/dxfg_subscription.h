@@ -496,6 +496,40 @@ int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_iso
 int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int64_t aggregationPeriod);
 
 /**
+ * Returns the aggregation period that was applied to the events delivered to this subscription.
+ *
+ * The value is updated when the events are delivered to the listeners: both bounds are negative (unknown) before the
+ * first events arrive.
+ *
+ * Java: `DXFeedSubscription.getAggregationPeriodInfo()`, `TimePeriodInfo.getMin()`, `TimePeriodInfo.getMax()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription handle.
+ * @param[out] min The minimum aggregation period in millis, negative if unknown. It is written on success only.
+ * @param[out] max The maximum aggregation period in millis, negative if unknown. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `min` or `max` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                         DXFG_OUT int64_t *min, DXFG_OUT int64_t *max);
+
+/**
+ * Returns the number of the events that were dropped because of a buffer overflow since the subscription was created.
+ *
+ * The function is experimental: the Java method is marked `@Experimental` and may change.
+ *
+ * Java: `DXFeedSubscription.getTotalDroppedEvents()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The subscription handle.
+ * @param[out] droppedEvents The number of the dropped events. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `droppedEvents` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                      DXFG_OUT int64_t *droppedEvents);
+
+/**
  * Creates a new event listener.
  *
  * The listener calls the function with the events that the subscription receives, see

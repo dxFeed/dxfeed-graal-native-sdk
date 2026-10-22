@@ -4,6 +4,7 @@
 package com.dxfeed.sdk.subscription;
 
 import com.devexperts.util.TimePeriod;
+import com.devexperts.util.TimePeriodInfo;
 import com.dxfeed.api.DXFeedEventListener;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
@@ -233,6 +234,37 @@ public class SubscriptionNative {
         //noinspection DataFlowIssue
         NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
                 .setAggregationPeriod(TimePeriod.valueOf(timePeriod));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(name = "dxfg_DXFeedSubscription_getAggregationPeriodInfo", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_DXFeedSubscription_getAggregationPeriodInfo(final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            @DxfgOut final CLongPointer min, @DxfgOut final CLongPointer max) {
+        if (min.isNull() || max.isNull()) {
+            throw new IllegalArgumentException("The `min` or `max` pointer is null");
+        }
+
+        //noinspection DataFlowIssue
+        final TimePeriodInfo info = NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getAggregationPeriodInfo();
+
+        min.write(info.getMin());
+        max.write(info.getMax());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(name = "dxfg_DXFeedSubscription_getTotalDroppedEvents", exceptionHandler = ExceptionHandlerReturnMinusOne.class)
+    public static int dxfg_DXFeedSubscription_getTotalDroppedEvents(final IsolateThread ignoredThread,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
+            @DxfgOut final CLongPointer droppedEvents) {
+        if (droppedEvents.isNull()) {
+            throw new IllegalArgumentException("The `droppedEvents` pointer is null");
+        }
+
+        //noinspection DataFlowIssue
+        droppedEvents.write(NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription).getTotalDroppedEvents());
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

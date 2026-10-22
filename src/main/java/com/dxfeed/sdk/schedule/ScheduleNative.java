@@ -24,6 +24,7 @@ import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.word.Pointer;
 
@@ -370,6 +371,25 @@ public class ScheduleNative {
     ) {
         return NativeUtils.MAPPER_STRING.toNative(
                 NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getTimeZone().getID());
+    }
+
+    @CEntryPoint(
+            name = "dxfg_Schedule_getDefinition",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_Schedule_getDefinition(
+            final IsolateThread ignoredThread,
+            final DxfgScheduleHandle dxfgSchedule,
+            @DxfgOut final CCharPointerPointer definition
+    ) {
+        if (definition.isNull()) {
+            throw new IllegalArgumentException("The `definition` pointer is null");
+        }
+
+        definition.write(NativeUtils.MAPPER_STRING.toNative(
+                NativeUtils.MAPPER_SCHEDULE.toJava(dxfgSchedule).getDefinition()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
     @CEntryPoint(
