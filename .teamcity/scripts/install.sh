@@ -141,6 +141,36 @@ graalvm() {
     mv "${tmp_path}" "${install_path}"
 }
 
+cmake_macos() {
+    set -eux
+    set -o pipefail
+
+    local -r version="$1"
+    local -r sha256="$2"
+    # Strip the trailing slash, otherwise the temporary path below ends up inside the install path.
+    local -r install_path="${3%/}"
+    local -r base_url="https://github.com/Kitware/CMake/releases/download"
+
+    if [[ -z "${version}" || -z "${sha256}" || -z "${install_path}" ]]; then
+        echo "Usage: install cmake_macos <version> <sha256> <install_path>"
+        return 1
+    fi
+
+    local -r tmp_path="${install_path}.tmp.$$"
+    trap 'rm -rf "${tmp_path}"' RETURN
+
+    mkdir -p "${tmp_path}"
+    # The universal archive runs on arm64 and x64; the binaries are in CMake.app/Contents/bin.
+    local -r archive="${tmp_path}/cmake.tar.gz"
+    curl -fsSL --retry 3 "${base_url}/v${version}/cmake-${version}-macos-universal.tar.gz" --output "${archive}"
+    echo "${sha256}  ${archive}" | shasum -a 256 -c -
+    bsdtar -xzf "${archive}" -C "${tmp_path}" --strip-components=1
+    rm "${archive}"
+
+    rm -rf "${install_path}"
+    mv "${tmp_path}" "${install_path}"
+}
+
 vs_build_tools() {
     set -eux
 

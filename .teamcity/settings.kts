@@ -153,6 +153,7 @@ object Tests : Project({
     description = "Started for the pull requests to main and for main"
 
     buildType(TestForLinux)
+    buildType(TestForMacOS)
 })
 
 object Etc : Project({
@@ -1093,49 +1094,83 @@ object TestForLinux : BuildType({
     }
 
     triggers {
-        vcs {
-            branchFilter = """
-                +:<default>
-                +:pull-requests/*
-            """.trimIndent()
-        }
+        mainAndPullRequests()
     }
 
     features {
-        pullRequests {
-            vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
-            provider = bitbucketServer {
-                serverUrl = "https://stash.in.devexperts.com"
-                authType = password {
-                    username = "dxcity"
-                    password = "%dxcity.token.bitbucket%"
-                }
-                filterTargetBranch = "+:refs/heads/main"
-                usePullRequestBranches = true
-            }
-        }
-
-        commitStatusPublisher {
-            vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
-            publisher = bitbucketServer {
-                url = "https://stash.in.devexperts.com"
-                authType = password {
-                    userName = "dxcity"
-                    password = "%dxcity.token.bitbucket%"
-                }
-            }
-        }
-
-        xmlReport {
-            reportType = XmlReport.XmlReportType.JUNIT
-            rules = "src/main/c/build/conf-release/ctest-junit.xml"
-        }
-
+        pullRequestsToMain()
+        cTestsReport()
         nexusDockerLogin()
     }
 
     requirements {
         linuxAgent()
+    }
+})
+
+object TestForMacOS : BuildType({
+    name = "Test [macOS, arm64]"
+    description = "Builds the library and runs the C tests (src/main/c, CTest) on the macOS host, without Docker, for the pull requests to main and for main"
+
+    mainRepository()
+
+    steps {
+        script {
+            name = "Build the library"
+            scriptContent = Util.prepareMacOS() + """
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+
+        script {
+            // The build installs CMake into ~/.graal (the version is CMake in Common.kt); the compilers come from the Xcode
+            // Command Line Tools.
+            name = "Build and run the C tests"
+            // The whole step runs as arm64, as the library does: CMakeLists.txt picks the architecture by the host
+            // processor, so under Rosetta (x86_64) the tests would be built for x86_64.
+            scriptContent = """
+                set -eu
+                if [ "$(uname -m)" != arm64 ] && [ -z "${'$'}{TEST_ARM64_REEXEC:-}" ]; then
+                    TEST_ARM64_REEXEC=1 exec arch -arm64 /bin/bash "$0"
+                fi
+                if [ "$(uname -m)" != arm64 ]; then
+                    echo "The C tests must run as arm64, but uname -m is $(uname -m)"
+                    exit 1
+                fi
+                cmake_install_path=~/.graal/cmake-${CMake.VERSION}
+                if [ ! -x "${'$'}{cmake_install_path}/CMake.app/Contents/bin/cmake" ]; then
+                    rm -rf "${'$'}{cmake_install_path}"
+                    .teamcity/scripts/install.sh cmake_macos ${CMake.VERSION} ${CMake.MACOS_SHA256} "${'$'}{cmake_install_path}"
+                fi
+                export PATH="${'$'}{cmake_install_path}/CMake.app/Contents/bin:${'$'}{PATH}"
+                cmake --version
+                cd src/main/c
+                rm -rf build bin
+                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
+                cmake --build --preset=build-release --config=Release -j$(sysctl -n hw.ncpu)
+                ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        mainAndPullRequests()
+    }
+
+    features {
+        pullRequestsToMain()
+        cTestsReport()
+    }
+
+    failureConditions {
+        // The mac agents are shared with the releases: a hung build must not hold one.
+        executionTimeoutMin = 30
+    }
+
+    requirements {
+        macAgent()
     }
 })
 

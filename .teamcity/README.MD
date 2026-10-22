@@ -138,10 +138,13 @@ described parameters as undocumented) and logs its version, the number of warnin
 declarations and parameters, broken references). It fails the build on any warning, when Doxygen fails and when it
 writes no log. It needs only the headers, so it runs also after a failed step.
 
-- The build runs for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
-- The status of the build is published to the pull request in Bitbucket (with a link to the build). The results of the
+The `Test [macOS, arm64]` build builds the library and runs the same C tests directly on a macOS agent (Apple Silicon,
+no Docker), so the tests also check the arm64 macOS library. The Doxygen check runs only in the Linux build.
+
+- The builds run for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
+- The status of each build is published to the pull request in Bitbucket (with a link to the build). The results of the
   tests are in the build in TeamCity (the JUnit report of CTest).
-- The build configuration appears in TeamCity when `.teamcity/settings.kts` with it gets to `main`.
+- A build configuration appears in TeamCity when `.teamcity/settings.kts` with it gets to `main`.
 
 One-time setup:
 
@@ -152,8 +155,9 @@ One-time setup:
    binary for the check of the C API documentation (`docker/docs-check-linux-x64.Dockerfile`; the version and the SHA-256
    of the release archive are `Doxygen` in `Common.kt`). Run it again when the Dockerfile changes, and right after a new
    Doxygen version gets to `main`: the image of a new version has a new tag, which the check finds only once it is built.
-3. To block merging a pull request without a successful build, enable the `Minimum successful builds` merge check in the
-   settings of the repository in Bitbucket.
+3. To block merging a pull request until both builds succeed, enable the `Minimum successful builds` merge check in the
+   settings of the repository in Bitbucket with 2 builds: `Test [Linux, x64]` and `Test [macOS, arm64]`. While the
+   macOS agents are unavailable, the pull requests wait for them.
 
 The same locally (after `mvn clean package` in the Linux build image):
 
@@ -178,6 +182,9 @@ The project is built directly on the macOS host system.
 * The agent must be equipped with an Apple Silicon processor.
 * Rosetta 2 must be installed on the agent (`softwareupdate --install-rosetta`).
 * Xcode Command Line Tools must be installed on the agent (`xcode-select --install`).
+* **Test [macOS, arm64]** installs CMake itself into `~/.graal/cmake-<version>` (the official universal archive from
+  GitHub, checked by its SHA-256; the version and the checksum are `CMake` in `Common.kt`), as the builds do with Maven
+  and GraalVM: the agents need no CMake of their own.
 * **Build JRE Libraries [iOS]**, which builds the libraries of [jre-ios](../jre-ios/README.MD), also needs Xcode with
   the iOS and iOS Simulator SDKs, selected with `sudo xcode-select -s /Applications/Xcode.app`: the Command Line
   Tools have only the macOS SDK.

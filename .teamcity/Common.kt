@@ -6,10 +6,16 @@ import jetbrains.buildServer.configs.kotlin.BuildStepConditions
 import jetbrains.buildServer.configs.kotlin.BuildSteps
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.Requirements
+import jetbrains.buildServer.configs.kotlin.Triggers
+import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
+import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
+import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
+import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /** The Maven options of the builds: the settings with the repositories, and the credentials of the dxcity bot. */
@@ -54,6 +60,14 @@ object Doxygen {
     const val SHA256 = "14fa81bdc34171edb5f1f02b1d60e74802f0439b77fa44e592565d517d72df90"
 }
 
+/** CMake of the C tests on macOS, installed by the build into ~/.graal (the agents have no CMake). */
+object CMake {
+    const val VERSION = "4.4.4"
+
+    // The SHA-256 of cmake-<VERSION>-macos-universal.tar.gz of the release on GitHub (cmake-<VERSION>-SHA-256.txt).
+    const val MACOS_SHA256 = "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305"
+}
+
 /** The repository of the SDK (the name of its object is its id in TeamCity). */
 fun BuildType.mainRepository() {
     vcs {
@@ -78,6 +92,51 @@ fun BuildFeatures.nexusDockerLogin() {
         loginToRegistry = on {
             dockerRegistryId = "NEXUS"
         }
+    }
+}
+
+/** The tests run for main and for the pull requests to main. */
+fun Triggers.mainAndPullRequests() {
+    vcs {
+        branchFilter = """
+            +:<default>
+            +:pull-requests/*
+        """.trimIndent()
+    }
+}
+
+/** Builds the pull requests to main and reports the result of the build to the pull request in Bitbucket. */
+fun BuildFeatures.pullRequestsToMain() {
+    pullRequests {
+        vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
+        provider = bitbucketServer {
+            serverUrl = "https://stash.in.devexperts.com"
+            authType = password {
+                username = "dxcity"
+                password = "%dxcity.token.bitbucket%"
+            }
+            filterTargetBranch = "+:refs/heads/main"
+            usePullRequestBranches = true
+        }
+    }
+
+    commitStatusPublisher {
+        vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
+        publisher = bitbucketServer {
+            url = "https://stash.in.devexperts.com"
+            authType = password {
+                userName = "dxcity"
+                password = "%dxcity.token.bitbucket%"
+            }
+        }
+    }
+}
+
+/** The results of the C tests (CTest, `--output-junit` in src/main/c/build/conf-release). */
+fun BuildFeatures.cTestsReport() {
+    xmlReport {
+        reportType = XmlReport.XmlReportType.JUNIT
+        rules = "src/main/c/build/conf-release/ctest-junit.xml"
     }
 }
 
