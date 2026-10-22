@@ -1544,7 +1544,7 @@ object CxxApiGitGubJiraSync : BuildType({
         schedule {
             schedulingPolicy = cron {
                 seconds = "0"
-                minutes = "0/10"
+                minutes = "0/5"
                 hours = "*"
                 dayOfMonth = "*"
                 month = "*"
