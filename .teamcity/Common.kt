@@ -68,6 +68,15 @@ object CMake {
     const val MACOS_SHA256 = "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305"
 }
 
+/** git over SSH to the GitHub mirror (Publish GitHub Release, Publish C API Docs to GitHub Pages). */
+object GitHub {
+    /**
+     * The export that makes git check github.com against the host keys of .teamcity/github_known_hosts instead of the
+     * known_hosts of the agent: not every Linux agent has github.com there ("Host key verification failed").
+     */
+    const val SSH_COMMAND = "export GIT_SSH_COMMAND=\"ssh -o UserKnownHostsFile='%teamcity.build.checkoutDir%/.teamcity/github_known_hosts' -o StrictHostKeyChecking=yes\""
+}
+
 /** The repository of the SDK (the name of its object is its id in TeamCity). */
 fun BuildType.mainRepository() {
     vcs {

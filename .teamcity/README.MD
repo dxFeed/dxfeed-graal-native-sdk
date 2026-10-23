@@ -125,6 +125,12 @@ available in the corresponding Dockerfile.
 - The `dxcity` user should be capable of running containers without sudo.
 - The images are in the Docker registry of Nexus `nexus-docker-graalvm.in.devexperts.com`: the project feature
   `Nexus` (`dockerRegistry` in `settings.kts`) logs the builds in to it.
+- `github.com` does not have to be in the `known_hosts` of the agent: the builds that push to the GitHub mirror over
+  SSH (`Publish GitHub Release`, `Publish C API Docs to GitHub Pages`) check its host keys against
+  `.teamcity/github_known_hosts` (`GitHub.SSH_COMMAND` in `Common.kt`). If GitHub changes its keys, these builds fail
+  with "Host key verification failed": take the new keys from `ssh_keys` of https://api.github.com/meta and check them
+  against the fingerprints of
+  https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints.
 
 # Testing
 
@@ -408,7 +414,8 @@ The tests (no network): `python3 -m unittest` in `jira-sync`.
 reference of the release on GitHub Pages of the mirror (https://dxfeed.github.io/dxfeed-graal-native-sdk/) with
 `gh-pages/publish_c_api_docs.py`. It takes the release of `env.TAG` (`v3.9.0`), or else the latest tag of `main` (the
 one the chain has just published), downloads `html/` of `graal-native-sdk-<version>-c-api-docs-html.zip` from `qd` and
-pushes the branch `gh-pages` of the mirror with the SSH key of `Publish GitHub Release`:
+pushes the branch `gh-pages` of the mirror with the SSH key of `Publish GitHub Release` (and its pinned host keys of
+`github.com`, see [Building on Linux](#building-on-linux)):
 
 - `<version>/` (`3.9.0/`, `3.10.0-rc1/`) is replaced with the reference of the release;
 - `latest/` is a copy of the highest `X.Y.Z` directory, never of an rc: a later patch of an older line (`3.9.1` after

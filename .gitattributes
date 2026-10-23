@@ -3,3 +3,6 @@
 
 # Patches are applied with git apply on macOS, their context lines must keep LF line endings.
 *.patch text eol=lf
+
+# The pinned SSH host keys of github.com are read by ssh on the Linux agents.
+.teamcity/github_known_hosts text eol=lf

@@ -609,6 +609,7 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
             scriptContent = """
                 set -eu
 
+                ${GitHub.SSH_COMMAND}
                 REMOTE="git@github.com:dxFeed/dxfeed-graal-native-sdk.git"
                 TAG=$(git describe --tags --abbrev=0)
 
@@ -977,6 +978,7 @@ object PublishCApiDocsToGitHubPages : BuildType({
             scriptContent = """
                 export GIT_AUTHOR_NAME=dxcity GIT_COMMITTER_NAME=dxcity
                 export GIT_AUTHOR_EMAIL=dxcity@bots.devexperts.com GIT_COMMITTER_EMAIL=dxcity@bots.devexperts.com
+                ${GitHub.SSH_COMMAND}
                 if [ "${'$'}C_API_DOCS_SOURCE" = tag ]; then
                     export C_API_DOCS_HTML="${CApiReference.HTML}"
                 fi
