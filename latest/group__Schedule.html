@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
    </div>
   </td>
  </tr>
@@ -205,6 +205,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ga487ae355ec7cf5e6d76d8d356efcfc76" id="r_ga487ae355ec7cf5e6d76d8d356efcfc76"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#ga487ae355ec7cf5e6d76d8d356efcfc76">dxfg_Schedule_getName</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a> *schedule)</td></tr>
 <tr class="memitem:gabc7dc4ac80b669db01dd32b08e2b15ad" id="r_gabc7dc4ac80b669db01dd32b08e2b15ad"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#gabc7dc4ac80b669db01dd32b08e2b15ad">dxfg_Schedule_getTimeZone</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a> *schedule)</td></tr>
 <tr class="memitem:ga619ee4aceb904e4401748232286ce6b3" id="r_ga619ee4aceb904e4401748232286ce6b3"><td class="memItemLeft">const char *&#160;</td><td class="memItemRight"><a class="el" href="#ga619ee4aceb904e4401748232286ce6b3">dxfg_Schedule_getTimeZone_getID</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a> *schedule)</td></tr>
+<tr class="memitem:ga67afb32db619f471157b3ba351e74fec" id="r_ga67afb32db619f471157b3ba351e74fec"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga67afb32db619f471157b3ba351e74fec">dxfg_Schedule_getDefinition</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a> *schedule, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> char **definition)</td></tr>
 <tr class="memitem:gaf2fb79e0b04fae8495e3342c7bc8d12f" id="r_gaf2fb79e0b04fae8495e3342c7bc8d12f"><td class="memItemLeft"><a class="el" href="structdxfg__day__t.html">dxfg_day_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#gaf2fb79e0b04fae8495e3342c7bc8d12f">dxfg_Session_getDay</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__session__t.html">dxfg_session_t</a> *session)</td></tr>
 <tr class="memitem:gac99a3da3b38d90aeb005129560033af3" id="r_gac99a3da3b38d90aeb005129560033af3"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gac99a3da3b38d90aeb005129560033af3">dxfg_Session_getType</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__session__t.html">dxfg_session_t</a> *session)</td></tr>
 <tr class="memitem:ga020812d38d94e734f87dfb06b39d4bf6" id="r_ga020812d38d94e734f87dfb06b39d4bf6"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga020812d38d94e734f87dfb06b39d4bf6">dxfg_Session_isTrading</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__session__t.html">dxfg_session_t</a> *session)</td></tr>
@@ -1768,6 +1769,43 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The day (release it with <a class="el" href="#gab45f4a12746048392ca6d35532a1e114">dxfg_Day_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception.</dd></dl>
 <p>Java: <span class="tt">Schedule.getDayByYearMonthDay(int)</span>. </p>
+
+</div>
+</div>
+<a id="ga67afb32db619f471157b3ba351e74fec" name="ga67afb32db619f471157b3ba351e74fec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga67afb32db619f471157b3ba351e74fec">&#9670;&#160;</a></span>dxfg_Schedule_getDefinition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_Schedule_getDefinition </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a> *</td>          <td class="paramname"><span class="paramname"><em>schedule</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> char **</td>          <td class="paramname"><span class="paramname"><em>definition</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the definition of a schedule: its name and its properties in parentheses, e.g. <span class="tt">NYSE(...)</span>. It is the part of the string given to <a class="el" href="#gaec4b0d54aa774cf6204fadfffa9b1a1b">dxfg_Schedule_getInstance2()</a>, or of the trading hours of the instrument profile, that defines this schedule.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">schedule</td><td>The schedule. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">definition</td><td>The definition, a null-terminated UTF-8 string (release it with <a class="el" href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release()</a>). It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">definition</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown.</dd></dl>
+<p>Java: <span class="tt">Schedule.getDefinition()</span>. </p>
 
 </div>
 </div>

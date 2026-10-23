@@ -1,5 +1,13 @@
 var NAVTREEINDEX6 =
 {
+"structdxfg__symbols__by__order__source__id__map__entry__t.html#a4c8eb0b70f0215b6095a3cfcdeaca7ef":[1,12,1,2,1],
+"structdxfg__symbols__by__order__source__id__map__entry__t.html#a84061178aaaae0a7b235e33b8fd5f0bd":[1,12,1,2,0],
+"structdxfg__symbols__by__order__source__map__entry__list__t.html":[1,12,1,5],
+"structdxfg__symbols__by__order__source__map__entry__list__t.html#aa33d92a5e350ff0fd5718c34434aa0b9":[1,12,1,5,0],
+"structdxfg__symbols__by__order__source__map__entry__list__t.html#ad0cd58c73b7db07cb962cbb0a6ca262a":[1,12,1,5,1],
+"structdxfg__symbols__by__order__source__map__entry__t.html":[1,12,1,4],
+"structdxfg__symbols__by__order__source__map__entry__t.html#a10048b7333112e9dfa355504b79e09a9":[1,12,1,4,1],
+"structdxfg__symbols__by__order__source__map__entry__t.html#ab8088179b071a06ac5b06067835879aa":[1,12,1,4,0],
 "structdxfg__text__configuration__t.html":[2,0,100],
 "structdxfg__text__configuration__t.html#a2651c61e1a36b1afca1ba81593b1c3eb":[2,0,100,4],
 "structdxfg__text__configuration__t.html#a4e37ba5361b95d191350a0f594de15fd":[2,0,100,3],

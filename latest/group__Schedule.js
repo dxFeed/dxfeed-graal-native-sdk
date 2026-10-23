@@ -96,6 +96,7 @@ var group__Schedule =
     [ "dxfg_Schedule_getDayById", "group__Schedule.html#gab41ceb764d8476bb6ffce7c910091192", null ],
     [ "dxfg_Schedule_getDayByTime", "group__Schedule.html#ga149740848bacf809092c87a0855c2c0e", null ],
     [ "dxfg_Schedule_getDayByYearMonthDay", "group__Schedule.html#gacd5e6a2bba1ec400a91d43e2f189f1b8", null ],
+    [ "dxfg_Schedule_getDefinition", "group__Schedule.html#ga67afb32db619f471157b3ba351e74fec", null ],
     [ "dxfg_Schedule_getInstance", "group__Schedule.html#gadf498ca14cb18719603738883f41b5a0", null ],
     [ "dxfg_Schedule_getInstance2", "group__Schedule.html#gaec4b0d54aa774cf6204fadfffa9b1a1b", null ],
     [ "dxfg_Schedule_getInstance3", "group__Schedule.html#ga2714ef6c996c384378db3000c0a7ff57", null ],

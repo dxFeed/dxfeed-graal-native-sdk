@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
    </div>
   </td>
  </tr>
@@ -214,17 +214,22 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('globals_func.h
 <li>dxfg_DXEndpoint_disconnect()&#160;:&#160;<a class="el" href="group__Endpoint.html#gacfa4f1185edfd35e2af7106b8f93bd8c">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_disconnectAndClear()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga50e168f6b1c65115e6e83c8c3c232069">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_executor()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga1d78f9dc111d39f789b84c39e6f65ad5">dxfg_endpoint.h</a></li>
+<li>dxfg_DXEndpoint_getAggregationPeriodInfo()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga8ba922e9747f1974ae98fb4056d9ce05">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getEventTypes()&#160;:&#160;<a class="el" href="group__Endpoint.html#gaedceb99ada8f31e7ec6266d13a3b704e">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getFeed()&#160;:&#160;<a class="el" href="group__Endpoint.html#gabcaa6f329546a0d1c0f550fce6b679b2">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getInstance()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga9cc4b26d918874f6a814e3dd8e5416bf">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getInstance2()&#160;:&#160;<a class="el" href="group__Endpoint.html#gae0d6b833b8afb2e49ab01c994f501c25">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getPublisher()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga2f67e4dc6864aea4ea14cde570056ae5">dxfg_endpoint.h</a></li>
+<li>dxfg_DXEndpoint_getRequestedAggregationPeriod()&#160;:&#160;<a class="el" href="group__Endpoint.html#gaa8ab7b7236f715232f11ad1120becd03">dxfg_endpoint.h</a></li>
+<li>dxfg_DXEndpoint_getRequestedAggregationPeriodMillis()&#160;:&#160;<a class="el" href="group__Endpoint.html#gaf19f759693369a769dfa033c3ac17425">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getRole()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga426e2a64a250aeafbf6563ab6a1db78f">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_getState()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga13b82663fecb65f91c804d4e42a08278">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_newBuilder()&#160;:&#160;<a class="el" href="group__Builder.html#ga33a650b9c38510d9aee24b6f625c7cc7">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_password()&#160;:&#160;<a class="el" href="group__Endpoint.html#gaee56dbc3b80abc162a45a95f896069fd">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_reconnect()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga390aa081e3056312c1e7f933e7a3e021">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_removeStateChangeListener()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga1604dbb6551b80fd3e139edf6f830304">dxfg_endpoint.h</a></li>
+<li>dxfg_DXEndpoint_setRequestedAggregationPeriod()&#160;:&#160;<a class="el" href="group__Endpoint.html#gab0b9a4843e94df9fbe81a9984cad0c43">dxfg_endpoint.h</a></li>
+<li>dxfg_DXEndpoint_setRequestedAggregationPeriodMillis()&#160;:&#160;<a class="el" href="group__Endpoint.html#ga5e492f932bcb360f8cef9e9803acb685">dxfg_endpoint.h</a></li>
 <li>dxfg_DXEndpoint_user()&#160;:&#160;<a class="el" href="group__Endpoint.html#gaa9a1338340ffd7eb598617256c028389">dxfg_endpoint.h</a></li>
 <li>dxfg_DXFeed_attachSubscription()&#160;:&#160;<a class="el" href="group__Feed.html#ga502109cbd4ca05cf081f80ac6ad63873">dxfg_feed.h</a></li>
 <li>dxfg_DXFeed_createSubscription()&#160;:&#160;<a class="el" href="group__Feed.html#gadfb1ba52f79171442ff09619d13a5305">dxfg_feed.h</a></li>
@@ -256,6 +261,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('globals_func.h
 <li>dxfg_DXFeedSubscription_containsEventType()&#160;:&#160;<a class="el" href="group__Subscription.html#gac901fa5bd253bfafd443ac1e888451e5">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_detach()&#160;:&#160;<a class="el" href="group__Subscription.html#ga2a247230adfd524a78a2dac99e695245">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getAggregationPeriod()&#160;:&#160;<a class="el" href="group__Subscription.html#ga9756136e66d8d147caf7d095f01a2c8e">dxfg_subscription.h</a></li>
+<li>dxfg_DXFeedSubscription_getAggregationPeriodInfo()&#160;:&#160;<a class="el" href="group__Subscription.html#gabb48299eef642bd79c1048485fdef103">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getAggregationPeriodMillis()&#160;:&#160;<a class="el" href="group__Subscription.html#ga908fefd4708d22aefd861d1ad52cf8fa">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getDecoratedSymbols()&#160;:&#160;<a class="el" href="group__Subscription.html#ga7a3a2589d1991b7a60388e7a279138b0">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getEventsBatchLimit()&#160;:&#160;<a class="el" href="group__Subscription.html#gae2cb454c550a06b167032da53b105f77">dxfg_subscription.h</a></li>
@@ -263,6 +269,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('globals_func.h
 <li>dxfg_DXFeedSubscription_getExecutor()&#160;:&#160;<a class="el" href="group__Subscription.html#ga115ef66dd2a3022dce201dfeb94251e3">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getSubscriptionController()&#160;:&#160;<a class="el" href="group__Subscription.html#gaa67b8155c911b2e2632d96e98593c4dd">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_getSymbols()&#160;:&#160;<a class="el" href="group__Subscription.html#gafb54dc9066bf375e5a46856ef75d801f">dxfg_subscription.h</a></li>
+<li>dxfg_DXFeedSubscription_getTotalDroppedEvents()&#160;:&#160;<a class="el" href="group__Subscription.html#ga7ae99f6a91fecc57c24ce26a093699e7">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_isClosed()&#160;:&#160;<a class="el" href="group__Subscription.html#gaeb086692c1fdaf4c6a2085e790efcbca">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_new()&#160;:&#160;<a class="el" href="group__Subscription.html#gaec6bd84df44a8c11c88386dd34876c1c">dxfg_subscription.h</a></li>
 <li>dxfg_DXFeedSubscription_new2()&#160;:&#160;<a class="el" href="group__Subscription.html#ga0d16ea73bd4374d0f6021bd40a0e88b7">dxfg_subscription.h</a></li>
@@ -600,6 +607,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('globals_func.h
 <li>dxfg_Schedule_getDayById()&#160;:&#160;<a class="el" href="group__Schedule.html#gab41ceb764d8476bb6ffce7c910091192">dxfg_schedule.h</a></li>
 <li>dxfg_Schedule_getDayByTime()&#160;:&#160;<a class="el" href="group__Schedule.html#ga149740848bacf809092c87a0855c2c0e">dxfg_schedule.h</a></li>
 <li>dxfg_Schedule_getDayByYearMonthDay()&#160;:&#160;<a class="el" href="group__Schedule.html#gacd5e6a2bba1ec400a91d43e2f189f1b8">dxfg_schedule.h</a></li>
+<li>dxfg_Schedule_getDefinition()&#160;:&#160;<a class="el" href="group__Schedule.html#ga67afb32db619f471157b3ba351e74fec">dxfg_schedule.h</a></li>
 <li>dxfg_Schedule_getInstance()&#160;:&#160;<a class="el" href="group__Schedule.html#gadf498ca14cb18719603738883f41b5a0">dxfg_schedule.h</a></li>
 <li>dxfg_Schedule_getInstance2()&#160;:&#160;<a class="el" href="group__Schedule.html#gaec4b0d54aa774cf6204fadfffa9b1a1b">dxfg_schedule.h</a></li>
 <li>dxfg_Schedule_getInstance3()&#160;:&#160;<a class="el" href="group__Schedule.html#ga2714ef6c996c384378db3000c0a7ff57">dxfg_schedule.h</a></li>

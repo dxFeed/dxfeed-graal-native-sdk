@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
    </div>
   </td>
  </tr>
@@ -216,6 +216,16 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga1d78f9dc111d39f789b84c39e6f65ad5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the executor of the endpoint's notifications.  <br /></td></tr>
 <tr class="memitem:gaedceb99ada8f31e7ec6266d13a3b704e" id="r_gaedceb99ada8f31e7ec6266d13a3b704e"><td class="memItemLeft"><a class="el" href="structdxfg__event__clazz__list__t.html">dxfg_event_clazz_list_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#gaedceb99ada8f31e7ec6266d13a3b704e">dxfg_DXEndpoint_getEventTypes</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint)</td></tr>
 <tr class="memdesc:gaedceb99ada8f31e7ec6266d13a3b704e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the event types that the endpoint supports.  <br /></td></tr>
+<tr class="memitem:gaa8ab7b7236f715232f11ad1120becd03" id="r_gaa8ab7b7236f715232f11ad1120becd03"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaa8ab7b7236f715232f11ad1120becd03">dxfg_DXEndpoint_getRequestedAggregationPeriod</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__time__period__t.html">dxfg_time_period_t</a> **period)</td></tr>
+<tr class="memdesc:gaa8ab7b7236f715232f11ad1120becd03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the aggregation period that the endpoint requests from the server.  <br /></td></tr>
+<tr class="memitem:gaf19f759693369a769dfa033c3ac17425" id="r_gaf19f759693369a769dfa033c3ac17425"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaf19f759693369a769dfa033c3ac17425">dxfg_DXEndpoint_getRequestedAggregationPeriodMillis</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *period)</td></tr>
+<tr class="memdesc:gaf19f759693369a769dfa033c3ac17425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the aggregation period (in millis) that the endpoint requests from the server.  <br /></td></tr>
+<tr class="memitem:gab0b9a4843e94df9fbe81a9984cad0c43" id="r_gab0b9a4843e94df9fbe81a9984cad0c43"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab0b9a4843e94df9fbe81a9984cad0c43">dxfg_DXEndpoint_setRequestedAggregationPeriod</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint, <a class="el" href="structdxfg__time__period__t.html">dxfg_time_period_t</a> *period)</td></tr>
+<tr class="memdesc:gab0b9a4843e94df9fbe81a9984cad0c43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the aggregation period that the endpoint requests from the server.  <br /></td></tr>
+<tr class="memitem:ga5e492f932bcb360f8cef9e9803acb685" id="r_ga5e492f932bcb360f8cef9e9803acb685"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga5e492f932bcb360f8cef9e9803acb685">dxfg_DXEndpoint_setRequestedAggregationPeriodMillis</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint, int64_t period)</td></tr>
+<tr class="memdesc:ga5e492f932bcb360f8cef9e9803acb685"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the aggregation period (in millis) that the endpoint requests from the server.  <br /></td></tr>
+<tr class="memitem:ga8ba922e9747f1974ae98fb4056d9ce05" id="r_ga8ba922e9747f1974ae98fb4056d9ce05"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga8ba922e9747f1974ae98fb4056d9ce05">dxfg_DXEndpoint_getAggregationPeriodInfo</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *endpoint, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *min, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *max)</td></tr>
+<tr class="memdesc:ga8ba922e9747f1974ae98fb4056d9ce05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the aggregation period that the servers apply, over all connections of the endpoint.  <br /></td></tr>
 <tr class="memitem:gaa55c29c38e0908906238fe37c4dd15b1" id="r_gaa55c29c38e0908906238fe37c4dd15b1"><td class="memItemLeft"><a class="el" href="structdxfg__endpoint__state__change__listener__t.html">dxfg_endpoint_state_change_listener_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#gaa55c29c38e0908906238fe37c4dd15b1">dxfg_PropertyChangeListener_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaab2286f59fb9f6feefadf07c626c7439">dxfg_endpoint_state_change_listener_func</a> user_func, void *user_data)</td></tr>
 <tr class="memdesc:gaa55c29c38e0908906238fe37c4dd15b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new endpoint state change listener.  <br /></td></tr>
 </table>
@@ -844,6 +854,51 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga8ba922e9747f1974ae98fb4056d9ce05" name="ga8ba922e9747f1974ae98fb4056d9ce05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8ba922e9747f1974ae98fb4056d9ce05">&#9670;&#160;</a></span>dxfg_DXEndpoint_getAggregationPeriodInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXEndpoint_getAggregationPeriodInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *</td>          <td class="paramname"><span class="paramname"><em>endpoint</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>min</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>max</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the aggregation period that the servers apply, over all connections of the endpoint. </p>
+<p>The servers report the period when the connection is established. Both bounds are negative (unknown) until then, and when no server reports the period (e.g. a local hub, a publisher or an older server).</p>
+<p>Java: <span class="tt">DXEndpoint.getAggregationPeriodInfo()</span>, <span class="tt">TimePeriodInfo.getMin()</span>, <span class="tt">TimePeriodInfo.getMax()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">endpoint</td><td>The endpoint. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">min</td><td>The minimum aggregation period in millis, negative if unknown. It is written on success only. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">max</td><td>The maximum aggregation period in millis, negative if unknown. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">min</span> or <span class="tt">max</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
 <a id="gaedceb99ada8f31e7ec6266d13a3b704e" name="gaedceb99ada8f31e7ec6266d13a3b704e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaedceb99ada8f31e7ec6266d13a3b704e">&#9670;&#160;</a></span>dxfg_DXEndpoint_getEventTypes()</h2>
 
@@ -1002,6 +1057,82 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The publisher (release its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception. </dd></dl>
+
+</div>
+</div>
+<a id="gaa8ab7b7236f715232f11ad1120becd03" name="gaa8ab7b7236f715232f11ad1120becd03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa8ab7b7236f715232f11ad1120becd03">&#9670;&#160;</a></span>dxfg_DXEndpoint_getRequestedAggregationPeriod()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXEndpoint_getRequestedAggregationPeriod </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *</td>          <td class="paramname"><span class="paramname"><em>endpoint</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__time__period__t.html">dxfg_time_period_t</a> **</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the aggregation period that the endpoint requests from the server. </p>
+<p>Java: <span class="tt">DXEndpoint.getRequestedAggregationPeriod()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">endpoint</td><td>The endpoint. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">period</td><td>The requested aggregation period (release the handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), or NULL if no period is requested. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">period</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="gaf19f759693369a769dfa033c3ac17425" name="gaf19f759693369a769dfa033c3ac17425"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf19f759693369a769dfa033c3ac17425">&#9670;&#160;</a></span>dxfg_DXEndpoint_getRequestedAggregationPeriodMillis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXEndpoint_getRequestedAggregationPeriodMillis </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *</td>          <td class="paramname"><span class="paramname"><em>endpoint</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the aggregation period (in millis) that the endpoint requests from the server. </p>
+<p>Java: <span class="tt">DXEndpoint.getRequestedAggregationPeriod()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">endpoint</td><td>The endpoint. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">period</td><td>The requested aggregation period in millis, or -1 if no period is requested. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">period</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>
@@ -1178,6 +1309,84 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="gab0b9a4843e94df9fbe81a9984cad0c43" name="gab0b9a4843e94df9fbe81a9984cad0c43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab0b9a4843e94df9fbe81a9984cad0c43">&#9670;&#160;</a></span>dxfg_DXEndpoint_setRequestedAggregationPeriod()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXEndpoint_setRequestedAggregationPeriod </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *</td>          <td class="paramname"><span class="paramname"><em>endpoint</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__time__period__t.html">dxfg_time_period_t</a> *</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the aggregation period that the endpoint requests from the server. </p>
+<p>The server keeps the period within its own bounds and reports the period it applies: see <a class="el" href="#ga8ba922e9747f1974ae98fb4056d9ce05" title="Returns the aggregation period that the servers apply, over all connections of the endpoint.">dxfg_DXEndpoint_getAggregationPeriodInfo()</a>. The period can also be requested with the <span class="tt">dxfeed.requestedAggregationPeriod</span> property or the <span class="tt">[requestedAggregationPeriod=5s]</span> address option.</p>
+<p>Java: <span class="tt">DXEndpoint.setRequestedAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">endpoint</td><td>The endpoint. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">period</td><td>The requested aggregation period: zero (<a class="el" href="group__Javac.html#gaad9bb4cb33f9a1aeb792f613e3d0a238">dxfg_TimePeriod_ZERO()</a>) requests real-time delivery, NULL clears the request (the server uses its default period). It must not exceed 24 hours. The endpoint does not take the handle: release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> when it is no longer needed. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (for example, when the period exceeds 24 hours). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="ga5e492f932bcb360f8cef9e9803acb685" name="ga5e492f932bcb360f8cef9e9803acb685"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5e492f932bcb360f8cef9e9803acb685">&#9670;&#160;</a></span>dxfg_DXEndpoint_setRequestedAggregationPeriodMillis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXEndpoint_setRequestedAggregationPeriodMillis </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__endpoint__t.html">dxfg_endpoint_t</a> *</td>          <td class="paramname"><span class="paramname"><em>endpoint</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the aggregation period (in millis) that the endpoint requests from the server. </p>
+<p>The same as <a class="el" href="#gab0b9a4843e94df9fbe81a9984cad0c43" title="Sets the aggregation period that the endpoint requests from the server.">dxfg_DXEndpoint_setRequestedAggregationPeriod()</a>, without a time period handle.</p>
+<p>Java: <span class="tt">DXEndpoint.setRequestedAggregationPeriod(TimePeriod)</span>, called with <span class="tt">TimePeriod.valueOf(long)</span>, or with <span class="tt">null</span> for a negative period.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">endpoint</td><td>The endpoint. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">period</td><td>The requested aggregation period in millis: 0 requests real-time delivery, a negative value clears the request (the server uses its default period). It must not exceed 24 hours (86400000). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (for example, when the period exceeds 24 hours). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>

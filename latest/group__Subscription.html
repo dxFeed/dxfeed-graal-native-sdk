@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.10.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
    </div>
   </td>
  </tr>
@@ -161,6 +161,8 @@ Functions</h2></td></tr>
 <tr class="memitem:ga908fefd4708d22aefd861d1ad52cf8fa" id="r_ga908fefd4708d22aefd861d1ad52cf8fa"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga908fefd4708d22aefd861d1ad52cf8fa">dxfg_DXFeedSubscription_getAggregationPeriodMillis</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *aggregationPeriod)</td></tr>
 <tr class="memitem:ga51aa2153ba2760b2c0d364c2e92b8b1a" id="r_ga51aa2153ba2760b2c0d364c2e92b8b1a"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga51aa2153ba2760b2c0d364c2e92b8b1a">dxfg_DXFeedSubscription_setAggregationPeriod</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="structdxfg__time__period__t.html">dxfg_time_period_t</a> *period)</td></tr>
 <tr class="memitem:ga134e3de265e38359bad1c67ef166416b" id="r_ga134e3de265e38359bad1c67ef166416b"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga134e3de265e38359bad1c67ef166416b">dxfg_DXFeedSubscription_setAggregationPeriodMillis</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, int64_t aggregationPeriod)</td></tr>
+<tr class="memitem:gabb48299eef642bd79c1048485fdef103" id="r_gabb48299eef642bd79c1048485fdef103"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gabb48299eef642bd79c1048485fdef103">dxfg_DXFeedSubscription_getAggregationPeriodInfo</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *min, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *max)</td></tr>
+<tr class="memitem:ga7ae99f6a91fecc57c24ce26a093699e7" id="r_ga7ae99f6a91fecc57c24ce26a093699e7"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga7ae99f6a91fecc57c24ce26a093699e7">dxfg_DXFeedSubscription_getTotalDroppedEvents</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *droppedEvents)</td></tr>
 <tr class="memitem:ga171884000fc4d8af4ca288f8955854b1" id="r_ga171884000fc4d8af4ca288f8955854b1"><td class="memItemLeft"><a class="el" href="structdxfg__feed__event__listener__t.html">dxfg_feed_event_listener_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ga171884000fc4d8af4ca288f8955854b1">dxfg_DXFeedEventListener_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga09ccdfd07f71538fb870edba35ef64e9">dxfg_feed_event_listener_function</a> user_func, void *user_data)</td></tr>
 <tr class="memitem:ga2adbf79e4899cca9512372ae6d66afb3" id="r_ga2adbf79e4899cca9512372ae6d66afb3"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga2adbf79e4899cca9512372ae6d66afb3">dxfg_DXFeedSubscription_addEventListener</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="structdxfg__feed__event__listener__t.html">dxfg_feed_event_listener_t</a> *listener)</td></tr>
 <tr class="memitem:gab6357fc5d57e7233e7f7dfe96c75efe1" id="r_gab6357fc5d57e7233e7f7dfe96c75efe1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab6357fc5d57e7233e7f7dfe96c75efe1">dxfg_DXFeedSubscription_removeEventListener</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *sub, <a class="el" href="structdxfg__feed__event__listener__t.html">dxfg_feed_event_listener_t</a> *listener)</td></tr>
@@ -657,6 +659,50 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gabb48299eef642bd79c1048485fdef103" name="gabb48299eef642bd79c1048485fdef103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabb48299eef642bd79c1048485fdef103">&#9670;&#160;</a></span>dxfg_DXFeedSubscription_getAggregationPeriodInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *</td>          <td class="paramname"><span class="paramname"><em>sub</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>min</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>max</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the aggregation period that was applied to the events delivered to this subscription.</p>
+<p>The value is updated when the events are delivered to the listeners: both bounds are negative (unknown) before the first events arrive.</p>
+<p>Java: <span class="tt">DXFeedSubscription.getAggregationPeriodInfo()</span>, <span class="tt">TimePeriodInfo.getMin()</span>, <span class="tt">TimePeriodInfo.getMax()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The subscription handle. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">min</td><td>The minimum aggregation period in millis, negative if unknown. It is written on success only. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">max</td><td>The maximum aggregation period in millis, negative if unknown. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">min</span> or <span class="tt">max</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
 <a id="ga908fefd4708d22aefd861d1ad52cf8fa" name="ga908fefd4708d22aefd861d1ad52cf8fa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga908fefd4708d22aefd861d1ad52cf8fa">&#9670;&#160;</a></span>dxfg_DXFeedSubscription_getAggregationPeriodMillis()</h2>
 
@@ -888,6 +934,44 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The list of the symbols (release it with <a class="el" href="dxfg__events_8h.html#a8b6c748571e5250fe02ca1f9aa5565a5">dxfg_CList_symbol_release()</a>), or NULL on error. Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to get the exception.</dd></dl>
 <p>Java: <span class="tt">DXFeedSubscription.getSymbols()</span>. </p>
+
+</div>
+</div>
+<a id="ga7ae99f6a91fecc57c24ce26a093699e7" name="ga7ae99f6a91fecc57c24ce26a093699e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7ae99f6a91fecc57c24ce26a093699e7">&#9670;&#160;</a></span>dxfg_DXFeedSubscription_getTotalDroppedEvents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__subscription__t.html">dxfg_subscription_t</a> *</td>          <td class="paramname"><span class="paramname"><em>sub</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int64_t *</td>          <td class="paramname"><span class="paramname"><em>droppedEvents</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the number of the events that were dropped because of a buffer overflow since the subscription was created.</p>
+<p>The function is experimental: the Java method is marked <span class="tt">@Experimental</span> and may change.</p>
+<p>Java: <span class="tt">DXFeedSubscription.getTotalDroppedEvents()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sub</td><td>The subscription handle. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">droppedEvents</td><td>The number of the dropped events. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">droppedEvents</span> is NULL). Use <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a> to determine if an exception was thrown. </dd></dl>
 
 </div>
 </div>

@@ -1,5 +1,13 @@
 var NAVTREEINDEX5 =
 {
+"structdxfg__ipf__connection__state__change__listener__t.html#a3d7c170b05dc75b5eb8480a4c3683770":[1,8,2,0],
+"structdxfg__ipf__connection__t.html":[1,8,0],
+"structdxfg__ipf__connection__t.html#ad3ea27f36414e6f34856a23955da1ac8":[1,8,0,0],
+"structdxfg__ipf__update__listener__t.html":[1,8,6],
+"structdxfg__ipf__update__listener__t.html#a7fecbe72939d60bd1d44d1ebed2d294f":[1,8,6,0],
+"structdxfg__iterable__ip__t.html":[1,8,7],
+"structdxfg__iterable__ip__t.html#af8697b71d0ed9ded77267201041b635a":[1,8,7,0],
+"structdxfg__java__object__handler.html":[1,9,0],
 "structdxfg__java__object__handler.html#a2ff74c5ede378e9e00db11564a9a68f9":[1,9,0,0],
 "structdxfg__java__object__handler__list.html":[1,9,3],
 "structdxfg__java__object__handler__list.html#a256bcbea98a2084db9c3384d729b2074":[1,9,3,1],
@@ -241,13 +249,5 @@ var NAVTREEINDEX5 =
 "structdxfg__symbols__by__order__source__id__map__entry__list__t.html":[1,12,1,3],
 "structdxfg__symbols__by__order__source__id__map__entry__list__t.html#a24adc45124e60f3c3e9d9ec98ef80ad7":[1,12,1,3,1],
 "structdxfg__symbols__by__order__source__id__map__entry__list__t.html#ac97cf7f1b0b8f7d273228caf5e569c26":[1,12,1,3,0],
-"structdxfg__symbols__by__order__source__id__map__entry__t.html":[1,12,1,2],
-"structdxfg__symbols__by__order__source__id__map__entry__t.html#a4c8eb0b70f0215b6095a3cfcdeaca7ef":[1,12,1,2,1],
-"structdxfg__symbols__by__order__source__id__map__entry__t.html#a84061178aaaae0a7b235e33b8fd5f0bd":[1,12,1,2,0],
-"structdxfg__symbols__by__order__source__map__entry__list__t.html":[1,12,1,5],
-"structdxfg__symbols__by__order__source__map__entry__list__t.html#aa33d92a5e350ff0fd5718c34434aa0b9":[1,12,1,5,0],
-"structdxfg__symbols__by__order__source__map__entry__list__t.html#ad0cd58c73b7db07cb962cbb0a6ca262a":[1,12,1,5,1],
-"structdxfg__symbols__by__order__source__map__entry__t.html":[1,12,1,4],
-"structdxfg__symbols__by__order__source__map__entry__t.html#a10048b7333112e9dfa355504b79e09a9":[1,12,1,4,1],
-"structdxfg__symbols__by__order__source__map__entry__t.html#ab8088179b071a06ac5b06067835879aa":[1,12,1,4,0]
+"structdxfg__symbols__by__order__source__id__map__entry__t.html":[1,12,1,2]
 };
