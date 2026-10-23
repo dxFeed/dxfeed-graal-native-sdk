@@ -7,14 +7,21 @@
 #define xstr(s) str(s)
 #define str(s) #s
 
+// DXFSDK_PRE_RELEASE is 1 for a version with a qualifier (3.6.0-rc2, 3.10.1-SNAPSHOT) and 0 for a release.
+#if DXFSDK_PRE_RELEASE
+#define DXFSDK_PRE_RELEASE_FLAG VS_FF_PRERELEASE
+#else
+#define DXFSDK_PRE_RELEASE_FLAG 0x0L
+#endif
+
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION DXFSDK_MAJOR_VERSION, DXFSDK_MINOR_VERSION, DXFSDK_PATCH_VERSION, DXFSDK_PRE_RELEASE_NUMBER
  PRODUCTVERSION DXFSDK_MAJOR_VERSION, DXFSDK_MINOR_VERSION, DXFSDK_PATCH_VERSION, DXFSDK_PRE_RELEASE_NUMBER
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
- FILEFLAGS 0x1L
+ FILEFLAGS VS_FF_DEBUG | DXFSDK_PRE_RELEASE_FLAG
 #else
- FILEFLAGS 0x0L
+ FILEFLAGS DXFSDK_PRE_RELEASE_FLAG
 #endif
  FILEOS 0x40004L
  FILETYPE 0x2L
@@ -26,8 +33,10 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Devexperts LLC"
             VALUE "FileDescription", "GraalVM C-library wrapper for dxFeed Java API."
+            // .NET FileVersionInfo (PowerShell VersionInfo) ignores the whole string block without FileVersion.
+            VALUE "FileVersion", xstr(DXFSDK_VERSION)
             VALUE "InternalName", "DxFeedGraalNativeSdk.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2025 Devexperts LLC"
+            VALUE "LegalCopyright", xstr(Copyright (C) DXFSDK_YEAR Devexperts LLC)
             VALUE "OriginalFilename", "DxFeedGraalNativeSdk.dll"
             VALUE "ProductName", "dxFeed Graal Native SDK"
             VALUE "ProductVersion", xstr(DXFSDK_VERSION)

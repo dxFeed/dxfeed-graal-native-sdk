@@ -20,7 +20,7 @@ CommandsContext::CommandsContext() {
     defaultUser_ = "demo";
     defaultPassword_ = "demo";
     defaultIpfAddress_ = "https://"s + defaultUser_ + ":" + defaultPassword_ + "@" + defaultToolsHost_ + "/ipf"s;
-    defaultIpfFilePath_ = "../../../../../ipf.txt";
+    defaultIpfFilePath_ = "../../../../../src/test/resources/data/ipf.txt";
     defaultCandleDataAddress_ = "https://"s + defaultToolsHost_ + "/candledata"s;
     defaultSymbols_ = {"AAPL", "IBM"};
 }

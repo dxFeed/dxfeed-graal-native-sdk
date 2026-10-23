@@ -595,6 +595,36 @@
                   <replacement>$1$2</replacement>
                 </configuration>
               </execution>
+              <execution>
+                <!-- 1 for a version with a qualifier (3.6.0-rc2, 3.10.1-SNAPSHOT), 0 for a release: the pre-release flag
+                     of the Windows file version. -->
+                <id>parse-pre-release</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>regex-property</goal>
+                </goals>
+                <configuration>
+                  <name>parsedVersion.preRelease</name>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <value>${parsedVersion.qualifier}#1#0</value>
+                  <regex>^.+#(1)#0$|^#1#(0)$</regex>
+                  <replacement>$1$2</replacement>
+                </configuration>
+              </execution>
+              <execution>
+                <!-- The year of the build for the copyright of the Windows version info. -->
+                <id>parse-build-year</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>regex-property</goal>
+                </goals>
+                <configuration>
+                  <name>build.year</name>
+                  <value>${maven.build.timestamp}</value>
+                  <regex>^(\d{4}).*$</regex>
+                  <replacement>$1</replacement>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -621,7 +651,13 @@
                     <argument>-DDXFSDK_PATCH_VERSION=${parsedVersion.incrementalVersion}</argument>
                     <!--suppress UnresolvedMavenProperty -->
                     <argument>-DDXFSDK_PRE_RELEASE_NUMBER=${parsedVersion.preReleaseNumber}</argument>
-                    <argument>version.rc</argument>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argument>-DDXFSDK_PRE_RELEASE=${parsedVersion.preRelease}</argument>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argument>-DDXFSDK_YEAR=${build.year}</argument>
+                    <argument>/fo</argument>
+                    <argument>${project.build.directory}\version.res</argument>
+                    <argument>src\main\windows\version.rc</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -662,7 +698,7 @@
                   --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
                 <buildArg>-march=compatibility</buildArg>
-                <buildArg>-H:NativeLinkerOption=version.res</buildArg>
+                <buildArg>-H:NativeLinkerOption=${project.build.directory}\version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
                 <buildArg>${debug.buildArg2}</buildArg>
                 <buildArg>${debug.buildArg3}</buildArg>

@@ -6,6 +6,10 @@
     and maximum period that was applied, in millis, negative while unknown (`TimePeriodInfo`).
   * `dxfg_DXFeedSubscription_getTotalDroppedEvents()` (experimental in Java).
   * `dxfg_Schedule_getDefinition()`.
+* **\[GRAAL]** The version info of `DxFeedGraalNativeSdk.dll` has the `FileVersion` string, so .NET
+  (`FileVersionInfo`, PowerShell `VersionInfo`) reads the company, the description and the versions: before, it showed
+  them empty, while Explorer showed them. The copyright year is the year of the build, and an rc build is marked as a
+  pre-release.
 
 ## v3.10.0
 

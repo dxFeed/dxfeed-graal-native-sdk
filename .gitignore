@@ -41,12 +41,3 @@ fabric.properties
 
 # C project
 /src/main/c/.idea/**
-
-# Resources
-version.res
-/reports/**/*.txt
-
-config
-cp.txt
-/reflect-config.json
-/serialization-config.json

@@ -92,8 +92,8 @@ public class NativeLibMain {
 
     public static void tapeFile() throws InterruptedException {
         // Determine input and output tapes and specify appropriate configuration parameters
-        String inputAddress = "file:ConvertTapeFile.in[readAs=stream_data,speed=max]";
-        String outputAddress = "tape:ConvertTapeFile.out[saveAs=stream_data,format=text]";
+        String inputAddress = "file:src/test/resources/data/ConvertTapeFile.in[readAs=stream_data,speed=max]";
+        String outputAddress = "tape:target/ConvertTapeFile.out[saveAs=stream_data,format=text]";
 
         // Create input endpoint configured for tape reading
         DXEndpoint inputEndpoint = DXEndpoint.newBuilder()
@@ -215,7 +215,7 @@ public class NativeLibMain {
                 .withRole(DXEndpoint.Role.FEED)
                 .withProperties(System.getProperties())
                 .build().user("********").password("********");
-        dxEndpoint.connect("tape.csv[format=csv,readAs=ticker_data,cycle,speed=max]");
+        dxEndpoint.connect("src/test/resources/data/tape.csv[format=csv,readAs=ticker_data,cycle,speed=max]");
         final var subscription3 = dxEndpoint.getFeed().createSubscription(Quote.class);
         subscription3.addEventListener(System.out::println);
         subscription3.addSymbols("AAPL");
@@ -370,7 +370,7 @@ public class NativeLibMain {
 
     public static void liveIpf(final ObjectMapper objectMapper) throws InterruptedException, IOException {
         for (final InstrumentProfile instrumentProfile : new InstrumentProfileReader().readFromFile(
-                "ipf.txt")) {
+                "src/test/resources/data/ipf.txt")) {
             System.out.println(instrumentProfile);
         }
 
@@ -428,7 +428,7 @@ public class NativeLibMain {
         System.setProperty("com.dxfeed.schedule.download", "auto");
         InstrumentProfile profile = null;
         for (final InstrumentProfile prfl : new InstrumentProfileReader().readFromFile(
-                "ipf.txt")) {
+                "src/test/resources/data/ipf.txt")) {
             profile = prfl;
             Schedule.getInstance(prfl);
             for (final String venue : Schedule.getTradingVenues(prfl)) {

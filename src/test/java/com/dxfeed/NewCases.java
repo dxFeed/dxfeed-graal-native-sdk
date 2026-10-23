@@ -148,7 +148,7 @@ public class NewCases {
         try (var pub = DXEndpoint.create(DXEndpoint.Role.PUBLISHER).connect(":" + port);
                 var feed = DXEndpoint.create(DXEndpoint.Role.FEED).connect("localhost:" + port);
                 var tape = DXEndpoint.create(DXEndpoint.Role.STREAM_PUBLISHER).connect("tape:" + tapeFile + "[format=text]");
-                var file = DXEndpoint.create(DXEndpoint.Role.STREAM_FEED).connect("file:ConvertTapeFile.in[speed=max]")) {
+                var file = DXEndpoint.create(DXEndpoint.Role.STREAM_FEED).connect("file:src/test/resources/data/ConvertTapeFile.in[speed=max]")) {
             Thread.sleep(2000);
 
             var server = ManagementFactory.getPlatformMBeanServer();
@@ -225,7 +225,7 @@ public class NewCases {
         var addresses = new LinkedHashMap<String, List<DXEndpoint.Role>>();
         // The message adapter factories (configured like codecs) depend on the role.
         addresses.put("localhost:1", List.of(DXEndpoint.Role.values()));
-        for (var address : List.of(":0", "nio::0", "file:ConvertTapeFile.in", "tape:" + tapeFile,
+        for (var address : List.of(":0", "nio::0", "file:src/test/resources/data/ConvertTapeFile.in", "tape:" + tapeFile,
                 "dxlink:wss://localhost:1/realtime", "ondemand:localhost:1",
                 "ssl+localhost:1", "tls+localhost:1", "shaped+localhost:1", "delayed+localhost:1")) {
             addresses.put(address, List.of(DXEndpoint.Role.FEED));
