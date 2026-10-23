@@ -1,3 +1,5 @@
+## v3.11.0
+
 * **\[MDAPI-453]\[GRAAL]** New functions for the Java API of QDS 3.326–3.351:
   * `dxfg_DXEndpoint_setRequestedAggregationPeriod[Millis]()`, `dxfg_DXEndpoint_getRequestedAggregationPeriod[Millis]()`:
     the aggregation period that the endpoint requests from the server (`DXEndpoint.setRequestedAggregationPeriod`). In
