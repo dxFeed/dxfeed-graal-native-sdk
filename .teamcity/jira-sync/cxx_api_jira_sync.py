@@ -7,15 +7,18 @@ The pull requests updated and the branches created during the last LOOKBACK_HOUR
 tickets are the MDAPI keys of the title and the branch of a PR, of the name of a branch). The development starts with
 Reported -> Confirmed (a forgotten confirmation) -> In development, or Confirmed -> In development:
   - a branch is created (feature/MDAPI-NNN-..., bugfix/MDAPI-NNN-..., any name with the key) or a draft PR is opened
-    (the work starts or goes on): the development starts, Waiting for build -> Waiting for review -> In development
-    (there is no direct transition), and Waiting for review -> In development if no other PR of the ticket is in
-    review (open and not a draft); a branch created before the merge of a PR of the ticket is only linked (GitHub
-    delivers some events hours late, after the PR of the branch is merged);
+    (the work starts or goes on): the development starts, Waiting for build -> Waiting for review (there is no direct
+    transition to In development), and Waiting for review -> In development if no other PR of the ticket is in review
+    (open and not a draft); a branch created before the merge of a PR of the ticket is only linked (GitHub delivers
+    some events hours late, after the PR of the branch is merged);
   - a PR is opened (not a draft, or a draft is marked ready): the development starts if needed, then In development ->
-    Waiting for review;
+    Waiting for review, and Waiting for build -> Waiting for review if the PR is still open (the next part of a
+    merged ticket);
   - a PR is merged into main or release/*, or another PR of the ticket is closed (without a merge, or merged into
     another branch), and a PR of the ticket has been merged: Waiting for review -> Waiting for build if no other PR of
     the ticket is open, -> In development if only drafts are open; it stays in review while another PR is in review;
+    a ticket returned to In development while the merged PR was in review goes the same way through Waiting for
+    review if no other PR of the ticket is open;
   - a PR is closed without a merge, and no PR of the ticket has been merged: Waiting for review -> In development
     unless another PR of the ticket is in review;
     A Task has no Waiting for build in its workflow (Waiting for review -> Done): it goes to Done instead, gets the fix
@@ -567,7 +570,7 @@ class Sync(Workflow):
         if event == "drafted":
             moved = self.to_development(key, number)
         elif event == "opened":
-            moved = self.to_review(key)
+            moved = self.to_review(key, pr["state"] == "open")
         else:
             moved = self.to_build(key, state, number)
 
@@ -670,12 +673,19 @@ class Sync(Workflow):
 
         return self.move(key, IN_DEVELOPMENT)
 
-    def to_review(self, key):
-        """A PR is opened: In development -> Waiting for review, after the start of the development if needed."""
+    def to_review(self, key, still_open):
+        """
+        A PR is opened: In development -> Waiting for review, after the start of the development if needed; Waiting for
+        build (Done for a Task) -> Waiting for review if the PR is still open, as the next part of the ticket is in
+        review now (a PR merged before a run saw it open only passes through review).
+        """
         if self.not_started(key) and not self.start_development(key):
             return False
 
         status = self.status(key)
+
+        if still_open and (status["id"] == WAITING_FOR_BUILD or status["name"].lower() == DONE_NAME):
+            return self.move(key, WAITING_FOR_REVIEW)
 
         if status["id"] != IN_DEVELOPMENT:
             self.log.info(f"  stays in {status['name']}")
@@ -694,8 +704,11 @@ class Sync(Workflow):
             return self.start_development(key)
 
         if status["id"] == WAITING_FOR_BUILD or status["name"].lower() == DONE_NAME:
-            # No direct transition: back to review, then to development.
-            return self.move(key, WAITING_FOR_REVIEW) and self.move(key, IN_DEVELOPMENT)
+            # No direct transition: back to review, then to development unless another PR is in review.
+            if not self.move(key, WAITING_FOR_REVIEW):
+                return False
+
+            status = self.status(key)
 
         if status["id"] == WAITING_FOR_REVIEW:
             in_review = [
@@ -716,9 +729,25 @@ class Sync(Workflow):
         """
         A PR is merged or closed: Waiting for review -> Waiting for build once a PR is merged and the other PRs are
         closed; -> In development if only drafts are open, or if nothing has been merged and nothing is in review (the
-        PR has been closed without a merge).
+        PR has been closed without a merge). A ticket returned to In development while the merged PR was in review (by
+        hand, or by a late event of its branch) goes through Waiting for review the same way if no other PR is open.
         """
         status = self.status(key)
+
+        if status["id"] == IN_DEVELOPMENT and number in state.get("merged", []):
+            other_open = [
+                other["number"] for other in self.open_pull_requests()
+                if key in pr_keys(other) and other["number"] != number
+            ]
+
+            if other_open:
+                self.log.info(f"  stays in {status['name']}: {prs(other_open)} open")
+                return True
+
+            if not self.move(key, WAITING_FOR_REVIEW):
+                return False
+
+            status = self.status(key)
 
         if status["id"] != WAITING_FOR_REVIEW:
             self.log.info(f"  stays in {status['name']}")

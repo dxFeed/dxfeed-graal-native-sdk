@@ -412,14 +412,62 @@ class SyncTest(unittest.TestCase):
         self.assertEqual([], self.server.changes)
 
     def test_ticket_in_another_status_stays_but_the_pull_request_is_remembered(self):
-        self.server.issue("MDAPI-1", WAITING_FOR_BUILD)
+        self.server.issue("MDAPI-1", TESTING)
         self.server.pulls = [pull_request(12, "[MDAPI-1] The next PR of the ticket")]
 
         self.run_sync()
 
-        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual(TESTING, self.status_of("MDAPI-1"))
         self.assertEqual([], self.transitions())
         self.assertEqual({"opened": [12]}, self.server.issues["MDAPI-1"]["property"])
+
+    def test_next_pull_request_returns_a_ticket_waiting_for_build_to_review(self):
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(12, "[MDAPI-1] The next PR of the ticket")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(["176"], self.transition_ids())
+
+    def test_next_pull_request_returns_a_done_task_to_review(self):
+        self.server.issue("MDAPI-1", TASK_DONE, prop={"opened": [10], "merged": [10]})
+        self.server.pulls = [pull_request(12, "[MDAPI-1] The next PR of the task")]
+
+        self.run_sync_of_task()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(["231"], self.transition_ids())
+
+    def test_merge_moves_a_ticket_returned_to_development_through_review_to_build(self):
+        # Returned to In development while PR #12 was in review (by hand, or by a late event of its branch).
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT, prop={"opened": [10, 12], "merged": [10]})
+        self.server.pulls = [pull_request(12, "[MDAPI-1] Y", state="closed", merged_at="2026-10-05T10:00:00Z")]
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual(["151", "161"], self.transition_ids())
+
+    def test_merge_leaves_a_ticket_in_development_while_another_pull_request_is_open(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT, prop={"opened": [12], "drafted": [13]})
+        self.server.pulls = [pull_request(12, "[MDAPI-1] Y", state="closed", merged_at="2026-10-05T10:00:00Z"),
+                             pull_request(13, "[MDAPI-1] Z", draft=True, updated_at="2026-10-05T09:00:00Z")]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
+        self.assertIn("stays in In development: PR #13 is open", self.out.getvalue())
+
+    def test_closed_pull_request_leaves_a_ticket_in_development(self):
+        self.server.issue("MDAPI-1", IN_DEVELOPMENT, prop={"opened": [10, 12], "merged": [10]})
+        self.server.pulls = [pull_request(12, "[MDAPI-1] Y", state="closed")]
+
+        self.run_sync()
+
+        self.assertEqual(IN_DEVELOPMENT, self.status_of("MDAPI-1"))
+        self.assertEqual([], self.transitions())
 
     def test_merged_pull_request_goes_through_review_to_build(self):
         # Opened and merged between two runs.
@@ -1063,6 +1111,37 @@ class SyncTest(unittest.TestCase):
         self.run_sync()
 
         self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+    def test_created_branch_returns_a_ticket_waiting_for_build_only_to_review_while_a_pull_request_is_in_review(self):
+        # PR #12 was opened while the ticket was waiting for the build, and the ticket stayed there.
+        self.merged_ticket(WAITING_FOR_BUILD)
+        self.server.issues["MDAPI-1"]["property"]["opened"].append(12)
+        self.server.pulls.append(pull_request(12, "[MDAPI-1] Y", updated_at="2026-10-05T10:30:00Z"))
+        self.branch_created("feature/MDAPI-1-next-part")
+
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+        self.assertEqual(["176"], self.transition_ids())
+        self.assertIn("stays in Waiting for review: PR #12 is in review", self.out.getvalue())
+
+    def test_late_creation_of_the_branch_of_the_next_pull_request_in_review_keeps_the_ticket_in_review(self):
+        # MDAPI-432 on 2026-10-22: the next PR opened after a merge, the creation of its branch seen a day later.
+        self.merged_ticket(WAITING_FOR_BUILD)
+        self.server.pulls.append(pull_request(12, "[MDAPI-1] Y", branch="bugfix/MDAPI-1-y"))
+        self.run_sync()
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+        self.branch_created("bugfix/MDAPI-1-y", time="2026-10-05T11:30:00Z")
+        self.run_sync()
+        self.assertEqual(WAITING_FOR_REVIEW, self.status_of("MDAPI-1"))
+
+        self.server.pulls[-1].update(state="closed", merged_at="2026-10-05T11:50:00Z",
+                                     updated_at="2026-10-05T11:50:00Z")
+        self.run_sync()
+
+        self.assertEqual(WAITING_FOR_BUILD, self.status_of("MDAPI-1"))
+        self.assertEqual(["176", "161"], self.transition_ids())
 
     def test_created_branch_is_applied_once(self):
         self.server.issue("MDAPI-1", CONFIRMED)
