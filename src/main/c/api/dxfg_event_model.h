@@ -153,10 +153,13 @@ typedef void (*dxfg_order_book_model_listener_function)(graal_isolatethread_t *t
  *
  * Java: `new OrderBookModel()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The model (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_new()")
 dxfg_order_book_model_t*          dxfg_OrderBookModel_new(graal_isolatethread_t *thread);
 
 /**
@@ -168,11 +171,14 @@ dxfg_order_book_model_t*          dxfg_OrderBookModel_new(graal_isolatethread_t 
  *
  * Java: `new IndexedEventModel(Class)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] clazz The event type of the model; it has to be an indexed event type.
  * @return The model (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_new()")
 dxfg_indexed_event_model_t*       dxfg_IndexedEventModel_new(graal_isolatethread_t *thread, dxfg_event_clazz_t clazz);
 
 /**
@@ -185,11 +191,14 @@ dxfg_indexed_event_model_t*       dxfg_IndexedEventModel_new(graal_isolatethread
  *
  * Java: `new TimeSeriesEventModel(Class)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] clazz The event type of the model; it has to be a time-series event type.
  * @return The model (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_new()")
 dxfg_time_series_event_model_t*   dxfg_TimeSeriesEventModel_new(graal_isolatethread_t *thread, dxfg_event_clazz_t clazz);
 
 /**
@@ -228,12 +237,15 @@ typedef enum dxfg_order_book_model_filter_t {
  *
  * Java: `OrderBookModel.attach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] feed The feed to attach to.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_attach()")
 int32_t                                       dxfg_OrderBookModel_attach(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -241,12 +253,15 @@ int32_t                                       dxfg_OrderBookModel_attach(graal_i
  *
  * Java: `OrderBookModel.detach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_detach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] feed The feed to detach from.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_detach()")
 int32_t                                       dxfg_OrderBookModel_detach(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -254,11 +269,14 @@ int32_t                                       dxfg_OrderBookModel_detach(graal_i
  *
  * Java: `OrderBookModel.close()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_close()")
 int32_t                                       dxfg_OrderBookModel_close(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -266,12 +284,15 @@ int32_t                                       dxfg_OrderBookModel_close(graal_is
  *
  * Java: `OrderBookModel.getExecutor()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The executor (release it with dxfg_JavaObjectHandler_release()), or NULL if the default executor
  * of the feed is used or on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception
  * was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getExecutor()")
 dxfg_executor_t*                              dxfg_OrderBookModel_getExecutor(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -279,12 +300,15 @@ dxfg_executor_t*                              dxfg_OrderBookModel_getExecutor(gr
  *
  * Java: `OrderBookModel.setExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_setExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] executor The executor, or NULL to use the default executor of the feed.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_setExecutor()")
 int32_t                                       dxfg_OrderBookModel_setExecutor(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_executor_t *executor);
 
 /**
@@ -294,11 +318,14 @@ int32_t                                       dxfg_OrderBookModel_setExecutor(gr
  *
  * Java: `OrderBookModel.clear()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_clear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_clear()")
 int32_t                                       dxfg_OrderBookModel_clear(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -309,12 +336,15 @@ int32_t                                       dxfg_OrderBookModel_clear(graal_is
  *
  * Java: `IndexedEventModel.attach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @param[in] feed The feed to attach to.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_attach()")
 int32_t                                       dxfg_IndexedEventModel_attach(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -322,12 +352,15 @@ int32_t                                       dxfg_IndexedEventModel_attach(graa
  *
  * Java: `IndexedEventModel.detach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_detach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @param[in] feed The feed to detach from.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_detach()")
 int32_t                                       dxfg_IndexedEventModel_detach(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -335,11 +368,14 @@ int32_t                                       dxfg_IndexedEventModel_detach(graa
  *
  * Java: `IndexedEventModel.close()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_close()")
 int32_t                                       dxfg_IndexedEventModel_close(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -347,12 +383,15 @@ int32_t                                       dxfg_IndexedEventModel_close(graal
  *
  * Java: `IndexedEventModel.getExecutor()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_getExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return The executor (release it with dxfg_JavaObjectHandler_release()), or NULL if the default executor
  * of the feed is used or on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception
  * was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_getExecutor()")
 dxfg_executor_t*                              dxfg_IndexedEventModel_getExecutor(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -360,12 +399,15 @@ dxfg_executor_t*                              dxfg_IndexedEventModel_getExecutor
  *
  * Java: `IndexedEventModel.setExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_setExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @param[in] executor The executor, or NULL to use the default executor of the feed.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_setExecutor()")
 int32_t                                       dxfg_IndexedEventModel_setExecutor(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model, dxfg_executor_t *executor);
 
 /**
@@ -375,11 +417,14 @@ int32_t                                       dxfg_IndexedEventModel_setExecutor
  *
  * Java: `IndexedEventModel.clear()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_clear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_clear()")
 int32_t                                       dxfg_IndexedEventModel_clear(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -390,12 +435,15 @@ int32_t                                       dxfg_IndexedEventModel_clear(graal
  *
  * Java: `TimeSeriesEventModel.attach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] feed The feed to attach to.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_attach()")
 int32_t                                       dxfg_TimeSeriesEventModel_attach(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -403,12 +451,15 @@ int32_t                                       dxfg_TimeSeriesEventModel_attach(g
  *
  * Java: `TimeSeriesEventModel.detach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_detach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] feed The feed to detach from.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_detach()")
 int32_t                                       dxfg_TimeSeriesEventModel_detach(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, dxfg_feed_t *feed);
 
 /**
@@ -417,11 +468,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_detach(g
  *
  * Java: `TimeSeriesEventModel.close()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_close()")
 int32_t                                       dxfg_TimeSeriesEventModel_close(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -429,12 +483,15 @@ int32_t                                       dxfg_TimeSeriesEventModel_close(gr
  *
  * Java: `TimeSeriesEventModel.getExecutor()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_getExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return The executor (release it with dxfg_JavaObjectHandler_release()), or NULL if the default executor
  * of the feed is used or on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception
  * was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_getExecutor()")
 dxfg_executor_t*                              dxfg_TimeSeriesEventModel_getExecutor(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -442,12 +499,15 @@ dxfg_executor_t*                              dxfg_TimeSeriesEventModel_getExecu
  *
  * Java: `TimeSeriesEventModel.setExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_setExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] executor The executor, or NULL to use the default executor of the feed.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_setExecutor()")
 int32_t                                       dxfg_TimeSeriesEventModel_setExecutor(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, dxfg_executor_t *executor);
 
 /**
@@ -456,11 +516,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_setExecu
  *
  * Java: `TimeSeriesEventModel.clear()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_clear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_clear()")
 int32_t                                       dxfg_TimeSeriesEventModel_clear(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -468,11 +531,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_clear(gr
  *
  * Java: `OrderBookModel.getFilter()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getFilter().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The filter, a value of #dxfg_order_book_model_filter_t, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getFilter()")
 int32_t                                       dxfg_OrderBookModel_getFilter(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -480,12 +546,15 @@ int32_t                                       dxfg_OrderBookModel_getFilter(graa
  *
  * Java: `OrderBookModel.setFilter(OrderBookModelFilter)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_setFilter().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] filter The filter.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_setFilter()")
 int32_t                                       dxfg_OrderBookModel_setFilter(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_order_book_model_filter_t filter);
 
 /**
@@ -493,12 +562,15 @@ int32_t                                       dxfg_OrderBookModel_setFilter(graa
  *
  * Java: `OrderBookModel.getSymbol()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The symbol (a UTF-8 string; release it with dxfg_String_release()), or NULL if the model is not
  * subscribed (the default) or on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception
  * was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getSymbol()")
 const char*                                   dxfg_OrderBookModel_getSymbol(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -506,12 +578,15 @@ const char*                                   dxfg_OrderBookModel_getSymbol(graa
  *
  * Java: `OrderBookModel.setSymbol(String)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_setSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] symbol The symbol, a UTF-8 string, or NULL to unsubscribe (that removes the orders of the model).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_setSymbol()")
 int32_t                                       dxfg_OrderBookModel_setSymbol(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, const char* symbol);
 
 /**
@@ -519,12 +594,15 @@ int32_t                                       dxfg_OrderBookModel_setSymbol(graa
  *
  * Java: `IndexedEventModel.getSymbol()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_getSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return The symbol (release it with dxfg_Symbol_release()), or NULL if the model is not subscribed (the
  * default). On error the result is `(dxfg_symbol_t *)-1`, not NULL: use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_getSymbol()")
 dxfg_symbol_t*                                dxfg_IndexedEventModel_getSymbol(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -532,12 +610,15 @@ dxfg_symbol_t*                                dxfg_IndexedEventModel_getSymbol(g
  *
  * Java: `IndexedEventModel.setSymbol(Object)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_setSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @param[in] symbol The symbol, or NULL to unsubscribe (that removes the events of the model).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_setSymbol()")
 int32_t                                       dxfg_IndexedEventModel_setSymbol(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model, dxfg_symbol_t* symbol);
 
 /**
@@ -545,12 +626,15 @@ int32_t                                       dxfg_IndexedEventModel_setSymbol(g
  *
  * Java: `TimeSeriesEventModel.getSymbol()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_getSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return The symbol (release it with dxfg_Symbol_release()), or NULL if the model is not subscribed (the
  * default). On error the result is `(dxfg_symbol_t *)-1`, not NULL: use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_getSymbol()")
 dxfg_symbol_t*                                dxfg_TimeSeriesEventModel_getSymbol(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -558,12 +642,15 @@ dxfg_symbol_t*                                dxfg_TimeSeriesEventModel_getSymbo
  *
  * Java: `TimeSeriesEventModel.setSymbol(Object)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_setSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] symbol The symbol, or NULL to unsubscribe (that removes the events of the model).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_setSymbol()")
 int32_t                                       dxfg_TimeSeriesEventModel_setSymbol(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, dxfg_symbol_t* symbol);
 
 /**
@@ -574,11 +661,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_setSymbo
  *
  * Java: `OrderBookModel.getLotSize()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getLotSize().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The lot size, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception
  * was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getLotSize()")
 int32_t                                       dxfg_OrderBookModel_getLotSize(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -588,12 +678,15 @@ int32_t                                       dxfg_OrderBookModel_getLotSize(gra
  *
  * Java: `OrderBookModel.setLotSize(int)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_setLotSize().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] lotSize The lot size multiplier, 1 or greater.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_setLotSize()")
 int32_t                                       dxfg_OrderBookModel_setLotSize(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, int32_t lotSize);
 
 /**
@@ -601,11 +694,14 @@ int32_t                                       dxfg_OrderBookModel_setLotSize(gra
  *
  * Java: `IndexedEventModel.getSizeLimit()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_getSizeLimit().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return The size limit (INT32_MAX means no limit, it is the default), or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_getSizeLimit()")
 int32_t                                       dxfg_IndexedEventModel_getSizeLimit(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -615,6 +711,8 @@ int32_t                                       dxfg_IndexedEventModel_getSizeLimi
  *
  * Java: `IndexedEventModel.setSizeLimit(int)`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_setSizeLimit().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @param[in] sizeLimit The size limit, not negative. When the limit is exceeded, the first events of the list
@@ -622,6 +720,7 @@ int32_t                                       dxfg_IndexedEventModel_getSizeLimi
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_setSizeLimit()")
 int32_t                                       dxfg_IndexedEventModel_setSizeLimit(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model, int32_t sizeLimit);
 
 /**
@@ -629,11 +728,14 @@ int32_t                                       dxfg_IndexedEventModel_setSizeLimi
  *
  * Java: `TimeSeriesEventModel.getSizeLimit()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_getSizeLimit().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return The size limit (INT32_MAX means no limit, it is the default), or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_getSizeLimit()")
 int32_t                                       dxfg_TimeSeriesEventModel_getSizeLimit(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -643,6 +745,8 @@ int32_t                                       dxfg_TimeSeriesEventModel_getSizeL
  *
  * Java: `TimeSeriesEventModel.setSizeLimit(int)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_setSizeLimit().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] sizeLimit The size limit, not negative. When the limit is exceeded, the first events of the list
@@ -650,6 +754,7 @@ int32_t                                       dxfg_TimeSeriesEventModel_getSizeL
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_setSizeLimit()")
 int32_t                                       dxfg_TimeSeriesEventModel_setSizeLimit(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, int32_t sizeLimit);
 
 /**
@@ -657,11 +762,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_setSizeL
  *
  * Java: `TimeSeriesEventModel.getFromTime()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_getFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return The time in milliseconds since the epoch (INT64_MAX means not subscribed, it is the default), or -1 on
  * error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_getFromTime()")
 int64_t                                       dxfg_TimeSeriesEventModel_getFromTime(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -669,12 +777,15 @@ int64_t                                       dxfg_TimeSeriesEventModel_getFromT
  *
  * Java: `TimeSeriesEventModel.setFromTime(long)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_setFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @param[in] fromTime The time in milliseconds since the epoch; INT64_MAX unsubscribes.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_setFromTime()")
 int32_t                                       dxfg_TimeSeriesEventModel_setFromTime(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model, int64_t fromTime);
 
 /**
@@ -686,11 +797,14 @@ int32_t                                       dxfg_TimeSeriesEventModel_setFromT
  *
  * Java: `OrderBookModel.getBuyOrders()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getBuyOrders().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The list (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getBuyOrders()")
 dxfg_observable_list_model_t*                 dxfg_OrderBookModel_getBuyOrders(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -702,11 +816,14 @@ dxfg_observable_list_model_t*                 dxfg_OrderBookModel_getBuyOrders(g
  *
  * Java: `OrderBookModel.getSellOrders()`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_getSellOrders().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @return The list (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_getSellOrders()")
 dxfg_observable_list_model_t*                 dxfg_OrderBookModel_getSellOrders(graal_isolatethread_t *thread, dxfg_order_book_model_t *model);
 
 /**
@@ -718,11 +835,14 @@ dxfg_observable_list_model_t*                 dxfg_OrderBookModel_getSellOrders(
  *
  * Java: `IndexedEventModel.getEventsList()`.
  *
+ * @deprecated Use dxfg_v4_IndexedEventModel_getEventsList().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The indexed event model handle.
  * @return The list (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventModel_getEventsList()")
 dxfg_observable_list_model_t*                 dxfg_IndexedEventModel_getEventsList(graal_isolatethread_t *thread, dxfg_indexed_event_model_t *model);
 
 /**
@@ -734,11 +854,14 @@ dxfg_observable_list_model_t*                 dxfg_IndexedEventModel_getEventsLi
  *
  * Java: `TimeSeriesEventModel.getEventsList()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesEventModel_getEventsList().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The time-series event model handle.
  * @return The list (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesEventModel_getEventsList()")
 dxfg_observable_list_model_t*                 dxfg_TimeSeriesEventModel_getEventsList(graal_isolatethread_t *thread, dxfg_time_series_event_model_t *model);
 
 /**
@@ -751,6 +874,8 @@ dxfg_observable_list_model_t*                 dxfg_TimeSeriesEventModel_getEvent
  *
  * Java: `ObservableListModelListener.modelChanged(ObservableListModelListener.Change)`.
  *
+ * @deprecated Use dxfg_v4_ObservableListModelListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call after the list has changed; see
  * #dxfg_observable_list_model_listener_function for the thread and the ownership of its data.
@@ -759,6 +884,7 @@ dxfg_observable_list_model_t*                 dxfg_TimeSeriesEventModel_getEvent
  * @return The listener (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableListModelListener_new()")
 dxfg_observable_list_model_listener_t*        dxfg_ObservableListModelListener_new(graal_isolatethread_t *thread, dxfg_observable_list_model_listener_function user_func, void *user_data);
 
 /**
@@ -766,12 +892,15 @@ dxfg_observable_list_model_listener_t*        dxfg_ObservableListModelListener_n
  *
  * Java: `ObservableListModel.addListener(ObservableListModelListener)`.
  *
+ * @deprecated Use dxfg_v4_ObservableListModel_addListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list handle.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableListModel_addListener()")
 int32_t                                       dxfg_ObservableListModel_addListener(graal_isolatethread_t *thread, dxfg_observable_list_model_t *list, dxfg_observable_list_model_listener_t *listener);
 
 /**
@@ -779,12 +908,15 @@ int32_t                                       dxfg_ObservableListModel_addListen
  *
  * Java: `ObservableListModel.removeListener(ObservableListModelListener)`.
  *
+ * @deprecated Use dxfg_v4_ObservableListModel_removeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list handle.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableListModel_removeListener()")
 int32_t                                       dxfg_ObservableListModel_removeListener(graal_isolatethread_t *thread, dxfg_observable_list_model_t *list, dxfg_observable_list_model_listener_t *listener);
 
 /**
@@ -797,6 +929,8 @@ int32_t                                       dxfg_ObservableListModel_removeLis
  *
  * Java: `OrderBookModelListener.modelChanged(OrderBookModelListener.Change)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModelListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call after the model has changed; see
  * #dxfg_order_book_model_listener_function for the thread and the ownership of its data.
@@ -805,6 +939,7 @@ int32_t                                       dxfg_ObservableListModel_removeLis
  * @return The listener (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModelListener_new()")
 dxfg_order_book_model_listener_t*             dxfg_OrderBookModelListener_new(graal_isolatethread_t *thread, dxfg_order_book_model_listener_function user_func, void *user_data);
 
 /**
@@ -812,12 +947,15 @@ dxfg_order_book_model_listener_t*             dxfg_OrderBookModelListener_new(gr
  *
  * Java: `OrderBookModel.addListener(OrderBookModelListener)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_addListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_addListener()")
 int32_t                                       dxfg_OrderBookModel_addListener(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_order_book_model_listener_t *listener);
 
 /**
@@ -825,12 +963,15 @@ int32_t                                       dxfg_OrderBookModel_addListener(gr
  *
  * Java: `OrderBookModel.removeListener(OrderBookModelListener)`.
  *
+ * @deprecated Use dxfg_v4_OrderBookModel_removeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] model The order book model handle.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OrderBookModel_removeListener()")
 int32_t                                       dxfg_OrderBookModel_removeListener(graal_isolatethread_t *thread, dxfg_order_book_model_t *model, dxfg_order_book_model_listener_t *listener);
 
 /**
@@ -840,11 +981,14 @@ int32_t                                       dxfg_OrderBookModel_removeListener
  *
  * Java: the elements of `ObservableListModel` (a `java.util.List`).
  *
+ * @deprecated Use dxfg_v4_ObservableListModel_toArray().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list handle.
  * @return The events (release them with dxfg_CList_EventType_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableListModel_toArray()")
 dxfg_event_type_list*                         dxfg_ObservableListModel_toArray(graal_isolatethread_t *thread, dxfg_observable_list_model_t *list);
 
 /**
@@ -946,11 +1090,14 @@ typedef void (*dxfg_TxModelListener_function_eventsReceived)(graal_isolatethread
  *
  * Java: `IndexedTxModel.newBuilder(Class)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_newBuilder().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventType The type of the indexed events of the model.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_newBuilder()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_newBuilder(graal_isolatethread_t* thread, dxfg_event_clazz_t eventType);
 
 /**
@@ -958,11 +1105,14 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_newBuilder(graal_isolatethr
  *
  * Java: `IndexedTxModel.getSources()`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_getSources().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return The sources (release them with dxfg_CList_IndexedEventSource_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_getSources()")
 dxfg_indexed_event_source_list* dxfg_IndexedTxModel_getSources(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 
 /**
@@ -972,12 +1122,15 @@ dxfg_indexed_event_source_list* dxfg_IndexedTxModel_getSources(graal_isolatethre
  *
  * Java: `IndexedTxModel.setSources(Set)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_setSources().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] sources The new sources of the model; an empty list means all the sources.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_setSources()")
 int32_t dxfg_IndexedTxModel_setSources(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_indexed_event_source_list* sources);
 
 /**
@@ -985,11 +1138,14 @@ int32_t dxfg_IndexedTxModel_setSources(graal_isolatethread_t* thread, dxfg_index
  *
  * Java: `AbstractTxModel.isBatchProcessing()`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_isBatchProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return 1 if enabled, 0 otherwise, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_isBatchProcessing()")
 int32_t dxfg_IndexedTxModel_isBatchProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 
 /**
@@ -997,11 +1153,14 @@ int32_t dxfg_IndexedTxModel_isBatchProcessing(graal_isolatethread_t* thread, dxf
  *
  * Java: `AbstractTxModel.isSnapshotProcessing()`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_isSnapshotProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return 1 if enabled, 0 otherwise, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_isSnapshotProcessing()")
 int32_t dxfg_IndexedTxModel_isSnapshotProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 
 /**
@@ -1009,12 +1168,15 @@ int32_t dxfg_IndexedTxModel_isSnapshotProcessing(graal_isolatethread_t* thread, 
  *
  * Java: `AbstractTxModel.attach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] feed The feed to attach to.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_attach()")
 int32_t dxfg_IndexedTxModel_attach(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1022,12 +1184,15 @@ int32_t dxfg_IndexedTxModel_attach(graal_isolatethread_t* thread, dxfg_indexed_t
  *
  * Java: `AbstractTxModel.detach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_detach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] feed The feed to detach from.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_detach()")
 int32_t dxfg_IndexedTxModel_detach(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1035,12 +1200,15 @@ int32_t dxfg_IndexedTxModel_detach(graal_isolatethread_t* thread, dxfg_indexed_t
  *
  * Java: `AbstractTxModel.setAggregationPeriod(TimePeriod)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_setAggregationPeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] aggregationPeriod The new aggregation period of the events.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_setAggregationPeriod()")
 int32_t dxfg_IndexedTxModel_setAggregationPeriod(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source, dxfg_time_period_t* aggregationPeriod);
 
 /**
@@ -1048,11 +1216,14 @@ int32_t dxfg_IndexedTxModel_setAggregationPeriod(graal_isolatethread_t* thread, 
  *
  * Java: `AbstractTxModel.close()`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_close()")
 int32_t dxfg_IndexedTxModel_close(graal_isolatethread_t* thread, dxfg_indexed_tx_model_t* source);
 
 /**
@@ -1060,12 +1231,15 @@ int32_t dxfg_IndexedTxModel_close(graal_isolatethread_t* thread, dxfg_indexed_tx
  *
  * Java: `IndexedTxModel.Builder.withSources(Collection)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withSources().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] sources The sources of the events; an empty list means all the sources.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withSources()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSources(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_indexed_event_source_list* sources);
 
 /**
@@ -1073,11 +1247,14 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSources(graal_i
  *
  * Java: `IndexedTxModel.Builder.build()`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_build().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @return The model (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_build()")
 dxfg_indexed_tx_model_t* dxfg_IndexedTxModel_Builder_build(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source);
 
 /**
@@ -1085,18 +1262,23 @@ dxfg_indexed_tx_model_t* dxfg_IndexedTxModel_Builder_build(graal_isolatethread_t
  *
  * Java: `AbstractTxModel.Builder.withBatchProcessing(boolean)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] isBatchProcessing 1 to deliver all the pending transactions in one call, 0 to deliver them one by one.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withBatchProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, int32_t isBatchProcessing);
 
 /**
  * @brief Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0, default).
  *
  * Java: `AbstractTxModel.Builder.withSnapshotProcessing(boolean)`.
+ *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
@@ -1106,6 +1288,7 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withBatchProcessing
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSnapshotProcessing(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, int32_t isSnapshotProcessing);
 
 /**
@@ -1113,12 +1296,15 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSnapshotProcess
  *
  * Java: `AbstractTxModel.Builder.withFeed(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withFeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] feed The feed the model is attached to.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withFeed()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withFeed(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1126,12 +1312,15 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withFeed(graal_isol
  *
  * Java: `AbstractTxModel.Builder.withAggregationPeriod(TimePeriod)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] aggregationPeriod The aggregation period of the events.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withAggregationPeriod(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_time_period_t* aggregationPeriod);
 
 /**
@@ -1139,12 +1328,15 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withAggregationPeri
  *
  * Java: `AbstractTxModel.Builder.withSymbol(Object)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] symbol The symbol to subscribe for (a dxfg_symbol_t).
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withSymbol()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSymbol(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_symbol_t* symbol);
 
 /**
@@ -1152,12 +1344,15 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withSymbol(graal_is
  *
  * Java: `AbstractTxModel.Builder.withListener(TxModelListener)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] listener The listener of the transactions (see dxfg_TxModelListener_new()).
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withListener()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withListener(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_tx_model_listener_t* listener);
 
 /**
@@ -1165,12 +1360,15 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withListener(graal_
  *
  * Java: `AbstractTxModel.Builder.withExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_IndexedTxModel_Builder_withExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] executor The executor that calls the listener.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedTxModel_Builder_withExecutor()")
 dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withExecutor(graal_isolatethread_t* thread, dxfg_indexed_tx_model_builder_t* source, dxfg_executor_t* executor);
 
 /**
@@ -1178,11 +1376,14 @@ dxfg_indexed_tx_model_builder_t* dxfg_IndexedTxModel_Builder_withExecutor(graal_
  *
  * Java: `TimeSeriesTxModel.newBuilder(Class)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_newBuilder().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventType The type of the time-series events of the model.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_newBuilder()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_newBuilder(graal_isolatethread_t* thread, dxfg_event_clazz_t eventType);
 
 /**
@@ -1190,11 +1391,14 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_newBuilder(graal_iso
  *
  * Java: `TimeSeriesTxModel.getFromTime()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_getFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return The time in milliseconds since the epoch (INT64_MAX if the model is not subscribed), or -1 on
  * error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_getFromTime()")
 int64_t dxfg_TimeSeriesTxModel_getFromTime(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 
 /**
@@ -1202,12 +1406,15 @@ int64_t dxfg_TimeSeriesTxModel_getFromTime(graal_isolatethread_t* thread, dxfg_t
  *
  * Java: `TimeSeriesTxModel.setFromTime(long)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_setFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] fromTime The time to subscribe from, in milliseconds since the epoch; INT64_MAX unsubscribes.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_setFromTime()")
 int32_t dxfg_TimeSeriesTxModel_setFromTime(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, int64_t fromTime);
 
 /**
@@ -1215,11 +1422,14 @@ int32_t dxfg_TimeSeriesTxModel_setFromTime(graal_isolatethread_t* thread, dxfg_t
  *
  * Java: `AbstractTxModel.isBatchProcessing()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_isBatchProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return 1 if enabled, 0 otherwise, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_isBatchProcessing()")
 int32_t dxfg_TimeSeriesTxModel_isBatchProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 
 /**
@@ -1227,11 +1437,14 @@ int32_t dxfg_TimeSeriesTxModel_isBatchProcessing(graal_isolatethread_t* thread, 
  *
  * Java: `AbstractTxModel.isSnapshotProcessing()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return 1 if enabled, 0 otherwise, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing()")
 int32_t dxfg_TimeSeriesTxModel_isSnapshotProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 
 /**
@@ -1239,12 +1452,15 @@ int32_t dxfg_TimeSeriesTxModel_isSnapshotProcessing(graal_isolatethread_t* threa
  *
  * Java: `AbstractTxModel.attach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] feed The feed to attach to.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_attach()")
 int32_t dxfg_TimeSeriesTxModel_attach(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1252,12 +1468,15 @@ int32_t dxfg_TimeSeriesTxModel_attach(graal_isolatethread_t* thread, dxfg_time_s
  *
  * Java: `AbstractTxModel.detach(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_detach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] feed The feed to detach from.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_detach()")
 int32_t dxfg_TimeSeriesTxModel_detach(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1265,12 +1484,15 @@ int32_t dxfg_TimeSeriesTxModel_detach(graal_isolatethread_t* thread, dxfg_time_s
  *
  * Java: `AbstractTxModel.setAggregationPeriod(TimePeriod)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @param[in] aggregationPeriod The new aggregation period of the events.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod()")
 int32_t dxfg_TimeSeriesTxModel_setAggregationPeriod(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source, dxfg_time_period_t* aggregationPeriod);
 
 /**
@@ -1278,11 +1500,14 @@ int32_t dxfg_TimeSeriesTxModel_setAggregationPeriod(graal_isolatethread_t* threa
  *
  * Java: `AbstractTxModel.close()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The model handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_close()")
 int32_t dxfg_TimeSeriesTxModel_close(graal_isolatethread_t* thread, dxfg_time_series_tx_model_t* source);
 
 /**
@@ -1290,12 +1515,15 @@ int32_t dxfg_TimeSeriesTxModel_close(graal_isolatethread_t* thread, dxfg_time_se
  *
  * Java: `TimeSeriesTxModel.Builder.withFromTime(long)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] fromTime The time to subscribe from, in milliseconds since the epoch (INT64_MAX: not subscribed).
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFromTime(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int64_t fromTime);
 
 /**
@@ -1303,12 +1531,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFromTime
  *
  * Java: `TimeSeriesTxModel.Builder.withSorting(TimeSeriesTxModel.SortOrder)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withSorting().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] sortOrder The order of the events of a snapshot.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withSorting()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSorting(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_TimeSeriesTxModelSortOrder_t sortOrder);
 
 /**
@@ -1316,12 +1547,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSorting(
  *
  * Java: `TimeSeriesTxModel.Builder.ignoreRemoveEvents(boolean)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] ignoreRemoveEvents 1 to drop the removed events, 0 to deliver them.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreRemoveEvents(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t ignoreRemoveEvents);
 
 /**
@@ -1329,6 +1563,8 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreRemove
  * or delivered (0, default).
  *
  * Java: `TimeSeriesTxModel.Builder.ignoreEventsFromPast(boolean)`.
+ *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
@@ -1338,6 +1574,7 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreRemove
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreEventsFromPast(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t ignoreEventFromPast);
 
 /**
@@ -1347,6 +1584,8 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreEvents
  *
  * Java: `TimeSeriesTxModel.Builder.withConfirmationTick(boolean)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] confirmationTick 1 to deliver a new bar after the previous (closing) one, to confirm it, 0 to deliver it
@@ -1354,6 +1593,7 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_ignoreEvents
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withConfirmationTick(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t confirmationTick);
 
 /**
@@ -1361,12 +1601,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withConfirma
  *
  * Java: `TimeSeriesTxModel.Builder.withEventPeek(Consumer)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] eventPeek Ignored: pass NULL.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withEventPeek(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, void* eventPeek);
 
 /**
@@ -1374,11 +1617,14 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withEventPee
  *
  * Java: `TimeSeriesTxModel.Builder.build()`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_build().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @return The model (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_build()")
 dxfg_time_series_tx_model_t* dxfg_TimeSeriesTxModel_Builder_build(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source);
 
 /**
@@ -1386,18 +1632,23 @@ dxfg_time_series_tx_model_t* dxfg_TimeSeriesTxModel_Builder_build(graal_isolatet
  *
  * Java: `AbstractTxModel.Builder.withBatchProcessing(boolean)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] isBatchProcessing 1 to deliver all the pending transactions in one call, 0 to deliver them one by one.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withBatchProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t isBatchProcessing);
 
 /**
  * @brief Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0, default).
  *
  * Java: `AbstractTxModel.Builder.withSnapshotProcessing(boolean)`.
+ *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
@@ -1407,6 +1658,7 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withBatchPro
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSnapshotProcessing(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, int32_t isSnapshotProcessing);
 
 /**
@@ -1414,12 +1666,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSnapshot
  *
  * Java: `AbstractTxModel.Builder.withFeed(DXFeed)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withFeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] feed The feed the model is attached to.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withFeed()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFeed(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_feed_t* feed);
 
 /**
@@ -1427,12 +1682,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withFeed(gra
  *
  * Java: `AbstractTxModel.Builder.withAggregationPeriod(TimePeriod)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] aggregationPeriod The aggregation period of the events.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withAggregationPeriod(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_time_period_t* aggregationPeriod);
 
 /**
@@ -1440,12 +1698,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withAggregat
  *
  * Java: `AbstractTxModel.Builder.withSymbol(Object)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] symbol The symbol to subscribe for (a dxfg_symbol_t).
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSymbol(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_symbol_t* symbol);
 
 /**
@@ -1453,12 +1714,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withSymbol(g
  *
  * Java: `AbstractTxModel.Builder.withListener(TxModelListener)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] listener The listener of the transactions (see dxfg_TxModelListener_new()).
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withListener()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withListener(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_tx_model_listener_t* listener);
 
 /**
@@ -1466,12 +1730,15 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withListener
  *
  * Java: `AbstractTxModel.Builder.withExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
  * @param[in] executor The executor that calls the listener.
  * @return The builder (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor()")
 dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withExecutor(graal_isolatethread_t* thread, dxfg_time_series_tx_model_builder_t* source, dxfg_executor_t* executor);
 
 /**
@@ -1482,6 +1749,8 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withExecutor
  *
  * Java: `TxModelListener.eventsReceived(IndexedEventSource, List, boolean)`.
  *
+ * @deprecated Use dxfg_v4_TxModelListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] function_eventsReceived The function to call when transactions are received; see
  * #dxfg_TxModelListener_function_eventsReceived for the thread and the ownership of its data.
@@ -1490,6 +1759,7 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withExecutor
  * @return The listener (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_TxModelListener_new()")
 dxfg_tx_model_listener_t* dxfg_TxModelListener_new(graal_isolatethread_t* thread, dxfg_TxModelListener_function_eventsReceived  function_eventsReceived, void* user_data);
 
 /** @} */

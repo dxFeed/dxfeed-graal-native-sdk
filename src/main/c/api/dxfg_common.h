@@ -90,12 +90,16 @@ typedef struct dxfg_string_to_double_map_entry_t {
  * is NULL or `size` is not positive, the function does nothing (an empty array is not freed) and returns
  * #DXFG_EXECUTE_SUCCESSFULLY.
  *
+ * @deprecated Use dxfg_v4_string_to_double_map_entry_list_release(): dxfg_v4_AdditionalUnderlyings_getMap() returns
+ * a list.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] mapEntries The array of map entries ([string, double] pair) that was returned by the SDK.
  * @param[in] size The number of entries in the array, as returned together with the array.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_string_to_double_map_entry_list_release()")
 int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread,
                                                dxfg_string_to_double_map_entry_t *mapEntries, int32_t size);
 
@@ -106,11 +110,14 @@ int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread,
  * Only a block of memory that a function of the SDK allocated and documents to be released with this function can be
  * passed. Do not use the memory after that.
  *
+ * @deprecated Use dxfg_v4_free().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] pointer The pointer to the unmanaged memory that was returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_free()")
 int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer);
 
 /**
@@ -121,15 +128,57 @@ int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer);
  * #DXFG_EXECUTE_SUCCESSFULLY. A list of strings (dxfg_string_list) is not an array of this kind: it is released with
  * dxfg_CList_String_release().
  *
+ * @deprecated Use dxfg_v4_string_list_release(): the v4 functions return strings in lists.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] strings The array of the NUL-terminated strings that was returned by the SDK.
  * @param[in] size The number of strings in the array, as returned together with the array.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_string_list_release()")
 int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t size);
 
 /** @} */ // end of Common
+
+/** @defgroup V4_Conventions The v4 functions
+ *  @brief The `dxfg_v4_` functions: the operations of the older functions of the C API in one uniform form.
+ *
+ *  A function of the C API that has a `dxfg_v4_` twin is deprecated in favour of it. The twin is declared in a
+ *  `dxfg_v4_<area>.h` header next to the header of the older function (dxfg_v4_api.h and dxfg_api.h include all of
+ *  them). dxfg_free_strings() and dxfg_free_string_to_double_map_entries() have no twin and are deprecated: the v4
+ *  functions return lists, released by their `dxfg_v4_<element>_list_release()` functions. A twin does the same as
+ *  the older function, only its form differs:
+ *  - It returns `int32_t`: #DXFG_EXECUTE_SUCCESSFULLY (0) on success, #DXFG_EXECUTE_FAIL (-1) on error. The status is
+ *    the only error signal: after -1, dxfg_v4_get_and_clear_thread_exception() gives the exception. A successful call
+ *    does not clear an exception left by an earlier failed call that was not taken, so take it right after the error.
+ *  - It writes its result to the last parameter, marked #DXFG_OUT: the caller passes the address of its own variable.
+ *    The variable is written only if the function succeeds (dxfg_v4_DXFeed_getLastEvent() and
+ *    dxfg_v4_DXFeed_getLastEvents() write NULL on error, as their older functions do); after an error its value must
+ *    not be used. A NULL out pointer is an error (`IllegalArgumentException`), unless the parameter is documented as
+ *    optional.
+ *  - A NULL handle, string or list written to the out variable means "no value" (e.g. no session is found), it is
+ *    never an error. A number is written as it is: -1 or 0 are ordinary values, not error markers.
+ *  - It returns a collection as a list `dxfg_v4_<element>_list` (`size` and `elements`; `elements` of an empty list
+ *    may be NULL), which is released with its `dxfg_v4_<element>_list_release()` function. A list that the caller
+ *    builds and passes to a function stays the caller's: it is never passed to a release function.
+ *  - Its name has no digit suffix: an overload is named by what it takes (e.g. dxfg_v4_TimePeriod_valueOfString()).
+ *  - The types of its parameters have `dxfg_v4_` names: typedefs of the older types with the same layout. The
+ *    constants of the enumerations keep their names.
+ *
+ *  The `dxfg_v4_` prefix names a generation of the C API, not a release of the SDK: the rules above hold for every
+ *  function and type with this prefix, and later releases, major ones included, add functions with the same prefix.
+ *  A new generation appears only when these rules change. It is named after the major release in which it becomes
+ *  the only one: the v4 functions become the only ones in 4.0.0.
+ *
+ *  The older and the v4 functions can be mixed on the same objects: a handle, a string or a list that one of them
+ *  returned can be passed to the other one and released by the release function of either.
+ *
+ *  The older functions that have twins are marked with `DXFG_DEPRECATED`, so the compilers warn where they are used.
+ *  To compile code that still uses them without the warnings, define the macro empty before the headers are included:
+ *  `#define DXFG_DEPRECATED(message)` in the code, or `-DDXFG_DEPRECATED(message)=` on the command line of GCC and
+ *  Clang. With MSVC, the warning is C4996 (`/wd4996` disables it).
+ */
 
 #ifdef __cplusplus
 }

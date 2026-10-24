@@ -204,23 +204,29 @@ typedef void (*dxfg_ipf_update_listener_function)(graal_isolatethread_t *thread,
  *
  * Java: `InstrumentProfileConnection.createConnection(String, InstrumentProfileCollector)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_createConnection().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] address The address, a UTF-8 string.
  * @param[in] collector The collector handle that the connection pushes the updates into.
  * @return The connection (release it with dxfg_JavaObjectHandler_release(); that does not close the connection), or
  * NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_createConnection()")
 dxfg_ipf_connection_t*                        dxfg_InstrumentProfileConnection_createConnection(graal_isolatethread_t *thread, const char *address, dxfg_ipf_collector_t *collector);
 /**
  * @brief Returns the address of the connection, without the additional options given as a part of it.
  *
  * Java: `InstrumentProfileConnection.getAddress()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_getAddress().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return The address (a UTF-8 string; release it with dxfg_String_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_getAddress()")
 const char*                                   dxfg_InstrumentProfileConnection_getAddress(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Returns the update period of the connection in milliseconds.
@@ -230,16 +236,21 @@ const char*                                   dxfg_InstrumentProfileConnection_g
  *
  * Java: `InstrumentProfileConnection.getUpdatePeriod()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_getUpdatePeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return The update period in milliseconds, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine
  * if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_getUpdatePeriod()")
 int64_t                                       dxfg_InstrumentProfileConnection_getUpdatePeriod(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Changes the update period of the connection.
  *
  * Java: `InstrumentProfileConnection.setUpdatePeriod(long)`.
+ *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_setUpdatePeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
@@ -247,17 +258,21 @@ int64_t                                       dxfg_InstrumentProfileConnection_g
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_setUpdatePeriod()")
 int32_t                                       dxfg_InstrumentProfileConnection_setUpdatePeriod(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, int64_t newValue);
 /**
  * @brief Returns the state of the connection.
  *
  * Java: `InstrumentProfileConnection.getState()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_getState().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return The state, or -1 (it is not a dxfg_ipf_connection_state_t value) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_getState()")
 dxfg_ipf_connection_state_t                   dxfg_InstrumentProfileConnection_getState(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Returns the last modification time of the instrument profiles in milliseconds, or 0 if it is unknown.
@@ -266,11 +281,14 @@ dxfg_ipf_connection_state_t                   dxfg_InstrumentProfileConnection_g
  *
  * Java: `InstrumentProfileConnection.getLastModified()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_getLastModified().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return The last modification time in milliseconds, or 0 if it is unknown, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_getLastModified()")
 int64_t                                       dxfg_InstrumentProfileConnection_getLastModified(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Starts the connection.
@@ -281,11 +299,14 @@ int64_t                                       dxfg_InstrumentProfileConnection_g
  *
  * Java: `InstrumentProfileConnection.start()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_start().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_start()")
 int32_t                                       dxfg_InstrumentProfileConnection_start(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Closes the connection.
@@ -295,11 +316,14 @@ int32_t                                       dxfg_InstrumentProfileConnection_s
  *
  * Java: `InstrumentProfileConnection.close()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_close()")
 int32_t                                       dxfg_InstrumentProfileConnection_close(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection);
 /**
  * @brief Creates a listener of the state changes of a connection that calls a C function.
@@ -310,12 +334,15 @@ int32_t                                       dxfg_InstrumentProfileConnection_c
  *
  * Java: `PropertyChangeListener.propertyChange(PropertyChangeEvent)`.
  *
+ * @deprecated Use dxfg_v4_IpfPropertyChangeListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call when the state of the connection changes.
  * @param[in] user_data The pointer that is passed to user_func as is; the SDK does not use it.
  * @return The listener (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_IpfPropertyChangeListener_new()")
 dxfg_ipf_connection_state_change_listener_t*  dxfg_IpfPropertyChangeListener_new(graal_isolatethread_t *thread, dxfg_ipf_connection_state_change_listener_func user_func, void *user_data);
 /**
  * @brief Adds a listener of the state changes of the connection.
@@ -325,12 +352,15 @@ dxfg_ipf_connection_state_change_listener_t*  dxfg_IpfPropertyChangeListener_new
  *
  * Java: `InstrumentProfileConnection.addStateChangeListener(PropertyChangeListener)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_addStateChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @param[in] listener The listener handle, see dxfg_IpfPropertyChangeListener_new().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_addStateChangeListener()")
 int32_t                                       dxfg_InstrumentProfileConnection_addStateChangeListener(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, dxfg_ipf_connection_state_change_listener_t *listener);
 /**
  * @brief Removes a listener of the state changes of the connection.
@@ -339,6 +369,8 @@ int32_t                                       dxfg_InstrumentProfileConnection_a
  *
  * Java: `InstrumentProfileConnection.removeStateChangeListener(PropertyChangeListener)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_removeStateChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @param[in] listener The listener handle that was added with
@@ -346,6 +378,7 @@ int32_t                                       dxfg_InstrumentProfileConnection_a
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_removeStateChangeListener()")
 int32_t                                       dxfg_InstrumentProfileConnection_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, dxfg_ipf_connection_state_change_listener_t *listener);
 /**
  * @brief Waits until the initial snapshot of the instrument profiles is fully read, for at most the timeout.
@@ -355,6 +388,8 @@ int32_t                                       dxfg_InstrumentProfileConnection_r
  *
  * Java: `InstrumentProfileConnection.waitUntilCompleted(long, TimeUnit)`. The timeout is in milliseconds.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileConnection_waitUntilCompleted().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] connection The connection handle.
  * @param[in] timeoutInMs The maximum time to wait in milliseconds.
@@ -362,6 +397,7 @@ int32_t                                       dxfg_InstrumentProfileConnection_r
  * closed before the snapshot was fully read, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine
  * if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileConnection_waitUntilCompleted()")
 int32_t                                       dxfg_InstrumentProfileConnection_waitUntilCompleted(graal_isolatethread_t *thread, dxfg_ipf_connection_t *connection, int64_t timeoutInMs);
 
 /**
@@ -370,20 +406,26 @@ int32_t                                       dxfg_InstrumentProfileConnection_w
  * The array of the elements and the dxfg_instrument_profile_list structure are freed. The profile handles stay valid:
  * release each of them with dxfg_JavaObjectHandler_release().
  *
- * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] ips The list of the instrument profile handles.
- * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
- * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
- */
-int32_t                                       dxfg_CList_InstrumentProfile_wrapper_release(graal_isolatethread_t *thread, dxfg_instrument_profile_list *ips);
-/**
- * @brief Releases the list and all the instrument profile handles in it.
+ * @deprecated Use dxfg_v4_instrument_profile_list_wrapper_release().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ips The list of the instrument profile handles.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_instrument_profile_list_wrapper_release()")
+int32_t                                       dxfg_CList_InstrumentProfile_wrapper_release(graal_isolatethread_t *thread, dxfg_instrument_profile_list *ips);
+/**
+ * @brief Releases the list and all the instrument profile handles in it.
+ *
+ * @deprecated Use dxfg_v4_instrument_profile_list_release().
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] ips The list of the instrument profile handles.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
+ */
+DXFG_DEPRECATED("use dxfg_v4_instrument_profile_list_release()")
 int32_t                                       dxfg_CList_InstrumentProfile_release(graal_isolatethread_t *thread, dxfg_instrument_profile_list *ips);
 
 /**
@@ -393,10 +435,13 @@ int32_t                                       dxfg_CList_InstrumentProfile_relea
  *
  * Java: `new InstrumentProfileCollector()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The collector (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_new()")
 dxfg_ipf_collector_t*                         dxfg_InstrumentProfileCollector_new(graal_isolatethread_t *thread);
 /**
  * @brief Returns the last modification time of the instrument profiles of the collector in milliseconds.
@@ -405,11 +450,14 @@ dxfg_ipf_collector_t*                         dxfg_InstrumentProfileCollector_ne
  *
  * Java: `InstrumentProfileCollector.getLastUpdateTime()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_getLastUpdateTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @return The last modification time in milliseconds, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_getLastUpdateTime()")
 int64_t                                       dxfg_InstrumentProfileCollector_getLastUpdateTime(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector);
 /**
  * @brief Updates one instrument profile in the collector.
@@ -420,12 +468,15 @@ int64_t                                       dxfg_InstrumentProfileCollector_ge
  *
  * Java: `InstrumentProfileCollector.updateInstrumentProfile(InstrumentProfile)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] ip The instrument profile handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandle()")
 int32_t                                       dxfg_InstrumentProfileCollector_updateInstrumentProfile(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile_t *ip);
 /**
  * @brief Updates a list of instrument profiles in the collector and assigns them a generation tag.
@@ -436,6 +487,8 @@ int32_t                                       dxfg_InstrumentProfileCollector_up
  *
  * Java: `InstrumentProfileCollector.updateInstrumentProfiles(List, Object)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] ips The list of the instrument profile handles.
@@ -444,6 +497,7 @@ int32_t                                       dxfg_InstrumentProfileCollector_up
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandles()")
 int32_t                                       dxfg_InstrumentProfileCollector_updateInstrumentProfiles(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile_list *ips, dxfg_java_object_handler *generation);
 /**
  * @brief Removes the instrument profiles whose generation tags are in a list.
@@ -453,12 +507,15 @@ int32_t                                       dxfg_InstrumentProfileCollector_up
  *
  * Java: `InstrumentProfileCollector.removeGenerations(Set)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_removeGenerations().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] generations The list of the generation tags, the handles of Java objects.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_removeGenerations()")
 int32_t                                       dxfg_InstrumentProfileCollector_removeGenerations(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_java_object_handler_list *generations);
 /**
  * @brief Returns an iterator over the instrument profiles of the collector.
@@ -468,11 +525,14 @@ int32_t                                       dxfg_InstrumentProfileCollector_re
  *
  * Java: `InstrumentProfileCollector.view()`. The SDK returns the iterator of the view.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_view().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @return The iterator (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_view()")
 dxfg_iterable_ip_t*                           dxfg_InstrumentProfileCollector_view(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector);
 /**
  * @brief Returns the executor that calls the update listeners of the collector.
@@ -481,16 +541,21 @@ dxfg_iterable_ip_t*                           dxfg_InstrumentProfileCollector_vi
  *
  * Java: `InstrumentProfileCollector.getExecutor()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_getExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @return The executor (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_getExecutor()")
 dxfg_executor_t*                              dxfg_InstrumentProfileCollector_getExecutor(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector);
 /**
  * @brief Changes the executor that calls the update listeners of the collector.
  *
  * Java: `InstrumentProfileCollector.setExecutor(Executor)`.
+ *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_setExecutor().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
@@ -498,6 +563,7 @@ dxfg_executor_t*                              dxfg_InstrumentProfileCollector_ge
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_setExecutor()")
 int32_t                                       dxfg_InstrumentProfileCollector_setExecutor(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_executor_t *executor);
 /**
  * @brief Adds a listener that is notified about any updates in the set of the instrument profiles.
@@ -507,12 +573,15 @@ int32_t                                       dxfg_InstrumentProfileCollector_se
  *
  * Java: `InstrumentProfileCollector.addUpdateListener(InstrumentProfileUpdateListener)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_addUpdateListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] listener The listener handle, see dxfg_InstrumentProfileUpdateListener_new().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_addUpdateListener()")
 int32_t                                       dxfg_InstrumentProfileCollector_addUpdateListener(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_ipf_update_listener_t* listener);
 /**
  * @brief Removes a listener that was added with dxfg_InstrumentProfileCollector_addUpdateListener().
@@ -521,12 +590,15 @@ int32_t                                       dxfg_InstrumentProfileCollector_ad
  *
  * Java: `InstrumentProfileCollector.removeUpdateListener(InstrumentProfileUpdateListener)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_removeUpdateListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_removeUpdateListener()")
 int32_t                                       dxfg_InstrumentProfileCollector_removeUpdateListener(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_ipf_update_listener_t* listener);
 
 /**
@@ -534,11 +606,14 @@ int32_t                                       dxfg_InstrumentProfileCollector_re
  *
  * Java: `Iterator.hasNext()`.
  *
+ * @deprecated Use dxfg_v4_Iterable_InstrumentProfile_hasNext().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] iterable_ip The iterator handle.
  * @return 1 if the iterator has a next instrument profile, 0 if it has not, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Iterable_InstrumentProfile_hasNext()")
 int32_t                                       dxfg_Iterable_InstrumentProfile_hasNext(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip);
 /**
  * @brief Returns the next instrument profile of the iterator as a handle.
@@ -549,11 +624,14 @@ int32_t                                       dxfg_Iterable_InstrumentProfile_ha
  *
  * Java: `Iterator.next()`.
  *
+ * @deprecated Use dxfg_v4_Iterable_InstrumentProfile_nextHandle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] iterable_ip The iterator handle.
  * @return The instrument profile (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Iterable_InstrumentProfile_nextHandle()")
 dxfg_instrument_profile_t*                    dxfg_Iterable_InstrumentProfile_next(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip);
 
 /**
@@ -565,12 +643,15 @@ dxfg_instrument_profile_t*                    dxfg_Iterable_InstrumentProfile_ne
  *
  * Java: `InstrumentProfileUpdateListener.instrumentProfilesUpdated(Iterator)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileUpdateListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call when the set of the instrument profiles changes.
  * @param[in] user_data The pointer that is passed to user_func as is; the SDK does not use it.
  * @return The listener (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileUpdateListener_new()")
 dxfg_ipf_update_listener_t*                   dxfg_InstrumentProfileUpdateListener_new(graal_isolatethread_t *thread, dxfg_ipf_update_listener_function user_func, void *user_data);
 
 /**
@@ -578,32 +659,41 @@ dxfg_ipf_update_listener_t*                   dxfg_InstrumentProfileUpdateListen
  *
  * Java: `new InstrumentProfileReader()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The reader (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_new()")
 dxfg_instrument_profile_reader_t*             dxfg_InstrumentProfileReader_new(graal_isolatethread_t *thread);
 /**
  * @brief Returns the last modification time in milliseconds from the last read from an address, or 0 if it is unknown.
  *
  * Java: `InstrumentProfileReader.getLastModified()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_getLastModified().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @return The last modification time in milliseconds, or 0 if it is unknown, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_getLastModified()")
 int64_t                                       dxfg_InstrumentProfileReader_getLastModified(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader);
 /**
  * @brief Checks whether the instrument profile file was fully read by the last read operation.
  *
  * Java: `InstrumentProfileReader.wasComplete()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_wasComplete().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @return 1 if the file was fully read, 0 if it was not, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_wasComplete()")
 int32_t                                       dxfg_InstrumentProfileReader_wasComplete(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader);
 /**
  * @brief Reads and returns the instrument profiles from an address.
@@ -617,6 +707,8 @@ int32_t                                       dxfg_InstrumentProfileReader_wasCo
  *
  * Java: `InstrumentProfileReader.readFromFile(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -624,6 +716,7 @@ int32_t                                       dxfg_InstrumentProfileReader_wasCo
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readFromFile(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address);
 /**
  * @brief Reads and returns the instrument profiles from an address with basic authentication credentials.
@@ -638,6 +731,8 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readF
  *
  * Java: `InstrumentProfileReader.readFromFile(String, String, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPasswordAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -647,6 +742,7 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readF
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPasswordAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readFromFile2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, const char *user, const char *password);
 /**
  * @brief Reads and returns the instrument profiles from an address with token credentials.
@@ -661,6 +757,8 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readF
  *
  * Java: `InstrumentProfileReader.readFromFile(String, AuthToken)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithTokenAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -669,6 +767,7 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readF
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithTokenAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readFromFile3(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token);
 /**
  * @brief Converts an address specification into the URL that is read by the
@@ -679,11 +778,14 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readF
  *
  * Java: `InstrumentProfileReader.resolveSourceURL(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_resolveSourceURL().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] address The address, a UTF-8 string.
  * @return The URL (a UTF-8 string; release it with dxfg_String_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_resolveSourceURL()")
 const char*                                   dxfg_InstrumentProfileReader_resolveSourceURL(graal_isolatethread_t *thread, const char *address);
 /**
  * @brief Reads and returns the instrument profiles from an input stream.
@@ -695,6 +797,8 @@ const char*                                   dxfg_InstrumentProfileReader_resol
  *
  * Java: `InstrumentProfileReader.read(InputStream, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readWithAddressAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -703,6 +807,7 @@ const char*                                   dxfg_InstrumentProfileReader_resol
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readWithAddressAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_read2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, const char* address);
 /**
  * @brief Reads and returns the instrument profiles from a compressed input stream.
@@ -714,6 +819,8 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_read2
  *
  * Java: `InstrumentProfileReader.readCompressed(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readCompressedAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -721,6 +828,7 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_read2
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readCompressedAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readCompressed(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is);
 /**
  * @brief Reads and returns the instrument profiles from an input stream with plain (not compressed) data.
@@ -731,6 +839,8 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readC
  *
  * Java: `InstrumentProfileReader.read(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readAsHandles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -738,27 +848,34 @@ dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_readC
  * dxfg_CList_InstrumentProfile_release()), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readAsHandles()")
 dxfg_instrument_profile_list*                 dxfg_InstrumentProfileReader_read(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is);
 /**
  * @brief Creates an instrument profile with the default values: empty strings and zero numbers.
  *
  * Java: `new InstrumentProfile()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The instrument profile (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_new()")
 dxfg_instrument_profile_t*                    dxfg_InstrumentProfile_new(graal_isolatethread_t *thread);
 /**
  * @brief Creates an instrument profile as a copy of another instrument profile.
  *
  * Java: `new InstrumentProfile(InstrumentProfile)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_newCopy().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The handle of the instrument profile to copy.
  * @return The instrument profile (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_newCopy()")
 dxfg_instrument_profile_t*                    dxfg_InstrumentProfile_new2(graal_isolatethread_t *thread, dxfg_instrument_profile_t* ip);
 /**
  * @brief Returns the type of the instrument of the instrument profile.
@@ -768,11 +885,14 @@ dxfg_instrument_profile_t*                    dxfg_InstrumentProfile_new2(graal_
  *
  * Java: `InstrumentProfile.getType()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getType().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The type (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getType()")
 const char*                                   dxfg_InstrumentProfile_getType(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the type of the instrument of the instrument profile.
@@ -782,12 +902,15 @@ const char*                                   dxfg_InstrumentProfile_getType(gra
  *
  * Java: `InstrumentProfile.setType(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setType().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The type, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setType()")
 int32_t                                       dxfg_InstrumentProfile_setType(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the identifier of the instrument of the instrument profile.
@@ -797,11 +920,14 @@ int32_t                                       dxfg_InstrumentProfile_setType(gra
  *
  * Java: `InstrumentProfile.getSymbol()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The symbol (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getSymbol()")
 const char*                                   dxfg_InstrumentProfile_getSymbol(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the identifier of the instrument of the instrument profile.
@@ -811,12 +937,15 @@ const char*                                   dxfg_InstrumentProfile_getSymbol(g
  *
  * Java: `InstrumentProfile.setSymbol(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The symbol, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setSymbol()")
 int32_t                                       dxfg_InstrumentProfile_setSymbol(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the description of the instrument of the instrument profile.
@@ -826,11 +955,14 @@ int32_t                                       dxfg_InstrumentProfile_setSymbol(g
  *
  * Java: `InstrumentProfile.getDescription()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The description (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getDescription()")
 const char*                                   dxfg_InstrumentProfile_getDescription(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the description of the instrument of the instrument profile.
@@ -840,12 +972,15 @@ const char*                                   dxfg_InstrumentProfile_getDescript
  *
  * Java: `InstrumentProfile.setDescription(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The description, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setDescription()")
 int32_t                                       dxfg_InstrumentProfile_setDescription(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the identifier of the instrument in the national language of the instrument profile.
@@ -854,11 +989,14 @@ int32_t                                       dxfg_InstrumentProfile_setDescript
  *
  * Java: `InstrumentProfile.getLocalSymbol()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getLocalSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The local symbol (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getLocalSymbol()")
 const char*                                   dxfg_InstrumentProfile_getLocalSymbol(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the identifier of the instrument in the national language of the instrument profile.
@@ -867,12 +1005,15 @@ const char*                                   dxfg_InstrumentProfile_getLocalSym
  *
  * Java: `InstrumentProfile.setLocalSymbol(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setLocalSymbol().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The local symbol, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setLocalSymbol()")
 int32_t                                       dxfg_InstrumentProfile_setLocalSymbol(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the description of the instrument in the national language of the instrument profile.
@@ -881,11 +1022,14 @@ int32_t                                       dxfg_InstrumentProfile_setLocalSym
  *
  * Java: `InstrumentProfile.getLocalDescription()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getLocalDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The local description (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or
  * NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getLocalDescription()")
 const char*                                   dxfg_InstrumentProfile_getLocalDescription(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the description of the instrument in the national language of the instrument profile.
@@ -894,12 +1038,15 @@ const char*                                   dxfg_InstrumentProfile_getLocalDes
  *
  * Java: `InstrumentProfile.setLocalDescription(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setLocalDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The local description, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setLocalDescription()")
 int32_t                                       dxfg_InstrumentProfile_setLocalDescription(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the country of origin (incorporation) of the corresponding company or parent entity of the instrument
@@ -909,11 +1056,14 @@ int32_t                                       dxfg_InstrumentProfile_setLocalDes
  *
  * Java: `InstrumentProfile.getCountry()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getCountry().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The country (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getCountry()")
 const char*                                   dxfg_InstrumentProfile_getCountry(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the country of origin (incorporation) of the corresponding company or parent entity of the instrument
@@ -923,12 +1073,15 @@ const char*                                   dxfg_InstrumentProfile_getCountry(
  *
  * Java: `InstrumentProfile.setCountry(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setCountry().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The country, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setCountry()")
 int32_t                                       dxfg_InstrumentProfile_setCountry(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the official Place Of Listing, the organization that has listed the instrument of the instrument
@@ -939,11 +1092,14 @@ int32_t                                       dxfg_InstrumentProfile_setCountry(
  *
  * Java: `InstrumentProfile.getOPOL()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getOPOL().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The OPOL (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getOPOL()")
 const char*                                   dxfg_InstrumentProfile_getOPOL(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the official Place Of Listing, the organization that has listed the instrument of the instrument profile.
@@ -953,12 +1109,15 @@ const char*                                   dxfg_InstrumentProfile_getOPOL(gra
  *
  * Java: `InstrumentProfile.setOPOL(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setOPOL().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The OPOL, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setOPOL()")
 int32_t                                       dxfg_InstrumentProfile_setOPOL(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the exchange-specific data required to identify the instrument when communicating with the exchange of
@@ -968,11 +1127,14 @@ int32_t                                       dxfg_InstrumentProfile_setOPOL(gra
  *
  * Java: `InstrumentProfile.getExchangeData()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getExchangeData().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The exchange data (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getExchangeData()")
 const char*                                   dxfg_InstrumentProfile_getExchangeData(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the exchange-specific data required to identify the instrument when communicating with the exchange of
@@ -982,12 +1144,15 @@ const char*                                   dxfg_InstrumentProfile_getExchange
  *
  * Java: `InstrumentProfile.setExchangeData(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setExchangeData().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The exchange data, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setExchangeData()")
 int32_t                                       dxfg_InstrumentProfile_setExchangeData(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the list of the exchanges where the instrument is quoted or traded of the instrument profile.
@@ -996,11 +1161,14 @@ int32_t                                       dxfg_InstrumentProfile_setExchange
  *
  * Java: `InstrumentProfile.getExchanges()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getExchanges().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The exchanges (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getExchanges()")
 const char*                                   dxfg_InstrumentProfile_getExchanges(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the list of the exchanges where the instrument is quoted or traded of the instrument profile.
@@ -1009,12 +1177,15 @@ const char*                                   dxfg_InstrumentProfile_getExchange
  *
  * Java: `InstrumentProfile.setExchanges(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setExchanges().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The exchanges, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setExchanges()")
 int32_t                                       dxfg_InstrumentProfile_setExchanges(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the currency of quotation, pricing and trading of the instrument profile.
@@ -1023,11 +1194,14 @@ int32_t                                       dxfg_InstrumentProfile_setExchange
  *
  * Java: `InstrumentProfile.getCurrency()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getCurrency().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The currency (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getCurrency()")
 const char*                                   dxfg_InstrumentProfile_getCurrency(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the currency of quotation, pricing and trading of the instrument profile.
@@ -1036,12 +1210,15 @@ const char*                                   dxfg_InstrumentProfile_getCurrency
  *
  * Java: `InstrumentProfile.setCurrency(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setCurrency().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The currency, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setCurrency()")
 int32_t                                       dxfg_InstrumentProfile_setCurrency(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the base currency of a currency pair (FOREX instruments) of the instrument profile.
@@ -1050,11 +1227,14 @@ int32_t                                       dxfg_InstrumentProfile_setCurrency
  *
  * Java: `InstrumentProfile.getBaseCurrency()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getBaseCurrency().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The base currency (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getBaseCurrency()")
 const char*                                   dxfg_InstrumentProfile_getBaseCurrency(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the base currency of a currency pair (FOREX instruments) of the instrument profile.
@@ -1063,12 +1243,15 @@ const char*                                   dxfg_InstrumentProfile_getBaseCurr
  *
  * Java: `InstrumentProfile.setBaseCurrency(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setBaseCurrency().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The base currency, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setBaseCurrency()")
 int32_t                                       dxfg_InstrumentProfile_setBaseCurrency(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the Classification of Financial Instruments code of the instrument profile.
@@ -1079,11 +1262,14 @@ int32_t                                       dxfg_InstrumentProfile_setBaseCurr
  *
  * Java: `InstrumentProfile.getCFI()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getCFI().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The CFI (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getCFI()")
 const char*                                   dxfg_InstrumentProfile_getCFI(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the Classification of Financial Instruments code of the instrument profile.
@@ -1094,12 +1280,15 @@ const char*                                   dxfg_InstrumentProfile_getCFI(graa
  *
  * Java: `InstrumentProfile.setCFI(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setCFI().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The CFI, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setCFI()")
 int32_t                                       dxfg_InstrumentProfile_setCFI(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the International Securities Identifying Number of the instrument profile.
@@ -1108,11 +1297,14 @@ int32_t                                       dxfg_InstrumentProfile_setCFI(graa
  *
  * Java: `InstrumentProfile.getISIN()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getISIN().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The ISIN (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getISIN()")
 const char*                                   dxfg_InstrumentProfile_getISIN(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the International Securities Identifying Number of the instrument profile.
@@ -1121,12 +1313,15 @@ const char*                                   dxfg_InstrumentProfile_getISIN(gra
  *
  * Java: `InstrumentProfile.setISIN(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setISIN().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The ISIN, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setISIN()")
 int32_t                                       dxfg_InstrumentProfile_setISIN(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the Stock Exchange Daily Official List code of the instrument profile.
@@ -1135,11 +1330,14 @@ int32_t                                       dxfg_InstrumentProfile_setISIN(gra
  *
  * Java: `InstrumentProfile.getSEDOL()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getSEDOL().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The SEDOL (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getSEDOL()")
 const char*                                   dxfg_InstrumentProfile_getSEDOL(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the Stock Exchange Daily Official List code of the instrument profile.
@@ -1148,12 +1346,15 @@ const char*                                   dxfg_InstrumentProfile_getSEDOL(gr
  *
  * Java: `InstrumentProfile.setSEDOL(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setSEDOL().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The SEDOL, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setSEDOL()")
 int32_t                                       dxfg_InstrumentProfile_setSEDOL(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the Committee on Uniform Security Identification Procedures code of the instrument profile.
@@ -1162,11 +1363,14 @@ int32_t                                       dxfg_InstrumentProfile_setSEDOL(gr
  *
  * Java: `InstrumentProfile.getCUSIP()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getCUSIP().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The CUSIP (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getCUSIP()")
 const char*                                   dxfg_InstrumentProfile_getCUSIP(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the Committee on Uniform Security Identification Procedures code of the instrument profile.
@@ -1175,12 +1379,15 @@ const char*                                   dxfg_InstrumentProfile_getCUSIP(gr
  *
  * Java: `InstrumentProfile.setCUSIP(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setCUSIP().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The CUSIP, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setCUSIP()")
 int32_t                                       dxfg_InstrumentProfile_setCUSIP(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the Industry Classification Benchmark of the instrument profile.
@@ -1189,11 +1396,14 @@ int32_t                                       dxfg_InstrumentProfile_setCUSIP(gr
  *
  * Java: `InstrumentProfile.getICB()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getICB().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The ICB number, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getICB()")
 int32_t                                       dxfg_InstrumentProfile_getICB(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the Industry Classification Benchmark of the instrument profile.
@@ -1202,12 +1412,15 @@ int32_t                                       dxfg_InstrumentProfile_getICB(graa
  *
  * Java: `InstrumentProfile.setICB(int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setICB().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The ICB.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setICB()")
 int32_t                                       dxfg_InstrumentProfile_setICB(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, int32_t value);
 /**
  * @brief Returns the Standard Industrial Classification of the instrument profile.
@@ -1216,11 +1429,14 @@ int32_t                                       dxfg_InstrumentProfile_setICB(graa
  *
  * Java: `InstrumentProfile.getSIC()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getSIC().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The SIC number, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getSIC()")
 int32_t                                       dxfg_InstrumentProfile_getSIC(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the Standard Industrial Classification of the instrument profile.
@@ -1229,12 +1445,15 @@ int32_t                                       dxfg_InstrumentProfile_getSIC(graa
  *
  * Java: `InstrumentProfile.setSIC(int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setSIC().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The SIC.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setSIC()")
 int32_t                                       dxfg_InstrumentProfile_setSIC(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, int32_t value);
 /**
  * @brief Returns the market value multiplier of the instrument profile.
@@ -1243,11 +1462,14 @@ int32_t                                       dxfg_InstrumentProfile_setSIC(graa
  *
  * Java: `InstrumentProfile.getMultiplier()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getMultiplier().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The multiplier, or negative infinity on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getMultiplier()")
 double                                        dxfg_InstrumentProfile_getMultiplier(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the market value multiplier of the instrument profile.
@@ -1256,12 +1478,15 @@ double                                        dxfg_InstrumentProfile_getMultipli
  *
  * Java: `InstrumentProfile.setMultiplier(double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setMultiplier().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The multiplier.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setMultiplier()")
 int32_t                                       dxfg_InstrumentProfile_setMultiplier(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, double value);
 /**
  * @brief Returns the product for futures and options on futures (the name of the underlying asset) of the instrument
@@ -1271,11 +1496,14 @@ int32_t                                       dxfg_InstrumentProfile_setMultipli
  *
  * Java: `InstrumentProfile.getProduct()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getProduct().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The product (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getProduct()")
 const char*                                   dxfg_InstrumentProfile_getProduct(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the product for futures and options on futures (the name of the underlying asset) of the instrument
@@ -1285,12 +1513,15 @@ const char*                                   dxfg_InstrumentProfile_getProduct(
  *
  * Java: `InstrumentProfile.setProduct(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setProduct().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The product, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setProduct()")
 int32_t                                       dxfg_InstrumentProfile_setProduct(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the primary underlying symbol for options of the instrument profile.
@@ -1299,11 +1530,14 @@ int32_t                                       dxfg_InstrumentProfile_setProduct(
  *
  * Java: `InstrumentProfile.getUnderlying()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getUnderlying().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The underlying (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getUnderlying()")
 const char*                                   dxfg_InstrumentProfile_getUnderlying(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the primary underlying symbol for options of the instrument profile.
@@ -1312,12 +1546,15 @@ const char*                                   dxfg_InstrumentProfile_getUnderlyi
  *
  * Java: `InstrumentProfile.setUnderlying(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setUnderlying().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The underlying, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setUnderlying()")
 int32_t                                       dxfg_InstrumentProfile_setUnderlying(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the shares per contract for options of the instrument profile.
@@ -1326,11 +1563,14 @@ int32_t                                       dxfg_InstrumentProfile_setUnderlyi
  *
  * Java: `InstrumentProfile.getSPC()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getSPC().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The SPC, or negative infinity on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getSPC()")
 double                                        dxfg_InstrumentProfile_getSPC(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the shares per contract for options of the instrument profile.
@@ -1339,12 +1579,15 @@ double                                        dxfg_InstrumentProfile_getSPC(graa
  *
  * Java: `InstrumentProfile.setSPC(double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setSPC().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The SPC.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setSPC()")
 int32_t                                       dxfg_InstrumentProfile_setSPC(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, double value);
 /**
  * @brief Returns the additional underlyings for options, including additional cash of the instrument profile.
@@ -1354,11 +1597,14 @@ int32_t                                       dxfg_InstrumentProfile_setSPC(graa
  *
  * Java: `InstrumentProfile.getAdditionalUnderlyings()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getAdditionalUnderlyings().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The additional underlyings (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()),
  * or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getAdditionalUnderlyings()")
 const char*                                   dxfg_InstrumentProfile_getAdditionalUnderlyings(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the additional underlyings for options, including additional cash of the instrument profile.
@@ -1368,12 +1614,15 @@ const char*                                   dxfg_InstrumentProfile_getAddition
  *
  * Java: `InstrumentProfile.setAdditionalUnderlyings(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setAdditionalUnderlyings().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The additional underlyings, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setAdditionalUnderlyings()")
 int32_t                                       dxfg_InstrumentProfile_setAdditionalUnderlyings(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the maturity month-year as provided for the corresponding FIX tag (200) of the instrument profile.
@@ -1383,11 +1632,14 @@ int32_t                                       dxfg_InstrumentProfile_setAddition
  *
  * Java: `InstrumentProfile.getMMY()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getMMY().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The MMY (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getMMY()")
 const char*                                   dxfg_InstrumentProfile_getMMY(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the maturity month-year as provided for the corresponding FIX tag (200) of the instrument profile.
@@ -1397,12 +1649,15 @@ const char*                                   dxfg_InstrumentProfile_getMMY(graa
  *
  * Java: `InstrumentProfile.setMMY(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setMMY().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The MMY, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setMMY()")
 int32_t                                       dxfg_InstrumentProfile_setMMY(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the day id of the expiration of the instrument profile.
@@ -1411,11 +1666,14 @@ int32_t                                       dxfg_InstrumentProfile_setMMY(graa
  *
  * Java: `InstrumentProfile.getExpiration()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getExpiration().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The day id of the expiration (the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set), or
  * -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getExpiration()")
 int32_t                                       dxfg_InstrumentProfile_getExpiration(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the day id of the expiration of the instrument profile.
@@ -1424,12 +1682,15 @@ int32_t                                       dxfg_InstrumentProfile_getExpirati
  *
  * Java: `InstrumentProfile.setExpiration(int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setExpiration().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The expiration.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setExpiration()")
 int32_t                                       dxfg_InstrumentProfile_setExpiration(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, int32_t value);
 /**
  * @brief Returns the day id of the last trading day of the instrument profile.
@@ -1438,11 +1699,14 @@ int32_t                                       dxfg_InstrumentProfile_setExpirati
  *
  * Java: `InstrumentProfile.getLastTrade()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getLastTrade().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The day id of the last trading day (the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not
  * set), or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getLastTrade()")
 int32_t                                       dxfg_InstrumentProfile_getLastTrade(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the day id of the last trading day of the instrument profile.
@@ -1451,12 +1715,15 @@ int32_t                                       dxfg_InstrumentProfile_getLastTrad
  *
  * Java: `InstrumentProfile.setLastTrade(int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setLastTrade().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The last trade.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setLastTrade()")
 int32_t                                       dxfg_InstrumentProfile_setLastTrade(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, int32_t value);
 /**
  * @brief Returns the strike price for options of the instrument profile.
@@ -1465,11 +1732,14 @@ int32_t                                       dxfg_InstrumentProfile_setLastTrad
  *
  * Java: `InstrumentProfile.getStrike()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getStrike().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The strike, or negative infinity on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getStrike()")
 double                                        dxfg_InstrumentProfile_getStrike(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the strike price for options of the instrument profile.
@@ -1478,12 +1748,15 @@ double                                        dxfg_InstrumentProfile_getStrike(g
  *
  * Java: `InstrumentProfile.setStrike(double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setStrike().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The strike.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setStrike()")
 int32_t                                       dxfg_InstrumentProfile_setStrike(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, double value);
 /**
  * @brief Returns the type of the option of the instrument profile.
@@ -1494,11 +1767,14 @@ int32_t                                       dxfg_InstrumentProfile_setStrike(g
  *
  * Java: `InstrumentProfile.getOptionType()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getOptionType().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The option type (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getOptionType()")
 const char*                                   dxfg_InstrumentProfile_getOptionType(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the type of the option of the instrument profile.
@@ -1509,12 +1785,15 @@ const char*                                   dxfg_InstrumentProfile_getOptionTy
  *
  * Java: `InstrumentProfile.setOptionType(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setOptionType().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The option type, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setOptionType()")
 int32_t                                       dxfg_InstrumentProfile_setOptionType(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the expiration cycle style of the instrument profile.
@@ -1523,11 +1802,14 @@ int32_t                                       dxfg_InstrumentProfile_setOptionTy
  *
  * Java: `InstrumentProfile.getExpirationStyle()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getExpirationStyle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The expiration style (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL
  * on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getExpirationStyle()")
 const char*                                   dxfg_InstrumentProfile_getExpirationStyle(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the expiration cycle style of the instrument profile.
@@ -1536,12 +1818,15 @@ const char*                                   dxfg_InstrumentProfile_getExpirati
  *
  * Java: `InstrumentProfile.setExpirationStyle(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setExpirationStyle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The expiration style, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setExpirationStyle()")
 int32_t                                       dxfg_InstrumentProfile_setExpirationStyle(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the settlement price determination style of the instrument profile.
@@ -1550,11 +1835,14 @@ int32_t                                       dxfg_InstrumentProfile_setExpirati
  *
  * Java: `InstrumentProfile.getSettlementStyle()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getSettlementStyle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The settlement style (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL
  * on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getSettlementStyle()")
 const char*                                   dxfg_InstrumentProfile_getSettlementStyle(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the settlement price determination style of the instrument profile.
@@ -1563,12 +1851,15 @@ const char*                                   dxfg_InstrumentProfile_getSettleme
  *
  * Java: `InstrumentProfile.setSettlementStyle(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setSettlementStyle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The settlement style, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setSettlementStyle()")
 int32_t                                       dxfg_InstrumentProfile_setSettlementStyle(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the minimum allowed price increments with the corresponding price ranges of the instrument profile.
@@ -1578,11 +1869,14 @@ int32_t                                       dxfg_InstrumentProfile_setSettleme
  *
  * Java: `InstrumentProfile.getPriceIncrements()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getPriceIncrements().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The price increments (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL
  * on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getPriceIncrements()")
 const char*                                   dxfg_InstrumentProfile_getPriceIncrements(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the minimum allowed price increments with the corresponding price ranges of the instrument profile.
@@ -1592,12 +1886,15 @@ const char*                                   dxfg_InstrumentProfile_getPriceInc
  *
  * Java: `InstrumentProfile.setPriceIncrements(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setPriceIncrements().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The price increments, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setPriceIncrements()")
 int32_t                                       dxfg_InstrumentProfile_setPriceIncrements(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the trading hours specification of the instrument profile.
@@ -1606,11 +1903,14 @@ int32_t                                       dxfg_InstrumentProfile_setPriceInc
  *
  * Java: `InstrumentProfile.getTradingHours()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getTradingHours().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The trading hours (a UTF-8 string, empty if it is not set; release it with dxfg_String_release()), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getTradingHours()")
 const char*                                   dxfg_InstrumentProfile_getTradingHours(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Sets the trading hours specification of the instrument profile.
@@ -1619,12 +1919,15 @@ const char*                                   dxfg_InstrumentProfile_getTradingH
  *
  * Java: `InstrumentProfile.setTradingHours(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setTradingHours().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] value The trading hours, a UTF-8 string; NULL is treated as an empty string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setTradingHours()")
 int32_t                                       dxfg_InstrumentProfile_setTradingHours(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *value);
 /**
  * @brief Returns the value of a field of the instrument profile by the name of the field, in the text form.
@@ -1638,12 +1941,15 @@ int32_t                                       dxfg_InstrumentProfile_setTradingH
  *
  * Java: `InstrumentProfile.getField(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string; the standard field names are case sensitive.
  * @return The value (a UTF-8 string, empty if a custom field is not set; release it with dxfg_String_release()), or
  * NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getField()")
 const char*                                   dxfg_InstrumentProfile_getField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name);
 /**
  * @brief Sets the value of a field of the instrument profile by the name of the field, in the text form.
@@ -1657,6 +1963,8 @@ const char*                                   dxfg_InstrumentProfile_getField(gr
  *
  * Java: `InstrumentProfile.setField(String, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string; the standard field names are case sensitive.
@@ -1664,6 +1972,7 @@ const char*                                   dxfg_InstrumentProfile_getField(gr
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setField()")
 int32_t                                       dxfg_InstrumentProfile_setField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name, const char *value);
 /**
  * @brief Returns the value of a field of the instrument profile by the name of the field, in the numeric form.
@@ -1674,12 +1983,15 @@ int32_t                                       dxfg_InstrumentProfile_setField(gr
  *
  * Java: `InstrumentProfile.getNumericField(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getNumericField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string.
  * @return The value, or negative infinity on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getNumericField()")
 double                                        dxfg_InstrumentProfile_getNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name);
 /**
  * @brief Sets the value of a field of the instrument profile by the name of the field, in the numeric form.
@@ -1689,6 +2001,8 @@ double                                        dxfg_InstrumentProfile_getNumericF
  *
  * Java: `InstrumentProfile.setNumericField(String, double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setNumericField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -1696,6 +2010,7 @@ double                                        dxfg_InstrumentProfile_getNumericF
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setNumericField()")
 int32_t                                       dxfg_InstrumentProfile_setNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name, double value);
 /**
  * @brief Returns the day id of a date field of the instrument profile by the name of the field.
@@ -1704,12 +2019,15 @@ int32_t                                       dxfg_InstrumentProfile_setNumericF
  *
  * Java: `InstrumentProfile.getDateField(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getDateField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string.
  * @return The day id (the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set), or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getDateField()")
 int32_t                                       dxfg_InstrumentProfile_getDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name);
 /**
  * @brief Sets the day id of a date field of the instrument profile by the name of the field.
@@ -1719,6 +2037,8 @@ int32_t                                       dxfg_InstrumentProfile_getDateFiel
  *
  * Java: `InstrumentProfile.setDateField(String, int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_setDateField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -1726,28 +2046,35 @@ int32_t                                       dxfg_InstrumentProfile_getDateFiel
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_setDateField()")
 int32_t                                       dxfg_InstrumentProfile_setDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip, const char *name, int32_t value);
 /**
  * @brief Returns the names of the non-empty custom fields of the instrument profile.
  *
  * Java: `InstrumentProfile.addNonEmptyCustomFieldNames(Collection)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_getNonEmptyCustomFieldNames().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return The list of the names (release it with dxfg_CList_String_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_getNonEmptyCustomFieldNames()")
 dxfg_string_list*                             dxfg_InstrumentProfile_getNonEmptyCustomFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 /**
  * @brief Releases an instrument profile handle.
  *
  * It is the same as dxfg_JavaObjectHandler_release() for the handle.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfile_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ip The instrument profile handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfile_release()")
 int32_t                                       dxfg_InstrumentProfile_release(graal_isolatethread_t *thread, dxfg_instrument_profile_t *ip);
 
 /**
@@ -1877,12 +2204,15 @@ typedef struct dxfg_instrument_profile2_list_t {
  *
  * Java: `InstrumentProfileField.formatNumber(double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileField_formatNumber().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] number The number to format.
  * @param[out] result The formatted number, a UTF-8 string; release it with dxfg_String_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileField_formatNumber()")
 int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, double number, DXFG_OUT char** result);
 
 /**
@@ -1892,12 +2222,15 @@ int32_t dxfg_InstrumentProfileField_formatNumber(graal_isolatethread_t *thread, 
  *
  * Java: `InstrumentProfileField.parseNumber(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileField_parseNumber().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] string The text to parse, a UTF-8 string.
  * @param[out] number The parsed number.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileField_parseNumber()")
 int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, const char* string, DXFG_OUT double* number);
 
 /**
@@ -1907,12 +2240,15 @@ int32_t dxfg_InstrumentProfileField_parseNumber(graal_isolatethread_t *thread, c
  *
  * Java: `InstrumentProfileField.formatDate(int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileField_formatDate().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] date The day id: the number of days since January 1, 1970, 00:00:00 GMT.
  * @param[out] result The formatted date, a UTF-8 string; release it with dxfg_String_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileField_formatDate()")
 int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, int32_t date, DXFG_OUT char** result);
 
 /**
@@ -1923,12 +2259,15 @@ int32_t dxfg_InstrumentProfileField_formatDate(graal_isolatethread_t *thread, in
  *
  * Java: `InstrumentProfileField.parseDate(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileField_parseDate().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] string The text to parse, a UTF-8 string.
  * @param[out] date The parsed day id: the number of days since January 1, 1970, 00:00:00 GMT.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileField_parseDate()")
 int32_t dxfg_InstrumentProfileField_parseDate(graal_isolatethread_t *thread, const char* string, DXFG_OUT int32_t* date);
 
 /**
@@ -1936,11 +2275,14 @@ int32_t dxfg_InstrumentProfileField_parseDate(graal_isolatethread_t *thread, con
  *
  * Java: `new InstrumentProfileCustomFields()`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] custom_fields The handle of the new custom fields; release it with dxfg_JavaObjectHandler_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_new()")
 int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
 
 /**
@@ -1951,6 +2293,8 @@ int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DX
  *
  * Java: `new InstrumentProfileCustomFields(String[])`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields_array The array of the UTF-8 strings: names and values, consecutive.
  * @param[in] size The number of the strings in the array.
@@ -1958,6 +2302,7 @@ int32_t dxfg_InstrumentProfileCustomFields_new(graal_isolatethread_t *thread, DX
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues()")
 int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, const char** custom_fields_array, int32_t size, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
 
 /**
@@ -1965,12 +2310,15 @@ int32_t dxfg_InstrumentProfileCustomFields_new2(graal_isolatethread_t *thread, c
  *
  * Java: `new InstrumentProfileCustomFields(InstrumentProfileCustomFields)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_newCopy().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The handle of the custom fields to copy.
  * @param[out] custom_fields The handle of the new custom fields; release it with dxfg_JavaObjectHandler_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_newCopy()")
 int32_t dxfg_InstrumentProfileCustomFields_new3(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t * source, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
 
 /**
@@ -1981,12 +2329,15 @@ int32_t dxfg_InstrumentProfileCustomFields_new3(graal_isolatethread_t *thread, d
  *
  * Java: `new InstrumentProfileCustomFields(String[])`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields_string_list The list of the UTF-8 strings: names and values, consecutive.
  * @param[out] custom_fields The handle of the new custom fields; release it with dxfg_JavaObjectHandler_release().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues()")
 int32_t dxfg_InstrumentProfileCustomFields_new4(graal_isolatethread_t *thread, const dxfg_string_list* custom_fields_string_list, DXFG_OUT dxfg_instrument_profile_custom_fields_t **custom_fields);
 
 
@@ -1994,6 +2345,8 @@ int32_t dxfg_InstrumentProfileCustomFields_new4(graal_isolatethread_t *thread, c
  * @brief Returns the value of a custom field by the name.
  *
  * Java: `InstrumentProfileCustomFields.getField(String)`.
+ *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_getField().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
@@ -2003,6 +2356,7 @@ int32_t dxfg_InstrumentProfileCustomFields_new4(graal_isolatethread_t *thread, c
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_getField()")
 int32_t dxfg_InstrumentProfileCustomFields_getField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT char** result);
 
 /**
@@ -2013,6 +2367,8 @@ int32_t dxfg_InstrumentProfileCustomFields_getField(graal_isolatethread_t *threa
  *
  * Java: `InstrumentProfileCustomFields.setField(String, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_setField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -2020,6 +2376,7 @@ int32_t dxfg_InstrumentProfileCustomFields_getField(graal_isolatethread_t *threa
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_setField()")
 int32_t dxfg_InstrumentProfileCustomFields_setField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, const char* value);
 
 /**
@@ -2030,6 +2387,8 @@ int32_t dxfg_InstrumentProfileCustomFields_setField(graal_isolatethread_t *threa
  *
  * Java: `InstrumentProfileCustomFields.getNumericField(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_getNumericField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -2037,6 +2396,7 @@ int32_t dxfg_InstrumentProfileCustomFields_setField(graal_isolatethread_t *threa
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_getNumericField()")
 int32_t dxfg_InstrumentProfileCustomFields_getNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT double* result);
 
 /**
@@ -2046,6 +2406,8 @@ int32_t dxfg_InstrumentProfileCustomFields_getNumericField(graal_isolatethread_t
  *
  * Java: `InstrumentProfileCustomFields.setNumericField(String, double)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_setNumericField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -2053,6 +2415,7 @@ int32_t dxfg_InstrumentProfileCustomFields_getNumericField(graal_isolatethread_t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_setNumericField()")
 int32_t dxfg_InstrumentProfileCustomFields_setNumericField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, double value);
 
 /**
@@ -2063,6 +2426,8 @@ int32_t dxfg_InstrumentProfileCustomFields_setNumericField(graal_isolatethread_t
  *
  * Java: `InstrumentProfileCustomFields.getDateField(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_getDateField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -2070,6 +2435,7 @@ int32_t dxfg_InstrumentProfileCustomFields_setNumericField(graal_isolatethread_t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_getDateField()")
 int32_t dxfg_InstrumentProfileCustomFields_getDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, DXFG_OUT int32_t* result);
 
 /**
@@ -2079,6 +2445,8 @@ int32_t dxfg_InstrumentProfileCustomFields_getDateField(graal_isolatethread_t *t
  *
  * Java: `InstrumentProfileCustomFields.setDateField(String, int)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_setDateField().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
  * @param[in] name The name of the field, a UTF-8 string.
@@ -2086,12 +2454,14 @@ int32_t dxfg_InstrumentProfileCustomFields_getDateField(graal_isolatethread_t *t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_setDateField()")
 int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, const char *name, int32_t value);
 
 /**
  * @brief Returns the names of the non-empty custom fields.
  *
- * @deprecated The updated parameter is useless. Use dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames() instead.
+ * @deprecated The updated parameter is useless. Use dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames()
+ * instead.
  *
  * Java: `InstrumentProfileCustomFields.addNonEmptyFieldNames(Collection)`.
  *
@@ -2104,13 +2474,15 @@ int32_t dxfg_InstrumentProfileCustomFields_setDateField(graal_isolatethread_t *t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-DXFG_DEPRECATED("use dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(), the updated parameter is useless")
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames(), the updated parameter is useless")
 int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT dxfg_string_list** target_field_names, DXFG_OUT int32_t* updated);
 
 /**
  * @brief Returns the names of the non-empty custom fields.
  *
  * Java: `InstrumentProfileCustomFields.addNonEmptyFieldNames(Collection)`.
+ *
+ * @deprecated Use dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] custom_fields The custom fields handle.
@@ -2119,6 +2491,7 @@ int32_t dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames(graal_isolateth
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames()")
 int32_t dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(graal_isolatethread_t *thread, dxfg_instrument_profile_custom_fields_t *custom_fields, DXFG_OUT dxfg_string_list** target_field_names);
 
 /**
@@ -2130,12 +2503,15 @@ int32_t dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames(graal_isolateth
  *
  * Java: `InstrumentProfileCollector.updateInstrumentProfile(InstrumentProfile)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfile().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] instrument_profile The structure with the fields of the instrument profile.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfile()")
 int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, dxfg_instrument_profile2_t *instrument_profile);
 
 /**
@@ -2148,6 +2524,8 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile2(graal_isolateth
  *
  * Java: `InstrumentProfileCollector.updateInstrumentProfiles(List, Object)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] instrument_profiles The array of the structures with the fields of the instrument profiles.
@@ -2157,6 +2535,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfile2(graal_isolateth
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles()")
 int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, const dxfg_instrument_profile2_t* instrument_profiles, int32_t size, dxfg_java_object_handler *generation);
 
 /**
@@ -2168,6 +2547,8 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(graal_isolatet
  *
  * Java: `InstrumentProfileCollector.updateInstrumentProfiles(List, Object)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] collector The collector handle.
  * @param[in] instrument_profiles The list of the structures with the fields of the instrument profiles.
@@ -2176,6 +2557,7 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles2(graal_isolatet
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles()")
 int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles3(graal_isolatethread_t *thread, dxfg_ipf_collector_t *collector, const dxfg_instrument_profile2_list_t* instrument_profiles, dxfg_java_object_handler *generation);
 
 /**
@@ -2187,12 +2569,15 @@ int32_t dxfg_InstrumentProfileCollector_updateInstrumentProfiles3(graal_isolatet
  *
  * Java: `Iterator.next()`.
  *
+ * @deprecated Use dxfg_v4_Iterable_InstrumentProfile_next().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] iterable_ip The iterator handle.
  * @param[out] instrument_profile The next instrument profile; release it with dxfg_instrument_profile_free().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Iterable_InstrumentProfile_next()")
 int32_t dxfg_Iterable_InstrumentProfile_next2(graal_isolatethread_t *thread, dxfg_iterable_ip_t *iterable_ip, DXFG_OUT dxfg_instrument_profile2_t **instrument_profile);
 
 /**
@@ -2207,6 +2592,8 @@ int32_t dxfg_Iterable_InstrumentProfile_next2(graal_isolatethread_t *thread, dxf
  *
  * Java: `InstrumentProfileReader.readFromFile(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFile().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2216,6 +2603,7 @@ int32_t dxfg_Iterable_InstrumentProfile_next2(graal_isolatethread_t *thread, dxf
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFile()")
 int32_t dxfg_InstrumentProfileReader_readFromFile4(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2231,6 +2619,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile4(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.readFromFile(String, String, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2242,6 +2632,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile4(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword()")
 int32_t dxfg_InstrumentProfileReader_readFromFile5(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, const char *user, const char *password, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2257,6 +2648,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile5(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.readFromFile(String, AuthToken)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithToken().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2267,6 +2660,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile5(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithToken()")
 int32_t dxfg_InstrumentProfileReader_readFromFile6(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2281,6 +2675,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile6(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.readFromFile(String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFile().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2289,6 +2685,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile6(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFile()")
 int32_t dxfg_InstrumentProfileReader_readFromFile7(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2304,6 +2701,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile7(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.readFromFile(String, String, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2314,6 +2713,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile7(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword()")
 int32_t dxfg_InstrumentProfileReader_readFromFile8(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, const char *user, const char *password, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2329,6 +2729,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile8(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.readFromFile(String, AuthToken)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readFromFileWithToken().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] address The address, a UTF-8 string.
@@ -2338,6 +2740,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile8(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readFromFileWithToken()")
 int32_t dxfg_InstrumentProfileReader_readFromFile9(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, const char *address, dxfg_auth_token_t *token, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2349,6 +2752,8 @@ int32_t dxfg_InstrumentProfileReader_readFromFile9(graal_isolatethread_t *thread
  *
  * Java: `InstrumentProfileReader.read(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_read().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2358,6 +2763,7 @@ int32_t dxfg_InstrumentProfileReader_readFromFile9(graal_isolatethread_t *thread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_read()")
 int32_t dxfg_InstrumentProfileReader_read3(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2370,6 +2776,8 @@ int32_t dxfg_InstrumentProfileReader_read3(graal_isolatethread_t *thread, dxfg_i
  *
  * Java: `InstrumentProfileReader.read(InputStream, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readWithAddress().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2380,6 +2788,7 @@ int32_t dxfg_InstrumentProfileReader_read3(graal_isolatethread_t *thread, dxfg_i
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readWithAddress()")
 int32_t dxfg_InstrumentProfileReader_read4(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, const char *address, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2391,6 +2800,8 @@ int32_t dxfg_InstrumentProfileReader_read4(graal_isolatethread_t *thread, dxfg_i
  *
  * Java: `InstrumentProfileReader.read(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_read().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2399,6 +2810,7 @@ int32_t dxfg_InstrumentProfileReader_read4(graal_isolatethread_t *thread, dxfg_i
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_read()")
 int32_t dxfg_InstrumentProfileReader_read5(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2411,6 +2823,8 @@ int32_t dxfg_InstrumentProfileReader_read5(graal_isolatethread_t *thread, dxfg_i
  *
  * Java: `InstrumentProfileReader.read(InputStream, String)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readWithAddress().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2420,6 +2834,7 @@ int32_t dxfg_InstrumentProfileReader_read5(graal_isolatethread_t *thread, dxfg_i
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readWithAddress()")
 int32_t dxfg_InstrumentProfileReader_read6(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, const char *address, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2432,6 +2847,8 @@ int32_t dxfg_InstrumentProfileReader_read6(graal_isolatethread_t *thread, dxfg_i
  *
  * Java: `InstrumentProfileReader.readCompressed(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readCompressed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2441,6 +2858,7 @@ int32_t dxfg_InstrumentProfileReader_read6(graal_isolatethread_t *thread, dxfg_i
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readCompressed()")
 int32_t dxfg_InstrumentProfileReader_readCompressed2(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_t **instrument_profiles, DXFG_OUT int32_t* size);
 
 /**
@@ -2453,6 +2871,8 @@ int32_t dxfg_InstrumentProfileReader_readCompressed2(graal_isolatethread_t *thre
  *
  * Java: `InstrumentProfileReader.readCompressed(InputStream)`.
  *
+ * @deprecated Use dxfg_v4_InstrumentProfileReader_readCompressed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] reader The reader handle.
  * @param[in] is The input stream handle.
@@ -2461,6 +2881,7 @@ int32_t dxfg_InstrumentProfileReader_readCompressed2(graal_isolatethread_t *thre
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_InstrumentProfileReader_readCompressed()")
 int32_t dxfg_InstrumentProfileReader_readCompressed3(graal_isolatethread_t *thread, dxfg_instrument_profile_reader_t *reader, dxfg_input_stream_t* is, DXFG_OUT dxfg_instrument_profile2_list_t **instrument_profiles);
 
 /**
@@ -2469,16 +2890,21 @@ int32_t dxfg_InstrumentProfileReader_readCompressed3(graal_isolatethread_t *thre
  * The structure itself is freed as well: use it for a structure that was returned by
  * dxfg_Iterable_InstrumentProfile_next2(), not for an element of an array or a list.
  *
+ * @deprecated Use dxfg_v4_instrument_profile_data_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrument_profile The structure of the instrument profile; NULL does nothing.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_instrument_profile_data_release()")
 int32_t dxfg_instrument_profile_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profile);
 
 /**
  * @brief Frees an array of the structures of instrument profiles that the SDK has filled, with the strings of every
  * structure, and releases their custom fields handles.
+ *
+ * @deprecated Use dxfg_v4_instrument_profile_data_list_release().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrument_profiles The array of the structures; NULL does nothing.
@@ -2486,17 +2912,21 @@ int32_t dxfg_instrument_profile_free(graal_isolatethread_t *thread, dxfg_instrum
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_instrument_profile_data_list_release()")
 int32_t dxfg_instrument_profiles_array_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrument_profiles, int32_t size);
 
 /**
  * @brief Frees a list of the structures of instrument profiles that the SDK has filled, with the structures in it, and
  * releases their custom fields handles.
  *
+ * @deprecated Use dxfg_v4_instrument_profile_data_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrument_profiles The list of the structures.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_instrument_profile_data_list_release()")
 int32_t dxfg_instrument_profile2_list_free(graal_isolatethread_t *thread, dxfg_instrument_profile2_list_t* instrument_profiles);
 
 /** @} */ // end of InstrumentProfile

@@ -79,7 +79,8 @@ typedef struct dxfg_session_t {
  * A list of session handles, returned by dxfg_Day_getSessions().
  *
  * Release the sessions with dxfg_Session_release() one by one and then the list itself with
- * dxfg_SessionList_wrapper_release(). There is no function that releases the list and its sessions together.
+ * dxfg_SessionList_wrapper_release(), or release the list together with its sessions with
+ * dxfg_v4_session_list_release().
  */
 typedef struct dxfg_session_list {
     /** The number of elements; 0 for an empty list. */
@@ -155,6 +156,8 @@ typedef enum dxfg_session_filter_prepare_t {
  *
  * The function pointer must stay valid as long as the filter may be used by search functions.
  *
+ * @deprecated Use dxfg_v4_SessionFilter_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] filter The function that tests a session: it returns 1 to accept the session.
  * @return The new session filter (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -162,9 +165,12 @@ typedef enum dxfg_session_filter_prepare_t {
  *
  * Java: `new SessionFilter(SessionType, Boolean)` with `SessionFilter.accept(Session)` overridden to call `filter`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SessionFilter_new()")
 dxfg_session_filter_t*    dxfg_SessionFilter_new(graal_isolatethread_t *thread, dxfg_session_filter_function filter);
 /**
  * Returns a predefined session filter.
+ *
+ * @deprecated Use dxfg_v4_SessionFilter_getInstance().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] filter The predefined filter to return.
@@ -174,6 +180,7 @@ dxfg_session_filter_t*    dxfg_SessionFilter_new(graal_isolatethread_t *thread, 
  * Java: `SessionFilter.ANY`, `SessionFilter.TRADING`, `SessionFilter.NON_TRADING`, `SessionFilter.NO_TRADING`,
  * `SessionFilter.PRE_MARKET`, `SessionFilter.REGULAR`, `SessionFilter.AFTER_MARKET`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SessionFilter_getInstance()")
 dxfg_session_filter_t*    dxfg_SessionFilter_getInstance(graal_isolatethread_t *thread, dxfg_session_filter_prepare_t filter);
 
 /**
@@ -244,6 +251,8 @@ typedef enum dxfg_day_filter_prepare_t {
  *
  * The function pointer must stay valid as long as the filter may be used by search functions.
  *
+ * @deprecated Use dxfg_v4_DayFilter_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] filter The function that tests a day: it returns 1 to accept the day.
  * @return The new day filter (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -251,9 +260,12 @@ typedef enum dxfg_day_filter_prepare_t {
  *
  * Java: `new DayFilter(int, Boolean, Boolean, Boolean)` with `DayFilter.accept(Day)` overridden to call `filter`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DayFilter_new()")
 dxfg_day_filter_t*    dxfg_DayFilter_new(graal_isolatethread_t *thread, dxfg_day_filter_function filter);
 /**
  * Returns a predefined day filter.
+ *
+ * @deprecated Use dxfg_v4_DayFilter_getInstance().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] filter The predefined filter to return.
@@ -263,6 +275,7 @@ dxfg_day_filter_t*    dxfg_DayFilter_new(graal_isolatethread_t *thread, dxfg_day
  * Java: `DayFilter.ANY`, `DayFilter.TRADING`, `DayFilter.NON_TRADING`, `DayFilter.HOLIDAY`, `DayFilter.SHORT_DAY`,
  * `DayFilter.MONDAY` ... `DayFilter.SUNDAY`, `DayFilter.WEEK_DAY`, `DayFilter.WEEK_END`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DayFilter_getInstance()")
 dxfg_day_filter_t*    dxfg_DayFilter_getInstance(graal_isolatethread_t *thread, dxfg_day_filter_prepare_t filter);
 
 
@@ -272,6 +285,8 @@ dxfg_day_filter_t*    dxfg_DayFilter_getInstance(graal_isolatethread_t *thread, 
  * The schedule is defined by the trading hours of the profile. The function fails if the trading hours contain no
  * parenthesized schedule definition.
  *
+ * @deprecated Use dxfg_v4_Schedule_getInstanceByProfileHandle().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile whose schedule is requested.
  * @return The schedule (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -279,12 +294,15 @@ dxfg_day_filter_t*    dxfg_DayFilter_getInstance(graal_isolatethread_t *thread, 
  *
  * Java: `Schedule.getInstance(InstrumentProfile)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getInstanceByProfileHandle()")
 dxfg_schedule_t*      dxfg_Schedule_getInstance(graal_isolatethread_t *thread, dxfg_instrument_profile_t *instrumentProfile);
 /**
  * Returns the default schedule for a schedule definition.
  *
  * The definition has the form of the trading hours of an instrument profile. The first parenthesized part of it is
  * used. The function fails if the definition contains no parenthesized part.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getInstanceByDefinition().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] scheduleDefinition The schedule definition, a null-terminated UTF-8 string.
@@ -293,12 +311,15 @@ dxfg_schedule_t*      dxfg_Schedule_getInstance(graal_isolatethread_t *thread, d
  *
  * Java: `Schedule.getInstance(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getInstanceByDefinition()")
 dxfg_schedule_t*      dxfg_Schedule_getInstance2(graal_isolatethread_t *thread, const char *scheduleDefinition);
 /**
  * Returns the schedule for an instrument profile and a trading venue.
  *
  * The venue is the name that precedes the schedule definition in parentheses in the trading hours of the profile.
  * The function fails if the trading hours contain no schedule for the venue.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getInstanceByProfileHandleWithVenue().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile whose schedule is requested.
@@ -308,11 +329,14 @@ dxfg_schedule_t*      dxfg_Schedule_getInstance2(graal_isolatethread_t *thread, 
  *
  * Java: `Schedule.getInstance(InstrumentProfile, String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getInstanceByProfileHandleWithVenue()")
 dxfg_schedule_t*      dxfg_Schedule_getInstance3(graal_isolatethread_t *thread, dxfg_instrument_profile_t *instrumentProfile, const char *venue);
 /**
  * Returns the trading venues of an instrument profile.
  *
  * The list is empty (size 0, elements NULL) if the trading hours of the profile contain no venues.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getTradingVenuesByProfileHandle().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile whose venues are requested.
@@ -321,12 +345,15 @@ dxfg_schedule_t*      dxfg_Schedule_getInstance3(graal_isolatethread_t *thread, 
  *
  * Java: `Schedule.getTradingVenues(InstrumentProfile)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getTradingVenuesByProfileHandle()")
 dxfg_string_list*     dxfg_Schedule_getTradingVenues(graal_isolatethread_t *thread, dxfg_instrument_profile_t *instrumentProfile);
 /**
  * Downloads the default schedule data and optionally starts the periodic download.
  *
  * The first download is done before the function returns. A failure of the download itself is logged and does not
  * make the function fail.
+ *
+ * @deprecated Use dxfg_v4_Schedule_downloadDefaults().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] downloadConfig The download config, a null-terminated UTF-8 string, one of:
@@ -338,9 +365,12 @@ dxfg_string_list*     dxfg_Schedule_getTradingVenues(graal_isolatethread_t *thre
  *
  * Java: `Schedule.downloadDefaults(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_downloadDefaults()")
 int32_t               dxfg_Schedule_downloadDefaults(graal_isolatethread_t *thread, const char *downloadConfig);
 /**
  * Sets the shared defaults that are used by the schedule instances.
+ *
+ * @deprecated Use dxfg_v4_Schedule_setDefaults().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] data The content of the default data. Compressed data is detected by its header.
@@ -350,11 +380,14 @@ int32_t               dxfg_Schedule_downloadDefaults(graal_isolatethread_t *thre
  *
  * Java: `Schedule.setDefaults(byte[])`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_setDefaults()")
 int32_t               dxfg_Schedule_setDefaults(graal_isolatethread_t *thread, const char *data, int32_t size);
 /**
  * Returns the session of a schedule that contains a time.
  *
  * The function fails if the time is outside the supported date range.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getSessionByTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -364,11 +397,14 @@ int32_t               dxfg_Schedule_setDefaults(graal_isolatethread_t *thread, c
  *
  * Java: `Schedule.getSessionByTime(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getSessionByTime()")
 dxfg_session_t*       dxfg_Schedule_getSessionByTime(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int64_t time);
 /**
  * Returns the day of a schedule that contains a time.
  *
  * The function fails if the time is outside the supported date range.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getDayByTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -378,11 +414,14 @@ dxfg_session_t*       dxfg_Schedule_getSessionByTime(graal_isolatethread_t *thre
  *
  * Java: `Schedule.getDayByTime(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getDayByTime()")
 dxfg_day_t*           dxfg_Schedule_getDayByTime(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int64_t time);
 /**
  * Returns the day of a schedule with a day identifier.
  *
  * The function fails if the day identifier is outside the supported date range.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getDayById().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -393,12 +432,15 @@ dxfg_day_t*           dxfg_Schedule_getDayByTime(graal_isolatethread_t *thread, 
  *
  * Java: `Schedule.getDayById(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getDayById()")
 dxfg_day_t*           dxfg_Schedule_getDayById(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int32_t dayId);
 /**
  * Returns the day of a schedule with year, month and day numbers.
  *
  * If the day does not exist, the day with the lowest valid yearMonthDay that is greater than the specified one is
  * returned. The function fails if the value is outside the supported date range.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getDayByYearMonthDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -409,6 +451,7 @@ dxfg_day_t*           dxfg_Schedule_getDayById(graal_isolatethread_t *thread, dx
  *
  * Java: `Schedule.getDayByYearMonthDay(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getDayByYearMonthDay()")
 dxfg_day_t*           dxfg_Schedule_getDayByYearMonthDay(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int32_t yearMonthDay);
 /**
  * Returns the session of a schedule that is nearest to a time and is accepted by a filter.
@@ -416,6 +459,8 @@ dxfg_day_t*           dxfg_Schedule_getDayByYearMonthDay(graal_isolatethread_t *
  * The function fails if the time is outside the supported date range or if no session accepted by the filter is found
  * within one year; in both cases it returns NULL and an exception is set. To get NULL without an exception when
  * no session is found, use dxfg_Schedule_findNearestSessionByTime().
+ *
+ * @deprecated Use dxfg_v4_Schedule_getNearestSessionByTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -426,12 +471,15 @@ dxfg_day_t*           dxfg_Schedule_getDayByYearMonthDay(graal_isolatethread_t *
  *
  * Java: `Schedule.getNearestSessionByTime(long, SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getNearestSessionByTime()")
 dxfg_session_t*       dxfg_Schedule_getNearestSessionByTime(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int64_t time, dxfg_session_filter_t* filter);
 /**
  * Returns the session of a schedule that is nearest to a time and is accepted by a filter, or NULL if there is none.
  *
  * NULL is returned without an exception if no session accepted by the filter is found within one year. The function
  * fails (NULL and an exception) if the time is outside the supported date range.
+ *
+ * @deprecated Use dxfg_v4_Schedule_findNearestSessionByTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -442,9 +490,12 @@ dxfg_session_t*       dxfg_Schedule_getNearestSessionByTime(graal_isolatethread_
  *
  * Java: `Schedule.findNearestSessionByTime(long, SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_findNearestSessionByTime()")
 dxfg_session_t*       dxfg_Schedule_findNearestSessionByTime(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, int64_t time, dxfg_session_filter_t* filter);
 /**
  * Returns the name of a schedule.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getName().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -453,11 +504,14 @@ dxfg_session_t*       dxfg_Schedule_findNearestSessionByTime(graal_isolatethread
  *
  * Java: `Schedule.getName()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getName()")
 const char*           dxfg_Schedule_getName(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
 /**
  * Returns the display name of the time zone in which a schedule is defined.
  *
  * To get the identifier of the time zone, use dxfg_Schedule_getTimeZone_getID().
+ *
+ * @deprecated Use dxfg_v4_Schedule_getTimeZone().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -466,9 +520,12 @@ const char*           dxfg_Schedule_getName(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Schedule.getTimeZone()`, `TimeZone.getDisplayName()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getTimeZone()")
 const char*           dxfg_Schedule_getTimeZone(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
 /**
  * Returns the identifier of the time zone in which a schedule is defined.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getTimeZone_getID().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -477,11 +534,14 @@ const char*           dxfg_Schedule_getTimeZone(graal_isolatethread_t *thread, d
  *
  * Java: `Schedule.getTimeZone()`, `TimeZone.getID()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getTimeZone_getID()")
 const char*           dxfg_Schedule_getTimeZone_getID(graal_isolatethread_t *thread, dxfg_schedule_t* schedule);
 /**
  * Returns the definition of a schedule: its name and its properties in parentheses, e.g. `NYSE(...)`. It is the part
  * of the string given to dxfg_Schedule_getInstance2(), or of the trading hours of the instrument profile, that defines
  * this schedule.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getDefinition().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] schedule The schedule.
@@ -492,11 +552,14 @@ const char*           dxfg_Schedule_getTimeZone_getID(graal_isolatethread_t *thr
  *
  * Java: `Schedule.getDefinition()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getDefinition()")
 int32_t               dxfg_Schedule_getDefinition(graal_isolatethread_t *thread, dxfg_schedule_t* schedule, DXFG_OUT char **definition);
 
 
 /**
  * Returns the day to which a session belongs.
+ *
+ * @deprecated Use dxfg_v4_Session_getDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -505,9 +568,12 @@ int32_t               dxfg_Schedule_getDefinition(graal_isolatethread_t *thread,
  *
  * Java: `Session.getDay()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getDay()")
 dxfg_day_t*           dxfg_Session_getDay(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Returns the type of a session.
+ *
+ * @deprecated Use dxfg_v4_Session_getType().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -516,9 +582,12 @@ dxfg_day_t*           dxfg_Session_getDay(graal_isolatethread_t *thread, dxfg_se
  *
  * Java: `Session.getType()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getType()")
 int32_t               dxfg_Session_getType(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Checks whether trading activity is allowed within a session.
+ *
+ * @deprecated Use dxfg_v4_Session_isTrading().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -527,11 +596,14 @@ int32_t               dxfg_Session_getType(graal_isolatethread_t *thread, dxfg_s
  *
  * Java: `Session.isTrading()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_isTrading()")
 int32_t               dxfg_Session_isTrading(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Checks whether a session has zero duration.
  *
  * Empty sessions are used for example for indices that post a value once a day. They can be of any type.
+ *
+ * @deprecated Use dxfg_v4_Session_isEmpty().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -540,11 +612,14 @@ int32_t               dxfg_Session_isTrading(graal_isolatethread_t *thread, dxfg
  *
  * Java: `Session.isEmpty()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_isEmpty()")
 int32_t               dxfg_Session_isEmpty(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Returns the start time of a session (inclusive).
  *
  * For an empty session the start time equals the end time.
+ *
+ * @deprecated Use dxfg_v4_Session_getStartTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -553,11 +628,14 @@ int32_t               dxfg_Session_isEmpty(graal_isolatethread_t *thread, dxfg_s
  *
  * Java: `Session.getStartTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getStartTime()")
 int64_t               dxfg_Session_getStartTime(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Returns the end time of a session (exclusive).
  *
  * For an empty session the end time equals the start time.
+ *
+ * @deprecated Use dxfg_v4_Session_getEndTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -566,9 +644,12 @@ int64_t               dxfg_Session_getStartTime(graal_isolatethread_t *thread, d
  *
  * Java: `Session.getEndTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getEndTime()")
 int64_t               dxfg_Session_getEndTime(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Checks whether a time belongs to a session.
+ *
+ * @deprecated Use dxfg_v4_Session_containsTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -578,6 +659,7 @@ int64_t               dxfg_Session_getEndTime(graal_isolatethread_t *thread, dxf
  *
  * Java: `Session.containsTime(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_containsTime()")
 int32_t               dxfg_Session_containsTime(graal_isolatethread_t *thread, dxfg_session_t* session, int64_t time);
 /**
  * Returns the previous session accepted by a filter.
@@ -585,6 +667,8 @@ int32_t               dxfg_Session_containsTime(graal_isolatethread_t *thread, d
  * The search may cross the day boundary and look up to a year back in time. The function fails if no such session
  * is found; it returns NULL and an exception is set. To get NULL without an exception when no session is found, use
  * dxfg_Session_findPrevSession().
+ *
+ * @deprecated Use dxfg_v4_Session_getPrevSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session to start from.
@@ -594,6 +678,7 @@ int32_t               dxfg_Session_containsTime(graal_isolatethread_t *thread, d
  *
  * Java: `Session.getPrevSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getPrevSession()")
 dxfg_session_t*       dxfg_Session_getPrevSession(graal_isolatethread_t *thread, dxfg_session_t* session, dxfg_session_filter_t* filter);
 /**
  * Returns the following session accepted by a filter.
@@ -601,6 +686,8 @@ dxfg_session_t*       dxfg_Session_getPrevSession(graal_isolatethread_t *thread,
  * The search may cross the day boundary and look up to a year ahead. The function fails if no such session is
  * found; it returns NULL and an exception is set. To get NULL without an exception when no session is found, use
  * dxfg_Session_findNextSession().
+ *
+ * @deprecated Use dxfg_v4_Session_getNextSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session to start from.
@@ -610,12 +697,15 @@ dxfg_session_t*       dxfg_Session_getPrevSession(graal_isolatethread_t *thread,
  *
  * Java: `Session.getNextSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_getNextSession()")
 dxfg_session_t*       dxfg_Session_getNextSession(graal_isolatethread_t *thread, dxfg_session_t* session, dxfg_session_filter_t* filter);
 /**
  * Returns the previous session accepted by a filter, or NULL if there is none.
  *
  * The search may cross the day boundary and look up to a year back in time. NULL is returned without an exception
  * if no such session is found.
+ *
+ * @deprecated Use dxfg_v4_Session_findPrevSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session to start from.
@@ -626,12 +716,15 @@ dxfg_session_t*       dxfg_Session_getNextSession(graal_isolatethread_t *thread,
  *
  * Java: `Session.findPrevSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_findPrevSession()")
 dxfg_session_t*       dxfg_Session_findPrevSession(graal_isolatethread_t *thread, dxfg_session_t* session, dxfg_session_filter_t* filter);
 /**
  * Returns the following session accepted by a filter, or NULL if there is none.
  *
  * The search may cross the day boundary and look up to a year ahead. NULL is returned without an exception
  * if no such session is found.
+ *
+ * @deprecated Use dxfg_v4_Session_findNextSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session to start from.
@@ -642,9 +735,12 @@ dxfg_session_t*       dxfg_Session_findPrevSession(graal_isolatethread_t *thread
  *
  * Java: `Session.findNextSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_findNextSession()")
 dxfg_session_t*       dxfg_Session_findNextSession(graal_isolatethread_t *thread, dxfg_session_t* session, dxfg_session_filter_t* filter);
 /**
  * Returns the hash code of a session.
+ *
+ * @deprecated Use dxfg_v4_Session_hashCode().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -653,11 +749,14 @@ dxfg_session_t*       dxfg_Session_findNextSession(graal_isolatethread_t *thread
  *
  * Java: `Session.hashCode()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_hashCode()")
 int32_t               dxfg_Session_hashCode(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Checks whether two sessions are equal.
  *
  * Sessions are equal if they belong to equal days and have the same type, start time and end time.
+ *
+ * @deprecated Use dxfg_v4_Session_equals().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -667,9 +766,12 @@ int32_t               dxfg_Session_hashCode(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Session.equals(Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_equals()")
 int32_t               dxfg_Session_equals(graal_isolatethread_t *thread, dxfg_session_t* session, dxfg_session_t* otherSession);
 /**
  * Returns the string representation of a session.
+ *
+ * @deprecated Use dxfg_v4_Session_toString().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session.
@@ -678,11 +780,14 @@ int32_t               dxfg_Session_equals(graal_isolatethread_t *thread, dxfg_se
  *
  * Java: `Session.toString()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_toString()")
 const char*           dxfg_Session_toString(graal_isolatethread_t *thread, dxfg_session_t* session);
 
 
 /**
  * Returns the schedule to which a day belongs.
+ *
+ * @deprecated Use dxfg_v4_Day_getSchedule().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -691,10 +796,13 @@ const char*           dxfg_Session_toString(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Day.getSchedule()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getSchedule()")
 dxfg_schedule_t*      dxfg_Day_getSchedule(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the identifier of a day: the number of the day since 1970-01-01, which has the identifier 0. The previous
  * days have negative identifiers.
+ *
+ * @deprecated Use dxfg_v4_Day_getDayId().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -703,11 +811,14 @@ dxfg_schedule_t*      dxfg_Day_getSchedule(graal_isolatethread_t *thread, dxfg_d
  *
  * Java: `Day.getDayId()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getDayId()")
 int32_t               dxfg_Day_getDayId(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the year, month and day numbers of a day packed as `year * 10000 + month * 100 + day`.
  *
  * For example, September 28, 1977 has the value 19770928.
+ *
+ * @deprecated Use dxfg_v4_Day_getYearMonthDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -716,9 +827,12 @@ int32_t               dxfg_Day_getDayId(graal_isolatethread_t *thread, dxfg_day_
  *
  * Java: `Day.getYearMonthDay()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getYearMonthDay()")
 int32_t               dxfg_Day_getYearMonthDay(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the calendar year of a day, for example 1977.
+ *
+ * @deprecated Use dxfg_v4_Day_getYear().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -727,9 +841,12 @@ int32_t               dxfg_Day_getYearMonthDay(graal_isolatethread_t *thread, dx
  *
  * Java: `Day.getYear()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getYear()")
 int32_t               dxfg_Day_getYear(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the calendar month number of a day, from 1 (January) to 12 (December).
+ *
+ * @deprecated Use dxfg_v4_Day_getMonthOfYear().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -738,9 +855,12 @@ int32_t               dxfg_Day_getYear(graal_isolatethread_t *thread, dxfg_day_t
  *
  * Java: `Day.getMonthOfYear()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getMonthOfYear()")
 int32_t               dxfg_Day_getMonthOfYear(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the ordinal number of a day in its month, starting with 1 for the first day of the month.
+ *
+ * @deprecated Use dxfg_v4_Day_getDayOfMonth().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -749,9 +869,12 @@ int32_t               dxfg_Day_getMonthOfYear(graal_isolatethread_t *thread, dxf
  *
  * Java: `Day.getDayOfMonth()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getDayOfMonth()")
 int32_t               dxfg_Day_getDayOfMonth(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the ordinal number of a day in its week, from 1 (Monday) to 7 (Sunday).
+ *
+ * @deprecated Use dxfg_v4_Day_getDayOfWeek().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -760,11 +883,14 @@ int32_t               dxfg_Day_getDayOfMonth(graal_isolatethread_t *thread, dxfg
  *
  * Java: `Day.getDayOfWeek()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getDayOfWeek()")
 int32_t               dxfg_Day_getDayOfWeek(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Checks whether a day is an exchange holiday.
  *
  * Usually no trading takes place on a holiday.
+ *
+ * @deprecated Use dxfg_v4_Day_isHoliday().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -773,11 +899,14 @@ int32_t               dxfg_Day_getDayOfWeek(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Day.isHoliday()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_isHoliday()")
 int32_t               dxfg_Day_isHoliday(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Checks whether a day is a short day.
  *
  * Usually trading stops earlier on a short day.
+ *
+ * @deprecated Use dxfg_v4_Day_isShortDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -786,11 +915,14 @@ int32_t               dxfg_Day_isHoliday(graal_isolatethread_t *thread, dxfg_day
  *
  * Java: `Day.isShortDay()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_isShortDay()")
 int32_t               dxfg_Day_isShortDay(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Checks whether trading activity is allowed within a day.
  *
  * A trading day has at least one trading session.
+ *
+ * @deprecated Use dxfg_v4_Day_isTrading().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -799,9 +931,12 @@ int32_t               dxfg_Day_isShortDay(graal_isolatethread_t *thread, dxfg_da
  *
  * Java: `Day.isTrading()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_isTrading()")
 int32_t               dxfg_Day_isTrading(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the start time of a day (inclusive).
+ *
+ * @deprecated Use dxfg_v4_Day_getStartTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -810,9 +945,12 @@ int32_t               dxfg_Day_isTrading(graal_isolatethread_t *thread, dxfg_day
  *
  * Java: `Day.getStartTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getStartTime()")
 int64_t               dxfg_Day_getStartTime(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the end time of a day (exclusive).
+ *
+ * @deprecated Use dxfg_v4_Day_getEndTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -821,9 +959,12 @@ int64_t               dxfg_Day_getStartTime(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Day.getEndTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getEndTime()")
 int64_t               dxfg_Day_getEndTime(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Checks whether a time belongs to a day.
+ *
+ * @deprecated Use dxfg_v4_Day_containsTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -833,11 +974,14 @@ int64_t               dxfg_Day_getEndTime(graal_isolatethread_t *thread, dxfg_da
  *
  * Java: `Day.containsTime(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_containsTime()")
 int32_t               dxfg_Day_containsTime(graal_isolatethread_t *thread, dxfg_day_t* day, int64_t time);
 /**
  * Returns the reset time of a day.
  *
  * The daily data is reset on trading days only; the result has no meaning for non-trading days.
+ *
+ * @deprecated Use dxfg_v4_Day_getResetTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -846,9 +990,12 @@ int32_t               dxfg_Day_containsTime(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Day.getResetTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getResetTime()")
 int64_t               dxfg_Day_getResetTime(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the sessions that constitute a day, in the order in which they follow one another.
+ *
+ * @deprecated Use dxfg_v4_Day_getSessions().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -857,11 +1004,14 @@ int64_t               dxfg_Day_getResetTime(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Day.getSessions()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getSessions()")
 dxfg_session_list*    dxfg_Day_getSessions(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Returns the session of a day that contains a time.
  *
  * The function fails if no such session is found within the day; it returns NULL and an exception is set.
+ *
+ * @deprecated Use dxfg_v4_Day_getSessionByTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -871,6 +1021,7 @@ dxfg_session_list*    dxfg_Day_getSessions(graal_isolatethread_t *thread, dxfg_d
  *
  * Java: `Day.getSessionByTime(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getSessionByTime()")
 dxfg_session_t*       dxfg_Day_getSessionByTime(graal_isolatethread_t *thread, dxfg_day_t* day, int64_t time);
 /**
  * Returns the first session of a day that is accepted by a filter.
@@ -878,6 +1029,8 @@ dxfg_session_t*       dxfg_Day_getSessionByTime(graal_isolatethread_t *thread, d
  * The search does not cross the day boundary. The function fails if no such session is found within the day; it
  * returns NULL and an exception is set. To get NULL without an exception when no session is found, use
  * dxfg_Day_findFirstSession().
+ *
+ * @deprecated Use dxfg_v4_Day_getFirstSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -887,6 +1040,7 @@ dxfg_session_t*       dxfg_Day_getSessionByTime(graal_isolatethread_t *thread, d
  *
  * Java: `Day.getFirstSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getFirstSession()")
 dxfg_session_t*       dxfg_Day_getFirstSession(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_session_filter_t* filter);
 /**
  * Returns the last session of a day that is accepted by a filter.
@@ -894,6 +1048,8 @@ dxfg_session_t*       dxfg_Day_getFirstSession(graal_isolatethread_t *thread, dx
  * The search does not cross the day boundary. The function fails if no such session is found within the day; it
  * returns NULL and an exception is set. To get NULL without an exception when no session is found, use
  * dxfg_Day_findLastSession().
+ *
+ * @deprecated Use dxfg_v4_Day_getLastSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -903,12 +1059,15 @@ dxfg_session_t*       dxfg_Day_getFirstSession(graal_isolatethread_t *thread, dx
  *
  * Java: `Day.getLastSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getLastSession()")
 dxfg_session_t*       dxfg_Day_getLastSession(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_session_filter_t* filter);
 /**
  * Returns the first session of a day that is accepted by a filter, or NULL if there is none.
  *
  * The search does not cross the day boundary. NULL is returned without an exception if no such session is found
  * within the day.
+ *
+ * @deprecated Use dxfg_v4_Day_findFirstSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -918,12 +1077,15 @@ dxfg_session_t*       dxfg_Day_getLastSession(graal_isolatethread_t *thread, dxf
  *
  * Java: `Day.findFirstSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_findFirstSession()")
 dxfg_session_t*       dxfg_Day_findFirstSession(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_session_filter_t* filter);
 /**
  * Returns the last session of a day that is accepted by a filter, or NULL if there is none.
  *
  * The search does not cross the day boundary. NULL is returned without an exception if no such session is found
  * within the day.
+ *
+ * @deprecated Use dxfg_v4_Day_findLastSession().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -933,12 +1095,15 @@ dxfg_session_t*       dxfg_Day_findFirstSession(graal_isolatethread_t *thread, d
  *
  * Java: `Day.findLastSession(SessionFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_findLastSession()")
 dxfg_session_t*       dxfg_Day_findLastSession(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_session_filter_t* filter);
 /**
  * Returns the previous day accepted by a filter.
  *
  * The search looks up to a year back in time. The function fails if no such day is found; it returns NULL and an
  * exception is set. To get NULL without an exception when no day is found, use dxfg_Day_findPrevDay().
+ *
+ * @deprecated Use dxfg_v4_Day_getPrevDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day to start from.
@@ -948,12 +1113,15 @@ dxfg_session_t*       dxfg_Day_findLastSession(graal_isolatethread_t *thread, dx
  *
  * Java: `Day.getPrevDay(DayFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getPrevDay()")
 dxfg_day_t*           dxfg_Day_getPrevDay(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_day_filter_t* filter);
 /**
  * Returns the following day accepted by a filter.
  *
  * The search looks up to a year ahead. The function fails if no such day is found; it returns NULL and an exception
  * is set. To get NULL without an exception when no day is found, use dxfg_Day_findNextDay().
+ *
+ * @deprecated Use dxfg_v4_Day_getNextDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day to start from.
@@ -963,11 +1131,14 @@ dxfg_day_t*           dxfg_Day_getPrevDay(graal_isolatethread_t *thread, dxfg_da
  *
  * Java: `Day.getNextDay(DayFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_getNextDay()")
 dxfg_day_t*           dxfg_Day_getNextDay(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_day_filter_t* filter);
 /**
  * Returns the previous day accepted by a filter, or NULL if there is none.
  *
  * The search looks up to a year back in time. NULL is returned without an exception if no such day is found.
+ *
+ * @deprecated Use dxfg_v4_Day_findPrevDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day to start from.
@@ -977,11 +1148,14 @@ dxfg_day_t*           dxfg_Day_getNextDay(graal_isolatethread_t *thread, dxfg_da
  *
  * Java: `Day.findPrevDay(DayFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_findPrevDay()")
 dxfg_day_t*           dxfg_Day_findPrevDay(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_day_filter_t* filter);
 /**
  * Returns the following day accepted by a filter, or NULL if there is none.
  *
  * The search looks up to a year ahead. NULL is returned without an exception if no such day is found.
+ *
+ * @deprecated Use dxfg_v4_Day_findNextDay().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day to start from.
@@ -991,9 +1165,12 @@ dxfg_day_t*           dxfg_Day_findPrevDay(graal_isolatethread_t *thread, dxfg_d
  *
  * Java: `Day.findNextDay(DayFilter)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_findNextDay()")
 dxfg_day_t*           dxfg_Day_findNextDay(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_day_filter_t* filter);
 /**
  * Returns the hash code of a day.
+ *
+ * @deprecated Use dxfg_v4_Day_hashCode().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -1002,11 +1179,14 @@ dxfg_day_t*           dxfg_Day_findNextDay(graal_isolatethread_t *thread, dxfg_d
  *
  * Java: `Day.hashCode()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_hashCode()")
 int32_t               dxfg_Day_hashCode(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Checks whether two days are equal.
  *
  * Days are equal if they belong to equal schedules and have the same day identifier.
+ *
+ * @deprecated Use dxfg_v4_Day_equals().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -1016,9 +1196,12 @@ int32_t               dxfg_Day_hashCode(graal_isolatethread_t *thread, dxfg_day_
  *
  * Java: `Day.equals(Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_equals()")
 int32_t               dxfg_Day_equals(graal_isolatethread_t *thread, dxfg_day_t* day, dxfg_day_t* otherDay);
 /**
  * Returns the string representation of a day.
+ *
+ * @deprecated Use dxfg_v4_Day_toString().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day.
@@ -1027,37 +1210,47 @@ int32_t               dxfg_Day_equals(graal_isolatethread_t *thread, dxfg_day_t*
  *
  * Java: `Day.toString()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_toString()")
 const char*           dxfg_Day_toString(graal_isolatethread_t *thread, dxfg_day_t* day);
 
 
 /**
  * Releases a day handle.
  *
+ * @deprecated Use dxfg_v4_Day_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] day The day handle to release. Do not use it afterwards.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Day_release()")
 int32_t               dxfg_Day_release(graal_isolatethread_t *thread, dxfg_day_t* day);
 /**
  * Releases a session handle.
+ *
+ * @deprecated Use dxfg_v4_Session_release().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] session The session handle to release. Do not use it afterwards.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Session_release()")
 int32_t               dxfg_Session_release(graal_isolatethread_t *thread, dxfg_session_t* session);
 /**
  * Releases the dxfg_session_list structure and its array of elements and keeps the sessions themselves.
  *
  * Release the sessions with dxfg_Session_release() separately; the list must not be used afterwards.
  *
+ * @deprecated Use dxfg_v4_session_list_wrapper_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sessions The list to release; must not be NULL.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_session_list_wrapper_release()")
 int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *thread, dxfg_session_list* sessions);
 
 /**
@@ -1065,6 +1258,8 @@ int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *th
  *
  * The schedule is defined by the trading hours of the profile. The function fails if the trading hours contain no
  * parenthesized schedule definition.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getInstance().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile.
@@ -1075,6 +1270,7 @@ int32_t               dxfg_SessionList_wrapper_release(graal_isolatethread_t *th
  *
  * Java: `Schedule.getInstance(InstrumentProfile)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getInstance()")
 int32_t dxfg_Schedule_getInstance4(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_schedule_t** schedule);
 
 /**
@@ -1082,6 +1278,8 @@ int32_t dxfg_Schedule_getInstance4(graal_isolatethread_t *thread, dxfg_instrumen
  *
  * The venue is the name that precedes the schedule definition in parentheses in the trading hours of the profile.
  * The function fails if the trading hours contain no schedule for the venue.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getInstanceWithVenue().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile.
@@ -1093,12 +1291,15 @@ int32_t dxfg_Schedule_getInstance4(graal_isolatethread_t *thread, dxfg_instrumen
  *
  * Java: `Schedule.getInstance(InstrumentProfile, String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getInstanceWithVenue()")
 int32_t dxfg_Schedule_getInstance5(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, const char *venue, DXFG_OUT dxfg_schedule_t** schedule);
 
 /**
  * Returns trading venues by an instrument profile.
  *
  * The list is empty (size 0, elements NULL) if the trading hours of the profile contain no venues.
+ *
+ * @deprecated Use dxfg_v4_Schedule_getTradingVenues().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] instrumentProfile The instrument profile.
@@ -1109,6 +1310,7 @@ int32_t dxfg_Schedule_getInstance5(graal_isolatethread_t *thread, dxfg_instrumen
  *
  * Java: `Schedule.getTradingVenues(InstrumentProfile)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Schedule_getTradingVenues()")
 int32_t dxfg_Schedule_getTradingVenues2(graal_isolatethread_t *thread, dxfg_instrument_profile2_t *instrumentProfile, DXFG_OUT dxfg_string_list** venues);
 
 /** @} */ // end of Schedule

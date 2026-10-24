@@ -41,12 +41,15 @@ extern "C" {
  *
  * Java: `Tools.parseSymbols(String, DataScheme)`, with the default scheme (`QDFactory.getDefaultScheme()`).
  *
+ * @deprecated Use dxfg_v4_Tools_parseSymbols().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] symbolList The specification of the symbol list: a UTF-8 null-terminated string; the caller keeps its
  * ownership.
  * @return The list of the symbols (release it with dxfg_CList_String_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Tools_parseSymbols()")
 dxfg_string_list*   dxfg_Tools_parseSymbols(graal_isolatethread_t *thread, const char* symbolList);
 
 /**
@@ -62,12 +65,15 @@ dxfg_string_list*   dxfg_Tools_parseSymbols(graal_isolatethread_t *thread, const
  *
  * Java: `Tools.main(String[])`.
  *
+ * @deprecated Use dxfg_v4_Tools_main().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] args The list of the arguments; the caller keeps its ownership.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) if no arguments are passed (the process is terminated otherwise, see above),
  * or #DXFG_EXECUTE_FAIL (-1) on error. Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Tools_main()")
 int32_t             dxfg_Tools_main(graal_isolatethread_t *thread, dxfg_string_list* args);
 
 /** @} */ // end of Qds

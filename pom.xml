@@ -69,6 +69,7 @@
     <ios.check.skip>false</ios.check.skip>
     <macos.manifest.skip>true</macos.manifest.skip>
     <graal.isolate.headers.check.skip>false</graal.isolate.headers.check.skip>
+    <api.headers.check.skip>false</api.headers.check.skip>
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
@@ -1483,6 +1484,29 @@
                 </macrodef>
                 <check-header name="graal_isolate.h" />
                 <check-header name="graal_isolate_dynamic.h" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              The headers of src/main/c/api must declare the functions that the library exports: the same names with
+              the same numbers of parameters as in the header that native-image generates. Every older function must
+              be DXFG_DEPRECATED in favour of declared dxfg_v4_ functions, dxfg_v4_api.h must include every dxfg_v4_*.h
+              and dxfg_api.h must include dxfg_v4_api.h (see scripts/check-api-headers/CheckApiHeaders.java).
+            -->
+            <id>check-api-headers</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${api.headers.check.skip}</skip>
+              <target>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-api-headers/CheckApiHeaders.java" />
+                  <arg value="${project.basedir}/src/main/c/api" />
+                  <arg value="${native.image.path}/${native.image.name}.h" />
+                </exec>
               </target>
             </configuration>
           </execution>

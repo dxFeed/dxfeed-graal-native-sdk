@@ -71,10 +71,13 @@ typedef struct dxfg_on_demand_service_t {
  *
  * Java: `OnDemandService.getInstance()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_getInstance().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The service (release the handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_getInstance()")
 dxfg_on_demand_service_t*         dxfg_OnDemandService_getInstance(graal_isolatethread_t *thread);
 
 /**
@@ -86,11 +89,14 @@ dxfg_on_demand_service_t*         dxfg_OnDemandService_getInstance(graal_isolate
  *
  * Java: `OnDemandService.getInstance(DXEndpoint)`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_getInstanceByEndpoint().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint; the caller keeps its ownership.
  * @return The service (release the handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_getInstanceByEndpoint()")
 dxfg_on_demand_service_t*         dxfg_OnDemandService_getInstance2(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -98,11 +104,14 @@ dxfg_on_demand_service_t*         dxfg_OnDemandService_getInstance2(graal_isolat
  *
  * Java: `OnDemandService.getEndpoint()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_getEndpoint().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return The endpoint (release the handle with dxfg_JavaObjectHandler_release(); this does not close the endpoint),
  * or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_getEndpoint()")
 dxfg_endpoint_t*                  dxfg_OnDemandService_getEndpoint(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -113,11 +122,14 @@ dxfg_endpoint_t*                  dxfg_OnDemandService_getEndpoint(graal_isolate
  *
  * Java: `OnDemandService.isReplaySupported()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_isReplaySupported().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return 1 if the replay mode is supported, 0 if not, or -1 on error. Use dxfg_get_and_clear_thread_exception_t() to
  * get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_isReplaySupported()")
 int32_t                           dxfg_OnDemandService_isReplaySupported(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -128,11 +140,14 @@ int32_t                           dxfg_OnDemandService_isReplaySupported(graal_i
  *
  * Java: `OnDemandService.isReplay()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_isReplay().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return 1 if the service is in the replay mode, 0 if not, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_isReplay()")
 int32_t                           dxfg_OnDemandService_isReplay(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -143,11 +158,14 @@ int32_t                           dxfg_OnDemandService_isReplay(graal_isolatethr
  *
  * Java: `OnDemandService.isClear()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_isClear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return 1 if the service is in the clear mode, 0 if not, or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_isClear()")
 int32_t                           dxfg_OnDemandService_isClear(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -158,11 +176,14 @@ int32_t                           dxfg_OnDemandService_isClear(graal_isolatethre
  *
  * Java: `OnDemandService.getTime()`, the result of `Date.getTime()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_getTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return The time in milliseconds since the Unix epoch (UTC), or -1 on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_getTime()")
 int64_t                           dxfg_OnDemandService_getTime(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -173,11 +194,14 @@ int64_t                           dxfg_OnDemandService_getTime(graal_isolatethre
  *
  * Java: `OnDemandService.getSpeed()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_getSpeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return The replay speed, or negative infinity (-Inf) on error. Use dxfg_get_and_clear_thread_exception_t() to get
  * the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_getSpeed()")
 double                            dxfg_OnDemandService_getSpeed(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -188,12 +212,15 @@ double                            dxfg_OnDemandService_getSpeed(graal_isolatethr
  *
  * Java: `OnDemandService.replay(Date)`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_replay().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @param[in] time The time to start the replay from, in milliseconds since the Unix epoch (UTC).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_replay()")
 int32_t                           dxfg_OnDemandService_replay(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service, int64_t time);
 
 /**
@@ -207,6 +234,8 @@ int32_t                           dxfg_OnDemandService_replay(graal_isolatethrea
  *
  * Java: `OnDemandService.replay(Date, double)`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_replayWithSpeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @param[in] time The time to start the replay from, in milliseconds since the Unix epoch (UTC).
@@ -215,6 +244,7 @@ int32_t                           dxfg_OnDemandService_replay(graal_isolatethrea
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_replayWithSpeed()")
 int32_t                           dxfg_OnDemandService_replay2(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service, int64_t time, double speed);
 
 /**
@@ -225,11 +255,14 @@ int32_t                           dxfg_OnDemandService_replay2(graal_isolatethre
  *
  * Java: `OnDemandService.pause()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_pause().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_pause()")
 int32_t                           dxfg_OnDemandService_pause(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -243,11 +276,14 @@ int32_t                           dxfg_OnDemandService_pause(graal_isolatethread
  *
  * Java: `OnDemandService.stopAndResume()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_stopAndResume().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_stopAndResume()")
 int32_t                           dxfg_OnDemandService_stopAndResume(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -261,11 +297,14 @@ int32_t                           dxfg_OnDemandService_stopAndResume(graal_isola
  *
  * Java: `OnDemandService.stopAndClear()`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_stopAndClear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_stopAndClear()")
 int32_t                           dxfg_OnDemandService_stopAndClear(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service);
 
 /**
@@ -276,6 +315,8 @@ int32_t                           dxfg_OnDemandService_stopAndClear(graal_isolat
  *
  * Java: `OnDemandService.setSpeed(double)`.
  *
+ * @deprecated Use dxfg_v4_OnDemandService_setSpeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The service.
  * @param[in] speed The new replay speed: 1 is the real-time speed, more than 1 is faster, less than 1 is slower and 0
@@ -283,6 +324,7 @@ int32_t                           dxfg_OnDemandService_stopAndClear(graal_isolat
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_OnDemandService_setSpeed()")
 int32_t                           dxfg_OnDemandService_setSpeed(graal_isolatethread_t *thread, dxfg_on_demand_service_t *service, double speed);
 
 /** @} */ // end of OnDemand

@@ -53,6 +53,15 @@ if (DEFINED GENERIC_COMPILE_OPTIONS)
     set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS} ${GENERIC_COMPILE_OPTIONS})
 endif ()
 
+# The SDK's own tests, samples and libraries still call the functions that the dxfg_v4_ functions replace: no
+# deprecation warnings for them (V4ApiTest removes this option and turns the warning into an error instead).
+if (MSVC)
+    set(DXFG_NO_DEPRECATION_WARNINGS /wd4996)
+else ()
+    set(DXFG_NO_DEPRECATION_WARNINGS -Wno-deprecated-declarations)
+endif ()
+set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS} ${DXFG_NO_DEPRECATION_WARNINGS})
+
 
 #
 # Linker script

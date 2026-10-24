@@ -80,9 +80,9 @@ typedef struct dxfg_promise_t {
 /**
  * @brief A list of promise handles.
  *
- * A list that a function returns is allocated by the SDK: release it with dxfg_CList_JavaObjectHandler_release(),
- * passing the field `list` (there is no release function specific to this list). That releases every promise handle,
- * the array of the handles and the list itself.
+ * A list that a function returns is allocated by the SDK: release it with dxfg_v4_promise_list_release(), or with
+ * dxfg_CList_JavaObjectHandler_release() passing the field `list`. That releases every promise handle, the array of the
+ * handles and the list itself.
  */
 typedef struct dxfg_promise_list {
     /** The list of the promise handles: the number of the handles and the array of the pointers to them. */
@@ -122,10 +122,13 @@ typedef struct dxfg_promise_event_t {
  *
  * Java: `DXFeed.getInstance()`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getInstance().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The feed (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getInstance()")
 dxfg_feed_t*                      dxfg_DXFeed_getInstance(graal_isolatethread_t *thread);
 
 /**
@@ -136,12 +139,15 @@ dxfg_feed_t*                      dxfg_DXFeed_getInstance(graal_isolatethread_t 
  *
  * Java: `DXFeed.createSubscription(Class)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_createSubscription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the events to subscribe to.
  * @return The subscription (release its handle with dxfg_JavaObjectHandler_release(); that neither closes nor detaches
  * the subscription), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_createSubscription()")
 dxfg_subscription_t*              dxfg_DXFeed_createSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz);
 
 /**
@@ -152,12 +158,15 @@ dxfg_subscription_t*              dxfg_DXFeed_createSubscription(graal_isolateth
  *
  * Java: `DXFeed.createSubscription(Class...)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_createSubscriptionWithEventTypes().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazzes The classes of the events to subscribe to.
  * @return The subscription (release its handle with dxfg_JavaObjectHandler_release(); that neither closes nor detaches
  * the subscription), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_createSubscriptionWithEventTypes()")
 dxfg_subscription_t*              dxfg_DXFeed_createSubscription2(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_list_t *eventClazzes);
 
 /**
@@ -172,12 +181,15 @@ dxfg_subscription_t*              dxfg_DXFeed_createSubscription2(graal_isolatet
  *
  * Java: `DXFeed.createTimeSeriesSubscription(Class)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_createTimeSeriesSubscription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the time series events to subscribe to.
  * @return The subscription (release its handle with dxfg_JavaObjectHandler_release(); that neither closes nor detaches
  * the subscription), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_createTimeSeriesSubscription()")
 dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz);
 
 /**
@@ -188,12 +200,15 @@ dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription(graal
  *
  * Java: `DXFeed.createTimeSeriesSubscription(Class...)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_createTimeSeriesSubscriptionWithEventTypes().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazzes The classes of the time series events to subscribe to.
  * @return The subscription (release its handle with dxfg_JavaObjectHandler_release(); that neither closes nor detaches
  * the subscription), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_createTimeSeriesSubscriptionWithEventTypes()")
 dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription2(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_list_t *eventClazzes);
 
 /**
@@ -204,6 +219,8 @@ dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription2(graa
  *
  * Java: `DXFeed.attachSubscription(DXFeedSubscription)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_attachSubscription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] sub The subscription, created by dxfg_DXFeedSubscription_new() or dxfg_DXFeedSubscription_new2() (or any
@@ -211,6 +228,7 @@ dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription2(graa
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_attachSubscription()")
 int32_t                           dxfg_DXFeed_attachSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
 
 /**
@@ -221,12 +239,15 @@ int32_t                           dxfg_DXFeed_attachSubscription(graal_isolateth
  *
  * Java: `DXFeed.detachSubscription(DXFeedSubscription)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_detachSubscription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] sub The subscription.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_detachSubscription()")
 int32_t                           dxfg_DXFeed_detachSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
 
 /**
@@ -237,12 +258,15 @@ int32_t                           dxfg_DXFeed_detachSubscription(graal_isolateth
  *
  * Java: `DXFeed.detachSubscriptionAndClear(DXFeedSubscription)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_detachSubscriptionAndClear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] sub The subscription.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_detachSubscriptionAndClear()")
 int32_t                           dxfg_DXFeed_detachSubscriptionAndClear(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_subscription_t *sub);
 
 /**
@@ -260,6 +284,8 @@ int32_t                           dxfg_DXFeed_detachSubscriptionAndClear(graal_i
  *
  * Java: `DXFeed.getLastEventIfSubscribed(Class, Object)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getLastEventIfSubscribed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the event, a lasting one.
@@ -267,6 +293,7 @@ int32_t                           dxfg_DXFeed_detachSubscriptionAndClear(graal_i
  * @return The new event (release it with dxfg_EventType_release()), or NULL if there is no subscription for the event
  * class and symbol, or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEventIfSubscribed()")
 dxfg_event_type_t*                dxfg_DXFeed_getLastEventIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
 
 /**
@@ -284,6 +311,8 @@ dxfg_event_type_t*                dxfg_DXFeed_getLastEventIfSubscribed(graal_iso
  *
  * Java: `DXFeed.getIndexedEventsIfSubscribed(Class, Object, IndexedEventSource)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getIndexedEventsIfSubscribed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the events, an indexed one.
@@ -294,6 +323,7 @@ dxfg_event_type_t*                dxfg_DXFeed_getLastEventIfSubscribed(graal_iso
  * @return The new list of new events (release it with dxfg_CList_EventType_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getIndexedEventsIfSubscribed()")
 dxfg_event_type_list*             dxfg_DXFeed_getIndexedEventsIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, const char *source);
 
 /**
@@ -311,6 +341,8 @@ dxfg_event_type_list*             dxfg_DXFeed_getIndexedEventsIfSubscribed(graal
  *
  * Java: `DXFeed.getTimeSeriesIfSubscribed(Class, Object, long, long)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getTimeSeriesIfSubscribed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the events, a time series one.
@@ -322,6 +354,7 @@ dxfg_event_type_list*             dxfg_DXFeed_getIndexedEventsIfSubscribed(graal
  * @return The new list of new events (release it with dxfg_CList_EventType_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getTimeSeriesIfSubscribed()")
 dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, int64_t from_time, int64_t to_time);
 
 /**
@@ -329,7 +362,7 @@ dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_is
  *
  * See dxfg_DXFeed_getLastEvent2() for what the last event is and when it is available.
  *
- * @deprecated Use dxfg_DXFeed_getLastEvent2(). This function writes the result into the given event: it frees the
+ * @deprecated Use dxfg_v4_DXFeed_getLastEvent(). This function writes the result into the given event: it frees the
  * strings of the event with the SDK's allocator and writes the strings allocated by the SDK there. So the event must be
  * created by dxfg_EventType_new() (or come from the SDK) and be freed by dxfg_EventType_release(); an event allocated
  * by the caller leaks the SDK's strings or corrupts memory. When the last event is not available, the event keeps the
@@ -345,14 +378,14 @@ dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_is
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-DXFG_DEPRECATED("use dxfg_DXFeed_getLastEvent2(), it does not write into the given event")
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEvent(), it does not write into the given event")
 int32_t                           dxfg_DXFeed_getLastEvent(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_t *event);
 
 /**
  * @brief The bulk version of dxfg_DXFeed_getLastEvent(): fills every event of the list.
  *
- * @deprecated Use dxfg_DXFeed_getLastEvents2(), see dxfg_DXFeed_getLastEvent() for the reasons. Every event of the list
- * must be created by dxfg_EventType_new(). The list must not be NULL.
+ * @deprecated Use dxfg_v4_DXFeed_getLastEvents(), see dxfg_DXFeed_getLastEvent() for the reasons. Every event of the
+ * list must be created by dxfg_EventType_new(). The list must not be NULL.
  *
  * Java: `DXFeed.getLastEvent(LastingEvent)` for every event of the list.
  *
@@ -363,7 +396,7 @@ int32_t                           dxfg_DXFeed_getLastEvent(graal_isolatethread_t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-DXFG_DEPRECATED("use dxfg_DXFeed_getLastEvents2(), it does not write into the given events")
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEvents(), it does not write into the given events")
 int32_t                           dxfg_DXFeed_getLastEvents(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_type_list *events);
 
 /**
@@ -381,6 +414,8 @@ int32_t                           dxfg_DXFeed_getLastEvents(graal_isolatethread_
  *
  * Java: `DXFeed.getLastEvent(LastingEvent)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getLastEvent().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] event The event: its type and symbol, and the values to return when the last event is not available.
@@ -390,6 +425,7 @@ int32_t                           dxfg_DXFeed_getLastEvents(graal_isolatethread_
  * the event is NULL or of a type that is not lasting). Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEvent()")
 int32_t                           dxfg_DXFeed_getLastEvent2(graal_isolatethread_t *thread, dxfg_feed_t *feed, const dxfg_event_type_t *event, DXFG_OUT dxfg_event_type_t **lastEvent);
 
 /**
@@ -400,6 +436,8 @@ int32_t                           dxfg_DXFeed_getLastEvent2(graal_isolatethread_
  *
  * Java: `DXFeed.getLastEvents(Collection)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getLastEvents().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] events The events.
@@ -409,6 +447,7 @@ int32_t                           dxfg_DXFeed_getLastEvent2(graal_isolatethread_
  * the list or one of its events is NULL, or an event is of a type that is not lasting). Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEvents()")
 int32_t                           dxfg_DXFeed_getLastEvents2(graal_isolatethread_t *thread, dxfg_feed_t *feed, const dxfg_event_type_list *events, DXFG_OUT dxfg_event_type_list **lastEvents);
 
 /**
@@ -427,6 +466,8 @@ int32_t                           dxfg_DXFeed_getLastEvents2(graal_isolatethread
  *
  * Java: `DXFeed.getLastEventPromise(Class, Object)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getLastEventPromise().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the event, a lasting one.
@@ -435,6 +476,7 @@ int32_t                           dxfg_DXFeed_getLastEvents2(graal_isolatethread
  * dxfg_Promise_* functions as `&result->handler` (a dxfg_promise_t) and read the event with
  * dxfg_Promise_EventType_getResult(). Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEventPromise()")
 dxfg_promise_event_t*             dxfg_DXFeed_getLastEventPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol);
 
 /**
@@ -447,6 +489,8 @@ dxfg_promise_event_t*             dxfg_DXFeed_getLastEventPromise(graal_isolatet
  *
  * Java: `DXFeed.getLastEventsPromises(Class, Collection)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getLastEventsPromises().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the events, a lasting one.
@@ -456,6 +500,7 @@ dxfg_promise_event_t*             dxfg_DXFeed_getLastEventPromise(graal_isolatet
  * dxfg_CList_JavaObjectHandler_release(), passing its `list` field; that releases every promise handle), or NULL on
  * error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getLastEventsPromises()")
 dxfg_promise_list*                dxfg_DXFeed_getLastEventsPromises(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_list *symbols);
 
 /**
@@ -480,6 +525,8 @@ dxfg_promise_list*                dxfg_DXFeed_getLastEventsPromises(graal_isolat
  *
  * Java: `DXFeed.getIndexedEventsPromise(Class, Object, IndexedEventSource)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getIndexedEventsPromise().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] eventClazz The class of the events, an indexed one.
@@ -489,6 +536,7 @@ dxfg_promise_list*                dxfg_DXFeed_getLastEventsPromises(graal_isolat
  * @return The promise (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Pass it to the
  * dxfg_Promise_* functions as `&result->base`. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getIndexedEventsPromise()")
 dxfg_promise_events_t*            dxfg_DXFeed_getIndexedEventsPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, dxfg_indexed_event_source_t* source);
 
 /**
@@ -511,6 +559,8 @@ dxfg_promise_events_t*            dxfg_DXFeed_getIndexedEventsPromise(graal_isol
  *
  * Java: `DXFeed.getTimeSeriesPromise(Class, Object, long, long)`.
  *
+ * @deprecated Use dxfg_v4_DXFeed_getTimeSeriesPromise().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] feed The feed.
  * @param[in] clazz The class of the events, a time series one.
@@ -522,6 +572,7 @@ dxfg_promise_events_t*            dxfg_DXFeed_getIndexedEventsPromise(graal_isol
  * @return The promise (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Pass it to the
  * dxfg_Promise_* functions as `&result->base`. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeed_getTimeSeriesPromise()")
 dxfg_promise_events_t*            dxfg_DXFeed_getTimeSeriesPromise(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t clazz, dxfg_symbol_t *symbol, int64_t fromTime, int64_t toTime);
 
 /**
@@ -531,12 +582,15 @@ dxfg_promise_events_t*            dxfg_DXFeed_getTimeSeriesPromise(graal_isolate
  *
  * Java: `DXFeedTimeSeriesSubscription.setFromTime(long)`.
  *
+ * @deprecated Use dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The time series subscription.
  * @param[in] fromTime The time in milliseconds since 1970-01-01 00:00:00 UTC.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime()")
 int32_t                           dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t *thread, dxfg_time_series_subscription_t *sub, int64_t fromTime);
 
 /**
@@ -564,11 +618,14 @@ typedef void (*dxfg_promise_handler_function)(graal_isolatethread_t *thread, dxf
  *
  * Java: `Promise.isDone()`.
  *
+ * @deprecated Use dxfg_v4_Promise_isDone().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return 1 if the promise is done, 0 if not, or -1 on error (e.g., the promise is NULL). Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_isDone()")
 int32_t               dxfg_Promise_isDone(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -576,11 +633,14 @@ int32_t               dxfg_Promise_isDone(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `Promise.hasResult()`.
  *
+ * @deprecated Use dxfg_v4_Promise_hasResult().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return 1 if the promise has completed normally, 0 if not, or -1 on error (e.g., the promise is NULL). Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_hasResult()")
 int32_t               dxfg_Promise_hasResult(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -590,11 +650,14 @@ int32_t               dxfg_Promise_hasResult(graal_isolatethread_t *thread, dxfg
  *
  * Java: `Promise.hasException()`.
  *
+ * @deprecated Use dxfg_v4_Promise_hasException().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return 1 if the promise has completed exceptionally or was cancelled, 0 if not, or -1 on error (e.g., the promise is
  * NULL). Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_hasException()")
 int32_t               dxfg_Promise_hasException(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -602,11 +665,14 @@ int32_t               dxfg_Promise_hasException(graal_isolatethread_t *thread, d
  *
  * Java: `Promise.isCancelled()`.
  *
+ * @deprecated Use dxfg_v4_Promise_isCancelled().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return 1 if the promise was cancelled, 0 if not, or -1 on error (e.g., the promise is NULL). Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_isCancelled()")
 int32_t               dxfg_Promise_isCancelled(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -618,12 +684,15 @@ int32_t               dxfg_Promise_isCancelled(graal_isolatethread_t *thread, dx
  *
  * Java: `Promise.getResult()`.
  *
+ * @deprecated Use dxfg_v4_Promise_EventType_getResult().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise of an event.
  * @return The new event (release it with dxfg_EventType_release()), or NULL if the promise has no result (it is not
  * done, completed exceptionally or was cancelled), or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get
  * the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_EventType_getResult()")
 dxfg_event_type_t*    dxfg_Promise_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_event_t *promise);
 
 /**
@@ -636,11 +705,14 @@ dxfg_event_type_t*    dxfg_Promise_EventType_getResult(graal_isolatethread_t *th
  *
  * Java: `Promise.getResult()`.
  *
+ * @deprecated Use dxfg_v4_Promise_List_EventType_getResult().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise of a list of events.
  * @return The new list of new events (release it with dxfg_CList_EventType_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_List_EventType_getResult()")
 dxfg_event_type_list* dxfg_Promise_List_EventType_getResult(graal_isolatethread_t *thread, dxfg_promise_events_t *promise);
 
 /**
@@ -655,11 +727,14 @@ dxfg_event_type_list* dxfg_Promise_List_EventType_getResult(graal_isolatethread_
  *
  * Java: `Promise.getException()`.
  *
+ * @deprecated Use dxfg_v4_Promise_getException().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return The exception (release it with dxfg_Exception_release()), NULL if the promise has no exception, or
  * `(dxfg_exception_t *)-1` on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_getException()")
 dxfg_exception_t*     dxfg_Promise_getException(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -679,12 +754,15 @@ dxfg_exception_t*     dxfg_Promise_getException(graal_isolatethread_t *thread, d
  *
  * Java: `Promise.await()`.
  *
+ * @deprecated Use dxfg_v4_Promise_await().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) if the promise has completed normally or #DXFG_EXECUTE_FAIL (-1) if it has
  * completed exceptionally, was cancelled or the wait was interrupted. Use dxfg_get_and_clear_thread_exception_t() to
  * get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_await()")
 int32_t               dxfg_Promise_await(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -696,6 +774,8 @@ int32_t               dxfg_Promise_await(graal_isolatethread_t *thread, dxfg_pro
  *
  * Java: `Promise.await(long, TimeUnit)`.
  *
+ * @deprecated Use dxfg_v4_Promise_awaitWithTimeout().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] timeoutInMilliseconds The timeout in milliseconds.
@@ -703,6 +783,7 @@ int32_t               dxfg_Promise_await(graal_isolatethread_t *thread, dxfg_pro
  * completed exceptionally, was cancelled, the wait timed out or was interrupted. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_awaitWithTimeout()")
 int32_t               dxfg_Promise_await2(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
 
 /**
@@ -715,6 +796,8 @@ int32_t               dxfg_Promise_await2(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `Promise.awaitWithoutException(long, TimeUnit)`.
  *
+ * @deprecated Use dxfg_v4_Promise_awaitWithoutException().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] timeoutInMilliseconds The timeout in milliseconds.
@@ -722,6 +805,7 @@ int32_t               dxfg_Promise_await2(graal_isolatethread_t *thread, dxfg_pr
  * the wait timed out (the promise is cancelled), or #DXFG_EXECUTE_FAIL (-1) if the promise has completed exceptionally,
  * was cancelled or the wait was interrupted. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_awaitWithoutException()")
 int32_t               dxfg_Promise_awaitWithoutException(graal_isolatethread_t *thread, dxfg_promise_t *promise, int32_t timeoutInMilliseconds);
 
 /**
@@ -734,11 +818,14 @@ int32_t               dxfg_Promise_awaitWithoutException(graal_isolatethread_t *
  *
  * Java: `Promise.cancel()`.
  *
+ * @deprecated Use dxfg_v4_Promise_cancel().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_cancel()")
 int32_t               dxfg_Promise_cancel(graal_isolatethread_t *thread, dxfg_promise_t *promise);
 
 /**
@@ -752,12 +839,15 @@ int32_t               dxfg_Promise_cancel(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `Promise.complete(Object)`.
  *
+ * @deprecated Use dxfg_v4_Promise_List_EventType_complete().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] events The list of events, the result of the promise. A NULL list is an empty list.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_List_EventType_complete()")
 int32_t               dxfg_Promise_List_EventType_complete(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_event_type_list* events);
 
 /**
@@ -772,12 +862,15 @@ int32_t               dxfg_Promise_List_EventType_complete(graal_isolatethread_t
  *
  * Java: `Promise.complete(Object)`.
  *
+ * @deprecated Use dxfg_v4_Promise_EventType_complete().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] event The event, the result of the promise.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_EventType_complete()")
 int32_t               dxfg_Promise_EventType_complete(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_event_type_t* event);
 
 /**
@@ -789,12 +882,15 @@ int32_t               dxfg_Promise_EventType_complete(graal_isolatethread_t *thr
  *
  * Java: `Promise.completeExceptionally(Throwable)`.
  *
+ * @deprecated Use dxfg_v4_Promise_completeExceptionally().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] exception The exception.
  * @return #DXFG_EXECUTE_FAIL (-1) always in this version. Use dxfg_get_and_clear_thread_exception_t() to get the
  * exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_completeExceptionally()")
 int32_t               dxfg_Promise_completeExceptionally(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_exception_t* exception);
 
 /**
@@ -814,6 +910,8 @@ int32_t               dxfg_Promise_completeExceptionally(graal_isolatethread_t *
  *
  * Java: `Promise.whenDone(PromiseHandler)`.
  *
+ * @deprecated Use dxfg_v4_Promise_whenDone().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] promise_handler_function The function to call when the promise is done, see dxfg_promise_handler_function.
@@ -821,6 +919,7 @@ int32_t               dxfg_Promise_completeExceptionally(graal_isolatethread_t *
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_whenDone()")
 int32_t               dxfg_Promise_whenDone(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_promise_handler_function promise_handler_function, void *user_data);
 
 /**
@@ -836,6 +935,8 @@ int32_t               dxfg_Promise_whenDone(graal_isolatethread_t *thread, dxfg_
  *
  * Java: `Promise.whenDoneAsync(PromiseHandler, Executor)`.
  *
+ * @deprecated Use dxfg_v4_Promise_whenDoneAsync().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise The promise.
  * @param[in] promise_handler_function The function to call when the promise is done, see dxfg_promise_handler_function.
@@ -845,6 +946,7 @@ int32_t               dxfg_Promise_whenDone(graal_isolatethread_t *thread, dxfg_
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_whenDoneAsync()")
 int32_t               dxfg_Promise_whenDoneAsync(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_promise_handler_function promise_handler_function, void *user_data, dxfg_executor_t* executor);
 
 /**
@@ -855,6 +957,8 @@ int32_t               dxfg_Promise_whenDoneAsync(graal_isolatethread_t *thread, 
  *
  * Java: `Promise.completed(Object)`.
  *
+ * @deprecated Use dxfg_v4_Promise_completed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise A promise handle; it is not used.
  * @param[in] handler The handle of the Java object that is the result of the new promise; it is only read, the caller
@@ -862,6 +966,7 @@ int32_t               dxfg_Promise_whenDoneAsync(graal_isolatethread_t *thread, 
  * @return The new promise (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_completed()")
 dxfg_promise_t*       dxfg_Promise_completed(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_java_object_handler *handler);
 
 /**
@@ -875,12 +980,15 @@ dxfg_promise_t*       dxfg_Promise_completed(graal_isolatethread_t *thread, dxfg
  *
  * Java: `Promise.failed(Throwable)`.
  *
+ * @deprecated Use dxfg_v4_Promise_failed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promise A promise handle; it is not used.
  * @param[in] exception The exception.
  * @return The new promise (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promise_failed()")
 dxfg_promise_t*       dxfg_Promise_failed(graal_isolatethread_t *thread, dxfg_promise_t *promise, dxfg_exception_t* exception);
 
 /**
@@ -893,11 +1001,14 @@ dxfg_promise_t*       dxfg_Promise_failed(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `Promises.allOf(Collection)`.
  *
+ * @deprecated Use dxfg_v4_Promises_allOf().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] promises The list of the promises; it is only read, the caller keeps its ownership.
  * @return The new promise (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_Promises_allOf()")
 dxfg_promise_t*       dxfg_Promises_allOf(graal_isolatethread_t *thread, dxfg_promise_list *promises);
 
 

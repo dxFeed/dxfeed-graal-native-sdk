@@ -158,6 +158,8 @@ typedef void (*dxfg_logging_listener_function_t)(graal_isolatethread_t *thread, 
  *
  * Java: `InterceptableLoggingListener.onLog(Level, long, String, long, String, String, Throwable, String)`.
  *
+ * @deprecated Use dxfg_v4_logging_listener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The listener callback.
  * @param[in] user_data The user data that will be passed to the callback; the SDK does not use it. It must stay valid
@@ -167,6 +169,7 @@ typedef void (*dxfg_logging_listener_function_t)(graal_isolatethread_t *thread, 
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_logging_listener_new()")
 int32_t dxfg_logging_listener_new(graal_isolatethread_t *thread, dxfg_logging_listener_function_t user_func,
                                   void *user_data, DXFG_OUT dxfg_logging_listener_t **listener);
 
@@ -184,11 +187,14 @@ int32_t dxfg_logging_listener_new(graal_isolatethread_t *thread, dxfg_logging_li
  *
  * Java: `InterceptableLogging.setListener(InterceptableLoggingListener)`.
  *
+ * @deprecated Use dxfg_v4_logging_set_listener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] listener The logging listener. The caller keeps its handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_logging_set_listener()")
 int32_t dxfg_logging_set_listener(graal_isolatethread_t *thread, dxfg_logging_listener_t *listener);
 
 /**
@@ -200,11 +206,14 @@ int32_t dxfg_logging_set_listener(graal_isolatethread_t *thread, dxfg_logging_li
  *
  * Java: `InterceptableLogging.setLogLevel(Level)`.
  *
+ * @deprecated Use dxfg_v4_logging_set_log_level().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] level The new logging level.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_logging_set_log_level()")
 int32_t dxfg_logging_set_log_level(graal_isolatethread_t *thread, dxfg_logging_level_t level);
 
 /**
@@ -217,11 +226,14 @@ int32_t dxfg_logging_set_log_level(graal_isolatethread_t *thread, dxfg_logging_l
  *
  * Java: `InterceptableLogging.setErrLevel(Level)`.
  *
+ * @deprecated Use dxfg_v4_logging_set_err_level().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] level The new logging level.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_logging_set_err_level()")
 int32_t dxfg_logging_set_err_level(graal_isolatethread_t *thread, dxfg_logging_level_t level);
 
 /** @} */ // end of Logging

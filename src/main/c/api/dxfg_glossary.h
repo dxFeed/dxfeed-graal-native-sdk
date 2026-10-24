@@ -175,6 +175,8 @@ typedef struct dxfg_price_increments_t {
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_EMPTY().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] emptyAdditionalUnderlyings The pointer to result's handle (an empty additional underlyings
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#EMPTY)
@@ -182,6 +184,7 @@ typedef struct dxfg_price_increments_t {
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the additional underlyings handle.
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_EMPTY()")
 int32_t dxfg_AdditionalUnderlyings_EMPTY(graal_isolatethread_t *thread,
                                          DXFG_OUT dxfg_additional_underlyings_t **emptyAdditionalUnderlyings);
 
@@ -204,6 +207,8 @@ int32_t dxfg_AdditionalUnderlyings_EMPTY(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_valueOf().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] text The textual representation.
  * @param[out] additionalUnderlyings The pointer to result's handle (additional underlyings for specified
@@ -213,6 +218,7 @@ int32_t dxfg_AdditionalUnderlyings_EMPTY(graal_isolatethread_t *thread,
  * Use dxfg_JavaObjectHandler_release() to free the additional underlyings handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.lang.String-
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_valueOf()")
 int32_t dxfg_AdditionalUnderlyings_valueOf(graal_isolatethread_t *thread, const char *text,
                                            DXFG_OUT dxfg_additional_underlyings_t **additionalUnderlyings);
 
@@ -236,6 +242,8 @@ int32_t dxfg_AdditionalUnderlyings_valueOf(graal_isolatethread_t *thread, const 
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_valueOfMap().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] mapEntries The array of map entries ([string, double] pair).
  * @param[in] size A size of the array.
@@ -246,6 +254,7 @@ int32_t dxfg_AdditionalUnderlyings_valueOf(graal_isolatethread_t *thread, const 
  * Use dxfg_JavaObjectHandler_release() to free the additional underlyings handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#valueOf-java.util.Map-
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_valueOfMap()")
 int32_t dxfg_AdditionalUnderlyings_valueOf2(graal_isolatethread_t *thread,
                                             const dxfg_string_to_double_map_entry_t *mapEntries, int32_t size,
                                             DXFG_OUT dxfg_additional_underlyings_t **additionalUnderlyings);
@@ -265,6 +274,8 @@ int32_t dxfg_AdditionalUnderlyings_valueOf2(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_getSPCFromText().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] text The textual representation of the additional underlyings.
  * @param[in] symbol The symbol by which spc will be obtained.
@@ -274,6 +285,7 @@ int32_t dxfg_AdditionalUnderlyings_valueOf2(graal_isolatethread_t *thread,
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-java.lang.String-
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_getSPCFromText()")
 int32_t dxfg_AdditionalUnderlyings_getSPC(graal_isolatethread_t *thread, const char *text, const char *symbol,
                                           DXFG_OUT double *spc);
 
@@ -301,6 +313,8 @@ int32_t dxfg_AdditionalUnderlyings_getSPC(graal_isolatethread_t *thread, const c
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_getText().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] additionalUnderlyings The additional underlyings handle.
  * @param[out] text A pointer to the textual representation of the additional underlyings.
@@ -310,6 +324,7 @@ int32_t dxfg_AdditionalUnderlyings_getSPC(graal_isolatethread_t *thread, const c
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getText--
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_getText()")
 int32_t dxfg_AdditionalUnderlyings_getText(graal_isolatethread_t *thread,
                                            dxfg_additional_underlyings_t *additionalUnderlyings, DXFG_OUT char **text);
 
@@ -334,6 +349,8 @@ int32_t dxfg_AdditionalUnderlyings_getText(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_getMap().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] additionalUnderlyings The additional underlyings handle.
  * @param[out] mapEntries A pointer to the array of map entries ([string, double] pair).
@@ -344,6 +361,7 @@ int32_t dxfg_AdditionalUnderlyings_getText(graal_isolatethread_t *thread,
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getMap--
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_getMap()")
 int32_t dxfg_AdditionalUnderlyings_getMap(graal_isolatethread_t *thread,
                                           dxfg_additional_underlyings_t *additionalUnderlyings,
                                           DXFG_OUT dxfg_string_to_double_map_entry_t **mapEntries,
@@ -364,6 +382,8 @@ int32_t dxfg_AdditionalUnderlyings_getMap(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_AdditionalUnderlyings_getSPC().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] additionalUnderlyings The additional underlyings handle.
  * @param[in] symbol The symbol by which spc will be obtained.
@@ -373,6 +393,7 @@ int32_t dxfg_AdditionalUnderlyings_getMap(graal_isolatethread_t *thread,
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#getSPC-java.lang.String-
  */
+DXFG_DEPRECATED("use dxfg_v4_AdditionalUnderlyings_getSPC()")
 int32_t dxfg_AdditionalUnderlyings_getSPC2(graal_isolatethread_t *thread,
                                            dxfg_additional_underlyings_t *additionalUnderlyings, const char *symbol,
                                            DXFG_OUT double *spc);
@@ -403,6 +424,8 @@ int32_t dxfg_AdditionalUnderlyings_getSPC2(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_EMPTY().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] emptyCfi The pointer to result's handle (an empty CFI
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#EMPTY)
@@ -410,6 +433,7 @@ int32_t dxfg_AdditionalUnderlyings_getSPC2(graal_isolatethread_t *thread,
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the CFI handle.
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_EMPTY()")
 int32_t dxfg_CFI_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_cfi_t **emptyCfi);
 
 /**
@@ -430,6 +454,8 @@ int32_t dxfg_CFI_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_cfi_t **empt
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_valueOf().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] code The CFI code.
  * @param[out] cfi The pointer to result's handle (for specified CFI code)
@@ -438,6 +464,7 @@ int32_t dxfg_CFI_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_cfi_t **empt
  * Use dxfg_JavaObjectHandler_release() to free the CFI handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#valueOf-java.lang.String-
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_valueOf()")
 int32_t dxfg_CFI_valueOf(graal_isolatethread_t *thread, const char *code, DXFG_OUT dxfg_cfi_t **cfi);
 
 /**
@@ -457,6 +484,8 @@ int32_t dxfg_CFI_valueOf(graal_isolatethread_t *thread, const char *code, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_valueOfIntCode().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] intCode The integer representation of CFI code.
  * @param[out] cfi The pointer to result's handle (for specified CFI code)
@@ -465,6 +494,7 @@ int32_t dxfg_CFI_valueOf(graal_isolatethread_t *thread, const char *code, DXFG_O
  * Use dxfg_JavaObjectHandler_release() to free the CFI handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#valueOf-int-
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_valueOfIntCode()")
 int32_t dxfg_CFI_valueOf2(graal_isolatethread_t *thread, int32_t intCode, DXFG_OUT dxfg_cfi_t **cfi);
 
 /**
@@ -483,6 +513,8 @@ int32_t dxfg_CFI_valueOf2(graal_isolatethread_t *thread, int32_t intCode, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_getCode().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] code A pointer to the CFI code.
@@ -491,6 +523,7 @@ int32_t dxfg_CFI_valueOf2(graal_isolatethread_t *thread, int32_t intCode, DXFG_O
  * Use dxfg_String_release() to free the CFI code.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#getCode--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_getCode()")
 int32_t dxfg_CFI_getCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT char **code);
 
 /**
@@ -508,6 +541,8 @@ int32_t dxfg_CFI_getCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OU
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_getIntCode().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] intCode A pointer to the result.
@@ -515,6 +550,7 @@ int32_t dxfg_CFI_getCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OU
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#getIntCode--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_getIntCode()")
 int32_t dxfg_CFI_getIntCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *intCode);
 
 /**
@@ -532,6 +568,8 @@ int32_t dxfg_CFI_getIntCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_getCategory().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] category A pointer to the result.
@@ -539,6 +577,7 @@ int32_t dxfg_CFI_getIntCode(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#getCategory--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_getCategory()")
 int32_t dxfg_CFI_getCategory(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int16_t *category);
 
 /**
@@ -556,6 +595,8 @@ int32_t dxfg_CFI_getCategory(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXF
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_getGroup().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] group A pointer to the result.
@@ -563,6 +604,7 @@ int32_t dxfg_CFI_getCategory(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXF
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#getGroup--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_getGroup()")
 int32_t dxfg_CFI_getGroup(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int16_t *group);
 
 /**
@@ -579,6 +621,8 @@ int32_t dxfg_CFI_getGroup(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isEquity().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isEquity A pointer to the result.
@@ -586,6 +630,7 @@ int32_t dxfg_CFI_getGroup(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isEquity--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isEquity()")
 int32_t dxfg_CFI_isEquity(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isEquity);
 
 /**
@@ -602,6 +647,8 @@ int32_t dxfg_CFI_isEquity(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isDebtInstrument().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isDebtInstrument A pointer to the result.
@@ -609,6 +656,7 @@ int32_t dxfg_CFI_isEquity(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isDebtInstrument--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isDebtInstrument()")
 int32_t dxfg_CFI_isDebtInstrument(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isDebtInstrument);
 
 /**
@@ -625,6 +673,8 @@ int32_t dxfg_CFI_isDebtInstrument(graal_isolatethread_t *thread, dxfg_cfi_t *cfi
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isEntitlement().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isEntitlement A pointer to the result.
@@ -632,6 +682,7 @@ int32_t dxfg_CFI_isDebtInstrument(graal_isolatethread_t *thread, dxfg_cfi_t *cfi
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isEntitlement--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isEntitlement()")
 int32_t dxfg_CFI_isEntitlement(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isEntitlement);
 
 /**
@@ -648,6 +699,8 @@ int32_t dxfg_CFI_isEntitlement(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, D
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isOption().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isOption A pointer to the result.
@@ -655,6 +708,7 @@ int32_t dxfg_CFI_isEntitlement(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, D
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isOption--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isOption()")
 int32_t dxfg_CFI_isOption(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isOption);
 
 /**
@@ -671,6 +725,8 @@ int32_t dxfg_CFI_isOption(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isFuture().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isFuture A pointer to the result.
@@ -678,6 +734,7 @@ int32_t dxfg_CFI_isOption(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isFuture--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isFuture()")
 int32_t dxfg_CFI_isFuture(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isFuture);
 
 /**
@@ -694,6 +751,8 @@ int32_t dxfg_CFI_isFuture(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_isOther().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] isOther A pointer to the result.
@@ -701,6 +760,7 @@ int32_t dxfg_CFI_isFuture(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#isOther--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_isOther()")
 int32_t dxfg_CFI_isOther(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT int32_t *isOther);
 
 /**
@@ -723,6 +783,8 @@ int32_t dxfg_CFI_isOther(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OU
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_decipher().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] values A pointer to the result.
@@ -735,6 +797,7 @@ int32_t dxfg_CFI_isOther(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OU
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#decipher--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_decipher()")
 int32_t dxfg_CFI_decipher(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT dxfg_cfi_value_t **values,
                           DXFG_OUT int32_t *size);
 
@@ -758,6 +821,8 @@ int32_t dxfg_CFI_decipher(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_describe().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfi The CFI handle.
  * @param[out] description A pointer to the description.
@@ -766,6 +831,7 @@ int32_t dxfg_CFI_decipher(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * Use dxfg_String_release() to free the description.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.html#describe--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_describe()")
 int32_t dxfg_CFI_describe(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT char **description);
 
 /** @} */ // end of CFIFunctions
@@ -791,6 +857,8 @@ int32_t dxfg_CFI_describe(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Attribute_getName().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiAttribute The CFI attribute handle.
  * @param[out] name A pointer to the attribute name.
@@ -799,6 +867,7 @@ int32_t dxfg_CFI_describe(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_O
  * Use dxfg_String_release() to free the attribute name.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Attribute.html#getName--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Attribute_getName()")
 int32_t dxfg_CFI_Attribute_getName(graal_isolatethread_t *thread, dxfg_cfi_attribute_t *cfiAttribute,
                                    DXFG_OUT char **name);
 
@@ -817,6 +886,8 @@ int32_t dxfg_CFI_Attribute_getName(graal_isolatethread_t *thread, dxfg_cfi_attri
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Attribute_getDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiAttribute The CFI attribute handle.
  * @param[out] description A pointer to the attribute description.
@@ -825,6 +896,7 @@ int32_t dxfg_CFI_Attribute_getName(graal_isolatethread_t *thread, dxfg_cfi_attri
  * Use dxfg_String_release() to free the attribute description.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Attribute.html#getDescription--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Attribute_getDescription()")
 int32_t dxfg_CFI_Attribute_getDescription(graal_isolatethread_t *thread, dxfg_cfi_attribute_t *cfiAttribute,
                                           DXFG_OUT char **description);
 
@@ -845,6 +917,8 @@ int32_t dxfg_CFI_Attribute_getDescription(graal_isolatethread_t *thread, dxfg_cf
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Attribute_getValues().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiAttribute The CFI attribute handle.
  * @param[out] values A pointer to the result.
@@ -857,6 +931,7 @@ int32_t dxfg_CFI_Attribute_getDescription(graal_isolatethread_t *thread, dxfg_cf
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Attribute.html#getValues--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Attribute_getValues()")
 int32_t dxfg_CFI_Attribute_getValues(graal_isolatethread_t *thread, dxfg_cfi_attribute_t *cfiAttribute,
                                      DXFG_OUT dxfg_cfi_value_t **values, DXFG_OUT int32_t *size);
 
@@ -884,6 +959,8 @@ int32_t dxfg_CFI_Attribute_getValues(graal_isolatethread_t *thread, dxfg_cfi_att
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Value_getAttribute().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiValue The CFI value handle.
  * @param[out] attribute A pointer to the result.
@@ -892,6 +969,7 @@ int32_t dxfg_CFI_Attribute_getValues(graal_isolatethread_t *thread, dxfg_cfi_att
  * Use dxfg_JavaObjectHandler_release() to free the attribute handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Value.html#getAttribute--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Value_getAttribute()")
 int32_t dxfg_CFI_Value_getAttribute(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue,
                                     DXFG_OUT dxfg_cfi_attribute_t **attribute);
 
@@ -910,6 +988,8 @@ int32_t dxfg_CFI_Value_getAttribute(graal_isolatethread_t *thread, dxfg_cfi_valu
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Value_getCode().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiValue The CFI value handle.
  * @param[out] code A pointer to the result.
@@ -917,6 +997,7 @@ int32_t dxfg_CFI_Value_getAttribute(graal_isolatethread_t *thread, dxfg_cfi_valu
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Value.html#getCode--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Value_getCode()")
 int32_t dxfg_CFI_Value_getCode(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue, DXFG_OUT int16_t *code);
 
 /**
@@ -934,6 +1015,8 @@ int32_t dxfg_CFI_Value_getCode(graal_isolatethread_t *thread, dxfg_cfi_value_t *
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Value_getName().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiValue The CFI value handle.
  * @param[out] name A pointer to the value name.
@@ -942,6 +1025,7 @@ int32_t dxfg_CFI_Value_getCode(graal_isolatethread_t *thread, dxfg_cfi_value_t *
  * Use dxfg_String_release() to free the value name.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Value.html#getName--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Value_getName()")
 int32_t dxfg_CFI_Value_getName(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue, DXFG_OUT char **name);
 
 /**
@@ -959,6 +1043,8 @@ int32_t dxfg_CFI_Value_getName(graal_isolatethread_t *thread, dxfg_cfi_value_t *
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_CFI_Value_getDescription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] cfiValue The CFI value handle.
  * @param[out] description A pointer to the value description.
@@ -967,6 +1053,7 @@ int32_t dxfg_CFI_Value_getName(graal_isolatethread_t *thread, dxfg_cfi_value_t *
  * Use dxfg_String_release() to free the value description.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/CFI.Value.html#getDescription--
  */
+DXFG_DEPRECATED("use dxfg_v4_CFI_Value_getDescription()")
 int32_t dxfg_CFI_Value_getDescription(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue,
                                       DXFG_OUT char **description);
 
@@ -995,6 +1082,8 @@ int32_t dxfg_CFI_Value_getDescription(graal_isolatethread_t *thread, dxfg_cfi_va
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_EMPTY().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] emptyPriceIncrements The pointer to result's handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
@@ -1002,6 +1091,7 @@ int32_t dxfg_CFI_Value_getDescription(graal_isolatethread_t *thread, dxfg_cfi_va
  * Use dxfg_JavaObjectHandler_release() to free the price increments handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#EMPTY
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_EMPTY()")
 int32_t dxfg_PriceIncrements_EMPTY(graal_isolatethread_t *thread,
                                    DXFG_OUT dxfg_price_increments_t **emptyPriceIncrements);
 
@@ -1024,6 +1114,8 @@ int32_t dxfg_PriceIncrements_EMPTY(graal_isolatethread_t *thread,
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_valueOf().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] text The textual representation.
  * @param[out] priceIncrements The pointer to result's handle (price increments for specified
@@ -1033,6 +1125,7 @@ int32_t dxfg_PriceIncrements_EMPTY(graal_isolatethread_t *thread,
  * Use dxfg_JavaObjectHandler_release() to free the price increments handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-java.lang.String-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_valueOf()")
 int32_t dxfg_PriceIncrements_valueOf(graal_isolatethread_t *thread, const char *text,
                                      DXFG_OUT dxfg_price_increments_t **priceIncrements);
 
@@ -1052,6 +1145,8 @@ int32_t dxfg_PriceIncrements_valueOf(graal_isolatethread_t *thread, const char *
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_valueOfIncrement().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] increment The single increment.
  * @param[out] priceIncrements The pointer to result's handle.
@@ -1060,6 +1155,7 @@ int32_t dxfg_PriceIncrements_valueOf(graal_isolatethread_t *thread, const char *
  * Use dxfg_JavaObjectHandler_release() to free the price increments handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_valueOfIncrement()")
 int32_t dxfg_PriceIncrements_valueOf2(graal_isolatethread_t *thread, double increment,
                                       DXFG_OUT dxfg_price_increments_t **priceIncrements);
 
@@ -1082,6 +1178,8 @@ int32_t dxfg_PriceIncrements_valueOf2(graal_isolatethread_t *thread, double incr
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_valueOfIncrements().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] increments The array of increments in internal representation.
  * @param[in] size A size of the array.
@@ -1091,6 +1189,7 @@ int32_t dxfg_PriceIncrements_valueOf2(graal_isolatethread_t *thread, double incr
  * Use dxfg_JavaObjectHandler_release() to free the price increments handle.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#valueOf-double:A-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_valueOfIncrements()")
 int32_t dxfg_PriceIncrements_valueOf3(graal_isolatethread_t *thread, const double *increments, int32_t size,
                                       DXFG_OUT dxfg_price_increments_t **priceIncrements);
 
@@ -1120,6 +1219,8 @@ int32_t dxfg_PriceIncrements_valueOf3(graal_isolatethread_t *thread, const doubl
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getText().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[out] text A pointer to the textual representation of the price increments.
@@ -1129,6 +1230,7 @@ int32_t dxfg_PriceIncrements_valueOf3(graal_isolatethread_t *thread, const doubl
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getText--
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getText()")
 int32_t dxfg_PriceIncrements_getText(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                      DXFG_OUT char **text);
 
@@ -1154,6 +1256,8 @@ int32_t dxfg_PriceIncrements_getText(graal_isolatethread_t *thread, dxfg_price_i
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPriceIncrements().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[out] increments A pointer to the result.
@@ -1164,6 +1268,7 @@ int32_t dxfg_PriceIncrements_getText(graal_isolatethread_t *thread, dxfg_price_i
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrements--
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPriceIncrements()")
 int32_t dxfg_PriceIncrements_getPriceIncrements(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                 DXFG_OUT double **increments, DXFG_OUT int32_t *size);
 
@@ -1182,6 +1287,8 @@ int32_t dxfg_PriceIncrements_getPriceIncrements(graal_isolatethread_t *thread, d
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPriceIncrement().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[out] priceIncrement A pointer to the result.
@@ -1189,6 +1296,7 @@ int32_t dxfg_PriceIncrements_getPriceIncrements(graal_isolatethread_t *thread, d
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement--
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPriceIncrement()")
 int32_t dxfg_PriceIncrements_getPriceIncrement(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                DXFG_OUT double *priceIncrement);
 
@@ -1210,6 +1318,8 @@ int32_t dxfg_PriceIncrements_getPriceIncrement(graal_isolatethread_t *thread, dx
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPriceIncrementForPrice().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1218,6 +1328,7 @@ int32_t dxfg_PriceIncrements_getPriceIncrement(graal_isolatethread_t *thread, dx
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPriceIncrementForPrice()")
 int32_t dxfg_PriceIncrements_getPriceIncrement2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                 double price, DXFG_OUT double *priceIncrement);
 
@@ -1239,6 +1350,8 @@ int32_t dxfg_PriceIncrements_getPriceIncrement2(graal_isolatethread_t *thread, d
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPriceIncrementForPriceAndDirection().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1248,6 +1361,7 @@ int32_t dxfg_PriceIncrements_getPriceIncrement2(graal_isolatethread_t *thread, d
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPriceIncrement-double-int-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPriceIncrementForPriceAndDirection()")
 int32_t dxfg_PriceIncrements_getPriceIncrement3(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                 double price, int32_t direction, DXFG_OUT double *priceIncrement);
 
@@ -1266,6 +1380,8 @@ int32_t dxfg_PriceIncrements_getPriceIncrement3(graal_isolatethread_t *thread, d
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPricePrecision().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[out] pricePrecision A pointer to the result.
@@ -1273,6 +1389,7 @@ int32_t dxfg_PriceIncrements_getPriceIncrement3(graal_isolatethread_t *thread, d
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision--
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPricePrecision()")
 int32_t dxfg_PriceIncrements_getPricePrecision(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                DXFG_OUT int32_t *pricePrecision);
 
@@ -1295,6 +1412,8 @@ int32_t dxfg_PriceIncrements_getPricePrecision(graal_isolatethread_t *thread, dx
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_getPricePrecisionForPrice().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1303,6 +1422,7 @@ int32_t dxfg_PriceIncrements_getPricePrecision(graal_isolatethread_t *thread, dx
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#getPricePrecision-double-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_getPricePrecisionForPrice()")
 int32_t dxfg_PriceIncrements_getPricePrecision2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                                 double price, DXFG_OUT int32_t *pricePrecision);
 
@@ -1324,6 +1444,8 @@ int32_t dxfg_PriceIncrements_getPricePrecision2(graal_isolatethread_t *thread, d
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_roundPrice().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1332,6 +1454,7 @@ int32_t dxfg_PriceIncrements_getPricePrecision2(graal_isolatethread_t *thread, d
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_roundPrice()")
 int32_t dxfg_PriceIncrements_roundPrice(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                         double price, DXFG_OUT double *roundedPrice);
 
@@ -1353,6 +1476,8 @@ int32_t dxfg_PriceIncrements_roundPrice(graal_isolatethread_t *thread, dxfg_pric
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_roundPriceWithDirection().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1362,6 +1487,7 @@ int32_t dxfg_PriceIncrements_roundPrice(graal_isolatethread_t *thread, dxfg_pric
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-int-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_roundPriceWithDirection()")
 int32_t dxfg_PriceIncrements_roundPrice2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                          double price, int32_t direction, DXFG_OUT double *roundedPrice);
 
@@ -1383,6 +1509,8 @@ int32_t dxfg_PriceIncrements_roundPrice2(graal_isolatethread_t *thread, dxfg_pri
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_roundPriceWithRoundingMode().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1393,6 +1521,7 @@ int32_t dxfg_PriceIncrements_roundPrice2(graal_isolatethread_t *thread, dxfg_pri
  * @see
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#roundPrice-double-java.math.RoundingMode-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_roundPriceWithRoundingMode()")
 int32_t dxfg_PriceIncrements_roundPrice3(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                          double price, dxfg_rounding_mode_t roundingMode,
                                          DXFG_OUT double *roundedPrice);
@@ -1416,6 +1545,8 @@ int32_t dxfg_PriceIncrements_roundPrice3(graal_isolatethread_t *thread, dxfg_pri
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_incrementPrice().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1426,6 +1557,7 @@ int32_t dxfg_PriceIncrements_roundPrice3(graal_isolatethread_t *thread, dxfg_pri
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_incrementPrice()")
 int32_t dxfg_PriceIncrements_incrementPrice(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                             double price, int32_t direction, DXFG_OUT double *incrementedPrice);
 
@@ -1448,6 +1580,8 @@ int32_t dxfg_PriceIncrements_incrementPrice(graal_isolatethread_t *thread, dxfg_
  * // Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.
  * }
  * ```
+ * @deprecated Use dxfg_v4_PriceIncrements_incrementPriceWithStep().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] priceIncrements The price increments handle.
  * @param[in] price The price.
@@ -1459,6 +1593,7 @@ int32_t dxfg_PriceIncrements_incrementPrice(graal_isolatethread_t *thread, dxfg_
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/PriceIncrements.html#incrementPrice-double-int-double-
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceIncrements_incrementPriceWithStep()")
 int32_t dxfg_PriceIncrements_incrementPrice2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements,
                                              double price, int32_t direction, double step,
                                              DXFG_OUT double *incrementedPrice);

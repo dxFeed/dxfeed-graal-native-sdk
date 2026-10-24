@@ -193,10 +193,13 @@ typedef void (*dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t *
  *
  * Java: `DXEndpoint.newBuilder()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_newBuilder().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The builder (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_newBuilder()")
 dxfg_endpoint_builder_t*    dxfg_DXEndpoint_newBuilder(graal_isolatethread_t *thread);
 
 /**
@@ -206,12 +209,15 @@ dxfg_endpoint_builder_t*    dxfg_DXEndpoint_newBuilder(graal_isolatethread_t *th
  *
  * Java: `DXEndpoint.Builder.withRole(DXEndpoint.Role)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withRole().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] role The role of the endpoints.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withRole()")
 int32_t                     dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, dxfg_endpoint_role_t role);
 
 /**
@@ -223,12 +229,15 @@ int32_t                     dxfg_DXEndpoint_Builder_withRole(graal_isolatethread
  *
  * Java: `DXEndpoint.Builder.withName(String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withName().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] name The name, a NUL-terminated UTF-8 string; the SDK copies it.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withName()")
 int32_t                     dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *name);
 
 /**
@@ -240,6 +249,8 @@ int32_t                     dxfg_DXEndpoint_Builder_withName(graal_isolatethread
  *
  * Java: `DXEndpoint.Builder.withProperty(String, String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withProperty().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] key The name of the property, a NUL-terminated UTF-8 string; the SDK copies it.
@@ -247,6 +258,7 @@ int32_t                     dxfg_DXEndpoint_Builder_withName(graal_isolatethread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withProperty()")
 int32_t                     dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *key, const char *value);
 
 /**
@@ -258,12 +270,15 @@ int32_t                     dxfg_DXEndpoint_Builder_withProperty(graal_isolateth
  *
  * Java: `DXEndpoint.Builder.withProperties(Properties)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withProperties().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] file_path The path of the properties file, a NUL-terminated UTF-8 string; the SDK copies it.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withProperties()")
 int32_t                     dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *file_path);
 
 /**
@@ -278,6 +293,8 @@ int32_t                     dxfg_DXEndpoint_Builder_withProperties(graal_isolate
  *
  * Java: `DXEndpoint.Builder.withExecutor(Executor)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] executor The executor (e.g. from dxfg_Executors_newFixedThreadPool()) or NULL to use the default one.
@@ -285,6 +302,7 @@ int32_t                     dxfg_DXEndpoint_Builder_withProperties(graal_isolate
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withExecutor()")
 int32_t                     dxfg_DXEndpoint_Builder_withExecutor(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, dxfg_executor_t *executor);
 
 /**
@@ -294,12 +312,15 @@ int32_t                     dxfg_DXEndpoint_Builder_withExecutor(graal_isolateth
  *
  * Java: `DXEndpoint.Builder.supportsProperty(String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_supportsProperty().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @param[in] key The name of the property, a NUL-terminated UTF-8 string.
  * @return 1 if the property is supported, 0 if it is not supported, or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_supportsProperty()")
 int32_t                     dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder, const char *key);
 
 /**
@@ -311,12 +332,15 @@ int32_t                     dxfg_DXEndpoint_Builder_supportsProperty(graal_isola
  *
  * Java: `DXEndpoint.Builder.build()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_build().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The builder.
  * @return The new endpoint, or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  * The caller owns the endpoint: close it with dxfg_DXEndpoint_close() or dxfg_DXEndpoint_closeAndAwaitTermination()
  * and free its handle with dxfg_JavaObjectHandler_release() (releasing the handle does not close the endpoint).
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_build()")
 dxfg_endpoint_t*            dxfg_DXEndpoint_Builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);
 
 /** @} */ // end of Builder
@@ -332,10 +356,13 @@ dxfg_endpoint_t*            dxfg_DXEndpoint_Builder_build(graal_isolatethread_t 
  *
  * Java: `DXEndpoint.getInstance()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getInstance().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The endpoint (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getInstance()")
 dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_t *thread);
 
 /**
@@ -346,12 +373,15 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_
  *
  * Java: `DXEndpoint.create(DXEndpoint.Role)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getInstanceWithRole().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] role The role of the endpoint.
  * @return The new endpoint, or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  * The caller owns the endpoint: close it with dxfg_DXEndpoint_close() or dxfg_DXEndpoint_closeAndAwaitTermination()
  * and free its handle with dxfg_JavaObjectHandler_release().
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getInstanceWithRole()")
 dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance2(graal_isolatethread_t *thread, dxfg_endpoint_role_t role);
 
 /**
@@ -359,11 +389,14 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance2(graal_isolatethread
  *
  * Java: `DXEndpoint.create()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_create().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The new endpoint, or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  * The caller owns the endpoint: close it with dxfg_DXEndpoint_close() or dxfg_DXEndpoint_closeAndAwaitTermination()
  * and free its handle with dxfg_JavaObjectHandler_release().
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_create()")
 dxfg_endpoint_t*                dxfg_DXEndpoint_create(graal_isolatethread_t *thread);
 
 /**
@@ -371,12 +404,15 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_create(graal_isolatethread_t *th
  *
  * Java: `DXEndpoint.create(DXEndpoint.Role)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_createWithRole().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] role The role of the endpoint.
  * @return The new endpoint, or NULL on error. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  * The caller owns the endpoint: close it with dxfg_DXEndpoint_close() or dxfg_DXEndpoint_closeAndAwaitTermination()
  * and free its handle with dxfg_JavaObjectHandler_release().
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_createWithRole()")
 dxfg_endpoint_t*                dxfg_DXEndpoint_create2(graal_isolatethread_t *thread, dxfg_endpoint_role_t role);
 
 /**
@@ -391,11 +427,14 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_create2(graal_isolatethread_t *t
  *
  * Java: `DXEndpoint.close()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_close()")
 int32_t                         dxfg_DXEndpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -409,12 +448,15 @@ int32_t                         dxfg_DXEndpoint_close(graal_isolatethread_t *thr
  *
  * Java: `DXEndpoint.closeAndAwaitTermination()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_closeAndAwaitTermination().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
  * the waiting thread is interrupted). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_closeAndAwaitTermination()")
 int32_t                         dxfg_DXEndpoint_closeAndAwaitTermination(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -422,11 +464,14 @@ int32_t                         dxfg_DXEndpoint_closeAndAwaitTermination(graal_i
  *
  * Java: `DXEndpoint.getRole()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getRole().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return The role of the endpoint, or -1 on error: it is not a value of #dxfg_endpoint_role_t, so compare the result
  * with -1 before using it. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getRole()")
 dxfg_endpoint_role_t            dxfg_DXEndpoint_getRole(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -437,12 +482,15 @@ dxfg_endpoint_role_t            dxfg_DXEndpoint_getRole(graal_isolatethread_t *t
  *
  * Java: `DXEndpoint.user(String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_user().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] user The user name, a NUL-terminated UTF-8 string; the SDK copies it.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_user()")
 int32_t                         dxfg_DXEndpoint_user(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *user);
 
 /**
@@ -453,12 +501,15 @@ int32_t                         dxfg_DXEndpoint_user(graal_isolatethread_t *thre
  *
  * Java: `DXEndpoint.password(String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_password().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] password The password, a NUL-terminated UTF-8 string; the SDK copies it.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_password()")
 int32_t                         dxfg_DXEndpoint_password(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *password);
 
 /**
@@ -477,12 +528,15 @@ int32_t                         dxfg_DXEndpoint_password(graal_isolatethread_t *
  *
  * Java: `DXEndpoint.connect(String)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_connect().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] address The address of the data source, a NUL-terminated UTF-8 string; the SDK copies it.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_connect()")
 int32_t                         dxfg_DXEndpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, const char *address);
 
 /**
@@ -498,11 +552,14 @@ int32_t                         dxfg_DXEndpoint_connect(graal_isolatethread_t *t
  *
  * Java: `DXEndpoint.reconnect()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_reconnect().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_reconnect()")
 int32_t                         dxfg_DXEndpoint_reconnect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -514,11 +571,14 @@ int32_t                         dxfg_DXEndpoint_reconnect(graal_isolatethread_t 
  *
  * Java: `DXEndpoint.disconnect()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_disconnect().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_disconnect()")
 int32_t                         dxfg_DXEndpoint_disconnect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -530,11 +590,14 @@ int32_t                         dxfg_DXEndpoint_disconnect(graal_isolatethread_t
  *
  * Java: `DXEndpoint.disconnectAndClear()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_disconnectAndClear().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_disconnectAndClear()")
 int32_t                         dxfg_DXEndpoint_disconnectAndClear(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -548,12 +611,15 @@ int32_t                         dxfg_DXEndpoint_disconnectAndClear(graal_isolate
  *
  * Java: `DXEndpoint.awaitProcessed()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_awaitProcessed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
  * the waiting thread is interrupted). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_awaitProcessed()")
 int32_t                         dxfg_DXEndpoint_awaitProcessed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -569,12 +635,15 @@ int32_t                         dxfg_DXEndpoint_awaitProcessed(graal_isolatethre
  *
  * Java: `DXEndpoint.awaitNotConnected()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_awaitNotConnected().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
  * the waiting thread is interrupted). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_awaitNotConnected()")
 int32_t                         dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -582,11 +651,14 @@ int32_t                         dxfg_DXEndpoint_awaitNotConnected(graal_isolatet
  *
  * Java: `DXEndpoint.getState()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getState().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return The state of the endpoint, or -1 on error: it is not a value of #dxfg_endpoint_state_t, so compare the
  * result with -1 before using it. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getState()")
 dxfg_endpoint_state_t           dxfg_DXEndpoint_getState(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -602,12 +674,15 @@ dxfg_endpoint_state_t           dxfg_DXEndpoint_getState(graal_isolatethread_t *
  *
  * Java: `DXEndpoint.addStateChangeListener(PropertyChangeListener)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_addStateChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] listener The listener. The caller keeps its handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_addStateChangeListener()")
 int32_t                         dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_endpoint_state_change_listener_t *listener);
 
 /**
@@ -619,12 +694,15 @@ int32_t                         dxfg_DXEndpoint_addStateChangeListener(graal_iso
  *
  * Java: `DXEndpoint.removeStateChangeListener(PropertyChangeListener)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_removeStateChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] listener The listener to remove. The caller keeps its handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_removeStateChangeListener()")
 int32_t                         dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_endpoint_state_change_listener_t *listener);
 
 /**
@@ -635,11 +713,14 @@ int32_t                         dxfg_DXEndpoint_removeStateChangeListener(graal_
  *
  * Java: `DXEndpoint.getFeed()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getFeed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return The feed (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getFeed()")
 dxfg_feed_t*                    dxfg_DXEndpoint_getFeed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -650,11 +731,14 @@ dxfg_feed_t*                    dxfg_DXEndpoint_getFeed(graal_isolatethread_t *t
  *
  * Java: `DXEndpoint.getPublisher()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getPublisher().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return The publisher (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getPublisher()")
 dxfg_publisher_t*               dxfg_DXEndpoint_getPublisher(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
@@ -671,7 +755,7 @@ dxfg_publisher_t*               dxfg_DXEndpoint_getPublisher(graal_isolatethread
  *
  * Java: `DXEndpoint.executor(Executor)`.
  *
- * @deprecated Use dxfg_DXEndpoint_Builder_withExecutor(). The first call logs a deprecation warning.
+ * @deprecated Use dxfg_v4_DXEndpoint_Builder_withExecutor(). The first call logs a deprecation warning.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
@@ -680,7 +764,7 @@ dxfg_publisher_t*               dxfg_DXEndpoint_getPublisher(graal_isolatethread
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-DXFG_DEPRECATED("use dxfg_DXEndpoint_Builder_withExecutor()")
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_Builder_withExecutor()")
 int32_t                         dxfg_DXEndpoint_executor(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_executor_t *executor);
 
 /**
@@ -691,17 +775,22 @@ int32_t                         dxfg_DXEndpoint_executor(graal_isolatethread_t *
  *
  * Java: `DXEndpoint.getEventTypes()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getEventTypes().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @return The list of the supported event types (release it with dxfg_CList_EventClazz_release()), or NULL on error.
  * Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getEventTypes()")
 dxfg_event_clazz_list_t *dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
 
 /**
  * @brief Returns the aggregation period that the endpoint requests from the server.
  *
  * Java: `DXEndpoint.getRequestedAggregationPeriod()`.
+ *
+ * @deprecated Use dxfg_v4_DXEndpoint_getRequestedAggregationPeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
@@ -710,6 +799,7 @@ dxfg_event_clazz_list_t *dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *th
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `period` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getRequestedAggregationPeriod()")
 int32_t dxfg_DXEndpoint_getRequestedAggregationPeriod(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                       DXFG_OUT dxfg_time_period_t **period);
 
@@ -718,6 +808,8 @@ int32_t dxfg_DXEndpoint_getRequestedAggregationPeriod(graal_isolatethread_t *thr
  *
  * Java: `DXEndpoint.getRequestedAggregationPeriod()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getRequestedAggregationPeriodMillis().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[out] period The requested aggregation period in millis, or -1 if no period is requested. It is written on
@@ -725,6 +817,7 @@ int32_t dxfg_DXEndpoint_getRequestedAggregationPeriod(graal_isolatethread_t *thr
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `period` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getRequestedAggregationPeriodMillis()")
 int32_t dxfg_DXEndpoint_getRequestedAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                             DXFG_OUT int64_t *period);
 
@@ -737,6 +830,8 @@ int32_t dxfg_DXEndpoint_getRequestedAggregationPeriodMillis(graal_isolatethread_
  *
  * Java: `DXEndpoint.setRequestedAggregationPeriod(TimePeriod)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_setRequestedAggregationPeriod().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] period The requested aggregation period: zero (dxfg_TimePeriod_ZERO()) requests real-time delivery, NULL
@@ -746,6 +841,7 @@ int32_t dxfg_DXEndpoint_getRequestedAggregationPeriodMillis(graal_isolatethread_
  * example, when the period exceeds 24 hours). Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_setRequestedAggregationPeriod()")
 int32_t dxfg_DXEndpoint_setRequestedAggregationPeriod(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                       dxfg_time_period_t *period);
 
@@ -757,6 +853,8 @@ int32_t dxfg_DXEndpoint_setRequestedAggregationPeriod(graal_isolatethread_t *thr
  * Java: `DXEndpoint.setRequestedAggregationPeriod(TimePeriod)`, called with `TimePeriod.valueOf(long)`, or with `null`
  * for a negative period.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_setRequestedAggregationPeriodMillis().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[in] period The requested aggregation period in millis: 0 requests real-time delivery, a negative value clears
@@ -765,6 +863,7 @@ int32_t dxfg_DXEndpoint_setRequestedAggregationPeriod(graal_isolatethread_t *thr
  * example, when the period exceeds 24 hours). Use dxfg_get_and_clear_thread_exception_t() to determine if an
  * exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_setRequestedAggregationPeriodMillis()")
 int32_t dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                             int64_t period);
 
@@ -776,6 +875,8 @@ int32_t dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(graal_isolatethread_
  *
  * Java: `DXEndpoint.getAggregationPeriodInfo()`, `TimePeriodInfo.getMin()`, `TimePeriodInfo.getMax()`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_getAggregationPeriodInfo().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The endpoint.
  * @param[out] min The minimum aggregation period in millis, negative if unknown. It is written on success only.
@@ -783,6 +884,7 @@ int32_t dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(graal_isolatethread_
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `min` or `max` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getAggregationPeriodInfo()")
 int32_t dxfg_DXEndpoint_getAggregationPeriodInfo(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                  DXFG_OUT int64_t *min, DXFG_OUT int64_t *max);
 
@@ -799,6 +901,8 @@ int32_t dxfg_DXEndpoint_getAggregationPeriodInfo(graal_isolatethread_t *thread, 
  *
  * Java: `PropertyChangeListener.propertyChange(PropertyChangeEvent)`.
  *
+ * @deprecated Use dxfg_v4_PropertyChangeListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call on the state changes (see dxfg_DXEndpoint_addStateChangeListener()).
  * @param[in] user_data The user data to pass to the function; the SDK does not use it. It must stay valid until the
@@ -806,6 +910,7 @@ int32_t dxfg_DXEndpoint_getAggregationPeriodInfo(graal_isolatethread_t *thread, 
  * @return The listener (release its handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_PropertyChangeListener_new()")
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t *thread, dxfg_endpoint_state_change_listener_func user_func, void *user_data);
 
 /** @} */ // end of Endpoint

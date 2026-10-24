@@ -40,6 +40,8 @@ extern "C" {
 #include "dxfg_candlewebservice.h"
 #include "dxfg_indexed_event_tx_model.h"
 
+#include "dxfg_v4_api.h"
+
 #ifdef __cplusplus
 }
 #endif

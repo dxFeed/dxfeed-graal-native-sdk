@@ -77,12 +77,15 @@ typedef struct dxfg_observable_subscription_t {
  *
  * All callers share this publisher and its endpoint: closing the endpoint closes it for everyone in the process.
  *
+ * @deprecated Use dxfg_v4_DXPublisher_getInstance().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The publisher (release the handle with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  *
  * Java: `DXPublisher.getInstance()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXPublisher_getInstance()")
 dxfg_publisher_t*                   dxfg_DXPublisher_getInstance(graal_isolatethread_t *thread);
 
 /**
@@ -97,6 +100,8 @@ dxfg_publisher_t*                   dxfg_DXPublisher_getInstance(graal_isolateth
  * The events are serialized by the function: the list and the events are only read, the caller keeps its ownership
  * and can reuse or release them after the function returns.
  *
+ * @deprecated Use dxfg_v4_DXPublisher_publishEvents().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] publisher The publisher handle.
  * @param[in] events The events to publish.
@@ -105,6 +110,7 @@ dxfg_publisher_t*                   dxfg_DXPublisher_getInstance(graal_isolateth
  *
  * Java: `DXPublisher.publishEvents(Collection)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXPublisher_publishEvents()")
 int32_t                             dxfg_DXPublisher_publishEvents(graal_isolatethread_t *thread, dxfg_publisher_t *publisher, dxfg_event_type_list *events);
 
 /**
@@ -117,6 +123,8 @@ int32_t                             dxfg_DXPublisher_publishEvents(graal_isolate
  * the cached data is lost and the subscription appears again. On each such notification the data provider is to
  * publish the most recent events of the symbols (dxfg_DXPublisher_publishEvents()).
  *
+ * @deprecated Use dxfg_v4_DXPublisher_getSubscription().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] publisher The publisher handle.
  * @param[in] eventClazz The event type.
@@ -125,6 +133,7 @@ int32_t                             dxfg_DXPublisher_publishEvents(graal_isolate
  *
  * Java: `DXPublisher.getSubscription(Class)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXPublisher_getSubscription()")
 dxfg_observable_subscription_t*     dxfg_DXPublisher_getSubscription(graal_isolatethread_t *thread, dxfg_publisher_t *publisher, dxfg_event_clazz_t eventClazz);
 
 
@@ -133,6 +142,8 @@ dxfg_observable_subscription_t*     dxfg_DXPublisher_getSubscription(graal_isola
  *
  * The subscription of a publisher is closed when its endpoint is closed.
  *
+ * @deprecated Use dxfg_v4_ObservableSubscription_isClosed().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The observable subscription handle.
  * @return 1 if the subscription is closed, 0 if it is not, or -1 on error. Use
@@ -140,12 +151,15 @@ dxfg_observable_subscription_t*     dxfg_DXPublisher_getSubscription(graal_isola
  *
  * Java: `ObservableSubscription.isClosed()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscription_isClosed()")
 int32_t                    dxfg_ObservableSubscription_isClosed(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
 
 /**
  * Returns the event types of the observable subscription.
  *
  * The subscription of a publisher (dxfg_DXPublisher_getSubscription()) has the single event type that was requested.
+ *
+ * @deprecated Use dxfg_v4_ObservableSubscription_getEventTypes().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The observable subscription handle.
@@ -154,10 +168,13 @@ int32_t                    dxfg_ObservableSubscription_isClosed(graal_isolatethr
  *
  * Java: `ObservableSubscription.getEventTypes()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscription_getEventTypes()")
 dxfg_event_clazz_list_t*   dxfg_ObservableSubscription_getEventTypes(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
 
 /**
  * Checks whether the observable subscription contains the event type.
+ *
+ * @deprecated Use dxfg_v4_ObservableSubscription_containsEventType().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The observable subscription handle.
@@ -167,6 +184,7 @@ dxfg_event_clazz_list_t*   dxfg_ObservableSubscription_getEventTypes(graal_isola
  *
  * Java: `ObservableSubscription.containsEventType(Class)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscription_containsEventType()")
 int32_t                    dxfg_ObservableSubscription_containsEventType(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_event_clazz_t eventClazz);
 
 /**
@@ -179,6 +197,8 @@ int32_t                    dxfg_ObservableSubscription_containsEventType(graal_i
  * calls of the listener for one subscription do not overlap. Adding a listener that is already added, or to a closed
  * subscription, does nothing.
  *
+ * @deprecated Use dxfg_v4_ObservableSubscription_addChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The observable subscription handle.
  * @param[in] listener The change listener.
@@ -187,6 +207,7 @@ int32_t                    dxfg_ObservableSubscription_containsEventType(graal_i
  *
  * Java: `ObservableSubscription.addChangeListener(ObservableSubscriptionChangeListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscription_addChangeListener()")
 int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 
 /**
@@ -196,6 +217,8 @@ int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_i
  * returns. Removing a listener that is not added does nothing. To be sure that the functions of the listener are not
  * called anymore, release it (dxfg_JavaObjectHandler_release()) or deactivate it (dxfg_NativeListener_deactivate()).
  *
+ * @deprecated Use dxfg_v4_ObservableSubscription_removeChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The observable subscription handle.
  * @param[in] listener The change listener.
@@ -204,6 +227,7 @@ int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_i
  *
  * Java: `ObservableSubscription.removeChangeListener(ObservableSubscriptionChangeListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscription_removeChangeListener()")
 int32_t                    dxfg_ObservableSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 
 /** @} */ // end of Publisher

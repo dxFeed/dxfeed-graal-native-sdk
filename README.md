@@ -181,21 +181,31 @@ code with `-fomit-frame-pointer`.
   [Isolates](#isolates).
 - **Handles.** The structures with the `handler` field (`dxfg_endpoint_t`, `dxfg_subscription_t`, the listeners, etc.)
   are handles of Java objects: the Java object is not collected until its handle is released with
-  `dxfg_JavaObjectHandler_release(thread, &object->handler)`. The other structures (events, symbols, instrument
+  `dxfg_v4_JavaObjectHandler_release(thread, &object->handler)`. The other structures (events, symbols, instrument
   profiles, lists) are copies of the data of Java objects.
 - **Memory.** What a function returns belongs to the caller, who releases it with the function that its description
-  names: `dxfg_JavaObjectHandler_release` for handles, `dxfg_EventType_release` and `dxfg_CList_EventType_release`
-  for events, `dxfg_String_release` for strings, etc. What the caller passes stays the caller's: the SDK copies what it
-  needs during the call. The data passed to a callback (the events of a listener) belongs to the SDK and is released
-  when the callback returns, so copy what is needed later.
+  names: `dxfg_v4_JavaObjectHandler_release` for handles, `dxfg_v4_EventType_release` and
+  `dxfg_v4_event_type_list_release` for events, `dxfg_v4_String_release` for strings, etc. What the caller passes
+  stays the caller's: the SDK copies what it needs during the call. The data passed to a callback (the events of a
+  listener) belongs to the SDK and is released when the callback returns, so copy what is needed later.
 - **Errors.** A function that returns a pointer returns `NULL` on error, the functions that return `int32_t` return
   `DXFG_EXECUTE_SUCCESSFULLY` (0) or `DXFG_EXECUTE_FAIL` (-1), and the ones that return `int64_t` return -1 on error.
   A boolean is an `int32_t`: 1 is true, 0 is false, -1 is an error. Results that are not returned are written to the
   parameters marked `DXFG_OUT`. A failed call stores the Java exception in the calling thread:
-  `dxfg_get_and_clear_thread_exception_t` returns it (the class, the message, the stack trace and the cause) and
-  clears it, `dxfg_Exception_release` releases it.
+  `dxfg_v4_get_and_clear_thread_exception` writes it (the class, the message, the stack trace and the cause) to its
+  out parameter and clears it, `dxfg_v4_Exception_release` releases it.
 - **Deprecation.** The deprecated functions are marked `DXFG_DEPRECATED`: the compilers warn where they are used, and
-  their descriptions name the replacements.
+  their descriptions name the replacements. To build code that still uses them without the warnings, define the macro
+  empty before the headers: `#define DXFG_DEPRECATED(message)` (or disable the warning C4996 of MSVC).
+- **The v4 functions.** The `dxfg_v4_` functions (`dxfg_v4_<area>.h`, included by `dxfg_api.h`) do what the older
+  functions do in one form: they return the `int32_t` status only, write the result to the last parameter, marked
+  `DXFG_OUT`, take the exception with `dxfg_v4_get_and_clear_thread_exception`, return collections as
+  `dxfg_v4_<element>_list` and have no digit suffixes. An older function that has a v4 twin is deprecated. The rules
+  are in the "The v4 functions" group of the C API reference. The older and the v4 functions can be mixed.
+- **The v4 generation.** The `dxfg_v4_` prefix names a generation of the C API, not a release of the SDK: later
+  releases, major ones included, add functions with the same prefix. A new generation appears only when the rules of
+  the v4 functions change. It is named after the major release in which it becomes the only one: the v4 functions
+  become the only ones in 4.0.0.
 
 ### Example
 
@@ -207,13 +217,13 @@ Prints the quotes of AAPL until Enter is pressed:
 #include "dxfg_api.h"
 
 // Called on the threads of the SDK. The events are valid only during the call.
-static void printQuotes(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *userData) {
+static void printQuotes(graal_isolatethread_t *thread, dxfg_v4_event_type_list *events, void *userData) {
     (void)thread;
     (void)userData;
 
     for (int32_t i = 0; i < events->size; i++) {
         if (events->elements[i]->clazz == DXFG_EVENT_QUOTE) {
-            const dxfg_quote_t *quote = (const dxfg_quote_t *)events->elements[i];
+            const dxfg_v4_quote_t *quote = (const dxfg_v4_quote_t *)events->elements[i];
 
             printf("%s bid %g x %g, ask %g x %g\n", quote->market_event.event_symbol, quote->bid_price,
                    quote->bid_size, quote->ask_price, quote->ask_size);
@@ -223,11 +233,11 @@ static void printQuotes(graal_isolatethread_t *thread, dxfg_event_type_list *eve
 
 // Prints and releases the exception of the last failed call on this thread.
 static int printException(graal_isolatethread_t *thread) {
-    dxfg_exception_t *exception = dxfg_get_and_clear_thread_exception_t(thread);
+    dxfg_v4_exception_t *exception = NULL;
 
-    if (exception != NULL) {
+    if (dxfg_v4_get_and_clear_thread_exception(thread, &exception) == DXFG_EXECUTE_SUCCESSFULLY && exception != NULL) {
         fprintf(stderr, "%s: %s\n", exception->class_name, exception->message != NULL ? exception->message : "");
-        dxfg_Exception_release(thread, exception);
+        dxfg_v4_Exception_release(thread, exception);
     }
 
     return 1;
@@ -241,23 +251,25 @@ int main(void) {
         return 1;
     }
 
-    dxfg_endpoint_t *endpoint = dxfg_DXEndpoint_create(thread);
-    if (endpoint == NULL ||
-        dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300") != DXFG_EXECUTE_SUCCESSFULLY) {
+    dxfg_v4_endpoint_t *endpoint = NULL;
+    if (dxfg_v4_DXEndpoint_create(thread, &endpoint) != DXFG_EXECUTE_SUCCESSFULLY ||
+        dxfg_v4_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300") != DXFG_EXECUTE_SUCCESSFULLY) {
         return printException(thread);
     }
 
-    dxfg_feed_t *feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
-    dxfg_subscription_t *subscription = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
-    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &printQuotes, NULL);
-    if (feed == NULL || subscription == NULL || listener == NULL ||
-        dxfg_DXFeedSubscription_addEventListener(thread, subscription, listener) != DXFG_EXECUTE_SUCCESSFULLY) {
+    dxfg_v4_feed_t *feed = NULL;
+    dxfg_v4_subscription_t *subscription = NULL;
+    dxfg_v4_feed_event_listener_t *listener = NULL;
+    if (dxfg_v4_DXEndpoint_getFeed(thread, endpoint, &feed) != DXFG_EXECUTE_SUCCESSFULLY ||
+        dxfg_v4_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE, &subscription) != DXFG_EXECUTE_SUCCESSFULLY ||
+        dxfg_v4_DXFeedEventListener_new(thread, &printQuotes, NULL, &listener) != DXFG_EXECUTE_SUCCESSFULLY ||
+        dxfg_v4_DXFeedSubscription_addEventListener(thread, subscription, listener) != DXFG_EXECUTE_SUCCESSFULLY) {
         return printException(thread);
     }
 
     // The symbol is copied by the call, so it can be on the stack.
-    dxfg_string_symbol_t symbol = {{STRING}, "AAPL"};
-    if (dxfg_DXFeedSubscription_addSymbol(thread, subscription, &symbol.supper) != DXFG_EXECUTE_SUCCESSFULLY) {
+    dxfg_v4_string_symbol_t symbol = {{STRING}, "AAPL"};
+    if (dxfg_v4_DXFeedSubscription_addSymbol(thread, subscription, &symbol.supper) != DXFG_EXECUTE_SUCCESSFULLY) {
         return printException(thread);
     }
 
@@ -265,12 +277,12 @@ int main(void) {
     getchar();
 
     // Releasing the last handle of the listener waits for its calls in progress: no calls after it.
-    dxfg_DXFeedSubscription_close(thread, subscription);
-    dxfg_JavaObjectHandler_release(thread, &listener->handler);
-    dxfg_JavaObjectHandler_release(thread, &subscription->handler);
-    dxfg_JavaObjectHandler_release(thread, &feed->handler);
-    dxfg_DXEndpoint_close(thread, endpoint);
-    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+    dxfg_v4_DXFeedSubscription_close(thread, subscription);
+    dxfg_v4_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_v4_JavaObjectHandler_release(thread, &subscription->handler);
+    dxfg_v4_JavaObjectHandler_release(thread, &feed->handler);
+    dxfg_v4_DXEndpoint_close(thread, endpoint);
+    dxfg_v4_JavaObjectHandler_release(thread, &endpoint->handler);
 
     // Stops the endpoints that are still open, otherwise graal_tear_down_isolate waits for their threads.
     dxfg_system_close_all_and_await_termination(thread);
@@ -348,12 +360,12 @@ headers have the same include guard. The C API documentation describes both head
 ### Listeners
 
 A listener created by a `dxfg_*Listener_new` function calls its function with the user data until it is deactivated:
-when the last handle of the listener is released (`dxfg_JavaObjectHandler_release`, the clones made by
-`dxfg_JavaObjectHandler_clone` count) or by `dxfg_NativeListener_deactivate`. Both wait for the calls that are
+when the last handle of the listener is released (`dxfg_v4_JavaObjectHandler_release`, the clones made by
+`dxfg_v4_JavaObjectHandler_clone` count) or by `dxfg_v4_NativeListener_deactivate`. Both wait for the calls that are
 in progress on other threads, so the user data can be freed right after they return. Do not hold the locks that
 the listener's function takes while releasing it. A listener may be released or deactivated from its own callback.
 
-QD may call a listener once more after `dxfg_DXEndpoint_close`, `dxfg_DXFeedSubscription_close` or
+QD may call a listener once more after `dxfg_v4_DXEndpoint_close`, `dxfg_v4_DXFeedSubscription_close` or
 `dxfg_*_remove*Listener` returns, so remove the listener first and then release it. The state changes
 of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECTING`).
 
@@ -362,9 +374,9 @@ of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECT
 The threads of an open endpoint do not stop on `Thread.interrupt()`, so `graal_tear_down_isolate` waits
 for them forever while any endpoint is open. Before tearing down the isolate (or exiting the process):
 
-1. Release the listeners (or deactivate them with `dxfg_NativeListener_deactivate`).
+1. Release the listeners (or deactivate them with `dxfg_v4_NativeListener_deactivate`).
 2. Call `dxfg_system_close_all_and_await_termination`: it closes all the endpoints (including the default ones
-   of `dxfg_DXEndpoint_getInstance`, `dxfg_DXFeed_getInstance`, etc.) and instrument profile connections created
+   of `dxfg_v4_DXEndpoint_getInstance`, `dxfg_v4_DXFeed_getInstance`, etc.) and instrument profile connections created
    through the SDK and waits for the termination of the endpoints.
 3. Release the remaining handles and call `graal_tear_down_isolate`.
 

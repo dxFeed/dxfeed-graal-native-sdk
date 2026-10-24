@@ -46,6 +46,33 @@ public abstract class ListMapper<
         return nativeList;
     }
 
+    /**
+     * Checks a native list the caller passed before it is mapped: a list with a positive size has elements, and none of
+     * them is NULL. A NULL list and a list of size 0 pass.
+     *
+     * @param nativeList the native list
+     * @param name       the name of the parameter for the exception message
+     * @throws IllegalArgumentException if the elements pointer or an element is NULL
+     */
+    public static void requireNoNullElements(final CList<?> nativeList, final String name) {
+        if (nativeList.isNull() || nativeList.getSize() <= 0) {
+            return;
+        }
+
+        final CPointerPointer<?> elements = nativeList.getElements();
+
+        if (elements.isNull()) {
+            throw new IllegalArgumentException(
+                    "The `" + name + "` list of size " + nativeList.getSize() + " has a null elements pointer");
+        }
+
+        for (int i = 0; i < nativeList.getSize(); i++) {
+            if (elements.addressOf(i).read().isNull()) {
+                throw new IllegalArgumentException("The element " + i + " of the `" + name + "` list is null");
+            }
+        }
+    }
+
     public List<JavaObjectType> toJavaList(final NativeListType nativeList) {
         if (nativeList.isNull() || nativeList.getSize() == 0) {
             return Collections.emptyList();

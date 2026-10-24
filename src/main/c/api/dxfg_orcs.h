@@ -152,12 +152,15 @@ typedef struct dxfg_symbols_by_order_source_map_entry_list_t {
  *
  * Java: `new PriceLevelServiceHolder(String)` (the SDK class that wraps `RMIEndpoint` and `PriceLevelService`).
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] address The RMI endpoint's address: a UTF-8 null-terminated string; the caller keeps its ownership.
  * @param[out] service The new client (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_new()")
 int32_t dxfg_PriceLevelService_new(graal_isolatethread_t *thread, const char *address,
                                    DXFG_OUT dxfg_price_level_service_t **service);
 
@@ -172,6 +175,8 @@ int32_t dxfg_PriceLevelService_new(graal_isolatethread_t *thread, const char *ad
  *
  * Java: `PriceLevelService.getOrders(CandleSymbol, int, long, long, String)`, the order source is passed by its id.
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_getOrdersWithCaller().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
  * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
@@ -186,6 +191,7 @@ int32_t dxfg_PriceLevelService_new(graal_isolatethread_t *thread, const char *ad
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_getOrdersWithCaller()")
 int32_t dxfg_PriceLevelService_getOrders(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                          dxfg_symbol_t *candleSymbol, dxfg_indexed_event_source_t *orderSource,
                                          int64_t from, int64_t to, const char *caller,
@@ -200,6 +206,8 @@ int32_t dxfg_PriceLevelService_getOrders(graal_isolatethread_t *thread, dxfg_pri
  * Java: `PriceLevelService.getOrders(CandleSymbol, int, long, long, String)` with the caller "dxfg" (the SDK method
  * `PriceLevelServiceHolder.getOrders(CandleSymbol, OrderSource, long, long)`).
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_getOrders().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
  * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
@@ -213,6 +221,7 @@ int32_t dxfg_PriceLevelService_getOrders(graal_isolatethread_t *thread, dxfg_pri
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_getOrders()")
 int32_t dxfg_PriceLevelService_getOrders2(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                           dxfg_symbol_t *candleSymbol, dxfg_indexed_event_source_t *orderSource,
                                           int64_t from, int64_t to, DXFG_OUT dxfg_event_type_list **orders);
@@ -226,12 +235,15 @@ int32_t dxfg_PriceLevelService_getOrders2(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `PriceLevelService.getAuthOrderSource()`.
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_getAuthOrderSource().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
  * @param[out] authOrderSource The AuthOrderSource (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_getAuthOrderSource()")
 int32_t dxfg_PriceLevelService_getAuthOrderSource(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                                   DXFG_OUT dxfg_auth_order_source_t **authOrderSource);
 
@@ -241,6 +253,8 @@ int32_t dxfg_PriceLevelService_getAuthOrderSource(graal_isolatethread_t *thread,
  * The quotes are sorted in ascending order by time (see the Java documentation).
  *
  * Java: `PriceLevelService.getQuotes(CandleSymbol, long, long, String)`.
+ *
+ * @deprecated Use dxfg_v4_PriceLevelService_getQuotesWithCaller().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
@@ -254,6 +268,7 @@ int32_t dxfg_PriceLevelService_getAuthOrderSource(graal_isolatethread_t *thread,
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_getQuotesWithCaller()")
 int32_t dxfg_PriceLevelService_getQuotes(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                          dxfg_symbol_t *candleSymbol, int64_t from, int64_t to, const char *caller,
                                          DXFG_OUT dxfg_event_type_list **quotes);
@@ -266,6 +281,8 @@ int32_t dxfg_PriceLevelService_getQuotes(graal_isolatethread_t *thread, dxfg_pri
  * Java: `PriceLevelService.getQuotes(CandleSymbol, long, long, String)` with the caller "dxfg" (the SDK method
  * `PriceLevelServiceHolder.getQuotes(CandleSymbol, long, long)`).
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_getQuotes().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
  * @param[in] candleSymbol The candle symbol to request: a dxfg_candle_symbol_t (type #CANDLE); the call fails for
@@ -277,6 +294,7 @@ int32_t dxfg_PriceLevelService_getQuotes(graal_isolatethread_t *thread, dxfg_pri
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_getQuotes()")
 int32_t dxfg_PriceLevelService_getQuotes2(graal_isolatethread_t *thread, dxfg_price_level_service_t *service,
                                           dxfg_symbol_t *candleSymbol, int64_t from, int64_t to,
                                           DXFG_OUT dxfg_event_type_list **quotes);
@@ -288,11 +306,14 @@ int32_t dxfg_PriceLevelService_getQuotes2(graal_isolatethread_t *thread, dxfg_pr
  *
  * Java: `PriceLevelServiceHolder.close()` (the SDK class that closes its `RMIEndpoint`).
  *
+ * @deprecated Use dxfg_v4_PriceLevelService_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] service The PriceLevelService.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelService_close()")
 int32_t dxfg_PriceLevelService_close(graal_isolatethread_t *thread, dxfg_price_level_service_t *service);
 
 /// @} end of PriceLevelServiceFunctions
@@ -311,6 +332,8 @@ int32_t dxfg_PriceLevelService_close(graal_isolatethread_t *thread, dxfg_price_l
  *
  * Java: `AuthOrderSource.getByIds()`.
  *
+ * @deprecated Use dxfg_v4_AuthOrderSource_getByIds().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authOrderSource The AuthOrderSource.
  * @param[out] symbolsByOrderSourceIdMapEntryList The list of the entries. Release it with
@@ -318,6 +341,7 @@ int32_t dxfg_PriceLevelService_close(graal_isolatethread_t *thread, dxfg_price_l
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthOrderSource_getByIds()")
 int32_t dxfg_AuthOrderSource_getByIds(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_id_map_entry_list_t **symbolsByOrderSourceIdMapEntryList);
@@ -329,11 +353,14 @@ int32_t dxfg_AuthOrderSource_getByIds(
  *
  * Java: not applicable (the list is allocated by the SDK outside the Java heap).
  *
+ * @deprecated Use dxfg_v4_symbols_by_order_source_id_map_entry_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list of the entries that dxfg_AuthOrderSource_getByIds() returned.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_symbols_by_order_source_id_map_entry_list_release()")
 int32_t dxfg_symbols_by_order_source_id_map_entry_list_free(graal_isolatethread_t *thread,
                                                             dxfg_symbols_by_order_source_id_map_entry_list_t *list);
 
@@ -344,6 +371,8 @@ int32_t dxfg_symbols_by_order_source_id_map_entry_list_free(graal_isolatethread_
  *
  * Java: `AuthOrderSource.getByOrderSources()`.
  *
+ * @deprecated Use dxfg_v4_AuthOrderSource_getByOrderSources().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authOrderSource The AuthOrderSource.
  * @param[out] symbolsByOrderSourceMapEntryList The list of the entries. Release it with
@@ -351,6 +380,7 @@ int32_t dxfg_symbols_by_order_source_id_map_entry_list_free(graal_isolatethread_
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthOrderSource_getByOrderSources()")
 int32_t dxfg_AuthOrderSource_getByOrderSources(
     graal_isolatethread_t *thread, dxfg_auth_order_source_t *authOrderSource,
     DXFG_OUT dxfg_symbols_by_order_source_map_entry_list_t **symbolsByOrderSourceMapEntryList);
@@ -362,11 +392,14 @@ int32_t dxfg_AuthOrderSource_getByOrderSources(
  *
  * Java: not applicable (the list is allocated by the SDK outside the Java heap).
  *
+ * @deprecated Use dxfg_v4_symbols_by_order_source_map_entry_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list of the entries that dxfg_AuthOrderSource_getByOrderSources() returned.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_symbols_by_order_source_map_entry_list_release()")
 int32_t dxfg_symbols_by_order_source_map_entry_list_free(graal_isolatethread_t *thread,
                                                          dxfg_symbols_by_order_source_map_entry_list_t *list);
 
@@ -396,6 +429,8 @@ int32_t dxfg_symbols_by_order_source_map_entry_list_free(graal_isolatethread_t *
  *
  * Java: `PriceLevelChecker.validate(List, long, boolean)`.
  *
+ * @deprecated Use dxfg_v4_PriceLevelChecker_validate().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] orders The list of the orders (events that are orders, for example the list that
  * dxfg_PriceLevelService_getOrders() returned); the call fails for another kind of event. The caller keeps its
@@ -407,6 +442,7 @@ int32_t dxfg_symbols_by_order_source_map_entry_list_free(graal_isolatethread_t *
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_PriceLevelChecker_validate()")
 int32_t dxfg_PriceLevelChecker_validate(graal_isolatethread_t *thread, dxfg_event_type_list *orders,
                                         int64_t timeGapBound, int32_t /*bool*/ printQuotes, DXFG_OUT int32_t *isValid);
 

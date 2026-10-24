@@ -1,3 +1,56 @@
+* **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the
+  `int32_t` status only (`DXFG_EXECUTE_SUCCESSFULLY` or `DXFG_EXECUTE_FAIL`), writes its result to the last parameter,
+  marked `DXFG_OUT` (a NULL result means "no value", never an error), returns collections as `dxfg_v4_<element>_list`
+  with a `_release` function, and its name has no digit suffix: an overload is named by its parameters. Its types are
+  `dxfg_v4_` typedefs of the older ones, so the older and the v4 functions can be mixed. The headers are
+  `dxfg_v4_<area>.h`, all included by `dxfg_v4_api.h` and `dxfg_api.h`; the rules are in the "The v4 functions" group of
+  the C API reference. The prefix names a generation of the C API, not a release of the SDK: later releases, major
+  ones included, keep it until these rules change. This release adds the twins of:
+  * `dxfg_free()` (`dxfg_common.h`) and the functions of `dxfg_javac.h`, `dxfg_catch_exception.h`, `dxfg_endpoint.h`,
+    `dxfg_feed.h`, `dxfg_subscription.h`, `dxfg_publisher.h` and `dxfg_events.h`, e.g.
+    `dxfg_v4_get_and_clear_thread_exception()`, `dxfg_v4_JavaObjectHandler_release()`,
+    `dxfg_v4_DXEndpoint_createWithRole()`, `dxfg_v4_DXEndpoint_getState()` (writes the enum value),
+    `dxfg_v4_Promise_getException()` (no `(dxfg_exception_t *)-1` marker) and `dxfg_v4_promise_list_release()`.
+  * The functions of `dxfg_ipf.h`: the instrument profiles are read, iterated and given to a collector as structures
+    (`dxfg_v4_instrument_profile_data_t`, the older `dxfg_instrument_profile2_t`) in
+    `dxfg_v4_instrument_profile_data_list`, e.g. `dxfg_v4_InstrumentProfileReader_readFromFile()`,
+    `dxfg_v4_Iterable_InstrumentProfile_next()`, `dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles()`. The
+    forms with profile handles keep a suffix (`dxfg_v4_InstrumentProfileReader_readFromFileAsHandles()`,
+    `dxfg_v4_Iterable_InstrumentProfile_nextHandle()`,
+    `dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandles()`).
+  * The functions of `dxfg_schedule.h`: `dxfg_v4_Schedule_getInstance()` takes an instrument profile structure,
+    `dxfg_v4_Schedule_getInstanceByProfileHandle()` a handle and `dxfg_v4_Schedule_getInstanceByDefinition()` a
+    definition string; a day or a session that is not found is written as NULL. `dxfg_v4_session_list_release()`
+    releases the sessions of a list together with the list, `dxfg_v4_session_list_wrapper_release()` the list only.
+  * The functions of `dxfg_glossary.h`: the arrays with a size become lists, `dxfg_v4_double_list` (the price
+    increments), `dxfg_v4_string_to_double_map_entry_list` (the map of additional underlyings) and
+    `dxfg_v4_cfi_value_list` (the values of a CFI code).
+  * The functions of `dxfg_event_model.h`, `dxfg_indexed_event_tx_model.h`, `dxfg_ondemand.h`, `dxfg_orcs.h`,
+    `dxfg_candlewebservice.h`, `dxfg_subscription_controller.h`, `dxfg_logging.h`, `dxfg_system.h` and `dxfg_qds.h`,
+    e.g. `dxfg_v4_OrderBookModel_getFilter()` (writes the enum value), `dxfg_v4_system_get_property()` (a missing
+    property is written as NULL), `dxfg_v4_OnDemandService_getInstanceByEndpoint()`,
+    `dxfg_v4_OnDemandService_replayWithSpeed()`, `dxfg_v4_PriceLevelService_getOrdersWithCaller()` and
+    `dxfg_v4_symbols_by_order_source_map_entry_list_release()`. A function that already has the v4 form gets a twin with
+    the `dxfg_v4_` name and types.
+* **\[MDAPI-458]\[GRAAL]** **Deprecated:** `dxfg_free()` and the functions of `dxfg_javac.h`, `dxfg_catch_exception.h`,
+  `dxfg_endpoint.h`, `dxfg_feed.h`, `dxfg_subscription.h`, `dxfg_publisher.h`, `dxfg_events.h`, `dxfg_ipf.h`,
+  `dxfg_schedule.h`, `dxfg_glossary.h`, `dxfg_event_model.h`, `dxfg_indexed_event_tx_model.h`, `dxfg_ondemand.h`,
+  `dxfg_orcs.h`, `dxfg_candlewebservice.h`, `dxfg_subscription_controller.h`, `dxfg_logging.h`, `dxfg_system.h` and
+  `dxfg_qds.h`: each one is marked `DXFG_DEPRECATED` and names its v4 twin. The instrument profile forms with an array
+  and a size, `dxfg_free_strings()` and `dxfg_free_string_to_double_map_entries()` have no twin: their deprecation names
+  the list function or the release function of the list. They work as before and are removed in 4.0.0.
+* **\[MDAPI-458]\[GRAAL]** The build checks that the C API headers declare the functions that the library exports, with
+  the same numbers of parameters, that every older function is marked `DXFG_DEPRECATED` in favour of declared `dxfg_v4_`
+  functions, that `dxfg_v4_api.h` includes every `dxfg_v4_*.h` and that `dxfg_api.h` includes `dxfg_v4_api.h`
+  (`-Dapi.headers.check.skip=true` skips it).
+
+### For integrators
+
+* Code that calls a deprecated function gets a compiler warning (C4996 with MSVC, `-Wdeprecated-declarations` with GCC
+  and Clang), an error with `-Werror` or `/WX`. Move the call to the v4 twin, or silence the warning: define the macro
+  empty before the headers are included (`#define DXFG_DEPRECATED(message)`, or `-DDXFG_DEPRECATED(message)=` with GCC
+  and Clang), or disable C4996 with `/wd4996`.
+
 ## v3.11.0
 
 * **\[MDAPI-453]\[GRAAL]** New functions for the Java API of QDS 3.326–3.351:

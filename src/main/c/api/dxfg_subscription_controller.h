@@ -62,6 +62,8 @@ typedef struct dxfg_subscription_controller_t {
  * The attached subscription receives the events of the feed. It can be attached to several feeds at the same time,
  * but this is rarely necessary and is not recommended.
  *
+ * @deprecated Use dxfg_v4_SubscriptionController_attach().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
  * @param[in] feed The feed to attach to.
@@ -72,11 +74,14 @@ typedef struct dxfg_subscription_controller_t {
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/SubscriptionController.html#attach-com.dxfeed.api.DXFeed-
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_attach()")
 int32_t dxfg_SubscriptionController_attach(graal_isolatethread_t *thread,
                                            dxfg_subscription_controller_t *subscriptionController, dxfg_feed_t *feed);
 
 /**
  * Detaches the underlying subscription from the specified feed.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_detach().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -88,12 +93,15 @@ int32_t dxfg_SubscriptionController_attach(graal_isolatethread_t *thread,
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/SubscriptionController.html#detach-com.dxfeed.api.DXFeed-
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_detach()")
 int32_t dxfg_SubscriptionController_detach(graal_isolatethread_t *thread,
                                            dxfg_subscription_controller_t *subscriptionController, dxfg_feed_t *feed);
 
 /**
  * Returns maximum number of events in the single notification of the listener.
  * This is not a strict guarantee, some implementations may exceed the limit.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_getEventsBatchLimit().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -105,6 +113,7 @@ int32_t dxfg_SubscriptionController_detach(graal_isolatethread_t *thread,
  *
  * Java: `SubscriptionController.getEventsBatchLimit()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_getEventsBatchLimit()")
 int32_t dxfg_SubscriptionController_getEventsBatchLimit(graal_isolatethread_t *thread,
                                                         dxfg_subscription_controller_t *subscriptionController,
                                                         DXFG_OUT int32_t *eventsBatchLimit);
@@ -112,6 +121,8 @@ int32_t dxfg_SubscriptionController_getEventsBatchLimit(graal_isolatethread_t *t
 /**
  * Sets maximum number of events in the single notification of the listener.
  * This is not a strict guarantee, some implementations may exceed the limit.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_setEventsBatchLimit().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -123,12 +134,15 @@ int32_t dxfg_SubscriptionController_getEventsBatchLimit(graal_isolatethread_t *t
  *
  * Java: `SubscriptionController.setEventsBatchLimit(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_setEventsBatchLimit()")
 int32_t dxfg_SubscriptionController_setEventsBatchLimit(graal_isolatethread_t *thread,
                                                         dxfg_subscription_controller_t *subscriptionController,
                                                         int32_t eventsBatchLimit);
 
 /**
  * Returns the aggregation period for data for this underlying subscription.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_getAggregationPeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -141,6 +155,7 @@ int32_t dxfg_SubscriptionController_setEventsBatchLimit(graal_isolatethread_t *t
  *
  * Java: `SubscriptionController.getAggregationPeriod()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_getAggregationPeriod()")
 int32_t dxfg_SubscriptionController_getAggregationPeriod(graal_isolatethread_t *thread,
                                                          dxfg_subscription_controller_t *subscriptionController,
                                                          DXFG_OUT dxfg_time_period_t **aggregationPeriod);
@@ -150,6 +165,8 @@ int32_t dxfg_SubscriptionController_getAggregationPeriod(graal_isolatethread_t *
  *
  * The function fails if no aggregation period was set (the Java side throws a `NullPointerException`): use
  * dxfg_SubscriptionController_getAggregationPeriod(), which gives NULL in this case.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_getAggregationPeriodMillis().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -161,6 +178,7 @@ int32_t dxfg_SubscriptionController_getAggregationPeriod(graal_isolatethread_t *
  *
  * Java: `SubscriptionController.getAggregationPeriod()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_getAggregationPeriodMillis()")
 int32_t dxfg_SubscriptionController_getAggregationPeriodMillis(graal_isolatethread_t *thread,
                                                                dxfg_subscription_controller_t *subscriptionController,
                                                                DXFG_OUT int64_t *aggregationPeriod);
@@ -169,6 +187,8 @@ int32_t dxfg_SubscriptionController_getAggregationPeriodMillis(graal_isolatethre
  * Sets the aggregation period for data that limits the rate of data notifications.
  * For example, setting the value to `0.1s` limits notification to once every 100ms (at most 10 per second).
  * The new aggregation period will take effect during the next iteration of data notification.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_setAggregationPeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -180,6 +200,7 @@ int32_t dxfg_SubscriptionController_getAggregationPeriodMillis(graal_isolatethre
  *
  * Java: `SubscriptionController.setAggregationPeriod(TimePeriod)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_setAggregationPeriod()")
 int32_t dxfg_SubscriptionController_setAggregationPeriod(graal_isolatethread_t *thread,
                                                          dxfg_subscription_controller_t *subscriptionController,
                                                          dxfg_time_period_t *aggregationPeriod);
@@ -188,6 +209,8 @@ int32_t dxfg_SubscriptionController_setAggregationPeriod(graal_isolatethread_t *
  * Sets the aggregation period for data that limits the rate of data notifications.
  * For example, setting the value to `100` limits notification to once every 100ms (at most 10 per second).
  * The new aggregation period will take effect during the next iteration of data notification.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_setAggregationPeriodMillis().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -198,12 +221,15 @@ int32_t dxfg_SubscriptionController_setAggregationPeriod(graal_isolatethread_t *
  *
  * Java: `SubscriptionController.setAggregationPeriod(TimePeriod)`, called with `TimePeriod.valueOf(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_setAggregationPeriodMillis()")
 int32_t dxfg_SubscriptionController_setAggregationPeriodMillis(graal_isolatethread_t *thread,
                                                                dxfg_subscription_controller_t *subscriptionController,
                                                                int64_t aggregationPeriod);
 
 /**
  * Returns executor for processing event notifications on this underlying subscription.
+ *
+ * @deprecated Use dxfg_v4_SubscriptionController_getExecutor().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
@@ -215,6 +241,7 @@ int32_t dxfg_SubscriptionController_setAggregationPeriodMillis(graal_isolatethre
  *
  * Java: `SubscriptionController.getExecutor()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_getExecutor()")
 int32_t dxfg_SubscriptionController_getExecutor(graal_isolatethread_t *thread,
                                                 dxfg_subscription_controller_t *subscriptionController,
                                                 DXFG_OUT dxfg_executor_t **executor);
@@ -225,6 +252,8 @@ int32_t dxfg_SubscriptionController_getExecutor(graal_isolatethread_t *thread,
  * The controller does not take the handle of the executor: release it with dxfg_JavaObjectHandler_release() when it
  * is no longer needed.
  *
+ * @deprecated Use dxfg_v4_SubscriptionController_setExecutor().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.
  * @param[in] executor The executor for processing event notifications on this underlying subscription.
@@ -234,6 +263,7 @@ int32_t dxfg_SubscriptionController_getExecutor(graal_isolatethread_t *thread,
  *
  * Java: `SubscriptionController.setExecutor(Executor)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_SubscriptionController_setExecutor()")
 int32_t dxfg_SubscriptionController_setExecutor(graal_isolatethread_t *thread,
                                                 dxfg_subscription_controller_t *subscriptionController,
                                                 dxfg_executor_t *executor);

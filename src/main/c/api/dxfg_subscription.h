@@ -125,6 +125,8 @@ typedef void (*dxfg_feed_event_listener_function)(graal_isolatethread_t *thread,
  * The subscription is not attached to any feed: attach it with dxfg_DXFeedSubscription_attach(). The event type
  * cannot be changed later.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventClazz The event type.
  * @return The subscription (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -132,6 +134,7 @@ typedef void (*dxfg_feed_event_listener_function)(graal_isolatethread_t *thread,
  *
  * Java: `DXFeedSubscription(Class)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_new()")
 dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t *thread, dxfg_event_clazz_t eventClazz);
 
 /**
@@ -140,6 +143,8 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t *thr
  * The subscription is not attached to any feed: attach it with dxfg_DXFeedSubscription_attach(). The event types
  * cannot be changed later. The list must not be empty.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_newWithEventTypes().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventClazzes The event types. The list is only read: the caller keeps its ownership.
  * @return The subscription (release it with dxfg_JavaObjectHandler_release()), or NULL on error (for example, for
@@ -147,6 +152,7 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t *thr
  *
  * Java: `DXFeedSubscription(Class...)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_newWithEventTypes()")
 dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *thread, dxfg_event_clazz_list_t *eventClazzes);
 
 /**
@@ -154,6 +160,8 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *th
  *
  * The controller manages the same subscription: attaching to feeds, the batch limit, the aggregation period and the
  * executor (see the group @ref SubscriptionController).
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getSubscriptionController().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -165,6 +173,7 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *th
  *
  * Java: `DXFeedSubscription.getSubscriptionController()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getSubscriptionController()")
 int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT dxfg_subscription_controller_t **subscriptionController);
 
 /**
@@ -172,6 +181,8 @@ int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graa
  *
  * The attached subscription receives the events of the feed for its symbols. It can be attached to several feeds at
  * the same time, but it cannot be known which feed an event came from.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_attach().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -181,12 +192,15 @@ int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graa
  *
  * Java: `DXFeedSubscription.attach(DXFeed)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_attach()")
 int32_t                   dxfg_DXFeedSubscription_attach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed);
 
 /**
  * Detaches the subscription from the specified feed.
  *
  * The subscription keeps its symbols and listeners, but does not receive the events of this feed any more.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_detach().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -196,10 +210,13 @@ int32_t                   dxfg_DXFeedSubscription_attach(graal_isolatethread_t *
  *
  * Java: `DXFeedSubscription.detach(DXFeed)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_detach()")
 int32_t                   dxfg_DXFeedSubscription_detach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed);
 
 /**
  * Checks whether the subscription is closed (see dxfg_DXFeedSubscription_close()).
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_isClosed().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -208,6 +225,7 @@ int32_t                   dxfg_DXFeedSubscription_detach(graal_isolatethread_t *
  *
  * Java: `DXFeedSubscription.isClosed()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_isClosed()")
 int32_t                   dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -222,6 +240,8 @@ int32_t                   dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t
  * function is not called anymore, release the listener (dxfg_JavaObjectHandler_release()) or deactivate it
  * (dxfg_NativeListener_deactivate()).
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_close().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
@@ -229,10 +249,13 @@ int32_t                   dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t
  *
  * Java: `DXFeedSubscription.close()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_close()")
 int32_t                   dxfg_DXFeedSubscription_close(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
  * Returns the event types of the subscription.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getEventTypes().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -241,10 +264,13 @@ int32_t                   dxfg_DXFeedSubscription_close(graal_isolatethread_t *t
  *
  * Java: `DXFeedSubscription.getEventTypes()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getEventTypes()")
 dxfg_event_clazz_list_t*  dxfg_DXFeedSubscription_getEventTypes(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
  * Checks whether the subscription contains the event type.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_containsEventType().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -254,12 +280,15 @@ dxfg_event_clazz_list_t*  dxfg_DXFeedSubscription_getEventTypes(graal_isolatethr
  *
  * Java: `DXFeedSubscription.containsEventType(Class)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_containsEventType()")
 int32_t                   dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_event_clazz_t eventClazz);
 
 /**
  * Clears the set of the subscribed symbols.
  *
  * It is the same as setting an empty list of symbols with dxfg_DXFeedSubscription_setSymbols().
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_clear().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -268,6 +297,7 @@ int32_t                   dxfg_DXFeedSubscription_containsEventType(graal_isolat
  *
  * Java: `DXFeedSubscription.clear()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_clear()")
 int32_t                   dxfg_DXFeedSubscription_clear(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -276,6 +306,8 @@ int32_t                   dxfg_DXFeedSubscription_clear(graal_isolatethread_t *t
  * For a time series subscription these are the original symbols, without the time of the subscription (see
  * dxfg_DXFeedSubscription_getDecoratedSymbols()). The list is a copy of the symbols at the moment of the call.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getSymbols().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @return The list of the symbols (release it with dxfg_CList_symbol_release()), or NULL on error. Use
@@ -283,6 +315,7 @@ int32_t                   dxfg_DXFeedSubscription_clear(graal_isolatethread_t *t
  *
  * Java: `DXFeedSubscription.getSymbols()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getSymbols()")
 dxfg_symbol_list*         dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -292,6 +325,8 @@ dxfg_symbol_list*         dxfg_DXFeedSubscription_getSymbols(graal_isolatethread
  * (dxfg_time_series_subscription_symbol_t); for any other subscription the result is the same as of
  * dxfg_DXFeedSubscription_getSymbols(). The list is a copy of the symbols at the moment of the call.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getDecoratedSymbols().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @return The list of the symbols (release it with dxfg_CList_symbol_release()), or NULL on error. Use
@@ -299,6 +334,7 @@ dxfg_symbol_list*         dxfg_DXFeedSubscription_getSymbols(graal_isolatethread
  *
  * Java: `DXFeedSubscription.getDecoratedSymbols()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getDecoratedSymbols()")
 dxfg_symbol_list*         dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -306,6 +342,8 @@ dxfg_symbol_list*         dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isol
  *
  * The event listeners receive the last events of the symbols that were added. The change listeners are notified of
  * the added and removed symbols on the calling thread before the function returns.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setSymbol().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -315,6 +353,7 @@ dxfg_symbol_list*         dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isol
  *
  * Java: `DXFeedSubscription.setSymbols(Object...)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setSymbol()")
 int32_t                   dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_t *symbol);
 
 /**
@@ -324,6 +363,8 @@ int32_t                   dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_
  * the added and removed symbols on the calling thread before the function returns. Prefer this function to
  * dxfg_DXFeedSubscription_setSymbol() for several symbols.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setSymbols().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @param[in] symbols The symbols. The list is only read: the caller keeps its ownership.
@@ -332,6 +373,7 @@ int32_t                   dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_
  *
  * Java: `DXFeedSubscription.setSymbols(Collection)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setSymbols()")
 int32_t                   dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_list *symbols);
 
 /**
@@ -339,6 +381,8 @@ int32_t                   dxfg_DXFeedSubscription_setSymbols(graal_isolatethread
  *
  * The event listeners receive the last event of the symbol. The change listeners are notified of the added symbol
  * on the calling thread before the function returns.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_addSymbol().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -348,6 +392,7 @@ int32_t                   dxfg_DXFeedSubscription_setSymbols(graal_isolatethread
  *
  * Java: `DXFeedSubscription.addSymbols(Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_addSymbol()")
 int32_t                   dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_t *symbol);
 
 /**
@@ -357,6 +402,8 @@ int32_t                   dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_
  * the added symbols on the calling thread before the function returns. Prefer this function to
  * dxfg_DXFeedSubscription_addSymbol() for several symbols.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_addSymbols().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @param[in] symbols The symbols. The list is only read: the caller keeps its ownership.
@@ -365,12 +412,15 @@ int32_t                   dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_
  *
  * Java: `DXFeedSubscription.addSymbols(Collection)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_addSymbols()")
 int32_t                   dxfg_DXFeedSubscription_addSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_list *symbols);
 
 /**
  * Removes the symbol from the set of the subscribed symbols.
  *
  * The change listeners are notified of the removed symbol on the calling thread before the function returns.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_removeSymbol().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -380,6 +430,7 @@ int32_t                   dxfg_DXFeedSubscription_addSymbols(graal_isolatethread
  *
  * Java: `DXFeedSubscription.removeSymbols(Object...)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_removeSymbol()")
 int32_t                   dxfg_DXFeedSubscription_removeSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_t *symbol);
 
 /**
@@ -387,6 +438,8 @@ int32_t                   dxfg_DXFeedSubscription_removeSymbol(graal_isolatethre
  *
  * The change listeners are notified of the removed symbols on the calling thread before the function returns. Prefer
  * this function to dxfg_DXFeedSubscription_removeSymbol() for several symbols.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_removeSymbols().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -396,10 +449,13 @@ int32_t                   dxfg_DXFeedSubscription_removeSymbol(graal_isolatethre
  *
  * Java: `DXFeedSubscription.removeSymbols(Collection)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_removeSymbols()")
 int32_t                   dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_symbol_list *symbols);
 
 /**
  * Returns the executor that processes the event notifications of the subscription.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getExecutor().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -409,6 +465,7 @@ int32_t                   dxfg_DXFeedSubscription_removeSymbols(graal_isolatethr
  *
  * Java: `DXFeedSubscription.getExecutor()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getExecutor()")
 dxfg_executor_t*          dxfg_DXFeedSubscription_getExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -416,6 +473,8 @@ dxfg_executor_t*          dxfg_DXFeedSubscription_getExecutor(graal_isolatethrea
  *
  * The event listeners of the subscription are called by the threads of this executor. The subscription does not
  * take the handle of the executor: release it with dxfg_JavaObjectHandler_release() when it is no longer needed.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setExecutor().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -425,10 +484,13 @@ dxfg_executor_t*          dxfg_DXFeedSubscription_getExecutor(graal_isolatethrea
  *
  * Java: `DXFeedSubscription.setExecutor(Executor)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setExecutor()")
 int32_t                   dxfg_DXFeedSubscription_setExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_executor_t *executor);
 
 /**
  * Returns the aggregation period for data of this subscription.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getAggregationPeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -438,6 +500,7 @@ int32_t                   dxfg_DXFeedSubscription_setExecutor(graal_isolatethrea
  *
  * Java: `DXFeedSubscription.getAggregationPeriod()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getAggregationPeriod()")
 dxfg_time_period_t*       dxfg_DXFeedSubscription_getAggregationPeriod(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -445,6 +508,8 @@ dxfg_time_period_t*       dxfg_DXFeedSubscription_getAggregationPeriod(graal_iso
  *
  * The function fails if no aggregation period was set (the Java side throws a `NullPointerException`): use
  * dxfg_DXFeedSubscription_getAggregationPeriod(), which returns NULL in this case.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getAggregationPeriodMillis().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -455,6 +520,7 @@ dxfg_time_period_t*       dxfg_DXFeedSubscription_getAggregationPeriod(graal_iso
  *
  * Java: `DXFeedSubscription.getAggregationPeriod()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getAggregationPeriodMillis()")
 int32_t  dxfg_DXFeedSubscription_getAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT int64_t *aggregationPeriod);
 
 /**
@@ -463,6 +529,8 @@ int32_t  dxfg_DXFeedSubscription_getAggregationPeriodMillis(graal_isolatethread_
  * The period limits the rate of the notifications of the event listeners. The new period takes effect only after the
  * current one elapses. The effective period is the maximum of this period and the global aggregation period of the
  * endpoint.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setAggregationPeriod().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -475,6 +543,7 @@ int32_t  dxfg_DXFeedSubscription_getAggregationPeriodMillis(graal_isolatethread_
  *
  * Java: `DXFeedSubscription.setAggregationPeriod(TimePeriod)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setAggregationPeriod()")
 int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_time_period_t *period);
 
 /**
@@ -483,6 +552,8 @@ int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_iso
  * notification. For example, if the current aggregation period is 5 seconds, and it is changed to 1 second, the next
  * notification may come after up to 5 seconds, after which the new aggregation period will take effect. The
  * effective period is the maximum of this period and the global aggregation period of the endpoint.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setAggregationPeriodMillis().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -493,6 +564,7 @@ int32_t                   dxfg_DXFeedSubscription_setAggregationPeriod(graal_iso
  *
  * Java: `DXFeedSubscription.setAggregationPeriod(TimePeriod)`, called with `TimePeriod.valueOf(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setAggregationPeriodMillis()")
 int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int64_t aggregationPeriod);
 
 /**
@@ -503,6 +575,8 @@ int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t
  *
  * Java: `DXFeedSubscription.getAggregationPeriodInfo()`, `TimePeriodInfo.getMin()`, `TimePeriodInfo.getMax()`.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getAggregationPeriodInfo().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @param[out] min The minimum aggregation period in millis, negative if unknown. It is written on success only.
@@ -510,6 +584,7 @@ int32_t dxfg_DXFeedSubscription_setAggregationPeriodMillis(graal_isolatethread_t
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `min` or `max` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getAggregationPeriodInfo()")
 int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
                                                          DXFG_OUT int64_t *min, DXFG_OUT int64_t *max);
 
@@ -520,12 +595,15 @@ int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo(graal_isolatethread_t *
  *
  * Java: `DXFeedSubscription.getTotalDroppedEvents()`.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @param[out] droppedEvents The number of the dropped events. It is written on success only.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `droppedEvents` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents()")
 int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
                                                       DXFG_OUT int64_t *droppedEvents);
 
@@ -535,6 +613,8 @@ int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents(graal_isolatethread_t *thr
  * The listener calls the function with the events that the subscription receives, see
  * dxfg_feed_event_listener_function for the thread of the call and the ownership of the events. Add the listener to
  * a subscription with dxfg_DXFeedSubscription_addEventListener().
+ *
+ * @deprecated Use dxfg_v4_DXFeedEventListener_new().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user_func The function to call with the received events.
@@ -546,6 +626,7 @@ int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents(graal_isolatethread_t *thr
  *
  * Java: `DXFeedEventListener` (eventsReceived(List)).
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedEventListener_new()")
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t *thread, dxfg_feed_event_listener_function user_func, void *user_data);
 
 /**
@@ -556,6 +637,8 @@ dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t *
  * dxfg_JavaObjectHandler_release() when it is no longer needed. Adding a listener to a closed subscription does
  * nothing.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_addEventListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription.
  * @param[in] listener The listener.
@@ -564,6 +647,7 @@ dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t *
  *
  * Java: `DXFeedSubscription.addEventListener(DXFeedEventListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_addEventListener()")
 int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);
 
 /**
@@ -573,6 +657,8 @@ int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolate
  * returns. Release the listener (dxfg_JavaObjectHandler_release()) or deactivate it (dxfg_NativeListener_deactivate())
  * to be sure that its function is not called anymore.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_removeEventListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription.
  * @param[in] listener The listener.
@@ -581,6 +667,7 @@ int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolate
  *
  * Java: `DXFeedSubscription.removeEventListener(DXFeedEventListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_removeEventListener()")
 int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_event_listener_t *listener);
 
 /**
@@ -592,6 +679,8 @@ int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isol
  * of every change on the thread that changes the subscription. The calls of the listener for one subscription do not
  * overlap. Adding a listener that is already added, or to a closed subscription, does nothing.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_addChangeListener().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @param[in] listener The change listener.
@@ -600,6 +689,7 @@ int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isol
  *
  * Java: `DXFeedSubscription.addChangeListener(ObservableSubscriptionChangeListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_addChangeListener()")
 int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 
 /**
@@ -607,6 +697,8 @@ int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolat
  *
  * If the listener was added, it is notified of the removal (its `subscriptionClosed` function) on the calling thread
  * before the function returns. Removing a listener that is not added does nothing.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_removeChangeListener().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -616,6 +708,7 @@ int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolat
  *
  * Java: `DXFeedSubscription.removeChangeListener(ObservableSubscriptionChangeListener)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_removeChangeListener()")
 int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
 
 /**
@@ -624,6 +717,8 @@ int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_iso
  * It is not a strict guarantee: the notification may exceed the limit. 0 means the optimal limit (the default),
  * INT32_MAX means the maximum limit.
  *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getEventsBatchLimit().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
  * @return The events batch limit, or -1 on error (a valid limit is never negative). Use
@@ -631,6 +726,7 @@ int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_iso
  *
  * Java: `DXFeedSubscription.getEventsBatchLimit()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getEventsBatchLimit()")
 int32_t                   dxfg_DXFeedSubscription_getEventsBatchLimit(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
 
 /**
@@ -638,6 +734,8 @@ int32_t                   dxfg_DXFeedSubscription_getEventsBatchLimit(graal_isol
  *
  * It is not a strict guarantee: the notification may exceed the limit. 0 means the optimal limit (the default),
  * INT32_MAX means the maximum limit.
+ *
+ * @deprecated Use dxfg_v4_DXFeedSubscription_setEventsBatchLimit().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -648,6 +746,7 @@ int32_t                   dxfg_DXFeedSubscription_getEventsBatchLimit(graal_isol
  *
  * Java: `DXFeedSubscription.setEventsBatchLimit(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_setEventsBatchLimit()")
 int32_t                   dxfg_DXFeedSubscription_setEventsBatchLimit(graal_isolatethread_t *thread, dxfg_subscription_t *sub, int32_t eventsBatchLimit);
 
 /** @} */ // end of Subscription

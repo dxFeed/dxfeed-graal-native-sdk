@@ -1234,6 +1234,8 @@ typedef struct dxfg_event_clazz_list_t {
  * For #CANDLE the string is parsed as a candle symbol (an invalid string is an error) and the symbol of the created
  * structure is its normalized string form. For #WILDCARD the string is ignored.
  *
+ * @deprecated Use dxfg_v4_Symbol_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] symbol The symbol: a UTF-8 null-terminated string.
  * @param[in] symbolType The type of the symbol to create.
@@ -1242,16 +1244,20 @@ typedef struct dxfg_event_clazz_list_t {
  *
  * Java: `CandleSymbol.valueOf(String)` for #CANDLE, `WildcardSymbol.ALL` for #WILDCARD.
  */
+DXFG_DEPRECATED("use dxfg_v4_Symbol_new()")
 dxfg_symbol_t *dxfg_Symbol_new(graal_isolatethread_t *thread, const char *symbol, dxfg_symbol_type_t symbolType);
 
 /**
  * Releases a symbol: frees the structure, its strings and the nested symbols and sources. Passing NULL does nothing.
+ *
+ * @deprecated Use dxfg_v4_Symbol_release().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] symbol The symbol created by dxfg_Symbol_new() or returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Symbol_release()")
 int32_t dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t *symbol);
 
 /**
@@ -1260,6 +1266,8 @@ int32_t dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t *symbol
  * The event has the given `clazz` and event symbol (a copy of the string), all the other fields are zero (not NaN
  * and not the defaults of the Java event). Fill the fields, then pass the event to a function that needs it.
  *
+ * @deprecated Use dxfg_v4_EventType_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] symbolName The event symbol: a UTF-8 null-terminated string. For #DXFG_EVENT_CANDLE and
  * #DXFG_EVENT_DAILY_CANDLE it is the string form of a candle symbol.
@@ -1267,6 +1275,7 @@ int32_t dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t *symbol
  * @return The event (release it with dxfg_EventType_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_EventType_new()")
 dxfg_event_type_t *dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
 
 /**
@@ -1275,22 +1284,28 @@ dxfg_event_type_t *dxfg_EventType_new(graal_isolatethread_t *thread, const char 
  * Use it for the events created by dxfg_EventType_new() and for the events that the SDK returns to the caller as a
  * result. Do not release an event that the SDK passed to a listener: the SDK frees it after the listener returns.
  *
+ * @deprecated Use dxfg_v4_EventType_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventType The event to release.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_EventType_release()")
 int32_t dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t *eventType);
 
 /**
  * Releases a list of events: frees the list, its array and every event of the list together with its strings.
  * Passing NULL does nothing.
  *
+ * @deprecated Use dxfg_v4_event_type_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventTypes The list of events returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_event_type_list_release()")
 int32_t dxfg_CList_EventType_release(
     graal_isolatethread_t *thread,
     dxfg_event_type_list *eventTypes);
@@ -1298,11 +1313,14 @@ int32_t dxfg_CList_EventType_release(
 /**
  * Releases a list of event classes: frees the list, its array and every element. Passing NULL does nothing.
  *
+ * @deprecated Use dxfg_v4_event_clazz_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventClazzes The list of event classes returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_event_clazz_list_release()")
 int32_t dxfg_CList_EventClazz_release(graal_isolatethread_t *thread,
                                       dxfg_event_clazz_list_t *eventClazzes);
 
@@ -1310,11 +1328,14 @@ int32_t dxfg_CList_EventClazz_release(graal_isolatethread_t *thread,
  * Releases a list of symbols: frees the list, its array and every symbol of the list with its strings and the nested
  * symbols and sources.
  *
+ * @deprecated Use dxfg_v4_symbol_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] symbols The list of symbols returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_symbol_list_release()")
 int32_t dxfg_CList_symbol_release(
     graal_isolatethread_t *thread,
     dxfg_symbol_list *symbols);
@@ -1327,6 +1348,8 @@ int32_t dxfg_CList_symbol_release(
  * source) and of #DXFG_EVENT_ORDER_BASE, #DXFG_EVENT_ORDER, #DXFG_EVENT_ANALYTIC_ORDER and #DXFG_EVENT_SPREAD_ORDER
  * (the source stored in the index of the order). For the events of any other class the function fails.
  *
+ * @deprecated Use dxfg_v4_IndexedEvent_getSource().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] eventType The event.
  * @return The source (release it with dxfg_IndexedEventSource_release()), or NULL on error. Use
@@ -1334,10 +1357,13 @@ int32_t dxfg_CList_symbol_release(
  *
  * Java: `IndexedEvent.getSource()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEvent_getSource()")
 dxfg_indexed_event_source_t *dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t *eventType);
 
 /**
  * Creates an event source by its name.
+ *
+ * @deprecated Use dxfg_v4_IndexedEventSource_new().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The name of the order source: a UTF-8 null-terminated string, either predefined or at most four
@@ -1347,12 +1373,15 @@ dxfg_indexed_event_source_t *dxfg_IndexedEvent_getSource(graal_isolatethread_t *
  *
  * Java: `OrderSource.valueOf(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventSource_new()")
 dxfg_indexed_event_source_t *dxfg_IndexedEventSource_new(
     graal_isolatethread_t *thread,
     const char *source);
 
 /**
  * Creates an event source by its identifier.
+ *
+ * @deprecated Use dxfg_v4_IndexedEventSource_newWithId().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sourceId The identifier of the source. If it is 0, the default source is returned, otherwise it is the
@@ -1364,6 +1393,7 @@ dxfg_indexed_event_source_t *dxfg_IndexedEventSource_new(
  *
  * Java: `OrderSource.valueOf(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventSource_newWithId()")
 int32_t dxfg_IndexedEventSource_new2(
     graal_isolatethread_t *thread,
     int32_t sourceId, DXFG_OUT dxfg_indexed_event_source_t** source);
@@ -1371,23 +1401,29 @@ int32_t dxfg_IndexedEventSource_new2(
 /**
  * Releases an event source: frees the structure and its name. Passing NULL does nothing.
  *
+ * @deprecated Use dxfg_v4_IndexedEventSource_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The source created by dxfg_IndexedEventSource_new(), dxfg_IndexedEventSource_new2() or returned by
  * the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_IndexedEventSource_release()")
 int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t *source);
 
 /**
  * Releases a list of event sources: frees the list, its array and every source of the list with its name.
  * Passing NULL does nothing.
  *
+ * @deprecated Use dxfg_v4_indexed_event_source_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list of sources returned by the SDK.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_indexed_event_source_list_release()")
 int32_t dxfg_CList_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_list* list);
 
 /**
@@ -1452,6 +1488,8 @@ typedef void (*dxfg_ObservableSubscriptionChangeListener_function_subscriptionCl
  * dxfg_JavaObjectHandler_release() (or dxfg_NativeListener_deactivate()) stops the calls: after that none of the
  * functions is called or running, and the user data can be freed.
  *
+ * @deprecated Use dxfg_v4_ObservableSubscriptionChangeListener_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] function_symbolsAdded The function called when symbols are added to the subscription.
  * @param[in] function_symbolsRemoved The function called when symbols are removed from the subscription.
@@ -1463,6 +1501,7 @@ typedef void (*dxfg_ObservableSubscriptionChangeListener_function_subscriptionCl
  *
  * Java: `ObservableSubscriptionChangeListener` (symbolsAdded(Set), symbolsRemoved(Set), subscriptionClosed()).
  */
+DXFG_DEPRECATED("use dxfg_v4_ObservableSubscriptionChangeListener_new()")
 dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
     graal_isolatethread_t *thread,
     dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,

@@ -114,10 +114,13 @@ typedef struct dxfg_exception_t {
  * Java: `JNIThreadLocalPendingException.get()` and `JNIThreadLocalPendingException.clear()` (GraalVM native image),
  * the result is converted from `Throwable`.
  *
+ * @deprecated Use dxfg_v4_get_and_clear_thread_exception().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The exception (release it with dxfg_Exception_release()), or NULL if no exception is stored for the
  * calling thread.
  */
+DXFG_DEPRECATED("use dxfg_v4_get_and_clear_thread_exception()")
 dxfg_exception_t* dxfg_get_and_clear_thread_exception_t(graal_isolatethread_t *thread);
 
 /**
@@ -128,9 +131,12 @@ dxfg_exception_t* dxfg_get_and_clear_thread_exception_t(graal_isolatethread_t *t
  *
  * Java: not applicable (the structure is allocated by the SDK outside the Java heap).
  *
+ * @deprecated Use dxfg_v4_Exception_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] exception The exception to release.
  */
+DXFG_DEPRECATED("use dxfg_v4_Exception_release()")
 void dxfg_Exception_release(graal_isolatethread_t *thread, dxfg_exception_t *exception);
 
 /** @} */ // end of Exceptions

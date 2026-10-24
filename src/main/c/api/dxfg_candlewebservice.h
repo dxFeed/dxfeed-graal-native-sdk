@@ -104,11 +104,14 @@ typedef enum dxfg_history_endpoint_format_t {
  *
  * Java: `HistoryEndpoint.newBuilder()`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_newBuilder().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] builder The new builder (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_newBuilder()")
 int32_t dxfg_HistoryEndpoint_newBuilder(graal_isolatethread_t *thread,
                                         DXFG_OUT dxfg_history_endpoint_builder_t **builder);
 
@@ -125,6 +128,8 @@ int32_t dxfg_HistoryEndpoint_newBuilder(graal_isolatethread_t *thread,
  *
  * Java: `HistoryEndpoint.getTimeSeries(Class, Object, Long, Long)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_getTimeSeries().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] endpoint The history endpoint.
  * @param[in] eventClazz The class of the events to retrieve.
@@ -137,6 +142,7 @@ int32_t dxfg_HistoryEndpoint_newBuilder(graal_isolatethread_t *thread,
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_getTimeSeries()")
 int32_t dxfg_HistoryEndpoint_getTimeSeries(graal_isolatethread_t *thread, dxfg_history_endpoint_t *endpoint,
                                            dxfg_event_clazz_t eventClazz, dxfg_symbol_t *symbol, int64_t fromTime,
                                            int64_t toTime, DXFG_OUT dxfg_event_type_list **events);
@@ -149,12 +155,15 @@ int32_t dxfg_HistoryEndpoint_getTimeSeries(graal_isolatethread_t *thread, dxfg_h
  *
  * Java: `HistoryEndpoint.Builder.withAddress(String)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withAddress().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] address The address of the service: a UTF-8 null-terminated string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withAddress()")
 int32_t dxfg_HistoryEndpoint_Builder_withAddress(graal_isolatethread_t *thread,
                                                  dxfg_history_endpoint_builder_t *builder, const char *address);
 
@@ -166,12 +175,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withAddress(graal_isolatethread_t *thread,
  *
  * Java: `HistoryEndpoint.Builder.withUserName(String)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withUserName().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] userName The user name: a UTF-8 null-terminated string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withUserName()")
 int32_t dxfg_HistoryEndpoint_Builder_withUserName(graal_isolatethread_t *thread,
                                                   dxfg_history_endpoint_builder_t *builder, const char *userName);
 
@@ -183,12 +195,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withUserName(graal_isolatethread_t *thread,
  *
  * Java: `HistoryEndpoint.Builder.withPassword(String)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withPassword().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] password The password: a UTF-8 null-terminated string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withPassword()")
 int32_t dxfg_HistoryEndpoint_Builder_withPassword(graal_isolatethread_t *thread,
                                                   dxfg_history_endpoint_builder_t *builder, const char *password);
 
@@ -200,12 +215,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withPassword(graal_isolatethread_t *thread,
  *
  * Java: `HistoryEndpoint.Builder.withAuthToken(String)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withAuthToken().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] authToken The authentication token: a UTF-8 null-terminated string.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withAuthToken()")
 int32_t dxfg_HistoryEndpoint_Builder_withAuthToken(graal_isolatethread_t *thread,
                                                    dxfg_history_endpoint_builder_t *builder, const char *authToken);
 
@@ -214,12 +232,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withAuthToken(graal_isolatethread_t *thread
  *
  * Java: `HistoryEndpoint.Builder.withCompression(HistoryEndpoint.Compression)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withCompression().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] compression The compression, see #dxfg_history_endpoint_compression_t.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withCompression()")
 int32_t dxfg_HistoryEndpoint_Builder_withCompression(graal_isolatethread_t *thread,
                                                      dxfg_history_endpoint_builder_t *builder,
                                                      dxfg_history_endpoint_compression_t compression);
@@ -229,12 +250,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withCompression(graal_isolatethread_t *thre
  *
  * Java: `HistoryEndpoint.Builder.withFormat(HistoryEndpoint.Format)`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_withFormat().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[in] format The format, see #dxfg_history_endpoint_format_t.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_withFormat()")
 int32_t dxfg_HistoryEndpoint_Builder_withFormat(graal_isolatethread_t *thread, dxfg_history_endpoint_builder_t *builder,
                                                 dxfg_history_endpoint_format_t format);
 
@@ -247,12 +271,15 @@ int32_t dxfg_HistoryEndpoint_Builder_withFormat(graal_isolatethread_t *thread, d
  *
  * Java: `HistoryEndpoint.Builder.build()`.
  *
+ * @deprecated Use dxfg_v4_HistoryEndpoint_Builder_build().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] builder The history endpoint's builder.
  * @param[out] endpoint The new endpoint (release the handle with dxfg_JavaObjectHandler_release()).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_HistoryEndpoint_Builder_build()")
 int32_t dxfg_HistoryEndpoint_Builder_build(graal_isolatethread_t *thread, dxfg_history_endpoint_builder_t *builder,
                                            DXFG_OUT dxfg_history_endpoint_t **endpoint);
 

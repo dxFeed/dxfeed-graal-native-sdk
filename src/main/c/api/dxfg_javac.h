@@ -415,6 +415,8 @@ typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user
  *
  * It does not stop the callbacks of a listener: see dxfg_NativeListener_deactivate() for that.
  *
+ * @deprecated Use dxfg_v4_Object_finalize().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] handler The handle of the object to watch.
  * @param[in] finalize The function to call.
@@ -422,6 +424,7 @@ typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_Object_finalize()")
 int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_handler *handler,
                              dxfg_finalize_function finalize, void *user_data);
 
@@ -438,11 +441,14 @@ int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_han
  * Do not hold the locks that the listener's function may take while releasing the listener: it may deadlock.
  * Releasing a listener from its own callback is allowed (the function does not wait for that call).
  *
+ * @deprecated Use dxfg_v4_JavaObjectHandler_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] handler The handle to release (e.g. `&executor->handler` for a dxfg_executor_t).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_JavaObjectHandler_release()")
 int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler);
 
 /**
@@ -455,12 +461,15 @@ int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_
  * Do not hold the locks that the listener's function may take while deactivating the listener: it may deadlock.
  * Deactivating a listener from its own callback is allowed (the function does not wait for that call).
  *
+ * @deprecated Use dxfg_v4_NativeListener_deactivate().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] listener The listener handle.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error
  * (e.g. the object is not a listener created by a `dxfg_*Listener_new` function).
  * Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_NativeListener_deactivate()")
 int32_t dxfg_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_java_object_handler *listener);
 
 /**
@@ -489,6 +498,8 @@ int32_t dxfg_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_java_
  * }
  * ```
  *
+ * @deprecated Use dxfg_v4_JavaObjectHandler_clone().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] javaObjectHandler The handle to clone; it stays valid.
  * @param[out] javaObjectHandlerClone The pointer to which the pointer to the new handle is written; must not be NULL.
@@ -496,6 +507,7 @@ int32_t dxfg_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_java_
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  * Use dxfg_JavaObjectHandler_release() to free the object clone handle.
  */
+DXFG_DEPRECATED("use dxfg_v4_JavaObjectHandler_clone()")
 int32_t dxfg_JavaObjectHandler_clone(graal_isolatethread_t *thread, dxfg_java_object_handler *javaObjectHandler,
                                      dxfg_java_object_handler **javaObjectHandlerClone);
 
@@ -510,17 +522,22 @@ int32_t dxfg_JavaObjectHandler_clone(graal_isolatethread_t *thread, dxfg_java_ob
  * dxfg_JavaObjectHandler_array_release(isolate_thread, (const dxfg_java_object_handler **)values, size);
  * ```
  *
+ * @deprecated Use dxfg_v4_JavaObjectHandler_array_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] handlersArray The array of handles. If it is NULL or `size` is 0, nothing is done.
  * @param[in] size The number of handles in the array.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_JavaObjectHandler_array_release()")
 int32_t dxfg_JavaObjectHandler_array_release(graal_isolatethread_t *thread,
                                              const dxfg_java_object_handler **handlersArray, int32_t size);
 
 /**
  * Creates a new Java Object.
+ *
+ * @deprecated Use dxfg_v4_Object_new().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] object The pointer to which the pointer to the handle of the new object is written; must not be NULL.
@@ -530,11 +547,14 @@ int32_t dxfg_JavaObjectHandler_array_release(graal_isolatethread_t *thread,
  *
  * Java: `Object()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Object_new()")
 int32_t dxfg_Object_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_java_object_handler **object);
 
 /**
  * Returns the string representation of the Java object. It works for the handle of any Java object, including the
  * typed handles (e.g. dxfg_time_zone_t, dxfg_auth_token_t).
+ *
+ * @deprecated Use dxfg_v4_Object_toString().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] object The handle of the object. A NULL handle is an error.
@@ -543,12 +563,15 @@ int32_t dxfg_Object_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_java_object
  *
  * Java: `Object.toString()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Object_toString()")
 const char *dxfg_Object_toString(graal_isolatethread_t *thread, dxfg_java_object_handler *object);
 
 /**
  * Checks whether the Java objects are equal: the handles of the same object, and the handles of the objects that are
  * equal in the sense of the Java `equals` method of the first object. Two NULL handles are equal, a NULL handle and
  * a non-NULL handle are not.
+ *
+ * @deprecated Use dxfg_v4_Object_equals().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] object The handle of the first object.
@@ -558,11 +581,14 @@ const char *dxfg_Object_toString(graal_isolatethread_t *thread, dxfg_java_object
  *
  * Java: `Objects.equals(Object, Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Object_equals()")
 int32_t dxfg_Object_equals(graal_isolatethread_t *thread, dxfg_java_object_handler *object,
                            dxfg_java_object_handler *other);
 
 /**
  * Returns the hash code of the Java object: the result of its Java `hashCode` method, or 0 for a NULL handle.
+ *
+ * @deprecated Use dxfg_v4_Object_hashCode().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] object The handle of the object.
@@ -571,12 +597,15 @@ int32_t dxfg_Object_equals(graal_isolatethread_t *thread, dxfg_java_object_handl
  *
  * Java: `Objects.hashCode(Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Object_hashCode()")
 int32_t dxfg_Object_hashCode(graal_isolatethread_t *thread, dxfg_java_object_handler *object);
 
 /**
  * Compares the Java objects by their natural order. The objects must implement the Java `Comparable` interface and
  * be comparable to each other, otherwise the function fails. The handles of the same object are equal; a NULL handle
  * is less than a non-NULL handle.
+ *
+ * @deprecated Use dxfg_v4_Comparable_compareTo().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] object The handle of the first object.
@@ -587,6 +616,7 @@ int32_t dxfg_Object_hashCode(graal_isolatethread_t *thread, dxfg_java_object_han
  *
  * Java: `Comparable.compareTo(Object)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Comparable_compareTo()")
 int32_t dxfg_Comparable_compareTo(graal_isolatethread_t *thread, dxfg_java_object_handler *object,
                                   dxfg_java_object_handler *other);
 
@@ -594,33 +624,42 @@ int32_t dxfg_Comparable_compareTo(graal_isolatethread_t *thread, dxfg_java_objec
  * Releases a list of handles that a function returned: releases every handle of the list, frees the array of the
  * elements and the list itself.
  *
+ * @deprecated Use dxfg_v4_java_object_handler_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] list The list to release. If it is NULL, nothing is done.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_java_object_handler_list_release()")
 int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list *list);
 
 /**
  * Frees a string that a function returned (e.g. dxfg_Object_toString()). Do not pass a string that is a field of
  * a structure, such as a string of an event: it is freed with the structure.
  *
+ * @deprecated Use dxfg_v4_String_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] string The string to free. If it is NULL, nothing is done.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_String_release()")
 int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string);
 
 /**
  * Releases a list of strings that a function returned: frees every string of the list, the array of the strings and
  * the list itself.
  *
+ * @deprecated Use dxfg_v4_string_list_release().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] stringList The list to release. If it is NULL, nothing is done.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_string_list_release()")
 int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list *stringList);
 
 /**
@@ -631,6 +670,8 @@ int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_lis
  * https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html for how the executor is used by the
  * listeners.
  *
+ * @deprecated Use dxfg_v4_Executors_newFixedThreadPool().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] nThreads The number of threads of the pool; must be positive.
  * @param[in] nameThreads The prefix of the names of the threads: they are named `<nameThreads>-1`,
@@ -640,6 +681,7 @@ int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_lis
  *
  * Java: `Executors.newFixedThreadPool(int, ThreadFactory)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Executors_newFixedThreadPool()")
 dxfg_executor_t *dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread, int nThreads,
                                                    const char *nameThreads);
 
@@ -648,6 +690,8 @@ dxfg_executor_t *dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread
  * threads. The SDK has no function that shuts the executor down.
  *
  * See dxfg_Executors_newFixedThreadPool() for how the listeners use the executor.
+ *
+ * @deprecated Use dxfg_v4_Executors_newScheduledThreadPool().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] nThreads The number of threads to keep in the pool, even if they are idle; must not be negative.
@@ -658,6 +702,7 @@ dxfg_executor_t *dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread
  *
  * Java: `Executors.newScheduledThreadPool(int, ThreadFactory)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_Executors_newScheduledThreadPool()")
 dxfg_executor_t *dxfg_Executors_newScheduledThreadPool(graal_isolatethread_t *thread, int nThreads,
                                                        const char *nameThreads);
 
@@ -666,10 +711,13 @@ dxfg_executor_t *dxfg_Executors_newScheduledThreadPool(graal_isolatethread_t *th
  * dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks() is called, on the thread that calls it. Use it
  * to have the calls of the listeners made on a thread of your own.
  *
+ * @deprecated Use dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The executor (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
  * dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()")
 dxfg_executor_t *dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethread_t *thread);
 
 /**
@@ -677,18 +725,23 @@ dxfg_executor_t *dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethrea
  * added by the running tasks are run as well). If a task throws an exception, the function fails and the rest of
  * the tasks stay in the queue.
  *
+ * @deprecated Use dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] executor The executor created by dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(); any other executor
  * makes the function fail.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks()")
 int32_t dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal_isolatethread_t *thread,
                                                                         dxfg_executor_t *executor);
 
 /**
  * Creates an input stream that reads the bytes of the memory block. The bytes are copied: the caller keeps the memory
  * block and may free it after the function returns.
+ *
+ * @deprecated Use dxfg_v4_ByteArrayInputStream_new().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] bytes The bytes of the stream; must point to at least `size` bytes.
@@ -698,10 +751,13 @@ int32_t dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal_is
  *
  * Java: `ByteArrayInputStream(byte[])`.
  */
+DXFG_DEPRECATED("use dxfg_v4_ByteArrayInputStream_new()")
 dxfg_input_stream_t *dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thread, const char *bytes, int32_t size);
 
 /**
  * Requests a garbage collection. It is only for testing, e.g. of the functions registered by dxfg_Object_finalize().
+ *
+ * @deprecated Use dxfg_v4_gc().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
@@ -709,19 +765,25 @@ dxfg_input_stream_t *dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thread
  *
  * Java: `System.gc()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_gc()")
 int32_t dxfg_gc(graal_isolatethread_t *thread);
 
 /**
  * Always fails: throws a Java exception (a RuntimeException "recursion" with a cause "cause", thrown several calls
  * deep, so that its stack trace has several frames). It is only for testing of dxfg_get_and_clear_thread_exception_t().
  *
+ * @deprecated Use dxfg_v4_throw_exception().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return Always NULL. Use dxfg_get_and_clear_thread_exception_t() to get the exception.
  */
+DXFG_DEPRECATED("use dxfg_v4_throw_exception()")
 dxfg_java_object_handler *dxfg_throw_exception(graal_isolatethread_t *thread);
 
 /**
  * Returns the time zone for the ID. If the ID is not known, the result is the GMT zone.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getTimeZone().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] ID The ID of the time zone, e.g. "America/New_York" or "GMT+03:00".
@@ -730,10 +792,13 @@ dxfg_java_object_handler *dxfg_throw_exception(graal_isolatethread_t *thread);
  *
  * Java: `TimeZone.getTimeZone(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getTimeZone()")
 dxfg_time_zone_t *dxfg_TimeZone_getTimeZone(graal_isolatethread_t *thread, const char *ID);
 
 /**
  * Returns the default time zone of the Java virtual machine.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getDefault().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The time zone (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -741,10 +806,13 @@ dxfg_time_zone_t *dxfg_TimeZone_getTimeZone(graal_isolatethread_t *thread, const
  *
  * Java: `TimeZone.getDefault()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getDefault()")
 dxfg_time_zone_t *dxfg_TimeZone_getDefault(graal_isolatethread_t *thread);
 
 /**
  * Returns the ID of the time zone.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getID().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -753,10 +821,13 @@ dxfg_time_zone_t *dxfg_TimeZone_getDefault(graal_isolatethread_t *thread);
  *
  * Java: `TimeZone.getID()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getID()")
 const char *dxfg_TimeZone_getID(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Returns the long name of the time zone (for the standard time) in the default locale of the Java virtual machine.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getDisplayName().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -765,11 +836,14 @@ const char *dxfg_TimeZone_getID(graal_isolatethread_t *thread, dxfg_time_zone_t 
  *
  * Java: `TimeZone.getDisplayName()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getDisplayName()")
 const char *dxfg_TimeZone_getDisplayName(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Returns the name of the time zone in the default locale of the Java virtual machine, for the standard or the
  * daylight saving time, in the long or the short style.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getDisplayNameWithStyle().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -781,12 +855,15 @@ const char *dxfg_TimeZone_getDisplayName(graal_isolatethread_t *thread, dxfg_tim
  *
  * Java: `TimeZone.getDisplayName(boolean, int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getDisplayNameWithStyle()")
 const char *dxfg_TimeZone_getDisplayName2(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, int32_t daylight,
                                           int32_t style);
 
 /**
  * Returns the amount of time to be added to the local standard time to get the local wall clock time, in
  * milliseconds. It is 0 if the time zone does not observe the daylight saving time.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getDSTSavings().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -795,10 +872,13 @@ const char *dxfg_TimeZone_getDisplayName2(graal_isolatethread_t *thread, dxfg_ti
  *
  * Java: `TimeZone.getDSTSavings()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getDSTSavings()")
 int32_t dxfg_TimeZone_getDSTSavings(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Checks whether the time zone uses the daylight saving time.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_useDaylightTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -807,11 +887,14 @@ int32_t dxfg_TimeZone_getDSTSavings(graal_isolatethread_t *thread, dxfg_time_zon
  *
  * Java: `TimeZone.useDaylightTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_useDaylightTime()")
 int32_t dxfg_TimeZone_useDaylightTime(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Checks whether the time zone is currently in the daylight saving time, or a transition from the standard time to the
  * daylight saving time occurs at any future time.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_observesDaylightTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -820,11 +903,14 @@ int32_t dxfg_TimeZone_useDaylightTime(graal_isolatethread_t *thread, dxfg_time_z
  *
  * Java: `TimeZone.observesDaylightTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_observesDaylightTime()")
 int32_t dxfg_TimeZone_observesDaylightTime(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Returns the offset of the time zone from UTC at the date, in milliseconds. If the daylight saving time is in effect
  * at the date, the offset includes the saving.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getOffset().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -834,11 +920,14 @@ int32_t dxfg_TimeZone_observesDaylightTime(graal_isolatethread_t *thread, dxfg_t
  *
  * Java: `TimeZone.getOffset(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getOffset()")
 int32_t dxfg_TimeZone_getOffset(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, int64_t date);
 
 /**
  * Returns the offset of the time zone from UTC at the local date, in milliseconds, adjusted for the daylight saving
  * time.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getOffsetByCalendarFields().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -853,11 +942,14 @@ int32_t dxfg_TimeZone_getOffset(graal_isolatethread_t *thread, dxfg_time_zone_t 
  *
  * Java: `TimeZone.getOffset(int, int, int, int, int, int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getOffsetByCalendarFields()")
 int32_t dxfg_TimeZone_getOffset2(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, int32_t era, int32_t year,
                                  int32_t month, int32_t day, int32_t dayOfWeek, int32_t milliseconds);
 
 /**
  * Returns the offset of the time zone from UTC, in milliseconds, that does not include the daylight saving time.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_getRawOffset().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -866,10 +958,13 @@ int32_t dxfg_TimeZone_getOffset2(graal_isolatethread_t *thread, dxfg_time_zone_t
  *
  * Java: `TimeZone.getRawOffset()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_getRawOffset()")
 int32_t dxfg_TimeZone_getRawOffset(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Checks whether the time zone has the same rules and offset as the other time zone (they may differ only in the ID).
+ *
+ * @deprecated Use dxfg_v4_TimeZone_hasSameRules().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -879,10 +974,13 @@ int32_t dxfg_TimeZone_getRawOffset(graal_isolatethread_t *thread, dxfg_time_zone
  *
  * Java: `TimeZone.hasSameRules(TimeZone)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_hasSameRules()")
 int32_t dxfg_TimeZone_hasSameRules(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, dxfg_time_zone_t *other);
 
 /**
  * Checks whether the date is in the daylight saving time of the time zone.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_inDaylightTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -892,10 +990,13 @@ int32_t dxfg_TimeZone_hasSameRules(graal_isolatethread_t *thread, dxfg_time_zone
  *
  * Java: `TimeZone.inDaylightTime(Date)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_inDaylightTime()")
 int32_t dxfg_TimeZone_inDaylightTime(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, int64_t date);
 
 /**
  * Sets the ID of the time zone. It changes the Java object, so all the handles of the time zone see the new ID.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_setID().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -905,11 +1006,14 @@ int32_t dxfg_TimeZone_inDaylightTime(graal_isolatethread_t *thread, dxfg_time_zo
  *
  * Java: `TimeZone.setID(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_setID()")
 int32_t dxfg_TimeZone_setID(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, const char *ID);
 
 /**
  * Sets the offset of the time zone from UTC that does not include the daylight saving time. It changes the Java
  * object, so all the handles of the time zone see the new offset.
+ *
+ * @deprecated Use dxfg_v4_TimeZone_setRawOffset().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone.
@@ -919,10 +1023,13 @@ int32_t dxfg_TimeZone_setID(graal_isolatethread_t *thread, dxfg_time_zone_t *tim
  *
  * Java: `TimeZone.setRawOffset(int)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeZone_setRawOffset()")
 int32_t dxfg_TimeZone_setRawOffset(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone, int32_t offsetMillis);
 
 /**
  * Returns the time period of zero.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_ZERO().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The time period (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -930,10 +1037,13 @@ int32_t dxfg_TimeZone_setRawOffset(graal_isolatethread_t *thread, dxfg_time_zone
  *
  * Java: `TimePeriod.ZERO`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_ZERO()")
 dxfg_time_period_t *dxfg_TimePeriod_ZERO(graal_isolatethread_t *thread);
 
 /**
  * Returns the time period of "infinity": its time is the maximum value of `int64_t` milliseconds.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_UNLIMITED().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The time period (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -941,10 +1051,13 @@ dxfg_time_period_t *dxfg_TimePeriod_ZERO(graal_isolatethread_t *thread);
  *
  * Java: `TimePeriod.UNLIMITED`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_UNLIMITED()")
 dxfg_time_period_t *dxfg_TimePeriod_UNLIMITED(graal_isolatethread_t *thread);
 
 /**
  * Returns the time period of the given number of milliseconds.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_valueOf().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] value The value in milliseconds; a negative value is an error.
@@ -953,6 +1066,7 @@ dxfg_time_period_t *dxfg_TimePeriod_UNLIMITED(graal_isolatethread_t *thread);
  *
  * Java: `TimePeriod.valueOf(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_valueOf()")
 dxfg_time_period_t *dxfg_TimePeriod_valueOf(graal_isolatethread_t *thread, int64_t value);
 
 /**
@@ -961,6 +1075,8 @@ dxfg_time_period_t *dxfg_TimePeriod_valueOf(graal_isolatethread_t *thread, int64
  * last number is the seconds; the seconds can be fractional (milliseconds precision); an omitted part is zero; the
  * string "inf" is the unlimited period.
  *
+ * @deprecated Use dxfg_v4_TimePeriod_valueOfString().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] value The string, e.g. "PT1H30M", "1d" or "0.5".
  * @return The time period (release it with dxfg_JavaObjectHandler_release()), or NULL on error (e.g. the string
@@ -968,10 +1084,13 @@ dxfg_time_period_t *dxfg_TimePeriod_valueOf(graal_isolatethread_t *thread, int64
  *
  * Java: `TimePeriod.valueOf(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_valueOfString()")
 dxfg_time_period_t *dxfg_TimePeriod_valueOf2(graal_isolatethread_t *thread, const char *value);
 
 /**
  * Returns the time period in milliseconds.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_getTime().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timePeriod The time period.
@@ -980,11 +1099,14 @@ dxfg_time_period_t *dxfg_TimePeriod_valueOf2(graal_isolatethread_t *thread, cons
  *
  * Java: `TimePeriod.getTime()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_getTime()")
 int64_t dxfg_TimePeriod_getTime(graal_isolatethread_t *thread, dxfg_time_period_t *timePeriod);
 
 /**
  * Returns the time period in whole seconds (rounded down). A period longer than about 68 years, e.g.
  * dxfg_TimePeriod_UNLIMITED(), does not fit into `int32_t`: the result is truncated to its lower 32 bits.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_getSeconds().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timePeriod The time period.
@@ -993,12 +1115,15 @@ int64_t dxfg_TimePeriod_getTime(graal_isolatethread_t *thread, dxfg_time_period_
  *
  * Java: `TimePeriod.getSeconds()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_getSeconds()")
 int32_t dxfg_TimePeriod_getSeconds(graal_isolatethread_t *thread, dxfg_time_period_t *timePeriod);
 
 /**
  * Returns the time period in nanoseconds. A period longer than about 292 years, e.g. dxfg_TimePeriod_UNLIMITED(),
  * overflows `int64_t` and gives a wrong value, which may be negative (-1000000 for the unlimited period); use
  * dxfg_TimePeriod_getTime() for such periods.
+ *
+ * @deprecated Use dxfg_v4_TimePeriod_getNanos().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timePeriod The time period.
@@ -1007,10 +1132,13 @@ int32_t dxfg_TimePeriod_getSeconds(graal_isolatethread_t *thread, dxfg_time_peri
  *
  * Java: `TimePeriod.getNanos()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimePeriod_getNanos()")
 int64_t dxfg_TimePeriod_getNanos(graal_isolatethread_t *thread, dxfg_time_period_t *timePeriod);
 
 /**
  * Returns the time format of the default time zone of the Java virtual machine.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_DEFAULT().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The time format (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -1018,10 +1146,13 @@ int64_t dxfg_TimePeriod_getNanos(graal_isolatethread_t *thread, dxfg_time_period
  *
  * Java: `TimeFormat.DEFAULT`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_DEFAULT()")
 dxfg_time_format_t *dxfg_TimeFormat_DEFAULT(graal_isolatethread_t *thread);
 
 /**
  * Returns the time format of the GMT time zone.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_GMT().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return The time format (release it with dxfg_JavaObjectHandler_release()), or NULL on error. Use
@@ -1029,11 +1160,14 @@ dxfg_time_format_t *dxfg_TimeFormat_DEFAULT(graal_isolatethread_t *thread);
  *
  * Java: `TimeFormat.GMT`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_GMT()")
 dxfg_time_format_t *dxfg_TimeFormat_GMT(graal_isolatethread_t *thread);
 
 /**
  * Returns the time format of the time zone. The format keeps a copy of the time zone: later changes of the time zone
  * do not affect it.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_getInstance().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeZone The time zone; NULL is an error.
@@ -1042,10 +1176,13 @@ dxfg_time_format_t *dxfg_TimeFormat_GMT(graal_isolatethread_t *thread);
  *
  * Java: `TimeFormat.getInstance(TimeZone)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_getInstance()")
 dxfg_time_format_t *dxfg_TimeFormat_getInstance(graal_isolatethread_t *thread, dxfg_time_zone_t *timeZone);
 
 /**
  * Returns the time format that also includes the time zone into the string of dxfg_TimeFormat_format().
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_withTimeZone().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
@@ -1054,10 +1191,13 @@ dxfg_time_format_t *dxfg_TimeFormat_getInstance(graal_isolatethread_t *thread, d
  *
  * Java: `TimeFormat.withTimeZone()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_withTimeZone()")
 dxfg_time_format_t *dxfg_TimeFormat_withTimeZone(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat);
 
 /**
  * Returns the time format that also includes the milliseconds into the string of dxfg_TimeFormat_format().
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_withMillis().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
@@ -1066,10 +1206,13 @@ dxfg_time_format_t *dxfg_TimeFormat_withTimeZone(graal_isolatethread_t *thread, 
  *
  * Java: `TimeFormat.withMillis()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_withMillis()")
 dxfg_time_format_t *dxfg_TimeFormat_withMillis(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat);
 
 /**
  * Returns the time format that produces the full ISO8601 string of `yyyy-MM-dd'T'HH:mm:ss.SSSX`.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_asFullIso().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
@@ -1078,6 +1221,7 @@ dxfg_time_format_t *dxfg_TimeFormat_withMillis(graal_isolatethread_t *thread, dx
  *
  * Java: `TimeFormat.asFullIso()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_asFullIso()")
 dxfg_time_format_t *dxfg_TimeFormat_asFullIso(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat);
 
 /**
@@ -1090,6 +1234,8 @@ dxfg_time_format_t *dxfg_TimeFormat_asFullIso(graal_isolatethread_t *thread, dxf
  *   is the current date), the time zone is `[+-]HH:mm`, `[+-]HHmm`, `[+-]HH`, `Z` or a name of a time zone. A string
  *   without a time zone is in the time zone of the time format.
  *
+ * @deprecated Use dxfg_v4_TimeFormat_parse().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
  * @param[in] value The string to parse; NULL is an error.
@@ -1098,6 +1244,7 @@ dxfg_time_format_t *dxfg_TimeFormat_asFullIso(graal_isolatethread_t *thread, dxf
  *
  * Java: `TimeFormat.parse(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_parse()")
 int64_t dxfg_TimeFormat_parse(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat, const char *value);
 
 /**
@@ -1105,6 +1252,8 @@ int64_t dxfg_TimeFormat_parse(graal_isolatethread_t *thread, dxfg_time_format_t 
  * (RFC 822, e.g. `+0300`) and the milliseconds (`.sss`) are included if the format was obtained with
  * dxfg_TimeFormat_withTimeZone() and dxfg_TimeFormat_withMillis(). The time 0 is formatted as "0". If the year of the
  * time is outside of 0001 to 9999, the result is the decimal number of the milliseconds.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_format().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
@@ -1114,10 +1263,13 @@ int64_t dxfg_TimeFormat_parse(graal_isolatethread_t *thread, dxfg_time_format_t 
  *
  * Java: `TimeFormat.format(long)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_format()")
 const char *dxfg_TimeFormat_format(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat, int64_t value);
 
 /**
  * Returns the time zone of the time format.
+ *
+ * @deprecated Use dxfg_v4_TimeFormat_getTimeZone().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] timeFormat The time format.
@@ -1126,12 +1278,15 @@ const char *dxfg_TimeFormat_format(graal_isolatethread_t *thread, dxfg_time_form
  *
  * Java: `TimeFormat.getTimeZone()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_TimeFormat_getTimeZone()")
 dxfg_time_zone_t *dxfg_TimeFormat_getTimeZone(graal_isolatethread_t *thread, dxfg_time_format_t *timeFormat);
 
 /**
  * Creates the authorization token from the string of the scheme and the value separated by a space, e.g.
  * `Bearer <token>` or `Basic <Base64 of user:password>`. The value of the "Basic" scheme must be the Base64-encoded
  * `user:password`.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_valueOf().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] string The string; NULL is an error.
@@ -1140,11 +1295,14 @@ dxfg_time_zone_t *dxfg_TimeFormat_getTimeZone(graal_isolatethread_t *thread, dxf
  *
  * Java: `AuthToken.valueOf(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_valueOf()")
 dxfg_auth_token_t *dxfg_AuthToken_valueOf(graal_isolatethread_t *thread, const char *string);
 
 /**
  * Creates the "Basic" authorization token (RFC 2617) from the string `user:password`. The user name and the password
  * can be empty.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createBasicToken().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] userPassword The string `user:password`; a string without a colon or NULL is an error.
@@ -1153,10 +1311,13 @@ dxfg_auth_token_t *dxfg_AuthToken_valueOf(graal_isolatethread_t *thread, const c
  *
  * Java: `AuthToken.createBasicToken(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createBasicToken()")
 dxfg_auth_token_t *dxfg_AuthToken_createBasicToken(graal_isolatethread_t *thread, const char *userPassword);
 
 /**
  * Creates the "Basic" authorization token (RFC 2617) from the user name and the password. They can be empty.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createBasicTokenWithUserAndPassword().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user The user name; NULL is an error.
@@ -1166,12 +1327,15 @@ dxfg_auth_token_t *dxfg_AuthToken_createBasicToken(graal_isolatethread_t *thread
  *
  * Java: `AuthToken.createBasicToken(String, String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createBasicTokenWithUserAndPassword()")
 dxfg_auth_token_t *dxfg_AuthToken_createBasicToken2(graal_isolatethread_t *thread, const char *user,
                                                     const char *password);
 
 /**
  * Creates the "Basic" authorization token (RFC 2617) from the user name and the password, or returns NULL if both of
  * them are NULL or empty (it is not an error). A NULL user name or password is taken as empty.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createBasicTokenOrNull().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] user The user name.
@@ -1181,11 +1345,14 @@ dxfg_auth_token_t *dxfg_AuthToken_createBasicToken2(graal_isolatethread_t *threa
  *
  * Java: `AuthToken.createBasicTokenOrNull(String, String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createBasicTokenOrNull()")
 dxfg_auth_token_t *dxfg_AuthToken_createBasicTokenOrNull(graal_isolatethread_t *thread, const char *user,
                                                          const char *password);
 
 /**
  * Creates the "Bearer" authorization token (RFC 6750) from the access token.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createBearerToken().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] token The access token; NULL or an empty string is an error.
@@ -1194,11 +1361,14 @@ dxfg_auth_token_t *dxfg_AuthToken_createBasicTokenOrNull(graal_isolatethread_t *
  *
  * Java: `AuthToken.createBearerToken(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createBearerToken()")
 dxfg_auth_token_t *dxfg_AuthToken_createBearerToken(graal_isolatethread_t *thread, const char *token);
 
 /**
  * Creates the "Bearer" authorization token (RFC 6750) from the access token, or returns NULL if the access token is
  * NULL or empty (it is not an error).
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createBearerTokenOrNull().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] token The access token.
@@ -1207,10 +1377,13 @@ dxfg_auth_token_t *dxfg_AuthToken_createBearerToken(graal_isolatethread_t *threa
  *
  * Java: `AuthToken.createBearerTokenOrNull(String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createBearerTokenOrNull()")
 dxfg_auth_token_t *dxfg_AuthToken_createBearerTokenOrNull(graal_isolatethread_t *thread, const char *token);
 
 /**
  * Creates the authorization token with a custom scheme and value.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_createCustomToken().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] scheme The scheme; NULL or an empty string is an error.
@@ -1220,11 +1393,14 @@ dxfg_auth_token_t *dxfg_AuthToken_createBearerTokenOrNull(graal_isolatethread_t 
  *
  * Java: `AuthToken.createCustomToken(String, String)`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_createCustomToken()")
 dxfg_auth_token_t *dxfg_AuthToken_createCustomToken(graal_isolatethread_t *thread, const char *scheme,
                                                     const char *value);
 
 /**
  * Returns the value of the HTTP authorization header: the scheme and the value separated by a space.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_getHttpAuthorization().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authToken The token.
@@ -1233,10 +1409,13 @@ dxfg_auth_token_t *dxfg_AuthToken_createCustomToken(graal_isolatethread_t *threa
  *
  * Java: `AuthToken.getHttpAuthorization()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_getHttpAuthorization()")
 const char *dxfg_AuthToken_getHttpAuthorization(graal_isolatethread_t *thread, dxfg_auth_token_t *authToken);
 
 /**
  * Returns the user name of the token.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_getUser().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authToken The token.
@@ -1245,10 +1424,13 @@ const char *dxfg_AuthToken_getHttpAuthorization(graal_isolatethread_t *thread, d
  *
  * Java: `AuthToken.getUser()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_getUser()")
 const char *dxfg_AuthToken_getUser(graal_isolatethread_t *thread, dxfg_auth_token_t *authToken);
 
 /**
  * Returns the password of the token.
+ *
+ * @deprecated Use dxfg_v4_AuthToken_getPassword().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authToken The token.
@@ -1257,10 +1439,13 @@ const char *dxfg_AuthToken_getUser(graal_isolatethread_t *thread, dxfg_auth_toke
  *
  * Java: `AuthToken.getPassword()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_getPassword()")
 const char *dxfg_AuthToken_getPassword(graal_isolatethread_t *thread, dxfg_auth_token_t *authToken);
 
 /**
  * Returns the authorization scheme of the token, e.g. "Basic" or "Bearer".
+ *
+ * @deprecated Use dxfg_v4_AuthToken_getScheme().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authToken The token.
@@ -1269,11 +1454,14 @@ const char *dxfg_AuthToken_getPassword(graal_isolatethread_t *thread, dxfg_auth_
  *
  * Java: `AuthToken.getScheme()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_getScheme()")
 const char *dxfg_AuthToken_getScheme(graal_isolatethread_t *thread, dxfg_auth_token_t *authToken);
 
 /**
  * Returns the value of the token: the access token of the "Bearer" scheme (RFC 6750) or the Base64-encoded
  * `user:password` of the "Basic" scheme (RFC 2617).
+ *
+ * @deprecated Use dxfg_v4_AuthToken_getValue().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] authToken The token.
@@ -1282,6 +1470,7 @@ const char *dxfg_AuthToken_getScheme(graal_isolatethread_t *thread, dxfg_auth_to
  *
  * Java: `AuthToken.getValue()`.
  */
+DXFG_DEPRECATED("use dxfg_v4_AuthToken_getValue()")
 const char *dxfg_AuthToken_getValue(graal_isolatethread_t *thread, dxfg_auth_token_t *authToken);
 
 /** @} */ // end of Javac

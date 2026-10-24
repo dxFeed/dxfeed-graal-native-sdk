@@ -40,6 +40,8 @@ extern "C" {
  *
  * Java: `System.setProperty(String, String)`.
  *
+ * @deprecated Use dxfg_v4_system_set_property().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] key The name of the property, a NUL-terminated UTF-8 string; the SDK copies it. It must not be NULL or
  * empty.
@@ -47,6 +49,7 @@ extern "C" {
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_system_set_property()")
 int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key, const char *value);
 
 /**
@@ -54,12 +57,15 @@ int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key,
  *
  * Java: `System.getProperty(String)`.
  *
+ * @deprecated Use dxfg_v4_system_get_property().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] key The name of the property, a NUL-terminated UTF-8 string. It must not be NULL or empty.
  * @return The value of the property as a NUL-terminated UTF-8 string allocated by the SDK (release it with
  * dxfg_system_release_property()), or NULL if the property is not set. NULL is also returned on error: use
  * dxfg_get_and_clear_thread_exception_t() to get the exception, it returns NULL if there was none.
  */
+DXFG_DEPRECATED("use dxfg_v4_system_get_property()")
 const char *dxfg_system_get_property(graal_isolatethread_t *thread, const char *key);
 
 /**
@@ -67,11 +73,14 @@ const char *dxfg_system_get_property(graal_isolatethread_t *thread, const char *
  *
  * The string is freed: do not use it after that. Passing NULL does nothing.
  *
+ * @deprecated Use dxfg_v4_system_release_property().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] value The value returned by dxfg_system_get_property().
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_system_release_property()")
 int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *value);
 
 /**
@@ -98,11 +107,14 @@ int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *
  * endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the
  * call are not closed by it. The function is a function of the SDK: there is no QD method that it calls.
  *
+ * @deprecated Use dxfg_v4_system_close_all_and_await_termination().
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
  * the waiting thread is interrupted). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was
  * thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_system_close_all_and_await_termination()")
 int32_t dxfg_system_close_all_and_await_termination(graal_isolatethread_t *thread);
 
 /** @} */ // end of System
