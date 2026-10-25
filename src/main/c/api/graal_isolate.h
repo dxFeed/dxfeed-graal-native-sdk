@@ -32,8 +32,9 @@
  *     graal_detach_thread(other); // before the thread exits
  * }
  *
- * // At the end (see dxfg_system_close_all_and_await_termination()):
- * dxfg_system_close_all_and_await_termination(thread);
+ * // At the end (see dxfg_v4_system_shutdown()):
+ * dxfg_v4_system_shutdown(thread);
+ * // ... release the remaining handles ...
  * graal_tear_down_isolate(thread);
  * @endcode
  */
@@ -202,8 +203,8 @@ int graal_detach_thread(graal_isolatethread_t* thread);
  * threads to detach, then discards the objects, the threads and the other state of the isolate.
  *
  * The call blocks while Java threads of the isolate run that do not stop on `Thread.interrupt()`. The threads of an
- * open endpoint do not, so close the endpoints first with dxfg_system_close_all_and_await_termination() (see it for
- * the whole shutdown sequence). The isolate argument `-XX:TearDownWarningSeconds=<seconds>` prints the stack traces
+ * open endpoint do not, so close the endpoints first with dxfg_v4_system_shutdown() (see it for the whole shutdown
+ * sequence). The isolate argument `-XX:TearDownWarningSeconds=<seconds>` prints the stack traces
  * of the threads that block the tear-down.
  *
  * @param[in] thread The isolate thread of the current thread.

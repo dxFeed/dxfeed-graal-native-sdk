@@ -78,6 +78,18 @@ public final class JavacV4Native {
     }
 
     @CEntryPoint(
+            name = "dxfg_v4_NativeListener_deactivateAll",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_NativeListener_deactivateAll(
+            final IsolateThread ignoredThread
+    ) {
+        NativeListener.deactivateAll();
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_v4_JavaObjectHandler_clone",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )

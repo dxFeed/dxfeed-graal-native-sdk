@@ -121,6 +121,28 @@ int32_t dxfg_v4_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_v4
 int32_t dxfg_v4_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_v4_java_object_handler *listener);
 
 /**
+ * Deactivates all the listeners of this isolate created by the `dxfg_*Listener_new` functions, as
+ * dxfg_v4_NativeListener_deactivate() does for one: waits for the listeners' callbacks that are in progress on other
+ * threads, after that no listener's function is called anymore, so the user data of the listeners can be freed. The
+ * listeners created afterwards are inactive from the start. The deactivation cannot be undone for the isolate.
+ *
+ * The handles of the listeners stay valid and must be released as usual. Use dxfg_v4_system_shutdown() to deactivate
+ * the listeners and then close the endpoints. Only the listeners are deactivated: the handlers of
+ * dxfg_v4_Promise_whenDone(), dxfg_v4_Promise_whenDoneAsync(), the finalizers of dxfg_v4_Object_finalize() and the
+ * filters of dxfg_v4_SessionFilter_new() and dxfg_v4_DayFilter_new() are still called.
+ *
+ * Calling it from a listener's callback is allowed (the function does not wait for that call), but not from the
+ * callbacks of two threads at once: each would wait for the other. Do not hold the locks that the listeners' functions
+ * may take while calling it, nor call it from an exit handler of a DLL (`DLL_PROCESS_DETACH`, a destructor of a
+ * static object of a DLL): a callback that waits for the loader lock never finishes.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ */
+int32_t dxfg_v4_NativeListener_deactivateAll(graal_isolatethread_t *thread);
+
+/**
  * Creates another handle of the Java object: allocates the memory of the new handle structure. Both handles refer to
  * the same object and are released independently: the object stays alive until all of its handles are released.
  *

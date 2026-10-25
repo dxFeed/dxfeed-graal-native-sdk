@@ -82,15 +82,9 @@ int32_t dxfg_v4_system_release_property(graal_isolatethread_t *thread, const cha
  *
  * Call it before graal_tear_down_isolate() (or before the process exits): the threads of an open endpoint
  * ("DXEndpoint-DXExecutorThread-N", etc.) do not stop on `Thread.interrupt()`, so graal_tear_down_isolate()
- * waits for them forever while any endpoint is open. To stop the calls of the native listeners, release them
- * (see dxfg_v4_JavaObjectHandler_release()) before tearing down the isolate. To find the threads that block
+ * waits for them forever while any endpoint is open. The function does not stop the calls of the native listeners:
+ * dxfg_v4_system_shutdown() stops them first and then calls this function. To find the threads that block
  * the tear-down, pass the `-XX:TearDownWarningSeconds=<seconds>` option in `graal_create_isolate_params_t.argv`.
- *
- * Recommended shutdown sequence:
- * 1. Release the listeners (dxfg_v4_JavaObjectHandler_release() or dxfg_v4_NativeListener_deactivate()).
- * 2. dxfg_v4_system_close_all_and_await_termination().
- * 3. Release the remaining handles.
- * 4. graal_tear_down_isolate().
  *
  * The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an
  * endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the
@@ -102,6 +96,33 @@ int32_t dxfg_v4_system_release_property(graal_isolatethread_t *thread, const cha
  * thrown.
  */
 int32_t dxfg_v4_system_close_all_and_await_termination(graal_isolatethread_t *thread);
+
+/**
+ * @brief Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instrument
+ * profile connections and waits for the termination of the endpoints.
+ *
+ * The function calls dxfg_v4_NativeListener_deactivateAll() and then dxfg_v4_system_close_all_and_await_termination(),
+ * so that no listener is called while the endpoints are closed. Both steps wait without a limit; like them, the
+ * function is irreversible: the listeners created afterwards are never called, the endpoints created afterwards are
+ * not closed by it.
+ *
+ * Recommended shutdown sequence:
+ * 1. dxfg_v4_system_shutdown(). After it returns, no listener's function is called and none of its calls is in
+ *    progress, so the user data of the listeners can be freed.
+ * 2. Release the remaining handles (dxfg_v4_JavaObjectHandler_release()), the listeners among them.
+ * 3. graal_tear_down_isolate(), if the isolate is torn down at all; the process may also just exit.
+ *
+ * Call it in a normal context of the application: not while holding the locks that the listeners' functions may take
+ * (it may deadlock), not from a listener of an endpoint (it would wait for the notification that is calling it), and
+ * not from an exit handler of a DLL (`DLL_PROCESS_DETACH`, a destructor of a static object of a DLL): there the
+ * loader lock is held, and a listener's call that waits for it never finishes.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if
+ * the waiting thread is interrupted while waiting for the endpoints). Use dxfg_v4_get_and_clear_thread_exception() to
+ * determine if an exception was thrown.
+ */
+int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 
 /** @} */ // end of V4_System
 

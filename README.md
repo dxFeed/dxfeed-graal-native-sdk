@@ -284,8 +284,9 @@ int main(void) {
     dxfg_v4_DXEndpoint_close(thread, endpoint);
     dxfg_v4_JavaObjectHandler_release(thread, &endpoint->handler);
 
-    // Stops the endpoints that are still open, otherwise graal_tear_down_isolate waits for their threads.
-    dxfg_system_close_all_and_await_termination(thread);
+    // Stops the listeners and the endpoints that are still open, otherwise graal_tear_down_isolate waits for their
+    // threads.
+    dxfg_v4_system_shutdown(thread);
     graal_tear_down_isolate(thread);
 
     return 0;
@@ -374,11 +375,13 @@ of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECT
 The threads of an open endpoint do not stop on `Thread.interrupt()`, so `graal_tear_down_isolate` waits
 for them forever while any endpoint is open. Before tearing down the isolate (or exiting the process):
 
-1. Release the listeners (or deactivate them with `dxfg_v4_NativeListener_deactivate`).
-2. Call `dxfg_system_close_all_and_await_termination`: it closes all the endpoints (including the default ones
-   of `dxfg_v4_DXEndpoint_getInstance`, `dxfg_v4_DXFeed_getInstance`, etc.) and instrument profile connections created
-   through the SDK and waits for the termination of the endpoints.
-3. Release the remaining handles and call `graal_tear_down_isolate`.
+1. Call `dxfg_v4_system_shutdown`. It deactivates all the listeners (`dxfg_v4_NativeListener_deactivateAll`: no
+   listener is called after it returns, the ones created later are never called), then closes all the endpoints
+   (including the default ones of `dxfg_v4_DXEndpoint_getInstance`, `dxfg_v4_DXFeed_getInstance`, etc.) and instrument
+   profile connections created through the SDK and waits for the termination of the endpoints
+   (`dxfg_v4_system_close_all_and_await_termination`). It cannot be undone; call it in the explicit shutdown of the
+   application, not from an exit handler of a DLL.
+2. Release the remaining handles and call `graal_tear_down_isolate`.
 
 To find the threads that block the tear-down, pass `-XX:TearDownWarningSeconds=<seconds>` in
 `graal_create_isolate_params_t.argv` (the debug builds use 10 seconds by default).

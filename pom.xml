@@ -1121,9 +1121,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
         <configuration>
-          <!-- Only the model tests: the other classes in src/test are programs with main(), not tests. -->
+          <!-- Only the tests: the other classes in src/test are programs with main(), not tests. -->
           <includes>
             <include>com/dxfeed/sdk/model/tx/**/*Test.java</include>
+            <include>com/dxfeed/sdk/javac/**/*Test.java</include>
           </includes>
         </configuration>
       </plugin>

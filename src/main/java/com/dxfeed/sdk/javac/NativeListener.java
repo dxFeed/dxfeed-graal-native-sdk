@@ -3,8 +3,13 @@
 
 package com.dxfeed.sdk.javac;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Base class of the Java objects that call a native (C) function with the user data
@@ -15,6 +20,9 @@ import java.util.Map;
  * is not called anymore and none of its calls is in progress (except the call on the deactivating thread itself,
  * if it deactivates the listener from its own callback), so the user data can be freed.
  * A deactivated listener that is still added somewhere stays there, but does nothing.
+ *
+ * <p>{@link #deactivateAll()} ({@code dxfg_v4_NativeListener_deactivateAll}) deactivates all the listeners of the
+ * isolate (the static fields are per isolate), and the listeners created after it are inactive from the start.
  *
  * <p>Subclasses wrap every call of the native function:
  * <pre>{@code
@@ -29,12 +37,53 @@ import java.util.Map;
  */
 public abstract class NativeListener {
 
+    private static final Object REGISTRY_LOCK = new Object();
+    // Guarded by REGISTRY_LOCK. Weak: an unreachable listener is not called anymore.
+    private static final Set<NativeListener> LISTENERS = Collections.newSetFromMap(new WeakHashMap<>());
+    private static boolean allDeactivated;
+
     private final Object lock = new Object();
     // Guarded by lock.
     private boolean active = true;
     private int handles;
     private int calls;
     private final Map<Thread, Integer> callers = new HashMap<>(4); // the threads in the native function -> depth
+
+    protected NativeListener() {
+        synchronized (REGISTRY_LOCK) {
+            if (allDeactivated) {
+                stopCalls();
+            } else {
+                LISTENERS.add(this);
+            }
+        }
+    }
+
+    /**
+     * Deactivates all the listeners of the isolate, the listeners created afterwards are inactive from the start.
+     * Waits for the calls of the native functions in progress on the other threads, as {@link #deactivate()} does.
+     */
+    public static void deactivateAll() {
+        final List<NativeListener> listeners;
+        synchronized (REGISTRY_LOCK) {
+            allDeactivated = true;
+            // Not cleared: a concurrent call must wait for the same calls in progress.
+            listeners = new ArrayList<>(LISTENERS);
+        }
+        // No new call starts on any of them while the calls in progress on one of them are waited for.
+        for (final NativeListener listener : listeners) {
+            listener.stopCalls();
+        }
+        for (final NativeListener listener : listeners) {
+            listener.deactivate();
+        }
+    }
+
+    private void stopCalls() {
+        synchronized (lock) {
+            active = false;
+        }
+    }
 
     /**
      * Starts a call of the native function.
@@ -112,5 +161,16 @@ public abstract class NativeListener {
         if (last) {
             deactivate();
         }
+    }
+
+    // Identity: the registry is a WeakHashMap, a subclass must not change how the listeners are compared.
+    @Override
+    public final boolean equals(final Object other) {
+        return this == other;
+    }
+
+    @Override
+    public final int hashCode() {
+        return System.identityHashCode(this);
     }
 }

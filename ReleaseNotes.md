@@ -43,6 +43,11 @@
   the same numbers of parameters, that every older function is marked `DXFG_DEPRECATED` in favour of declared `dxfg_v4_`
   functions, that `dxfg_v4_api.h` includes every `dxfg_v4_*.h` and that `dxfg_api.h` includes `dxfg_v4_api.h`
   (`-Dapi.headers.check.skip=true` skips it).
+* **\[MDAPI-464]\[GRAAL]** `dxfg_v4_NativeListener_deactivateAll()` (`dxfg_v4_javac.h`) deactivates all the
+  listeners of the isolate created by the `dxfg_*Listener_new` functions and waits for their callbacks in progress on
+  other threads; the listeners created afterwards are inactive from the start. `dxfg_v4_system_shutdown()`
+  (`dxfg_v4_system.h`) deactivates them and then closes the endpoints and instrument profile connections, as
+  `dxfg_v4_system_close_all_and_await_termination()` does, so that no callback runs while they are closed.
 
 ### For integrators
 
@@ -50,6 +55,10 @@
   and Clang), an error with `-Werror` or `/WX`. Move the call to the v4 twin, or silence the warning: define the macro
   empty before the headers are included (`#define DXFG_DEPRECATED(message)`, or `-DDXFG_DEPRECATED(message)=` with GCC
   and Clang), or disable C4996 with `/wd4996`.
+* To stop the callbacks before the objects of the application are destroyed, call `dxfg_v4_system_shutdown()` first
+  in the explicit shutdown of the application instead of releasing or deactivating the listeners one by one; then
+  release the remaining handles. Do not call it from an exit handler of a DLL: a callback that waits for the loader
+  lock never finishes.
 
 ## v3.11.0
 

@@ -6,6 +6,7 @@ package com.dxfeed.sdk.system;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
+import com.dxfeed.sdk.javac.NativeListener;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -94,5 +95,19 @@ public final class SystemV4Native {
         return OlderEntryPoint.failed(stored, result == ExceptionHandlerReturnMinusOne.EXECUTE_FAIL)
                 ? ExceptionHandlerReturnMinusOne.EXECUTE_FAIL
                 : result;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_system_shutdown",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_shutdown(
+            final IsolateThread ignoredThread
+    ) throws InterruptedException {
+        // The listeners first: no callback runs while the endpoints are closed.
+        NativeListener.deactivateAll();
+        IsolateResources.closeAllAndAwaitTermination();
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 }
