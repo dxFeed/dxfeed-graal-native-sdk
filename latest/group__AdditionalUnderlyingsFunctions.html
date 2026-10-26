@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -158,7 +158,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__Javac_html_ga923b84ec33ec668fc59c89168c832dac"><div class="ttname"><a href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler)</div></div>
 <div class="ttc" id="astructdxfg__additional__underlyings__t_html"><div class="ttname"><a href="structdxfg__additional__underlyings__t.html">dxfg_additional_underlyings_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:47</div></div>
 <div class="ttc" id="astructdxfg__additional__underlyings__t_html_a3af761aaabbbe167033ac08429756697"><div class="ttname"><a href="structdxfg__additional__underlyings__t.html#a3af761aaabbbe167033ac08429756697">dxfg_additional_underlyings_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:49</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000193">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga0e4950a50a4933a11fcdbc10254c1385">dxfg_v4_AdditionalUnderlyings_EMPTY()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">emptyAdditionalUnderlyings</td><td>The pointer to result's handle (an empty additional underlyings <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#EMPTY">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/glossary/AdditionalUnderlyings.html#EMPTY</a>) </td></tr>
@@ -216,7 +217,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_gae4b09ecd9dd40393baeb03f4ea1c8678"><div class="ttname"><a href="#gae4b09ecd9dd40393baeb03f4ea1c8678">dxfg_AdditionalUnderlyings_getMap</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_getMap(graal_isolatethread_t *thread, dxfg_additional_underlyings_t *additionalUnderlyings, DXFG_OUT dxfg_string_to_double_map_entry_t **mapEntries, DXFG_OUT int32_t *size)</div></div>
 <div class="ttc" id="agroup__Common_html_ga89679b7394b02f500b65a39414712aed"><div class="ttname"><a href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a></div><div class="ttdeci">int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread, dxfg_string_to_double_map_entry_t *mapEntries, int32_t size)</div><div class="ttdoc">Frees an array of string to double map entries that a function of the SDK returned.</div></div>
 <div class="ttc" id="astructdxfg__string__to__double__map__entry__t_html"><div class="ttname"><a href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a></div><div class="ttdoc">A map entry that consists of a string and a double: an element of an array that represents a map from...</div><div class="ttdef"><b>Definition</b> dxfg_common.h:79</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000198">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga65c1793e8531091918f0262e198d7b52">dxfg_v4_AdditionalUnderlyings_getMap()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">additionalUnderlyings</td><td>The additional underlyings handle. </td></tr>
@@ -268,7 +270,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_ga379ac19de8961a6e640f1abcddcd77f1"><div class="ttname"><a href="#ga379ac19de8961a6e640f1abcddcd77f1">dxfg_AdditionalUnderlyings_getSPC</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_getSPC(graal_isolatethread_t *thread, const char *text, const char *symbol, DXFG_OUT double *spc)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000196">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga86959aeeef231532e2552a5b2ad65446">dxfg_v4_AdditionalUnderlyings_getSPCFromText()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>The textual representation of the additional underlyings. </td></tr>
@@ -320,7 +323,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_ga3c5ae59d6b0e0775afb69a39d48dfdb7"><div class="ttname"><a href="#ga3c5ae59d6b0e0775afb69a39d48dfdb7">dxfg_AdditionalUnderlyings_getSPC2</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_getSPC2(graal_isolatethread_t *thread, dxfg_additional_underlyings_t *additionalUnderlyings, const char *symbol, DXFG_OUT double *spc)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000199">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaf4fe28d1eab4e6d107ba8d0da12539e4">dxfg_v4_AdditionalUnderlyings_getSPC()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">additionalUnderlyings</td><td>The additional underlyings handle. </td></tr>
@@ -372,7 +376,8 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_gaf23707ab387ca78fae71470690a3aa70"><div class="ttname"><a href="#gaf23707ab387ca78fae71470690a3aa70">dxfg_AdditionalUnderlyings_getText</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_getText(graal_isolatethread_t *thread, dxfg_additional_underlyings_t *additionalUnderlyings, DXFG_OUT char **text)</div></div>
 <div class="ttc" id="agroup__Javac_html_ga7eb5a22aac50b0f1054245789bad9873"><div class="ttname"><a href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release</a></div><div class="ttdeci">int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000197">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaf704f97f26a48e5e9c58f1d99eb467eb">dxfg_v4_AdditionalUnderlyings_getText()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">additionalUnderlyings</td><td>The additional underlyings handle. </td></tr>
@@ -421,7 +426,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_gaf436a2c09284dc9213ab82ce165b0a8d"><div class="ttname"><a href="#gaf436a2c09284dc9213ab82ce165b0a8d">dxfg_AdditionalUnderlyings_valueOf</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_valueOf(graal_isolatethread_t *thread, const char *text, DXFG_OUT dxfg_additional_underlyings_t **additionalUnderlyings)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000194">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga5c8628a876183c7a56399309b9044bd1">dxfg_v4_AdditionalUnderlyings_valueOf()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>The textual representation. </td></tr>
@@ -477,7 +483,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__AdditionalUnderlyingsFunctions_html_ga7dc4124b3eaafc6fab2a1837a9d615b1"><div class="ttname"><a href="#ga7dc4124b3eaafc6fab2a1837a9d615b1">dxfg_AdditionalUnderlyings_valueOf2</a></div><div class="ttdeci">int32_t dxfg_AdditionalUnderlyings_valueOf2(graal_isolatethread_t *thread, const dxfg_string_to_double_map_entry_t *mapEntries, int32_t size, DXFG_OUT dxfg_additional_underlyings_t **additionalUnderlyings)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000195">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaa06163263aba9281ff509b826e5a8c53">dxfg_v4_AdditionalUnderlyings_valueOfMap()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mapEntries</td><td>The array of map entries ([string, double] pair). </td></tr>

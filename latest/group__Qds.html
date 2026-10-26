@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -149,6 +149,7 @@ Functions</h2></td></tr>
 <p>The first argument is the name of the tool, the others are its arguments; several tools can be run together, separated by the argument "+". The function blocks the calling thread until the tools finish. With no arguments (an empty list or NULL) it prints the usage to the standard error stream and returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>.</p>
 <p>Warning: with at least one argument the Java <span class="tt">Tools.main()</span> ends with <span class="tt">System.exit()</span>: the whole process, not only the isolate, is terminated with the exit code 0 if the tools succeeded and 1 if they failed, so the function does not return to the caller. Use it only from a process that is a launcher of a tool.</p>
 <p>Java: <span class="tt">Tools.main(String[])</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000503">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Qds.html#gaffe414c725691152a02e144f8bb420f6" title="Runs the QDS tools with the command line arguments.">dxfg_v4_Tools_main()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -182,6 +183,7 @@ Functions</h2></td></tr>
 <p>Parses a list of symbols (a symbol set filter specification) into the symbols that it contains. </p>
 <p>The specification is parsed as a QD symbol set filter of the default data scheme (see the QDS documentation for the syntax of the filters); a pattern that contains the ".ipf" substring is recognized as the URL of an IPF file that gives the set of symbols. The symbols of the set are decoded to strings and returned in the order in which the set gives them, which is not specified. The call fails if the specification is invalid.</p>
 <p>Java: <span class="tt">Tools.parseSymbols(String, DataScheme)</span>, with the default scheme (<span class="tt">QDFactory.getDefaultScheme()</span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000502">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Qds.html#ga076524316dbc562abcf76ec744d323d1" title="Parses a list of symbols (a symbol set filter specification) into the symbols that it contains.">dxfg_v4_Tools_parseSymbols()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

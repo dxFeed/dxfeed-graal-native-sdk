@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -785,6 +785,7 @@ Transactional models</h2></td></tr>
 <p>Attaches the indexed event model to the feed: the model starts receiving the events of its symbol. </p>
 <p>The feed keeps an attached model: releasing the handle of the model does not detach it. Detach the model with <a class="el" href="#ga1ef68ea0ddac30774c640f480c548ac5" title="Detaches the indexed event model from the feed.">dxfg_IndexedEventModel_detach()</a> or close it with <a class="el" href="#gaf485c4fca56ec4ab80b4adf445ec9a70" title="Closes the indexed event model: it becomes permanently detached from all feeds and removes all its li...">dxfg_IndexedEventModel_close()</a>.</p>
 <p>Java: <span class="tt">IndexedEventModel.attach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000060">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga0ebc814c074cac6d2ba8702861341b34" title="Attaches the indexed event model to the feed: the model starts receiving the events of its symbol.">dxfg_v4_IndexedEventModel_attach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -819,6 +820,7 @@ Transactional models</h2></td></tr>
 <p>Clears the subscription symbol and, with it, all the events of the model. </p>
 <p>This is a shortcut for <a class="el" href="#ga02d812cadb2e6311c7a43eba9dd99c21" title="Sets the subscription symbol of the indexed event model.">dxfg_IndexedEventModel_setSymbol()</a> with NULL.</p>
 <p>Java: <span class="tt">IndexedEventModel.clear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000065">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga109781b71c38160f5632ebcc8f30ff16" title="Clears the subscription symbol and, with it, all the events of the model.">dxfg_v4_IndexedEventModel_clear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -851,6 +853,7 @@ Transactional models</h2></td></tr>
 
 <p>Closes the indexed event model: it becomes permanently detached from all feeds and removes all its listeners. </p>
 <p>Java: <span class="tt">IndexedEventModel.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000062">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga6fd73e34e6ed66d6f004516877f3764c" title="Closes the indexed event model: it becomes permanently detached from all feeds and removes all its li...">dxfg_v4_IndexedEventModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -888,6 +891,7 @@ Transactional models</h2></td></tr>
 
 <p>Detaches the indexed event model from the feed. </p>
 <p>Java: <span class="tt">IndexedEventModel.detach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000061">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga3e57d17ea7f7c301b428d898ebacb4d6" title="Detaches the indexed event model from the feed.">dxfg_v4_IndexedEventModel_detach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -922,6 +926,7 @@ Transactional models</h2></td></tr>
 <p>Returns the list of events of the indexed event model. </p>
 <p>The events are ordered by the id of their source and by their index. The handle refers to the live list of the model: its content changes as the model receives events. The function creates a new handle on every call. Read the list with <a class="el" href="#gad1d13d958996cf49520ffd886b49d947" title="Returns the events of the list as a new list of events.">dxfg_ObservableListModel_toArray()</a>.</p>
 <p>Java: <span class="tt">IndexedEventModel.getEventsList()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000090">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga5fde474e3eabef5db6296023e0d56796" title="Returns the list of events of the indexed event model.">dxfg_v4_IndexedEventModel_getEventsList()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -954,6 +959,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the executor that calls the listeners of the indexed event model. </p>
 <p>Java: <span class="tt">IndexedEventModel.getExecutor()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000063">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga21c4f8284518e0041aa4a8dace331dec" title="Returns the executor that calls the listeners of the indexed event model.">dxfg_v4_IndexedEventModel_getExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -986,6 +992,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the size limit of the indexed event model. </p>
 <p>Java: <span class="tt">IndexedEventModel.getSizeLimit()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000082">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga3be76fb75d8713abdefa4168014c65aa" title="Returns the size limit of the indexed event model.">dxfg_v4_IndexedEventModel_getSizeLimit()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1018,6 +1025,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the subscription symbol of the indexed event model. </p>
 <p>Java: <span class="tt">IndexedEventModel.getSymbol()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000076">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga234d1ce1a1b2fb9982094ddbc216f3e8" title="Returns the subscription symbol of the indexed event model.">dxfg_v4_IndexedEventModel_getSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1051,6 +1059,7 @@ Transactional models</h2></td></tr>
 <p>Creates a new model of indexed events of the event type. </p>
 <p>The model is not attached to any feed and not subscribed to any symbol. Set the symbol with <a class="el" href="#ga02d812cadb2e6311c7a43eba9dd99c21" title="Sets the subscription symbol of the indexed event model.">dxfg_IndexedEventModel_setSymbol()</a> and attach the model with <a class="el" href="#gaeedfc002c1dbeb45dc845157e078de3b" title="Attaches the indexed event model to the feed: the model starts receiving the events of its symbol.">dxfg_IndexedEventModel_attach()</a> to start receiving events.</p>
 <p>Java: <span class="tt">new IndexedEventModel(Class)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000052">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga647a7c2b963ce5f4a7b5a3d98913cf82" title="Creates a new model of indexed events of the event type.">dxfg_v4_IndexedEventModel_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1088,6 +1097,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the executor that calls the listeners of the indexed event model. </p>
 <p>Java: <span class="tt">IndexedEventModel.setExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000064">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga56034703b22bfafa1391d36e856c5c65" title="Sets the executor that calls the listeners of the indexed event model.">dxfg_v4_IndexedEventModel_setExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1127,6 +1137,7 @@ Transactional models</h2></td></tr>
 <p>Sets the size limit of the indexed event model. </p>
 <p>A negative size limit is an error.</p>
 <p>Java: <span class="tt">IndexedEventModel.setSizeLimit(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000083">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga00307cbc98c3091b5385a816ba410b06" title="Sets the size limit of the indexed event model.">dxfg_v4_IndexedEventModel_setSizeLimit()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1165,6 +1176,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the subscription symbol of the indexed event model. </p>
 <p>Java: <span class="tt">IndexedEventModel.setSymbol(Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000077">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga12069065ce252c41dc48477a57a5bf12" title="Sets the subscription symbol of the indexed event model.">dxfg_v4_IndexedEventModel_setSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1203,6 +1215,7 @@ Transactional models</h2></td></tr>
 
 <p>Attaches the model to the feed. </p>
 <p>Java: <span class="tt">AbstractTxModel.attach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000104">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga47809b802b2fd982ebd5e2c409fe4869" title="Attaches the model to the feed.">dxfg_v4_IndexedTxModel_attach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1236,6 +1249,7 @@ Transactional models</h2></td></tr>
 
 <p>Builds the model (the symbol must be set). </p>
 <p>Java: <span class="tt">IndexedTxModel.Builder.build()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000109">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gae26bf9049a94828285a2a075818c93a5" title="Builds the model (the symbol must be set).">dxfg_v4_IndexedTxModel_Builder_build()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1273,6 +1287,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the aggregation period of the events. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000113">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga06645495a626d7866271592bf509356b" title="Sets the aggregation period of the events.">dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1311,6 +1326,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether the listener gets all the pending transactions in one call (1, default) or one by one (0). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withBatchProcessing(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000110">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gae7e3331051542f4720a1701ff8d12216" title="Sets whether the listener gets all the pending transactions in one call (1, default) or one by one (0...">dxfg_v4_IndexedTxModel_Builder_withBatchProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1349,6 +1365,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the executor that calls the listener (by default, the executor of the feed). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000116">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga1db648f58351723fea104b9e0ba14c39" title="Sets the executor that calls the listener (by default, the executor of the feed).">dxfg_v4_IndexedTxModel_Builder_withExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1387,6 +1404,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the feed the model is attached to. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withFeed(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000112">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gabc0f88cf805893caadbb865e5ecfb32d" title="Sets the feed the model is attached to.">dxfg_v4_IndexedTxModel_Builder_withFeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1425,6 +1443,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the listener of the transactions. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withListener(TxModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000115">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac2f0ece9defc50a118a243a2ad4ab16b" title="Sets the listener of the transactions.">dxfg_v4_IndexedTxModel_Builder_withListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1463,6 +1482,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0, default). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withSnapshotProcessing(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000111">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaeb4afad260a46a4acac86aec20180d35" title="Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0,...">dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1501,6 +1521,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the sources (an empty list means all the sources). </p>
 <p>Java: <span class="tt">IndexedTxModel.Builder.withSources(Collection)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000108">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga93b5983bdd2d524cbc07443470fbe300" title="Sets the sources (an empty list means all the sources).">dxfg_v4_IndexedTxModel_Builder_withSources()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1539,6 +1560,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the symbol of the subscription. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withSymbol(Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000114">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga4129ebbed4f9b1fe7cd43741b32fc11f" title="Sets the symbol of the subscription.">dxfg_v4_IndexedTxModel_Builder_withSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1572,6 +1594,7 @@ Transactional models</h2></td></tr>
 
 <p>Closes the model: it is detached from all the feeds for good. Closing it again does nothing. </p>
 <p>Java: <span class="tt">AbstractTxModel.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000107">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaabf06c336d7f775c00defdb667527d8c" title="Closes the model: it is detached from all the feeds for good. Closing it again does nothing.">dxfg_v4_IndexedTxModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1609,6 +1632,7 @@ Transactional models</h2></td></tr>
 
 <p>Detaches the model from the feed. </p>
 <p>Java: <span class="tt">AbstractTxModel.detach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000105">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga94b6b6a34a8448d2e2a03b33b2a88a43" title="Detaches the model from the feed.">dxfg_v4_IndexedTxModel_detach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1642,6 +1666,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the sources of the model. </p>
 <p>Java: <span class="tt">IndexedTxModel.getSources()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000100">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga282621411e35b2ce7dd9ff34e4b3bccb" title="Returns the sources of the model.">dxfg_v4_IndexedTxModel_getSources()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1674,6 +1699,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns whether the listener gets all the pending transactions in one call. </p>
 <p>Java: <span class="tt">AbstractTxModel.isBatchProcessing()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000102">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac38ab5453da697ff6acec1d14dee3e74" title="Returns whether the listener gets all the pending transactions in one call.">dxfg_v4_IndexedTxModel_isBatchProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1706,6 +1732,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns whether a snapshot is delivered as its resulting state (without the removed events). </p>
 <p>Java: <span class="tt">AbstractTxModel.isSnapshotProcessing()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000103">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gafc618735de8b42532919c18ca64e5573" title="Returns whether a snapshot is delivered as its resulting state (without the removed events).">dxfg_v4_IndexedTxModel_isSnapshotProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1738,6 +1765,7 @@ Transactional models</h2></td></tr>
 
 <p>Creates a new builder of a model of the indexed events of the type. </p>
 <p>Java: <span class="tt">IndexedTxModel.newBuilder(Class)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000099">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gade80bd69d30588f887e8f8212c733c65" title="Creates a new builder of a model of the indexed events of the type.">dxfg_v4_IndexedTxModel_newBuilder()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1775,6 +1803,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the aggregation period of the events. </p>
 <p>Java: <span class="tt">AbstractTxModel.setAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000106">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga5ab5cd7a9e68742f5822218889397cae" title="Sets the aggregation period of the events.">dxfg_v4_IndexedTxModel_setAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1814,6 +1843,7 @@ Transactional models</h2></td></tr>
 <p>Sets the sources of the model: it subscribes to the new ones and unsubscribes from the old ones. </p>
 <p>An empty list means all the sources.</p>
 <p>Java: <span class="tt">IndexedTxModel.setSources(Set)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000101">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga3c6efb672303641cd6e825db22ad54d9" title="Sets the sources of the model: it subscribes to the new ones and unsubscribes from the old ones.">dxfg_v4_IndexedTxModel_setSources()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1852,6 +1882,7 @@ Transactional models</h2></td></tr>
 
 <p>Adds the listener to the list. </p>
 <p>Java: <span class="tt">ObservableListModel.addListener(ObservableListModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000093">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2bc70f588253139cacc0f10780a2a933" title="Adds the listener to the list.">dxfg_v4_ObservableListModel_addListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1890,6 +1921,7 @@ Transactional models</h2></td></tr>
 
 <p>Removes the listener from the list. If the listener is not added to the list, nothing happens. </p>
 <p>Java: <span class="tt">ObservableListModel.removeListener(ObservableListModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000094">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga4e7883631f798e8b578bd551f7d031a5" title="Removes the listener from the list. If the listener is not added to the list, nothing happens.">dxfg_v4_ObservableListModel_removeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1924,6 +1956,7 @@ Transactional models</h2></td></tr>
 <p>Returns the events of the list as a new list of events. </p>
 <p>The result is a snapshot: it does not change when the list changes. An empty list gives a list of size 0.</p>
 <p>Java: the elements of <span class="tt">ObservableListModel</span> (a <span class="tt">java.util.List</span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000098">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gafd47a824bf4b7395340c0772ea637214" title="Returns the events of the list as a new list of events.">dxfg_v4_ObservableListModel_toArray()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1962,6 +1995,7 @@ Transactional models</h2></td></tr>
 <p>Creates a listener of the changes of a list that calls the function with the user data. </p>
 <p>Add the listener to a list with <a class="el" href="#gad02711c4540f271e674a802143f0f2e9" title="Adds the listener to the list.">dxfg_ObservableListModel_addListener()</a>. After the last handle of the listener is released the function is not called anymore and none of its calls is in progress, so the user data can be freed. Remove the listener from the list before releasing it, otherwise it stays added and does nothing, see <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.</p>
 <p>Java: <span class="tt">ObservableListModelListener.modelChanged(ObservableListModelListener.Change)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000092">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaa4fafbf1738e68f990f070b7fb96964a" title="Creates a listener of the changes of a list that calls the function with the user data.">dxfg_v4_ObservableListModelListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2000,6 +2034,7 @@ Transactional models</h2></td></tr>
 
 <p>Adds the listener to the order book model. A closed model does not add listeners. </p>
 <p>Java: <span class="tt">OrderBookModel.addListener(OrderBookModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000096">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga261adaf169af342ec3c3bd5d55a4ed27" title="Adds the listener to the order book model. A closed model does not add listeners.">dxfg_v4_OrderBookModel_addListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2039,6 +2074,7 @@ Transactional models</h2></td></tr>
 <p>Attaches the order book model to the feed: the model starts receiving the events of its symbol. </p>
 <p>The feed keeps an attached model: releasing the handle of the model does not detach it. Detach the model with <a class="el" href="#ga23351eb0d70f91a62c7b4146017458a5" title="Detaches the order book model from the feed.">dxfg_OrderBookModel_detach()</a> or close it with <a class="el" href="#ga65e55b48c028f42727561080adb09b61" title="Closes the order book model: it becomes permanently detached from all feeds and removes all its liste...">dxfg_OrderBookModel_close()</a>.</p>
 <p>Java: <span class="tt">OrderBookModel.attach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000054">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9b7b9286b365c2c84e08ba39957fbd0e" title="Attaches the order book model to the feed: the model starts receiving the events of its symbol.">dxfg_v4_OrderBookModel_attach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2073,6 +2109,7 @@ Transactional models</h2></td></tr>
 <p>Clears the subscription symbol and, with it, all the orders of the model. </p>
 <p>This is a shortcut for <a class="el" href="#ga0f3f3207f99b02f96d9c8487c20eec46" title="Sets the subscription symbol of the order book model.">dxfg_OrderBookModel_setSymbol()</a> with NULL.</p>
 <p>Java: <span class="tt">OrderBookModel.clear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000059">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2ec66a2354a569e2d975d77008b76107" title="Clears the subscription symbol and, with it, all the orders of the model.">dxfg_v4_OrderBookModel_clear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2105,6 +2142,7 @@ Transactional models</h2></td></tr>
 
 <p>Closes the order book model: it becomes permanently detached from all feeds and removes all its listeners. </p>
 <p>Java: <span class="tt">OrderBookModel.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000056">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaafdd137fd49f4977a1cdbe56f7162917" title="Closes the order book model: it becomes permanently detached from all feeds and removes all its liste...">dxfg_v4_OrderBookModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2142,6 +2180,7 @@ Transactional models</h2></td></tr>
 
 <p>Detaches the order book model from the feed. </p>
 <p>Java: <span class="tt">OrderBookModel.detach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000055">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga535e82f90fb012c37b775220196f6f62" title="Detaches the order book model from the feed.">dxfg_v4_OrderBookModel_detach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2176,6 +2215,7 @@ Transactional models</h2></td></tr>
 <p>Returns the buy orders (the bid side) of the order book model. </p>
 <p>The orders are arranged by price: the first order is the top of the bid side (the highest price). The handle refers to the live list of the model: its content changes as the model receives events. The function creates a new handle on every call. Read the list with <a class="el" href="#gad1d13d958996cf49520ffd886b49d947" title="Returns the events of the list as a new list of events.">dxfg_ObservableListModel_toArray()</a>.</p>
 <p>Java: <span class="tt">OrderBookModel.getBuyOrders()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000088">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga7a63cd2aa8c87e6b245c0264360dc94c" title="Returns the buy orders (the bid side) of the order book model.">dxfg_v4_OrderBookModel_getBuyOrders()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2208,6 +2248,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the executor that calls the listeners of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.getExecutor()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000057">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga30985bee1b12ce6b42561f076b80913b" title="Returns the executor that calls the listeners of the order book model.">dxfg_v4_OrderBookModel_getExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2240,6 +2281,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the filter of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.getFilter()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000072">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2e8d0a0c9703f1b7ee0037b79c8452f3">dxfg_v4_OrderBookModel_getFilter()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2273,6 +2315,7 @@ Transactional models</h2></td></tr>
 <p>Returns the lot size of the order book model. </p>
 <p>The lot size is a multiplier applied to the sizes of the composite, regional and aggregate orders (1 by default).</p>
 <p>Java: <span class="tt">OrderBookModel.getLotSize()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000080">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2bd6a462e34a13acf27c4aeefc793c7e" title="Returns the lot size of the order book model.">dxfg_v4_OrderBookModel_getLotSize()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2306,6 +2349,7 @@ Transactional models</h2></td></tr>
 <p>Returns the sell orders (the offer side) of the order book model. </p>
 <p>The orders are arranged by price: the first order is the top of the offer side (the lowest price). The handle refers to the live list of the model: its content changes as the model receives events. The function creates a new handle on every call. Read the list with <a class="el" href="#gad1d13d958996cf49520ffd886b49d947" title="Returns the events of the list as a new list of events.">dxfg_ObservableListModel_toArray()</a>.</p>
 <p>Java: <span class="tt">OrderBookModel.getSellOrders()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000089">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga39d0de4ef80a3e398b009be45f7939f3" title="Returns the sell orders (the offer side) of the order book model.">dxfg_v4_OrderBookModel_getSellOrders()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2338,6 +2382,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the subscription symbol of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.getSymbol()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000074">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaaeceb09fb8a224eca6897c305074d604" title="Returns the subscription symbol of the order book model.">dxfg_v4_OrderBookModel_getSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2367,6 +2412,7 @@ Transactional models</h2></td></tr>
 <p>Creates a new order book model. </p>
 <p>The model is not attached to any feed and not subscribed to any symbol. Its filter is ALL and its lot size is 1. Set the symbol with <a class="el" href="#ga0f3f3207f99b02f96d9c8487c20eec46" title="Sets the subscription symbol of the order book model.">dxfg_OrderBookModel_setSymbol()</a> and attach the model with <a class="el" href="#gadb5a9d7e939c38ebebbd78e380872b62" title="Attaches the order book model to the feed: the model starts receiving the events of its symbol.">dxfg_OrderBookModel_attach()</a> to start receiving orders.</p>
 <p>Java: <span class="tt">new OrderBookModel()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000051">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga25e8aa568ff8af8a6996762195810bfb" title="Creates a new order book model.">dxfg_v4_OrderBookModel_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2403,6 +2449,7 @@ Transactional models</h2></td></tr>
 
 <p>Removes the listener from the order book model. If the listener is not added to the model, nothing happens. </p>
 <p>Java: <span class="tt">OrderBookModel.removeListener(OrderBookModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000097">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaa088dac694d08ef406f860d9e00ffb7c" title="Removes the listener from the order book model. If the listener is not added to the model,...">dxfg_v4_OrderBookModel_removeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2441,6 +2488,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the executor that calls the listeners of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.setExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000058">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gafe49af73c86b7eb0b0154baa98340514" title="Sets the executor that calls the listeners of the order book model.">dxfg_v4_OrderBookModel_setExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2479,6 +2527,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the filter of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.setFilter(OrderBookModelFilter)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000073">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gad25702b1b696d73536856f41562b1e73" title="Sets the filter of the order book model.">dxfg_v4_OrderBookModel_setFilter()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2518,6 +2567,7 @@ Transactional models</h2></td></tr>
 <p>Sets the lot size of the order book model. </p>
 <p>A lot size less than 1 is an error.</p>
 <p>Java: <span class="tt">OrderBookModel.setLotSize(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000081">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga63a0fc2f987734eb3d10ac8eea11dcaf" title="Sets the lot size of the order book model.">dxfg_v4_OrderBookModel_setLotSize()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2556,6 +2606,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the subscription symbol of the order book model. </p>
 <p>Java: <span class="tt">OrderBookModel.setSymbol(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000075">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga69d29105a4cc5b1d5a2038c7f4f1876f" title="Sets the subscription symbol of the order book model.">dxfg_v4_OrderBookModel_setSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2595,6 +2646,7 @@ Transactional models</h2></td></tr>
 <p>Creates a listener of the changes of an order book model that calls the function with the user data. </p>
 <p>Add the listener to a model with <a class="el" href="#gacff7ab8d25a197ef10690231bb7cb7e5" title="Adds the listener to the order book model. A closed model does not add listeners.">dxfg_OrderBookModel_addListener()</a>. After the last handle of the listener is released the function is not called anymore and none of its calls is in progress, so the user data can be freed. Remove the listener from the model before releasing it, otherwise it stays added and does nothing, see <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.</p>
 <p>Java: <span class="tt">OrderBookModelListener.modelChanged(OrderBookModelListener.Change)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000095">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gabc0fb8ff5a17a6850669719314a9980e" title="Creates a listener of the changes of an order book model that calls the function with the user data.">dxfg_v4_OrderBookModelListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2634,6 +2686,7 @@ Transactional models</h2></td></tr>
 <p>Attaches the time-series event model to the feed: the model starts receiving the events of its symbol. </p>
 <p>The feed keeps an attached model: releasing the handle of the model does not detach it. Detach the model with <a class="el" href="#ga8662add991106d01161cda81e5d34c8d" title="Detaches the time-series event model from the feed.">dxfg_TimeSeriesEventModel_detach()</a> or close it with <a class="el" href="#ga3cb2a9a62e4a256c14bc54b99a846bc9" title="Closes the time-series event model: it becomes permanently detached from all feeds and removes all it...">dxfg_TimeSeriesEventModel_close()</a>.</p>
 <p>Java: <span class="tt">TimeSeriesEventModel.attach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000066">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaf8384b9a8164ef30af3c44868b559d12" title="Attaches the time-series event model to the feed: the model starts receiving the events of its symbol...">dxfg_v4_TimeSeriesEventModel_attach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2667,6 +2720,7 @@ Transactional models</h2></td></tr>
 
 <p>Clears the subscription symbol, sets the from-time to INT64_MAX and, with it, clears all the events of the model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.clear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000071">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga83244050fe1cfe41d4b06d880867efb8" title="Clears the subscription symbol, sets the from-time to INT64_MAX and, with it, clears all the events o...">dxfg_v4_TimeSeriesEventModel_clear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2699,6 +2753,7 @@ Transactional models</h2></td></tr>
 
 <p>Closes the time-series event model: it becomes permanently detached from all feeds and removes all its listeners. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000068">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2ea055d9e143f1b97074cbdd6649410b" title="Closes the time-series event model: it becomes permanently detached from all feeds and removes all it...">dxfg_v4_TimeSeriesEventModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2736,6 +2791,7 @@ Transactional models</h2></td></tr>
 
 <p>Detaches the time-series event model from the feed. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.detach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000067">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac89b4c824b00c7974f6739284d51da9b" title="Detaches the time-series event model from the feed.">dxfg_v4_TimeSeriesEventModel_detach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2770,6 +2826,7 @@ Transactional models</h2></td></tr>
 <p>Returns the list of events of the time-series event model. </p>
 <p>The events are ordered by their time. The handle refers to the live list of the model: its content changes as the model receives events. The function creates a new handle on every call. Read the list with <a class="el" href="#gad1d13d958996cf49520ffd886b49d947" title="Returns the events of the list as a new list of events.">dxfg_ObservableListModel_toArray()</a>.</p>
 <p>Java: <span class="tt">TimeSeriesEventModel.getEventsList()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000091">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaa56d738143cc5da62637e088f5b70ffa" title="Returns the list of events of the time-series event model.">dxfg_v4_TimeSeriesEventModel_getEventsList()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2802,6 +2859,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the executor that calls the listeners of the time-series event model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.getExecutor()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000069">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga3788e7fb25a159f640751414d3c2f186" title="Returns the executor that calls the listeners of the time-series event model.">dxfg_v4_TimeSeriesEventModel_getExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2834,6 +2892,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the time from which the time-series event model subscribes for events. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.getFromTime()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000086">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9fbd633f715b7f3664d301c07b30a1ee" title="Returns the time from which the time-series event model subscribes for events.">dxfg_v4_TimeSeriesEventModel_getFromTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2866,6 +2925,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the size limit of the time-series event model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.getSizeLimit()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000084">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9ac5bdf1a0644ad3b650d1266277c92d" title="Returns the size limit of the time-series event model.">dxfg_v4_TimeSeriesEventModel_getSizeLimit()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2898,6 +2958,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the subscription symbol of the time-series event model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.getSymbol()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000078">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga74089106bd3cdcadf904392cd5887eb7" title="Returns the subscription symbol of the time-series event model.">dxfg_v4_TimeSeriesEventModel_getSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2931,6 +2992,7 @@ Transactional models</h2></td></tr>
 <p>Creates a new model of time-series events of the event type. </p>
 <p>The model is not attached to any feed and not subscribed to any symbol (its from-time is INT64_MAX). Set the symbol and the from-time with <a class="el" href="#gafaa0db7eee093df61d7a4e5de40243b6" title="Sets the subscription symbol of the time-series event model.">dxfg_TimeSeriesEventModel_setSymbol()</a> and <a class="el" href="#gadff4d089c6ace6d42997ee0312710336" title="Sets the time from which the time-series event model subscribes for events.">dxfg_TimeSeriesEventModel_setFromTime()</a> and attach the model with <a class="el" href="#gad8555e73ae9edc1f658f901c0a0e8248" title="Attaches the time-series event model to the feed: the model starts receiving the events of its symbol...">dxfg_TimeSeriesEventModel_attach()</a> to start receiving events.</p>
 <p>Java: <span class="tt">new TimeSeriesEventModel(Class)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000053">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga143e42bc49e309248f5049872546c8b6" title="Creates a new model of time-series events of the event type.">dxfg_v4_TimeSeriesEventModel_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2968,6 +3030,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the executor that calls the listeners of the time-series event model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.setExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000070">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gae9b8a8976cdba8c2c2342c989b80388d" title="Sets the executor that calls the listeners of the time-series event model.">dxfg_v4_TimeSeriesEventModel_setExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3006,6 +3069,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the time from which the time-series event model subscribes for events. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.setFromTime(long)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000087">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gadb05939b03c35df56e3ebc8106a00551" title="Sets the time from which the time-series event model subscribes for events.">dxfg_v4_TimeSeriesEventModel_setFromTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3045,6 +3109,7 @@ Transactional models</h2></td></tr>
 <p>Sets the size limit of the time-series event model. </p>
 <p>A negative size limit is an error.</p>
 <p>Java: <span class="tt">TimeSeriesEventModel.setSizeLimit(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000085">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac359ac6342289114d09fbedcd249bfbd" title="Sets the size limit of the time-series event model.">dxfg_v4_TimeSeriesEventModel_setSizeLimit()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3083,6 +3148,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the subscription symbol of the time-series event model. </p>
 <p>Java: <span class="tt">TimeSeriesEventModel.setSymbol(Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000079">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga64da1680959aafd4de9be0306e7a6775" title="Sets the subscription symbol of the time-series event model.">dxfg_v4_TimeSeriesEventModel_setSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3121,6 +3187,7 @@ Transactional models</h2></td></tr>
 
 <p>Attaches the model to the feed. </p>
 <p>Java: <span class="tt">AbstractTxModel.attach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000122">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga0cb6e576c9bc2f567c3bc372b67538bf" title="Attaches the model to the feed.">dxfg_v4_TimeSeriesTxModel_attach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3154,6 +3221,7 @@ Transactional models</h2></td></tr>
 
 <p>Builds the model (the symbol must be set). </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.build()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000132">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9163db97725417396c30b3f0f739b91a" title="Builds the model (the symbol must be set).">dxfg_v4_TimeSeriesTxModel_Builder_build()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3191,6 +3259,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether the events with an index not greater than the last processed one are dropped (1) or delivered (0, default). </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.ignoreEventsFromPast(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000129">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac5e6299fbee850aaef37026cfece7573" title="Sets whether the events with an index not greater than the last processed one are dropped (1) or deli...">dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3229,6 +3298,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether the removed events are dropped (1) or delivered (0, default). </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.ignoreRemoveEvents(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000128">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga396acd492bf51ee55d08adcb5d14fae5" title="Sets whether the removed events are dropped (1) or delivered (0, default).">dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3267,6 +3337,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the aggregation period of the events. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000136">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gada00f3b1f945ea8d526a0a2d0bb1ddd9" title="Sets the aggregation period of the events.">dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3305,6 +3376,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether the listener gets all the pending transactions in one call (1, default) or one by one (0). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withBatchProcessing(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000133">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gacb44ee99d4bdb2633de12ea0b40980ec" title="Sets whether the listener gets all the pending transactions in one call (1, default) or one by one (0...">dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3344,6 +3416,7 @@ Transactional models</h2></td></tr>
 <p>Sets whether a new bar comes after the previous (closing) one, to confirm it (1), or alone (0, default). </p>
 <p>With 1, the snapshot processing and the ascending sorting are on.</p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.withConfirmationTick(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000130">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gafd572d8d38e163d96c7bd175c714feb2" title="Sets whether a new bar comes after the previous (closing) one, to confirm it (1), or alone (0,...">dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3382,6 +3455,7 @@ Transactional models</h2></td></tr>
 
 <p>Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java <span class="tt">Consumer</span>). </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.withEventPeek(Consumer)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000131">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga7f3852354a0c6c8138b0dc23fa4754a4" title="Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java Consumer).">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3420,6 +3494,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the executor that calls the listener (by default, the executor of the feed). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000139">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9637131bd9e06edc34e5d9db1982b11e" title="Sets the executor that calls the listener (by default, the executor of the feed).">dxfg_v4_TimeSeriesTxModel_Builder_withExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3458,6 +3533,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the feed the model is attached to. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withFeed(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000135">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga3160370c1aa912c6021a519c13f16d3e" title="Sets the feed the model is attached to.">dxfg_v4_TimeSeriesTxModel_Builder_withFeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3496,6 +3572,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the time to subscribe from, in milliseconds since the epoch (by default INT64_MAX: not subscribed). </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.withFromTime(long)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000126">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga989a4f9753bc51fa00dd809a05bb6dd5" title="Sets the time to subscribe from, in milliseconds since the epoch (by default INT64_MAX: not subscribe...">dxfg_v4_TimeSeriesTxModel_Builder_withFromTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3534,6 +3611,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the listener of the transactions. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withListener(TxModelListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000138">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaf1b0f1c1a9c04e04084c418bc5a64cdb" title="Sets the listener of the transactions.">dxfg_v4_TimeSeriesTxModel_Builder_withListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3572,6 +3650,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0, default). </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withSnapshotProcessing(boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000134">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga298a3988b6099adf598d9b0912d87c76" title="Sets whether a snapshot is delivered as its resulting state (1) or as it comes (0,...">dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3610,6 +3689,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the order of the events of a snapshot. </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.withSorting(TimeSeriesTxModel.SortOrder)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000127">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga263c887594e92a8d5568766979c03d98" title="Sets the order of the events of a snapshot.">dxfg_v4_TimeSeriesTxModel_Builder_withSorting()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3648,6 +3728,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the symbol of the subscription. </p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withSymbol(Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000137">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga677926c9a50c0940306a61a2769722c4" title="Sets the symbol of the subscription.">dxfg_v4_TimeSeriesTxModel_Builder_withSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3681,6 +3762,7 @@ Transactional models</h2></td></tr>
 
 <p>Closes the model: it is detached from all the feeds for good. Closing it again does nothing. </p>
 <p>Java: <span class="tt">AbstractTxModel.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000125">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2186244761aa98399b8235183bcf53c4" title="Closes the model: it is detached from all the feeds for good. Closing it again does nothing.">dxfg_v4_TimeSeriesTxModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3718,6 +3800,7 @@ Transactional models</h2></td></tr>
 
 <p>Detaches the model from the feed. </p>
 <p>Java: <span class="tt">AbstractTxModel.detach(DXFeed)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000123">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga8ea50b26fb2429e812184db89f9d036a" title="Detaches the model from the feed.">dxfg_v4_TimeSeriesTxModel_detach()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3751,6 +3834,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns the time the model is subscribed from. </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.getFromTime()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000118">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gacf40da5067e38c9868b610b8f26f83b2" title="Returns the time the model is subscribed from.">dxfg_v4_TimeSeriesTxModel_getFromTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3783,6 +3867,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns whether the listener gets all the pending transactions in one call. </p>
 <p>Java: <span class="tt">AbstractTxModel.isBatchProcessing()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000120">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gac6cd14cf0ddff74257a839d11c144601" title="Returns whether the listener gets all the pending transactions in one call.">dxfg_v4_TimeSeriesTxModel_isBatchProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3815,6 +3900,7 @@ Transactional models</h2></td></tr>
 
 <p>Returns whether a snapshot is delivered as its resulting state (without the removed events). </p>
 <p>Java: <span class="tt">AbstractTxModel.isSnapshotProcessing()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000121">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga2e467b8351d171ab8d9fd2bf9dba6ed6" title="Returns whether a snapshot is delivered as its resulting state (without the removed events).">dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3847,6 +3933,7 @@ Transactional models</h2></td></tr>
 
 <p>Creates a new builder of a model of the time-series events of the type. </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.newBuilder(Class)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000117">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga8207dd4080e077aacfc02a34cd88c245" title="Creates a new builder of a model of the time-series events of the type.">dxfg_v4_TimeSeriesTxModel_newBuilder()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3884,6 +3971,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the aggregation period of the events. </p>
 <p>Java: <span class="tt">AbstractTxModel.setAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000124">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#gaace5d503e84b12b074c970f4456bd387" title="Sets the aggregation period of the events.">dxfg_v4_TimeSeriesTxModel_setAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3922,6 +4010,7 @@ Transactional models</h2></td></tr>
 
 <p>Sets the time the model is subscribed from (INT64_MAX unsubscribes); the model gets a new snapshot. </p>
 <p>Java: <span class="tt">TimeSeriesTxModel.setFromTime(long)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000119">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga9a13b8a5f6aec0afecb63f475cf83404" title="Sets the time the model is subscribed from (INT64_MAX unsubscribes); the model gets a new snapshot.">dxfg_v4_TimeSeriesTxModel_setFromTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3961,6 +4050,7 @@ Transactional models</h2></td></tr>
 <p>Creates a listener that calls the function with the user data. </p>
 <p>After the last handle of the listener is released (<a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>), the function is not called anymore and none of its calls is in progress, so the user data can be freed.</p>
 <p>Java: <span class="tt">TxModelListener.eventsReceived(IndexedEventSource, List, boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000140">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__EventModel.html#ga512298a6d95409ef6241c86dc3fcdc4d" title="Creates a listener that calls the function with the user data.">dxfg_v4_TxModelListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -182,16 +182,17 @@ Functions</h2></td></tr>
 <div class="line">    <a class="code hl_function" href="#a92cf5dfbd4276b09fe00ee091ded000b">graal_detach_thread</a>(other); <span class="comment">// before the thread exits</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// At the end (see dxfg_system_close_all_and_await_termination()):</span></div>
-<div class="line"><a class="code hl_function" href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc">dxfg_system_close_all_and_await_termination</a>(thread);</div>
+<div class="line"><span class="comment">// At the end (see dxfg_v4_system_shutdown()):</span></div>
+<div class="line"><a class="code hl_function" href="group__V4__System.html#ga3c7ae00bdfc464776675196aac4b9e47">dxfg_v4_system_shutdown</a>(thread);</div>
+<div class="line"><span class="comment">// ... release the remaining handles ...</span></div>
 <div class="line"><a class="code hl_function" href="#a93f3ba0c5302eb2304934c5f819a671b">graal_tear_down_isolate</a>(thread);</div>
-<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdoc">An isolate: the instance of the SDK (its heap and Java state) in the process.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:50</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdoc">An isolate: the instance of the SDK (its heap and Java state) in the process.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:51</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a3dffaccf18b0f6c777c247b22947ae62"><div class="ttname"><a href="#a3dffaccf18b0f6c777c247b22947ae62">graal_create_isolate</a></div><div class="ttdeci">int graal_create_isolate(graal_create_isolate_params_t *params, graal_isolate_t **isolate, graal_isolatethread_t **thread)</div><div class="ttdoc">Creates a new isolate and attaches the current thread to it.</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a92cf5dfbd4276b09fe00ee091ded000b"><div class="ttname"><a href="#a92cf5dfbd4276b09fe00ee091ded000b">graal_detach_thread</a></div><div class="ttdeci">int graal_detach_thread(graal_isolatethread_t *thread)</div><div class="ttdoc">Detaches the isolate thread from its isolate and discards its state.</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_a93f3ba0c5302eb2304934c5f819a671b"><div class="ttname"><a href="#a93f3ba0c5302eb2304934c5f819a671b">graal_tear_down_isolate</a></div><div class="ttdeci">int graal_tear_down_isolate(graal_isolatethread_t *thread)</div><div class="ttdoc">Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...</div></div>
-<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:59</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:60</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_adaaf0f534a87e0f43bf50b67a1c6da82"><div class="ttname"><a href="#adaaf0f534a87e0f43bf50b67a1c6da82">graal_attach_thread</a></div><div class="ttdeci">int graal_attach_thread(graal_isolate_t *isolate, graal_isolatethread_t **thread)</div><div class="ttdoc">Attaches the current thread to the isolate.</div></div>
-<div class="ttc" id="agroup__System_html_ga636a2efa1d17090bbf624185eb37acdc"><div class="ttname"><a href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc">dxfg_system_close_all_and_await_termination</a></div><div class="ttdeci">int32_t dxfg_system_close_all_and_await_termination(graal_isolatethread_t *thread)</div><div class="ttdoc">Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...</div></div>
+<div class="ttc" id="agroup__V4__System_html_ga3c7ae00bdfc464776675196aac4b9e47"><div class="ttname"><a href="group__V4__System.html#ga3c7ae00bdfc464776675196aac4b9e47">dxfg_v4_system_shutdown</a></div><div class="ttdeci">int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread)</div><div class="ttdoc">Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...</div></div>
 </div><!-- fragment --> </div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="a8f765400a6b2bc6620723dca47193aef" name="a8f765400a6b2bc6620723dca47193aef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f765400a6b2bc6620723dca47193aef">&#9670;&#160;</a></span>NEW_PROTECTION_DOMAIN</h2>
@@ -504,7 +505,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Tears down the isolate of the isolate thread (which must still be attached): waits for the other attached threads to detach, then discards the objects, the threads and the other state of the isolate. </p>
-<p>The call blocks while Java threads of the isolate run that do not stop on <span class="tt">Thread.interrupt()</span>. The threads of an open endpoint do not, so close the endpoints first with <a class="el" href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_system_close_all_and_await_termination()</a> (see it for the whole shutdown sequence). The isolate argument <span class="tt">-XX:TearDownWarningSeconds=&lt;seconds&gt;</span> prints the stack traces of the threads that block the tear-down.</p>
+<p>The call blocks while Java threads of the isolate run that do not stop on <span class="tt">Thread.interrupt()</span>. The threads of an open endpoint do not, so close the endpoints first with <a class="el" href="group__V4__System.html#ga3c7ae00bdfc464776675196aac4b9e47" title="Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...">dxfg_v4_system_shutdown()</a> (see it for the whole shutdown sequence). The isolate argument <span class="tt">-XX:TearDownWarningSeconds=&lt;seconds&gt;</span> prints the stack traces of the threads that block the tear-down.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The isolate thread of the current thread. </td></tr>

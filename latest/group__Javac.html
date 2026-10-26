@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -759,6 +759,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the "Basic" authorization token (RFC 2617) from the string <span class="tt">user:password</span>. The user name and the password can be empty.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000453">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga63ed7d1cd08f864cf3b3e8b2d7fd6c8d">dxfg_v4_AuthToken_createBasicToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -795,6 +796,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the "Basic" authorization token (RFC 2617) from the user name and the password. They can be empty.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000454">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga01276339d4271b1534c176f247d02ede">dxfg_v4_AuthToken_createBasicTokenWithUserAndPassword()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -832,6 +834,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the "Basic" authorization token (RFC 2617) from the user name and the password, or returns NULL if both of them are NULL or empty (it is not an error). A NULL user name or password is taken as empty.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000455">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga364c88883ad7d7762b7b614f230c63e3">dxfg_v4_AuthToken_createBasicTokenOrNull()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -864,6 +867,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the "Bearer" authorization token (RFC 6750) from the access token.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000456">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga13a22f0723781ca101305a58ccf422f8">dxfg_v4_AuthToken_createBearerToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -895,6 +899,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the "Bearer" authorization token (RFC 6750) from the access token, or returns NULL if the access token is NULL or empty (it is not an error).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000457">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf43eaeeea539139827cafea09e7c58c9">dxfg_v4_AuthToken_createBearerTokenOrNull()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -931,6 +936,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the authorization token with a custom scheme and value.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000458">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga04ea834d73ccef11c404109528608ef6">dxfg_v4_AuthToken_createCustomToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -963,6 +969,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the value of the HTTP authorization header: the scheme and the value separated by a space.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000459">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga9ca97b6e77e1e2f348c638204a25fcf7">dxfg_v4_AuthToken_getHttpAuthorization()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -994,6 +1001,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the password of the token.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000461">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga84a98beb78042e71f3a7f85d264744cc">dxfg_v4_AuthToken_getPassword()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1025,6 +1033,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the authorization scheme of the token, e.g. "Basic" or "Bearer".</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000462">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga47906d84175ce61bee88dc605e1e9827">dxfg_v4_AuthToken_getScheme()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1056,6 +1065,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the user name of the token.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000460">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga5444ea3c6a00560a96a482d55ccd64e5">dxfg_v4_AuthToken_getUser()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1087,6 +1097,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the value of the token: the access token of the "Bearer" scheme (RFC 6750) or the Base64-encoded <span class="tt">user:password</span> of the "Basic" scheme (RFC 2617).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000463">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga95c112a377f25f8aab402abf65830e87">dxfg_v4_AuthToken_getValue()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1118,6 +1129,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates the authorization token from the string of the scheme and the value separated by a space, e.g. <span class="tt">Bearer &lt;token&gt;</span> or <span class="tt">Basic &lt;Base64 of user:password&gt;</span>. The value of the "Basic" scheme must be the Base64-encoded <span class="tt">user:password</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000452">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga0edede4813f0ef3415b216aa51ee813a">dxfg_v4_AuthToken_valueOf()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1154,6 +1166,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates an input stream that reads the bytes of the memory block. The bytes are copied: the caller keeps the memory block and may free it after the function returns.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000418">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga5303f7a639fb982834a17f89a7da5b0d">dxfg_v4_ByteArrayInputStream_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1186,6 +1199,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Releases a list of handles that a function returned: releases every handle of the list, frees the array of the elements and the list itself.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000411">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gae36eb9c06dfac3235af385425c38917a">dxfg_v4_java_object_handler_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1216,6 +1230,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Releases a list of strings that a function returned: frees every string of the list, the array of the strings and the list itself.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000413">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga07938203cc4ccb7d41411bb5cf836f40">dxfg_v4_string_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1251,6 +1266,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Compares the Java objects by their natural order. The objects must implement the Java <span class="tt">Comparable</span> interface and be comparable to each other, otherwise the function fails. The handles of the same object are equal; a NULL handle is less than a non-NULL handle.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000410">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf35618ff0c64203b9c620def8268e71e">dxfg_v4_Comparable_compareTo()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1279,6 +1295,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates an executor that does not run the tasks by itself: a submitted task is added to a queue and runs when <a class="el" href="#ga7267712f307836080063b03445f84e90">dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks()</a> is called, on the thread that calls it. Use it to have the calls of the listeners made on a thread of your own.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000416">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1308,6 +1325,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Runs the tasks that are in the queue of the executor, on the calling thread, until the queue is empty (the tasks added by the running tasks are run as well). If a task throws an exception, the function fails and the rest of the tasks stay in the queue.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000417">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gac3b47c71f1d40d9bc247e9d4e390cc06">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1344,6 +1362,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Creates an executor with a fixed number of threads that runs the submitted tasks. The threads are daemon threads. The SDK has no function that shuts the executor down.</p>
 <p>Read the "Threads and locks" section of <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html</a> for how the executor is used by the listeners.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000414">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga79dddce7e7f1d51d113d48cb3aa5b049">dxfg_v4_Executors_newFixedThreadPool()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1382,6 +1401,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Creates an executor that runs the submitted tasks, also with a delay or periodically. The threads are daemon threads. The SDK has no function that shuts the executor down.</p>
 <p>See <a class="el" href="#ga83ea0d43abadfe4b96fe8c4e0e0ef8e9">dxfg_Executors_newFixedThreadPool()</a> for how the listeners use the executor.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000415">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga8b80616844988d60098a3310ed081dbe">dxfg_v4_Executors_newScheduledThreadPool()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1410,6 +1430,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Requests a garbage collection. It is only for testing, e.g. of the functions registered by <a class="el" href="#gae7cdf15be27f52b1169629db33367df7">dxfg_Object_finalize()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000419">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga193f3b604211245b01a1bd4af3752964">dxfg_v4_gc()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1450,7 +1471,8 @@ Functions</h2></td></tr>
 <div class="line"><a class="code hl_function" href="#ga99c171e09b0177aa75b0c46be576f0ae">dxfg_JavaObjectHandler_array_release</a>(isolate_thread, (<span class="keyword">const</span> <a class="code hl_struct" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a> **)values, size);</div>
 <div class="ttc" id="agroup__Javac_html_ga99c171e09b0177aa75b0c46be576f0ae"><div class="ttname"><a href="#ga99c171e09b0177aa75b0c46be576f0ae">dxfg_JavaObjectHandler_array_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_array_release(graal_isolatethread_t *thread, const dxfg_java_object_handler **handlersArray, int32_t size)</div></div>
 <div class="ttc" id="astructdxfg__java__object__handler_html"><div class="ttname"><a href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a></div><div class="ttdoc">The handle of a Java object: the reference by which the C code refers to an object that lives in Java...</div><div class="ttdef"><b>Definition</b> dxfg_javac.h:60</div></div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000405">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga14e166023e8bd09722daf1a35a2fbe51">dxfg_v4_JavaObjectHandler_array_release()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">handlersArray</td><td>The array of handles. If it is NULL or <span class="tt">size</span> is 0, nothing is done. </td></tr>
@@ -1507,7 +1529,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__CFIFunctions_html_ga60cba95cd5639d094a7265de865bf057"><div class="ttname"><a href="group__CFIFunctions.html#ga60cba95cd5639d094a7265de865bf057">dxfg_CFI_decipher</a></div><div class="ttdeci">int32_t dxfg_CFI_decipher(graal_isolatethread_t *thread, dxfg_cfi_t *cfi, DXFG_OUT dxfg_cfi_value_t **values, DXFG_OUT int32_t *size)</div></div>
 <div class="ttc" id="agroup__Javac_html_gac1d3eab12de62c11215a1686ad6abc7c"><div class="ttname"><a href="#gac1d3eab12de62c11215a1686ad6abc7c">dxfg_JavaObjectHandler_clone</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_clone(graal_isolatethread_t *thread, dxfg_java_object_handler *javaObjectHandler, dxfg_java_object_handler **javaObjectHandlerClone)</div></div>
 <div class="ttc" id="astructdxfg__cfi__value__t_html"><div class="ttname"><a href="structdxfg__cfi__value__t.html">dxfg_cfi_value_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:109</div></div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000404">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga9425fbd4cc2cd9254bfbf39caa558574">dxfg_v4_JavaObjectHandler_clone()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">javaObjectHandler</td><td>The handle to clone; it stays valid. </td></tr>
@@ -1540,6 +1563,7 @@ Functions</h2></td></tr>
 <p>Frees the memory of the handle structure and releases the reference to the Java object. Do not use the handle after that. Passing NULL does nothing.</p>
 <p>If the handle is the last handle (see <a class="el" href="#gac1d3eab12de62c11215a1686ad6abc7c">dxfg_JavaObjectHandler_clone()</a>) of a listener created by a <span class="tt">dxfg_*Listener_new</span> function, the listener is deactivated (see <a class="el" href="#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a>): the function waits for the listener's callbacks that are in progress on other threads and after it returns the listener's function is not called anymore, so its user data can be freed. Remove the listener (e.g. <a class="el" href="group__Subscription.html#gab6357fc5d57e7233e7f7dfe96c75efe1">dxfg_DXFeedSubscription_removeEventListener()</a>) before releasing it, otherwise it stays added and does nothing.</p>
 <p>Do not hold the locks that the listener's function may take while releasing the listener: it may deadlock. Releasing a listener from its own callback is allowed (the function does not wait for that call).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000402">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1571,6 +1595,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Deactivates a listener created by a <span class="tt">dxfg_*Listener_new</span> function (e.g. <a class="el" href="group__Subscription.html#ga171884000fc4d8af4ca288f8955854b1">dxfg_DXFeedEventListener_new()</a>, <a class="el" href="group__Endpoint.html#gaa55c29c38e0908906238fe37c4dd15b1" title="Creates a new endpoint state change listener.">dxfg_PropertyChangeListener_new()</a>) regardless of the number of its handles: waits for the listener's callbacks that are in progress on other threads, after that the listener's function is not called anymore, so its user data can be freed. The listener stays added where it was added, but does nothing, and cannot be activated again.</p>
 <p>Releasing the last handle of the listener with <a class="el" href="#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> deactivates it as well. Do not hold the locks that the listener's function may take while deactivating the listener: it may deadlock. Deactivating a listener from its own callback is allowed (the function does not wait for that call).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000403">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga09d3698595682688fdc61c6a55bfd181">dxfg_v4_NativeListener_deactivate()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1606,6 +1631,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the Java objects are equal: the handles of the same object, and the handles of the objects that are equal in the sense of the Java <span class="tt">equals</span> method of the first object. Two NULL handles are equal, a NULL handle and a non-NULL handle are not.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000408">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga8fc88ba1ac5cab3028efbcc0cfe4819f">dxfg_v4_Object_equals()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1650,6 +1676,7 @@ Functions</h2></td></tr>
 <p>Registers a function that is called with the user data after the Java object is garbage collected.</p>
 <p>The Java object is not collected while a handle of it exists, so the function is called after all the handles of the object have been released and nothing else in Java refers to the object. The collected objects are checked about once a second. The function is called by a daemon Java thread of the SDK (see <a class="el" href="#gaab2eef0e31bb9bdf47f3c0d5c5817217" title="The function registered by dxfg_Object_finalize(): called after the Java object has been garbage coll...">dxfg_finalize_function</a>), once for each registration.</p>
 <p>It does not stop the callbacks of a listener: see <a class="el" href="#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a> for that.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000401">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gad01b963a22e456bf5d2089f626b36253">dxfg_v4_Object_finalize()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1682,6 +1709,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the hash code of the Java object: the result of its Java <span class="tt">hashCode</span> method, or 0 for a NULL handle.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000409">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga28865e260bd4f4cd92697d2f7cca2cfe">dxfg_v4_Object_hashCode()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1713,6 +1741,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates a new Java Object.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000406">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga32e584b9992f489d37c8b2e00c9da705">dxfg_v4_Object_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1744,6 +1773,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the string representation of the Java object. It works for the handle of any Java object, including the typed handles (e.g. <a class="el" href="structdxfg__time__zone__t.html" title="A handle of a Java TimeZone object; release it with dxfg_JavaObjectHandler_release().">dxfg_time_zone_t</a>, <a class="el" href="structdxfg__auth__token__t.html" title="A handle of a Java AuthToken object; release it with dxfg_JavaObjectHandler_release().">dxfg_auth_token_t</a>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000407">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga15bb0973ff90c1b538d2e9957add834b">dxfg_v4_Object_toString()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1775,6 +1805,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Frees a string that a function returned (e.g. <a class="el" href="#gac744677a9cb5d8d19196b1007afab5b0">dxfg_Object_toString()</a>). Do not pass a string that is a field of a structure, such as a string of an event: it is freed with the structure.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000412">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga3e57b4137ef6eb063c0c90d0c41b61c9">dxfg_v4_String_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1801,6 +1832,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Always fails: throws a Java exception (a RuntimeException "recursion" with a cause "cause", thrown several calls deep, so that its stack trace has several frames). It is only for testing of <a class="el" href="group__Exceptions.html#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000420">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf354b23237d9ac7e18b7fac807ddcc71">dxfg_v4_throw_exception()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1830,6 +1862,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format that produces the full ISO8601 string of <span class="tt">yyyy-MM-dd'T'HH:mm:ss.SSSX</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000448">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga2800defe7f96fd70f97d737fd839f0ec">dxfg_v4_TimeFormat_asFullIso()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1857,6 +1890,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format of the default time zone of the Java virtual machine.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000443">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga9af8d21603b4b44a11df5c97ba3e96cc">dxfg_v4_TimeFormat_DEFAULT()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1892,6 +1926,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Converts the time to a string like <span class="tt">yyyyMMdd-HHmmss</span> in the time zone of the time format. The time zone (RFC 822, e.g. <span class="tt">+0300</span>) and the milliseconds (<span class="tt">.sss</span>) are included if the format was obtained with <a class="el" href="#ga5eba26c86f7a4f42856ea7f627fbabc8">dxfg_TimeFormat_withTimeZone()</a> and <a class="el" href="#ga25afe93b04314d8fe93bf76f0af758a5">dxfg_TimeFormat_withMillis()</a>. The time 0 is formatted as "0". If the year of the time is outside of 0001 to 9999, the result is the decimal number of the milliseconds.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000450">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga94328832d18227a339d592ccdc613303">dxfg_v4_TimeFormat_format()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1924,6 +1959,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format of the time zone. The format keeps a copy of the time zone: later changes of the time zone do not affect it.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000445">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga09204dfbc297a9942c69197007c0dff1">dxfg_v4_TimeFormat_getInstance()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1955,6 +1991,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time zone of the time format.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000451">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gab29c18011bc1cb1b345b5f6b7fc92f4e">dxfg_v4_TimeFormat_getTimeZone()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1982,6 +2019,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format of the GMT time zone.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000444">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaa36f637a36981fcb773cde19b36cdea6">dxfg_v4_TimeFormat_GMT()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2022,6 +2060,7 @@ Functions</h2></td></tr>
 <li>a number of milliseconds since 1970-01-01T00:00:00Z: at least 9 digits;</li>
 <li><span class="tt">&lt;date&gt;[(T|t|-| )&lt;time&gt;][&lt;time zone&gt;]</span> or <span class="tt">[T|t]&lt;time&gt;[&lt;time zone&gt;]</span>: the date is <span class="tt">yyyy-MM-dd</span> or <span class="tt">yyyyMMdd</span>, the time is <span class="tt">HH:mm:ss[.sss]</span>, <span class="tt">HHmmss[.sss]</span>, <span class="tt">HH:mm</span>, <span class="tt">HHmm</span> or <span class="tt">HH</span> (a missing time is 00:00:00, a missing date is the current date), the time zone is <span class="tt">[+-]HH:mm</span>, <span class="tt">[+-]HHmm</span>, <span class="tt">[+-]HH</span>, <span class="tt">Z</span> or a name of a time zone. A string without a time zone is in the time zone of the time format.</li>
 </ul>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000449">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga4a30380dedf5d75c67c520ea61650c0a">dxfg_v4_TimeFormat_parse()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2054,6 +2093,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format that also includes the milliseconds into the string of <a class="el" href="#gaae7f6ea99fc75f1eb6d6ab8e152ab5ed">dxfg_TimeFormat_format()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000447">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga3b9ea9f25a9101213b1d08438e02e12c">dxfg_v4_TimeFormat_withMillis()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2085,6 +2125,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time format that also includes the time zone into the string of <a class="el" href="#gaae7f6ea99fc75f1eb6d6ab8e152ab5ed">dxfg_TimeFormat_format()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000446">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf78cc452f895f5e4848e67271179fe6f">dxfg_v4_TimeFormat_withTimeZone()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2116,6 +2157,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period in nanoseconds. A period longer than about 292 years, e.g. <a class="el" href="#ga77e7e62b9d51019238ebbf450312ee18">dxfg_TimePeriod_UNLIMITED()</a>, overflows <span class="tt">int64_t</span> and gives a wrong value, which may be negative (-1000000 for the unlimited period); use <a class="el" href="#gaf34f4e7e27aa7acbc3e7a55963fe9619">dxfg_TimePeriod_getTime()</a> for such periods.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000442">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga642048ad8a1650c83a390a71391b7a0e">dxfg_v4_TimePeriod_getNanos()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2147,6 +2189,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period in whole seconds (rounded down). A period longer than about 68 years, e.g. <a class="el" href="#ga77e7e62b9d51019238ebbf450312ee18">dxfg_TimePeriod_UNLIMITED()</a>, does not fit into <span class="tt">int32_t</span>: the result is truncated to its lower 32 bits.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000441">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga4439202dba40d0261166d73606a4622d">dxfg_v4_TimePeriod_getSeconds()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2178,6 +2221,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period in milliseconds.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000440">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaaccb286089eb4140b57cde22756964c1">dxfg_v4_TimePeriod_getTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2205,6 +2249,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period of "infinity": its time is the maximum value of <span class="tt">int64_t</span> milliseconds.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000437">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gae66e4af80d1553df634db1b1ac6f95d3">dxfg_v4_TimePeriod_UNLIMITED()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2235,6 +2280,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period of the given number of milliseconds.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000438">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga9bdc81f26b58303af0b1da3e8ee3c809">dxfg_v4_TimePeriod_valueOf()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2266,6 +2312,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period that the string represents. The string is an ISO8601 duration with these simplifications: the letters are case insensitive; the letters "P" and "T" can be omitted; the letter "S" can be omitted, then the last number is the seconds; the seconds can be fractional (milliseconds precision); an omitted part is zero; the string "inf" is the unlimited period.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000439">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaee733c7c7ac88e8a706bab0f63191cc9">dxfg_v4_TimePeriod_valueOfString()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2293,6 +2340,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time period of zero.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000436">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gabd5f71f34b16d87fadd9a4e7c0d1b99a">dxfg_v4_TimePeriod_ZERO()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2319,6 +2367,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the default time zone of the Java virtual machine.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000422">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf1ba31e9fca2b696a65de7ee89b735cd">dxfg_v4_TimeZone_getDefault()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2349,6 +2398,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the long name of the time zone (for the standard time) in the default locale of the Java virtual machine.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000424">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gadda5e38f869764db81463563ec2e87e5">dxfg_v4_TimeZone_getDisplayName()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2390,6 +2440,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the name of the time zone in the default locale of the Java virtual machine, for the standard or the daylight saving time, in the long or the short style.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000425">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga6a1754e686b062249a4e1f3982eec386">dxfg_v4_TimeZone_getDisplayNameWithStyle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2423,6 +2474,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the amount of time to be added to the local standard time to get the local wall clock time, in milliseconds. It is 0 if the time zone does not observe the daylight saving time.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000426">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gab8aa686349640fbce1b4d3fc4bb5a8d7">dxfg_v4_TimeZone_getDSTSavings()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2454,6 +2506,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the ID of the time zone.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000423">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga2108c355f46a22d104a4b2a3f1850234">dxfg_v4_TimeZone_getID()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2490,6 +2543,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the offset of the time zone from UTC at the date, in milliseconds. If the daylight saving time is in effect at the date, the offset includes the saving.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000429">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga3cf62cfbe97fe4bdd2a912586de429f4">dxfg_v4_TimeZone_getOffset()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2552,6 +2606,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the offset of the time zone from UTC at the local date, in milliseconds, adjusted for the daylight saving time.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000430">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gac8c11dc66dbc0aac6f1974a2758ff49e">dxfg_v4_TimeZone_getOffsetByCalendarFields()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2589,6 +2644,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the offset of the time zone from UTC, in milliseconds, that does not include the daylight saving time.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000431">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gacecb0499951cdfebf3bc406ffd04beaf">dxfg_v4_TimeZone_getRawOffset()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2620,6 +2676,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the time zone for the ID. If the ID is not known, the result is the GMT zone.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000421">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga2cf36a16dbb3187d82bb13df3b2ed6b4">dxfg_v4_TimeZone_getTimeZone()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2656,6 +2713,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the time zone has the same rules and offset as the other time zone (they may differ only in the ID).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000432">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga9832c9cdcb84ac01e37040dff683d777">dxfg_v4_TimeZone_hasSameRules()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2693,6 +2751,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the date is in the daylight saving time of the time zone.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000433">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga7a0a47f98969463eb950e40e98004688">dxfg_v4_TimeZone_inDaylightTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2725,6 +2784,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the time zone is currently in the daylight saving time, or a transition from the standard time to the daylight saving time occurs at any future time.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000428">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga45059016019fc5fc35c1248e28593158">dxfg_v4_TimeZone_observesDaylightTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2761,6 +2821,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the ID of the time zone. It changes the Java object, so all the handles of the time zone see the new ID.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000434">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gaf2dd785d7ede0cb7f0acb4ca4f6ae2c0">dxfg_v4_TimeZone_setID()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2798,6 +2859,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the offset of the time zone from UTC that does not include the daylight saving time. It changes the Java object, so all the handles of the time zone see the new offset.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000435">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga621ff104d07b860aadec85910a92556f">dxfg_v4_TimeZone_setRawOffset()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2830,6 +2892,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the time zone uses the daylight saving time.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000427">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#gafdc95c7b53780b36c28a7255595b85c3">dxfg_v4_TimeZone_useDaylightTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

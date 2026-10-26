@@ -1,0 +1,28 @@
+var dxfg__v4__indexed__event__tx__model_8h =
+[
+    [ "dxfg_v4_feed_t", "group__V4__IndexedEventTxModel.html#gae3d27de390714a66060225ab49145a7d", null ],
+    [ "dxfg_v4_indexed_event_tx_model_builder_t", "group__V4__IndexedEventTxModel.html#ga86f01fd1a08454cd3c282fac748f8e38", null ],
+    [ "dxfg_v4_indexed_event_tx_model_listener_t", "group__V4__IndexedEventTxModel.html#gad2740525ac8b3c78f8e88c1a7c8cc9e3", null ],
+    [ "dxfg_v4_indexed_event_tx_model_t", "group__V4__IndexedEventTxModel.html#ga5517f612f75775664fffe36ec1a4ab04", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Listener_eventsReceived_f", "group__V4__IndexedEventTxModel.html#ga947ad0baebde601f637f3d65183268bc", null ],
+    [ "dxfg_v4_subscription_controller_t", "group__V4__IndexedEventTxModel.html#gab34735728b1694a1ee1811fe371082c6", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_build", "group__V4__IndexedEventTxModel.html#ga2407806c0526226c0b2492cf642d48f3", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_new", "group__V4__IndexedEventTxModel.html#gad64ff14e0a0c7a396579bc5c5763d585", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod", "group__V4__IndexedEventTxModel.html#ga1a8c7fcd4b2f66a4ae998087baae0996", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis", "group__V4__IndexedEventTxModel.html#ga33f30bd692febf42f0cab02a5352e4b1", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit", "group__V4__IndexedEventTxModel.html#gabac9c12fb8b9d82dc6de440169acc7c3", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withExecutor", "group__V4__IndexedEventTxModel.html#gab8c42ac985ba5645056429266872d10a", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withFeed", "group__V4__IndexedEventTxModel.html#ga20b7c0062a4fb7b3b3009b473d5851ca", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withListener", "group__V4__IndexedEventTxModel.html#gad2a2aa0b00f4f70d47e4bcbad9cdda88", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withSource", "group__V4__IndexedEventTxModel.html#gaa984e7d176a411942fd6e3ed48a078ca", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol", "group__V4__IndexedEventTxModel.html#ga7b097e1555b2301c8f0b8a9c87fc02cd", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Builder_withSymbol", "group__V4__IndexedEventTxModel.html#gae75c2b42f02e311a412e2e73407a454d", null ],
+    [ "dxfg_v4_IndexedEventTxModel_close", "group__V4__IndexedEventTxModel.html#ga49de36f3fd2733e547dd29ef3450522d", null ],
+    [ "dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol", "group__V4__IndexedEventTxModel.html#ga0b78b50fee5c3a0103a40be6bac50ce4", null ],
+    [ "dxfg_v4_IndexedEventTxModel_getSource", "group__V4__IndexedEventTxModel.html#ga7eef11c5c89d3c65413395a38d0ece32", null ],
+    [ "dxfg_v4_IndexedEventTxModel_getSubscriptionController", "group__V4__IndexedEventTxModel.html#ga4503e814ac7ed8cb6d4c861d78767eba", null ],
+    [ "dxfg_v4_IndexedEventTxModel_getSymbol", "group__V4__IndexedEventTxModel.html#gabf0294636eb9dc8024dd5985983fda04", null ],
+    [ "dxfg_v4_IndexedEventTxModel_isClosed", "group__V4__IndexedEventTxModel.html#gaa7e39c391e9f10a9caeeddf18713c288", null ],
+    [ "dxfg_v4_IndexedEventTxModel_Listener_new", "group__V4__IndexedEventTxModel.html#gab394f0914c639f0723f4188d48385ffa", null ],
+    [ "dxfg_v4_IndexedEventTxModel_newBuilder", "group__V4__IndexedEventTxModel.html#gac27f45d0e6a3669aee04105d1c0c9c57", null ]
+];

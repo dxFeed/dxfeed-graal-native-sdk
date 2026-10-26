@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -157,21 +157,25 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dxfg__common_8
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="group__Common.html#gafc539eede55f72fa52d6554f5d45d335">   84</a></span>} <a class="code hl_struct" href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a>;</div>
 </div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="group__Common.html#ga89679b7394b02f500b65a39414712aed">   99</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread,</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                                               <a class="code hl_struct" href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a> *mapEntries, int32_t size);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span></div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">  114</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keywordtype">void</span> *pointer);</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span></div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="group__Common.html#ga0d7619b9610bdde48ea403d074a9217f">  130</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga0d7619b9610bdde48ea403d074a9217f">dxfg_free_strings</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keywordtype">char</span>** strings, int32_t size);</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> <span class="comment">// end of Common</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>}</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_COMMON_H</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>DXFG_DEPRECATED(<span class="stringliteral">&quot;use dxfg_v4_string_to_double_map_entry_list_release()&quot;</span>)</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="group__Common.html#ga89679b7394b02f500b65a39414712aed">  103</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread,</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                                               <a class="code hl_struct" href="structdxfg__string__to__double__map__entry__t.html">dxfg_string_to_double_map_entry_t</a> *mapEntries, int32_t size);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>DXFG_DEPRECATED(<span class="stringliteral">&quot;use dxfg_v4_free()&quot;</span>)</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">  121</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keywordtype">void</span> *pointer);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span></div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>DXFG_DEPRECATED(<span class="stringliteral">&quot;use dxfg_v4_string_list_release()&quot;</span>)</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="group__Common.html#ga0d7619b9610bdde48ea403d074a9217f">  140</a></span>int32_t <a class="code hl_function" href="group__Common.html#ga0d7619b9610bdde48ea403d074a9217f">dxfg_free_strings</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keywordtype">char</span>** strings, int32_t size);</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> <span class="comment">// end of Common</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>}</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_COMMON_H</span></div>
 <div class="ttc" id="agraal__isolate_8h_html"><div class="ttname"><a href="graal__isolate_8h.html">graal_isolate.h</a></div><div class="ttdoc">The functions of GraalVM that create, attach to and tear down an isolate, the instance of the SDK in ...</div></div>
-<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:59</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:60</div></div>
 <div class="ttc" id="agroup__Common_html_ga0d7619b9610bdde48ea403d074a9217f"><div class="ttname"><a href="group__Common.html#ga0d7619b9610bdde48ea403d074a9217f">dxfg_free_strings</a></div><div class="ttdeci">int32_t dxfg_free_strings(graal_isolatethread_t *thread, char **strings, int32_t size)</div><div class="ttdoc">Frees an array of C strings that a function of the SDK returned.</div></div>
 <div class="ttc" id="agroup__Common_html_ga4e4d9157846f96d084b3f581f9222e85"><div class="ttname"><a href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a></div><div class="ttdeci">int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer)</div><div class="ttdoc">Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated,...</div></div>
 <div class="ttc" id="agroup__Common_html_ga89679b7394b02f500b65a39414712aed"><div class="ttname"><a href="group__Common.html#ga89679b7394b02f500b65a39414712aed">dxfg_free_string_to_double_map_entries</a></div><div class="ttdeci">int32_t dxfg_free_string_to_double_map_entries(graal_isolatethread_t *thread, dxfg_string_to_double_map_entry_t *mapEntries, int32_t size)</div><div class="ttdoc">Frees an array of string to double map entries that a function of the SDK returned.</div></div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -220,6 +220,7 @@ Functions</h2></td></tr>
 <p>Releases an exception that was returned by <a class="el" href="#ga69ce665610067e7e6cf0ba5aa0cfb9a0" title="Returns the exception of the last failed function call of the calling thread and clears it.">dxfg_get_and_clear_thread_exception_t()</a>. </p>
 <p>Frees the structure together with its strings, its stack trace and its whole chain of causes. A NULL pointer is ignored. Do not use the structure or the pointers inside it afterwards. The function does not report errors.</p>
 <p>Java: not applicable (the structure is allocated by the SDK outside the Java heap).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000011">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Exceptions.html#ga31d578a9ce15b0535b1edbbdf41c5e89" title="Releases an exception that was written by dxfg_v4_get_and_clear_thread_exception().">dxfg_v4_Exception_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -249,6 +250,7 @@ Functions</h2></td></tr>
 <p>Call it when a function reported an error (see the <span class="tt">@return</span> of that function) to learn what went wrong. The exception is stored per thread: this function returns the exception of the thread that calls it (the <span class="tt">thread</span> parameter is not used to choose it), so call it on the thread on which the function failed. The stored exception is cleared by this call: a second call returns NULL until another function fails.</p>
 <p>A function that completes successfully does not clear the stored exception, so call this function right after the error: otherwise it can return the exception of an earlier failure that was not taken. When several functions fail on a thread before the exception is taken, only the exception of the last failure is returned.</p>
 <p>Java: <span class="tt">JNIThreadLocalPendingException.get()</span> and <span class="tt">JNIThreadLocalPendingException.clear()</span> (GraalVM native image), the result is converted from <span class="tt">Throwable</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000010">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

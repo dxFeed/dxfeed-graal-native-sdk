@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -160,6 +160,7 @@ Functions</h2></td></tr>
 <p>Builds a new endpoint with the builder's settings. </p>
 <p>Every call builds a new endpoint. An endpoint with the role <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> or <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a7537d002f5683499246ae2b2b7126a43">DXFG_ENDPOINT_ROLE_PUBLISHER</a> connects automatically on creation if <span class="tt">dxfeed.address</span> (feed) or <span class="tt">dxpublisher.address</span> (publisher) is set; the endpoints of the other roles do not.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.build()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000022">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga2b8de5884e2f45fb0a287053a42285af" title="Builds a new endpoint with the builder&#39;s settings.">dxfg_v4_DXEndpoint_Builder_build()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -198,6 +199,7 @@ Functions</h2></td></tr>
 <p>Checks whether the builder supports a property. </p>
 <p>The properties that are not supported are ignored by <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a>.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.supportsProperty(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000021">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gacc33315ff00ff3fa3f3223695cbf42a4" title="Checks whether the builder supports a property.">dxfg_v4_DXEndpoint_Builder_supportsProperty()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -238,6 +240,7 @@ Functions</h2></td></tr>
 <p>Use it instead of the deprecated <a class="el" href="group__Endpoint.html#ga1d78f9dc111d39f789b84c39e6f65ad5" title="Changes the executor of the endpoint&#39;s notifications.">dxfg_DXEndpoint_executor()</a>.</p>
 <p>By default, the endpoint uses a thread pool with the size equal to the number of available processors (the <span class="tt">dxfeed.threadPoolSize</span> property for the feed roles and <span class="tt">dxpublisher.threadPoolSize</span> for the publisher). The executor must not reject the submitted tasks.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000020">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gafedcee62e8aea15bf4bc2e61b7ff0ae2" title="Sets the executor of the notifications of the endpoints built by this builder: event processing,...">dxfg_v4_DXEndpoint_Builder_withExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -277,6 +280,7 @@ Functions</h2></td></tr>
 <p>Sets the name of the endpoints built by the builder. </p>
 <p>The name distinguishes several endpoints in the same process in the logs and other diagnostics. It is the same as <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a> with the key <span class="tt">name</span>. A short name that describes the role of the endpoint in the application is recommended.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withName(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000017">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga4ccd9028f674c92d8ae6386a716eb127" title="Sets the name of the endpoints built by the builder.">dxfg_v4_DXEndpoint_Builder_withName()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -316,6 +320,7 @@ Functions</h2></td></tr>
 <p>Sets the properties of the endpoints built by the builder from a properties file. </p>
 <p>The file is read in the format of a Java properties file (<span class="tt">java.util.Properties.load</span>) and every property that the builder supports is set as by <a class="el" href="#ga5d35d081dba1a8897c64af8aeb8658c2" title="Sets a property of the endpoints built by the builder.">dxfg_DXEndpoint_Builder_withProperty()</a>. The unsupported properties are ignored. An error is reported if the file cannot be read.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withProperties(Properties)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000019">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga94951b56d5687271a26b17a6bc212063" title="Sets the properties of the endpoints built by the builder from a properties file.">dxfg_v4_DXEndpoint_Builder_withProperties()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -360,6 +365,7 @@ Functions</h2></td></tr>
 <p>Sets a property of the endpoints built by the builder. </p>
 <p>A property that the builder does not support is ignored: check it with <a class="el" href="#gae7c56153da199b9b2241ae4ecc44e93c" title="Checks whether the builder supports a property.">dxfg_DXEndpoint_Builder_supportsProperty()</a>. A property that is set here takes precedence over the same property from the properties file and from the system properties (see <a class="el" href="group__System.html#ga62a2c7ceaf1cc0eb9560a3c4a5e44f39" title="Sets the Java system property indicated by the specified key.">dxfg_system_set_property()</a>).</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withProperty(String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000018">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gae170a5b8816ee9e09376d8fdb0136f62" title="Sets a property of the endpoints built by the builder.">dxfg_v4_DXEndpoint_Builder_withProperty()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -400,6 +406,7 @@ Functions</h2></td></tr>
 <p>Sets the role of the endpoints built by the builder. </p>
 <p>The default role is <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a>.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withRole(DXEndpoint.Role)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000016">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga791aff9252793e343fa0b2929f75739f" title="Sets the role of the endpoints built by the builder.">dxfg_v4_DXEndpoint_Builder_withRole()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -430,6 +437,7 @@ Functions</h2></td></tr>
 <p>Creates a new endpoint builder. </p>
 <p>The builder has the <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> role and the default executor until they are changed.</p>
 <p>Java: <span class="tt">DXEndpoint.newBuilder()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000015">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga2de15206611e5db77d31ebc8b41ab6c9" title="Creates a new endpoint builder.">dxfg_v4_DXEndpoint_newBuilder()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

@@ -40,7 +40,7 @@ var NAVTREE =
       [ "Globals", "globals.html", [
         [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", "globals_func" ],
-        [ "Typedefs", "globals_type.html", null ],
+        [ "Typedefs", "globals_type.html", "globals_type" ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
@@ -52,12 +52,15 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"group__AdditionalUnderlyingsFunctions.html#gaf23707ab387ca78fae71470690a3aa70",
-"group__EventModel.html#ggaaa03fa83c7adfe489bba095ee9afd21cae79202c291ebd574766f70df455d8772",
-"group__Javac.html#ga18090f3719233c7b210bee45c81670f7",
-"group__Schedule.html#gga99668ad9a8802ed40ec877f0d8b294b2a64e40a1104e28b7d390926fb924ee2cf",
-"structdxfg__ipf__connection__state__change__listener__t.html#a3d7c170b05dc75b5eb8480a4c3683770",
-"structdxfg__symbols__by__order__source__id__map__entry__t.html#a4c8eb0b70f0215b6095a3cfcdeaca7ef"
+"globals_i.html",
+"group__EventModel.html#gab1135b134cc09b18b086eaa417712dc5",
+"group__InstrumentProfile.html#gac998eddb1692d38686c75adbad915a73",
+"group__Schedule.html#ga718bb01c716f38a566efe57bc608fd47",
+"group__V4__EventModel.html#ga9fbd633f715b7f3664d301c07b30a1ee",
+"group__V4__InstrumentProfile.html#ga10fc9029b4d46158c4f063ba34ae3232",
+"group__V4__OrcsApi.html#gad03f23b2f63ad32d90e0aa2733b34a93",
+"structdxfg__greeks__t.html",
+"structdxfg__promise__list.html"
 ];
 
 const SYNCONMSG = 'click to disable panel synchronization';

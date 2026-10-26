@@ -117,5 +117,8 @@ var annotated_dup =
     [ "dxfg_trade_t", "structdxfg__trade__t.html", "structdxfg__trade__t" ],
     [ "dxfg_tx_model_listener_t", "structdxfg__tx__model__listener__t.html", "structdxfg__tx__model__listener__t" ],
     [ "dxfg_underlying_t", "structdxfg__underlying__t.html", "structdxfg__underlying__t" ],
+    [ "dxfg_v4_cfi_value_list", "structdxfg__v4__cfi__value__list.html", "structdxfg__v4__cfi__value__list" ],
+    [ "dxfg_v4_double_list", "structdxfg__v4__double__list.html", "structdxfg__v4__double__list" ],
+    [ "dxfg_v4_string_to_double_map_entry_list", "structdxfg__v4__string__to__double__map__entry__list.html", "structdxfg__v4__string__to__double__map__entry__list" ],
     [ "dxfg_wildcard_symbol_t", "structdxfg__wildcard__symbol__t.html", "structdxfg__wildcard__symbol__t" ]
 ];

@@ -10,7 +10,8 @@ var searchData=
   ['local_5fdescription_7',['local_description',['../structdxfg__instrument__profile2__t.html#a8ecc6e06a0ed2060d845ce871af8a08c',1,'dxfg_instrument_profile2_t']]],
   ['local_5fsymbol_8',['local_symbol',['../structdxfg__instrument__profile2__t.html#ae689a4793d60e69de320c9a67b407fd7',1,'dxfg_instrument_profile2_t']]],
   ['logging_9',['Logging',['../group__Logging.html',1,'']]],
-  ['low_10',['low',['../structdxfg__candle__t.html#a9ac8debcd94d5e58fdc1cb1a76d1c885',1,'dxfg_candle_t']]],
-  ['low_5f52_5fweek_5fprice_11',['low_52_week_price',['../structdxfg__profile__t.html#a6797ef093e94954906dce00850ebde1a',1,'dxfg_profile_t']]],
-  ['low_5flimit_5fprice_12',['low_limit_price',['../structdxfg__profile__t.html#a37ca8742fd05b49dbdd166b89d185ca2',1,'dxfg_profile_t']]]
+  ['logging_20v4_10',['Logging (v4)',['../group__V4__Logging.html',1,'']]],
+  ['low_11',['low',['../structdxfg__candle__t.html#a9ac8debcd94d5e58fdc1cb1a76d1c885',1,'dxfg_candle_t']]],
+  ['low_5f52_5fweek_5fprice_12',['low_52_week_price',['../structdxfg__profile__t.html#a6797ef093e94954906dce00850ebde1a',1,'dxfg_profile_t']]],
+  ['low_5flimit_5fprice_13',['low_limit_price',['../structdxfg__profile__t.html#a37ca8742fd05b49dbdd166b89d185ca2',1,'dxfg_profile_t']]]
 ];

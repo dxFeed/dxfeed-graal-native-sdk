@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -167,7 +167,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga151d1f921d1d1c272d6bc58e29332046"><div class="ttname"><a href="#ga151d1f921d1d1c272d6bc58e29332046">dxfg_PriceIncrements_EMPTY</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_EMPTY(graal_isolatethread_t *thread, DXFG_OUT dxfg_price_increments_t **emptyPriceIncrements)</div></div>
 <div class="ttc" id="astructdxfg__price__increments__t_html"><div class="ttname"><a href="structdxfg__price__increments__t.html">dxfg_price_increments_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:147</div></div>
 <div class="ttc" id="astructdxfg__price__increments__t_html_a34198ceaa999a7e23eac27a1d992dc09"><div class="ttname"><a href="structdxfg__price__increments__t.html#a34198ceaa999a7e23eac27a1d992dc09">dxfg_price_increments_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:149</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000222">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga933e0e1bdf252afab8ad3a49d1b828aa">dxfg_v4_PriceIncrements_EMPTY()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">emptyPriceIncrements</td><td>The pointer to result's handle. </td></tr>
@@ -212,7 +213,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gae577362e63d4a02e56fae44e7c4f5946"><div class="ttname"><a href="#gae577362e63d4a02e56fae44e7c4f5946">dxfg_PriceIncrements_getPriceIncrement</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPriceIncrement(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, DXFG_OUT double *priceIncrement)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000228">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga82875bd6ecba5b475e8f0aefe0a4ec01">dxfg_v4_PriceIncrements_getPriceIncrement()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -263,7 +265,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga2bf983d1f4352fa31b4e15baa3bb183c"><div class="ttname"><a href="#ga2bf983d1f4352fa31b4e15baa3bb183c">dxfg_PriceIncrements_getPriceIncrement2</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPriceIncrement2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, DXFG_OUT double *priceIncrement)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000229">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga1550c03ac6974c96896ca0c7d39711d3">dxfg_v4_PriceIncrements_getPriceIncrementForPrice()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -321,7 +324,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga45dc71106e4a3e78a9bf1c37e5e72a5a"><div class="ttname"><a href="#ga45dc71106e4a3e78a9bf1c37e5e72a5a">dxfg_PriceIncrements_getPriceIncrement3</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPriceIncrement3(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, int32_t direction, DXFG_OUT double *priceIncrement)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000230">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga481e556b146da1bc470c8d418871cc7b">dxfg_v4_PriceIncrements_getPriceIncrementForPriceAndDirection()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -378,7 +382,8 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__Common_html_ga4e4d9157846f96d084b3f581f9222e85"><div class="ttname"><a href="group__Common.html#ga4e4d9157846f96d084b3f581f9222e85">dxfg_free</a></div><div class="ttdeci">int32_t dxfg_free(graal_isolatethread_t *thread, void *pointer)</div><div class="ttdoc">Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated,...</div></div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gaabf9dac2b53c31e6e1d045ddfd03b653"><div class="ttname"><a href="#gaabf9dac2b53c31e6e1d045ddfd03b653">dxfg_PriceIncrements_getPriceIncrements</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPriceIncrements(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, DXFG_OUT double **increments, DXFG_OUT int32_t *size)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000227">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gac26900c1b7d6451bf36308ea01cbaf80">dxfg_v4_PriceIncrements_getPriceIncrements()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -425,7 +430,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga3b0a12b56a319e739bc75c521294673d"><div class="ttname"><a href="#ga3b0a12b56a319e739bc75c521294673d">dxfg_PriceIncrements_getPricePrecision</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPricePrecision(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, DXFG_OUT int32_t *pricePrecision)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000231">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga383b7cbb29aa6220b4a6ae202b2b276c">dxfg_v4_PriceIncrements_getPricePrecision()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -476,7 +482,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gab4902fbefa5e9931c7b4c770ae9047af"><div class="ttname"><a href="#gab4902fbefa5e9931c7b4c770ae9047af">dxfg_PriceIncrements_getPricePrecision2</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getPricePrecision2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, DXFG_OUT int32_t *pricePrecision)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000232">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga7e6aac3523f84b2a1e0a457684c333e8">dxfg_v4_PriceIncrements_getPricePrecisionForPrice()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -530,7 +537,8 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__Javac_html_ga7eb5a22aac50b0f1054245789bad9873"><div class="ttname"><a href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release</a></div><div class="ttdeci">int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string)</div></div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gaaaab15c91e3f1c55c2c688051f54aa00"><div class="ttname"><a href="#gaaaab15c91e3f1c55c2c688051f54aa00">dxfg_PriceIncrements_getText</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_getText(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, DXFG_OUT char **text)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000226">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga0360b90c4cc301bc8ed2e7afa0fbdf17">dxfg_v4_PriceIncrements_getText()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -587,7 +595,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga4ad3a4d08163baefc4e9da9c7cf5c3c8"><div class="ttname"><a href="#ga4ad3a4d08163baefc4e9da9c7cf5c3c8">dxfg_PriceIncrements_incrementPrice</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_incrementPrice(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, int32_t direction, DXFG_OUT double *incrementedPrice)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000236">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaa5807ddbf8e13ef9995acd5ec85c5548">dxfg_v4_PriceIncrements_incrementPrice()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -651,7 +660,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga7d9eef1f808375ce92429df6ee2aa338"><div class="ttname"><a href="#ga7d9eef1f808375ce92429df6ee2aa338">dxfg_PriceIncrements_incrementPrice2</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_incrementPrice2(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, int32_t direction, double step, DXFG_OUT double *incrementedPrice)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000237">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaa35a1cebd5e1eb5be8f62184b3a28ee3">dxfg_v4_PriceIncrements_incrementPriceWithStep()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -705,7 +715,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_gac1b19d845e5348fcbbb5fc30921a0008"><div class="ttname"><a href="#gac1b19d845e5348fcbbb5fc30921a0008">dxfg_PriceIncrements_roundPrice</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_roundPrice(graal_isolatethread_t *thread, dxfg_price_increments_t *priceIncrements, double price, DXFG_OUT double *roundedPrice)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000233">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaf247236ad583393f639d425945e3d6ae">dxfg_v4_PriceIncrements_roundPrice()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -761,7 +772,8 @@ Functions</h2></td></tr>
 <div class="line">} <span class="keywordflow">else</span> {</div>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000234">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga7ab042280dd9d762f4b80c21bbe532bc">dxfg_v4_PriceIncrements_roundPriceWithDirection()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -820,7 +832,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__Javac_html_gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d"><div class="ttname"><a href="group__Javac.html#gga7dda4ec062f2491773e988db78293bcfad2f817b47bb67a507ee02cce4d73a29d">DXFG_ROUNDING_MODE_CEILING</a></div><div class="ttdeci">@ DXFG_ROUNDING_MODE_CEILING</div><div class="ttdef"><b>Definition</b> dxfg_javac.h:270</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000235">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga1288c903f55928171621e7d47c655efb">dxfg_v4_PriceIncrements_roundPriceWithRoundingMode()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">priceIncrements</td><td>The price increments handle. </td></tr>
@@ -871,7 +884,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga9a31bcb3838da2bfd1e5d4f2df0539e4"><div class="ttname"><a href="#ga9a31bcb3838da2bfd1e5d4f2df0539e4">dxfg_PriceIncrements_valueOf</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_valueOf(graal_isolatethread_t *thread, const char *text, DXFG_OUT dxfg_price_increments_t **priceIncrements)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000223">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga704e91b82f0cad167aba3c618a6cab64">dxfg_v4_PriceIncrements_valueOf()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>The textual representation. </td></tr>
@@ -919,7 +933,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga4b52c305888f9db52ae5cf9774402f94"><div class="ttname"><a href="#ga4b52c305888f9db52ae5cf9774402f94">dxfg_PriceIncrements_valueOf2</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_valueOf2(graal_isolatethread_t *thread, double increment, DXFG_OUT dxfg_price_increments_t **priceIncrements)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000224">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga5bbda989d97d56ac2ce3b9a62672f09a">dxfg_v4_PriceIncrements_valueOfIncrement()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">increment</td><td>The single increment. </td></tr>
@@ -974,7 +989,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__PriceIncrementsFunctions_html_ga99f1b888ab973f9a5e31f8a5b7d78b10"><div class="ttname"><a href="#ga99f1b888ab973f9a5e31f8a5b7d78b10">dxfg_PriceIncrements_valueOf3</a></div><div class="ttdeci">int32_t dxfg_PriceIncrements_valueOf3(graal_isolatethread_t *thread, const double *increments, int32_t size, DXFG_OUT dxfg_price_increments_t **priceIncrements)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000225">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga7bccca450ff8d1af4086f7ea75b07f2d">dxfg_v4_PriceIncrements_valueOfIncrements()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">increments</td><td>The array of increments in internal representation. </td></tr>

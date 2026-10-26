@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -156,7 +156,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__CFIAttributeFunctions_html_ga3f67e7c5448c8f762dbe9df8ef1e01df"><div class="ttname"><a href="#ga3f67e7c5448c8f762dbe9df8ef1e01df">dxfg_CFI_Attribute_getDescription</a></div><div class="ttdeci">int32_t dxfg_CFI_Attribute_getDescription(graal_isolatethread_t *thread, dxfg_cfi_attribute_t *cfiAttribute, DXFG_OUT char **description)</div></div>
 <div class="ttc" id="agroup__Common_html_ga1f963123e29eb44994e0b7e10161527a"><div class="ttname"><a href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a></div><div class="ttdeci">#define DXFG_EXECUTE_SUCCESSFULLY</div><div class="ttdef"><b>Definition</b> dxfg_common.h:61</div></div>
 <div class="ttc" id="agroup__Javac_html_ga7eb5a22aac50b0f1054245789bad9873"><div class="ttname"><a href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release</a></div><div class="ttdeci">int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000216">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gae4ab39b205c0f2ceaa7475596bf147e1">dxfg_v4_CFI_Attribute_getDescription()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiAttribute</td><td>The CFI attribute handle. </td></tr>
@@ -203,7 +204,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__CFIAttributeFunctions_html_gab857cfc9874964930089edb5d6293a13"><div class="ttname"><a href="#gab857cfc9874964930089edb5d6293a13">dxfg_CFI_Attribute_getName</a></div><div class="ttdeci">int32_t dxfg_CFI_Attribute_getName(graal_isolatethread_t *thread, dxfg_cfi_attribute_t *cfiAttribute, DXFG_OUT char **name)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000215">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga9714d29433322f4fd53f27e861e0f1eb">dxfg_v4_CFI_Attribute_getName()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiAttribute</td><td>The CFI attribute handle. </td></tr>
@@ -260,7 +262,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__Javac_html_ga99c171e09b0177aa75b0c46be576f0ae"><div class="ttname"><a href="group__Javac.html#ga99c171e09b0177aa75b0c46be576f0ae">dxfg_JavaObjectHandler_array_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_array_release(graal_isolatethread_t *thread, const dxfg_java_object_handler **handlersArray, int32_t size)</div></div>
 <div class="ttc" id="astructdxfg__cfi__value__t_html"><div class="ttname"><a href="structdxfg__cfi__value__t.html">dxfg_cfi_value_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:109</div></div>
 <div class="ttc" id="astructdxfg__java__object__handler_html"><div class="ttname"><a href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a></div><div class="ttdoc">The handle of a Java object: the reference by which the C code refers to an object that lives in Java...</div><div class="ttdef"><b>Definition</b> dxfg_javac.h:60</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000217">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gaf6ccb1cafb9e76796bfbc362fb8e2303">dxfg_v4_CFI_Attribute_getValues()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiAttribute</td><td>The CFI attribute handle. </td></tr>

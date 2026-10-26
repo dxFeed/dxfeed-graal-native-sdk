@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -498,6 +498,7 @@ Functions</h2></td></tr>
 <p>The state changes are delivered by a single task on the endpoint's executor that reports the change from the last reported state to the current one, so the fast changes are coalesced (e.g. <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a024e9add7179a5d485ff115fd1480365">DXFG_ENDPOINT_STATE_NOT_CONNECTED</a> -&gt; <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a29725e877c70d84406efe2b81573c58a">DXFG_ENDPOINT_STATE_CONNECTED</a> without <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5ad0884386b139d0043ffa0339a2b333d6">DXFG_ENDPOINT_STATE_CONNECTING</a>). A notification may come after <a class="el" href="#ga467e5d113b98aef8fc23110c760b2b30" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_DXEndpoint_close()</a> or <a class="el" href="#ga1604dbb6551b80fd3e139edf6f830304" title="Removes the state change listener that was added with dxfg_DXEndpoint_addStateChangeListener().">dxfg_DXEndpoint_removeStateChangeListener()</a> returns.</p>
 <p>The listener stays added until it is removed with <a class="el" href="#ga1604dbb6551b80fd3e139edf6f830304" title="Removes the state change listener that was added with dxfg_DXEndpoint_addStateChangeListener().">dxfg_DXEndpoint_removeStateChangeListener()</a>; releasing the last handle of the listener only deactivates it.</p>
 <p>Java: <span class="tt">DXEndpoint.addStateChangeListener(PropertyChangeListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000039">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga1b2d283e04f2dd4ad4b8b837f285f4d6" title="Adds the state change listener (see dxfg_v4_PropertyChangeListener_new()).">dxfg_v4_DXEndpoint_addStateChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -533,6 +534,7 @@ Functions</h2></td></tr>
 <p>It is the signal that the files opened with <a class="el" href="#ga01e6f81025ee1e0f26f46d1ee3fb1a3c" title="Connects the endpoint to the remote address.">dxfg_DXEndpoint_connect()</a> (<span class="tt"><a href="file:..">file:..</a>.</span> addresses) were finished reading, but not necessarily completely processed by the subscription listeners. Call <a class="el" href="#ga93bab72bdb63978dcf867cc619a1e65d" title="Closes the endpoint and waits until all the data processing and the scheduled notifications are compl...">dxfg_DXEndpoint_closeAndAwaitTermination()</a> after it returns to make sure that all the processing has completed.</p>
 <p>The function blocks the calling thread. With a single-threaded executor of the endpoint, do not call it from the executor's thread (e.g. from a listener): it would wait forever.</p>
 <p>Java: <span class="tt">DXEndpoint.awaitNotConnected()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000037">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gaca6bff5a5717e067fe599e5b4d9f99b2" title="Waits until the state of the endpoint becomes DXFG_ENDPOINT_STATE_NOT_CONNECTED or DXFG_ENDPOINT_STAT...">dxfg_v4_DXEndpoint_awaitNotConnected()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -567,6 +569,7 @@ Functions</h2></td></tr>
 <p>It is important when data is written to a file with a <span class="tt">tape:...</span> address: wait for it to make sure that all the published data was written before closing the endpoint.</p>
 <p>The function blocks the calling thread. With a single-threaded executor of the endpoint, do not call it from the executor's thread (e.g. from a listener): it would wait forever.</p>
 <p>Java: <span class="tt">DXEndpoint.awaitProcessed()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000036">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga09c8971cfa4ae290340c36e896d41e3b" title="Waits until the endpoint stops processing data (becomes quiescent).">dxfg_v4_DXEndpoint_awaitProcessed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -601,6 +604,7 @@ Functions</h2></td></tr>
 <p>The state of the endpoint becomes <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a02ab1689c69f645023ff1e799cd4628d">DXFG_ENDPOINT_STATE_CLOSED</a> immediately.</p>
 <p>The function does not wait for the notifications that are already scheduled: a state change listener (including the change to <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a02ab1689c69f645023ff1e799cd4628d">DXFG_ENDPOINT_STATE_CLOSED</a>) or an event listener may still be called after it returns. Use <a class="el" href="#ga93bab72bdb63978dcf867cc619a1e65d" title="Closes the endpoint and waits until all the data processing and the scheduled notifications are compl...">dxfg_DXEndpoint_closeAndAwaitTermination()</a> to wait for them, or <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> of the listener to stop its calls (see <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>).</p>
 <p>Java: <span class="tt">DXEndpoint.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000027">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gadf6d322bead5ef6c8f54a2b86b35c8a4" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_v4_DXEndpoint_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -635,6 +639,7 @@ Functions</h2></td></tr>
 <p>It does the same as <a class="el" href="#ga467e5d113b98aef8fc23110c760b2b30" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_DXEndpoint_close()</a> and blocks until the outstanding tasks of the endpoint are finished. It is designed for the <a class="el" href="#ggaec83860f86076b8cabecbd13a0d16445a5fcb325acaa68fc27bb41a89c00d90a5">DXFG_ENDPOINT_ROLE_STREAM_FEED</a> role, after <a class="el" href="#gab459c237b2c82eb8b8e64abcf3044b73" title="Waits until the state of the endpoint becomes DXFG_ENDPOINT_STATE_NOT_CONNECTED or DXFG_ENDPOINT_STAT...">dxfg_DXEndpoint_awaitNotConnected()</a> returns, to make sure that a file was completely processed.</p>
 <p>Do not call it from a listener of this endpoint: it would wait for the notification that is calling it.</p>
 <p>Java: <span class="tt">DXEndpoint.closeAndAwaitTermination()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000028">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga6441fa74687c0202ee5363dd32cac6ba" title="Closes the endpoint and waits until all the data processing and the scheduled notifications are compl...">dxfg_v4_DXEndpoint_closeAndAwaitTermination()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -675,6 +680,7 @@ Functions</h2></td></tr>
 <p>The function does not wait until the connection is established: it is established asynchronously. It waits only until the state change listeners have processed the change to <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5ad0884386b139d0043ffa0339a2b333d6">DXFG_ENDPOINT_STATE_CONNECTING</a>.</p>
 <p>The address string comes with the market data vendor agreement, for example <span class="tt">host:port</span> to connect to a server with TCP/IP, or <span class="tt">:port</span> to listen for a connection. A malformed address or a NULL address is an error. For the services that require credentials call <a class="el" href="#gaa9a1338340ffd7eb598617256c028389" title="Sets the user name of the endpoint.">dxfg_DXEndpoint_user()</a> and <a class="el" href="#gaee56dbc3b80abc162a45a95f896069fd" title="Sets the password of the endpoint.">dxfg_DXEndpoint_password()</a> first.</p>
 <p>Java: <span class="tt">DXEndpoint.connect(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000032">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga986e337894a068057555f7c130a35f97" title="Connects the endpoint to the remote address.">dxfg_v4_DXEndpoint_connect()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -704,6 +710,7 @@ Functions</h2></td></tr>
 
 <p>Creates a new endpoint with the <a class="el" href="#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> role. </p>
 <p>Java: <span class="tt">DXEndpoint.create()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000025">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga004d516611e3009bc5eadfc492356e39" title="Creates a new endpoint with the DXFG_ENDPOINT_ROLE_FEED role.">dxfg_v4_DXEndpoint_create()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -735,6 +742,7 @@ Functions</h2></td></tr>
 
 <p>Creates a new endpoint with the given role. </p>
 <p>Java: <span class="tt">DXEndpoint.create(DXEndpoint.Role)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000026">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -768,6 +776,7 @@ Functions</h2></td></tr>
 <p>Terminates all the remote network connections of the endpoint. </p>
 <p>The function does nothing if the endpoint is closed. Otherwise, the state of the endpoint immediately becomes <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a024e9add7179a5d485ff115fd1480365">DXFG_ENDPOINT_STATE_NOT_CONNECTED</a>. The resources of the endpoint are not released: use <a class="el" href="#ga467e5d113b98aef8fc23110c760b2b30" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_DXEndpoint_close()</a> for that.</p>
 <p>Java: <span class="tt">DXEndpoint.disconnect()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000034">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gad6fb6c7cb17fbc5013bd112d165270a1" title="Terminates all the remote network connections of the endpoint.">dxfg_v4_DXEndpoint_disconnect()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -801,6 +810,7 @@ Functions</h2></td></tr>
 <p>Terminates all the remote network connections of the endpoint and clears the stored data. </p>
 <p>The function does nothing if the endpoint is closed. Otherwise, the state of the endpoint immediately becomes <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a024e9add7179a5d485ff115fd1480365">DXFG_ENDPOINT_STATE_NOT_CONNECTED</a>. The resources of the endpoint are not released: use <a class="el" href="#ga467e5d113b98aef8fc23110c760b2b30" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_DXEndpoint_close()</a> for that.</p>
 <p>Java: <span class="tt">DXEndpoint.disconnectAndClear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000035">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga451fa9fb39df83fe196eb0993243ed97" title="Terminates all the remote network connections of the endpoint and clears the stored data.">dxfg_v4_DXEndpoint_disconnectAndClear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -841,7 +851,7 @@ Functions</h2></td></tr>
 <p>Call it before <a class="el" href="#gabcaa6f329546a0d1c0f550fce6b679b2" title="Returns the feed of the endpoint.">dxfg_DXEndpoint_getFeed()</a> (and before the other functions that use the endpoint's feed, e.g. <a class="el" href="group__OnDemand.html#ga1a7a5c2910e7925717e62c41f92b5552" title="Returns the on-demand service of the specified endpoint.">dxfg_OnDemandService_getInstance2()</a>). Otherwise, the feed keeps using the default executor, which is shut down, and the last events requests (<a class="el" href="group__Feed.html#ga741a4370c133da6632730f64f2796519" title="Requests the last event for the event class and symbol and returns the promise of the result.">dxfg_DXFeed_getLastEventPromise()</a>, etc.) never complete (a <span class="tt">RejectedExecutionException</span> is logged).</p>
 <p>The executor must not reject the submitted tasks. A NULL executor is an error.</p>
 <p>Java: <span class="tt">DXEndpoint.executor(Executor)</span>.</p>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated</a></b></dt><dd>Use <a class="el" href="group__Builder.html#gab8af6641e2e36955f84b384a23b64ccf" title="Sets the executor of the notifications of the endpoints built by this builder: event processing,...">dxfg_DXEndpoint_Builder_withExecutor()</a>. The first call logs a deprecation warning.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000043">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gafedcee62e8aea15bf4bc2e61b7ff0ae2" title="Sets the executor of the notifications of the endpoints built by this builder: event processing,...">dxfg_v4_DXEndpoint_Builder_withExecutor()</a>. The first call logs a deprecation warning.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -886,6 +896,7 @@ Functions</h2></td></tr>
 <p>Returns the aggregation period that the servers apply, over all connections of the endpoint. </p>
 <p>The servers report the period when the connection is established. Both bounds are negative (unknown) until then, and when no server reports the period (e.g. a local hub, a publisher or an older server).</p>
 <p>Java: <span class="tt">DXEndpoint.getAggregationPeriodInfo()</span>, <span class="tt">TimePeriodInfo.getMin()</span>, <span class="tt">TimePeriodInfo.getMax()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000049">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga44a621db6b89cb300a9f5644f73538a0" title="Returns the aggregation period that the servers apply, over all connections of the endpoint.">dxfg_v4_DXEndpoint_getAggregationPeriodInfo()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -921,6 +932,7 @@ Functions</h2></td></tr>
 <p>Returns the event types that the endpoint supports. </p>
 <p>The result is the set of the event types supported by the endpoint and by the current version of the dxFeed Graal Native SDK; the event types that the SDK does not know are left out.</p>
 <p>Java: <span class="tt">DXEndpoint.getEventTypes()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000044">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga41a4171a74ecd4b29ea78d2b50264297" title="Returns the event types that the endpoint supports.">dxfg_v4_DXEndpoint_getEventTypes()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -954,6 +966,7 @@ Functions</h2></td></tr>
 <p>Returns the feed of the endpoint. </p>
 <p>The feed is associated with the endpoint: it receives the events from the endpoint's connection. Releasing the handle of the feed does not affect the endpoint.</p>
 <p>Java: <span class="tt">DXEndpoint.getFeed()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000041">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga1eeba1150db30e64e68041a0d3c85f3f" title="Returns the feed of the endpoint.">dxfg_v4_DXEndpoint_getFeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -984,6 +997,7 @@ Functions</h2></td></tr>
 <p>The endpoint is created on the first call and is configured by the properties of the endpoint and the system properties (see <a class="el" href="group__System.html#ga62a2c7ceaf1cc0eb9560a3c4a5e44f39" title="Sets the Java system property indicated by the specified key.">dxfg_system_set_property()</a>) as of that moment.</p>
 <p>All callers share this endpoint: closing it closes it for everyone in the process.</p>
 <p>Java: <span class="tt">DXEndpoint.getInstance()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000023">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga0a682ec7f22eb6ac07536991489bb036" title="Returns the default application-wide singleton endpoint with the DXFG_ENDPOINT_ROLE_FEED role,...">dxfg_v4_DXEndpoint_getInstance()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1016,6 +1030,7 @@ Functions</h2></td></tr>
 <p>Creates a <b>new</b> endpoint with the given role on every call, the same as <a class="el" href="#gaba5212e4e8922a191f4349738e3b469d" title="Creates a new endpoint with the given role.">dxfg_DXEndpoint_create2()</a>. </p>
 <p>Unlike the Java <span class="tt">DXEndpoint.getInstance(Role)</span>, this function does not return a singleton: the SDK calls <span class="tt">DXEndpoint.create(Role)</span>. Prefer <a class="el" href="group__Builder.html#ga33a650b9c38510d9aee24b6f625c7cc7" title="Creates a new endpoint builder.">dxfg_DXEndpoint_newBuilder()</a> (or <a class="el" href="#gaba5212e4e8922a191f4349738e3b469d" title="Creates a new endpoint with the given role.">dxfg_DXEndpoint_create2()</a>) in the new code.</p>
 <p>Java: <span class="tt">DXEndpoint.create(DXEndpoint.Role)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000024">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gafebf6f4fd2fe7e894d47cdb55e86125c" title="Creates a new endpoint with the given role on every call, the same as dxfg_v4_DXEndpoint_createWithRo...">dxfg_v4_DXEndpoint_getInstanceWithRole()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1049,6 +1064,7 @@ Functions</h2></td></tr>
 <p>Returns the publisher of the endpoint. </p>
 <p>The publisher is associated with the endpoint: it publishes the events to the endpoint's connection. Releasing the handle of the publisher does not affect the endpoint.</p>
 <p>Java: <span class="tt">DXEndpoint.getPublisher()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000042">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga53df11d0a09182869b05f7ac51bf784b" title="Returns the publisher of the endpoint.">dxfg_v4_DXEndpoint_getPublisher()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1086,6 +1102,7 @@ Functions</h2></td></tr>
 
 <p>Returns the aggregation period that the endpoint requests from the server. </p>
 <p>Java: <span class="tt">DXEndpoint.getRequestedAggregationPeriod()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000045">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga1016a2d583bd9bf95d81edc02fd2a494" title="Returns the aggregation period that the endpoint requests from the server.">dxfg_v4_DXEndpoint_getRequestedAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1124,6 +1141,7 @@ Functions</h2></td></tr>
 
 <p>Returns the aggregation period (in millis) that the endpoint requests from the server. </p>
 <p>Java: <span class="tt">DXEndpoint.getRequestedAggregationPeriod()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000046">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga18574c416ec5156cfd366f3354e1d053" title="Returns the aggregation period (in millis) that the endpoint requests from the server.">dxfg_v4_DXEndpoint_getRequestedAggregationPeriodMillis()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1157,6 +1175,7 @@ Functions</h2></td></tr>
 
 <p>Returns the role of the endpoint. </p>
 <p>Java: <span class="tt">DXEndpoint.getRole()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000029">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga274ba9a5860e7c9feeb15b8ee33cb954" title="Returns the role of the endpoint.">dxfg_v4_DXEndpoint_getRole()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1189,6 +1208,7 @@ Functions</h2></td></tr>
 
 <p>Returns the state of the endpoint. </p>
 <p>Java: <span class="tt">DXEndpoint.getState()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000038">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga5c7e9ba8d2f56996c2b600a828fe12be" title="Returns the state of the endpoint.">dxfg_v4_DXEndpoint_getState()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1227,6 +1247,7 @@ Functions</h2></td></tr>
 <p>Sets the password of the endpoint. </p>
 <p>Call it before <a class="el" href="#ga01e6f81025ee1e0f26f46d1ee3fb1a3c" title="Connects the endpoint to the remote address.">dxfg_DXEndpoint_connect()</a>, together with <a class="el" href="#gaa9a1338340ffd7eb598617256c028389" title="Sets the user name of the endpoint.">dxfg_DXEndpoint_user()</a>, to configure the credentials of a service that requires them. A NULL password is an error.</p>
 <p>Java: <span class="tt">DXEndpoint.password(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000031">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gabcc9a27d9302889b448ed5f064b809c2" title="Sets the password of the endpoint.">dxfg_v4_DXEndpoint_password()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1262,6 +1283,7 @@ Functions</h2></td></tr>
 <p>It works like <a class="el" href="#gacfa4f1185edfd35e2af7106b8f93bd8c" title="Terminates all the remote network connections of the endpoint.">dxfg_DXEndpoint_disconnect()</a> followed by <a class="el" href="#ga01e6f81025ee1e0f26f46d1ee3fb1a3c" title="Connects the endpoint to the remote address.">dxfg_DXEndpoint_connect()</a> with the current address, but the internal resources may be reused. A connection with several target addresses tries to switch to an alternative address; the configured reconnect timeouts apply.</p>
 <p>The function does not connect an endpoint that was not connected with <a class="el" href="#ga01e6f81025ee1e0f26f46d1ee3fb1a3c" title="Connects the endpoint to the remote address.">dxfg_DXEndpoint_connect()</a> or was disconnected with <a class="el" href="#gacfa4f1185edfd35e2af7106b8f93bd8c" title="Terminates all the remote network connections of the endpoint.">dxfg_DXEndpoint_disconnect()</a>. Whether a state change listener sees the intermediate <a class="el" href="#ggabe90742e3279ebee850decf67ad401d5a024e9add7179a5d485ff115fd1480365">DXFG_ENDPOINT_STATE_NOT_CONNECTED</a> state is not specified.</p>
 <p>Java: <span class="tt">DXEndpoint.reconnect()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000033">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga8e9c8c939ba91e8373d6797380d611c9" title="Terminates all the network connections of the endpoint and initiates connecting again with the same a...">dxfg_v4_DXEndpoint_reconnect()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1300,6 +1322,7 @@ Functions</h2></td></tr>
 <p>Removes the state change listener that was added with <a class="el" href="#ga91cb7055be8f8d17ec7493fd675da6e5" title="Adds the state change listener (see dxfg_PropertyChangeListener_new()).">dxfg_DXEndpoint_addStateChangeListener()</a>. </p>
 <p>A notification that is already scheduled may still reach the listener after the function returns: release the listener's handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> (or deactivate it with <a class="el" href="group__Javac.html#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a>) to be sure that its function is not called anymore. The function does not release the handle.</p>
 <p>Java: <span class="tt">DXEndpoint.removeStateChangeListener(PropertyChangeListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000040">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gabacdf043d5656b55df1480b62971f2e1" title="Removes the state change listener that was added with dxfg_v4_DXEndpoint_addStateChangeListener().">dxfg_v4_DXEndpoint_removeStateChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1339,6 +1362,7 @@ Functions</h2></td></tr>
 <p>Sets the aggregation period that the endpoint requests from the server. </p>
 <p>The server keeps the period within its own bounds and reports the period it applies: see <a class="el" href="#ga8ba922e9747f1974ae98fb4056d9ce05" title="Returns the aggregation period that the servers apply, over all connections of the endpoint.">dxfg_DXEndpoint_getAggregationPeriodInfo()</a>. The period can also be requested with the <span class="tt">dxfeed.requestedAggregationPeriod</span> property or the <span class="tt">[requestedAggregationPeriod=5s]</span> address option.</p>
 <p>Java: <span class="tt">DXEndpoint.setRequestedAggregationPeriod(TimePeriod)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000047">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga8bd8df5abd5e6884e161398d54ade2d8" title="Sets the aggregation period that the endpoint requests from the server.">dxfg_v4_DXEndpoint_setRequestedAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1378,6 +1402,7 @@ Functions</h2></td></tr>
 <p>Sets the aggregation period (in millis) that the endpoint requests from the server. </p>
 <p>The same as <a class="el" href="#gab0b9a4843e94df9fbe81a9984cad0c43" title="Sets the aggregation period that the endpoint requests from the server.">dxfg_DXEndpoint_setRequestedAggregationPeriod()</a>, without a time period handle.</p>
 <p>Java: <span class="tt">DXEndpoint.setRequestedAggregationPeriod(TimePeriod)</span>, called with <span class="tt">TimePeriod.valueOf(long)</span>, or with <span class="tt">null</span> for a negative period.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000048">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga675cce54bf66725340ca90837592d08a" title="Sets the aggregation period (in millis) that the endpoint requests from the server.">dxfg_v4_DXEndpoint_setRequestedAggregationPeriodMillis()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1417,6 +1442,7 @@ Functions</h2></td></tr>
 <p>Sets the user name of the endpoint. </p>
 <p>Call it before <a class="el" href="#ga01e6f81025ee1e0f26f46d1ee3fb1a3c" title="Connects the endpoint to the remote address.">dxfg_DXEndpoint_connect()</a>, together with <a class="el" href="#gaee56dbc3b80abc162a45a95f896069fd" title="Sets the password of the endpoint.">dxfg_DXEndpoint_password()</a>, to configure the credentials of a service that requires them. A NULL user name is an error.</p>
 <p>Java: <span class="tt">DXEndpoint.user(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000030">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga72ae918f0af7cda88886e838c5f6892a" title="Sets the user name of the endpoint.">dxfg_v4_DXEndpoint_user()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1457,6 +1483,7 @@ Functions</h2></td></tr>
 <p>The listener does nothing until it is added to an endpoint with <a class="el" href="#ga91cb7055be8f8d17ec7493fd675da6e5" title="Adds the state change listener (see dxfg_PropertyChangeListener_new()).">dxfg_DXEndpoint_addStateChangeListener()</a>. The function is called as described at <a class="el" href="#gaab2286f59fb9f6feefadf07c626c7439" title="The function of a dxfg_endpoint_state_change_listener_t: called when the state of the endpoint change...">dxfg_endpoint_state_change_listener_func</a>.</p>
 <p>Releasing the last handle of the listener with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> (or <a class="el" href="group__Javac.html#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a>) stops the calls of the function: after the release returns the function is not running and is not called anymore, so the user data can be freed. Remove the listener from the endpoint as well, otherwise it stays added and does nothing.</p>
 <p>Java: <span class="tt">PropertyChangeListener.propertyChange(PropertyChangeEvent)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000050">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga71f21cf3ecafeab2c3e2628d78966eb3" title="Creates a new endpoint state change listener.">dxfg_v4_PropertyChangeListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

@@ -99,8 +99,8 @@ var menudata={children:[
 {text:"g",url:"globals_func_g.html#index_g"}]},
 {text:"Typedefs",url:"globals_type.html",children:[
 {text:"_",url:"globals_type.html#index__5F"},
-{text:"d",url:"globals_type.html#index_d"},
-{text:"g",url:"globals_type.html#index_g"}]},
+{text:"d",url:"globals_type_d.html#index_d"},
+{text:"g",url:"globals_type_g.html#index_g"}]},
 {text:"Enumerations",url:"globals_enum.html"},
 {text:"Enumerator",url:"globals_eval.html",children:[
 {text:"_",url:"globals_eval.html#index__5F"},

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -165,6 +165,7 @@ Functions</h2></td></tr>
 </ul>
 <p>The orders are not valid if the check finds a crossing of the bid and ask prices, or if the greatest gap between two subsequent orders is greater than <span class="tt">timeGapBound</span>. A list without orders is valid. Note that in some cases it is normal when the bid is greater than or equal to the ask.</p>
 <p>Java: <span class="tt">PriceLevelChecker.validate(List, long, boolean)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000493">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gaefc2e31b37cf569f414f29065f4857c6" title="Checks the consistency of a list of orders.">dxfg_v4_PriceLevelChecker_validate()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

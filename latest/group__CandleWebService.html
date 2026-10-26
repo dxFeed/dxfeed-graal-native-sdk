@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -319,6 +319,7 @@ Functions</h2></td></tr>
 <p>Creates a history endpoint with the settings of the builder. </p>
 <p>The endpoint takes the address, the user name, the password, the authentication token, the compression and the format that are set in the builder at the moment of the call; later changes of the builder do not affect it. The function does not check that the address is set.</p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.build()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000009">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga917fd56f4eae14058684921bca936003" title="Creates a history endpoint with the settings of the builder.">dxfg_v4_HistoryEndpoint_Builder_build()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -358,6 +359,7 @@ Functions</h2></td></tr>
 <p>Sets the address of the history service. </p>
 <p>The address is the URL of the service without the query: the SDK appends the query of each request to it. The string is copied: the caller keeps its ownership and can free it after the call.</p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withAddress(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga3061c0797e0e2cf553df3bef92ce51e9" title="Sets the address of the history service.">dxfg_v4_HistoryEndpoint_Builder_withAddress()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -397,6 +399,7 @@ Functions</h2></td></tr>
 <p>Sets the authentication token that the requests to the history service use. </p>
 <p>If the token is not NULL and not empty, each request carries it in the <span class="tt">Authorization: Bearer &lt;token&gt;</span> header. The string is copied: the caller keeps its ownership and can free it after the call.</p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withAuthToken(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000006">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga78c83a0e3d15d921a0334da8bb8c610c" title="Sets the authentication token that the requests to the history service use.">dxfg_v4_HistoryEndpoint_Builder_withAuthToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -435,6 +438,7 @@ Functions</h2></td></tr>
 
 <p>Sets the compression of the data that the history service sends. </p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withCompression(HistoryEndpoint.Compression)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000007">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#gabeb9d637a6a6a14ef756ffa44d41f31d" title="Sets the compression of the data that the history service sends.">dxfg_v4_HistoryEndpoint_Builder_withCompression()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -473,6 +477,7 @@ Functions</h2></td></tr>
 
 <p>Sets the format of the data that the history service sends. </p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withFormat(HistoryEndpoint.Format)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000008">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga70c0ba5b739542fc5bc87398dbb41fdf" title="Sets the format of the data that the history service sends.">dxfg_v4_HistoryEndpoint_Builder_withFormat()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -512,6 +517,7 @@ Functions</h2></td></tr>
 <p>Sets the password that the requests to the history service use. </p>
 <p>The user name and the password are used to open the connection to the service. The string is copied: the caller keeps its ownership and can free it after the call.</p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withPassword(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#gab0316f680e10c9210c904e9bac48171a" title="Sets the password that the requests to the history service use.">dxfg_v4_HistoryEndpoint_Builder_withPassword()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -551,6 +557,7 @@ Functions</h2></td></tr>
 <p>Sets the user name that the requests to the history service use. </p>
 <p>The user name and the password are used to open the connection to the service. The string is copied: the caller keeps its ownership and can free it after the call.</p>
 <p>Java: <span class="tt">HistoryEndpoint.Builder.withUserName(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga21377ee5985ccdd7683bf427c94eb1ab" title="Sets the user name that the requests to the history service use.">dxfg_v4_HistoryEndpoint_Builder_withUserName()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -611,6 +618,7 @@ Functions</h2></td></tr>
 <p>The function blocks the calling thread while the request is executed and the response is read: it sends a request to the address of the endpoint with the query parameters <span class="tt">records</span> (the simple name of the event class), <span class="tt">symbols</span>, <span class="tt">start</span> and <span class="tt">stop</span> (the range), <span class="tt">format</span> and <span class="tt">compression</span> (the settings of the endpoint), then decompresses and parses the response. It fails if the request, the reading or the parsing fails.</p>
 <p><span class="tt">eventClazz</span> must be the class of a time series event (for example <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a6aa8eaf159a22ff2326963c06893779e" title="Candle, a lasting event and a time series event: OHLC and other values of a period.">DXFG_EVENT_CANDLE</a> or <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a603fc8f13d8e6d14d14c324ce5061258" title="TimeAndSale, a time series event: a trade or another market event.">DXFG_EVENT_TIME_AND_SALE</a>); the sources do not say what happens for another class.</p>
 <p>Java: <span class="tt">HistoryEndpoint.getTimeSeries(Class, Object, Long, Long)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga7b2c31b5f10031710131fb8786a99fba" title="Requests the time series events of a symbol within a time range from the history service.">dxfg_v4_HistoryEndpoint_getTimeSeries()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -653,6 +661,7 @@ Functions</h2></td></tr>
 </ul>
 <p>The address, the user name, the password and the authentication token are not set.</p>
 <p>Java: <span class="tt">HistoryEndpoint.newBuilder()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__CandleWebService.html#ga5f9207f080001158463b07a4097931ef" title="Creates a builder of history endpoints with the default settings.">dxfg_v4_HistoryEndpoint_newBuilder()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

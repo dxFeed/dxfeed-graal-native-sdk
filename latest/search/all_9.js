@@ -13,10 +13,12 @@ var searchData=
   ['indexed_5fevent_5fsource_10',['INDEXED_EVENT_SOURCE',['../dxfg__events_8h.html#a77961ecdb2aaa0c29233b02d017e3a24a4b37184caf636f018af9efbd0e04bc30',1,'dxfg_events.h']]],
   ['indexed_5fevent_5fsubscription_11',['INDEXED_EVENT_SUBSCRIPTION',['../dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3aef2fb636bb0a03232a1d86f935bf4447',1,'dxfg_events.h']]],
   ['indexedeventtxmodel_12',['IndexedEventTxModel',['../group__IndexedEventTxModel.html',1,'']]],
-  ['instrument_5fprofile_5fcustom_5ffields_13',['instrument_profile_custom_fields',['../structdxfg__instrument__profile2__t.html#a10d093b69918aa546498713a41c4e77b',1,'dxfg_instrument_profile2_t']]],
-  ['instrument_5fprofile_5fcustom_5ffields_5fhash_14',['instrument_profile_custom_fields_hash',['../structdxfg__instrument__profile2__t.html#ac8ef941eb58576402c6065e447ba313e',1,'dxfg_instrument_profile2_t']]],
-  ['instrumentprofile_15',['InstrumentProfile',['../group__InstrumentProfile.html',1,'']]],
-  ['interest_16',['interest',['../structdxfg__theo__price__t.html#a8cbbd28ecee33fd11f84db89f28f7cae',1,'dxfg_theo_price_t::interest'],['../structdxfg__series__t.html#a42bb0f36ec1060075a203c2c116be2b6',1,'dxfg_series_t::interest']]],
-  ['is_5fnative_5fmethod_17',['is_native_method',['../structdxfg__stack__trace__element__t.html#a2171bf3945363443705718d5ebe26b8e',1,'dxfg_stack_trace_element_t']]],
-  ['isin_18',['isin',['../structdxfg__instrument__profile2__t.html#a4de634e9d085e4bff668d2297aa22058',1,'dxfg_instrument_profile2_t']]]
+  ['indexedeventtxmodel_20v4_13',['IndexedEventTxModel (v4)',['../group__V4__IndexedEventTxModel.html',1,'']]],
+  ['instrument_5fprofile_5fcustom_5ffields_14',['instrument_profile_custom_fields',['../structdxfg__instrument__profile2__t.html#a10d093b69918aa546498713a41c4e77b',1,'dxfg_instrument_profile2_t']]],
+  ['instrument_5fprofile_5fcustom_5ffields_5fhash_15',['instrument_profile_custom_fields_hash',['../structdxfg__instrument__profile2__t.html#ac8ef941eb58576402c6065e447ba313e',1,'dxfg_instrument_profile2_t']]],
+  ['instrumentprofile_16',['InstrumentProfile',['../group__InstrumentProfile.html',1,'']]],
+  ['instrumentprofile_20v4_17',['InstrumentProfile (v4)',['../group__V4__InstrumentProfile.html',1,'']]],
+  ['interest_18',['interest',['../structdxfg__theo__price__t.html#a8cbbd28ecee33fd11f84db89f28f7cae',1,'dxfg_theo_price_t::interest'],['../structdxfg__series__t.html#a42bb0f36ec1060075a203c2c116be2b6',1,'dxfg_series_t::interest']]],
+  ['is_5fnative_5fmethod_19',['is_native_method',['../structdxfg__stack__trace__element__t.html#a2171bf3945363443705718d5ebe26b8e',1,'dxfg_stack_trace_element_t']]],
+  ['isin_20',['isin',['../structdxfg__instrument__profile2__t.html#a4de634e9d085e4bff668d2297aa22058',1,'dxfg_instrument_profile2_t']]]
 ];

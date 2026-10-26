@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -798,6 +798,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Releases the list and all the instrument profile handles in it. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000270">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga9c299f7bbe0dee821c5069249dbb097a" title="Releases the list and all the instrument profile handles in it.">dxfg_v4_instrument_profile_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -830,6 +831,7 @@ Functions</h2></td></tr>
 
 <p>Releases the list structure only and keeps the instrument profile handles in it. </p>
 <p>The array of the elements and the <a class="el" href="structdxfg__instrument__profile__list.html" title="A list of instrument profile handles.">dxfg_instrument_profile_list</a> structure are freed. The profile handles stay valid: release each of them with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000269">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gae2ef65489af983d66f183c4ee2b2f731" title="Releases the list structure only and keeps the instrument profile handles in it.">dxfg_v4_instrument_profile_list_wrapper_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -861,6 +863,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Frees a list of the structures of instrument profiles that the SDK has filled, with the structures in it, and releases their custom fields handles. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000400">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaee915378e3b30f516a51bcae827e717f" title="Frees a list of the structures of instrument profiles that the SDK has filled, with the structures in...">dxfg_v4_instrument_profile_data_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -893,6 +896,7 @@ Functions</h2></td></tr>
 
 <p>Frees the structure of an instrument profile that the SDK has filled, and releases its custom fields handle. </p>
 <p>The structure itself is freed as well: use it for a structure that was returned by <a class="el" href="#gab869c8e0e5a741ff746402646dbbcd25" title="Returns the next instrument profile of the iterator as a structure.">dxfg_Iterable_InstrumentProfile_next2()</a>, not for an element of an array or a list.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000398">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3428761d388aa5e4bf9b6ad318c7b378" title="Frees the structure of an instrument profile that the SDK has filled, and releases its custom fields ...">dxfg_v4_instrument_profile_data_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -929,6 +933,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Frees an array of the structures of instrument profiles that the SDK has filled, with the strings of every structure, and releases their custom fields handles. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000399">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaee915378e3b30f516a51bcae827e717f" title="Frees a list of the structures of instrument profiles that the SDK has filled, with the structures in...">dxfg_v4_instrument_profile_data_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -963,6 +968,7 @@ Functions</h2></td></tr>
 <p>Returns the additional underlyings for options, including additional cash of the instrument profile. </p>
 <p>The format is a list of <span class="tt">&lt;UNDERLYING&gt; &lt;SPC&gt;</span> items separated by <span class="tt">; </span> and sorted by underlying. Examples: <span class="tt">SE 50</span>, <span class="tt">FIS 53; US$ 45.46</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getAdditionalUnderlyings()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000338">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga8a7bf725d4da24ba3f2036f20ce892ff" title="Returns the additional underlyings for options, including additional cash of the instrument profile.">dxfg_v4_InstrumentProfile_getAdditionalUnderlyings()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -996,6 +1002,7 @@ Functions</h2></td></tr>
 <p>Returns the base currency of a currency pair (FOREX instruments) of the instrument profile. </p>
 <p>It uses the three-letter currency code like the currency.</p>
 <p>Java: <span class="tt">InstrumentProfile.getBaseCurrency()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000316">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gac161c743db6b0e3bff1d34952af7fe45" title="Returns the base currency of a currency pair (FOREX instruments) of the instrument profile.">dxfg_v4_InstrumentProfile_getBaseCurrency()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1029,6 +1036,7 @@ Functions</h2></td></tr>
 <p>Returns the Classification of Financial Instruments code of the instrument profile. </p>
 <p>It is a mandatory field for OPTION instruments: it is the only way to distinguish Call/Put, American/European exercise and Cash/Physical delivery. It uses the six-letter code of ISO 10962; <span class="tt">X</span> can be used extensively and trailing letters can be omitted (they are assumed to be <span class="tt">X</span>). Examples: <span class="tt">ESNTPB</span>, <span class="tt">ESXXXX</span>, <span class="tt">ES</span>, <span class="tt">OPASPS</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getCFI()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000318">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaf52dd42189cfcc5505da3a3ca65a04c3" title="Returns the Classification of Financial Instruments code of the instrument profile.">dxfg_v4_InstrumentProfile_getCFI()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1062,6 +1070,7 @@ Functions</h2></td></tr>
 <p>Returns the country of origin (incorporation) of the corresponding company or parent entity of the instrument profile. </p>
 <p>It uses the two-letter country code of ISO 3166-1. Examples: <span class="tt">US</span>, <span class="tt">RU</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getCountry()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000306">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1d5507041587fb31728517ba2a4b3c23" title="Returns the country of origin (incorporation) of the corresponding company or parent entity of the in...">dxfg_v4_InstrumentProfile_getCountry()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1095,6 +1104,7 @@ Functions</h2></td></tr>
 <p>Returns the currency of quotation, pricing and trading of the instrument profile. </p>
 <p>It uses the three-letter currency code of ISO 4217. Examples: <span class="tt">USD</span>, <span class="tt">RUB</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getCurrency()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000314">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga939400330e01a91b38bd9ebe63eca259" title="Returns the currency of quotation, pricing and trading of the instrument profile.">dxfg_v4_InstrumentProfile_getCurrency()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1128,6 +1138,7 @@ Functions</h2></td></tr>
 <p>Returns the Committee on Uniform Security Identification Procedures code of the instrument profile. </p>
 <p>It uses the nine-letter code assigned by the CUSIP Services Bureau. Example: <span class="tt">38259P508</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getCUSIP()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000324">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga6fb260239ce6d9df8861233dbc8351c8" title="Returns the Committee on Uniform Security Identification Procedures code of the instrument profile.">dxfg_v4_InstrumentProfile_getCUSIP()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1166,6 +1177,7 @@ Functions</h2></td></tr>
 <p>Returns the day id of a date field of the instrument profile by the name of the field. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT. A custom field that is not set gives 0.</p>
 <p>Java: <span class="tt">InstrumentProfile.getDateField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000362">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3d8d941292f1c981477373bf2b559b86" title="Returns the day id of a date field of the instrument profile by the name of the field.">dxfg_v4_InstrumentProfile_getDateField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1201,6 +1213,7 @@ Functions</h2></td></tr>
 <p>It is preferably an international one in the Latin alphabet. Examples: <span class="tt">Google Inc.</span>, <span class="tt">Mini Gold
 Futures,Jun-2009,ETH</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getDescription()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000300">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga79d88b90c95668d2c5ccd7b251687cde" title="Returns the description of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_getDescription()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1234,6 +1247,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the exchange-specific data required to identify the instrument when communicating with the exchange of the instrument profile. </p>
 <p>It uses an exchange-specific format.</p>
 <p>Java: <span class="tt">InstrumentProfile.getExchangeData()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000310">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga353c660812bd6cc59a2aab08591bf605" title="Returns the exchange-specific data required to identify the instrument when communicating with the ex...">dxfg_v4_InstrumentProfile_getExchangeData()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1267,6 +1281,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the list of the exchanges where the instrument is quoted or traded of the instrument profile. </p>
 <p>The list is a sequence of MICs separated by semicolons and sorted by MIC. Example: <span class="tt">ARCX;CBSX;XNAS;XNYS</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getExchanges()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000312">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gacb83c4ef5e364edefcbc511b5fbffa78" title="Returns the list of the exchanges where the instrument is quoted or traded of the instrument profile.">dxfg_v4_InstrumentProfile_getExchanges()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1300,6 +1315,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the day id of the expiration of the instrument profile. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set.</p>
 <p>Java: <span class="tt">InstrumentProfile.getExpiration()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000342">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafb85fa5425065a205482ff586682346b" title="Returns the day id of the expiration of the instrument profile.">dxfg_v4_InstrumentProfile_getExpiration()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1333,6 +1349,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the expiration cycle style of the instrument profile. </p>
 <p>Examples: <span class="tt">Weeklys</span>, <span class="tt">Quarterlys</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getExpirationStyle()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000350">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaee125c81a8c5bed1da5eeb18e5b40070" title="Returns the expiration cycle style of the instrument profile.">dxfg_v4_InstrumentProfile_getExpirationStyle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1371,6 +1388,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the value of a field of the instrument profile by the name of the field, in the text form. </p>
 <p>The field is a standard field of the profile (TYPE, SYMBOL, DESCRIPTION, LOCAL_SYMBOL, LOCAL_DESCRIPTION, COUNTRY, OPOL, EXCHANGE_DATA, EXCHANGES, CURRENCY, BASE_CURRENCY, CFI, ISIN, SEDOL, CUSIP, ICB, SIC, MULTIPLIER, PRODUCT, UNDERLYING, SPC, ADDITIONAL_UNDERLYINGS, MMY, EXPIRATION, LAST_TRADE, STRIKE, OPTION_TYPE, EXPIRATION_STYLE, SETTLEMENT_STYLE, PRICE_INCREMENTS, TRADING_HOURS) or, for any other name, a custom field. The numeric fields are formatted like <a class="el" href="#ga9b6eb81ad79c1f5fc9c9f46a424ba08a" title="Formats a number to the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_formatNumber()</a> does, the date fields like <a class="el" href="#ga791c8c4739ca23591b00554bf531ca2c" title="Formats a day id to the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_formatDate()</a> does (a zero value is an empty string).</p>
 <p>Java: <span class="tt">InstrumentProfile.getField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000358">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1943c1e6ae5180f8abd2f2fbc65e97d9" title="Returns the value of a field of the instrument profile by the name of the field, in the text form.">dxfg_v4_InstrumentProfile_getField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1405,6 +1423,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the Industry Classification Benchmark of the instrument profile. </p>
 <p>It uses a four-digit number from the ICB catalog. Example: 9535.</p>
 <p>Java: <span class="tt">InstrumentProfile.getICB()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000326">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga673ccababa3dc4e4250575e50eb513ed" title="Returns the Industry Classification Benchmark of the instrument profile.">dxfg_v4_InstrumentProfile_getICB()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1438,6 +1457,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the International Securities Identifying Number of the instrument profile. </p>
 <p>It uses the twelve-letter code of ISO 6166. Examples: <span class="tt">DE0007100000</span>, <span class="tt">US38259P5089</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getISIN()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000320">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafd2485d3f9bd31680f134dc8677db3b3" title="Returns the International Securities Identifying Number of the instrument profile.">dxfg_v4_InstrumentProfile_getISIN()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1471,6 +1491,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the day id of the last trading day of the instrument profile. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set.</p>
 <p>Java: <span class="tt">InstrumentProfile.getLastTrade()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000344">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaaf21c0b0d90dc56ca6f69fd29c11608d" title="Returns the day id of the last trading day of the instrument profile.">dxfg_v4_InstrumentProfile_getLastTrade()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1504,6 +1525,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the description of the instrument in the national language of the instrument profile. </p>
 <p>It is empty if it is the same as the description.</p>
 <p>Java: <span class="tt">InstrumentProfile.getLocalDescription()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000304">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafee83f1ea48359f367080f3376994c21" title="Returns the description of the instrument in the national language of the instrument profile.">dxfg_v4_InstrumentProfile_getLocalDescription()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1537,6 +1559,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the identifier of the instrument in the national language of the instrument profile. </p>
 <p>It is empty if it is the same as the symbol.</p>
 <p>Java: <span class="tt">InstrumentProfile.getLocalSymbol()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000302">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga338e28dac76e6df36677c5403c7e5be7" title="Returns the identifier of the instrument in the national language of the instrument profile.">dxfg_v4_InstrumentProfile_getLocalSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1570,6 +1593,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the maturity month-year as provided for the corresponding FIX tag (200) of the instrument profile. </p>
 <p>Depending on the data source it uses <span class="tt">YYYYMM</span> (year and month), <span class="tt">YYYYMMDD</span> (full date) or <span class="tt">YYYYMMwN</span> (week number within the month).</p>
 <p>Java: <span class="tt">InstrumentProfile.getMMY()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000340">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa717ba2f5f1fd8516c6914936ff22768" title="Returns the maturity month-year as provided for the corresponding FIX tag (200) of the instrument pro...">dxfg_v4_InstrumentProfile_getMMY()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1603,6 +1627,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the market value multiplier of the instrument profile. </p>
 <p>Examples: 100, 33.2.</p>
 <p>Java: <span class="tt">InstrumentProfile.getMultiplier()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000330">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafe45c9e25c5986f437a5883b985c7824" title="Returns the market value multiplier of the instrument profile.">dxfg_v4_InstrumentProfile_getMultiplier()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1635,6 +1660,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the names of the non-empty custom fields of the instrument profile. </p>
 <p>Java: <span class="tt">InstrumentProfile.addNonEmptyCustomFieldNames(Collection)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000364">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gabd361fcecb8882be586f84b8c03308b5" title="Returns the names of the non-empty custom fields of the instrument profile.">dxfg_v4_InstrumentProfile_getNonEmptyCustomFieldNames()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1673,6 +1699,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the value of a field of the instrument profile by the name of the field, in the numeric form. </p>
 <p>The standard numeric fields are ICB, SIC, MULTIPLIER, SPC, EXPIRATION, LAST_TRADE and STRIKE; the function fails for the other standard fields. A custom field that is not set gives 0, a custom field whose text looks like a date (<span class="tt">yyyy-MM-dd</span>) gives the day id, any other text is parsed as a number.</p>
 <p>Java: <span class="tt">InstrumentProfile.getNumericField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000360">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4b0993e7a270f72921985880a519e559" title="Returns the value of a field of the instrument profile by the name of the field, in the numeric form.">dxfg_v4_InstrumentProfile_getNumericField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1707,6 +1734,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the official Place Of Listing, the organization that has listed the instrument of the instrument profile. </p>
 <p>An instrument with multiple listings uses a separate profile for each listing. It uses the Market Identifier Code (MIC) of ISO 10383. Examples: <span class="tt">XNAS</span>, <span class="tt">RTSX</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getOPOL()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000308">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafd3d708e2760b6d4ca5a9dbe8dcf3845" title="Returns the official Place Of Listing, the organization that has listed the instrument of the instrum...">dxfg_v4_InstrumentProfile_getOPOL()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1740,6 +1768,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the type of the option of the instrument profile. </p>
 <p>It is one of <span class="tt">STAN</span> (Standard Options), <span class="tt">LEAP</span> (Long-term Equity AnticiPation Securities), <span class="tt">SDO</span> (Special Dated Options), <span class="tt">BINY</span> (Binary Options), <span class="tt">FLEX</span> (FLexible EXchange Options), <span class="tt">VSO</span> (Variable Start Options), <span class="tt">RNGE</span> (Range).</p>
 <p>Java: <span class="tt">InstrumentProfile.getOptionType()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000348">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gada8128a8c3276d52d249f9cc5b06cfcd" title="Returns the type of the option of the instrument profile.">dxfg_v4_InstrumentProfile_getOptionType()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1773,6 +1802,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the minimum allowed price increments with the corresponding price ranges of the instrument profile. </p>
 <p>The format is an increment, or a list of <span class="tt">&lt;INCREMENT&gt; &lt;UPPER_LIMIT&gt;</span> ranges separated by <span class="tt">; </span> and sorted by upper limit. Examples: <span class="tt">0.25</span>, <span class="tt">0.01 3; 0.05</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getPriceIncrements()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000354">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga815b6a4cc6ba2d3dfb3f185c00f2fbc0" title="Returns the minimum allowed price increments with the corresponding price ranges of the instrument pr...">dxfg_v4_InstrumentProfile_getPriceIncrements()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1806,6 +1836,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the product for futures and options on futures (the name of the underlying asset) of the instrument profile. </p>
 <p>Example: <span class="tt">/YG</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getProduct()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000332">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4f2aa102a8377a795de7fc30daf5aa51" title="Returns the product for futures and options on futures (the name of the underlying asset) of the inst...">dxfg_v4_InstrumentProfile_getProduct()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1839,6 +1870,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the Stock Exchange Daily Official List code of the instrument profile. </p>
 <p>It uses the seven-letter code assigned by the London Stock Exchange. Examples: <span class="tt">2310967</span>, <span class="tt">5766857</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getSEDOL()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000322">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad37c48857ecaafe30ac1700324214d32" title="Returns the Stock Exchange Daily Official List code of the instrument profile.">dxfg_v4_InstrumentProfile_getSEDOL()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1872,6 +1904,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the settlement price determination style of the instrument profile. </p>
 <p>Examples: <span class="tt">Open</span>, <span class="tt">Close</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getSettlementStyle()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000352">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga0619a1466aea0b7afcd6c8b4feffe625" title="Returns the settlement price determination style of the instrument profile.">dxfg_v4_InstrumentProfile_getSettlementStyle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1905,6 +1938,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the Standard Industrial Classification of the instrument profile. </p>
 <p>It uses a four-digit number from the SIC catalog. Example: 7371.</p>
 <p>Java: <span class="tt">InstrumentProfile.getSIC()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000328">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1f7d50a0e8297d7f4c630df02babe250" title="Returns the Standard Industrial Classification of the instrument profile.">dxfg_v4_InstrumentProfile_getSIC()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1938,6 +1972,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the shares per contract for options of the instrument profile. </p>
 <p>Examples: 1, 100.</p>
 <p>Java: <span class="tt">InstrumentProfile.getSPC()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000336">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3a8dcd421b29132ced69780c2c889abe" title="Returns the shares per contract for options of the instrument profile.">dxfg_v4_InstrumentProfile_getSPC()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -1971,6 +2006,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the strike price for options of the instrument profile. </p>
 <p>Examples: 80, 22.5.</p>
 <p>Java: <span class="tt">InstrumentProfile.getStrike()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000346">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad9028cb76ea11a8ad8bb4289908a5ab7" title="Returns the strike price for options of the instrument profile.">dxfg_v4_InstrumentProfile_getStrike()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2004,6 +2040,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the identifier of the instrument of the instrument profile. </p>
 <p>It is preferably an international one in the Latin alphabet. It is a mandatory field and must not be empty. Examples: <span class="tt">GOOG</span>, <span class="tt">/YGM9</span>, <span class="tt">.ZYEAD</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getSymbol()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000298">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga04bca6fd939576e68847e3216cd199f2" title="Returns the identifier of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_getSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2037,6 +2074,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the trading hours specification of the instrument profile. </p>
 <p>The format is the one of <span class="tt">Schedule.getInstance(String)</span> of the dxFeed API.</p>
 <p>Java: <span class="tt">InstrumentProfile.getTradingHours()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000356">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gac5f3bcf95db7b9d004033b0f1399abbc" title="Returns the trading hours specification of the instrument profile.">dxfg_v4_InstrumentProfile_getTradingHours()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2070,6 +2108,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the type of the instrument of the instrument profile. </p>
 <p>It takes precedence over the other fields in conflict cases. It is a mandatory field and must not be empty. Examples: <span class="tt">STOCK</span>, <span class="tt">FUTURE</span>, <span class="tt">OPTION</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getType()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000296">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaf4d2aec7c63c177cb907214abb092911" title="Returns the type of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_getType()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2103,6 +2142,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the primary underlying symbol for options of the instrument profile. </p>
 <p>Examples: <span class="tt">C</span>, <span class="tt">/YGM9</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.getUnderlying()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000334">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1986f87c38858622219d112e42d19046" title="Returns the primary underlying symbol for options of the instrument profile.">dxfg_v4_InstrumentProfile_getUnderlying()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2131,6 +2171,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Creates an instrument profile with the default values: empty strings and zero numbers. </p>
 <p>Java: <span class="tt">new <a class="el" href="group__InstrumentProfile.html" title="Instrument profiles: reading of instrument profile files, live connections to an instrument profile s...">InstrumentProfile</a></span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000294">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga10fc9029b4d46158c4f063ba34ae3232" title="Creates an instrument profile with the default values: empty strings and zero numbers.">dxfg_v4_InstrumentProfile_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2162,6 +2203,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Creates an instrument profile as a copy of another instrument profile. </p>
 <p>Java: <span class="tt">new <a class="el" href="group__InstrumentProfile.html" title="Instrument profiles: reading of instrument profile files, live connections to an instrument profile s...">InstrumentProfile</a></span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000295">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad7c45464f4e49d72a20088234566f9b3" title="Creates an instrument profile as a copy of another instrument profile.">dxfg_v4_InstrumentProfile_newCopy()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2194,6 +2236,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Releases an instrument profile handle. </p>
 <p>It is the same as <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> for the handle.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000365">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga02911fefaf0cf65773455bd1fe9ea862" title="Releases an instrument profile handle.">dxfg_v4_InstrumentProfile_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2232,6 +2275,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the additional underlyings for options, including additional cash of the instrument profile. </p>
 <p>The format is a list of <span class="tt">&lt;UNDERLYING&gt; &lt;SPC&gt;</span> items separated by <span class="tt">; </span> and sorted by underlying. Examples: <span class="tt">SE 50</span>, <span class="tt">FIS 53; US$ 45.46</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setAdditionalUnderlyings(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000339">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4e53624876edb1c3f91d146121892ed7" title="Sets the additional underlyings for options, including additional cash of the instrument profile.">dxfg_v4_InstrumentProfile_setAdditionalUnderlyings()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2271,6 +2315,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the base currency of a currency pair (FOREX instruments) of the instrument profile. </p>
 <p>It uses the three-letter currency code like the currency.</p>
 <p>Java: <span class="tt">InstrumentProfile.setBaseCurrency(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000317">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gac17491ee758e4147c170d71c9d56ceec" title="Sets the base currency of a currency pair (FOREX instruments) of the instrument profile.">dxfg_v4_InstrumentProfile_setBaseCurrency()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2310,6 +2355,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the Classification of Financial Instruments code of the instrument profile. </p>
 <p>It is a mandatory field for OPTION instruments: it is the only way to distinguish Call/Put, American/European exercise and Cash/Physical delivery. It uses the six-letter code of ISO 10962; <span class="tt">X</span> can be used extensively and trailing letters can be omitted (they are assumed to be <span class="tt">X</span>). Examples: <span class="tt">ESNTPB</span>, <span class="tt">ESXXXX</span>, <span class="tt">ES</span>, <span class="tt">OPASPS</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setCFI(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000319">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gacae7ab6aad512427e2c3b49b2d129e41" title="Sets the Classification of Financial Instruments code of the instrument profile.">dxfg_v4_InstrumentProfile_setCFI()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2349,6 +2395,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the country of origin (incorporation) of the corresponding company or parent entity of the instrument profile. </p>
 <p>It uses the two-letter country code of ISO 3166-1. Examples: <span class="tt">US</span>, <span class="tt">RU</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setCountry(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000307">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1253aa13b01cec02e3fab22462fc6179" title="Sets the country of origin (incorporation) of the corresponding company or parent entity of the instr...">dxfg_v4_InstrumentProfile_setCountry()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2388,6 +2435,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the currency of quotation, pricing and trading of the instrument profile. </p>
 <p>It uses the three-letter currency code of ISO 4217. Examples: <span class="tt">USD</span>, <span class="tt">RUB</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setCurrency(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000315">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad3391fc20c1727113cfaf5f9d839c0ea" title="Sets the currency of quotation, pricing and trading of the instrument profile.">dxfg_v4_InstrumentProfile_setCurrency()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2427,6 +2475,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the Committee on Uniform Security Identification Procedures code of the instrument profile. </p>
 <p>It uses the nine-letter code assigned by the CUSIP Services Bureau. Example: <span class="tt">38259P508</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setCUSIP(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000325">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga6ab74ecfb36729af09cab516c1a251ff" title="Sets the Committee on Uniform Security Identification Procedures code of the instrument profile.">dxfg_v4_InstrumentProfile_setCUSIP()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2471,6 +2520,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the day id of a date field of the instrument profile by the name of the field. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT. A custom field is stored as the text <span class="tt">yyyy-MM-dd</span> (an empty string for 0).</p>
 <p>Java: <span class="tt">InstrumentProfile.setDateField(String, int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000363">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga2acb404b8e1226f75eb86fa3cac280d4" title="Sets the day id of a date field of the instrument profile by the name of the field.">dxfg_v4_InstrumentProfile_setDateField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2512,6 +2562,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>It is preferably an international one in the Latin alphabet. Examples: <span class="tt">Google Inc.</span>, <span class="tt">Mini Gold
 Futures,Jun-2009,ETH</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setDescription(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000301">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaaca10f559bf9aea48952d54466dd2ff5" title="Sets the description of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_setDescription()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2551,6 +2602,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the exchange-specific data required to identify the instrument when communicating with the exchange of the instrument profile. </p>
 <p>It uses an exchange-specific format.</p>
 <p>Java: <span class="tt">InstrumentProfile.setExchangeData(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000311">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga440bcb81a52ea8e15e7fef5bcb817412" title="Sets the exchange-specific data required to identify the instrument when communicating with the excha...">dxfg_v4_InstrumentProfile_setExchangeData()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2590,6 +2642,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the list of the exchanges where the instrument is quoted or traded of the instrument profile. </p>
 <p>The list is a sequence of MICs separated by semicolons and sorted by MIC. Example: <span class="tt">ARCX;CBSX;XNAS;XNYS</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setExchanges(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000313">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga263ffb06439ab694bcb79318ca5165c0" title="Sets the list of the exchanges where the instrument is quoted or traded of the instrument profile.">dxfg_v4_InstrumentProfile_setExchanges()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2629,6 +2682,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the day id of the expiration of the instrument profile. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set.</p>
 <p>Java: <span class="tt">InstrumentProfile.setExpiration(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000343">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga0ec09939cdb249dbc8b8bbf8bd1fa6d4" title="Sets the day id of the expiration of the instrument profile.">dxfg_v4_InstrumentProfile_setExpiration()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2668,6 +2722,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the expiration cycle style of the instrument profile. </p>
 <p>Examples: <span class="tt">Weeklys</span>, <span class="tt">Quarterlys</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setExpirationStyle(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000351">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga28209fd07efb22b291ab0222d2cc3001" title="Sets the expiration cycle style of the instrument profile.">dxfg_v4_InstrumentProfile_setExpirationStyle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2712,6 +2767,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the value of a field of the instrument profile by the name of the field, in the text form. </p>
 <p>The field is a standard field of the profile (TYPE, SYMBOL, DESCRIPTION, LOCAL_SYMBOL, LOCAL_DESCRIPTION, COUNTRY, OPOL, EXCHANGE_DATA, EXCHANGES, CURRENCY, BASE_CURRENCY, CFI, ISIN, SEDOL, CUSIP, ICB, SIC, MULTIPLIER, PRODUCT, UNDERLYING, SPC, ADDITIONAL_UNDERLYINGS, MMY, EXPIRATION, LAST_TRADE, STRIKE, OPTION_TYPE, EXPIRATION_STYLE, SETTLEMENT_STYLE, PRICE_INCREMENTS, TRADING_HOURS) or, for any other name, a custom field. The text of a numeric or a date field is parsed like <a class="el" href="#ga73c7d7989bd3cbc82fa98a31458fec97" title="Parses a number from the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_parseNumber()</a> and <a class="el" href="#ga475df7da7cbc7b996a826ec79a755df3" title="Parses a day id from the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_parseDate()</a> do; the function fails if the text has a wrong format.</p>
 <p>Java: <span class="tt">InstrumentProfile.setField(String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000359">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad29be7f5c388043752cd1501215ee8a3" title="Sets the value of a field of the instrument profile by the name of the field, in the text form.">dxfg_v4_InstrumentProfile_setField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2752,6 +2808,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the Industry Classification Benchmark of the instrument profile. </p>
 <p>It uses a four-digit number from the ICB catalog. Example: 9535.</p>
 <p>Java: <span class="tt">InstrumentProfile.setICB(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000327">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaea06649e8285f663a5d36a4ecb17ad38" title="Sets the Industry Classification Benchmark of the instrument profile.">dxfg_v4_InstrumentProfile_setICB()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2791,6 +2848,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the International Securities Identifying Number of the instrument profile. </p>
 <p>It uses the twelve-letter code of ISO 6166. Examples: <span class="tt">DE0007100000</span>, <span class="tt">US38259P5089</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setISIN(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000321">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga6871dc9bbe569533693aefbad931bce8" title="Sets the International Securities Identifying Number of the instrument profile.">dxfg_v4_InstrumentProfile_setISIN()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2830,6 +2888,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the day id of the last trading day of the instrument profile. </p>
 <p>The day id is the number of days since January 1, 1970, 00:00:00 GMT; 0 if it is not set.</p>
 <p>Java: <span class="tt">InstrumentProfile.setLastTrade(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000345">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga942f7379522bc0a1a110363e3b264bba" title="Sets the day id of the last trading day of the instrument profile.">dxfg_v4_InstrumentProfile_setLastTrade()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2869,6 +2928,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the description of the instrument in the national language of the instrument profile. </p>
 <p>It is empty if it is the same as the description.</p>
 <p>Java: <span class="tt">InstrumentProfile.setLocalDescription(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000305">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga28360f4226e6c854ea1bffcc55835472" title="Sets the description of the instrument in the national language of the instrument profile.">dxfg_v4_InstrumentProfile_setLocalDescription()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2908,6 +2968,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the identifier of the instrument in the national language of the instrument profile. </p>
 <p>It is empty if it is the same as the symbol.</p>
 <p>Java: <span class="tt">InstrumentProfile.setLocalSymbol(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000303">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga58e68c435616371aa1d8e2b5525c3fb7" title="Sets the identifier of the instrument in the national language of the instrument profile.">dxfg_v4_InstrumentProfile_setLocalSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2947,6 +3008,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the maturity month-year as provided for the corresponding FIX tag (200) of the instrument profile. </p>
 <p>Depending on the data source it uses <span class="tt">YYYYMM</span> (year and month), <span class="tt">YYYYMMDD</span> (full date) or <span class="tt">YYYYMMwN</span> (week number within the month).</p>
 <p>Java: <span class="tt">InstrumentProfile.setMMY(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000341">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gad80c244b85b22d84155349ec2cbba5d7" title="Sets the maturity month-year as provided for the corresponding FIX tag (200) of the instrument profil...">dxfg_v4_InstrumentProfile_setMMY()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -2986,6 +3048,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the market value multiplier of the instrument profile. </p>
 <p>Examples: 100, 33.2.</p>
 <p>Java: <span class="tt">InstrumentProfile.setMultiplier(double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000331">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gae94ad59aab925ba40cddb46b444624a0" title="Sets the market value multiplier of the instrument profile.">dxfg_v4_InstrumentProfile_setMultiplier()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3030,6 +3093,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the value of a field of the instrument profile by the name of the field, in the numeric form. </p>
 <p>The function fails for the standard fields that are not numeric (see <a class="el" href="#gadd3c8bca3630560995c0ee952d259ecc" title="Returns the value of a field of the instrument profile by the name of the field, in the numeric form.">dxfg_InstrumentProfile_getNumericField()</a>). A custom field is stored as the text of the number.</p>
 <p>Java: <span class="tt">InstrumentProfile.setNumericField(String, double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000361">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga22640f1fea2737458e76ae252d6cc331" title="Sets the value of a field of the instrument profile by the name of the field, in the numeric form.">dxfg_v4_InstrumentProfile_setNumericField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3070,6 +3134,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the official Place Of Listing, the organization that has listed the instrument of the instrument profile. </p>
 <p>An instrument with multiple listings uses a separate profile for each listing. It uses the Market Identifier Code (MIC) of ISO 10383. Examples: <span class="tt">XNAS</span>, <span class="tt">RTSX</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setOPOL(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000309">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaf4eb119413da1004b7ad806d6887a463" title="Sets the official Place Of Listing, the organization that has listed the instrument of the instrument...">dxfg_v4_InstrumentProfile_setOPOL()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3109,6 +3174,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the type of the option of the instrument profile. </p>
 <p>It is one of <span class="tt">STAN</span> (Standard Options), <span class="tt">LEAP</span> (Long-term Equity AnticiPation Securities), <span class="tt">SDO</span> (Special Dated Options), <span class="tt">BINY</span> (Binary Options), <span class="tt">FLEX</span> (FLexible EXchange Options), <span class="tt">VSO</span> (Variable Start Options), <span class="tt">RNGE</span> (Range).</p>
 <p>Java: <span class="tt">InstrumentProfile.setOptionType(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000349">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaf40f17ddf5b640716bf5226f0583c5c9" title="Sets the type of the option of the instrument profile.">dxfg_v4_InstrumentProfile_setOptionType()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3148,6 +3214,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the minimum allowed price increments with the corresponding price ranges of the instrument profile. </p>
 <p>The format is an increment, or a list of <span class="tt">&lt;INCREMENT&gt; &lt;UPPER_LIMIT&gt;</span> ranges separated by <span class="tt">; </span> and sorted by upper limit. Examples: <span class="tt">0.25</span>, <span class="tt">0.01 3; 0.05</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setPriceIncrements(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000355">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa0fc4219632becdb302ff512511a9117" title="Sets the minimum allowed price increments with the corresponding price ranges of the instrument profi...">dxfg_v4_InstrumentProfile_setPriceIncrements()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3187,6 +3254,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the product for futures and options on futures (the name of the underlying asset) of the instrument profile. </p>
 <p>Example: <span class="tt">/YG</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setProduct(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000333">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga777a2754b120921a416505cf0b2f049b" title="Sets the product for futures and options on futures (the name of the underlying asset) of the instrum...">dxfg_v4_InstrumentProfile_setProduct()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3226,6 +3294,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the Stock Exchange Daily Official List code of the instrument profile. </p>
 <p>It uses the seven-letter code assigned by the London Stock Exchange. Examples: <span class="tt">2310967</span>, <span class="tt">5766857</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setSEDOL(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000323">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gabb4b73b3dd34b634bac02a0e8bb1a3b7" title="Sets the Stock Exchange Daily Official List code of the instrument profile.">dxfg_v4_InstrumentProfile_setSEDOL()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3265,6 +3334,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the settlement price determination style of the instrument profile. </p>
 <p>Examples: <span class="tt">Open</span>, <span class="tt">Close</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setSettlementStyle(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000353">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gade1276f6c30b3e0121e33eeaf6aa8336" title="Sets the settlement price determination style of the instrument profile.">dxfg_v4_InstrumentProfile_setSettlementStyle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3304,6 +3374,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the Standard Industrial Classification of the instrument profile. </p>
 <p>It uses a four-digit number from the SIC catalog. Example: 7371.</p>
 <p>Java: <span class="tt">InstrumentProfile.setSIC(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000329">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaedbbc0c38af9a5c4a9d4a3cb019d33bc" title="Sets the Standard Industrial Classification of the instrument profile.">dxfg_v4_InstrumentProfile_setSIC()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3343,6 +3414,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the shares per contract for options of the instrument profile. </p>
 <p>Examples: 1, 100.</p>
 <p>Java: <span class="tt">InstrumentProfile.setSPC(double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000337">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga85e7a5c577632cfc41a667e017574d5e" title="Sets the shares per contract for options of the instrument profile.">dxfg_v4_InstrumentProfile_setSPC()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3382,6 +3454,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the strike price for options of the instrument profile. </p>
 <p>Examples: 80, 22.5.</p>
 <p>Java: <span class="tt">InstrumentProfile.setStrike(double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000347">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaec2fffc710e47610338cbb2ed3dd120f" title="Sets the strike price for options of the instrument profile.">dxfg_v4_InstrumentProfile_setStrike()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3421,6 +3494,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the identifier of the instrument of the instrument profile. </p>
 <p>It is preferably an international one in the Latin alphabet. It is a mandatory field and must not be empty. Examples: <span class="tt">GOOG</span>, <span class="tt">/YGM9</span>, <span class="tt">.ZYEAD</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setSymbol(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000299">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaf8bdc375fef5449ad04538ed550af674" title="Sets the identifier of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_setSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3460,6 +3534,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the trading hours specification of the instrument profile. </p>
 <p>The format is the one of <span class="tt">Schedule.getInstance(String)</span> of the dxFeed API.</p>
 <p>Java: <span class="tt">InstrumentProfile.setTradingHours(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000357">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga9c6dfdb02fbaf832af963b98a8f1c501" title="Sets the trading hours specification of the instrument profile.">dxfg_v4_InstrumentProfile_setTradingHours()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3499,6 +3574,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the type of the instrument of the instrument profile. </p>
 <p>It takes precedence over the other fields in conflict cases. It is a mandatory field and must not be empty. Examples: <span class="tt">STOCK</span>, <span class="tt">FUTURE</span>, <span class="tt">OPTION</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setType(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000297">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga7eeb5dafed5a156c8b2bbba66466db24" title="Sets the type of the instrument of the instrument profile.">dxfg_v4_InstrumentProfile_setType()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3538,6 +3614,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the primary underlying symbol for options of the instrument profile. </p>
 <p>Examples: <span class="tt">C</span>, <span class="tt">/YGM9</span>.</p>
 <p>Java: <span class="tt">InstrumentProfile.setUnderlying(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000335">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gadb044e920fcc7139fe12b39b3f823bc6" title="Sets the primary underlying symbol for options of the instrument profile.">dxfg_v4_InstrumentProfile_setUnderlying()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3577,6 +3654,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Adds a listener that is notified about any updates in the set of the instrument profiles. </p>
 <p>If the set of the profiles is not empty, the listener is notified about it as well (by the executor of the collector). Remove the listener with <a class="el" href="#gae71a570a938ca39291934b87266dc4ab" title="Removes a listener that was added with dxfg_InstrumentProfileCollector_addUpdateListener().">dxfg_InstrumentProfileCollector_removeUpdateListener()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.addUpdateListener(InstrumentProfileUpdateListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000279">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3f68d1b9e54d6148029940ab74ee3dce" title="Adds a listener that is notified about any updates in the set of the instrument profiles.">dxfg_v4_InstrumentProfileCollector_addUpdateListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3611,6 +3689,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the executor that calls the update listeners of the collector. </p>
 <p>By default a single-threaded executor is used to process the updates asynchronously.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.getExecutor()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000277">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga5e1f8b11f786a80e42afa7236b3cfc40" title="Returns the executor that calls the update listeners of the collector.">dxfg_v4_InstrumentProfileCollector_getExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3644,6 +3723,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the last modification time of the instrument profiles of the collector in milliseconds. </p>
 <p>The time is in milliseconds, but the actual granularity of the time is a second.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.getLastUpdateTime()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000272">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa56e64cf2a2cb44070a27b1f88f71a9a" title="Returns the last modification time of the instrument profiles of the collector in milliseconds.">dxfg_v4_InstrumentProfileCollector_getLastUpdateTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3673,6 +3753,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates an instrument profile collector. </p>
 <p>The collector keeps one instrument profile per symbol and notifies its listeners about the updates.</p>
 <p>Java: <span class="tt">new InstrumentProfileCollector()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000271">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga052aa53f2294e479d30c1ac15451c612" title="Creates an instrument profile collector.">dxfg_v4_InstrumentProfileCollector_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3710,6 +3791,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Removes the instrument profiles whose generation tags are in a list. </p>
 <p>The profiles without a generation tag are not removed. The time of the call grows with the number of the profiles in the collector: use it sparingly. The list and its handles still belong to the caller.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.removeGenerations(Set)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000275">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga833fbecfc87c32638edf02228204fdca" title="Removes the instrument profiles whose generation tags are in a list.">dxfg_v4_InstrumentProfileCollector_removeGenerations()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3749,6 +3831,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Removes a listener that was added with <a class="el" href="#ga5346fc07eef683c27b7f2efd23724780" title="Adds a listener that is notified about any updates in the set of the instrument profiles.">dxfg_InstrumentProfileCollector_addUpdateListener()</a>. </p>
 <p>The listener handle is not released.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.removeUpdateListener(InstrumentProfileUpdateListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000280">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga05184e49dc6fe6dc078cc2082a5f067b" title="Removes a listener that was added with dxfg_v4_InstrumentProfileCollector_addUpdateListener().">dxfg_v4_InstrumentProfileCollector_removeUpdateListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3787,6 +3870,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Changes the executor that calls the update listeners of the collector. </p>
 <p>Java: <span class="tt">InstrumentProfileCollector.setExecutor(Executor)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000278">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gab7fea39b77a81736abe9758a799047bd" title="Changes the executor that calls the update listeners of the collector.">dxfg_v4_InstrumentProfileCollector_setExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3826,6 +3910,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Updates one instrument profile in the collector. </p>
 <p>The collector stores the Java instrument profile object behind the handle, not a copy: do not modify the profile after the call. It is the same as <a class="el" href="#ga1e3f9fb6b4bf10670d780bdd59de56c7" title="Updates a list of instrument profiles in the collector and assigns them a generation tag.">dxfg_InstrumentProfileCollector_updateInstrumentProfiles()</a> with one profile and no generation.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.updateInstrumentProfile(InstrumentProfile)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000273">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa1d3230969ddc8c53d1868cd7520cb35" title="Updates one instrument profile in the collector.">dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3865,6 +3950,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Updates one instrument profile in the collector from a structure. </p>
 <p>The collector gets a new Java instrument profile built from the structure: the structure is only read and can be released after the call. The custom fields are shared, not copied (see <a class="el" href="structdxfg__instrument__profile2__t.html" title="The fields of an instrument profile in a plain C structure, with the handle of its custom fields.">dxfg_instrument_profile2_t</a>): do not change them through instrument_profile_custom_fields after the call.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.updateInstrumentProfile(InstrumentProfile)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000382">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1344aad7b488f08a4a04d79dc8cc4006" title="Updates one instrument profile in the collector from a structure.">dxfg_v4_InstrumentProfileCollector_updateInstrumentProfile()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3909,6 +3995,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Updates a list of instrument profiles in the collector and assigns them a generation tag. </p>
 <p>The removal of an instrument profile is represented by a profile whose type is <span class="tt">REMOVED</span>. The collector stores the Java instrument profile objects behind the handles, not copies: do not modify the profiles after the call. The list and its handles still belong to the caller.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.updateInstrumentProfiles(List, Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000274">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga21a522df07c009e421ec44a3a1c3be88" title="Updates a list of instrument profiles in the collector and assigns them a generation tag.">dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -3959,6 +4046,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Updates an array of instrument profiles in the collector from structures and assigns them a generation tag. </p>
 <p>The collector gets new Java instrument profiles built from the structures: the structures are only read and can be released after the call; the custom fields are shared, not copied (see <a class="el" href="structdxfg__instrument__profile2__t.html" title="The fields of an instrument profile in a plain C structure, with the handle of its custom fields.">dxfg_instrument_profile2_t</a>). The call does nothing if the array is NULL or the size is not positive. The removal of an instrument profile is represented by a profile whose type is <span class="tt">REMOVED</span>.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.updateInstrumentProfiles(List, Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000383">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gab93fcafe61231fa9a16ad54db5a7cb07" title="Updates a list of instrument profiles in the collector from structures and assigns them a generation ...">dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4005,6 +4093,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Updates a list of instrument profiles in the collector from structures and assigns them a generation tag. </p>
 <p>The collector gets new Java instrument profiles built from the structures: the structures are only read and can be released after the call; the custom fields are shared, not copied (see <a class="el" href="structdxfg__instrument__profile2__t.html" title="The fields of an instrument profile in a plain C structure, with the handle of its custom fields.">dxfg_instrument_profile2_t</a>). The removal of an instrument profile is represented by a profile whose type is <span class="tt">REMOVED</span>.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.updateInstrumentProfiles(List, Object)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000384">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gab93fcafe61231fa9a16ad54db5a7cb07" title="Updates a list of instrument profiles in the collector from structures and assigns them a generation ...">dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4040,6 +4129,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns an iterator over the instrument profiles of the collector. </p>
 <p>The iterator is a concurrent view of the set of the profiles. It exposes the profiles that are not removed; however, if the iteration is concurrent with a removal, a removed profile (its type is <span class="tt">REMOVED</span>) can be exposed.</p>
 <p>Java: <span class="tt">InstrumentProfileCollector.view()</span>. The SDK returns the iterator of the view.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000276">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga087f4bc8ff231330c352bfc69e9d03ae" title="Returns an iterator over the instrument profiles of the collector.">dxfg_v4_InstrumentProfileCollector_view()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4078,6 +4168,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Adds a listener of the state changes of the connection. </p>
 <p>The listener is called for the following state changes only, not for the current state. Remove it with <a class="el" href="#ga89c331b7141a27336751310169533713" title="Removes a listener of the state changes of the connection.">dxfg_InstrumentProfileConnection_removeStateChangeListener()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.addStateChangeListener(PropertyChangeListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000266">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga2bc9a206fc0a0147ea5418ba2f5a30fb" title="Adds a listener of the state changes of the connection.">dxfg_v4_InstrumentProfileConnection_addStateChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4112,6 +4203,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Closes the connection. </p>
 <p>The state of the connection immediately changes to <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aa380eea4bbe9c7bf7c6bb1ba6a9865a29">DXFG_IPF_CONNECTION_STATE_CLOSED</a> and the background update is terminated. Closing a closed connection does nothing.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.close()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000264">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa6bbf6ead5f77d95340523fa14ac5af2" title="Closes the connection.">dxfg_v4_InstrumentProfileConnection_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4150,6 +4242,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates an instrument profile connection to an address that pushes the profiles into a collector. </p>
 <p>The address is <span class="tt">&lt;host&gt;:&lt;port&gt;</span> of a server, a URL, or a file path. The clause <span class="tt">[update=&lt;period&gt;]</span> can be added at the end of the address to set the update period (see <a class="el" href="#gacd19411375e527069974f9ed1b84db9d" title="Returns the update period of the connection in milliseconds.">dxfg_InstrumentProfileConnection_getUpdatePeriod()</a>); the default period is 1 minute. The connection is not started: call <a class="el" href="#ga7b4a7ecfc3b12377af22a3308333cada" title="Starts the connection.">dxfg_InstrumentProfileConnection_start()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.createConnection(String, InstrumentProfileCollector)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000257">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga324930f6c21db7e08805a13b75c12447" title="Creates an instrument profile connection to an address that pushes the profiles into a collector.">dxfg_v4_InstrumentProfileConnection_createConnection()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4183,6 +4276,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the address of the connection, without the additional options given as a part of it. </p>
 <p>Java: <span class="tt">InstrumentProfileConnection.getAddress()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000258">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gab0d4ce783c16bf9ec4b83e9c6bf401c8" title="Returns the address of the connection, without the additional options given as a part of it.">dxfg_v4_InstrumentProfileConnection_getAddress()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4216,6 +4310,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the last modification time of the instrument profiles in milliseconds, or 0 if it is unknown. </p>
 <p>The time is in milliseconds, but the actual granularity of the time is a second.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.getLastModified()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000262">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3fefb18ec9e5aafd003172d6b1eccb3d" title="Returns the last modification time of the instrument profiles in milliseconds, or 0 if it is unknown.">dxfg_v4_InstrumentProfileConnection_getLastModified()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4248,6 +4343,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the state of the connection. </p>
 <p>Java: <span class="tt">InstrumentProfileConnection.getState()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000261">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4cb74b02568f2a00892770e0f1146231" title="Returns the state of the connection.">dxfg_v4_InstrumentProfileConnection_getState()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4281,6 +4377,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the update period of the connection in milliseconds. </p>
 <p>It is the period of an update check when the instrument profile source does not support live updates and when the connection is dropped. The default period is 1 minute unless the address of the connection sets another one.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.getUpdatePeriod()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000259">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga893a639d727a6ce48d46f18c885f39b9" title="Returns the update period of the connection in milliseconds.">dxfg_v4_InstrumentProfileConnection_getUpdatePeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4319,6 +4416,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Removes a listener of the state changes of the connection. </p>
 <p>The listener handle is not released.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.removeStateChangeListener(PropertyChangeListener)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000267">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga0b61e8ddb29abdfbed5e0cdc25c84181" title="Removes a listener of the state changes of the connection.">dxfg_v4_InstrumentProfileConnection_removeStateChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4357,6 +4455,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Changes the update period of the connection. </p>
 <p>Java: <span class="tt">InstrumentProfileConnection.setUpdatePeriod(long)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000260">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga63175594d55137ad7400eb2f5d035402" title="Changes the update period of the connection.">dxfg_v4_InstrumentProfileConnection_setUpdatePeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4391,6 +4490,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Starts the connection. </p>
 <p>The state of the connection immediately changes to <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aa96b44585259503b7ccc8e0509b363355">DXFG_IPF_CONNECTION_STATE_CONNECTING</a> and the actual connection is established in the background. The function fails if the state is not <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aa991193095dc8ec7e543d89c13616ebcd">DXFG_IPF_CONNECTION_STATE_NOT_CONNECTED</a> (the connection is already started or closed).</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.start()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000263">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga786a64670d3dfd737dd54f0f2a275aa7" title="Starts the connection.">dxfg_v4_InstrumentProfileConnection_start()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4429,6 +4529,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Waits until the initial snapshot of the instrument profiles is fully read, for at most the timeout. </p>
 <p>The calling thread is blocked until the state <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aacf5a67a087eb7763e4c50280852e5a36">DXFG_IPF_CONNECTION_STATE_COMPLETED</a> is reached, the connection is closed, or the timeout elapses.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.waitUntilCompleted(long, TimeUnit)</span>. The timeout is in milliseconds.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000268">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga9cc9238b78dcef544ba4729f3abf0542" title="Waits until the initial snapshot of the instrument profiles is fully read, for at most the timeout.">dxfg_v4_InstrumentProfileConnection_waitUntilCompleted()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4471,7 +4572,7 @@ Futures,Jun-2009,ETH</span>.</p>
 </div><div class="memdoc">
 
 <p>Returns the names of the non-empty custom fields. </p>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated</a></b></dt><dd>The updated parameter is useless. Use <a class="el" href="#gad3bf43b6401664bd607017ea1b90b1e6" title="Returns the names of the non-empty custom fields.">dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames()</a> instead.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000380">Deprecated</a></b></dt><dd>The updated parameter is useless. Use <a class="el" href="group__V4__InstrumentProfile.html#ga8a8cde1beb99a35cf866fb3f4353ed91" title="Returns the names of the non-empty custom fields.">dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames()</a> instead.</dd></dl>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.addNonEmptyFieldNames(Collection)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -4518,6 +4619,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the day id of a date custom field by the name. </p>
 <p>A field that is not set or is empty gives 0. The function fails if the text of the field is not a date, see <a class="el" href="#ga475df7da7cbc7b996a826ec79a755df3" title="Parses a day id from the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_parseDate()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.getDateField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000378">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga7384259e12dbcde415d2d242616aaad7" title="Returns the day id of a date custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_getDateField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4562,6 +4664,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the value of a custom field by the name. </p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.getField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000374">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4a05bff8dfb060dc2f36270167a025d0" title="Returns the value of a custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_getField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4601,6 +4704,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the names of the non-empty custom fields. </p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.addNonEmptyFieldNames(Collection)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000381">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga8a8cde1beb99a35cf866fb3f4353ed91" title="Returns the names of the non-empty custom fields.">dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4645,6 +4749,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the numeric value of a custom field by the name. </p>
 <p>A field that is not set or is empty gives 0. A field whose text looks like a date (<span class="tt">yyyy-MM-dd</span>) gives the day id (the number of days since January 1, 1970, 00:00:00 GMT); the text of any other field is parsed as a number.</p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.getNumericField(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000376">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga804aded4b675323a01dc7be142ea02b0" title="Returns the numeric value of a custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_getNumericField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4679,6 +4784,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Creates empty custom fields. </p>
 <p>Java: <span class="tt">new InstrumentProfileCustomFields()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000370">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gab92e7bbd267f25ded277469113383162" title="Creates empty custom fields.">dxfg_v4_InstrumentProfileCustomFields_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4722,6 +4828,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates custom fields from an array of strings: the names and the values, consecutive. </p>
 <p>The array is name 0, value 0, name 1, value 1 and so on. If the array is NULL or the size is not positive, empty custom fields are created.</p>
 <p>Java: <span class="tt">new InstrumentProfileCustomFields(String[])</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000371">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga675d1677d97fd5b9bc774d3c786194e6" title="Creates custom fields from a list of strings: the names and the values, consecutive.">dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4761,6 +4868,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Creates custom fields as a copy of other custom fields. </p>
 <p>Java: <span class="tt">new InstrumentProfileCustomFields(InstrumentProfileCustomFields)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000372">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga5a2b23d83f0ff4a8816f4d24a6fa5666" title="Creates custom fields as a copy of other custom fields.">dxfg_v4_InstrumentProfileCustomFields_newCopy()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4800,6 +4908,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates custom fields from a list of strings: the names and the values, consecutive. </p>
 <p>The list is name 0, value 0, name 1, value 1 and so on. If the list is NULL or empty, empty custom fields are created.</p>
 <p>Java: <span class="tt">new InstrumentProfileCustomFields(String[])</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000373">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga675d1677d97fd5b9bc774d3c786194e6" title="Creates custom fields from a list of strings: the names and the values, consecutive.">dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4844,6 +4953,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the day id of a date custom field by the name. </p>
 <p>The field is stored as the text of the date, see <a class="el" href="#ga791c8c4739ca23591b00554bf531ca2c" title="Formats a day id to the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_formatDate()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.setDateField(String, int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000379">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga7823f5af73674b3e1bcd03343e992a88" title="Sets the day id of a date custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_setDateField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4889,6 +4999,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the value of a custom field by the name. </p>
 <p>An empty value clears the field: it is not listed by <a class="el" href="#gad3bf43b6401664bd607017ea1b90b1e6" title="Returns the names of the non-empty custom fields.">dxfg_InstrumentProfileCustomFields_getNonEmptyFieldNames()</a> anymore.</p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.setField(String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000375">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1f03dc5a128fdba830978dd6d27d4100" title="Sets the value of a custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_setField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4934,6 +5045,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Sets the numeric value of a custom field by the name. </p>
 <p>The field is stored as the text of the number, see <a class="el" href="#ga9b6eb81ad79c1f5fc9c9f46a424ba08a" title="Formats a number to the text form that is used in the instrument profile fields.">dxfg_InstrumentProfileField_formatNumber()</a>.</p>
 <p>Java: <span class="tt">InstrumentProfileCustomFields.setNumericField(String, double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000377">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga01d42cc64bd0c626c5fae082f6b7f07d" title="Sets the numeric value of a custom field by the name.">dxfg_v4_InstrumentProfileCustomFields_setNumericField()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -4974,6 +5086,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Formats a day id to the text form that is used in the instrument profile fields. </p>
 <p>The text is <span class="tt">yyyy-MM-dd</span> for the GMT time zone; 0 is formatted as an empty string.</p>
 <p>Java: <span class="tt">InstrumentProfileField.formatDate(int)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000368">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gadd93f7470bcf4503f819689f2fd3ac79" title="Formats a day id to the text form that is used in the instrument profile fields.">dxfg_v4_InstrumentProfileField_formatDate()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5013,6 +5126,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Formats a number to the text form that is used in the instrument profile fields. </p>
 <p>The text has no digit grouping; 0 is formatted as an empty string.</p>
 <p>Java: <span class="tt">InstrumentProfileField.formatNumber(double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000366">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gafa71c8b71d5d002fc2431f6d3511c499" title="Formats a number to the text form that is used in the instrument profile fields.">dxfg_v4_InstrumentProfileField_formatNumber()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5052,6 +5166,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Parses a day id from the text form that is used in the instrument profile fields. </p>
 <p>The text is <span class="tt">yyyy-MM-dd</span> for the GMT time zone. A NULL or an empty string gives 0. The function fails if the text is not a date of this format.</p>
 <p>Java: <span class="tt">InstrumentProfileField.parseDate(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000369">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaee579f7f1c009bd7fcdf92a0b25276f2" title="Parses a day id from the text form that is used in the instrument profile fields.">dxfg_v4_InstrumentProfileField_parseDate()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5091,6 +5206,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Parses a number from the text form that is used in the instrument profile fields. </p>
 <p>A NULL or an empty string gives 0. The function fails if the text is not a number.</p>
 <p>Java: <span class="tt">InstrumentProfileField.parseNumber(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000367">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4076626b87bd29a20a565531f79fbf9b" title="Parses a number from the text form that is used in the instrument profile fields.">dxfg_v4_InstrumentProfileField_parseNumber()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5124,6 +5240,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Returns the last modification time in milliseconds from the last read from an address, or 0 if it is unknown. </p>
 <p>Java: <span class="tt">InstrumentProfileReader.getLastModified()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000285">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa4822c2bbaf9f2aa5144cdfec7c020b1" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_v4_InstrumentProfileReader_getLastModified()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5152,6 +5269,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Creates an instrument profile reader. </p>
 <p>Java: <span class="tt">new InstrumentProfileReader()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000284">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gae8bbb82027cdec6efcce1a3b2ec673ac" title="Creates an instrument profile reader.">dxfg_v4_InstrumentProfileReader_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5189,6 +5307,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream with plain (not compressed) data. </p>
 <p>It is deprecated in Java; use <a class="el" href="#ga09c80ea3102d0488c7c76202c9ccc884" title="Reads and returns the instrument profiles from an input stream.">dxfg_InstrumentProfileReader_read2()</a>. Unlike it, the function does not decompress the stream and does not report an incomplete one. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000293">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga7e9443355bf1a8b19dabe553dbc2c4b9" title="Reads and returns the instrument profiles from an input stream with plain (not compressed) data.">dxfg_v4_InstrumentProfileReader_readAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5233,6 +5352,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000291">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga8c018472682501eb8b4739115cf6cc7e" title="Reads and returns the instrument profiles from an input stream.">dxfg_v4_InstrumentProfileReader_readWithAddressAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5283,6 +5403,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream with plain (not compressed) data as structures. </p>
 <p>It is deprecated in Java. Use <a class="el" href="#gadf69f0bfb2ce5a90056047f3901559c8" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read4()</a> or <a class="el" href="#gadab00c8e15dc429fe3ef7eeb71dd9d15" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read6()</a>. Unlike <a class="el" href="#gadf69f0bfb2ce5a90056047f3901559c8" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read4()</a>, the function does not decompress the stream and does not report an incomplete one. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000392">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga56634b11b77b307ff5b82cf8f2d86d0e" title="Reads and returns the instrument profiles from an input stream with plain (not compressed) data as st...">dxfg_v4_InstrumentProfileReader_read()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5339,6 +5460,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000393">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga2ade71e23936b0998a6c15e1b32c88a6" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_v4_InstrumentProfileReader_readWithAddress()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5386,6 +5508,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream with plain (not compressed) data as structures. </p>
 <p>It is deprecated in Java. Use <a class="el" href="#gadf69f0bfb2ce5a90056047f3901559c8" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read4()</a> or <a class="el" href="#gadab00c8e15dc429fe3ef7eeb71dd9d15" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read6()</a>. Unlike <a class="el" href="#gadf69f0bfb2ce5a90056047f3901559c8" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_InstrumentProfileReader_read4()</a>, the function does not decompress the stream and does not report an incomplete one. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000394">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga56634b11b77b307ff5b82cf8f2d86d0e" title="Reads and returns the instrument profiles from an input stream with plain (not compressed) data as st...">dxfg_v4_InstrumentProfileReader_read()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5436,6 +5559,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an input stream as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.read(InputStream, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000395">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga2ade71e23936b0998a6c15e1b32c88a6" title="Reads and returns the instrument profiles from an input stream as structures.">dxfg_v4_InstrumentProfileReader_readWithAddress()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5477,6 +5601,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from a compressed input stream. </p>
 <p>It is deprecated in Java; use <a class="el" href="#ga09c80ea3102d0488c7c76202c9ccc884" title="Reads and returns the instrument profiles from an input stream.">dxfg_InstrumentProfileReader_read2()</a>. The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readCompressed(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000292">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga11f1f8b21bbec5fc350fccb333885085" title="Reads and returns the instrument profiles from a compressed input stream.">dxfg_v4_InstrumentProfileReader_readCompressedAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5526,6 +5651,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from a compressed input stream as structures. </p>
 <p>It is deprecated in Java. The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readCompressed(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000396">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga582b2188b6d087bd893870d211582e17" title="Reads and returns the instrument profiles from a compressed input stream as structures.">dxfg_v4_InstrumentProfileReader_readCompressed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5572,6 +5698,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from a compressed input stream as structures. </p>
 <p>It is deprecated in Java. The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The stream is not closed. The operation updates the value of <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readCompressed(InputStream)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000397">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga582b2188b6d087bd893870d211582e17" title="Reads and returns the instrument profiles from a compressed input stream as structures.">dxfg_v4_InstrumentProfileReader_readCompressed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5612,6 +5739,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000287">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga15b919d798317ea39040bd5e960535f9" title="Reads and returns the instrument profiles from an address.">dxfg_v4_InstrumentProfileReader_readFromFileAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5661,6 +5789,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with basic authentication credentials. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The user and the password take precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000288">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga4821793ecce6615ae7c9091489e7ff81" title="Reads and returns the instrument profiles from an address with basic authentication credentials.">dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPasswordAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5707,6 +5836,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with token credentials. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The token takes precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, AuthToken)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000289">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaeb9a52af39156ddaab110ac913a16cd1" title="Reads and returns the instrument profiles from an address with token credentials.">dxfg_v4_InstrumentProfileReader_readFromFileWithTokenAsHandles()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5757,6 +5887,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000386">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga66caf12192ec620cca76b38449ae3262" title="Reads and returns the instrument profiles from an address as structures.">dxfg_v4_InstrumentProfileReader_readFromFile()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5818,6 +5949,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with basic authentication credentials as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The user and the password take precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000387">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga0e44207ff64a50ec22383417d168df3d" title="Reads and returns the instrument profiles from an address with basic authentication credentials as st...">dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5876,6 +6008,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with token credentials as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The token takes precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, AuthToken)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000388">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3dff4924342c074ba50f11b2bcfccd9c" title="Reads and returns the instrument profiles from an address with token credentials as structures.">dxfg_v4_InstrumentProfileReader_readFromFileWithToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5923,6 +6056,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000389">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga66caf12192ec620cca76b38449ae3262" title="Reads and returns the instrument profiles from an address as structures.">dxfg_v4_InstrumentProfileReader_readFromFile()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -5978,6 +6112,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with basic authentication credentials as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The user and the password take precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000390">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga0e44207ff64a50ec22383417d168df3d" title="Reads and returns the instrument profiles from an address with basic authentication credentials as st...">dxfg_v4_InstrumentProfileReader_readFromFileWithUserAndPassword()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6030,6 +6165,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Reads and returns the instrument profiles from an address with token credentials as structures. </p>
 <p>The data compression formats "zip" and "gzip" are recognized automatically: for zip the first file entry is read as a plain data stream, other data is parsed as is. The address is a URL, a file path or <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (see <a class="el" href="#gae94342a08bab1f791a1a8d374eafd1dc" title="Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readF...">dxfg_InstrumentProfileReader_resolveSourceURL()</a>). Authentication information can be passed as a part of the URL, for example <span class="tt"><a href="http://user:password">http://user:password</a>@host:port/path/file.ipf</span>. The token takes precedence over the authentication information of the URL. The operation updates the values of <a class="el" href="#gacf7a4dbb39e300477d7fba977752ed6e" title="Returns the last modification time in milliseconds from the last read from an address,...">dxfg_InstrumentProfileReader_getLastModified()</a> and <a class="el" href="#gabec3b961303100922aabb302d71a56ce" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_InstrumentProfileReader_wasComplete()</a>. The function fails if the data does not conform to the Instrument Profile Format or on an I/O error.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.readFromFile(String, AuthToken)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000391">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga3dff4924342c074ba50f11b2bcfccd9c" title="Reads and returns the instrument profiles from an address with token credentials as structures.">dxfg_v4_InstrumentProfileReader_readFromFileWithToken()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6066,6 +6202,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Converts an address specification into the URL that is read by the dxfg_InstrumentProfileReader_readFromFile*() functions. </p>
 <p>An address of the form <span class="tt">&lt;host&gt;:&lt;port&gt;</span> (it contains a colon, no slash and ends with a valid port number) becomes <span class="tt"><a href="http://">http://</a>&lt;host&gt;:&lt;port&gt;/ipf/all.ipf.gz</span>, the query part of the address is kept; any other address is returned as is.</p>
 <p>Java: <span class="tt">InstrumentProfileReader.resolveSourceURL(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000290">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaace84ed94f71f02dc7def67389a6a235" title="Converts an address specification into the URL that is read by the dxfg_v4_InstrumentProfileReader_re...">dxfg_v4_InstrumentProfileReader_resolveSourceURL()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6098,6 +6235,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Checks whether the instrument profile file was fully read by the last read operation. </p>
 <p>Java: <span class="tt">InstrumentProfileReader.wasComplete()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000286">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga1263cfeab3aedef46b11c5ebf179936f" title="Checks whether the instrument profile file was fully read by the last read operation.">dxfg_v4_InstrumentProfileReader_wasComplete()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6136,6 +6274,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates a listener of the updates of a collector that calls a C function. </p>
 <p>Add the listener with <a class="el" href="#ga5346fc07eef683c27b7f2efd23724780" title="Adds a listener that is notified about any updates in the set of the instrument profiles.">dxfg_InstrumentProfileCollector_addUpdateListener()</a>. The function is called by the executor of the collector, see <a class="el" href="#gad4de3b9ea03f5d6677ffb4d3ca873ebe" title="The function of a dxfg_ipf_update_listener_t: called when the set of the instrument profiles of the c...">dxfg_ipf_update_listener_function</a>. Releasing the last handle of the listener deactivates it: after <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> returns the function is not called anymore, so user_data can be freed.</p>
 <p>Java: <span class="tt">InstrumentProfileUpdateListener.instrumentProfilesUpdated(Iterator)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000283">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga330e57c1e37c83a7daac709030814fc8" title="Creates a listener of the updates of a collector that calls a C function.">dxfg_v4_InstrumentProfileUpdateListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6175,6 +6314,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Creates a listener of the state changes of a connection that calls a C function. </p>
 <p>Add the listener with <a class="el" href="#ga33f61ef92381458a699ba97674e5db0e" title="Adds a listener of the state changes of the connection.">dxfg_InstrumentProfileConnection_addStateChangeListener()</a>. The function is called by a Java thread, see <a class="el" href="#ga9ddc23d6c198ca3c944fe5eef1a16629" title="The function of a dxfg_ipf_connection_state_change_listener_t: called when the state of the connectio...">dxfg_ipf_connection_state_change_listener_func</a>. Releasing the last handle of the listener deactivates it: after <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> returns the function is not called anymore, so user_data can be freed.</p>
 <p>Java: <span class="tt">PropertyChangeListener.propertyChange(PropertyChangeEvent)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000265">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga060b3711f9ea42896041eb9eda1d78cd" title="Creates a listener of the state changes of a connection that calls a C function.">dxfg_v4_IpfPropertyChangeListener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6208,6 +6348,7 @@ Futures,Jun-2009,ETH</span>.</p>
 
 <p>Checks whether the iterator has a next instrument profile. </p>
 <p>Java: <span class="tt">Iterator.hasNext()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000281">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga307d3c63c4a5fa87b0ce4e4fa078ea7e" title="Checks whether the iterator has a next instrument profile.">dxfg_v4_Iterable_InstrumentProfile_hasNext()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6241,6 +6382,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the next instrument profile of the iterator as a handle. </p>
 <p>Check <a class="el" href="#ga64b6e3a9ecf06dd914d287243eb0aa13" title="Checks whether the iterator has a next instrument profile.">dxfg_Iterable_InstrumentProfile_hasNext()</a> first: the function fails if there is no next profile. The handle refers to the profile object itself (the collector stores the profiles, not copies): do not modify it. Use <a class="el" href="#gab869c8e0e5a741ff746402646dbbcd25" title="Returns the next instrument profile of the iterator as a structure.">dxfg_Iterable_InstrumentProfile_next2()</a> to get a copy.</p>
 <p>Java: <span class="tt">Iterator.next()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000282">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gada3eeca04ed4a0e98ef1e7f266ef54ad" title="Returns the next instrument profile of the iterator as a handle.">dxfg_v4_Iterable_InstrumentProfile_nextHandle()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -6279,6 +6421,7 @@ Futures,Jun-2009,ETH</span>.</p>
 <p>Returns the next instrument profile of the iterator as a structure. </p>
 <p>Check <a class="el" href="#ga64b6e3a9ecf06dd914d287243eb0aa13" title="Checks whether the iterator has a next instrument profile.">dxfg_Iterable_InstrumentProfile_hasNext()</a> first: the function fails if there is no next profile. The strings of the structure are copies; its custom fields handle shares the custom fields of the profile in the collector (see <a class="el" href="structdxfg__instrument__profile2__t.html" title="The fields of an instrument profile in a plain C structure, with the handle of its custom fields.">dxfg_instrument_profile2_t</a>).</p>
 <p>Java: <span class="tt">Iterator.next()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000385">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#ga6e8837169e14788f11250296c1cba072" title="Returns the next instrument profile of the iterator as a structure.">dxfg_v4_Iterable_InstrumentProfile_next()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -160,7 +160,8 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__Javac_html_ga923b84ec33ec668fc59c89168c832dac"><div class="ttname"><a href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release</a></div><div class="ttdeci">int32_t dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler *handler)</div></div>
 <div class="ttc" id="astructdxfg__cfi__attribute__t_html"><div class="ttname"><a href="structdxfg__cfi__attribute__t.html">dxfg_cfi_attribute_t</a></div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:89</div></div>
 <div class="ttc" id="astructdxfg__cfi__attribute__t_html_a0744e4af28a2a0d368876f8657432a7e"><div class="ttname"><a href="structdxfg__cfi__attribute__t.html#a0744e4af28a2a0d368876f8657432a7e">dxfg_cfi_attribute_t::handler</a></div><div class="ttdeci">dxfg_java_object_handler handler</div><div class="ttdef"><b>Definition</b> dxfg_glossary.h:91</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000218">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gadb2184a8a0b5fe651d9490df559ea0a4">dxfg_v4_CFI_Value_getAttribute()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiValue</td><td>The CFI value handle. </td></tr>
@@ -207,7 +208,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__CFIValueFunctions_html_gaf0e2bd2b68cda26f7ffe126d8f0bf9a9"><div class="ttname"><a href="#gaf0e2bd2b68cda26f7ffe126d8f0bf9a9">dxfg_CFI_Value_getCode</a></div><div class="ttdeci">int32_t dxfg_CFI_Value_getCode(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue, DXFG_OUT int16_t *code)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000219">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga992d9f2ea83f4d978c41223eaec5dd2f">dxfg_v4_CFI_Value_getCode()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiValue</td><td>The CFI value handle. </td></tr>
@@ -255,7 +257,8 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__CFIValueFunctions_html_ga34d46c5748528d15543c7cdeda7a4714"><div class="ttname"><a href="#ga34d46c5748528d15543c7cdeda7a4714">dxfg_CFI_Value_getDescription</a></div><div class="ttdeci">int32_t dxfg_CFI_Value_getDescription(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue, DXFG_OUT char **description)</div></div>
 <div class="ttc" id="agroup__Javac_html_ga7eb5a22aac50b0f1054245789bad9873"><div class="ttname"><a href="group__Javac.html#ga7eb5a22aac50b0f1054245789bad9873">dxfg_String_release</a></div><div class="ttdeci">int32_t dxfg_String_release(graal_isolatethread_t *thread, const char *string)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000221">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga94bb6361017398e3f04e32ef430841bb">dxfg_v4_CFI_Value_getDescription()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiValue</td><td>The CFI value handle. </td></tr>
@@ -302,7 +305,8 @@ Functions</h2></td></tr>
 <div class="line"><span class="comment">// Use the dxfg_get_and_clear_thread_exception_t to print the stack trace.</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__CFIValueFunctions_html_ga21f4d6f1b548180210291d8366b89c49"><div class="ttname"><a href="#ga21f4d6f1b548180210291d8366b89c49">dxfg_CFI_Value_getName</a></div><div class="ttdeci">int32_t dxfg_CFI_Value_getName(graal_isolatethread_t *thread, dxfg_cfi_value_t *cfiValue, DXFG_OUT char **name)</div></div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000220">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#gad79b3a0eadc17a806e56630d3189c89f">dxfg_v4_CFI_Value_getName()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfiValue</td><td>The CFI value handle. </td></tr>

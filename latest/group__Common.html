@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -229,6 +229,7 @@ Functions</h2></td></tr>
 
 <p>Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated, e.g. the array of doubles that <a class="el" href="group__PriceIncrementsFunctions.html#gaabf9dac2b53c31e6e1d045ddfd03b653">dxfg_PriceIncrements_getPriceIncrements()</a> returns. </p>
 <p>Only a block of memory that a function of the SDK allocated and documents to be released with this function can be passed. Do not use the memory after that.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000013">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Common.html#ga3168e41325f67e4b60caacb9ea7b66fc" title="Frees a block of the unmanaged (GraalVM) memory that a function of the SDK allocated,...">dxfg_v4_free()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -266,6 +267,7 @@ Functions</h2></td></tr>
 
 <p>Frees an array of string to double map entries that a function of the SDK returned. </p>
 <p>It frees the key of every entry and the array itself. Do not use the array and the keys after that. If the array is NULL or <span class="tt">size</span> is not positive, the function does nothing (an empty array is not freed) and returns <a class="el" href="#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000012">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Glossary.html#ga1dd798462b41cd105476a19358512e7c">dxfg_v4_string_to_double_map_entry_list_release()</a>: <a class="el" href="group__V4__Glossary.html#ga65c1793e8531091918f0262e198d7b52">dxfg_v4_AdditionalUnderlyings_getMap()</a> returns a list.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -304,6 +306,7 @@ Functions</h2></td></tr>
 
 <p>Frees an array of C strings that a function of the SDK returned. </p>
 <p>It frees every string and the array itself. Do not use the array and the strings after that. If the array is NULL or <span class="tt">size</span> is not positive, the function does nothing (an empty array is not freed) and returns <a class="el" href="#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>. A list of strings (<a class="el" href="structdxfg__string__list.html" title="A list of strings.">dxfg_string_list</a>) is not an array of this kind: it is released with <a class="el" href="group__Javac.html#gad20babc2ba3d6e425c2ba5d70200b7ae">dxfg_CList_String_release()</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000014">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Javac.html#ga07938203cc4ccb7d41411bb5cf836f40">dxfg_v4_string_list_release()</a>: the v4 functions return strings in lists.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

@@ -116,5 +116,8 @@ var searchData=
   ['dxfg_5ftrade_5ft_113',['dxfg_trade_t',['../structdxfg__trade__t.html',1,'']]],
   ['dxfg_5ftx_5fmodel_5flistener_5ft_114',['dxfg_tx_model_listener_t',['../structdxfg__tx__model__listener__t.html',1,'']]],
   ['dxfg_5funderlying_5ft_115',['dxfg_underlying_t',['../structdxfg__underlying__t.html',1,'']]],
-  ['dxfg_5fwildcard_5fsymbol_5ft_116',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
+  ['dxfg_5fv4_5fcfi_5fvalue_5flist_116',['dxfg_v4_cfi_value_list',['../structdxfg__v4__cfi__value__list.html',1,'']]],
+  ['dxfg_5fv4_5fdouble_5flist_117',['dxfg_v4_double_list',['../structdxfg__v4__double__list.html',1,'']]],
+  ['dxfg_5fv4_5fstring_5fto_5fdouble_5fmap_5fentry_5flist_118',['dxfg_v4_string_to_double_map_entry_list',['../structdxfg__v4__string__to__double__map__entry__list.html',1,'']]],
+  ['dxfg_5fwildcard_5fsymbol_5ft_119',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
 ];

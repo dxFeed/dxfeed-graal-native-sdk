@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -157,6 +157,7 @@ Functions</h2></td></tr>
 <p>Closes the client of the price level service and its RMI endpoint. </p>
 <p>Do not use the client after the call; release its handle with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.</p>
 <p>Java: <span class="tt">PriceLevelServiceHolder.close()</span> (the SDK class that closes its <span class="tt">RMIEndpoint</span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000488">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gac1a7b663a0c5f151ad3f8899be003288" title="Closes the client of the price level service and its RMI endpoint.">dxfg_v4_PriceLevelService_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -195,6 +196,7 @@ Functions</h2></td></tr>
 <p>Returns the order sources and the symbols of each order source that are available to the client. </p>
 <p>The order sources and the symbols are filtered according to the permissions of the client. The view is built as of now: the result contains only the existing data (for example, no symbols that were delisted). Read the result with <a class="el" href="group__AuthOrderSourceFunctions.html#ga0738bfc62a0770f823d143e513f8521a" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByIds()</a> or <a class="el" href="group__AuthOrderSourceFunctions.html#ga7834a740661320c91fcaacb16420195c" title="Returns the entries (an order source, the symbols) of an AuthOrderSource.">dxfg_AuthOrderSource_getByOrderSources()</a>.</p>
 <p>Java: <span class="tt">PriceLevelService.getAuthOrderSource()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000485">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gabf628347f2c907f2a2fa7f0f5b752cf9" title="Returns the order sources and the symbols of each order source that are available to the client.">dxfg_v4_PriceLevelService_getAuthOrderSource()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -260,6 +262,7 @@ Functions</h2></td></tr>
 <p>The orders are sorted in ascending order by time.</p>
 <p>The candle symbol shall contain a supported CandlePeriod and a custom attribute called granularity with the key <span class="tt">GRANULARITY_ATTRIBUTE_KEY</span> ("gr"). The granularity value shall be an integer in seconds; the minimal value is 1 second. If the CandlePeriod or the granularity is not supported by the service, the result is an empty list.</p>
 <p>Java: <span class="tt">PriceLevelService.getOrders(CandleSymbol, int, long, long, String)</span>, the order source is passed by its id.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000483">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#ga222fb9655139d44921eddeb902e8384f" title="Returns the price levels (orders) of a candle symbol within a time range.">dxfg_v4_PriceLevelService_getOrdersWithCaller()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -324,6 +327,7 @@ Functions</h2></td></tr>
 <p>Returns the price levels (orders) of a candle symbol within a time range for the default caller. </p>
 <p>It is the same as <a class="el" href="#ga66ef13e93a82e11d4f0ec52d6d0e3357" title="Returns the price levels (orders) of a candle symbol within a time range.">dxfg_PriceLevelService_getOrders()</a> with the caller identifier "dxfg": see that function for the requirements on the candle symbol and the granularity, and for the empty list.</p>
 <p>Java: <span class="tt">PriceLevelService.getOrders(CandleSymbol, int, long, long, String)</span> with the caller "dxfg" (the SDK method <span class="tt">PriceLevelServiceHolder.getOrders(CandleSymbol, OrderSource, long, long)</span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000484">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gad9b96bc5ebd4839750975257ad881268" title="Returns the price levels (orders) of a candle symbol within a time range for the default caller.">dxfg_v4_PriceLevelService_getOrders()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -387,6 +391,7 @@ Functions</h2></td></tr>
 <p>Returns the quotes of a candle symbol within a time range. </p>
 <p>The quotes are sorted in ascending order by time (see the Java documentation).</p>
 <p>Java: <span class="tt">PriceLevelService.getQuotes(CandleSymbol, long, long, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000486">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gae8289b86d24aa90f59dd1b905735e149" title="Returns the quotes of a candle symbol within a time range.">dxfg_v4_PriceLevelService_getQuotesWithCaller()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -445,6 +450,7 @@ Functions</h2></td></tr>
 <p>Returns the quotes of a candle symbol within a time range for the default caller. </p>
 <p>It is the same as <a class="el" href="#gaa74cd060b53e22990ead0019fce403c8" title="Returns the quotes of a candle symbol within a time range.">dxfg_PriceLevelService_getQuotes()</a> with the caller identifier "dxfg".</p>
 <p>Java: <span class="tt">PriceLevelService.getQuotes(CandleSymbol, long, long, String)</span> with the caller "dxfg" (the SDK method <span class="tt">PriceLevelServiceHolder.getQuotes(CandleSymbol, long, long)</span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000487">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#ga1ea678d3f1dc66b8ceee9f26541495a2" title="Returns the quotes of a candle symbol within a time range for the default caller.">dxfg_v4_PriceLevelService_getQuotes()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -487,6 +493,7 @@ Functions</h2></td></tr>
 <p>Creates a client of the price level service and connects it to an RMI endpoint. </p>
 <p>The client is an RMI client endpoint that is connected to the address; the service is its proxy. The handle of the client is written to <span class="tt">service</span>. Close the connection with <a class="el" href="#gadfcf77aec9af20b6b2c90e0b41f9bb6d" title="Closes the client of the price level service and its RMI endpoint.">dxfg_PriceLevelService_close()</a>.</p>
 <p>Java: <span class="tt">new PriceLevelServiceHolder(String)</span> (the SDK class that wraps <span class="tt">RMIEndpoint</span> and <span class="tt"><a class="el" href="group__PriceLevelService.html" title="The handle of the client of the price level service.">PriceLevelService</a></span>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000482">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#ga9e56a2b011ffc358f49a64e146dea725" title="Creates a client of the price level service and connects it to an RMI endpoint.">dxfg_v4_PriceLevelService_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

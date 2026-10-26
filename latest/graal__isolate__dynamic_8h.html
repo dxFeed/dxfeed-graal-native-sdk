@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -169,8 +169,8 @@ Enumerations</h2></td></tr>
 <div class="line">    <span class="comment">// ... the SDK functions, loaded the same way ...</span></div>
 <div class="line">    tear_down_isolate(thread);</div>
 <div class="line">}</div>
-<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="graal__isolate_8h.html#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdoc">An isolate: the instance of the SDK (its heap and Java state) in the process.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:50</div></div>
-<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:59</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_a0cf7023f0e3929858271e4e3aab8e991"><div class="ttname"><a href="graal__isolate_8h.html#a0cf7023f0e3929858271e4e3aab8e991">graal_isolate_t</a></div><div class="ttdeci">struct __graal_isolate_t graal_isolate_t</div><div class="ttdoc">An isolate: the instance of the SDK (its heap and Java state) in the process.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:51</div></div>
+<div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:60</div></div>
 <div class="ttc" id="agraal__isolate__dynamic_8h_html"><div class="ttname"><a href="graal__isolate__dynamic_8h.html">graal_isolate_dynamic.h</a></div><div class="ttdoc">The functions of graal_isolate.h as pointer types (graal_create_isolate_fn_t, etc....</div></div>
 <div class="ttc" id="agraal__isolate__dynamic_8h_html_a5713f0148b2e8374f6dea074c041ad78"><div class="ttname"><a href="#a5713f0148b2e8374f6dea074c041ad78">graal_tear_down_isolate_fn_t</a></div><div class="ttdeci">int(*) graal_tear_down_isolate_fn_t(graal_isolatethread_t *thread)</div><div class="ttdoc">The type of graal_isolate.h&#39;s graal_tear_down_isolate() (dlsym(library, &quot;graal_tear_down_isolate&quot;)).</div><div class="ttdef"><b>Definition</b> graal_isolate_dynamic.h:162</div></div>
 <div class="ttc" id="agraal__isolate__dynamic_8h_html_aa48d8f0ffc87ed503f4e0f9c97b23bf9"><div class="ttname"><a href="#aa48d8f0ffc87ed503f4e0f9c97b23bf9">graal_create_isolate_fn_t</a></div><div class="ttdeci">int(*) graal_create_isolate_fn_t(graal_create_isolate_params_t *params, graal_isolate_t **isolate, graal_isolatethread_t **thread)</div><div class="ttdoc">The type of graal_isolate.h&#39;s graal_create_isolate() (dlsym(library, &quot;graal_create_isolate&quot;)).</div><div class="ttdef"><b>Definition</b> graal_isolate_dynamic.h:146</div></div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -219,6 +219,7 @@ Functions</h2></td></tr>
 
 <p>Returns the endpoint that is associated with the service. </p>
 <p>Java: <span class="tt">OnDemandService.getEndpoint()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000470">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#gaac35593372f1274a26dc63aad1b73188" title="Returns the endpoint that is associated with the service.">dxfg_v4_OnDemandService_getEndpoint()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -249,6 +250,7 @@ Functions</h2></td></tr>
 <p>The endpoint is the application-wide default endpoint of that role (<a class="el" href="#ga094daa39c3cebd2597def8f0e661dd93" title="Returns the endpoint that is associated with the service.">dxfg_OnDemandService_getEndpoint()</a> returns it; <a class="el" href="group__Endpoint.html#gae0d6b833b8afb2e49ab01c994f501c25" title="Creates a new endpoint with the given role on every call, the same as dxfg_DXEndpoint_create2().">dxfg_DXEndpoint_getInstance2()</a> creates a new endpoint instead), which is not connected to any other real-time or delayed data feed. It is created on the first call, is configured by the system properties and is closed by <a class="el" href="group__System.html#ga636a2efa1d17090bbf624185eb37acdc" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_system_close_all_and_await_termination()</a>. To switch another feed to the replay and back, use <a class="el" href="#ga1a7a5c2910e7925717e62c41f92b5552" title="Returns the on-demand service of the specified endpoint.">dxfg_OnDemandService_getInstance2()</a> with the endpoint of that feed.</p>
 <p>The call fails if the on-demand implementation is not available in the library.</p>
 <p>Java: <span class="tt">OnDemandService.getInstance()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000468">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga8353e859eacc45834e125b6949a08667" title="Returns the on-demand service of the default endpoint with the DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED role...">dxfg_v4_OnDemandService_getInstance()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -281,6 +283,7 @@ Functions</h2></td></tr>
 <p>Returns the on-demand service of the specified endpoint. </p>
 <p>Each endpoint is associated with one service, so the calls for the same endpoint return handles of the same service. The endpoint must have the role <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a31e4457a0b597055c976ad690d8a4b7d">DXFG_ENDPOINT_ROLE_FEED</a> or <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445af04b3deaa2904fe7bebf833c1f5292e8">DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED</a>, otherwise the call fails. It also fails if the on-demand implementation is not available in the library.</p>
 <p>Java: <span class="tt">OnDemandService.getInstance(DXEndpoint)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000469">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#gac790fe82f88a551462b1c124ea6eb79b" title="Returns the on-demand service of the specified endpoint.">dxfg_v4_OnDemandService_getInstanceByEndpoint()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -314,6 +317,7 @@ Functions</h2></td></tr>
 <p>Returns the replay speed. </p>
 <p>The speed is measured with respect to the real-time playback speed: 1 is the real-time speed. It is 0 while the service is not in the replay mode.</p>
 <p>Java: <span class="tt">OnDemandService.getSpeed()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000475">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga93fac1803a72877117d8349d5962ec35" title="Returns the replay speed.">dxfg_v4_OnDemandService_getSpeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -347,6 +351,7 @@ Functions</h2></td></tr>
 <p>Returns the current or the last replay time. </p>
 <p>In the replay mode it is the time that is being replayed, otherwise the last time that was replayed. If the replay was never started, it is 0 (the Unix epoch).</p>
 <p>Java: <span class="tt">OnDemandService.getTime()</span>, the result of <span class="tt">Date.getTime()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000474">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#gac0ee2f34c37a50d94414fa77291ffa64" title="Returns the current or the last replay time.">dxfg_v4_OnDemandService_getTime()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -380,6 +385,7 @@ Functions</h2></td></tr>
 <p>Tells whether the service is in the clear mode. </p>
 <p>The clear mode is in effect after <a class="el" href="#ga2fa091f5dbcbb6d035ce0e0ff2aec8d6" title="Stops the incoming data and clears it without resuming the data updates.">dxfg_OnDemandService_stopAndClear()</a> and before <a class="el" href="#ga1164cb4a70b3b5b1414405c0a9ccb07c" title="Stops the replay and resumes the ordinary data feed.">dxfg_OnDemandService_stopAndResume()</a>, <a class="el" href="#gaea99913481ab26630e3902ef79a657ee" title="Turns the replay mode on from the specified time with the real-time speed (1).">dxfg_OnDemandService_replay()</a> or <a class="el" href="#ga07272a4265eefb7a8f5ffc6e813f92ce" title="Turns the replay mode on from the specified time with the specified speed.">dxfg_OnDemandService_replay2()</a>.</p>
 <p>Java: <span class="tt">OnDemandService.isClear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000473">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga105d62e5583cb3fbe767a8e679d4eeed" title="Tells whether the service is in the clear mode.">dxfg_v4_OnDemandService_isClear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -413,6 +419,7 @@ Functions</h2></td></tr>
 <p>Tells whether the service is in the replay mode. </p>
 <p>The replay mode is in effect after <a class="el" href="#gaea99913481ab26630e3902ef79a657ee" title="Turns the replay mode on from the specified time with the real-time speed (1).">dxfg_OnDemandService_replay()</a> or <a class="el" href="#ga07272a4265eefb7a8f5ffc6e813f92ce" title="Turns the replay mode on from the specified time with the specified speed.">dxfg_OnDemandService_replay2()</a> and before <a class="el" href="#ga1164cb4a70b3b5b1414405c0a9ccb07c" title="Stops the replay and resumes the ordinary data feed.">dxfg_OnDemandService_stopAndResume()</a> or <a class="el" href="#ga2fa091f5dbcbb6d035ce0e0ff2aec8d6" title="Stops the incoming data and clears it without resuming the data updates.">dxfg_OnDemandService_stopAndClear()</a>.</p>
 <p>Java: <span class="tt">OnDemandService.isReplay()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000472">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga32b5d2fe2ca47f9db22dfb42cc54bcd9" title="Tells whether the service is in the replay mode.">dxfg_v4_OnDemandService_isReplay()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -446,6 +453,7 @@ Functions</h2></td></tr>
 <p>Tells whether the on-demand historical data replay mode is supported. </p>
 <p>It is supported when the endpoint is connected to an address with the "(ondemand:&lt;address&gt;)" component that specifies an on-demand historical data provider. While it is not supported, the replay functions fail.</p>
 <p>Java: <span class="tt">OnDemandService.isReplaySupported()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000471">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga3d57a3af712b35bdf6d9944fa310b8ee" title="Tells whether the on-demand historical data replay mode is supported.">dxfg_v4_OnDemandService_isReplaySupported()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -479,6 +487,7 @@ Functions</h2></td></tr>
 <p>Pauses the replay and keeps the data snapshot. </p>
 <p>It is the same as <a class="el" href="#gac3cd0f8ccab25aef2a716361c067e360" title="Changes the replay speed and continues the replay at the current time.">dxfg_OnDemandService_setSpeed()</a> with the speed 0: the current replay time is captured and the replay stops at it. Outside the replay mode the call has no effect (and succeeds).</p>
 <p>Java: <span class="tt">OnDemandService.pause()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000478">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga6af938ed9b887587409623d669f40135" title="Pauses the replay and keeps the data snapshot.">dxfg_v4_OnDemandService_pause()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -517,6 +526,7 @@ Functions</h2></td></tr>
 <p>Turns the replay mode on from the specified time with the real-time speed (1). </p>
 <p>The call is the same as <a class="el" href="#ga07272a4265eefb7a8f5ffc6e813f92ce" title="Turns the replay mode on from the specified time with the specified speed.">dxfg_OnDemandService_replay2()</a> with the speed 1. It fails if the replay mode is not supported (see <a class="el" href="#ga9b27359a59a2efa3c99a48dfe628a19a" title="Tells whether the on-demand historical data replay mode is supported.">dxfg_OnDemandService_isReplaySupported()</a>).</p>
 <p>Java: <span class="tt">OnDemandService.replay(Date)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000476">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#gac5172e4a3f18db24f8ad13b72f940b6e" title="Turns the replay mode on from the specified time with the real-time speed (1).">dxfg_v4_OnDemandService_replay()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -561,6 +571,7 @@ Functions</h2></td></tr>
 <p>Turns the replay mode on from the specified time with the specified speed. </p>
 <p>The feed is disconnected from the other data providers, pre-buffers the historical tick data and replays it as if it came from the data feeds now. After the call <a class="el" href="#ga229ef8d51ba4a9abeb15191032da781e" title="Tells whether the service is in the replay mode.">dxfg_OnDemandService_isReplay()</a> returns 1, <a class="el" href="#gae493f6501527f86adfcd46bb46b403ec" title="Tells whether the service is in the clear mode.">dxfg_OnDemandService_isClear()</a> returns 0, <a class="el" href="#gaad0fc7e77b895d020f10bf299ee212e2" title="Returns the current or the last replay time.">dxfg_OnDemandService_getTime()</a> returns the time that is being replayed and <a class="el" href="#ga43e363d4b7fc0717d67e80766b42b545" title="Returns the replay speed.">dxfg_OnDemandService_getSpeed()</a> returns <span class="tt">speed</span>. The call fails if the replay mode is not supported (see <a class="el" href="#ga9b27359a59a2efa3c99a48dfe628a19a" title="Tells whether the on-demand historical data replay mode is supported.">dxfg_OnDemandService_isReplaySupported()</a>) or if the speed is negative.</p>
 <p>Java: <span class="tt">OnDemandService.replay(Date, double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000477">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#gaf4ede47cb3ec4d3b336a69caa3601b74" title="Turns the replay mode on from the specified time with the specified speed.">dxfg_v4_OnDemandService_replayWithSpeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -601,6 +612,7 @@ Functions</h2></td></tr>
 <p>Changes the replay speed and continues the replay at the current time. </p>
 <p>The speed is measured with respect to the real-time playback speed. The call fails if the speed is negative, or if the service is not in the replay mode and the speed is not 0.</p>
 <p>Java: <span class="tt">OnDemandService.setSpeed(double)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000481">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga7ddee5a01a4003409bfa50cfd068f1f3" title="Changes the replay speed and continues the replay at the current time.">dxfg_v4_OnDemandService_setSpeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -635,6 +647,7 @@ Functions</h2></td></tr>
 <p>Stops the incoming data and clears it without resuming the data updates. </p>
 <p>The call works both in the replay mode and for the ordinary data feed: all the incoming data updates are suspended and the current data is cleared. After the call <a class="el" href="#ga229ef8d51ba4a9abeb15191032da781e" title="Tells whether the service is in the replay mode.">dxfg_OnDemandService_isReplay()</a> returns 0, <a class="el" href="#gae493f6501527f86adfcd46bb46b403ec" title="Tells whether the service is in the clear mode.">dxfg_OnDemandService_isClear()</a> returns 1, <a class="el" href="#gaad0fc7e77b895d020f10bf299ee212e2" title="Returns the current or the last replay time.">dxfg_OnDemandService_getTime()</a> returns the last replayed time and <a class="el" href="#ga43e363d4b7fc0717d67e80766b42b545" title="Returns the replay speed.">dxfg_OnDemandService_getSpeed()</a> returns 0. The ordinary feed is resumed by <a class="el" href="#ga1164cb4a70b3b5b1414405c0a9ccb07c" title="Stops the replay and resumes the ordinary data feed.">dxfg_OnDemandService_stopAndResume()</a>, the replay is continued by <a class="el" href="#gaea99913481ab26630e3902ef79a657ee" title="Turns the replay mode on from the specified time with the real-time speed (1).">dxfg_OnDemandService_replay()</a> or <a class="el" href="#ga07272a4265eefb7a8f5ffc6e813f92ce" title="Turns the replay mode on from the specified time with the specified speed.">dxfg_OnDemandService_replay2()</a>.</p>
 <p>Java: <span class="tt">OnDemandService.stopAndClear()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000480">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga5c1a0a1a5ba4227434cfac31e55a3b51" title="Stops the incoming data and clears it without resuming the data updates.">dxfg_v4_OnDemandService_stopAndClear()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -668,6 +681,7 @@ Functions</h2></td></tr>
 <p>Stops the replay and resumes the ordinary data feed. </p>
 <p>The call has no effect if the service is neither in the replay mode nor in the clear mode. After the call <a class="el" href="#ga229ef8d51ba4a9abeb15191032da781e" title="Tells whether the service is in the replay mode.">dxfg_OnDemandService_isReplay()</a> and <a class="el" href="#gae493f6501527f86adfcd46bb46b403ec" title="Tells whether the service is in the clear mode.">dxfg_OnDemandService_isClear()</a> return 0, <a class="el" href="#gaad0fc7e77b895d020f10bf299ee212e2" title="Returns the current or the last replay time.">dxfg_OnDemandService_getTime()</a> returns the last replayed time and <a class="el" href="#ga43e363d4b7fc0717d67e80766b42b545" title="Returns the replay speed.">dxfg_OnDemandService_getSpeed()</a> returns 0. An endpoint with the role <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445af04b3deaa2904fe7bebf833c1f5292e8">DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED</a> has no ordinary feed, so for it the call works like <a class="el" href="#ga2fa091f5dbcbb6d035ce0e0ff2aec8d6" title="Stops the incoming data and clears it without resuming the data updates.">dxfg_OnDemandService_stopAndClear()</a>.</p>
 <p>Java: <span class="tt">OnDemandService.stopAndResume()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000479">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OnDemand.html#ga0b80b5740c3665925fe4e76d356e13da" title="Stops the replay and resumes the ordinary data feed.">dxfg_v4_OnDemandService_stopAndResume()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

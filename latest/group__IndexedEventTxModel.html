@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -246,6 +246,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Builds a new instance of <a class="el" href="structdxfg__indexed__event__tx__model__t.html">dxfg_indexed_event_tx_model_t</a> with the provided configuration.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000256">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga2407806c0526226c0b2492cf642d48f3">dxfg_v4_IndexedEventTxModel_Builder_build()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -282,6 +283,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Constructs a new builder for the specified event type.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000245">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gad64ff14e0a0c7a396579bc5c5763d585">dxfg_v4_IndexedEventTxModel_Builder_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -318,6 +320,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the aggregation period for data that limits the rate of data notifications. For example, setting the value to <span class="tt">0.1s</span> limits notification to once every 100ms (at most 10 per second). This value can be changed later, after the model has been built using the <a class="el" href="#ga859a516069ab680e629e3bf6dc28ec4b" title="dxfg_IndexedEventTxModel_getSubscriptionController()">subscription controller</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000253">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga1a8c7fcd4b2f66a4ae998087baae0996">dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -354,6 +357,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the aggregation period for data that limits the rate of data notifications. For example, setting the value to <span class="tt">100</span> limits notification to once every 100ms (at most 10 per second). This value can be changed later, after the model has been built using the <a class="el" href="#ga859a516069ab680e629e3bf6dc28ec4b" title="dxfg_IndexedEventTxModel_getSubscriptionController()">subscription controller</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000254">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga33f30bd692febf42f0cab02a5352e4b1">dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -390,6 +394,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the maximum number of events in the single notification of <a class="el" href="#gaa0c367cef6edd8f6a65f8c3ab42b1ef5">dxfg_IndexedEventTxModel_Listener_eventsReceived_f</a>. This value can be exceeded if the size of the received transaction exceeds the set limit. This value can be changed later, after the model has been built using the <a class="el" href="#ga859a516069ab680e629e3bf6dc28ec4b" title="dxfg_IndexedEventTxModel_getSubscriptionController()">subscription controller</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000252">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gabac9c12fb8b9d82dc6de440169acc7c3">dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -426,6 +431,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the executor for processing listener notifications. The default executor for all models is the endpoint's one (see <a class="el" href="group__Builder.html#gab8af6641e2e36955f84b384a23b64ccf" title="Sets the executor of the notifications of the endpoints built by this builder: event processing,...">dxfg_DXEndpoint_Builder_withExecutor()</a>). This executor can be changed later, after the model has been built using the <a class="el" href="#ga859a516069ab680e629e3bf6dc28ec4b" title="dxfg_IndexedEventTxModel_getSubscriptionController()">subscription controller</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000255">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gab8c42ac985ba5645056429266872d10a">dxfg_v4_IndexedEventTxModel_Builder_withExecutor()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -463,6 +469,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets the feed for the model being created.</p>
 <p>The feed can also be attached later, after the model has been built using the <a class="el" href="#ga859a516069ab680e629e3bf6dc28ec4b" title="dxfg_IndexedEventTxModel_getSubscriptionController()">subscription controller</a>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000246">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga20b7c0062a4fb7b3b3009b473d5851ca">dxfg_v4_IndexedEventTxModel_Builder_withFeed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -499,6 +506,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the listener for transaction notifications. The notification is invoked from a separate thread via the <a class="el" href="#ga85b5436dd2a15ec974cfa53475c3e769" title="dxfg_IndexedEventTxModel_Builder_withExecutor()">executor</a>. The listener cannot be added or changed after the model has been built.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000251">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gad2a2aa0b00f4f70d47e4bcbad9cdda88">dxfg_v4_IndexedEventTxModel_Builder_withListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -536,6 +544,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets the source to subscribe to.</p>
 <p>The source cannot be added or changed after the model has been built.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000249">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gaa984e7d176a411942fd6e3ed48a078ca">dxfg_v4_IndexedEventTxModel_Builder_withSource()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -573,6 +582,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets the subscription symbol and its source (<a class="el" href="structdxfg__indexed__event__subscription__symbol__t.html" title="The subscription to the indexed events of one source.">dxfg_indexed_event_subscription_symbol_t</a>) for the model being created.</p>
 <p>This symbol and source cannot be added or changed after the model has been built.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000247">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gae75c2b42f02e311a412e2e73407a454d">dxfg_v4_IndexedEventTxModel_Builder_withSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -610,6 +620,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets the subscription symbol for the model being created.</p>
 <p>The symbol cannot be added or changed after the model has been built.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000248">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga7b097e1555b2301c8f0b8a9c87fc02cd">dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -640,7 +651,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the subscription controller for the underlying subscription.</p>
+<p>Closes this model: it is detached from the feed for good and stops the notifications.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000244">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga49de36f3fd2733e547dd29ef3450522d">dxfg_v4_IndexedEventTxModel_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -676,6 +688,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the indexed event subscription symbol associated with this model.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000239">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga0b78b50fee5c3a0103a40be6bac50ce4">dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -712,6 +725,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the source associated with this model.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000241">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga7eef11c5c89d3c65413395a38d0ece32">dxfg_v4_IndexedEventTxModel_getSource()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -748,6 +762,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the subscription controller for the underlying subscription.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000242">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#ga4503e814ac7ed8cb6d4c861d78767eba">dxfg_v4_IndexedEventTxModel_getSubscriptionController()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -784,6 +799,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the symbol associated with this model.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000240">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gabf0294636eb9dc8024dd5985983fda04">dxfg_v4_IndexedEventTxModel_getSymbol()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -820,6 +836,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns whether this model is closed.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000243">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gaa7e39c391e9f10a9caeeddf18713c288">dxfg_v4_IndexedEventTxModel_isClosed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -861,6 +878,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates a new listener for the model.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000250">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gab394f0914c639f0723f4188d48385ffa">dxfg_v4_IndexedEventTxModel_Listener_new()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -898,6 +916,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Factory method to create a new builder for this model.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000238">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__IndexedEventTxModel.html#gac27f45d0e6a3669aee04105d1c0c9c57">dxfg_v4_IndexedEventTxModel_newBuilder()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

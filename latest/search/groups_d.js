@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['value_0',['CFI.Value',['../group__CFIValue.html',1,'']]],
-  ['value_20functions_1',['CFI.Value&apos; functions',['../group__CFIValueFunctions.html',1,'']]]
+  ['the_20v4_20functions_0',['The v4 functions',['../group__V4__Conventions.html',1,'']]]
 ];

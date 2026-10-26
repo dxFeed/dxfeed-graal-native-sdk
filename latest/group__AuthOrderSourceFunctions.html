@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -156,6 +156,7 @@ Functions</h2></td></tr>
 <p>Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource. </p>
 <p>The list is a copy: it does not depend on the handle of the AuthOrderSource.</p>
 <p>Java: <span class="tt">AuthOrderSource.getByIds()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000489">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#ga3c3ffadb4372eba51249fce964917d35" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_v4_AuthOrderSource_getByIds()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -195,6 +196,7 @@ Functions</h2></td></tr>
 <p>Returns the entries (an order source, the symbols) of an AuthOrderSource. </p>
 <p>The list is a copy: it does not depend on the handle of the AuthOrderSource.</p>
 <p>Java: <span class="tt">AuthOrderSource.getByOrderSources()</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000491">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#ga9d48c48217fde0c847709d000d23e8aa" title="Returns the entries (an order source, the symbols) of an AuthOrderSource.">dxfg_v4_AuthOrderSource_getByOrderSources()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -229,6 +231,7 @@ Functions</h2></td></tr>
 <p>Frees a list of the entries (the identifier of an order source, the symbols). </p>
 <p>Frees the list, its entries and their symbol lists. A NULL list is ignored.</p>
 <p>Java: not applicable (the list is allocated by the SDK outside the Java heap).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000490">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gad03f23b2f63ad32d90e0aa2733b34a93" title="Frees a list of the entries (the identifier of an order source, the symbols).">dxfg_v4_symbols_by_order_source_id_map_entry_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -262,6 +265,7 @@ Functions</h2></td></tr>
 <p>Frees a list of the entries (an order source, the symbols). </p>
 <p>Frees the list, its entries, their order sources and their symbol lists. A NULL list is ignored.</p>
 <p>Java: not applicable (the list is allocated by the SDK outside the Java heap).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000492">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__OrcsApi.html#gaccc7fad15d9b3bc50837b1940d70f81d" title="Frees a list of the entries (an order source, the symbols).">dxfg_v4_symbols_by_order_source_map_entry_list_release()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

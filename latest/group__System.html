@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -155,6 +155,7 @@ Functions</h2></td></tr>
 <li><a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a>.</li>
 </ol>
 <p>The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the call are not closed by it. The function is a function of the SDK: there is no QD method that it calls.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000617">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__System.html#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -186,6 +187,7 @@ Functions</h2></td></tr>
 
 <p>Gets the Java system property indicated by the specified key. </p>
 <p>Java: <span class="tt">System.getProperty(String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000615">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__System.html#gaff81951e37bd4714da88582908e3a661" title="Gets the Java system property indicated by the specified key.">dxfg_v4_system_get_property()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -218,6 +220,7 @@ Functions</h2></td></tr>
 
 <p>Releases a property value that <a class="el" href="#gaf2d992a82100fd3659cf3b578f76dbbf" title="Gets the Java system property indicated by the specified key.">dxfg_system_get_property()</a> returned. </p>
 <p>The string is freed: do not use it after that. Passing NULL does nothing.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000616">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__System.html#gac73e70b25c89c90d4b8cc79a7e81d3f5" title="Releases a property value that dxfg_v4_system_get_property() returned.">dxfg_v4_system_release_property()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -258,6 +261,7 @@ Functions</h2></td></tr>
 <li><span class="tt">com.dxfeed.sdk.TimeSyncTracker.enable</span> = <span class="tt">true</span> enables the QD <span class="tt">TimeSyncTracker</span>, which sends UDP multicast packets (239.192.51.45:5145 by default, see <span class="tt">com.devexperts.qd.tools.TimeSyncTracker.addr</span> and <span class="tt">.port</span>) to compare the clocks of the hosts. The SDK disables it by default.</li>
 </ul>
 <p>Java: <span class="tt">System.setProperty(String, String)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000614">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__System.html#ga6886e73ffc8c2e8ae6b6e639f5de8701" title="Sets the Java system property indicated by the specified key.">dxfg_v4_system_set_property()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

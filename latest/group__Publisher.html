@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.11.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
    </div>
   </td>
  </tr>
@@ -198,6 +198,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the default application-wide singleton publisher (<a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html#getInstance--">DXPublisher.getInstance()</a>): the publisher of the default endpoint with the publisher role. It is configured by the system properties (see <a class="el" href="group__System.html#ga62a2c7ceaf1cc0eb9560a3c4a5e44f39" title="Sets the Java system property indicated by the specified key.">dxfg_system_set_property()</a>) when it is first used.</p>
 <p>All callers share this publisher and its endpoint: closing the endpoint closes it for everyone in the process.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000494">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#ga7a99d97f003d25935c6df9255c6911e0">dxfg_v4_DXPublisher_getInstance()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -234,6 +235,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the observable set of the subscribed symbols for the event type.</p>
 <p>The symbols of the set are the symbols that the feeds are subscribed to; the set contains the wildcard symbol if there is a subscription to all symbols, and, for a time series subscription, the symbols wrapped with the time of the subscription (<a class="el" href="structdxfg__time__series__subscription__symbol__t.html" title="The subscription to the time series of events from a time.">dxfg_time_series_subscription_symbol_t</a>). The set may notify its change listeners of the same symbols several times without a removal between the notifications: it happens when the subscription disappears, the cached data is lost and the subscription appears again. On each such notification the data provider is to publish the most recent events of the symbols (<a class="el" href="#ga3e16206c40030e305f290532ba1e1013">dxfg_DXPublisher_publishEvents()</a>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000496">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#ga0b8025273c70e3b83db1f0d30ca72826">dxfg_v4_DXPublisher_getSubscription()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -273,6 +275,7 @@ Functions</h2></td></tr>
 <p>Publishes the events to the corresponding feeds.</p>
 <p>If the endpoint of the publisher has the publisher role and is connected, the events are delivered to the remote endpoints. The local feed of the endpoint always receives them. A feed receives an event only if it is subscribed to its symbol (or to all symbols with a wildcard, or, for a time series event, with a time series subscription for the time of the event). The published events are not stored and are lost if there is no subscription; the last events of the lasting event types are kept while the subscription to their symbol exists.</p>
 <p>The events are serialized by the function: the list and the events are only read, the caller keeps its ownership and can reuse or release them after the function returns.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000495">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#ga2f2e622cc39f8d22bb67789724abb715">dxfg_v4_DXPublisher_publishEvents()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -311,6 +314,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Adds the change listener to the observable subscription.</p>
 <p>Create the listener with <a class="el" href="dxfg__events_8h.html#a9f12efba29d2d95c16a02a0bf5b39947">dxfg_ObservableSubscriptionChangeListener_new()</a>; see its description for the callbacks of the listener: they are called on a Java thread, not necessarily the one that added the listener, and the symbols belong to the SDK. If the listener is added to an open subscription, it is notified immediately of the existing subscription state (its <span class="tt">symbolsAdded</span> function) before the function returns, and after that of every change. The calls of the listener for one subscription do not overlap. Adding a listener that is already added, or to a closed subscription, does nothing.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000500">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#ga563f8b20a458ebed7b18ce64e0534581">dxfg_v4_ObservableSubscription_addChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -348,6 +352,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Checks whether the observable subscription contains the event type.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000499">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#gae5da94cee9f8a75aa84b496cf407dfaf">dxfg_v4_ObservableSubscription_containsEventType()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -381,6 +386,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the event types of the observable subscription.</p>
 <p>The subscription of a publisher (<a class="el" href="#ga35f5ea326d57a73c13f38e750585bcf3">dxfg_DXPublisher_getSubscription()</a>) has the single event type that was requested.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000498">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#gac794cbad3085e2b0a443a4bfae4c9d36">dxfg_v4_ObservableSubscription_getEventTypes()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -413,6 +419,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Checks whether the observable subscription is closed.</p>
 <p>The subscription of a publisher is closed when its endpoint is closed.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000497">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#ga2927e0689ed0b8000f6880fbc99a34dd">dxfg_v4_ObservableSubscription_isClosed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -450,6 +457,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Removes the change listener from the observable subscription.</p>
 <p>If the listener was added, it is notified of the removal (its <span class="tt">subscriptionClosed</span> function) before the function returns. Removing a listener that is not added does nothing. To be sure that the functions of the listener are not called anymore, release it (<a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>) or deactivate it (<a class="el" href="group__Javac.html#gaf0d9313b8ffa7dffb08b86c9a27999b5">dxfg_NativeListener_deactivate()</a>).</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000501">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Publisher.html#gaa0eefad14ebb7e59b80fa347090be372">dxfg_v4_ObservableSubscription_removeChangeListener()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
