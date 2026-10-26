@@ -1,3 +1,5 @@
+## v3.12.0
+
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the
   `int32_t` status only (`DXFG_EXECUTE_SUCCESSFULLY` or `DXFG_EXECUTE_FAIL`), writes its result to the last parameter,
   marked `DXFG_OUT` (a NULL result means "no value", never an error), returns collections as `dxfg_v4_<element>_list`
