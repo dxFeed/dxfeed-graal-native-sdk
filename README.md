@@ -24,6 +24,7 @@ into your projects.
   * [Windows archives](#windows-archives)
   * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
+  * [Windows on ARM and 32-bit systems](#windows-on-arm-and-32-bit-systems)
 - [Using the C API](#using-the-c-api)
   * [Conventions](#conventions)
   * [Example](#example)
@@ -85,7 +86,8 @@ The archives of every version are attached to its
 
 The Linux and Windows archives have `-debug` variants (`amd64-windows-debug-static-crt`,
 `amd64-windows-debug-static-lib`), see [Debug builds](#debug-builds). Which Windows archive to take: see
-[Windows archives](#windows-archives).
+[Windows archives](#windows-archives). There are no archives for Windows on ARM and 32-bit systems: see
+[Windows on ARM and 32-bit systems](#windows-on-arm-and-32-bit-systems).
 
 An archive contains the library, the headers (`dxfg_api.h` includes the others) and the license. The desktop archives
 also contain `CMakeLists.txt`, which imports the library as the CMake target `DxFeedGraalNativeSdk`:
@@ -168,6 +170,19 @@ gdb unwinds through the SDK using `libDxFeedGraalNativeSdk.so.debug`. The unwind
 for the SDK entry points does not describe the saved `rbp`, so gdb stops at the first application frame
 that is addressed by `rbp` (`previous frame inner to this frame`). To get the full stack in gdb, build the calling
 code with `-fomit-frame-pointer`.
+
+### Windows on ARM and 32-bit systems
+
+**Windows on ARM.** The SDK is built with GraalVM Native Image, which does not build for Windows on ARM yet
+([oracle/graal#9215](https://github.com/oracle/graal/issues/9215)). The arm64 archive will appear when it does. Until
+then, an arm64 process cannot load the SDK. An x64 application runs on Windows on ARM under the x64 emulation of
+Windows 11 and can load the x64 library, but we do not test this configuration.
+
+**32-bit systems.** There will be no 32-bit archives: GraalVM Native Image builds only 64-bit libraries, and the JDK no
+longer has the 32-bit x86 ports (removed in JDK 24 on Windows and in JDK 25 on Linux). This also applies to 32-bit
+applications on a 64-bit system. Such an application can receive the data over
+[dxLink](https://kb.dxfeed.com/en/market-data-api/dxlink.html), the WebSocket protocol of dxFeed, without a native
+library.
 
 ## Using the C API
 
