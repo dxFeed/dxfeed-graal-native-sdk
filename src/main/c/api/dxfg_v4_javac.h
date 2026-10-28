@@ -126,6 +126,10 @@ int32_t dxfg_v4_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_v4
  * threads, after that no listener's function is called anymore, so the user data of the listeners can be freed. The
  * listeners created afterwards are inactive from the start. The deactivation cannot be undone for the isolate.
  *
+ * Then the function closes all the event queues of this isolate (dxfg_v4_EventQueue_close()) and waits for the drains
+ * in progress on other threads: they return #DXFG_EVENT_QUEUE_CLOSED or the events they have already retrieved. The
+ * queues created afterwards are closed from the start.
+ *
  * The handles of the listeners stay valid and must be released as usual. Use dxfg_v4_system_shutdown() to deactivate
  * the listeners and then close the endpoints. Only the listeners are deactivated: the handlers of
  * dxfg_v4_Promise_whenDone(), dxfg_v4_Promise_whenDoneAsync(), the finalizers of dxfg_v4_Object_finalize() and the

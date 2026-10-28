@@ -4,6 +4,7 @@
 package com.dxfeed.sdk.subscriptioncontroller;
 
 import com.devexperts.util.TimePeriod;
+import com.dxfeed.api.SubscriptionController;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
@@ -13,6 +14,7 @@ import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgExecutorHandlePointer;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandlePointer;
+import com.dxfeed.sdk.subscription.EventQueue;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -140,10 +142,12 @@ public class SubscriptionControllerNative {
     public static int dxfg_SubscriptionController_setExecutor(final IsolateThread ignoredThread,
             final DxfgSubscriptionControllerHandle subscriptionController,
             final DxfgExecutorHandle executor) {
-        //noinspection DataFlowIssue
+        final SubscriptionController controller =
+                NativeUtils.MAPPER_SUBSCRIPTION_CONTROLLER.toJava(subscriptionController);
 
-        NativeUtils.MAPPER_SUBSCRIPTION_CONTROLLER.toJava(subscriptionController)
-                .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
+        //noinspection DataFlowIssue
+        EventQueue.setExecutor(controller::getExecutor, controller::setExecutor,
+                NativeUtils.MAPPER_EXECUTOR.toJava(executor));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

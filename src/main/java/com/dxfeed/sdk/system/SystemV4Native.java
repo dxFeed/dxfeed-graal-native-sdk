@@ -7,6 +7,7 @@ import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.javac.NativeListener;
+import com.dxfeed.sdk.subscription.EventQueue;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -104,8 +105,10 @@ public final class SystemV4Native {
     public static int dxfg_v4_system_shutdown(
             final IsolateThread ignoredThread
     ) throws InterruptedException {
-        // The listeners first: no callback runs while the endpoints are closed.
+        // The listeners first: no callback runs while the endpoints are closed or the queues run their tasks.
+        // The queues before the endpoints: an endpoint waits until no task of a queue is pending.
         NativeListener.deactivateAll();
+        EventQueue.closeAll();
         IsolateResources.closeAllAndAwaitTermination();
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;

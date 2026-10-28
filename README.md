@@ -31,6 +31,7 @@ into your projects.
   * [Samples and wrappers](#samples-and-wrappers)
   * [Isolates](#isolates)
   * [Listeners](#listeners)
+  * [Event queue](#event-queue)
   * [Shutdown](#shutdown)
   * [Network activity](#network-activity)
 - [Documentation](#documentation)
@@ -385,13 +386,36 @@ QD may call a listener once more after `dxfg_v4_DXEndpoint_close`, `dxfg_v4_DXFe
 `dxfg_*_remove*Listener` returns, so remove the listener first and then release it. The state changes
 of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECTING`).
 
+### Event queue
+
+An application that cannot take calls from the threads of the SDK (e.g. a wrapper for a language with its own runtime)
+receives the events of a subscription on its own thread with an event queue (`dxfg_v4_event_queue.h`):
+
+1. Create the queue with `dxfg_v4_EventQueue_new` before adding the symbols to the subscription.
+2. On a thread of your own, call `dxfg_v4_EventQueue_drain` in a loop: it waits for the events and returns them as a
+   `dxfg_v4_event_type_list` (release it with `dxfg_v4_event_type_list_release`). It returns
+   `DXFG_EVENT_QUEUE_NO_EVENTS` after the timeout or `dxfg_v4_EventQueue_wakeUp`, and `DXFG_EVENT_QUEUE_CLOSED` once
+   the queue is closed (`dxfg_v4_EventQueue_close`, the release of its handle, the close of the subscription,
+   `dxfg_v4_system_shutdown`).
+3. After a drain, compare `dxfg_v4_EventQueue_getDroppedEvents` with its previous value: a larger one means that events
+   were lost before the returned ones.
+
+The SDK retrieves the events only when the queue is drained. Meanwhile the lasting events (e.g. Quote) are conflated,
+and the other ones (e.g. TimeAndSale) wait in a buffer of the subscription: up to 1000000 events by default (the system
+property `com.devexperts.qd.impl.matrix.Agent.MaxBufferSize`, set before the first endpoint), beyond that the oldest
+ones are dropped and counted. A `STREAM_FEED` endpoint drops nothing: it stops receiving data for all its
+subscriptions until the full queue is drained. Drain a queue from one thread at a time. Closing an endpoint does not
+end a drain, so drain with a finite timeout if the application closes the endpoints itself. The rules are in the
+"Event queue" group of the C API reference.
+
 ### Shutdown
 
 The threads of an open endpoint do not stop on `Thread.interrupt()`, so `graal_tear_down_isolate` waits
 for them forever while any endpoint is open. Before tearing down the isolate (or exiting the process):
 
 1. Call `dxfg_v4_system_shutdown`. It deactivates all the listeners (`dxfg_v4_NativeListener_deactivateAll`: no
-   listener is called after it returns, the ones created later are never called), then closes all the endpoints
+   listener is called after it returns, the ones created later are never called) and closes the event queues (the
+   drains return `DXFG_EVENT_QUEUE_CLOSED`), then closes all the endpoints
    (including the default ones of `dxfg_v4_DXEndpoint_getInstance`, `dxfg_v4_DXFeed_getInstance`, etc.) and instrument
    profile connections created through the SDK and waits for the termination of the endpoints
    (`dxfg_v4_system_close_all_and_await_termination`). It cannot be undone; call it in the explicit shutdown of the

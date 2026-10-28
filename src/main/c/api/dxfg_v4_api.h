@@ -16,6 +16,7 @@
 #include "dxfg_v4_catch_exception.h"
 #include "dxfg_v4_endpoint.h"
 #include "dxfg_v4_event_model.h"
+#include "dxfg_v4_event_queue.h"
 #include "dxfg_v4_events.h"
 #include "dxfg_v4_feed.h"
 #include "dxfg_v4_glossary.h"

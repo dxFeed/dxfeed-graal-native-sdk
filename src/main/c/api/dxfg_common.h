@@ -152,6 +152,8 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
  *  - It returns `int32_t`: #DXFG_EXECUTE_SUCCESSFULLY (0) on success, #DXFG_EXECUTE_FAIL (-1) on error. The status is
  *    the only error signal: after -1, dxfg_v4_get_and_clear_thread_exception() gives the exception. A successful call
  *    does not clear an exception left by an earlier failed call that was not taken, so take it right after the error.
+ *    A function that waits may also return documented positive codes for outcomes that are not errors (e.g.
+ *    #DXFG_PROMISE_AWAIT_TIMED_OUT, #DXFG_EVENT_QUEUE_NO_EVENTS).
  *  - It writes its result to the last parameter, marked #DXFG_OUT: the caller passes the address of its own variable.
  *    The variable is written only if the function succeeds (dxfg_v4_DXFeed_getLastEvent() and
  *    dxfg_v4_DXFeed_getLastEvents() write NULL on error, as their older functions do); after an error its value must

@@ -7,6 +7,7 @@ import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
+import com.dxfeed.sdk.subscription.EventQueue;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -85,6 +86,7 @@ public final class JavacV4Native {
             final IsolateThread ignoredThread
     ) {
         NativeListener.deactivateAll();
+        EventQueue.closeAll();
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

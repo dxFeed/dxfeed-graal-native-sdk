@@ -74,6 +74,7 @@ target_include_directories(${target}
         ${DEFAULT_INCLUDE_DIRECTORIES}
         ${PROJECT_BINARY_DIR}/include
         ${PROJECT_BINARY_DIR}/source/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../common
         )
 
 

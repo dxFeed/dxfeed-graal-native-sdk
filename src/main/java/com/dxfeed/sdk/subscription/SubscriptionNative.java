@@ -189,8 +189,9 @@ public class SubscriptionNative {
     public static int dxfg_DXFeedSubscription_setExecutor(final IsolateThread ignoredThread,
             final DxfgSubscription<DXFeedSubscription<EventType<?>>> dxfgSubscription,
             final DxfgExecutorHandle executor) {
-        NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription)
-                .setExecutor(NativeUtils.MAPPER_EXECUTOR.toJava(executor));
+        final DXFeedSubscription<EventType<?>> subscription = NativeUtils.MAPPER_SUBSCRIPTION.toJava(dxfgSubscription);
+        EventQueue.setExecutor(subscription::getExecutor, subscription::setExecutor,
+                NativeUtils.MAPPER_EXECUTOR.toJava(executor));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

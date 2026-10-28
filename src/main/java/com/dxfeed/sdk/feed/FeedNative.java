@@ -23,6 +23,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
 import com.dxfeed.sdk.subscription.DxfgTimeSeriesSubscription;
+import com.dxfeed.sdk.subscription.EventQueue;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.system.IsolateResources;
 import com.dxfeed.sdk.system.QdPropertyDefaults;
@@ -159,8 +160,8 @@ public class FeedNative {
             final DxfgFeed feed,
             final DxfgSubscription<DXFeedSubscription<EventType<?>>> subscription
     ) {
-        NativeUtils.MAPPER_FEED.toJava(feed)
-                .detachSubscriptionAndClear(NativeUtils.MAPPER_SUBSCRIPTION.toJava(subscription));
+        EventQueue.detachSubscriptionAndClear(NativeUtils.MAPPER_FEED.toJava(feed),
+                NativeUtils.MAPPER_SUBSCRIPTION.toJava(subscription));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

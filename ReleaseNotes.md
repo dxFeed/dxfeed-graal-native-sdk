@@ -1,3 +1,16 @@
+* **\[MDAPI-466]\[GRAAL]** The event queue (`dxfg_v4_event_queue.h`): the events of a subscription received on the
+  application's own thread, without callbacks. `dxfg_v4_EventQueue_new()` creates a queue on a subscription before its
+  symbols are added; `dxfg_v4_EventQueue_drain()` waits up to a timeout and returns the events as a
+  `dxfg_v4_event_type_list`, or the positive codes `DXFG_EVENT_QUEUE_NO_EVENTS` and `DXFG_EVENT_QUEUE_CLOSED`;
+  `dxfg_v4_EventQueue_wakeUp()`, `dxfg_v4_EventQueue_close()` and `dxfg_v4_EventQueue_getDroppedEvents()` complete it.
+  The SDK retrieves the events only when the queue is drained, on the draining thread, so the lasting events are
+  conflated and the buffers of the SDK bound the memory; the lost events are counted. `dxfg_v4_system_shutdown()` and
+  `dxfg_v4_NativeListener_deactivateAll()` close the queues, so the draining threads can leave the SDK before
+  `graal_tear_down_isolate()`. The executor of a subscription with an event queue cannot be changed:
+  `dxfg_v4_DXFeedSubscription_setExecutor()`, `dxfg_v4_SubscriptionController_setExecutor()` and their older functions
+  fail with `IllegalStateException`. `dxfg_v4_DXFeed_detachSubscriptionAndClear()` does not wait for a drain of the
+  queue of the subscription.
+
 ## v3.12.0
 
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the

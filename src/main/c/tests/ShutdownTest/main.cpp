@@ -8,6 +8,8 @@
 #include <catch.hpp>
 #include <dxfg_api.h>
 
+#include "Hub.hpp"
+
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -75,87 +77,44 @@ void onEvents(graal_isolatethread_t *thread, dxfg_v4_event_type_list *, void *us
     static_cast<Calls *>(userData)->call(thread);
 }
 
-// A new isolate; never torn down, its threads end with the process.
-struct Isolate {
-    graal_isolate_t *isolate = nullptr;
-    graal_isolatethread_t *thread = nullptr;
+// Publishes a Profile of SYMBOL.
+bool publishProfile(Hub &hub) {
+    dxfg_v4_profile_t profile{};
 
-    Isolate() {
-        if (graal_create_isolate(nullptr, &isolate, &thread) != 0) {
-            thread = nullptr;
-        }
-    }
-};
+    profile.market_event.event_type.clazz = DXFG_EVENT_PROFILE;
+    profile.market_event.event_symbol = SYMBOL;
+    profile.description = "description";
 
-// A LOCAL_HUB endpoint and its publisher.
-struct Hub {
-    graal_isolatethread_t *thread;
-    dxfg_v4_endpoint_t *endpoint = nullptr;
-    dxfg_v4_feed_t *feed = nullptr;
-    dxfg_v4_publisher_t *publisher = nullptr;
-    bool ready = false;
+    dxfg_v4_event_type_t *events[] = {&profile.market_event.event_type};
 
-    explicit Hub(graal_isolatethread_t *thread) : thread(thread) {
-        ready = thread != nullptr &&
-                dxfg_v4_DXEndpoint_createWithRole(thread, DXFG_ENDPOINT_ROLE_LOCAL_HUB, &endpoint) == 0 &&
-                dxfg_v4_DXEndpoint_getFeed(thread, endpoint, &feed) == 0 &&
-                dxfg_v4_DXEndpoint_getPublisher(thread, endpoint, &publisher) == 0;
-    }
+    return hub.publish(events, 1);
+}
 
-    ~Hub() {
-        if (publisher != nullptr) {
-            dxfg_v4_JavaObjectHandler_release(thread, &publisher->handler);
+// Publishes until the listener is called: the subscription reaches the publisher asynchronously.
+bool publishUntilCalled(Hub &hub, Calls &calls) {
+    for (int i = 0; i < 500 && calls.calls() == 0; ++i) {
+        if (!publishProfile(hub)) {
+            return false;
         }
 
-        if (feed != nullptr) {
-            dxfg_v4_JavaObjectHandler_release(thread, &feed->handler);
-        }
-
-        if (endpoint != nullptr) {
-            dxfg_v4_DXEndpoint_close(thread, endpoint);
-            dxfg_v4_JavaObjectHandler_release(thread, &endpoint->handler);
-        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    bool publish() {
-        dxfg_v4_profile_t profile{};
+    return calls.waitForCall();
+}
 
-        profile.market_event.event_type.clazz = DXFG_EVENT_PROFILE;
-        profile.market_event.event_symbol = SYMBOL;
-        profile.description = "description";
-
-        dxfg_v4_event_type_t *events[] = {&profile.market_event.event_type};
-        dxfg_v4_event_type_list list{1, events};
-
-        return dxfg_v4_DXPublisher_publishEvents(thread, publisher, &list) == 0;
-    }
-
-    // Publishes until the listener is called: the subscription reaches the publisher asynchronously.
-    bool publishUntilCalled(Calls &calls) {
-        for (int i = 0; i < 500 && calls.calls() == 0; ++i) {
-            if (!publish()) {
-                return false;
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+// Publishes for NO_CALL_TIMEOUT: a listener that is called gets the events.
+bool publishForAWhile(Hub &hub) {
+    for (auto end = std::chrono::steady_clock::now() + NO_CALL_TIMEOUT; std::chrono::steady_clock::now() < end;) {
+        if (!publishProfile(hub)) {
+            return false;
         }
 
-        return calls.waitForCall();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    // Publishes for NO_CALL_TIMEOUT: a listener that is called gets the events.
-    bool publishForAWhile() {
-        for (auto end = std::chrono::steady_clock::now() + NO_CALL_TIMEOUT; std::chrono::steady_clock::now() < end;) {
-            if (!publish()) {
-                return false;
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-
-        return true;
-    }
-};
+    return true;
+}
 
 // A Profile subscription to SYMBOL with a listener of the calls.
 struct Listened {
@@ -185,45 +144,6 @@ struct Listened {
     }
 };
 
-// Runs the function on a new thread attached to the isolate.
-class Attached {
-    std::atomic<bool> returned_{false};
-    std::atomic<int32_t> result_{1};
-    std::thread thread_;
-
-  public:
-    Attached(graal_isolate_t *isolate, int32_t (*function)(graal_isolatethread_t *))
-        : thread_([this, isolate, function] {
-              graal_isolatethread_t *thread = nullptr;
-
-              if (graal_attach_thread(isolate, &thread) != 0) {
-                  result_ = -2;
-              } else {
-                  result_ = function(thread);
-                  graal_detach_thread(thread);
-              }
-
-              returned_ = true;
-          }) {
-    }
-
-    ~Attached() {
-        if (thread_.joinable()) {
-            thread_.join();
-        }
-    }
-
-    bool returned() const {
-        return returned_;
-    }
-
-    int32_t join() {
-        thread_.join();
-
-        return result_;
-    }
-};
-
 // Releases the calls at the end of the scope, also when a REQUIRE fails: then a thread that waits for a blocked call
 // returns, and its Attached can be joined.
 struct ReleaseOnExit {
@@ -250,7 +170,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no li
 
     REQUIRE(blockedListened.ready);
     REQUIRE(idleListened.ready);
-    REQUIRE(hub.publishUntilCalled(blocked)); // The call blocks on a thread of the endpoint.
+    REQUIRE(publishUntilCalled(hub, blocked)); // The call blocks on a thread of the endpoint.
 
     Attached deactivating(isolate.isolate, &dxfg_v4_NativeListener_deactivateAll);
 
@@ -263,7 +183,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no li
     const int blockedCalls = blocked.calls();
     const int idleCalls = idle.calls();
 
-    REQUIRE(hub.publishForAWhile());
+    REQUIRE(publishForAWhile(hub));
     CHECK(blocked.calls() == blockedCalls);
     CHECK(idle.calls() == idleCalls);
 
@@ -272,7 +192,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no li
     Listened laterListened(hub, later);
 
     REQUIRE(laterListened.ready);
-    REQUIRE(hub.publishForAWhile());
+    REQUIRE(publishForAWhile(hub));
     CHECK(later.calls() == 0);
 }
 
@@ -286,7 +206,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll called from a callback does not 
     Listened listened(hub, deactivating);
 
     REQUIRE(listened.ready);
-    REQUIRE(hub.publishUntilCalled(deactivating));
+    REQUIRE(publishUntilCalled(hub, deactivating));
 
     for (int i = 0; i < 1000 && deactivating.deactivateAllResult == 1; ++i) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -296,7 +216,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll called from a callback does not 
 
     const int calls = deactivating.calls();
 
-    REQUIRE(hub.publishForAWhile());
+    REQUIRE(publishForAWhile(hub));
     CHECK(deactivating.calls() == calls);
 }
 
@@ -310,7 +230,7 @@ TEST_CASE("dxfg_v4_system_shutdown closes the endpoints after the callbacks", "[
     Listened listened(hub, blocked);
 
     REQUIRE(listened.ready);
-    REQUIRE(hub.publishUntilCalled(blocked));
+    REQUIRE(publishUntilCalled(hub, blocked));
 
     Attached shuttingDown(isolate.isolate, &dxfg_v4_system_shutdown);
     ReleaseOnExit releaseOnExit{blocked}; // Destroyed before shuttingDown.

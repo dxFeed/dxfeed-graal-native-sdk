@@ -5,6 +5,7 @@ package com.dxfeed.sdk.mappers;
 
 import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.javac.NativeListener;
+import com.dxfeed.sdk.subscription.EventQueue;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -63,6 +64,8 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
         nativeObject.setJavaObjectHandler(ObjectHandles.getGlobal().create(javaObject));
         if (javaObject instanceof NativeListener) {
             ((NativeListener) javaObject).handleCreated();
+        } else if (javaObject instanceof EventQueue) {
+            ((EventQueue) javaObject).handleCreated();
         }
     }
 
@@ -71,9 +74,12 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
         final ObjectHandle handle = nativeObject.getJavaObjectHandler();
         final Object javaObject = ObjectHandles.getGlobal().get(handle);
         ObjectHandles.getGlobal().destroy(handle);
-        // The last released handle deactivates the listener, so that it does not call the native function anymore.
+        // The last released handle deactivates the listener, so that it does not call the native function anymore,
+        // or closes the event queue.
         if (javaObject instanceof NativeListener) {
             ((NativeListener) javaObject).handleReleased();
+        } else if (javaObject instanceof EventQueue) {
+            ((EventQueue) javaObject).handleReleased();
         }
     }
 
