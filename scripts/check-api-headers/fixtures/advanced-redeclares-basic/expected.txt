@@ -1,0 +1,2 @@
+declares DXFG_V4_BASIC_LIMIT, which the basic header dxfg_v4_basic.h declares
+declares dxfg_v4_basic_t, which the basic header dxfg_v4_basic.h declares

@@ -23,6 +23,20 @@
   `attach` and `getExecutor`. The executor of an attached subscription is refused by every function that accepts an
   executor (`IllegalStateException`); `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks()` fails with
   `IllegalArgumentException` for an executor it did not create, instead of a `ClassCastException`.
+* **\[MDAPI-482]\[GRAAL]** Stable and experimental functions. A stable function changes only by deprecation and is
+  removed only in a major release; an experimental one may change or be removed in a minor release, and an incompatible
+  change gives it a new name. The experimental functions are marked `DXFG_EXPERIMENTAL` (`dxfg_common.h`, empty unless
+  the application defines it first, e.g. as a deprecation attribute) and listed on the "Experimental declarations" page
+  of the C API reference: the twins of the experimental Java API (`dxfg_v4_indexed_event_tx_model.h`,
+  `dxfg_v4_subscription_controller.h`, `dxfg_v4_DXFeedSubscription_getSubscriptionController()`,
+  `dxfg_v4_DXFeedSubscription_getTotalDroppedEvents()`, the `IndexedTxModel`, `TimeSeriesTxModel` and `TxModelListener`
+  functions of `dxfg_v4_event_model.h`). These 73 functions came out in 3.12.0 with no tier and are experimental from
+  now on; their older twins stay until 4.0.0 as the other deprecated functions do, and their deprecation messages say
+  that the replacement is experimental. Later advanced headers with experimental functions only are not included by
+  `dxfg_v4_api.h`; the header check of the build enforces the boundary. The Nuam and `OrderImbalance` event types are
+  experimental in their descriptions. `dxfg_v4_system_get_version()`, `dxfg_v4_system_get_advanced_revision()`
+  (`DXFG_V4_ADVANCED_REVISION`, now 1) and `dxfg_v4_system_is_feature_supported()` (`DXFG_V4_FEATURE_EVENT_QUEUE`,
+  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`) let a wrapper check the library before it binds the other functions.
 
 ## v3.12.0
 

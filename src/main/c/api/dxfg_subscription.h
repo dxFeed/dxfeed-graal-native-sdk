@@ -161,7 +161,7 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *th
  * The controller manages the same subscription: attaching to feeds, the batch limit, the aggregation period and the
  * executor (see the group @ref SubscriptionController).
  *
- * @deprecated Use dxfg_v4_DXFeedSubscription_getSubscriptionController().
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getSubscriptionController() (experimental).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -173,7 +173,7 @@ dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t *th
  *
  * Java: `DXFeedSubscription.getSubscriptionController()`.
  */
-DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getSubscriptionController()")
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getSubscriptionController() (experimental)")
 int32_t                   dxfg_DXFeedSubscription_getSubscriptionController(graal_isolatethread_t *thread, dxfg_subscription_t *sub, DXFG_OUT dxfg_subscription_controller_t **subscriptionController);
 
 /**
@@ -595,7 +595,7 @@ int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo(graal_isolatethread_t *
  *
  * Java: `DXFeedSubscription.getTotalDroppedEvents()`.
  *
- * @deprecated Use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents().
+ * @deprecated Use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents() (experimental).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] sub The subscription handle.
@@ -603,7 +603,7 @@ int32_t dxfg_DXFeedSubscription_getAggregationPeriodInfo(graal_isolatethread_t *
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `droppedEvents` is NULL). Use dxfg_get_and_clear_thread_exception_t() to determine if an exception was thrown.
  */
-DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents()")
+DXFG_DEPRECATED("use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents() (experimental)")
 int32_t dxfg_DXFeedSubscription_getTotalDroppedEvents(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
                                                       DXFG_OUT int64_t *droppedEvents);
 

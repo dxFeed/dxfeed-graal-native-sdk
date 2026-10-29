@@ -3,6 +3,8 @@
 
 package com.dxfeed.sdk.system;
 
+import static com.dxfeed.sdk.NativeUtils.MAPPER_STRING;
+
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
@@ -12,6 +14,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 
 /**
@@ -113,6 +116,62 @@ public final class SystemV4Native {
         } finally {
             IsolateResources.closeAllAndAwaitTermination();
         }
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_system_get_version",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_get_version(
+            final IsolateThread ignoredThread,
+            @DxfgOut final WordPointer version
+    ) {
+        if (version.isNull()) {
+            throw new IllegalArgumentException("The `version` pointer is null");
+        }
+
+        version.write(MAPPER_STRING.toNative(SdkFeatures.VERSION));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_system_get_advanced_revision",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_get_advanced_revision(
+            final IsolateThread ignoredThread,
+            @DxfgOut final CIntPointer revision
+    ) {
+        if (revision.isNull()) {
+            throw new IllegalArgumentException("The `revision` pointer is null");
+        }
+
+        revision.write(SdkFeatures.ADVANCED_REVISION);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_system_is_feature_supported",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_is_feature_supported(
+            final IsolateThread ignoredThread,
+            final CCharPointer name,
+            @DxfgOut final CIntPointer supported
+    ) {
+        if (name.isNull()) {
+            throw new IllegalArgumentException("The `name` pointer is null");
+        }
+
+        if (supported.isNull()) {
+            throw new IllegalArgumentException("The `supported` pointer is null");
+        }
+
+        supported.write(SdkFeatures.isSupported(MAPPER_STRING.toJava(name)) ? 1 : 0);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

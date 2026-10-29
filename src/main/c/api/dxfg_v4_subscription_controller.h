@@ -45,7 +45,9 @@ typedef dxfg_subscription_controller_t dxfg_v4_subscription_controller_t;
  * Java: `SubscriptionController.attach(DXFeed)`.
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/SubscriptionController.html#attach-com.dxfeed.api.DXFeed-
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_attach(graal_isolatethread_t *thread,
                                               dxfg_v4_subscription_controller_t *subscriptionController,
                                               dxfg_v4_feed_t *feed);
@@ -62,7 +64,9 @@ int32_t dxfg_v4_SubscriptionController_attach(graal_isolatethread_t *thread,
  * Java: `SubscriptionController.detach(DXFeed)`.
  *
  * @see https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/SubscriptionController.html#detach-com.dxfeed.api.DXFeed-
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_detach(graal_isolatethread_t *thread,
                                               dxfg_v4_subscription_controller_t *subscriptionController,
                                               dxfg_v4_feed_t *feed);
@@ -80,7 +84,9 @@ int32_t dxfg_v4_SubscriptionController_detach(graal_isolatethread_t *thread,
  * thrown.
  *
  * Java: `SubscriptionController.getEventsBatchLimit()`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_getEventsBatchLimit(graal_isolatethread_t *thread,
                                                            dxfg_v4_subscription_controller_t *subscriptionController,
                                                            DXFG_OUT int32_t *eventsBatchLimit);
@@ -98,7 +104,9 @@ int32_t dxfg_v4_SubscriptionController_getEventsBatchLimit(graal_isolatethread_t
  * thrown.
  *
  * Java: `SubscriptionController.setEventsBatchLimit(int)`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_setEventsBatchLimit(graal_isolatethread_t *thread,
                                                            dxfg_v4_subscription_controller_t *subscriptionController,
                                                            int32_t eventsBatchLimit);
@@ -116,7 +124,9 @@ int32_t dxfg_v4_SubscriptionController_setEventsBatchLimit(graal_isolatethread_t
  * thrown.
  *
  * Java: `SubscriptionController.getAggregationPeriod()`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_getAggregationPeriod(graal_isolatethread_t *thread,
                                                             dxfg_v4_subscription_controller_t *subscriptionController,
                                                             DXFG_OUT dxfg_v4_time_period_t **aggregationPeriod);
@@ -136,7 +146,9 @@ int32_t dxfg_v4_SubscriptionController_getAggregationPeriod(graal_isolatethread_
  * thrown.
  *
  * Java: `SubscriptionController.getAggregationPeriod()`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_getAggregationPeriodMillis(
     graal_isolatethread_t *thread, dxfg_v4_subscription_controller_t *subscriptionController,
     DXFG_OUT int64_t *aggregationPeriod);
@@ -155,7 +167,9 @@ int32_t dxfg_v4_SubscriptionController_getAggregationPeriodMillis(
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  *
  * Java: `SubscriptionController.setAggregationPeriod(TimePeriod)`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_setAggregationPeriod(graal_isolatethread_t *thread,
                                                             dxfg_v4_subscription_controller_t *subscriptionController,
                                                             dxfg_v4_time_period_t *aggregationPeriod);
@@ -173,7 +187,9 @@ int32_t dxfg_v4_SubscriptionController_setAggregationPeriod(graal_isolatethread_
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  *
  * Java: `SubscriptionController.setAggregationPeriod(TimePeriod)`, called with `TimePeriod.valueOf(long)`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_setAggregationPeriodMillis(
     graal_isolatethread_t *thread, dxfg_v4_subscription_controller_t *subscriptionController,
     int64_t aggregationPeriod);
@@ -190,7 +206,9 @@ int32_t dxfg_v4_SubscriptionController_setAggregationPeriodMillis(
  * when `executor` is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  *
  * Java: `SubscriptionController.getExecutor()`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_getExecutor(graal_isolatethread_t *thread,
                                                    dxfg_v4_subscription_controller_t *subscriptionController,
                                                    DXFG_OUT dxfg_v4_executor_t **executor);
@@ -211,7 +229,9 @@ int32_t dxfg_v4_SubscriptionController_getExecutor(graal_isolatethread_t *thread
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  *
  * Java: `SubscriptionController.setExecutor(Executor)`.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_SubscriptionController_setExecutor(graal_isolatethread_t *thread,
                                                    dxfg_v4_subscription_controller_t *subscriptionController,
                                                    dxfg_v4_executor_t *executor);

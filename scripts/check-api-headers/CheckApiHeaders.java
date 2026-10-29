@@ -23,17 +23,34 @@ import java.util.stream.Stream;
  * it a declaration with no entry point (or an entry point with no declaration) fails only when a consumer links.
  *
  * <p>It also checks that the v4 API is complete: every older function is marked {@code DXFG_DEPRECATED} with a message
- * that names only declared {@code dxfg_v4_*} functions, {@code dxfg_v4_api.h} includes every {@code dxfg_v4_*.h} and
- * {@code dxfg_api.h} includes {@code dxfg_v4_api.h}.
+ * that names only declared {@code dxfg_v4_*} functions, {@code dxfg_v4_api.h} includes every {@code dxfg_v4_*.h}
+ * except the advanced headers and {@code dxfg_api.h} includes {@code dxfg_v4_api.h}.
+ *
+ * <p>And it checks the boundary between the stable and the experimental functions (see {@code V4_Conventions} in
+ * dxfg_common.h): the advanced headers ({@link #ADVANCED_HEADERS}) are included by no basic header, every function
+ * they declare is marked {@code DXFG_EXPERIMENTAL}, and they declare no name that a basic header declares; in every
+ * header, a function is marked {@code DXFG_EXPERIMENTAL} exactly when its description has {@code @experimental}.
  *
  * <p>Usage: {@code java CheckApiHeaders.java <directory of the API headers> <generated header>}. The argument types
  * are not compared: native-image declares them by their Java types.
+ *
+ * <p>Self-test: {@code java CheckApiHeaders.java --self-test <directory of fixtures>}. Each subdirectory of it is a
+ * fixture: {@code api/} with the headers, {@code generated.h}, {@code advanced.txt} with the names of its advanced
+ * headers (one per line) and {@code expected.txt} with the errors the check must report (a part of each error, one per
+ * line; an empty file when the check must pass). The self-test fails if a fixture reports another set of errors.
  */
 public final class CheckApiHeaders {
+
+    /**
+     * The advanced headers: {@code dxfg_v4_*.h} headers with experimental functions only, which {@code dxfg_v4_api.h}
+     * does not include.
+     */
+    private static final Set<String> ADVANCED_HEADERS = Set.of();
 
     private static final String V4_PREFIX = "dxfg_v4_";
     private static final String V4_API_HEADER = "dxfg_v4_api.h";
     private static final String API_HEADER = "dxfg_api.h";
+    private static final String EXPERIMENTAL_MARKER = "DXFG_EXPERIMENTAL";
 
     private static final Pattern COMMENTS = Pattern.compile("/\\*.*?\\*/|//[^\\n]*", Pattern.DOTALL);
     private static final Pattern STRINGS = Pattern.compile("\"(?:[^\"\\\\\\n]|\\\\.)*\"");
@@ -41,29 +58,133 @@ public final class CheckApiHeaders {
     private static final Pattern DECLARATION = Pattern.compile("\\b(dxfg_\\w+)\\s*\\(([^;{]*?)\\)\\s*;");
     private static final Pattern DEPRECATION = Pattern.compile(
             "\\bDXFG_DEPRECATED\\s*\\(\\s*\"((?:[^\"\\\\\\n]|\\\\.)*)\"\\s*\\)[^;{(]*?\\b(dxfg_\\w+)\\s*\\(");
+    private static final Pattern EXPERIMENTAL = Pattern.compile(
+            "\\b" + EXPERIMENTAL_MARKER + "\\b[^;{(]*?\\b(dxfg_\\w+)\\s*\\(");
+    // A documented function: its description and its name; the marker, if any, is skipped (experimentalFunctions()
+    // finds it).
+    private static final Pattern DOCUMENTED_FUNCTION = Pattern.compile(
+            "/\\*\\*((?:(?!\\*/).)*)\\*/\\s*(?:" + EXPERIMENTAL_MARKER + "\\s+)?"
+                    + "(?:DXFG_DEPRECATED\\s*\\(\\s*\"(?:[^\"\\\\\\n]|\\\\.)*\"\\s*\\)\\s*)?"
+                    + "[A-Za-z_][\\w\\s*]*?\\b(dxfg_\\w+)\\s*\\(",
+            Pattern.DOTALL);
+    private static final Pattern EXPERIMENTAL_TAG = Pattern.compile("^\\s*\\*?\\s*@experimental\\b", Pattern.MULTILINE);
     private static final Pattern V4_FUNCTION = Pattern.compile("\\b" + V4_PREFIX + "\\w+");
     private static final Pattern V4_INCLUDE = Pattern.compile(
             "^\\s*#\\s*include\\s*\"(" + V4_PREFIX + "\\w+\\.h)\"", Pattern.MULTILINE);
+    // The names a header declares besides its functions: macros, struct, union and enum tags, typedefs, enumerators.
+    private static final Pattern MACRO = Pattern.compile("^\\s*#\\s*define\\s+(\\w+)", Pattern.MULTILINE);
+    private static final Pattern TAG = Pattern.compile("\\b(?:struct|union|enum)\\s+(\\w+)\\s*\\{");
+    private static final Pattern TYPEDEF_AFTER_BODY = Pattern.compile("}\\s*(\\w+)\\s*;");
+    private static final Pattern TYPEDEF = Pattern.compile("\\btypedef\\s+[^;{}()]*?\\b(\\w+)\\s*;");
+    private static final Pattern FUNCTION_POINTER_TYPEDEF = Pattern.compile(
+            "\\btypedef\\b[^;{}]*?\\(\\s*\\*\\s*(\\w+)\\s*\\)");
+    private static final Pattern ENUM_BODY = Pattern.compile("\\benum\\b[^{;]*\\{([^}]*)}");
+    private static final Pattern ENUMERATOR = Pattern.compile("^\\s*(\\w+)");
 
     private CheckApiHeaders() {
     }
 
     public static void main(final String[] args) throws IOException {
+        if (args.length == 2 && args[0].equals("--self-test")) {
+            System.exit(selfTest(Path.of(args[1])) ? 0 : 1);
+        }
+
         if (args.length != 2) {
             System.err.println("Usage: java CheckApiHeaders.java <directory of the API headers> <generated header>");
+            System.err.println("       java CheckApiHeaders.java --self-test <directory of fixtures>");
             System.exit(2);
         }
 
+        final List<String> summary = new ArrayList<>();
+        final List<String> errors = check(Path.of(args[0]), Path.of(args[1]), ADVANCED_HEADERS, summary);
+
+        if (!errors.isEmpty()) {
+            errors.forEach(error -> System.err.println("ERROR: " + error));
+            System.err.println(errors.size() + " problems in " + args[0] + " (checked against " + args[1] + ")");
+            System.exit(1);
+        }
+
+        summary.forEach(System.out::println);
+    }
+
+    // Runs the check over every fixture and compares its errors with the expected ones.
+    private static boolean selfTest(final Path fixtures) throws IOException {
+        final List<Path> directories;
+
+        try (Stream<Path> paths = Files.list(fixtures)) {
+            directories = paths.filter(Files::isDirectory).sorted().toList();
+        }
+
+        if (directories.isEmpty()) {
+            System.err.println("ERROR: no fixtures in " + fixtures);
+            return false;
+        }
+
+        boolean passed = true;
+
+        for (final Path fixture : directories) {
+            final Set<String> advanced = new TreeSet<>(lines(fixture.resolve("advanced.txt")));
+            final List<String> expected = lines(fixture.resolve("expected.txt"));
+            final List<String> errors = check(fixture.resolve("api"), fixture.resolve("generated.h"), advanced,
+                    new ArrayList<>());
+            final List<String> unexpected = new ArrayList<>(errors);
+            final List<String> missing = new ArrayList<>();
+
+            for (final String part : expected) {
+                if (!unexpected.removeIf(error -> error.contains(part))) {
+                    missing.add(part);
+                }
+            }
+
+            if (missing.isEmpty() && unexpected.isEmpty()) {
+                System.out.println("Fixture " + fixture.getFileName() + ": "
+                        + (expected.isEmpty() ? "passes" : "reports " + expected));
+                continue;
+            }
+
+            passed = false;
+            missing.forEach(part -> System.err.println(
+                    "ERROR: fixture " + fixture.getFileName() + " does not report an error with \"" + part + "\""));
+            unexpected.forEach(error -> System.err.println(
+                    "ERROR: fixture " + fixture.getFileName() + " reports an unexpected error: " + error));
+        }
+
+        if (passed) {
+            System.out.println("The self-test of the header check passed: " + directories.size() + " fixtures");
+        }
+
+        return passed;
+    }
+
+    // The errors of the headers in the directory, checked against the generated header; the summary of a passed check.
+    private static List<String> check(
+            final Path directory,
+            final Path generatedHeader,
+            final Set<String> advancedHeaders,
+            final List<String> summary
+    ) throws IOException {
         final Map<String, Integer> declared = new TreeMap<>();
         final Map<String, String> deprecations = new TreeMap<>();
+        final Set<String> experimental = new TreeSet<>();
         final Set<String> v4Headers = new TreeSet<>();
+        final Map<String, Set<String>> includes = new TreeMap<>();
+        final Map<String, Set<String>> functionsByHeader = new TreeMap<>();
+        final Map<String, Set<String>> namesByHeader = new TreeMap<>();
+        final List<String> errors = new ArrayList<>();
 
-        try (Stream<Path> headers = Files.list(Path.of(args[0]))) {
+        try (Stream<Path> headers = Files.list(directory)) {
             for (final Path header : headers.filter(CheckApiHeaders::isApiHeader).sorted().toList()) {
-                declared.putAll(functions(header));
-                deprecations.putAll(deprecations(header));
-
                 final String name = header.getFileName().toString();
+                final Map<String, Integer> functions = functions(header);
+                final Set<String> marked = experimentalFunctions(header);
+
+                declared.putAll(functions);
+                deprecations.putAll(deprecations(header));
+                experimental.addAll(marked);
+                includes.put(name, includes(header));
+                functionsByHeader.put(name, functions.keySet());
+                namesByHeader.put(name, names(header));
+                errors.addAll(experimentalTags(header, functions.keySet(), marked));
 
                 if (name.startsWith(V4_PREFIX) && !name.equals(V4_API_HEADER)) {
                     v4Headers.add(name);
@@ -71,8 +192,7 @@ public final class CheckApiHeaders {
             }
         }
 
-        final Map<String, Integer> generated = functions(Path.of(args[1]));
-        final List<String> errors = new ArrayList<>();
+        final Map<String, Integer> generated = functions(generatedHeader);
 
         for (final Map.Entry<String, Integer> function : declared.entrySet()) {
             final Integer count = generated.get(function.getKey());
@@ -120,29 +240,68 @@ public final class CheckApiHeaders {
             deprecated++;
         }
 
-        final Set<String> included = includes(Path.of(args[0], V4_API_HEADER));
-
-        for (final String header : v4Headers) {
-            if (!included.contains(header)) {
-                errors.add(header + " is not included by " + V4_API_HEADER);
+        for (final String header : advancedHeaders) {
+            if (!includes.containsKey(header)) {
+                errors.add("the advanced header " + header + " does not exist");
             }
         }
 
-        if (!includes(Path.of(args[0], API_HEADER)).contains(V4_API_HEADER)) {
+        final Set<String> included = includes.getOrDefault(V4_API_HEADER, Set.of());
+
+        for (final String header : v4Headers) {
+            if (!advancedHeaders.contains(header) && !included.contains(header)) {
+                errors.add(header + " is not included by " + V4_API_HEADER + " and is not an advanced header");
+            }
+        }
+
+        if (!includes.getOrDefault(API_HEADER, Set.of()).contains(V4_API_HEADER)) {
             errors.add(V4_API_HEADER + " is not included by " + API_HEADER);
         }
 
-        if (!errors.isEmpty()) {
-            errors.forEach(error -> System.err.println("ERROR: " + error));
-            System.err.println(errors.size() + " problems in " + args[0] + " (checked against " + args[1] + ")");
-            System.exit(1);
+        final Map<String, String> basicNames = new TreeMap<>();
+
+        for (final Map.Entry<String, Set<String>> header : namesByHeader.entrySet()) {
+            if (!advancedHeaders.contains(header.getKey())) {
+                header.getValue().forEach(name -> basicNames.putIfAbsent(name, header.getKey()));
+            }
         }
 
-        System.out.println("The API headers declare the " + declared.size()
+        for (final String header : new TreeSet<>(advancedHeaders)) {
+            for (final Map.Entry<String, Set<String>> includer : includes.entrySet()) {
+                if (!advancedHeaders.contains(includer.getKey()) && includer.getValue().contains(header)) {
+                    errors.add("the advanced header " + header + " must not be included by the basic header "
+                            + includer.getKey());
+                }
+            }
+
+            for (final String function : functionsByHeader.getOrDefault(header, Set.of())) {
+                if (!experimental.contains(function)) {
+                    errors.add(function + " in the advanced header " + header + " is not marked "
+                            + EXPERIMENTAL_MARKER);
+                }
+            }
+
+            for (final String name : namesByHeader.getOrDefault(header, Set.of())) {
+                final String basic = basicNames.get(name);
+
+                if (basic != null) {
+                    errors.add("the advanced header " + header + " declares " + name + ", which the basic header "
+                            + basic + " declares");
+                }
+            }
+        }
+
+        summary.add("The API headers declare the " + declared.size()
                 + " functions of the library with the same numbers of parameters");
-        System.out.println("The " + deprecated + " older functions are deprecated in favour of declared "
-                + V4_PREFIX + " functions, " + V4_API_HEADER + " includes the " + v4Headers.size() + " v4 headers, "
-                + API_HEADER + " includes " + V4_API_HEADER);
+        summary.add("The " + deprecated + " older functions are deprecated in favour of declared "
+                + V4_PREFIX + " functions, " + V4_API_HEADER + " includes the "
+                + (v4Headers.size() - advancedHeaders.size()) + " basic v4 headers, " + API_HEADER + " includes "
+                + V4_API_HEADER);
+        summary.add("The " + experimental.size() + " functions marked " + EXPERIMENTAL_MARKER
+                + " have @experimental in their descriptions; the " + advancedHeaders.size()
+                + " advanced headers keep the boundary");
+
+        return errors;
     }
 
     private static boolean isApiHeader(final Path path) {
@@ -151,14 +310,23 @@ public final class CheckApiHeaders {
         return name.startsWith("dxfg_") && name.endsWith(".h");
     }
 
+    private static List<String> lines(final Path file) throws IOException {
+        return Files.readAllLines(file, StandardCharsets.UTF_8).stream().map(String::strip)
+                .filter(line -> !line.isEmpty()).toList();
+    }
+
+    private static String read(final Path header) throws IOException {
+        return Files.readString(header, StandardCharsets.UTF_8).replace("\r\n", "\n");
+    }
+
+    // The text of the header without comments and string literals: the preprocessor lines are kept.
+    private static String code(final Path header) throws IOException {
+        return STRINGS.matcher(COMMENTS.matcher(read(header)).replaceAll(" ")).replaceAll("\"\"");
+    }
+
     // The dxfg_* function declarations of the header: the name and the number of parameters.
     private static Map<String, Integer> functions(final Path header) throws IOException {
-        String text = Files.readString(header, StandardCharsets.UTF_8).replace("\r\n", "\n");
-
-        text = COMMENTS.matcher(text).replaceAll(" ");
-        text = STRINGS.matcher(text).replaceAll("\"\"");
-        text = PREPROCESSOR.matcher(text).replaceAll(" ");
-
+        final String text = PREPROCESSOR.matcher(code(header)).replaceAll(" ");
         final Map<String, Integer> functions = new TreeMap<>();
         final Matcher matcher = DECLARATION.matcher(text);
 
@@ -175,8 +343,7 @@ public final class CheckApiHeaders {
 
     // The functions of the header marked DXFG_DEPRECATED: the name and the message.
     private static Map<String, String> deprecations(final Path header) throws IOException {
-        final String text = COMMENTS.matcher(Files.readString(header, StandardCharsets.UTF_8).replace("\r\n", "\n"))
-                .replaceAll(" ");
+        final String text = COMMENTS.matcher(read(header)).replaceAll(" ");
         final Map<String, String> deprecations = new TreeMap<>();
         final Matcher matcher = DEPRECATION.matcher(text);
 
@@ -187,13 +354,77 @@ public final class CheckApiHeaders {
         return deprecations;
     }
 
+    // The functions of the header marked DXFG_EXPERIMENTAL.
+    private static Set<String> experimentalFunctions(final Path header) throws IOException {
+        final String text = PREPROCESSOR.matcher(code(header)).replaceAll(" ");
+
+        return EXPERIMENTAL.matcher(text).results().map(result -> result.group(1))
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    // The documented functions of the header whose marker and @experimental tag disagree.
+    private static List<String> experimentalTags(
+            final Path header,
+            final Set<String> functions,
+            final Set<String> marked
+    ) throws IOException {
+        final List<String> errors = new ArrayList<>();
+        final Matcher matcher = DOCUMENTED_FUNCTION.matcher(read(header));
+
+        while (matcher.find()) {
+            final String function = matcher.group(2);
+
+            if (!functions.contains(function)) {
+                continue;
+            }
+
+            final boolean tagged = EXPERIMENTAL_TAG.matcher(matcher.group(1)).find();
+
+            if (tagged && !marked.contains(function)) {
+                errors.add(function + " has @experimental in its description, but is not marked "
+                        + EXPERIMENTAL_MARKER);
+            } else if (!tagged && marked.contains(function)) {
+                errors.add(function + " is marked " + EXPERIMENTAL_MARKER
+                        + ", but has no @experimental in its description");
+            }
+        }
+
+        return errors;
+    }
+
     // The dxfg_v4_*.h headers that the header includes, dxfg_v4_api.h among them.
     private static Set<String> includes(final Path header) throws IOException {
-        final String text = COMMENTS.matcher(Files.readString(header, StandardCharsets.UTF_8).replace("\r\n", "\n"))
-                .replaceAll(" ");
+        final String text = COMMENTS.matcher(read(header)).replaceAll(" ");
 
         return V4_INCLUDE.matcher(text).results().map(result -> result.group(1))
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    // The dxfg_* and DXFG_* names that the header declares: functions, macros, tags, typedefs and enumerators.
+    private static Set<String> names(final Path header) throws IOException {
+        final String withPreprocessor = code(header);
+        final String text = PREPROCESSOR.matcher(withPreprocessor).replaceAll(" ");
+        final Set<String> names = new TreeSet<>(functions(header).keySet());
+
+        MACRO.matcher(withPreprocessor).results().forEach(result -> names.add(result.group(1)));
+
+        for (final Pattern pattern : List.of(TAG, TYPEDEF_AFTER_BODY, TYPEDEF, FUNCTION_POINTER_TYPEDEF)) {
+            pattern.matcher(text).results().forEach(result -> names.add(result.group(1)));
+        }
+
+        ENUM_BODY.matcher(text).results().forEach(body -> {
+            for (final String enumerator : body.group(1).split(",")) {
+                final Matcher matcher = ENUMERATOR.matcher(enumerator);
+
+                if (matcher.find()) {
+                    names.add(matcher.group(1));
+                }
+            }
+        });
+
+        names.removeIf(name -> !name.regionMatches(true, 0, "dxfg_", 0, "dxfg_".length()));
+
+        return names;
     }
 
     private static int countParameters(final String parameters) {

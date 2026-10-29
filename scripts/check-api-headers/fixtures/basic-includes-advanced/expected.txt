@@ -1,0 +1,1 @@
+the advanced header dxfg_v4_advanced.h must not be included by the basic header dxfg_v4_other.h

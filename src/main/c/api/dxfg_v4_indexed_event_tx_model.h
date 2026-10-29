@@ -53,7 +53,9 @@ typedef dxfg_IndexedEventTxModel_Listener_eventsReceived_f dxfg_v4_IndexedEventT
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_JavaObjectHandler_release() to free the builder handle.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_newBuilder(graal_isolatethread_t *thread, dxfg_v4_event_clazz_t eventType,
                                                DXFG_OUT dxfg_v4_indexed_event_tx_model_builder_t **builder);
 
@@ -66,7 +68,9 @@ int32_t dxfg_v4_IndexedEventTxModel_newBuilder(graal_isolatethread_t *thread, dx
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_Symbol_release() to free the symbol.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol(graal_isolatethread_t *thread,
                                                                       dxfg_v4_indexed_event_tx_model_t *model,
                                                                       DXFG_OUT dxfg_v4_symbol_t **symbol);
@@ -80,7 +84,9 @@ int32_t dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol(graal_isol
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_String_release() to free the symbol.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_getSymbol(graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_t *model,
                                               DXFG_OUT const char **symbol);
 
@@ -93,7 +99,9 @@ int32_t dxfg_v4_IndexedEventTxModel_getSymbol(graal_isolatethread_t *thread, dxf
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_IndexedEventSource_release() to free the source.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_getSource(graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_t *model,
                                               DXFG_OUT dxfg_v4_indexed_event_source_t **source);
 
@@ -106,7 +114,9 @@ int32_t dxfg_v4_IndexedEventTxModel_getSource(graal_isolatethread_t *thread, dxf
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_JavaObjectHandler_release() to free the SubscriptionController handle.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_getSubscriptionController(
     graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_t *model,
     DXFG_OUT dxfg_v4_subscription_controller_t **subscriptionController);
@@ -119,7 +129,9 @@ int32_t dxfg_v4_IndexedEventTxModel_getSubscriptionController(
  * @param[out] isClosed `true` (1) if this model is closed; `false` (0) otherwise.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_isClosed(graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_t *model,
                                              DXFG_OUT int32_t *isClosed);
 
@@ -130,7 +142,9 @@ int32_t dxfg_v4_IndexedEventTxModel_isClosed(graal_isolatethread_t *thread, dxfg
  * @param[in] model The current model.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_close(graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_t *model);
 
 /**
@@ -142,7 +156,9 @@ int32_t dxfg_v4_IndexedEventTxModel_close(graal_isolatethread_t *thread, dxfg_v4
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_JavaObjectHandler_release() to free the builder handle.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_new(graal_isolatethread_t *thread, dxfg_v4_event_clazz_t eventType,
                                                 DXFG_OUT dxfg_v4_indexed_event_tx_model_builder_t **builder);
 
@@ -157,7 +173,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_new(graal_isolatethread_t *thread, d
  * @param[in] feed The feed.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withFeed(graal_isolatethread_t *thread,
                                                      dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                      dxfg_v4_feed_t *feed);
@@ -173,7 +191,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withFeed(graal_isolatethread_t *thre
  * @param[in] symbol The subscription symbol (dxfg_v4_indexed_event_subscription_symbol_t).
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withSymbol(graal_isolatethread_t *thread,
                                                        dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                        dxfg_v4_symbol_t *symbol);
@@ -188,7 +208,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withSymbol(graal_isolatethread_t *th
  * @param[in] symbol The subscription symbol.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol(graal_isolatethread_t *thread,
                                                              dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                              const char *symbol);
@@ -203,7 +225,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol(graal_isolatethread
  * @param[in] source The specified source.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withSource(graal_isolatethread_t *thread,
                                                        dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                        dxfg_v4_indexed_event_source_t *source);
@@ -218,7 +242,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withSource(graal_isolatethread_t *th
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_JavaObjectHandler_release() to free the listener handle.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Listener_new(graal_isolatethread_t *thread,
                                                  dxfg_v4_IndexedEventTxModel_Listener_eventsReceived_f eventsReceived,
                                                  void *userData,
@@ -234,7 +260,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Listener_new(graal_isolatethread_t *thread,
  * @param[in] listener The model listener.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withListener(graal_isolatethread_t *thread,
                                                          dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                          dxfg_v4_indexed_event_tx_model_listener_t *listener);
@@ -250,7 +278,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withListener(graal_isolatethread_t *
  * @param[in] eventsBatchLimit The notification events limit.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit(graal_isolatethread_t *thread,
                                                                  dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                                  int32_t eventsBatchLimit);
@@ -266,7 +296,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit(graal_isolateth
  * @param[in] aggregationPeriod The aggregation period for data.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod(graal_isolatethread_t *thread,
                                                                   dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                                   dxfg_v4_time_period_t *aggregationPeriod);
@@ -282,7 +314,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod(graal_isolatet
  * @param[in] aggregationPeriod The aggregation period for data.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis(
     graal_isolatethread_t *thread, dxfg_v4_indexed_event_tx_model_builder_t *builder, int64_t aggregationPeriod);
 
@@ -297,7 +331,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis(
  * @param[in] executor The executor instance.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_withExecutor(graal_isolatethread_t *thread,
                                                          dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                          dxfg_v4_executor_t *executor);
@@ -311,7 +347,9 @@ int32_t dxfg_v4_IndexedEventTxModel_Builder_withExecutor(graal_isolatethread_t *
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  * Use dxfg_v4_JavaObjectHandler_release() to free the model handle.
+ * @experimental
  */
+DXFG_EXPERIMENTAL
 int32_t dxfg_v4_IndexedEventTxModel_Builder_build(graal_isolatethread_t *thread,
                                                   dxfg_v4_indexed_event_tx_model_builder_t *builder,
                                                   DXFG_OUT dxfg_v4_indexed_event_tx_model_t **model);

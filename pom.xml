@@ -52,7 +52,7 @@
     <windows.static.runtime.buildArg7>-DDXFG1=0</windows.static.runtime.buildArg7>
     <windows.static.runtime.buildArg8>-DDXFG1=0</windows.static.runtime.buildArg8>
     <initialize-at-build-time>
-      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.sdk.model.tx.TimeSeriesTxModel$SortOrder
+      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.sdk.model.tx.TimeSeriesTxModel$SortOrder,com.dxfeed.sdk.system.SdkFeatures
     </initialize-at-build-time>
     <isRelease>true</isRelease>
     <isDebug>false</isDebug>
@@ -691,6 +691,7 @@
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
+                <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
@@ -954,6 +955,7 @@
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
+                <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>
@@ -1035,6 +1037,7 @@
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
+                <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>
@@ -1126,7 +1129,12 @@
             <include>com/dxfeed/sdk/model/tx/**/*Test.java</include>
             <include>com/dxfeed/sdk/javac/**/*Test.java</include>
             <include>com/dxfeed/sdk/subscription/**/*Test.java</include>
+            <include>com/dxfeed/sdk/system/**/*Test.java</include>
           </includes>
+          <systemPropertyVariables>
+            <!-- As the build argument of native-image: the version that SdkFeatures reports. -->
+            <dxfg.sdk.version>${project.version}</dxfg.sdk.version>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
@@ -1156,6 +1164,7 @@
             <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
+            <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
             <buildArg>
@@ -1494,7 +1503,9 @@
               The headers of src/main/c/api must declare the functions that the library exports: the same names with
               the same numbers of parameters as in the header that native-image generates. Every older function must
               be DXFG_DEPRECATED in favour of declared dxfg_v4_ functions, dxfg_v4_api.h must include every dxfg_v4_*.h
-              and dxfg_api.h must include dxfg_v4_api.h (see scripts/check-api-headers/CheckApiHeaders.java).
+              except the advanced headers and dxfg_api.h must include dxfg_v4_api.h; the advanced headers keep the
+              boundary of the experimental functions (see scripts/check-api-headers/CheckApiHeaders.java). The
+              self-test of the check runs first, over scripts/check-api-headers/fixtures.
             -->
             <id>check-api-headers</id>
             <phase>package</phase>
@@ -1504,6 +1515,11 @@
             <configuration>
               <skip>${api.headers.check.skip}</skip>
               <target>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-api-headers/CheckApiHeaders.java" />
+                  <arg value="--self-test" />
+                  <arg value="${project.basedir}/scripts/check-api-headers/fixtures" />
+                </exec>
                 <exec executable="${java.home}/bin/java" failonerror="true">
                   <arg value="${project.basedir}/scripts/check-api-headers/CheckApiHeaders.java" />
                   <arg value="${project.basedir}/src/main/c/api" />

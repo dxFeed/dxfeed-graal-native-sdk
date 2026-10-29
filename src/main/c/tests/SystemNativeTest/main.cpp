@@ -1,6 +1,10 @@
 #include <catch.hpp>
 #include <dxfg_api.h>
 
+#include "Hub.hpp"
+
+#include <string>
+
 // ToDo Fix java daemon thread, appears in
 // https://github.com/stdcion/dxfeed-graal-native-api/commit/525e2eb5191bd196d08f725baf866f739f2a12b4#diff-390547990893e97ec6012ce95f1b5d4447f855fdbe11c95e183e9386f94f9f59R115
 // ToDo Issue https://github.com/oracle/graal/issues/4290 https://github.com/oracle/graal/issues/4024
@@ -111,6 +115,59 @@ TEST_CASE("Check in different isolate", "[SystemNative]") {
 
     // graal_result = graal_detach_all_threads_and_tear_down_isolate(threadSecond);
     REQUIRE(graal_result == 0);
+}
+
+TEST_CASE("The version is the one of the build", "[SystemNative][V4]") {
+    const Isolate isolate;
+    REQUIRE(isolate.thread != nullptr);
+
+    const char *version = nullptr;
+    REQUIRE(dxfg_v4_system_get_version(isolate.thread, &version) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(version != nullptr);
+    CHECK(std::string(version) == DXFG_TEST_SDK_VERSION);
+    REQUIRE(dxfg_v4_String_release(isolate.thread, version) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    CHECK(dxfg_v4_system_get_version(isolate.thread, nullptr) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
+}
+
+TEST_CASE("The advanced revision is the one of the headers", "[SystemNative][V4]") {
+    const Isolate isolate;
+    REQUIRE(isolate.thread != nullptr);
+
+    int32_t revision = -1;
+    REQUIRE(dxfg_v4_system_get_advanced_revision(isolate.thread, &revision) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(revision == DXFG_V4_ADVANCED_REVISION);
+
+    CHECK(dxfg_v4_system_get_advanced_revision(isolate.thread, nullptr) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
+}
+
+TEST_CASE("The features of the headers are supported, unknown ones are not", "[SystemNative][V4]") {
+    const Isolate isolate;
+    REQUIRE(isolate.thread != nullptr);
+
+    const auto isSupported = [&isolate](const char *name) {
+        int32_t supported = -1;
+        REQUIRE(dxfg_v4_system_is_feature_supported(isolate.thread, name, &supported) == DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE((supported == 0 || supported == 1));
+
+        return supported == 1;
+    };
+
+    CHECK(isSupported(DXFG_V4_FEATURE_EVENT_QUEUE));
+    CHECK(isSupported(DXFG_V4_FEATURE_SHARED_EVENT_QUEUE));
+    CHECK_FALSE(isSupported("no_such_feature"));
+    CHECK_FALSE(isSupported(""));
+    CHECK(takeExceptionClassName(isolate.thread).empty());
+
+    int32_t supported = -1;
+    CHECK(dxfg_v4_system_is_feature_supported(isolate.thread, nullptr, &supported) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
+    CHECK(supported == -1);
+    CHECK(dxfg_v4_system_is_feature_supported(isolate.thread, DXFG_V4_FEATURE_EVENT_QUEUE, nullptr) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
 }
 
 } // namespace test

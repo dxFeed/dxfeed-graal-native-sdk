@@ -14,7 +14,10 @@ QUIET                  = YES
 WARN_IF_UNDOCUMENTED   = NO
 GENERATE_TREEVIEW      = YES
 GENERATE_LATEX         = NO
-# The attribute of the deprecated functions (they have @deprecated in their descriptions)
+# The attributes of the deprecated and the experimental functions (they have @deprecated and @experimental in their
+# descriptions)
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
-PREDEFINED             = "DXFG_DEPRECATED(message)="
+PREDEFINED             = "DXFG_DEPRECATED(message)=" "DXFG_EXPERIMENTAL="
+# @experimental: the note of an experimental declaration and its entry on the page "Experimental declarations"
+ALIASES                = "experimental=@xrefitem experimental \"Experimental\" \"Experimental declarations\" It may change or be removed in a minor release, see @ref V4_Conventions."

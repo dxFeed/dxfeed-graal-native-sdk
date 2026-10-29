@@ -125,6 +125,78 @@ int32_t dxfg_v4_system_close_all_and_await_termination(graal_isolatethread_t *th
  */
 int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 
+/**
+ * @brief The advanced revision of these headers: the revision of the experimental functions that a wrapper is built
+ * for.
+ *
+ * The revision is incremented when an experimental function changes incompatibly (see @ref V4_Conventions). A wrapper
+ * compares it with dxfg_v4_system_get_advanced_revision() at start-up: it binds the stable functions always, and the
+ * experimental ones only when the revisions are equal.
+ * @since 3.13.0
+ */
+#define DXFG_V4_ADVANCED_REVISION ((int32_t)1)
+
+/**
+ * @brief The name of the feature "event queue" (dxfg_v4_event_queue.h: dxfg_v4_EventQueue_new(),
+ * dxfg_v4_EventQueue_poll()) for dxfg_v4_system_is_feature_supported().
+ * @since 3.13.0
+ */
+#define DXFG_V4_FEATURE_EVENT_QUEUE "event_queue"
+
+/**
+ * @brief The name of the feature "shared event queue" (dxfg_v4_EventQueue_create(), dxfg_v4_EventQueue_attach(),
+ * dxfg_v4_EventQueue_pollTagged(), dxfg_v4_EventQueue_getExecutor()) for dxfg_v4_system_is_feature_supported().
+ * @since 3.13.0
+ */
+#define DXFG_V4_FEATURE_SHARED_EVENT_QUEUE "shared_event_queue"
+
+/**
+ * @brief Returns the version of the SDK release that the library belongs to, e.g. `3.13.0`.
+ *
+ * A wrapper that binds the functions by name checks the release before it binds the others. When the function
+ * itself is missing, the library is older than 3.13.0.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[out] version The version, a NUL-terminated string allocated by the SDK; release it with
+ * dxfg_v4_String_release(). It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `version` is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_system_get_version(graal_isolatethread_t *thread, DXFG_OUT const char **version);
+
+/**
+ * @brief Returns the advanced revision of the library: the revision of its experimental functions.
+ *
+ * A wrapper built with #DXFG_V4_ADVANCED_REVISION binds the experimental functions (`DXFG_EXPERIMENTAL`, see
+ * @ref V4_Conventions) only when the library returns the same revision.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[out] revision The revision. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `revision` is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_system_get_advanced_revision(graal_isolatethread_t *thread, DXFG_OUT int32_t *revision);
+
+/**
+ * @brief Tells whether the library supports a feature, e.g. #DXFG_V4_FEATURE_EVENT_QUEUE.
+ *
+ * A feature names a group of functions or a behaviour added after the release that a wrapper requires. An unknown
+ * name, also an empty one, is not an error: the feature is not supported.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] name The name of the feature (the `DXFG_V4_FEATURE_` macros), a NUL-terminated UTF-8 string. It must not
+ * be NULL.
+ * @param[out] supported 1 if the feature is supported, 0 otherwise. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `name` or `supported` is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was
+ * thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_system_is_feature_supported(graal_isolatethread_t *thread, const char *name,
+                                            DXFG_OUT int32_t *supported);
+
 /** @} */ // end of V4_System
 
 #ifdef __cplusplus

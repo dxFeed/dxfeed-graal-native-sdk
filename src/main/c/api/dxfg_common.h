@@ -55,6 +55,17 @@ extern "C" {
 #endif /* DXFG_DEPRECATED */
 
 /**
+ * Marks an experimental function: it may change or be removed in a minor release (see the tiers in
+ * @ref V4_Conventions), and its description says so. The macro expands to nothing, unless the application defines it
+ * before the headers are included, e.g. `#define DXFG_EXPERIMENTAL [[deprecated("experimental")]]` in C++ or
+ * `-D'DXFG_EXPERIMENTAL=__attribute__((deprecated("experimental")))'` with GCC and Clang, so that the compilers warn
+ * where the experimental functions are used.
+ */
+#ifndef DXFG_EXPERIMENTAL
+#    define DXFG_EXPERIMENTAL
+#endif /* DXFG_EXPERIMENTAL */
+
+/**
  * A successful result that any dxFeed Graal Native SDK function can return: the status of the functions that return
  * `int32_t` status, #DXFG_EXECUTE_SUCCESSFULLY (0) means that the function was executed without an exception.
  */
@@ -172,6 +183,25 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
  *  function and type with this prefix, and later releases, major ones included, add functions with the same prefix.
  *  A new generation appears only when these rules change. It is named after the major release in which it becomes
  *  the only one: the v4 functions become the only ones in 4.0.0.
+ *
+ *  The v4 functions have two tiers:
+ *  - A stable function keeps its name, parameters and behaviour. It changes only by deprecation (a new function
+ *    replaces it, and the old one is marked `DXFG_DEPRECATED`), and it is removed only in a major release.
+ *  - An experimental function is marked with `DXFG_EXPERIMENTAL` and listed on the page @ref experimental. It may
+ *    change or be removed in any minor release, also between the release candidates of one release. An incompatible
+ *    change gives it a new name (named by what it takes, with no digit suffix) and increments the advanced revision
+ *    (dxfg_v4_system_get_advanced_revision(), #DXFG_V4_ADVANCED_REVISION), so a wrapper bound by name misses the old
+ *    symbol instead of calling it with a changed signature. A compatible addition adds a feature
+ *    (dxfg_v4_system_is_feature_supported()) and keeps the revision. A function promoted to stable keeps its name.
+ *
+ *  The experimental functions are the twins of the Java API that is experimental (`@Experimental` in QD, and the
+ *  transaction models taken from the experimental Java API), and the functions of the advanced headers: the
+ *  `dxfg_v4_*.h` headers that dxfg_v4_api.h does not include, each one included on its own. The twins came out in
+ *  3.12.0, before the tiers, and are experimental since 3.13.0; their older functions stay until 4.0.0, as the other
+ *  deprecated functions do, and their deprecation messages say that the replacement is experimental. An advanced header
+ *  may include the basic headers, never the other way round. The experimental event types say so in their descriptions;
+ *  their structures are delivered as the other events are. Every declaration added after 3.12.0 names the release that
+ *  added it (`@since`).
  *
  *  The older and the v4 functions can be mixed on the same objects: a handle, a string or a list that one of them
  *  returned can be passed to the other one and released by the release function of either.

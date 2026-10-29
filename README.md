@@ -29,6 +29,7 @@ into your projects.
   * [Conventions](#conventions)
   * [Example](#example)
   * [Samples and wrappers](#samples-and-wrappers)
+  * [Version and features](#version-and-features)
   * [Isolates](#isolates)
   * [Listeners](#listeners)
   * [Event queue](#event-queue)
@@ -222,6 +223,15 @@ library.
   releases, major ones included, add functions with the same prefix. A new generation appears only when the rules of
   the v4 functions change. It is named after the major release in which it becomes the only one: the v4 functions
   become the only ones in 4.0.0.
+- **Stable and experimental functions.** A stable function changes only by deprecation and is removed only in a major
+  release. An experimental function is marked `DXFG_EXPERIMENTAL` and says so in its description (the "Experimental
+  declarations" page of the C API reference lists them): it may change or be removed in a minor release, and an
+  incompatible change gives it a new name. The experimental functions are the twins of the experimental Java API
+  (`IndexedEventTxModel`, `SubscriptionController`, `DXFeedSubscription.getTotalDroppedEvents`, the transaction
+  models `IndexedTxModel` and `TimeSeriesTxModel`) and the functions of the advanced headers, which `dxfg_api.h` does
+  not include. The twins came out in 3.12.0 and are experimental since 3.13.0; their older functions stay until 4.0.0
+  and their deprecation messages say that the replacement is experimental. The marker expands to nothing; to see where the experimental functions are used, define it before the
+  headers, e.g. `#define DXFG_EXPERIMENTAL [[deprecated("experimental")]]`.
 
 ### Example
 
@@ -337,6 +347,37 @@ The [C tests](src/main/c/tests) are small programs too. Our ready-made wrappers:
 - C++: [dxfeed-graal-cxx-api](https://github.com/dxFeed/dxfeed-graal-cxx-api)
 - Swift: [dxfeed-graal-swift-api](https://github.com/dxFeed/dxfeed-graal-swift-api)
 - Go: [dxfeed-graal-go-api](https://github.com/dxFeed/dxfeed-graal-go-api)
+
+### Version and features
+
+A wrapper checks the library before it binds the other functions, with three functions of `dxfg_v4_system.h`
+(3.13.0 and newer; a library without them is older):
+
+- `dxfg_v4_system_get_version` writes the release version (`3.13.0`), released with `dxfg_v4_String_release`;
+- `dxfg_v4_system_get_advanced_revision` writes the revision of the experimental functions;
+- `dxfg_v4_system_is_feature_supported` tells whether a feature is supported (`DXFG_V4_FEATURE_EVENT_QUEUE`,
+  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`); an unknown name is not supported, not an error.
+
+Bind the stable functions always, and the experimental ones only when the revision equals
+`DXFG_V4_ADVANCED_REVISION` of the headers the wrapper was built with; otherwise treat the experimental part as
+missing. A wrapper that links to the library checks the same at start-up and stops before it calls an experimental
+function.
+
+```c
+const char *version = NULL;
+int32_t revision = 0;
+int32_t supported = 0;
+
+if (dxfg_v4_system_get_version(thread, &version) == DXFG_EXECUTE_SUCCESSFULLY) {
+    printf("dxFeed Graal Native SDK %s\n", version);
+    dxfg_v4_String_release(thread, version);
+}
+
+const int experimental = dxfg_v4_system_get_advanced_revision(thread, &revision) == DXFG_EXECUTE_SUCCESSFULLY &&
+                         revision == DXFG_V4_ADVANCED_REVISION;
+
+dxfg_v4_system_is_feature_supported(thread, DXFG_V4_FEATURE_SHARED_EVENT_QUEUE, &supported);
+```
 
 ### Isolates
 
