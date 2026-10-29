@@ -820,8 +820,13 @@ public class JavacNative {
             final IsolateThread ignoredThread,
             final DxfgExecutorHandle executor
     ) {
-        ((ExecutorBaseOnConcurrentLinkedQueue) NativeUtils.MAPPER_EXECUTOR.toJava(
-                executor)).processAllPendingTasks();
+        final Executor javaExecutor = NativeUtils.MAPPER_EXECUTOR.toJavaOfAnyKind(executor);
+        if (!(javaExecutor instanceof ExecutorBaseOnConcurrentLinkedQueue)) {
+            throw new IllegalArgumentException("The executor was not created by "
+                    + "dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new or "
+                    + "dxfg_ExecutorBaseOnConcurrentLinkedQueue_new");
+        }
+        ((ExecutorBaseOnConcurrentLinkedQueue) javaExecutor).processAllPendingTasks();
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

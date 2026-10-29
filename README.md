@@ -391,22 +391,58 @@ of an endpoint are coalesced (e.g. `NOT_CONNECTED -> CONNECTED` without `CONNECT
 An application that cannot take calls from the threads of the SDK (e.g. a wrapper for a language with its own runtime)
 receives the events of a subscription on its own thread with an event queue (`dxfg_v4_event_queue.h`):
 
-1. Create the queue with `dxfg_v4_EventQueue_new` before adding the symbols to the subscription.
-2. On a thread of your own, call `dxfg_v4_EventQueue_drain` in a loop: it waits for the events and returns them as a
+1. Create the queue with `dxfg_v4_EventQueue_new`. As with a listener, do it before adding the symbols to a
+   subscription attached to a feed; a detached subscription may already have symbols, but then add its listeners
+   before the queue (QD refuses a listener on a subscription with symbols once a feed or a queue is attached).
+2. On a thread of your own, call `dxfg_v4_EventQueue_poll` in a loop: it waits for the events and returns them as a
    `dxfg_v4_event_type_list` (release it with `dxfg_v4_event_type_list_release`). It returns
    `DXFG_EVENT_QUEUE_NO_EVENTS` after the timeout or `dxfg_v4_EventQueue_wakeUp`, and `DXFG_EVENT_QUEUE_CLOSED` once
    the queue is closed (`dxfg_v4_EventQueue_close`, the release of its handle, the close of the subscription,
    `dxfg_v4_system_shutdown`).
-3. After a drain, compare `dxfg_v4_EventQueue_getDroppedEvents` with its previous value: a larger one means that events
+3. After a poll, compare `dxfg_v4_EventQueue_getDroppedEvents` with its previous value: a larger one means that events
    were lost before the returned ones.
 
-The SDK retrieves the events only when the queue is drained. Meanwhile the lasting events (e.g. Quote) are conflated,
+The SDK retrieves the events only when the queue is polled. Meanwhile the lasting events (e.g. Quote) are conflated,
 and the other ones (e.g. TimeAndSale) wait in a buffer of the subscription: up to 1000000 events by default (the system
 property `com.devexperts.qd.impl.matrix.Agent.MaxBufferSize`, set before the first endpoint), beyond that the oldest
 ones are dropped and counted. A `STREAM_FEED` endpoint drops nothing: it stops receiving data for all its
-subscriptions until the full queue is drained. Drain a queue from one thread at a time. Closing an endpoint does not
-end a drain, so drain with a finite timeout if the application closes the endpoints itself. The rules are in the
+subscriptions until the full queue is polled. Poll a queue from one thread at a time. Closing an endpoint does not
+end a poll, so poll with a finite timeout if the application closes the endpoints itself. The rules are in the
 "Event queue" group of the C API reference.
+
+One thread can serve many subscriptions and the models: create a shared queue with `dxfg_v4_EventQueue_create`, attach
+each subscription with `dxfg_v4_EventQueue_attach` and a tag of your choice, and give the queue's executor
+(`dxfg_v4_EventQueue_getExecutor`) to the models and the instrument profile collector. `dxfg_v4_EventQueue_pollTagged`
+returns the events with the tag of their subscription (release the list with `dxfg_v4_tagged_event_list_release`), and
+calls the listeners of the models on the polling thread:
+
+```c
+dxfg_v4_event_queue_t *queue = NULL;
+dxfg_v4_EventQueue_create(thread, &queue);
+dxfg_v4_EventQueue_attach(thread, queue, quotes, 1);  // before the symbols are added
+dxfg_v4_EventQueue_attach(thread, queue, trades, 2);
+
+dxfg_v4_executor_t *executor = NULL;
+dxfg_v4_EventQueue_getExecutor(thread, queue, &executor);
+dxfg_v4_IndexedTxModel_Builder_withExecutor(thread, builder, executor, &builder2);  // the model's listener runs in polls
+
+for (;;) {
+    dxfg_v4_tagged_event_list *events = NULL;
+    int32_t result = dxfg_v4_EventQueue_pollTagged(thread, queue, 1000, 0, &events);
+    if (result == DXFG_EVENT_QUEUE_CLOSED || result < 0) {
+        break;
+    }
+    if (result == DXFG_EXECUTE_SUCCESSFULLY) {
+        for (int32_t i = 0; i < events->size; i++) {
+            handle(events->tags[i], events->elements[i]);
+        }
+        dxfg_v4_tagged_event_list_release(thread, events);
+    }
+}
+```
+
+Closing a subscription detaches only it; closing the queue or releasing the last handle of the queue and of its
+executor stops every listener on the queue. Keep the queue or executor handle until the models are closed.
 
 ### Shutdown
 
@@ -415,7 +451,7 @@ for them forever while any endpoint is open. Before tearing down the isolate (or
 
 1. Call `dxfg_v4_system_shutdown`. It deactivates all the listeners (`dxfg_v4_NativeListener_deactivateAll`: no
    listener is called after it returns, the ones created later are never called) and closes the event queues (the
-   drains return `DXFG_EVENT_QUEUE_CLOSED`), then closes all the endpoints
+   polls return `DXFG_EVENT_QUEUE_CLOSED`), then closes all the endpoints
    (including the default ones of `dxfg_v4_DXEndpoint_getInstance`, `dxfg_v4_DXFeed_getInstance`, etc.) and instrument
    profile connections created through the SDK and waits for the termination of the endpoints
    (`dxfg_v4_system_close_all_and_await_termination`). It cannot be undone; call it in the explicit shutdown of the

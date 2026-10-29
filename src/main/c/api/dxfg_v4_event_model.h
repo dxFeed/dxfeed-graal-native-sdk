@@ -190,6 +190,10 @@ int32_t dxfg_v4_OrderBookModel_getExecutor(graal_isolatethread_t *thread, dxfg_v
 /**
  * @brief Sets the executor that calls the listeners of the order book model.
  *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
+ *
  * Java: `OrderBookModel.setExecutor(Executor)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
@@ -275,6 +279,10 @@ int32_t dxfg_v4_IndexedEventModel_getExecutor(graal_isolatethread_t *thread, dxf
 
 /**
  * @brief Sets the executor that calls the listeners of the indexed event model.
+ *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
  *
  * Java: `IndexedEventModel.setExecutor(Executor)`.
  *
@@ -363,6 +371,10 @@ int32_t dxfg_v4_TimeSeriesEventModel_getExecutor(graal_isolatethread_t *thread,
 
 /**
  * @brief Sets the executor that calls the listeners of the time-series event model.
+ *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
  *
  * Java: `TimeSeriesEventModel.setExecutor(Executor)`.
  *
@@ -1098,6 +1110,10 @@ int32_t dxfg_v4_IndexedTxModel_Builder_withListener(
 /**
  * @brief Sets the executor that calls the listener (by default, the executor of the feed).
  *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
+ *
  * Java: `AbstractTxModel.Builder.withExecutor(Executor)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
@@ -1474,6 +1490,10 @@ int32_t dxfg_v4_TimeSeriesTxModel_Builder_withListener(
 
 /**
  * @brief Sets the executor that calls the listener (by default, the executor of the feed).
+ *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
  *
  * Java: `AbstractTxModel.Builder.withExecutor(Executor)`.
  *

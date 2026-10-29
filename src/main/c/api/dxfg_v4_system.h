@@ -102,14 +102,14 @@ int32_t dxfg_v4_system_close_all_and_await_termination(graal_isolatethread_t *th
  * profile connections and waits for the termination of the endpoints.
  *
  * The function calls dxfg_v4_NativeListener_deactivateAll(), which also closes the event queues, and then
- * dxfg_v4_system_close_all_and_await_termination(), so that no listener is called and no drain waits while the
+ * dxfg_v4_system_close_all_and_await_termination(), so that no listener is called and no poll waits while the
  * endpoints are closed. Both steps wait without a limit; like them, the function is irreversible: the listeners
  * created afterwards are never called, the endpoints created afterwards are not closed by it.
  *
  * Recommended shutdown sequence:
  * 1. dxfg_v4_system_shutdown(). After it returns, no listener's function is called and none of its calls is in
- *    progress, so the user data of the listeners can be freed; every drain of an event queue returns
- *    #DXFG_EVENT_QUEUE_CLOSED, so the draining threads can leave the SDK.
+ *    progress, so the user data of the listeners can be freed; every poll of an event queue returns
+ *    #DXFG_EVENT_QUEUE_CLOSED, so the polling threads can leave the SDK.
  * 2. Release the remaining handles (dxfg_v4_JavaObjectHandler_release()), the listeners among them.
  * 3. graal_tear_down_isolate(), if the isolate is torn down at all; the process may also just exit.
  *

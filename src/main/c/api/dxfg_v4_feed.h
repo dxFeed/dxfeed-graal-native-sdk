@@ -193,9 +193,11 @@ int32_t dxfg_v4_DXFeed_detachSubscription(graal_isolatethread_t *thread, dxfg_v4
  * @brief Detaches the subscription from the feed and clears the data that was delivered to the subscription.
  *
  * The data is cleared by publishing empty events to the subscription. The call does nothing if the subscription is not
- * attached to this feed. A NULL feed or subscription is an error. For a subscription with an event queue
- * (dxfg_v4_EventQueue_new()) the call does not wait for a drain: the events delivered while it runs, the empty ones
- * among them, arrive in the next drain.
+ * attached to this feed. A NULL feed or subscription is an error. For a subscription attached to an event queue
+ * (dxfg_v4_EventQueue_new(), dxfg_v4_EventQueue_attach()) the call does not wait for a poll: the events delivered while
+ * it runs, the empty ones among them, arrive in the poll in progress or the next one. For a subscription whose
+ * executor is the executor of a shared queue (dxfg_v4_EventQueue_getExecutor()) the call waits until another thread
+ * runs its pending work in a poll or the queue is closed: do not call it on the polling thread.
  *
  * Java: `DXFeed.detachSubscriptionAndClear(DXFeedSubscription)`.
  *

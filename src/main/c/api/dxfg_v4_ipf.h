@@ -436,6 +436,10 @@ int32_t dxfg_v4_InstrumentProfileCollector_getExecutor(graal_isolatethread_t *th
 /**
  * @brief Changes the executor that calls the update listeners of the collector.
  *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * update listeners; the executor of a subscription attached to a queue is refused with `IllegalStateException` (see
+ * @ref V4_EventQueue).
+ *
  * Java: `InstrumentProfileCollector.setExecutor(Executor)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.

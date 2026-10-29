@@ -200,7 +200,8 @@ int32_t dxfg_v4_SubscriptionController_getExecutor(graal_isolatethread_t *thread
  *
  * The controller does not take the handle of the executor: release it with dxfg_v4_JavaObjectHandler_release() when it
  * is no longer needed. As dxfg_v4_DXFeedSubscription_setExecutor(), the function fails with `IllegalStateException`
- * for a subscription with an event queue (dxfg_v4_EventQueue_new()) and for the executor of a queue.
+ * for a subscription attached to an event queue and for the executor of an attached subscription, and accepts the
+ * executor of a shared queue (dxfg_v4_EventQueue_getExecutor()).
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] subscriptionController The subscription controller handle.

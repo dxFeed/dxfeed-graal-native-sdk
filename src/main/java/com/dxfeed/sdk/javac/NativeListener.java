@@ -24,6 +24,9 @@ import java.util.WeakHashMap;
  * <p>{@link #deactivateAll()} ({@code dxfg_v4_NativeListener_deactivateAll}) deactivates all the listeners of the
  * isolate (the static fields are per isolate), and the listeners created after it are inactive from the start.
  *
+ * <p>Inside {@link #runMuted(Runnable)} no listener calls its native function on that thread (except the ones that
+ * {@link #ignoresMutedScope() ignore it}): a closed event queue runs the tasks QD waits for that way.
+ *
  * <p>Subclasses wrap every call of the native function:
  * <pre>{@code
  * if (enter()) {
@@ -41,6 +44,8 @@ public abstract class NativeListener {
     // Guarded by REGISTRY_LOCK. Weak: an unreachable listener is not called anymore.
     private static final Set<NativeListener> LISTENERS = Collections.newSetFromMap(new WeakHashMap<>());
     private static boolean allDeactivated;
+    // The depth of runMuted() on the thread.
+    private static final ThreadLocal<int[]> MUTED = ThreadLocal.withInitial(() -> new int[1]);
 
     private final Object lock = new Object();
     // Guarded by lock.
@@ -79,6 +84,34 @@ public abstract class NativeListener {
         }
     }
 
+    /**
+     * Runs the task with the native functions of the listeners muted on this thread.
+     */
+    public static void runMuted(final Runnable task) {
+        final int[] depth = MUTED.get();
+        depth[0]++;
+        try {
+            task.run();
+        } finally {
+            depth[0]--;
+        }
+    }
+
+    /**
+     * @return {@code true} inside {@link #runMuted(Runnable)} on this thread.
+     */
+    public static boolean isMuted() {
+        return MUTED.get()[0] > 0;
+    }
+
+    /**
+     * @return {@code true} if the listener calls its native function inside {@link #runMuted(Runnable)} too
+     *         (a logging listener: a log record is not a delivery).
+     */
+    protected boolean ignoresMutedScope() {
+        return false;
+    }
+
     private void stopCalls() {
         synchronized (lock) {
             active = false;
@@ -88,10 +121,13 @@ public abstract class NativeListener {
     /**
      * Starts a call of the native function.
      *
-     * @return {@code false} if the listener is deactivated and the native function must not be called,
-     *         otherwise {@code true} and {@link #exit()} must be called after the native function returns.
+     * @return {@code false} if the listener is deactivated or muted on this thread and the native function must not be
+     *         called, otherwise {@code true} and {@link #exit()} must be called after the native function returns.
      */
     protected final boolean enter() {
+        if (isMuted() && !ignoresMutedScope()) {
+            return false;
+        }
         synchronized (lock) {
             if (!active) {
                 return false;

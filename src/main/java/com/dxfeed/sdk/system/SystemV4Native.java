@@ -108,8 +108,11 @@ public final class SystemV4Native {
         // The listeners first: no callback runs while the endpoints are closed or the queues run their tasks.
         // The queues before the endpoints: an endpoint waits until no task of a queue is pending.
         NativeListener.deactivateAll();
-        EventQueue.closeAll();
-        IsolateResources.closeAllAndAwaitTermination();
+        try {
+            EventQueue.closeAll();
+        } finally {
+            IsolateResources.closeAllAndAwaitTermination();
+        }
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

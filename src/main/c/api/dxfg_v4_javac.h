@@ -126,7 +126,7 @@ int32_t dxfg_v4_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_v4
  * threads, after that no listener's function is called anymore, so the user data of the listeners can be freed. The
  * listeners created afterwards are inactive from the start. The deactivation cannot be undone for the isolate.
  *
- * Then the function closes all the event queues of this isolate (dxfg_v4_EventQueue_close()) and waits for the drains
+ * Then the function closes all the event queues of this isolate (dxfg_v4_EventQueue_close()) and waits for the polls
  * in progress on other threads: they return #DXFG_EVENT_QUEUE_CLOSED or the events they have already retrieved. The
  * queues created afterwards are closed from the start.
  *
@@ -348,7 +348,8 @@ int32_t dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethread_t *t
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] executor The executor created by dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new(); any other executor
- * makes the function fail.
+ * (e.g. the executor of an event queue, dxfg_v4_EventQueue_getExecutor()) makes the function fail with
+ * `IllegalArgumentException`.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  */

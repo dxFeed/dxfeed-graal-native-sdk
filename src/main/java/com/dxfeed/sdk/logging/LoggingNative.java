@@ -36,6 +36,11 @@ public class LoggingNative {
 
         final class Listener extends NativeListener implements InterceptableLoggingListener {
             @Override
+            protected boolean ignoresMutedScope() {
+                return true;
+            }
+
+            @Override
             public void onLog(final Level level, final long timestamp, final String threadName,
                     final long threadId, final String loggerName, final String message,
                     final Throwable exception, final String formattedMessage) {

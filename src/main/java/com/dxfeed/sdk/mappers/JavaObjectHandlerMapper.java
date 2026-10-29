@@ -64,8 +64,11 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
         nativeObject.setJavaObjectHandler(ObjectHandles.getGlobal().create(javaObject));
         if (javaObject instanceof NativeListener) {
             ((NativeListener) javaObject).handleCreated();
-        } else if (javaObject instanceof EventQueue) {
-            ((EventQueue) javaObject).handleCreated();
+        } else {
+            final EventQueue queue = EventQueue.countedBy(javaObject);
+            if (queue != null) {
+                queue.handleCreated();
+            }
         }
     }
 
@@ -75,11 +78,14 @@ public class JavaObjectHandlerMapper<JavaObjectType, NativeObjectType extends Ja
         final Object javaObject = ObjectHandles.getGlobal().get(handle);
         ObjectHandles.getGlobal().destroy(handle);
         // The last released handle deactivates the listener, so that it does not call the native function anymore,
-        // or closes the event queue.
+        // or closes the event queue (its handles and the ones of its queue-level executor).
         if (javaObject instanceof NativeListener) {
             ((NativeListener) javaObject).handleReleased();
-        } else if (javaObject instanceof EventQueue) {
-            ((EventQueue) javaObject).handleReleased();
+        } else {
+            final EventQueue queue = EventQueue.countedBy(javaObject);
+            if (queue != null) {
+                queue.handleReleased();
+            }
         }
     }
 

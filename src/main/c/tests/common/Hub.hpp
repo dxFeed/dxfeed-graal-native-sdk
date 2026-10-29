@@ -10,9 +10,11 @@
 
 #include <atomic>
 #include <functional>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <utility>
+#include <vector>
 
 namespace dxfg {
 namespace test {
@@ -108,6 +110,85 @@ class Attached {
         thread_.join();
 
         return result_;
+    }
+};
+
+// The threads that called a listener, one entry per call.
+class ListenerCalls {
+    std::mutex mutex_{};
+    std::vector<std::thread::id> threads_{};
+
+  public:
+    void add() {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        threads_.push_back(std::this_thread::get_id());
+    }
+
+    std::vector<std::thread::id> get() {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        return threads_;
+    }
+};
+
+// A TimeSeriesTxModel of TimeAndSale from time 0 whose listener runs on the executor and records its calls; closed and
+// released at the end.
+struct TimeAndSaleTxModel {
+    graal_isolatethread_t *thread;
+    dxfg_v4_tx_model_listener_t *listener = nullptr;
+    dxfg_v4_time_series_tx_model_t *model = nullptr;
+    bool ready = false;
+
+    TimeAndSaleTxModel(Hub &hub, dxfg_v4_executor_t *executor, dxfg_v4_symbol_t *symbol, ListenerCalls &calls)
+        : thread(hub.thread) {
+        dxfg_v4_time_series_tx_model_builder_t *builder = nullptr;
+        dxfg_v4_time_series_tx_model_builder_t *written = nullptr;
+
+        // Each step of the builder returns a handle of its own.
+        auto step = [this, &written](int32_t result) {
+            const bool done = result == 0 && written != nullptr;
+
+            if (written != nullptr) {
+                dxfg_v4_JavaObjectHandler_release(thread, &written->handler);
+                written = nullptr;
+            }
+
+            return done;
+        };
+
+        ready = dxfg_v4_TxModelListener_new(thread, &onEventsReceived, &calls, &listener) == 0 &&
+                dxfg_v4_TimeSeriesTxModel_newBuilder(thread, DXFG_EVENT_TIME_AND_SALE, &builder) == 0 &&
+                step(dxfg_v4_TimeSeriesTxModel_Builder_withFromTime(thread, builder, 0, &written)) &&
+                step(dxfg_v4_TimeSeriesTxModel_Builder_withFeed(thread, builder, hub.feed, &written)) &&
+                step(dxfg_v4_TimeSeriesTxModel_Builder_withSymbol(thread, builder, symbol, &written)) &&
+                step(dxfg_v4_TimeSeriesTxModel_Builder_withListener(thread, builder, listener, &written)) &&
+                step(dxfg_v4_TimeSeriesTxModel_Builder_withExecutor(thread, builder, executor, &written)) &&
+                dxfg_v4_TimeSeriesTxModel_Builder_build(thread, builder, &model) == 0;
+
+        if (builder != nullptr) {
+            dxfg_v4_JavaObjectHandler_release(thread, &builder->handler);
+        }
+    }
+
+    TimeAndSaleTxModel(const TimeAndSaleTxModel &) = delete;
+    TimeAndSaleTxModel &operator=(const TimeAndSaleTxModel &) = delete;
+
+    ~TimeAndSaleTxModel() {
+        if (model != nullptr) {
+            dxfg_v4_TimeSeriesTxModel_close(thread, model);
+            dxfg_v4_JavaObjectHandler_release(thread, &model->handler);
+        }
+
+        if (listener != nullptr) {
+            dxfg_v4_JavaObjectHandler_release(thread, &listener->handler);
+        }
+    }
+
+  private:
+    static void onEventsReceived(graal_isolatethread_t * /* thread */, dxfg_v4_indexed_event_source_t * /* source */,
+                                 dxfg_v4_event_type_list * /* events */, int32_t /* isSnapshot */, void *userData) {
+        static_cast<ListenerCalls *>(userData)->add();
     }
 };
 

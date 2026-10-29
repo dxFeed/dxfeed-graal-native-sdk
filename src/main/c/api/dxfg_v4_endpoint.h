@@ -147,6 +147,11 @@ int32_t dxfg_v4_DXEndpoint_Builder_withProperties(graal_isolatethread_t *thread,
  * (the `dxfeed.threadPoolSize` property for the feed roles and `dxpublisher.threadPoolSize` for the publisher).
  * The executor must not reject the submitted tasks.
  *
+ * The executor of a shared event queue (dxfg_v4_EventQueue_getExecutor()) makes the polls of the queue call the
+ * listeners of the endpoint and of the subscriptions that inherit it; those subscriptions are not attached to the queue
+ * (see @ref V4_EventQueue for the limits). The executor of a subscription attached to a queue is refused with
+ * `IllegalStateException`.
+ *
  * Java: `DXEndpoint.Builder.withExecutor(Executor)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.

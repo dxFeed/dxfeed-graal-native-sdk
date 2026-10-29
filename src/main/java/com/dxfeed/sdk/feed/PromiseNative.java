@@ -16,6 +16,7 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnNullWord;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
@@ -325,6 +326,10 @@ public class PromiseNative {
                 new PromiseHandler<Object>() {
                     @Override
                     public void promiseDone(final Promise<?> promise) {
+                        // Not called from a task of a closed event queue (see NativeListener.runMuted).
+                        if (NativeListener.isMuted()) {
+                            return;
+                        }
                         dxfgPromiseHandlerFunction.invoke(
                                 CurrentIsolate.getCurrentThread(),
                                 dxfgPromise,
@@ -351,6 +356,10 @@ public class PromiseNative {
                 new PromiseHandler<Object>() {
                     @Override
                     public void promiseDone(final Promise<?> promise) {
+                        // Not called from a task of a closed event queue (see NativeListener.runMuted).
+                        if (NativeListener.isMuted()) {
+                            return;
+                        }
                         dxfgPromiseHandlerFunction.invoke(
                                 CurrentIsolate.getCurrentThread(),
                                 dxfgPromise,

@@ -11,14 +11,16 @@ import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import java.util.List;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 import org.graalvm.word.WordFactory;
 
 /**
- * The functions of dxfg_v4_event_queue.h: the {@link EventQueue} of a subscription.
+ * The functions of dxfg_v4_event_queue.h: the {@link EventQueue} of subscriptions.
  */
 @CContext(EventQueueDirectives.class)
 public final class EventQueueV4Native {
@@ -50,10 +52,60 @@ public final class EventQueueV4Native {
     }
 
     @CEntryPoint(
-            name = "dxfg_v4_EventQueue_drain",
+            name = "dxfg_v4_EventQueue_create",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )
-    public static int dxfg_v4_EventQueue_drain(
+    public static int dxfg_v4_EventQueue_create(
+            final IsolateThread ignoredThread,
+            @DxfgOut final WordPointer queue
+    ) {
+        if (queue.isNull()) {
+            throw new IllegalArgumentException("The `queue` pointer is null");
+        }
+
+        queue.write(NativeUtils.MAPPER_EVENT_QUEUE.toNative(EventQueue.create()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_EventQueue_attach",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_EventQueue_attach(
+            final IsolateThread ignoredThread,
+            final DxfgEventQueueHandle queue,
+            final DxfgSubscription<DXFeedSubscription<EventType<?>>> subscription,
+            final long tag
+    ) {
+        NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue).attach(NativeUtils.MAPPER_SUBSCRIPTION.toJava(subscription), tag);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_EventQueue_getExecutor",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_EventQueue_getExecutor(
+            final IsolateThread ignoredThread,
+            final DxfgEventQueueHandle queue,
+            @DxfgOut final WordPointer executor
+    ) {
+        if (executor.isNull()) {
+            throw new IllegalArgumentException("The `executor` pointer is null");
+        }
+
+        executor.write(NativeUtils.MAPPER_EXECUTOR.toNative(NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue).getExecutor()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_EventQueue_poll",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_EventQueue_poll(
             final IsolateThread ignoredThread,
             final DxfgEventQueueHandle queue,
             final long timeoutInMilliseconds,
@@ -68,7 +120,7 @@ public final class EventQueueV4Native {
         }
 
         final EventQueue javaQueue = NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue);
-        final List<EventType<?>> batch = javaQueue.drain(timeoutInMilliseconds, limit);
+        final List<EventType<?>> batch = javaQueue.poll(timeoutInMilliseconds, limit);
 
         if (batch == null || batch.isEmpty()) {
             events.write(WordFactory.nullPointer());
@@ -87,6 +139,60 @@ public final class EventQueueV4Native {
         }
 
         events.write(nativeEvents);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_EventQueue_pollTagged",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_EventQueue_pollTagged(
+            final IsolateThread ignoredThread,
+            final DxfgEventQueueHandle queue,
+            final long timeoutInMilliseconds,
+            final int limit,
+            @DxfgOut final WordPointer events
+    ) throws InterruptedException {
+        if (events.isNull()) {
+            throw new IllegalArgumentException("The `events` pointer is null");
+        }
+        if (limit < 0) {
+            throw new IllegalArgumentException("The `limit` is negative: " + limit);
+        }
+
+        final EventQueue javaQueue = NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue);
+        final EventQueue.Batch batch = javaQueue.pollTagged(timeoutInMilliseconds, limit);
+
+        if (batch == null || batch.isEmpty()) {
+            events.write(WordFactory.nullPointer());
+
+            return batch == null ? CLOSED : NO_EVENTS;
+        }
+
+        final DxfgTaggedEventList nativeEvents;
+
+        try {
+            nativeEvents = toNativeTaggedList(batch);
+        } catch (final RuntimeException | Error e) {
+            javaQueue.dropBatch(batch.events());
+            throw e;
+        }
+
+        events.write(nativeEvents);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_tagged_event_list_release",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_tagged_event_list_release(
+            final IsolateThread ignoredThread,
+            final DxfgTaggedEventList events
+    ) {
+        releaseTaggedList(events);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
@@ -133,5 +239,46 @@ public final class EventQueueV4Native {
         droppedEvents.write(NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue).getDroppedEvents());
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // The events go through the list mapper of the events; its list shell is freed once its size and elements move to
+    // the tagged list.
+    private static DxfgTaggedEventList toNativeTaggedList(final EventQueue.Batch batch) {
+        final DxfgTaggedEventList nativeEvents = UnmanagedMemory.calloc(SizeOf.get(DxfgTaggedEventList.class));
+
+        try {
+            final int size = batch.size();
+            final CLongPointer tags = UnmanagedMemory.calloc(size * Long.BYTES);
+            nativeEvents.setTags(tags);
+
+            for (int i = 0; i < size; i++) {
+                tags.write(i, batch.tag(i));
+            }
+
+            final DxfgEventTypeListPointer list = NativeUtils.MAPPER_EVENTS.toNativeList(batch.events());
+            nativeEvents.setSize(list.getSize());
+            nativeEvents.setElements(list.getElements());
+            UnmanagedMemory.free(list);
+        } catch (final RuntimeException | Error e) {
+            releaseTaggedList(nativeEvents);
+            throw e;
+        }
+
+        return nativeEvents;
+    }
+
+    // Frees the tags, then the events and the list through the list mapper of the events: the first two fields of
+    // the tagged list are those of an event list.
+    private static void releaseTaggedList(final DxfgTaggedEventList events) {
+        if (events.isNull()) {
+            return;
+        }
+
+        if (events.getTags().isNonNull()) {
+            UnmanagedMemory.free(events.getTags());
+            events.setTags(WordFactory.nullPointer());
+        }
+
+        NativeUtils.MAPPER_EVENTS.release(events);
     }
 }

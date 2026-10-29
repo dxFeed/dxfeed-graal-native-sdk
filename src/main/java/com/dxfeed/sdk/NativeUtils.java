@@ -242,7 +242,7 @@ public final class NativeUtils {
     public static final Mapper<Object, DxfgSymbol> MAPPER_SYMBOL;
     public static final ListMapper<Object, DxfgSymbol, DxfgSymbolPointer, DxfgSymbolList> MAPPER_SYMBOLS;
     public static final ListMapper<Class<? extends EventType<?>>, CIntPointer, DxfgEventClazzPointer, DxfgEventClazzList> MAPPER_EVENT_TYPES;
-    public static final Mapper<Executor, DxfgExecutorHandle> MAPPER_EXECUTOR;
+    public static final ExecutorMapper MAPPER_EXECUTOR;
     public static final Mapper<EventQueue, DxfgEventQueueHandle> MAPPER_EVENT_QUEUE;
     public static final Mapper<TimePeriod, DxfgTimePeriodHandle> MAPPER_TIME_PERIOD;
     public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
