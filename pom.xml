@@ -689,6 +689,8 @@
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
+                <!-- QD (com.devexperts.util.AtomicArraysUnsafe) uses sun.misc.Unsafe: no JDK 24+ warning at runtime. -->
+                <buildArg>-J--sun-misc-unsafe-memory-access=allow</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
@@ -953,6 +955,8 @@
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
+                <!-- QD (com.devexperts.util.AtomicArraysUnsafe) uses sun.misc.Unsafe: no JDK 24+ warning at runtime. -->
+                <buildArg>-J--sun-misc-unsafe-memory-access=allow</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
@@ -1035,6 +1039,8 @@
                 <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
                 <buildArg>${url.protocols.buildArg}</buildArg>
                 <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
+                <!-- QD (com.devexperts.util.AtomicArraysUnsafe) uses sun.misc.Unsafe: no JDK 24+ warning at runtime. -->
+                <buildArg>-J--sun-misc-unsafe-memory-access=allow</buildArg>
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
@@ -1162,6 +1168,8 @@
             <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
             <buildArg>${url.protocols.buildArg}</buildArg>
             <buildArg>--enable-monitoring=jmxserver,jmxclient,jvmstat</buildArg>
+            <!-- QD (com.devexperts.util.AtomicArraysUnsafe) uses sun.misc.Unsafe: no JDK 24+ warning at runtime. -->
+            <buildArg>-J--sun-misc-unsafe-memory-access=allow</buildArg>
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
             <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>

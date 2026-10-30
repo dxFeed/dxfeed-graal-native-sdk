@@ -44,6 +44,9 @@
   release its results and its `DXFG_DEPRECATED` replacements. The build checks the headers against the committed
   description of 3.12.0: a stable declaration is not changed or removed, an experimental one changes only with a higher
   `DXFG_V4_ADVANCED_REVISION`, and a new declaration needs `@since`. See "API description" in the README.
+* **\[MDAPI-484]\[GRAAL]** The library no longer prints the JDK warning about `sun.misc.Unsafe` ("A terminally
+  deprecated method in sun.misc.Unsafe has been called", from `com.devexperts.util.AtomicArraysUnsafe` of QD) to
+  stderr of the application: the image is built with `--sun-misc-unsafe-memory-access=allow`.
 
 ## v3.12.0
 
