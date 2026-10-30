@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "sdk_version": "1.1.0",
+  "advanced_revision": 1,
+  "features": [],
+  "headers": [
+    {
+      "name": "dxfg_common.h",
+      "tier": "basic"
+    }
+  ],
+  "functions": [
+    {
+      "name": "dxfg_point_get",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "before 1.0.0",
+      "deprecated": {
+        "message": "use dxfg_v4_point_get()",
+        "replacements": [
+          "dxfg_v4_point_get"
+        ]
+      },
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "point",
+          "type": "dxfg_v4_point_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_point_get",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.0.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "thePoint",
+          "type": "dxfg_v4_point_t *",
+          "out": false
+        },
+        {
+          "name": "x",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_point_move",
+      "header": "dxfg_common.h",
+      "tier": "experimental",
+      "since": "1.0.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "point",
+          "type": "dxfg_v4_point_t *",
+          "out": false
+        },
+        {
+          "name": "dx",
+          "type": "int32_t",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_point_reset",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.1.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "point",
+          "type": "dxfg_v4_point_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    }
+  ],
+  "types": [
+    {
+      "name": "dxfg_v4_point_t",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.0.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "x",
+          "type": "int32_t"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_side_t",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.0.0",
+      "kind": "enum",
+      "enumerators": [
+        {
+          "name": "DXFG_V4_SIDE_BUY",
+          "value": "1"
+        },
+        {
+          "name": "DXFG_V4_SIDE_SELL",
+          "value": "2"
+        },
+        {
+          "name": "DXFG_V4_SIDE_NONE",
+          "value": "3"
+        }
+      ]
+    }
+  ],
+  "macros": [
+    {
+      "name": "DXFG_V4_ADVANCED_REVISION",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.0.0",
+      "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_POINT_LIMIT",
+      "header": "dxfg_common.h",
+      "tier": "stable",
+      "since": "1.0.0",
+      "value": "10"
+    }
+  ]
+}

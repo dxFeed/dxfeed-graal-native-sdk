@@ -1,0 +1,1 @@
+dxfg_v4_point_reset is not in the baseline 1.0.0 and has no @since

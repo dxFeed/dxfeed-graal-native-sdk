@@ -32,6 +32,7 @@
       <directory>${native.image.path}</directory>
       <includes>
         <include>*.h</include>
+        <include>dxfg-api.json</include>
       </includes>
       <excludes>
         <exclude>${native.image.name}.h</exclude>

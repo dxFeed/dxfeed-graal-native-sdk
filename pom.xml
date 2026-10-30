@@ -1529,6 +1529,40 @@
             </configuration>
           </execution>
           <execution>
+            <!--
+              The description of the C API for wrappers, dxfg-api.json next to the library in every archive: the
+              functions, types and macros of src/main/c/api with their tiers and versions, the advanced revision and the
+              features. The headers must keep the promise of the stable tier against the description of the last
+              release, scripts/check-api-headers/baseline/dxfg-api.json (see
+              scripts/check-api-headers/GenerateApiJson.java; after a release, refresh the baseline with its
+              update-baseline mode). The self-test of the generator runs first, over
+              scripts/check-api-headers/description-fixtures. It is declared after check-api-headers and before the
+              assembly plugin, so the archives get the description.
+            -->
+            <id>generate-api-description</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-api-headers/GenerateApiJson.java" />
+                  <arg value="--self-test" />
+                  <arg value="${project.basedir}/scripts/check-api-headers/description-fixtures" />
+                </exec>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-api-headers/GenerateApiJson.java" />
+                  <arg value="${project.basedir}/src/main/c/api" />
+                  <arg value="${project.version}" />
+                  <arg value="${project.basedir}/scripts/check-api-headers/baseline/dxfg-api.json" />
+                  <arg value="${project.basedir}/ReleaseNotes.md" />
+                  <arg value="${native.image.path}/dxfg-api.json" />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-artifact-file</id>
             <phase>install</phase>
             <configuration>

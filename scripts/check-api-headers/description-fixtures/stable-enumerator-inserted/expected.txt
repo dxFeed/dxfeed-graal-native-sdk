@@ -1,0 +1,1 @@
+the stable dxfg_v4_state_t is changed: the enumerator DXFG_V4_STATE_OPEN = 1 becomes 2

@@ -1,0 +1,1 @@
+the advanced revision 0 is lower than the one of the baseline, 1

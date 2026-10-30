@@ -6,3 +6,6 @@
 
 # The pinned SSH host keys of github.com are read by ssh on the Linux agents.
 .teamcity/github_known_hosts text eol=lf
+
+# The description of the C API is compared byte for byte: its expected outputs and the baseline keep LF line endings.
+scripts/check-api-headers/**/*.json text eol=lf

@@ -29,6 +29,8 @@
         <include>link-flags.txt</include>
         <!-- Debug builds: the gdb helpers. -->
         <include>gdb-debughelpers.py</include>
+        <!-- The description of the C API for wrappers (the generate-api-description execution of the pom). -->
+        <include>dxfg-api.json</include>
       </includes>
       <excludes>
         <exclude>${native.image.name}.h</exclude>

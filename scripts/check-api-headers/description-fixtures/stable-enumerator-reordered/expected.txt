@@ -1,0 +1,1 @@
+the stable dxfg_v4_state_t is changed

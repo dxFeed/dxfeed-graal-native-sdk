@@ -1,0 +1,1 @@
+the stable DXFG_V4_POINT_LIMIT is changed

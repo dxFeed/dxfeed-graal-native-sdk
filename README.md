@@ -30,6 +30,7 @@ into your projects.
   * [Example](#example)
   * [Samples and wrappers](#samples-and-wrappers)
   * [Version and features](#version-and-features)
+  * [API description](#api-description)
   * [Isolates](#isolates)
   * [Listeners](#listeners)
   * [Event queue](#event-queue)
@@ -378,6 +379,42 @@ const int experimental = dxfg_v4_system_get_advanced_revision(thread, &revision)
 
 dxfg_v4_system_is_feature_supported(thread, DXFG_V4_FEATURE_SHARED_EVENT_QUEUE, &supported);
 ```
+
+### API description
+
+Every archive has `dxfg-api.json` next to the library (3.13.0 and newer): the C API in a form a wrapper generator
+reads instead of parsing the headers. It is generated from the headers by the build, sorted and with LF line endings,
+so it is the same on every platform:
+
+- `schema_version`: the version of the format, now 1. It grows only when a field changes its meaning or goes away;
+  a new field does not change it, so a reader ignores the fields it does not know;
+- `sdk_version`, `advanced_revision` and `features`: what the three functions above report at runtime;
+- `headers`: every header with its tier, `basic` or `advanced` (an advanced header declares experimental functions
+  only and `dxfg_v4_api.h` does not include it);
+- `functions`, `types` and `macros`, sorted by name: each with its header, its tier (`stable` or `experimental`) and
+  `since`, the version that added it: `x.y.z` of a release (`3.12.0`, the first release of the v4 API, for its
+  declarations of that release), or `before 3.12.0` for the older ones. A pre-release such as `3.13.0-rc1` or
+  `3.13.0-SNAPSHOT` comes before `3.13.0`, so a declaration with `since` 3.13.0 is already in it;
+- a function has its return type and its parameters with their types and `out` (`DXFG_OUT`). A returned pointer and
+  an out parameter that receives a pointer (`**`) have `release`, the function that releases it, from its description
+  or by the `<type>_release` convention. `deprecated` is null, or the message and the `replacements` of
+  `DXFG_DEPRECATED`;
+- a struct has its fields, an enum its enumerators, a function pointer type its parameters. Types, values and
+  sizes are C text as the header writes it, not evaluated: an enumerator `value` is null when the header gives none,
+  and then it is the previous value plus 1 (0 for the first), as in C;
+- a field that has no machine-readable source is `unknown`: `threads` (reserved; the thread rules are in the
+  descriptions) and a `release` that the description does not name.
+
+The description covers the `dxfg_*` API only: `graal_isolate.h` and `graal_isolate_dynamic.h`, the isolate functions
+that GraalVM declares (see [Isolates](#isolates)), are outside it, and a wrapper binds them by hand.
+
+The build also checks the headers against the description of the last release,
+[scripts/check-api-headers/baseline/dxfg-api.json](scripts/check-api-headers/baseline/dxfg-api.json): a stable
+declaration is not changed or removed (a deprecated function may be removed from 4.0.0 on), an experimental one is
+changed or removed only together with a higher `DXFG_V4_ADVANCED_REVISION`, and a new declaration has `@since` in its
+description with a version later than the baseline. Parameter names may change; an enum may get new enumerators as
+long as every enumerator keeps its value. So that the description is complete, the headers declare nothing inside a
+conditional block other than the include guard and `#ifdef __cplusplus`, and no function bodies.
 
 ### Isolates
 
@@ -885,6 +922,17 @@ The releases are built in [TeamCity](https://dxcity.in.devexperts.com/project/Md
 3. Then "Deploy NuGet" publishes the `DxFeed.Graal.Native` package, and "Publish GitHub Release" pushes `main` and
    the tag to GitHub and publishes the release with the archives and the notes of the version from
    `ReleaseNotes.md`.
+4. After a release (not a pre-release), make its description the baseline of the [API description](#api-description)
+   check and commit it to `main` (run `java` of the GraalVM of the build: the generator is a multi-file source program,
+   which needs Java 22 or newer):
+
+   ```shell
+   git fetch --tags
+   java scripts/check-api-headers/GenerateApiJson.java --update-baseline v3.13.0 scripts/check-api-headers/baseline/dxfg-api.json
+   ```
+
+   Until then the build warns that the baseline is older than the last release in `ReleaseNotes.md`; it keeps the
+   `since` of the declarations from the old baseline.
 
 #### Pre-releases
 

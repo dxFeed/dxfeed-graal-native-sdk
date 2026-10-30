@@ -1,0 +1,1 @@
+dxfg_v4_point_get is declared inside a conditional block

@@ -37,6 +37,13 @@
   experimental in their descriptions. `dxfg_v4_system_get_version()`, `dxfg_v4_system_get_advanced_revision()`
   (`DXFG_V4_ADVANCED_REVISION`, now 1) and `dxfg_v4_system_is_feature_supported()` (`DXFG_V4_FEATURE_EVENT_QUEUE`,
   `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`) let a wrapper check the library before it binds the other functions.
+* **\[MDAPI-483]\[GRAAL]** The description of the C API for wrapper generators: every archive has `dxfg-api.json` next
+  to the library, generated from the headers and the same on every platform. It lists the version, the advanced
+  revision, the features, the headers with their tiers and the functions, types and macros with their tiers and the
+  versions that added them; a function has its return type, its parameters with `DXFG_OUT`, the functions that
+  release its results and its `DXFG_DEPRECATED` replacements. The build checks the headers against the committed
+  description of 3.12.0: a stable declaration is not changed or removed, an experimental one changes only with a higher
+  `DXFG_V4_ADVANCED_REVISION`, and a new declaration needs `@since`. See "API description" in the README.
 
 ## v3.12.0
 
