@@ -32,7 +32,10 @@ public final class SdkFeatures {
     /** {@code DXFG_V4_FEATURE_SHARED_EVENT_QUEUE}: the shared event queue and its executor (MDAPI-468). */
     public static final String SHARED_EVENT_QUEUE = "shared_event_queue";
 
-    private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE);
+    /** {@code DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL}: the ready signal of an event queue (MDAPI-485). */
+    public static final String EVENT_QUEUE_READY_SIGNAL = "event_queue_ready_signal";
+
+    private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL);
 
     private SdkFeatures() {
     }

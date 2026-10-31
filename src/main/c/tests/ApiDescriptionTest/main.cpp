@@ -84,6 +84,7 @@ TEST_CASE("The library supports every feature of the description", "[ApiDescript
     // The features of the headers are in the description.
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_SHARED_EVENT_QUEUE) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -92,6 +93,22 @@ TEST_CASE("The library supports every feature of the description", "[ApiDescript
                 DXFG_EXECUTE_SUCCESSFULLY);
         CHECK(supported == 1);
     }
+}
+
+TEST_CASE("The ready signal function and its feature are experimental in the description", "[ApiDescription]") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+
+    CHECK(entryOf("dxfg_v4_EventQueue_setReadySignal").find("\"tier\": \"experimental\"") != std::string::npos);
+    CHECK(entryOf("DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL").find("\"tier\": \"experimental\"") != std::string::npos);
+    CHECK(entryOf("dxfg_v4_ready_signal_kind_t").find("\"tier\": \"experimental\"") != std::string::npos);
 }
 
 } // namespace test

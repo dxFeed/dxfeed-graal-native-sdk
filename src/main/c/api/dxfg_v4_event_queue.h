@@ -109,6 +109,75 @@ extern "C" {
  *  attached subscription does not wait for a poll: the events that are delivered while it runs arrive in the poll in
  *  progress or the next one, and the work of the other subscriptions and of the models stays in the queue.
  *
+ *  Ready signal (experimental): a host with an event loop gives the queue an OS object of its own, and the SDK makes
+ *  the object ready whenever the queue has work. The loop waits for the object and polls with the timeout 0 on its own
+ *  thread, so the host keeps no thread that waits in a poll (dxfg_v4_EventQueue_setReadySignal(); the feature
+ *  #DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL). The object is a file descriptor on Linux, macOS and iOS (an `eventfd`,
+ *  or the write end of a pipe) and an event on Windows. The contract of the host:
+ *  - One object per queue. The host creates it, owns it and closes it: the SDK never creates, duplicates or closes
+ *    it. Once the removal of the signal or the close of the queue has returned, or a poll has returned
+ *    #DXFG_EVENT_QUEUE_CLOSED, the SDK does not write to the object and never will, whichever thread removes the
+ *    signal or closes the queue.
+ *  - Work is the events of a subscription, the work of a model or of the collector, a wake-up and the close. The queue
+ *    signals when it gets work while it is armed, and the signal disarms it; each poll arms it again, and a poll that
+ *    leaves work behind (for example at its limit) signals again. So no work is left without a signal. A signal
+ *    without work is possible, and its poll returns #DXFG_EVENT_QUEUE_NO_EVENTS.
+ *  - Reset the object before the poll, so that a signal sent during the poll is not lost: read the 8 bytes of an
+ *    `eventfd` once, read a pipe until `EAGAIN`; an auto-reset Windows event resets itself, a manual-reset one needs
+ *    `ResetEvent()`. After the object becomes ready, reset it and make one poll with the timeout 0.
+ *  - A wake-up (dxfg_v4_EventQueue_wakeUp()) signals as work does. But a wake-up that an overlapping poll consumes
+ *    may write nothing: a host that wakes the loop to recheck its own state (a stop flag) rechecks it after the poll
+ *    too.
+ *  - To stop, close the queue (dxfg_v4_EventQueue_close(), from any thread). The loop sees
+ *    #DXFG_EVENT_QUEUE_CLOSED, removes the object from its wait and then closes it, so the loop, not the thread that
+ *    closed the queue, closes the object. Closing it earlier makes the SDK write to a closed or reused descriptor.
+ *  - The descriptor must be non-blocking (a full blocking pipe would stall the thread that writes) and open for
+ *    writing; the setting is refused otherwise. A full pipe and a saturated `eventfd` are already readable, so the SDK
+ *    counts a write that would block as done. A write that fails otherwise (`EBADF`, `EPIPE`), or a failed
+ *    `SetEvent()`, is logged once per signal, and the next work tries again.
+ *  - SIGPIPE: a write to a pipe whose read end is closed fails with `EPIPE`. On Linux and macOS the isolate keeps the
+ *    process alive for it (unless the application restores the default action of SIGPIPE); iOS has no such handler,
+ *    so keep the read end of the pipe open until the signal is removed.
+ *  - The asyncio proactor loop and libuv on Windows cannot wait for a foreign event: there the host keeps a reader
+ *    thread, which polls with a timeout and passes the batches to the loop.
+ *
+ *  An `epoll` loop on Linux:
+ *  @code
+ *  int fd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+ *  dxfg_v4_EventQueue_setReadySignal(thread, queue, DXFG_V4_READY_SIGNAL_FD, fd);
+ *
+ *  int epfd = epoll_create1(EPOLL_CLOEXEC);
+ *  struct epoll_event ev = { .events = EPOLLIN, .data.fd = fd };
+ *  epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
+ *
+ *  for (bool running = true; running;) {
+ *      struct epoll_event ready;
+ *      if (epoll_wait(epfd, &ready, 1, -1) > 0 && ready.data.fd == fd) {
+ *          uint64_t counter;
+ *          read(fd, &counter, sizeof counter);           // reset before the poll
+ *          dxfg_v4_event_type_list *events = NULL;
+ *          int32_t result = dxfg_v4_EventQueue_poll(thread, queue, 0, 0, &events);
+ *          if (result == DXFG_EXECUTE_SUCCESSFULLY) {
+ *              // handle the events, then dxfg_v4_event_type_list_release(thread, events);
+ *          } else if (result == DXFG_EVENT_QUEUE_CLOSED) {
+ *              running = false;
+ *          }                                             // DXFG_EVENT_QUEUE_NO_EVENTS: wait again
+ *      }
+ *  }
+ *  epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL);
+ *  close(fd);                                            // the loop closes the object
+ *  @endcode
+ *
+ *  Python asyncio on Linux and macOS: make the object (`os.eventfd(0, os.EFD_NONBLOCK)`, or `os.pipe()` and
+ *  `os.set_blocking(write_end, False)`), pass its descriptor to the function, and `loop.add_reader(fd, on_ready)`
+ *  with a callback that reads the object and polls with the timeout 0.
+ *
+ *  A Windows host creates an auto-reset event with `CreateEventW(NULL, FALSE, FALSE, NULL)`, passes it as
+ *  `(int64_t)(intptr_t)handle` with #DXFG_V4_READY_SIGNAL_WINDOWS_EVENT, and waits for it on a thread of the pool with
+ *  `RegisterWaitForSingleObject()`, whose callback posts a message to the loop (or with `WaitForSingleObject()` or
+ *  `MsgWaitForMultipleObjects()` in its own loop); the poll runs on the loop's thread. After the loop sees
+ *  #DXFG_EVENT_QUEUE_CLOSED, it calls `UnregisterWaitEx()` and then `CloseHandle()`.
+ *
  *  The functions are functions of the SDK: there are no QD methods that they call.
  *  @{
  */
@@ -327,7 +396,8 @@ int32_t dxfg_v4_EventQueue_wakeUp(graal_isolatethread_t *thread, dxfg_v4_event_q
  * dropped, and so are the events of the subscriptions that arrive later. The pending work of the subscriptions, the
  * models and the collector runs on the calling thread without calling any listener of the application, and their
  * later work runs at once on the posting thread the same way. The function does not wait for the polls in progress.
- * Closing a closed queue does nothing.
+ * Closing a closed queue does nothing (if the queue had a ready signal, the call returns once the SDK no longer writes
+ * to its object).
  *
  * Releasing the last handle of the queue and of its executor (dxfg_v4_JavaObjectHandler_release()) closes it as well.
  *
@@ -359,6 +429,75 @@ int32_t dxfg_v4_EventQueue_close(graal_isolatethread_t *thread, dxfg_v4_event_qu
  */
 int32_t dxfg_v4_EventQueue_getDroppedEvents(graal_isolatethread_t *thread, dxfg_v4_event_queue_t *queue,
                                             DXFG_OUT int64_t *droppedEvents);
+
+/**
+ * @brief The kind of the OS object that is the ready signal of an event queue
+ * (dxfg_v4_EventQueue_setReadySignal()).
+ *
+ * The value is an `int` of the C ABI. New kinds may be added.
+ * @experimental
+ * @since 3.13.0
+ */
+typedef enum dxfg_v4_ready_signal_kind_t {
+    /** No signal: removes the ready signal of the queue; the handle is ignored. */
+    DXFG_V4_READY_SIGNAL_NONE = 0,
+    /** A file descriptor (Linux, macOS, iOS): an `eventfd` or the write end of a pipe, non-blocking; the SDK writes the
+     * 8 bytes of the value 1. The handle is the descriptor, from 0 to `INT32_MAX`. */
+    DXFG_V4_READY_SIGNAL_FD = 1,
+    /** A Windows event: the SDK calls `SetEvent()`. The handle is `(int64_t)(intptr_t)HANDLE`, not 0 and not -1. */
+    DXFG_V4_READY_SIGNAL_WINDOWS_EVENT = 2
+} dxfg_v4_ready_signal_kind_t;
+
+/**
+ * @brief Sets, replaces or removes the ready signal of the queue: the OS object that the SDK makes ready whenever the
+ * queue has work, so that an event loop can poll with the timeout 0 on its own thread (see the group description for
+ * the contract of the host).
+ *
+ * The host creates the object, owns it and closes it: the SDK never creates, duplicates or closes it. The queue
+ * signals when it gets work while it is armed (the events of a subscription, the work of a model or the collector, a
+ * wake-up, the close), and the signal disarms it; each poll arms it again and signals at once if work remains. If work
+ * is pending when the signal is set, it is signalled before the function returns. A signal without work is possible:
+ * its poll returns #DXFG_EVENT_QUEUE_NO_EVENTS. A queue has one signal: a new one replaces the old one, and the SDK
+ * does not write to the old object after the function returns. #DXFG_V4_READY_SIGNAL_NONE removes the signal; the
+ * close of the queue signals once more and then removes it. A signal set on a closed queue is written once, before the
+ * function returns, and not kept.
+ *
+ * The write to a file descriptor is of 8 bytes and never blocks: the descriptor must be non-blocking
+ * (`O_NONBLOCK`; `EFD_NONBLOCK` for an `eventfd`) and open for writing (the write end of a pipe, not its read end),
+ * which the function checks with `fcntl(F_GETFL)`. A failed write or `SetEvent()` is logged once per signal and does
+ * not fail anything else.
+ *
+ * Reset the object before each poll, as the group description says; for example, with `epoll` on Linux:
+ * @code
+ * int fd = eventfd(0, EFD_NONBLOCK);
+ * dxfg_v4_EventQueue_setReadySignal(thread, queue, DXFG_V4_READY_SIGNAL_FD, fd);
+ * // ... wait for fd to be readable with epoll_wait(); then:
+ * uint64_t counter;
+ * read(fd, &counter, sizeof counter);
+ * dxfg_v4_EventQueue_poll(thread, queue, 0, 0, &events);
+ * @endcode
+ *
+ * Python asyncio `loop.add_reader()` and `RegisterWaitForSingleObject()` on Windows wait for the same objects (see
+ * the group description); the asyncio proactor loop and libuv on Windows cannot wait for them, so there the host keeps
+ * a thread that polls.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] queue The queue.
+ * @param[in] kind The kind of the object: #DXFG_V4_READY_SIGNAL_FD on Linux, macOS and iOS,
+ * #DXFG_V4_READY_SIGNAL_WINDOWS_EVENT on Windows, or #DXFG_V4_READY_SIGNAL_NONE to remove the signal.
+ * @param[in] handle The file descriptor, or `(int64_t)(intptr_t)HANDLE` of the event; ignored for
+ * #DXFG_V4_READY_SIGNAL_NONE.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error
+ * (`IllegalArgumentException` for an unknown kind, a kind of the other OS, a descriptor outside 0 to `INT32_MAX`, a
+ * descriptor that is closed, blocking or read-only, and a handle 0 or -1; the message says how to fix it; the signal
+ * of the queue stays as it was). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was
+ * thrown.
+ * @experimental
+ * @since 3.13.0
+ */
+DXFG_EXPERIMENTAL
+int32_t dxfg_v4_EventQueue_setReadySignal(graal_isolatethread_t *thread, dxfg_v4_event_queue_t *queue,
+                                          dxfg_v4_ready_signal_kind_t kind, int64_t handle);
 
 /** @} */
 

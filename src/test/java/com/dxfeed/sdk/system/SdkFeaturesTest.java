@@ -28,8 +28,10 @@ public class SdkFeaturesTest {
     public void eventQueueFeaturesAreSupported() {
         assertTrue(SdkFeatures.isSupported(SdkFeatures.EVENT_QUEUE));
         assertTrue(SdkFeatures.isSupported(SdkFeatures.SHARED_EVENT_QUEUE));
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.EVENT_QUEUE_READY_SIGNAL));
         assertTrue(SdkFeatures.isSupported("event_queue"));
         assertTrue(SdkFeatures.isSupported("shared_event_queue"));
+        assertTrue(SdkFeatures.isSupported("event_queue_ready_signal"));
     }
 
     @Test

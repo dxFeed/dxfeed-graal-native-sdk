@@ -47,6 +47,17 @@
 * **\[MDAPI-484]\[GRAAL]** The library no longer prints the JDK warning about `sun.misc.Unsafe` ("A terminally
   deprecated method in sun.misc.Unsafe has been called", from `com.devexperts.util.AtomicArraysUnsafe` of QD) to
   stderr of the application: the image is built with `--sun-misc-unsafe-memory-access=allow`.
+* **\[MDAPI-485]\[GRAAL]** The ready signal of an event queue: an event loop polls without a reader thread.
+  `dxfg_v4_EventQueue_setReadySignal()` (experimental, `dxfg_v4_event_queue.h`) gives a queue an OS object of the host,
+  which the SDK makes ready whenever the queue has work (the events of a subscription, the work of a model or the
+  collector, a wake-up, the close): a non-blocking file descriptor on Linux, macOS and iOS
+  (`DXFG_V4_READY_SIGNAL_FD`, an `eventfd` or the write end of a pipe; a blocking or read-only descriptor is refused
+  with `IllegalArgumentException`), an event on Windows (`DXFG_V4_READY_SIGNAL_WINDOWS_EVENT`). The loop waits for the
+  object, resets it and polls with the timeout 0; no work is left without a signal, and a signal without work gives
+  `DXFG_EVENT_QUEUE_NO_EVENTS`. The host creates, owns and closes the object, after the queue is closed; the SDK never
+  closes it and does not write to it after the signal is removed or the queue is closed.
+  `DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL` reports the function; `DXFG_V4_ADVANCED_REVISION` stays 1. A loop that
+  cannot wait for a foreign object (the asyncio proactor loop and libuv on Windows) keeps a reader thread.
 
 ## v3.12.0
 

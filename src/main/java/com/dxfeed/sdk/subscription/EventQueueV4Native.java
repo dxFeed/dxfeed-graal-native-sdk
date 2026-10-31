@@ -224,6 +224,24 @@ public final class EventQueueV4Native {
     }
 
     @CEntryPoint(
+            name = "dxfg_v4_EventQueue_setReadySignal",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_EventQueue_setReadySignal(
+            final IsolateThread ignoredThread,
+            final DxfgEventQueueHandle queue,
+            final int kind,
+            final long handle
+    ) {
+        final EventQueue javaQueue = NativeUtils.MAPPER_EVENT_QUEUE.toJava(queue);
+
+        // The kind and the object are checked before the queue changes; NONE gives null and removes the signal.
+        javaQueue.setReadySignal(ReadySignalNative.create(kind, handle));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_v4_EventQueue_getDroppedEvents",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )

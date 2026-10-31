@@ -357,7 +357,8 @@ A wrapper checks the library before it binds the other functions, with three fun
 - `dxfg_v4_system_get_version` writes the release version (`3.13.0`), released with `dxfg_v4_String_release`;
 - `dxfg_v4_system_get_advanced_revision` writes the revision of the experimental functions;
 - `dxfg_v4_system_is_feature_supported` tells whether a feature is supported (`DXFG_V4_FEATURE_EVENT_QUEUE`,
-  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`); an unknown name is not supported, not an error.
+  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`, `DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL`); an unknown name is not supported,
+  not an error.
 
 Bind the stable functions always, and the experimental ones only when the revision equals
 `DXFG_V4_ADVANCED_REVISION` of the headers the wrapper was built with; otherwise treat the experimental part as
@@ -521,6 +522,45 @@ for (;;) {
 
 Closing a subscription detaches only it; closing the queue or releasing the last handle of the queue and of its
 executor stops every listener on the queue. Keep the queue or executor handle until the models are closed.
+
+A host with an event loop (Python asyncio, an `epoll` loop, libuv) can poll without a reader thread: the experimental
+`dxfg_v4_EventQueue_setReadySignal` gives the queue an OS object of the host (check
+`DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL`), which the SDK makes ready whenever the queue has work. The host creates,
+owns and closes the object, resets it before each poll, and polls with the timeout 0 when the loop reports it ready.
+On Linux, macOS and iOS the object is a non-blocking file descriptor, an `eventfd` or the write end of a pipe; a
+descriptor that is blocking or read-only is refused:
+
+```c
+int fd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+dxfg_v4_EventQueue_setReadySignal(thread, queue, DXFG_V4_READY_SIGNAL_FD, fd);
+
+int epfd = epoll_create1(EPOLL_CLOEXEC);
+struct epoll_event ev = { .events = EPOLLIN, .data.fd = fd };
+epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
+
+for (bool running = true; running;) {
+    struct epoll_event ready;
+    if (epoll_wait(epfd, &ready, 1, -1) > 0) {
+        uint64_t counter;
+        read(fd, &counter, sizeof counter);  // reset before the poll
+        dxfg_v4_event_type_list *events = NULL;
+        int32_t result = dxfg_v4_EventQueue_poll(thread, queue, 0, 0, &events);
+        if (result == DXFG_EXECUTE_SUCCESSFULLY) {
+            handle(events);
+            dxfg_v4_event_type_list_release(thread, events);
+        } else if (result == DXFG_EVENT_QUEUE_CLOSED) {
+            running = false;
+        }  // DXFG_EVENT_QUEUE_NO_EVENTS: wait again
+    }
+}
+close(fd);  // the loop closes the object, after the queue is closed
+```
+
+On Windows the object is an event: pass `(int64_t)(intptr_t)handle` of an auto-reset event with
+`DXFG_V4_READY_SIGNAL_WINDOWS_EVENT` and wait for it with `RegisterWaitForSingleObject` or `WaitForSingleObject`.
+Loops that cannot wait for a foreign object (the asyncio proactor loop and libuv on Windows) keep a reader thread that
+polls with a timeout. A signal without work is possible (its poll returns `DXFG_EVENT_QUEUE_NO_EVENTS`); work is never
+left without a signal. The contract is in the "Event queue" group of the C API reference.
 
 ### Shutdown
 
