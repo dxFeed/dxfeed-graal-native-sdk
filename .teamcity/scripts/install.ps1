@@ -302,3 +302,53 @@ function Install-VSBuildTools
     }
   }
 }
+
+function Install-CMake
+{
+  param (
+    [Parameter(Mandatory = $true)][string]$Version,
+    [Parameter(Mandatory = $true)][string]$Sha256,
+    [Parameter(Mandatory = $true)][string]$InstallPath
+  )
+
+  $ErrorActionPreference = 'Stop'
+  $DownloadUrl = "https://github.com/Kitware/CMake/releases/download/v$Version/cmake-$Version-windows-x86_64.zip"
+  # Strip the trailing separator, otherwise the temporary path below ends up inside the install path.
+  $InstallPath = $InstallPath.TrimEnd('\', '/')
+  # The archive is checked and extracted next to the install path and renamed into place at the end, so an
+  # interrupted install leaves no half-filled directory behind.
+  $TempPath = "$InstallPath.tmp.$PID"
+
+  try
+  {
+    New-Item -ItemType Directory -Force -Path $TempPath | Out-Null
+    $Archive = Join-Path $TempPath "cmake.zip"
+    Write-Host "Downloading CMake from $DownloadUrl"
+    Invoke-DownloadWithProgress -Uri $DownloadUrl -OutFile $Archive
+
+    $ActualSha256 = (Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash
+    if ($ActualSha256 -ne $Sha256)
+    {
+      throw "SHA-256 mismatch for $DownloadUrl`: expected $Sha256, got $ActualSha256"
+    }
+
+    # The tar of Windows (bsdtar) reads zip and strips the root directory. Called by its full path: a GNU tar from Git
+    # earlier on PATH reads neither zip nor paths with a drive letter.
+    & "$env:SystemRoot\System32\tar.exe" -xf $Archive -C $TempPath --strip-components=1
+    if ($LASTEXITCODE -ne 0) { throw "tar failed to extract $Archive (exit code $LASTEXITCODE)" }
+    Remove-Item -LiteralPath $Archive -Force
+
+    # Another build on this machine may have completed the install meanwhile and may be running from it: keep it.
+    if (Test-Path -LiteralPath (Join-Path $InstallPath "bin\cmake.exe"))
+    {
+      Write-Host "CMake already installed at $InstallPath by another build"
+      return
+    }
+    if (Test-Path -LiteralPath $InstallPath) { Remove-Item -LiteralPath $InstallPath -Recurse -Force }
+    Move-Item -LiteralPath $TempPath -Destination $InstallPath
+  }
+  finally
+  {
+    if (Test-Path -LiteralPath $TempPath) { Remove-Item -LiteralPath $TempPath -Recurse -Force }
+  }
+}

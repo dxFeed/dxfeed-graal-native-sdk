@@ -76,6 +76,11 @@ available in the corresponding Dockerfile.
   C++ Redistributable: the base image of the Windows build image, already on the agents. The agents run Windows 11
   (build 26300), so the container runs in Hyper-V isolation (process isolation only when the image has the build of
   the agent); the image is pulled if it is missing.
+- "Build [Win, x64]", the Windows releases and **Test [Windows, x64]** run directly on the agent, without Docker:
+  `Util.prepareWinLocal` in `Common.kt` installs the VS Build Tools 2022, Maven and GraalVM into `C:\BuildCache` when
+  they are missing. **Test [Windows, x64]** also installs CMake into `C:\BuildCache\cmake-<version>` (the official zip
+  from GitHub, checked by its SHA-256; the version and the checksums are `CMake` in `Common.kt`), so the agents need no
+  CMake of their own.
 
 ## How to install docker on Windows
 
@@ -147,9 +152,15 @@ writes no log. It needs only the headers, so it runs also after a failed step.
 The `Test [macOS, arm64]` build builds the library and runs the same C tests directly on a macOS agent (Apple Silicon,
 no Docker), so the tests also check the arm64 macOS library. The Doxygen check runs only in the Linux build.
 
+The `Test [Windows, x64]` build builds the library and runs the same C tests directly on a Windows agent (no Docker),
+with the toolchain of the Windows releases (see Building on Windows). It builds and tests the release variant only, as
+the Linux and macOS builds do; the static CRT and Debug variants are built only by the releases. Its timeout is 60
+minutes: the first run on an agent without the cache also installs the VS Build Tools.
+
 - The builds run for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
 - The status of each build is published to the pull request in Bitbucket (with a link to the build). The results of the
-  tests are in the build in TeamCity (the JUnit report of CTest).
+  tests are in the build in TeamCity (the JUnit report of CTest; on Windows also the Surefire report of the Java tests,
+  which TeamCity does not pick up by itself there because Maven runs inside a PowerShell script).
 - A build configuration appears in TeamCity when `.teamcity/settings.kts` with it gets to `main`.
 
 One-time setup:
@@ -161,15 +172,22 @@ One-time setup:
    binary for the check of the C API documentation (`docker/docs-check-linux-x64.Dockerfile`; the version and the SHA-256
    of the release archive are `Doxygen` in `Common.kt`). Run it again when the Dockerfile changes, and right after a new
    Doxygen version gets to `main`: the image of a new version has a new tag, which the check finds only once it is built.
-3. To block merging a pull request until both builds succeed, enable the `Minimum successful builds` merge check in the
-   settings of the repository in Bitbucket with 2 builds: `Test [Linux, x64]` and `Test [macOS, arm64]`. While the
-   macOS agents are unavailable, the pull requests wait for them.
+3. To block merging a pull request until the builds succeed, enable the `Minimum successful builds` merge check in the
+   settings of the repository in Bitbucket with 3 builds: `Test [Linux, x64]`, `Test [macOS, arm64]` and
+   `Test [Windows, x64]`. Add a new build to the check only after its first run on `main` is green. While the macOS or
+   Windows agents are unavailable, the pull requests wait for them.
 
 The same locally (after `mvn clean package` in the Linux build image):
 
 ```shell
 docker build --pull -t cpp-test:linux-x64-ol9 -f .teamcity/docker/cpp-test-linux-x64.Dockerfile .teamcity
 docker run --rm -v "$(pwd):/mnt" cpp-test:linux-x64-ol9 "cd src/main/c && cmake --preset=conf-release . && cmake --build --preset=build-release -j\$(nproc) && ctest --test-dir build/conf-release --output-on-failure"
+```
+
+The same on Windows (after `mvn clean package`, in a Developer PowerShell for VS 2022 with CMake 3.21 or newer, which reads `CMakePresets.json` version 3):
+
+```shell
+src\main\c\build.cmd
 ```
 
 The check of the C API documentation locally (the version and the SHA-256 from `Doxygen` in `Common.kt`):

@@ -154,6 +154,7 @@ object Tests : Project({
 
     buildType(TestForLinux)
     buildType(TestForMacOS)
+    buildType(TestForWindows)
 })
 
 object Etc : Project({
@@ -1173,6 +1174,62 @@ object TestForMacOS : BuildType({
 
     requirements {
         macAgent()
+    }
+})
+
+object TestForWindows : BuildType({
+    name = "Test [Windows, x64]"
+    description = "Builds the library and runs the C tests (src/main/c, CTest) on the Windows agent, without Docker, for the pull requests to main and for main"
+
+    mainRepository()
+
+    steps {
+        mavenWithPowerShell("Build the library", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package")
+
+        // The build installs CMake into C:\BuildCache (the version is CMake in Common.kt); the compilers are the VS Build
+        // Tools that prepareWinLocal sets up. The Visual Studio generator is multi-config, hence --config and -C Release,
+        // and the instance is pinned to those Build Tools in case the agent has another Visual Studio.
+        powerShellWithWinLocal("Build and run the C tests", """
+
+            ${'$'}cmakeInstallPath = "C:\BuildCache\cmake-${CMake.VERSION}"
+            if (-not (Test-Path "${'$'}cmakeInstallPath\bin\cmake.exe")) {
+                Install-CMake -Version "${CMake.VERSION}" -Sha256 "${CMake.WINDOWS_X64_SHA256}" -InstallPath ${'$'}cmakeInstallPath
+            }
+            ${'$'}env:PATH = "${'$'}cmakeInstallPath\bin;${'$'}env:PATH"
+            cmake --version
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+
+            Set-Location src\main\c
+            foreach (${'$'}dir in "build", "bin") {
+                if (Test-Path ${'$'}dir) { Remove-Item -LiteralPath ${'$'}dir -Recurse -Force }
+            }
+            cmake --preset=conf-release -G "Visual Studio 17 2022" "-DCMAKE_GENERATOR_INSTANCE=${'$'}vsInstallPath" -DCMAKE_BUILD_TYPE=Release .
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+            cmake --build --preset=build-release --config=Release --parallel
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+            ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+        """.trimIndent())
+    }
+
+    triggers {
+        mainAndPullRequests()
+    }
+
+    features {
+        pullRequestsToMain()
+        javaTestsReport()
+        cTestsReport()
+    }
+
+    failureConditions {
+        // The Windows agents are shared with the releases: a hung build must not hold one. The first run on an agent
+        // without the cache also installs the VS Build Tools.
+        executionTimeoutMin = 60
+    }
+
+    requirements {
+        windowsAgent()
     }
 })
 

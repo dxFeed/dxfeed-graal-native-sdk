@@ -60,12 +60,18 @@ object Doxygen {
     const val SHA256 = "14fa81bdc34171edb5f1f02b1d60e74802f0439b77fa44e592565d517d72df90"
 }
 
-/** CMake of the C tests on macOS, installed by the build into ~/.graal (the agents have no CMake). */
+/**
+ * CMake of the C tests on macOS and Windows, installed by the build into ~/.graal and C:\BuildCache (the agents have
+ * no CMake).
+ */
 object CMake {
     const val VERSION = "4.4.4"
 
     // The SHA-256 of cmake-<VERSION>-macos-universal.tar.gz of the release on GitHub (cmake-<VERSION>-SHA-256.txt).
     const val MACOS_SHA256 = "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305"
+
+    // The SHA-256 of cmake-<VERSION>-windows-x86_64.zip of the release on GitHub (cmake-<VERSION>-SHA-256.txt).
+    const val WINDOWS_X64_SHA256 = "bace36e94b31c68ab6fa295f26dfa11219e0701cf7c94b0284a7d1cb13dac536"
 }
 
 /** git over SSH to the GitHub mirror (Publish GitHub Release, Publish C API Docs to GitHub Pages). */
@@ -146,6 +152,17 @@ fun BuildFeatures.cTestsReport() {
     xmlReport {
         reportType = XmlReport.XmlReportType.JUNIT
         rules = "src/main/c/build/conf-release/ctest-junit.xml"
+    }
+}
+
+/**
+ * The results of the Java tests (Surefire). Needed where Maven runs inside a script, e.g. a PowerShell step: TeamCity
+ * then does not pick the reports up by itself.
+ */
+fun BuildFeatures.javaTestsReport() {
+    xmlReport {
+        reportType = XmlReport.XmlReportType.JUNIT
+        rules = "target/surefire-reports/*.xml"
     }
 }
 
@@ -336,19 +353,27 @@ fun BuildSteps.buildAndPushDockerImage(image: String, buildArguments: String) {
     }
 }
 
-/** Runs Maven with PowerShell on a Windows agent (Util.prepareWinLocal installs MSVC, Maven and GraalVM if needed). */
-fun BuildSteps.mavenWithPowerShell(stepName: String, mavenArguments: String) {
+/**
+ * Runs a PowerShell script on a Windows agent after Util.prepareWinLocal, which installs MSVC, Maven and GraalVM if
+ * needed and sets their environment for this step only.
+ */
+fun BuildSteps.powerShellWithWinLocal(stepName: String, script: String) {
     powerShell {
         name = stepName
         scriptMode = script {
-            content = Util.prepareWinLocal() + """
-
-                mvn ${Mvn.SETTINGS} $mavenArguments
-                if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-            """.trimIndent()
+            content = Util.prepareWinLocal() + script
         }
         formatStderrAsError = true
     }
+}
+
+/** Runs Maven with PowerShell on a Windows agent (see powerShellWithWinLocal). */
+fun BuildSteps.mavenWithPowerShell(stepName: String, mavenArguments: String) {
+    powerShellWithWinLocal(stepName, """
+
+        mvn ${Mvn.SETTINGS} $mavenArguments
+        if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+    """.trimIndent())
 }
 
 /** The shell and PowerShell scripts that the build configurations share. */
