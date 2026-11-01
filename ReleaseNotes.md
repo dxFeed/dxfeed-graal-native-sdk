@@ -59,6 +59,18 @@
   `DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL` reports the function; `DXFG_V4_ADVANCED_REVISION` stays 1. A loop that
   cannot wait for a foreign object (the asyncio proactor loop and libuv on Windows) keeps a reader thread.
 
+* **\[MDAPI-488]\[GRAAL]** A promise created, completed and failed from C (`dxfg_v4_feed.h`):
+  `dxfg_v4_Promise_new()` creates a promise, `dxfg_v4_Promise_complete()` completes it with a Java object handle (or
+  NULL) and `dxfg_v4_Promise_getResult()` reads the result of a promise of any kind as a handle.
+  `dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage()` fails a promise and
+  `dxfg_v4_Promise_failedWithClassNameAndMessage()` creates a failed one, with an exception of the named class and the
+  message. The class comes from a fixed set (`RuntimeException`, `IllegalArgumentException`, `IllegalStateException`,
+  `UnsupportedOperationException`, `java.io.IOException`, `CancellationException`, `TimeoutException`, by their fully
+  qualified names); any other name gives a `RuntimeException` whose message starts with the name. As in Java, the first
+  result wins: a later completion does nothing and returns success. `dxfg_Promise_failed()`,
+  `dxfg_v4_Promise_failed()` and the `completeExceptionally` functions that take a `dxfg_exception_t` keep their
+  behaviour; their descriptions point to the new functions.
+
 ## v3.12.0
 
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the

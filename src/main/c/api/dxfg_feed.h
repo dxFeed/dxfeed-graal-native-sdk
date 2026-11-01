@@ -878,7 +878,8 @@ int32_t               dxfg_Promise_EventType_complete(graal_isolatethread_t *thr
  *
  * The function does not work in this version: the SDK cannot convert a dxfg_exception_t into a Java exception, so a
  * call with a non-NULL exception fails with IllegalStateException, and a call with NULL fails with
- * NullPointerException. The promise is not changed.
+ * NullPointerException. The promise is not changed. Use
+ * dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage() to fail a promise.
  *
  * Java: `Promise.completeExceptionally(Throwable)`.
  *
@@ -976,7 +977,7 @@ dxfg_promise_t*       dxfg_Promise_completed(graal_isolatethread_t *thread, dxfg
  * call with a non-NULL exception fails with IllegalStateException and returns NULL. A call with a NULL exception does
  * not fail either, but it creates a promise that is completed normally with a null result, not a failed one (the
  * implementation calls `Promise.completed(Object)`). The Java method is static: the SDK does not use the state of
- * `promise`.
+ * `promise`. Use dxfg_v4_Promise_failedWithClassNameAndMessage() to create a failed promise.
  *
  * Java: `Promise.failed(Throwable)`.
  *

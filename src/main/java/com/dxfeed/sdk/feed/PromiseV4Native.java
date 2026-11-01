@@ -3,6 +3,7 @@
 
 package com.dxfeed.sdk.feed;
 
+import com.dxfeed.promise.Promise;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
@@ -14,19 +15,21 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.JavaObjectHandler;
+import com.dxfeed.sdk.mappers.ExceptionFactory;
 import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 
 /**
  * The v4 twins of the functions of {@link PromiseNative}: each one calls the old function as a Java method
  * ({@link OlderEntryPoint} tells whether it failed) and returns its result through an out parameter (see
- * dxfg_v4_api.h).
+ * dxfg_v4_api.h). The functions that create, complete and fail a promise of any result have no older twin.
  */
 @CContext(FeedDirectives.class)
 public final class PromiseV4Native {
@@ -585,5 +588,108 @@ public final class PromiseV4Native {
         NativeUtils.MAPPER_PROMISES.release(promises);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_Promise_new",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_Promise_new(
+            final IsolateThread ignoredThread,
+            @DxfgOut final WordPointer promise
+    ) {
+        if (promise.isNull()) {
+            throw new IllegalArgumentException("The `promise` pointer is null");
+        }
+
+        promise.write(NativeUtils.MAPPER_PROMISE.toNative(new Promise<>()));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_Promise_complete",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_Promise_complete(
+            final IsolateThread ignoredThread,
+            final DxfgPromise dxfgPromise,
+            final JavaObjectHandler<Object> result
+    ) {
+        // The first result wins: Promise.complete does nothing when the promise is already done.
+        PromiseV4Native.<Object>toJava(dxfgPromise).complete(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(result));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_Promise_getResult",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_Promise_getResult(
+            final IsolateThread ignoredThread,
+            final DxfgPromise dxfgPromise,
+            @DxfgOut final WordPointer result
+    ) {
+        if (result.isNull()) {
+            throw new IllegalArgumentException("The `result` pointer is null");
+        }
+
+        final Object javaResult = toJava(dxfgPromise).getResult();
+
+        result.write(NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toNative(javaResult));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage(
+            final IsolateThread ignoredThread,
+            final DxfgPromise dxfgPromise,
+            final CCharPointer className,
+            final CCharPointer message
+    ) {
+        final Promise<?> javaPromise = toJava(dxfgPromise);
+
+        // The first result wins: Promise.completeExceptionally does nothing when the promise is already done.
+        javaPromise.completeExceptionally(ExceptionFactory.create(
+                NativeUtils.MAPPER_STRING.toJava(className),
+                NativeUtils.MAPPER_STRING.toJava(message)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_Promise_failedWithClassNameAndMessage",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_Promise_failedWithClassNameAndMessage(
+            final IsolateThread ignoredThread,
+            final CCharPointer className,
+            final CCharPointer message,
+            @DxfgOut final WordPointer newPromise
+    ) {
+        if (newPromise.isNull()) {
+            throw new IllegalArgumentException("The `newPromise` pointer is null");
+        }
+
+        newPromise.write(NativeUtils.MAPPER_PROMISE.toNative(Promise.failed(ExceptionFactory.create(
+                NativeUtils.MAPPER_STRING.toJava(className),
+                NativeUtils.MAPPER_STRING.toJava(message)))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // The promise of a handle; a NULL handle is an error of the caller, not a null promise.
+    @SuppressWarnings("unchecked")
+    private static <T> Promise<T> toJava(final DxfgPromise dxfgPromise) {
+        if (dxfgPromise.isNull()) {
+            throw new IllegalArgumentException("The `promise` handle is null");
+        }
+
+        return (Promise<T>) NativeUtils.MAPPER_PROMISE.toJava(dxfgPromise);
     }
 }

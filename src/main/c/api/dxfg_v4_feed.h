@@ -735,7 +735,8 @@ int32_t dxfg_v4_Promise_EventType_complete(graal_isolatethread_t *thread, dxfg_v
  *
  * The function does not work in this version: the SDK cannot convert a dxfg_v4_exception_t into a Java exception, so a
  * call with a non-NULL exception fails with IllegalStateException, and a call with NULL fails with
- * NullPointerException. The promise is not changed.
+ * NullPointerException. The promise is not changed. Use
+ * dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage() to fail a promise.
  *
  * Java: `Promise.completeExceptionally(Throwable)`.
  *
@@ -830,7 +831,7 @@ int32_t dxfg_v4_Promise_completed(graal_isolatethread_t *thread, dxfg_v4_promise
  * call with a non-NULL exception fails with IllegalStateException and returns NULL. A call with a NULL exception does
  * not fail either, but it creates a promise that is completed normally with a null result, not a failed one (the
  * implementation calls `Promise.completed(Object)`). The Java method is static: the SDK does not use the state of
- * `promise`.
+ * `promise`. Use dxfg_v4_Promise_failedWithClassNameAndMessage() to create a failed promise.
  *
  * Java: `Promise.failed(Throwable)`.
  *
@@ -844,6 +845,138 @@ int32_t dxfg_v4_Promise_completed(graal_isolatethread_t *thread, dxfg_v4_promise
  */
 int32_t dxfg_v4_Promise_failed(graal_isolatethread_t *thread, dxfg_v4_promise_t *promise,
                                dxfg_v4_exception_t* exception, DXFG_OUT dxfg_v4_promise_t **newPromise);
+
+/**
+ * @brief Creates a new promise that is not done yet.
+ *
+ * The application completes the promise with dxfg_v4_Promise_complete(),
+ * dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage() or dxfg_v4_Promise_cancel(), and may give it to the
+ * functions that take a promise. Its result is a Java object of any class; read it with dxfg_v4_Promise_getResult().
+ * The handlers added by dxfg_v4_Promise_whenDone() before the promise is done are called by the thread that completes
+ * or cancels it, before that function returns.
+ *
+ * Java: `new Promise()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[out] promise The pointer to the variable that receives the new promise (release its handle with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_Promise_new(graal_isolatethread_t *thread, DXFG_OUT dxfg_v4_promise_t **promise);
+
+/**
+ * @brief Completes the promise normally, with the given Java object as the result.
+ *
+ * The first result wins: if the promise is already done (completed, failed or cancelled), the call does nothing and
+ * returns success. Otherwise the handlers added by dxfg_v4_Promise_whenDone() are called by the calling thread before
+ * the function returns (the handlers of dxfg_v4_Promise_whenDoneAsync() by their executor), and the waiters wake up.
+ *
+ * The promise must be one whose result may be any object, such as one from dxfg_v4_Promise_new(): the SDK does not
+ * check the class of the result, so completing a promise of an event with an object of another class makes
+ * dxfg_v4_Promise_EventType_getResult() fail later. For the promises of events use dxfg_v4_Promise_EventType_complete()
+ * and dxfg_v4_Promise_List_EventType_complete().
+ * A promise of a feed request is completed by the SDK as well: completing it from C races with the SDK, and the first
+ * result wins.
+ *
+ * Java: `Promise.complete(Object)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise; must not be NULL.
+ * @param[in] result The handle of the Java object that is the result, or NULL for a null result. It is only read: the
+ * caller keeps the ownership of the handle and may release it after the function returns.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution, also when the promise was already done, or
+ * #DXFG_EXECUTE_FAIL (-1) on error (e.g., the promise is NULL). Use dxfg_v4_get_and_clear_thread_exception() to
+ * determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_Promise_complete(graal_isolatethread_t *thread, dxfg_v4_promise_t *promise,
+                                 dxfg_v4_java_object_handler *result);
+
+/**
+ * @brief Gets the result of the promise as a handle of a Java object.
+ *
+ * The result is NULL when the promise is not done, completed exceptionally, was cancelled, or completed with a null
+ * result: use dxfg_v4_Promise_hasResult() to tell the cases apart. The function works for a promise of any kind; for
+ * the promises of events, dxfg_v4_Promise_EventType_getResult() and dxfg_v4_Promise_List_EventType_getResult() give
+ * the events themselves.
+ *
+ * Java: `Promise.getResult()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise; must not be NULL.
+ * @param[out] result The pointer to the variable that receives a new handle of the result (release it with
+ * dxfg_v4_JavaObjectHandler_release()), or NULL; must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (e.g.,
+ * the promise is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_Promise_getResult(graal_isolatethread_t *thread, dxfg_v4_promise_t *promise,
+                                  DXFG_OUT dxfg_v4_java_object_handler **result);
+
+/**
+ * @brief Completes the promise exceptionally, with a new Java exception of the named class and the given message.
+ *
+ * The SDK creates the exception from a fixed set of classes, without reflection (the native image cannot create a
+ * class by its name):
+ *  - `java.lang.RuntimeException`
+ *  - `java.lang.IllegalArgumentException`
+ *  - `java.lang.IllegalStateException`
+ *  - `java.lang.UnsupportedOperationException`
+ *  - `java.io.IOException`
+ *  - `java.util.concurrent.CancellationException`
+ *  - `java.util.concurrent.TimeoutException`
+ *
+ * The names are the fully qualified ones, as in the field `class_name` of dxfg_v4_exception_t. Any other name (another
+ * class, a class that is not an exception, or no class at all) gives a `java.lang.RuntimeException` whose message is
+ * `className + ": " + message`, or `className` when the message is NULL. A NULL or empty class name gives a
+ * `java.lang.RuntimeException` with the message as is. The exception has no cause. A
+ * `java.util.concurrent.CancellationException` fails the promise but does not cancel it: dxfg_v4_Promise_isCancelled()
+ * gives 0; use dxfg_v4_Promise_cancel() to cancel a promise.
+ *
+ * The first result wins: if the promise is already done (completed, failed or cancelled), the call does nothing and
+ * returns success. Otherwise the handlers are called as for dxfg_v4_Promise_complete(), and the waiters fail
+ * (dxfg_v4_Promise_getException() gives the exception itself).
+ *
+ * Java: `Promise.completeExceptionally(Throwable)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] promise The promise; must not be NULL.
+ * @param[in] className The fully qualified name of the class of the exception (a UTF-8 null-terminated string), or
+ * NULL.
+ * @param[in] message The message of the exception (a UTF-8 null-terminated string), or NULL for no message.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution, also when the promise was already done, or
+ * #DXFG_EXECUTE_FAIL (-1) on error (e.g., the promise is NULL). Use dxfg_v4_get_and_clear_thread_exception() to
+ * determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage(graal_isolatethread_t *thread,
+                                                                     dxfg_v4_promise_t *promise,
+                                                                     const char *className, const char *message);
+
+/**
+ * @brief Creates a promise that is already failed, with a new Java exception of the named class and the given
+ * message.
+ *
+ * The exception is created as in dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage(), from the same set
+ * of classes and with the same fallback to `java.lang.RuntimeException`. A handler added to the new promise by
+ * dxfg_v4_Promise_whenDone() is called before that function returns, by the calling thread.
+ *
+ * Java: `Promise.failed(Throwable)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] className The fully qualified name of the class of the exception (a UTF-8 null-terminated string), or
+ * NULL.
+ * @param[in] message The message of the exception (a UTF-8 null-terminated string), or NULL for no message.
+ * @param[out] newPromise The pointer to the variable that receives the new promise (release its handle with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_Promise_failedWithClassNameAndMessage(graal_isolatethread_t *thread, const char *className,
+                                                      const char *message, DXFG_OUT dxfg_v4_promise_t **newPromise);
 
 /**
  * @brief Creates a promise that is done when all the given promises are done.

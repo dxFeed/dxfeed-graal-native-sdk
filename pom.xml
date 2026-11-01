@@ -1134,6 +1134,7 @@
           <includes>
             <include>com/dxfeed/sdk/model/tx/**/*Test.java</include>
             <include>com/dxfeed/sdk/javac/**/*Test.java</include>
+            <include>com/dxfeed/sdk/mappers/**/*Test.java</include>
             <include>com/dxfeed/sdk/subscription/**/*Test.java</include>
             <include>com/dxfeed/sdk/system/**/*Test.java</include>
           </includes>
