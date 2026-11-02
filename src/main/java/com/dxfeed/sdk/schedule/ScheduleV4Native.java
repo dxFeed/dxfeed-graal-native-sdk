@@ -3,6 +3,11 @@
 
 package com.dxfeed.sdk.schedule;
 
+import com.dxfeed.schedule.Day;
+import com.dxfeed.schedule.DayFilter;
+import com.dxfeed.schedule.Session;
+import com.dxfeed.schedule.SessionFilter;
+import com.dxfeed.schedule.SessionType;
 import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
@@ -13,6 +18,7 @@ import com.dxfeed.sdk.ipf.DxfgInstrumentProfile;
 import com.dxfeed.sdk.javac.DxfgCStringListPointer;
 import com.dxfeed.sdk.javac.DxfgCStringListPointerPointer;
 import java.io.IOException;
+import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -20,6 +26,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CLongPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 
 /**
@@ -131,6 +138,122 @@ public final class ScheduleV4Native {
         dayFilter.write(result);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_DayFilter_newWithUserData",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_DayFilter_newWithUserData(
+            final IsolateThread ignoredThread,
+            final int dayOfWeekMask,
+            final int holiday,
+            final int shortDay,
+            final int trading,
+            final DxfgDayFilterUserDataFunction filter,
+            final VoidPointer userData,
+            @DxfgOut final WordPointer dayFilter
+    ) {
+        if (dayFilter.isNull()) {
+            throw new IllegalArgumentException("The `dayFilter` pointer is null");
+        }
+
+        if (filter.isNull()) {
+            throw new IllegalArgumentException("The `filter` function is null");
+        }
+
+        // A plain closure, not a NativeListener: deactivateAll does not stop it (see dxfg_v4_schedule.h).
+        final DayFilter javaFilter = new DayFilter(
+                dayOfWeekMask,
+                NullableBoolean.fromC(holiday, "holiday"),
+                NullableBoolean.fromC(shortDay, "shortDay"),
+                NullableBoolean.fromC(trading, "trading")
+        ) {
+            @Override
+            public boolean accept(final Day day) {
+                // The conditions of the constructor first: the function is not called for a day they reject.
+                if (!super.accept(day)) {
+                    return false;
+                }
+
+                final DxfgDay nativeDay = NativeUtils.MAPPER_DAY.toNative(day);
+
+                try {
+                    return filter.invoke(CurrentIsolate.getCurrentThread(), nativeDay, userData) == 1;
+                } finally {
+                    NativeUtils.MAPPER_DAY.release(nativeDay);
+                }
+            }
+        };
+
+        dayFilter.write(NativeUtils.MAPPER_DAY_FILTER.toNative(javaFilter));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_SessionFilter_newWithUserData",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_SessionFilter_newWithUserData(
+            final IsolateThread ignoredThread,
+            final int type,
+            final int trading,
+            final DxfgSessionFilterUserDataFunction filter,
+            final VoidPointer userData,
+            @DxfgOut final WordPointer sessionFilter
+    ) {
+        if (sessionFilter.isNull()) {
+            throw new IllegalArgumentException("The `sessionFilter` pointer is null");
+        }
+
+        if (filter.isNull()) {
+            throw new IllegalArgumentException("The `filter` function is null");
+        }
+
+        // A plain closure, not a NativeListener: deactivateAll does not stop it (see dxfg_v4_schedule.h).
+        final SessionFilter javaFilter = new SessionFilter(
+                sessionTypeFromC(type),
+                NullableBoolean.fromC(trading, "trading")
+        ) {
+            @Override
+            public boolean accept(final Session session) {
+                // The conditions of the constructor first: the function is not called for a session they reject.
+                if (!super.accept(session)) {
+                    return false;
+                }
+
+                final DxfgSession nativeSession = NativeUtils.MAPPER_SESSION.toNative(session);
+
+                try {
+                    return filter.invoke(CurrentIsolate.getCurrentThread(), nativeSession, userData) == 1;
+                } finally {
+                    NativeUtils.MAPPER_SESSION.release(nativeSession);
+                }
+            }
+        };
+
+        sessionFilter.write(NativeUtils.MAPPER_SESSION_FILTER.toNative(javaFilter));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // -1 is null (any type), the other values are the values of dxfg_session_type_t.
+    private static SessionType sessionTypeFromC(final int type) {
+        if (type == NullableBoolean.ANY) {
+            return null;
+        }
+
+        for (final SessionType sessionType : SessionType.values()) {
+            final DxfgSessionType nativeType = DxfgSessionType.of(sessionType);
+
+            if (nativeType != null && nativeType.getCValue() == type) {
+                return sessionType;
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "The `type` value " + type + " is not -1 (any) or a value of dxfg_session_type_t");
     }
 
     @CEntryPoint(

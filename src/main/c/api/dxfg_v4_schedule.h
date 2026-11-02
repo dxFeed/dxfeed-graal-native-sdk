@@ -129,6 +129,122 @@ int32_t dxfg_v4_DayFilter_getInstance(graal_isolatethread_t *thread, dxfg_v4_day
                                       DXFG_OUT dxfg_v4_day_filter_t **dayFilter);
 
 /**
+ * The value of a condition of dxfg_v4_DayFilter_newWithUserData() and dxfg_v4_SessionFilter_newWithUserData() that
+ * is not checked (Java `null`): for a flag, -1 instead of 0 (false) or 1 (true); for the session type, -1 instead of
+ * a value of #dxfg_session_type_t.
+ * @since 3.13.0
+ */
+#define DXFG_V4_FILTER_ANY (-1)
+
+/**
+ * A custom day filter function with user data: tests whether a day is an acceptable result of a search, see
+ * dxfg_v4_DayFilter_newWithUserData().
+ *
+ * The function is called by the search function that uses the filter (for example dxfg_v4_Day_findNextDay()), on
+ * the thread that called that search function, possibly several times during the call, and only for the days that
+ * pass the conditions given to dxfg_v4_DayFilter_newWithUserData().
+ *
+ * The day handle is valid during the call only: the SDK releases it after the function returns, so the function
+ * must not release it.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] day The day to test.
+ * @param[in] userData The user data given to dxfg_v4_DayFilter_newWithUserData().
+ * @return 1 if the day is accepted; any other value rejects it.
+ * @since 3.13.0
+ */
+typedef int32_t (*dxfg_v4_day_filter_user_data_function)(graal_isolatethread_t *thread, dxfg_v4_day_t *day,
+                                                         void *userData);
+
+/**
+ * A custom session filter function with user data: tests whether a session is an acceptable result of a search, see
+ * dxfg_v4_SessionFilter_newWithUserData().
+ *
+ * The function is called by the search function that uses the filter (for example dxfg_v4_Day_findFirstSession()),
+ * on the thread that called that search function, possibly several times during the call, and only for the sessions
+ * that pass the conditions given to dxfg_v4_SessionFilter_newWithUserData().
+ *
+ * The session handle is valid during the call only: the SDK releases it after the function returns, so the function
+ * must not release it.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] session The session to test.
+ * @param[in] userData The user data given to dxfg_v4_SessionFilter_newWithUserData().
+ * @return 1 if the session is accepted; any other value rejects it.
+ * @since 3.13.0
+ */
+typedef int32_t (*dxfg_v4_session_filter_user_data_function)(graal_isolatethread_t *thread,
+                                                             dxfg_v4_session_t *session, void *userData);
+
+/**
+ * Creates a day filter with the conditions of the Java constructor and a custom function with user data.
+ *
+ * The filter accepts a day if the day passes the conditions and then the function returns 1 for it: the function is
+ * not called for a day that the conditions reject. A condition of #DXFG_V4_FILTER_ANY (or a mask of 0) is not
+ * checked.
+ *
+ * The filter is a plain Java object, not a listener: neither the release of its handle nor
+ * dxfg_v4_NativeListener_deactivateAll() stops the calls of the function. The function pointer and the user data must
+ * stay valid while Java can still call the filter, which may outlive the handle (for example while a search function
+ * that got the filter runs on another thread).
+ *
+ * Java: `new DayFilter(int, Boolean, Boolean, Boolean)` with `DayFilter.accept(Day)` overridden to return
+ * `super.accept(day)` and then the result of `filter`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] dayOfWeekMask The bit mask of the accepted days of the week: bit N for the day of the week N (2 for
+ * Monday, 4 for Tuesday, ..., 128 for Sunday); 0 accepts any day of the week.
+ * @param[in] holiday 1 to accept holidays only, 0 to accept the other days only, #DXFG_V4_FILTER_ANY for any day.
+ * @param[in] shortDay 1 to accept short days only, 0 to accept the other days only, #DXFG_V4_FILTER_ANY for any day.
+ * @param[in] trading 1 to accept trading days only, 0 to accept the non-trading days only, #DXFG_V4_FILTER_ANY for
+ * any day.
+ * @param[in] filter The function that tests a day; must not be NULL.
+ * @param[in] userData The user data passed to `filter`, may be NULL.
+ * @param[out] dayFilter The pointer to the variable that receives the new day filter (release it with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `holiday`, `shortDay` or `trading` is not -1, 0 or 1, or `filter` is NULL: `IllegalArgumentException`). Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_DayFilter_newWithUserData(graal_isolatethread_t *thread, int32_t dayOfWeekMask, int32_t holiday,
+                                          int32_t shortDay, int32_t trading,
+                                          dxfg_v4_day_filter_user_data_function filter, void *userData,
+                                          DXFG_OUT dxfg_v4_day_filter_t **dayFilter);
+
+/**
+ * Creates a session filter with the conditions of the Java constructor and a custom function with user data.
+ *
+ * The filter accepts a session if the session passes the conditions and then the function returns 1 for it: the
+ * function is not called for a session that the conditions reject. A condition of #DXFG_V4_FILTER_ANY is not
+ * checked.
+ *
+ * The filter is a plain Java object, not a listener: neither the release of its handle nor
+ * dxfg_v4_NativeListener_deactivateAll() stops the calls of the function. The function pointer and the user data must
+ * stay valid while Java can still call the filter, which may outlive the handle (for example while a search function
+ * that got the filter runs on another thread).
+ *
+ * Java: `new SessionFilter(SessionType, Boolean)` with `SessionFilter.accept(Session)` overridden to return
+ * `super.accept(session)` and then the result of `filter`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] type The accepted session type, a value of #dxfg_session_type_t, or #DXFG_V4_FILTER_ANY for any type.
+ * @param[in] trading 1 to accept trading sessions only, 0 to accept the non-trading sessions only,
+ * #DXFG_V4_FILTER_ANY for any session.
+ * @param[in] filter The function that tests a session; must not be NULL.
+ * @param[in] userData The user data passed to `filter`, may be NULL.
+ * @param[out] sessionFilter The pointer to the variable that receives the new session filter (release it with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
+ * when `type` is neither -1 nor a value of #dxfg_session_type_t, `trading` is not -1, 0 or 1, or `filter` is NULL:
+ * `IllegalArgumentException`). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_SessionFilter_newWithUserData(graal_isolatethread_t *thread, int32_t type, int32_t trading,
+                                              dxfg_v4_session_filter_user_data_function filter, void *userData,
+                                              DXFG_OUT dxfg_v4_session_filter_t **sessionFilter);
+
+/**
  * Returns the default schedule for an instrument profile.
  *
  * The schedule is defined by the trading hours of the profile. The function fails if the trading hours contain no

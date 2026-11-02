@@ -41,6 +41,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void timeSeriesTxModelEventPeekIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.TIME_SERIES_TX_MODEL_EVENT_PEEK));
+        assertTrue(SdkFeatures.isSupported("time_series_tx_model_event_peek"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

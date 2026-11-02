@@ -38,8 +38,14 @@ public final class SdkFeatures {
     /** {@code DXFG_V4_FEATURE_FEED_FILTER}: the feed filter, its builder, tracker and listener (MDAPI-492). */
     public static final String FEED_FILTER = "feed_filter";
 
-    private static final Set<String> FEATURES =
-            Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL, FEED_FILTER);
+    /**
+     * {@code DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK}: the event peek of a time series model with a C function
+     * (MDAPI-490).
+     */
+    public static final String TIME_SERIES_TX_MODEL_EVENT_PEEK = "time_series_tx_model_event_peek";
+
+    private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
+            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK);
 
     private SdkFeatures() {
     }

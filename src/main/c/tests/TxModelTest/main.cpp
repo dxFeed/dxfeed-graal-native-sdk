@@ -441,5 +441,273 @@ TEST_CASE("TimeSeriesTxModel delivers the snapshot from its time and the updates
     release(thread, listener);
 }
 
+namespace {
+
+// What the event peek and the listener saw, in the order of the calls: "peek <index>" and "list <index>,<index>...".
+struct PeekLog {
+    std::mutex mutex;
+    std::condition_variable changed;
+    std::vector<std::string> entries;
+    std::vector<void *> userData;
+
+    void add(std::string entry, void *data) {
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+
+            entries.push_back(std::move(entry));
+            userData.push_back(data);
+        }
+
+        changed.notify_all();
+    }
+
+    // Waits for the given number of the entries of the listener; returns whether they came.
+    bool waitForLists(std::size_t count, std::chrono::milliseconds timeout = CALL_TIMEOUT) {
+        std::unique_lock<std::mutex> lock(mutex);
+
+        return changed.wait_for(lock, timeout, [&] {
+            return static_cast<std::size_t>(std::count_if(entries.begin(), entries.end(), [](const std::string &entry) {
+                       return entry.rfind("list", 0) == 0;
+                   })) >= count;
+        });
+    }
+
+    std::vector<std::string> get() {
+        std::lock_guard<std::mutex> lock(mutex);
+
+        return entries;
+    }
+
+    std::vector<void *> getUserData() {
+        std::lock_guard<std::mutex> lock(mutex);
+
+        return userData;
+    }
+};
+
+int64_t timeAndSaleIndex(dxfg_event_type_t *event) {
+    return event->clazz == DXFG_EVENT_TIME_AND_SALE ? reinterpret_cast<dxfg_time_and_sale_t *>(event)->index : -1;
+}
+
+void onEventPeek(graal_isolatethread_t * /* thread */, dxfg_v4_event_type_t *event, void *userData) {
+    static_cast<PeekLog *>(userData)->add("peek " + std::to_string(timeAndSaleIndex(event)), userData);
+}
+
+void onEventsLogged(graal_isolatethread_t * /* thread */, dxfg_indexed_event_source_t * /* source */,
+                    dxfg_event_type_list *events, int32_t /* isSnapshot */, void *userData) {
+    std::string entry = "list ";
+
+    for (int32_t i = 0; events != nullptr && i < events->size; ++i) {
+        entry += (i == 0 ? "" : ",") + std::to_string(timeAndSaleIndex(events->elements[i]));
+    }
+
+    static_cast<PeekLog *>(userData)->add(entry, userData);
+}
+
+// Sets the event peek with dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction() and releases the returned handle.
+void withEventPeekFunction(graal_isolatethread_t *thread, dxfg_time_series_tx_model_builder_t *builder,
+                           dxfg_v4_time_series_tx_model_event_peek_function eventPeek, void *userData) {
+    dxfg_v4_time_series_tx_model_builder_t *result = nullptr;
+
+    REQUIRE(dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction(thread, builder, eventPeek, userData, &result) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    release(thread, result);
+}
+
+// A time series model of the time and sales of SYMBOL from the time 0 with the listener that logs to the log; the
+// event peek is set by `configure`.
+struct PeekModel {
+    graal_isolatethread_t *thread;
+    dxfg_tx_model_listener_t *listener = nullptr;
+    dxfg_time_series_tx_model_builder_t *builder = nullptr;
+    dxfg_time_series_tx_model_t *model = nullptr;
+    dxfg_string_symbol_t symbol{{STRING}, SYMBOL};
+
+    template <typename Configure>
+    PeekModel(Hub &hub, PeekLog &log, dxfg_executor_t *executor, Configure configure) : thread(hub.thread) {
+        listener = dxfg_TxModelListener_new(thread, &onEventsLogged, &log);
+        REQUIRE(listener != nullptr);
+        builder = dxfg_TimeSeriesTxModel_newBuilder(thread, DXFG_EVENT_TIME_AND_SALE);
+        REQUIRE(builder != nullptr);
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withFromTime(thread, builder, 0));
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withSorting(thread, builder, ASCENDING));
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withSnapshotProcessing(thread, builder, 1));
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withFeed(thread, builder, hub.feed));
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withSymbol(thread, builder, &symbol.supper));
+        release(thread, dxfg_TimeSeriesTxModel_Builder_withListener(thread, builder, listener));
+
+        if (executor != nullptr) {
+            release(thread, dxfg_TimeSeriesTxModel_Builder_withExecutor(thread, builder, executor));
+        }
+
+        configure(builder);
+        model = dxfg_TimeSeriesTxModel_Builder_build(thread, builder);
+        REQUIRE(model != nullptr);
+    }
+
+    PeekModel(const PeekModel &) = delete;
+    PeekModel &operator=(const PeekModel &) = delete;
+
+    ~PeekModel() {
+        if (model != nullptr) {
+            dxfg_TimeSeriesTxModel_close(thread, model);
+            dxfg_JavaObjectHandler_release(thread, &model->handler);
+        }
+
+        if (builder != nullptr) {
+            dxfg_JavaObjectHandler_release(thread, &builder->handler);
+        }
+
+        if (listener != nullptr) {
+            dxfg_JavaObjectHandler_release(thread, &listener->handler);
+        }
+    }
+};
+
+} // namespace
+
+TEST_CASE("The event peek of a TimeSeriesTxModel sees each event before the listener gets the list", "[TxModel]") {
+    graal_isolatethread_t *thread = isolateThread();
+
+    REQUIRE(thread != nullptr);
+
+    int32_t supported = 0;
+
+    REQUIRE(dxfg_v4_system_is_feature_supported(thread, DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK, &supported) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(supported == 1);
+
+    // The log outlives the hub, so a callback still in flight after a failed REQUIRE does not write into a destroyed one.
+    PeekLog log{};
+    Hub hub(thread);
+    PeekModel model(hub, log, nullptr, [&](dxfg_time_series_tx_model_builder_t *builder) {
+        withEventPeekFunction(thread, builder, &onEventPeek, &log);
+    });
+
+    // The removed event at the end of the snapshot is dropped before the peek, as before the listener.
+    std::vector<dxfg_time_and_sale_t> snapshot{timeAndSale(3, 30.0, SNAPSHOT_BEGIN), timeAndSale(2, 20.0, 0),
+                                               timeAndSale(1, 10.0, 0),
+                                               timeAndSale(0, 0.0, REMOVE_EVENT | SNAPSHOT_END)};
+
+    hub.publish(snapshot);
+    REQUIRE(log.waitForLists(1));
+
+    std::vector<dxfg_time_and_sale_t> update{timeAndSale(4, 40.0, 0)};
+
+    hub.publish(update);
+    REQUIRE(log.waitForLists(2));
+    CHECK(log.get() == std::vector<std::string>{"peek 1", "peek 2", "peek 3", "list 1,2,3", "peek 4", "list 4"});
+
+    for (void *userData : log.getUserData()) {
+        CHECK(userData == &log);
+    }
+}
+
+TEST_CASE("NULL and the older no-op function remove the event peek of a TimeSeriesTxModel", "[TxModel]") {
+    graal_isolatethread_t *thread = isolateThread();
+
+    REQUIRE(thread != nullptr);
+
+    for (int removeWithOlderFunction = 0; removeWithOlderFunction <= 1; ++removeWithOlderFunction) {
+        INFO("removed with the older function: " << removeWithOlderFunction);
+
+        PeekLog log{};
+        Hub hub(thread);
+        PeekModel model(hub, log, nullptr, [&](dxfg_time_series_tx_model_builder_t *builder) {
+            withEventPeekFunction(thread, builder, &onEventPeek, &log);
+
+            if (removeWithOlderFunction == 1) {
+                dxfg_v4_time_series_tx_model_builder_t *result = nullptr;
+
+                REQUIRE(dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek(thread, builder, nullptr, &result) ==
+                        DXFG_EXECUTE_SUCCESSFULLY);
+                release(thread, result);
+            } else {
+                withEventPeekFunction(thread, builder, nullptr, &log);
+            }
+        });
+
+        std::vector<dxfg_time_and_sale_t> snapshot{timeAndSale(2, 20.0, SNAPSHOT_BEGIN),
+                                                   timeAndSale(1, 10.0, 0),
+                                                   timeAndSale(0, 0.0, REMOVE_EVENT | SNAPSHOT_END)};
+
+        hub.publish(snapshot);
+        REQUIRE(log.waitForLists(1));
+        CHECK(log.get() == std::vector<std::string>{"list 1,2"});
+    }
+}
+
+TEST_CASE("The event peek of a TimeSeriesTxModel is not called in the tasks of a closed event queue", "[TxModel]") {
+    graal_isolatethread_t *thread = isolateThread();
+
+    REQUIRE(thread != nullptr);
+
+    PeekLog log{};
+    Hub hub(thread);
+    dxfg_v4_event_queue_t *queue = nullptr;
+    dxfg_v4_executor_t *executor = nullptr;
+
+    REQUIRE(dxfg_v4_EventQueue_create(thread, &queue) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_EventQueue_getExecutor(thread, queue, &executor) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    {
+        PeekModel model(hub, log, executor, [&](dxfg_time_series_tx_model_builder_t *builder) {
+            withEventPeekFunction(thread, builder, &onEventPeek, &log);
+        });
+
+        // An open queue: the model runs in a poll, the peek is called.
+        std::vector<dxfg_time_and_sale_t> snapshot{timeAndSale(2, 20.0, SNAPSHOT_BEGIN),
+                                                   timeAndSale(1, 10.0, 0),
+                                                   timeAndSale(0, 0.0, REMOVE_EVENT | SNAPSHOT_END)};
+
+        hub.publish(snapshot);
+
+        for (auto end = std::chrono::steady_clock::now() + CALL_TIMEOUT;
+             log.get().empty() && std::chrono::steady_clock::now() < end;) {
+            dxfg_v4_event_type_list *events = nullptr;
+
+            if (dxfg_v4_EventQueue_poll(thread, queue, 200, 0, &events) == DXFG_EXECUTE_SUCCESSFULLY &&
+                events != nullptr) {
+                dxfg_v4_event_type_list_release(thread, events);
+            }
+        }
+
+        REQUIRE(log.waitForLists(1));
+        CHECK(log.get() == std::vector<std::string>{"peek 1", "peek 2", "list 1,2"});
+
+        // A closed queue: its executor runs the tasks at once in the muted scope, without the peek and the listener.
+        REQUIRE(dxfg_v4_EventQueue_close(thread, queue) == DXFG_EXECUTE_SUCCESSFULLY);
+
+        std::vector<dxfg_time_and_sale_t> update{timeAndSale(3, 30.0, 0)};
+
+        hub.publish(update);
+        CHECK_FALSE(log.waitForLists(2, NO_CALL_TIMEOUT));
+        CHECK(log.get() == std::vector<std::string>{"peek 1", "peek 2", "list 1,2"});
+    }
+
+    dxfg_v4_JavaObjectHandler_release(thread, &executor->handler);
+    dxfg_v4_JavaObjectHandler_release(thread, &queue->handler);
+}
+
+TEST_CASE("dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction fails on NULL pointers", "[TxModel]") {
+    graal_isolatethread_t *thread = isolateThread();
+
+    REQUIRE(thread != nullptr);
+
+    dxfg_time_series_tx_model_builder_t *builder = dxfg_TimeSeriesTxModel_newBuilder(thread, DXFG_EVENT_TIME_AND_SALE);
+    dxfg_v4_time_series_tx_model_builder_t *result = nullptr;
+
+    REQUIRE(builder != nullptr);
+    CHECK(dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction(thread, builder, &onEventPeek, nullptr, nullptr) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeException(thread).rfind("java.lang.IllegalArgumentException", 0) == 0);
+    CHECK(dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction(thread, nullptr, &onEventPeek, nullptr, &result) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(result == nullptr);
+    CHECK(takeException(thread).rfind("java.lang.IllegalArgumentException", 0) == 0);
+
+    release(thread, builder);
+}
+
 } // namespace test
 } // namespace dxfg

@@ -168,6 +168,14 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 #define DXFG_V4_FEATURE_FEED_FILTER "feed_filter"
 
 /**
+ * @brief The name of the feature "time series model event peek"
+ * (dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()) for dxfg_v4_system_is_feature_supported().
+ * @experimental
+ * @since 3.13.0
+ */
+#define DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK "time_series_tx_model_event_peek"
+
+/**
  * @brief Returns the version of the SDK release that the library belongs to, e.g. `3.13.0`.
  *
  * A wrapper that binds the functions by name checks the release before it binds the others. When the function

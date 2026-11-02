@@ -86,6 +86,7 @@ TEST_CASE("The library supports every feature of the description", "[ApiDescript
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_SHARED_EVENT_QUEUE) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_FEED_FILTER) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -135,6 +136,26 @@ TEST_CASE("The feed filter functions, types and feature are experimental in the 
         INFO(name);
         CHECK(entryOf(name).find("\"tier\": \"experimental\"") != std::string::npos);
     }
+}
+
+TEST_CASE("The event peek function is experimental, the filters with user data are stable", "[ApiDescription]") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+    const auto experimental = std::string("\"tier\": \"experimental\"");
+    const auto stable = std::string("\"tier\": \"stable\"");
+
+    CHECK(entryOf("dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction").find(experimental) != std::string::npos);
+    CHECK(entryOf("dxfg_v4_time_series_tx_model_event_peek_function").find(experimental) != std::string::npos);
+    CHECK(entryOf("DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK").find(experimental) != std::string::npos);
+    CHECK(entryOf("dxfg_v4_DayFilter_newWithUserData").find(stable) != std::string::npos);
+    CHECK(entryOf("dxfg_v4_SessionFilter_newWithUserData").find(stable) != std::string::npos);
 }
 
 } // namespace test

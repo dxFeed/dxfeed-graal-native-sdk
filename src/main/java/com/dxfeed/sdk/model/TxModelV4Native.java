@@ -3,16 +3,22 @@
 
 package com.dxfeed.sdk.model;
 
+import com.dxfeed.event.TimeSeriesEvent;
+import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
+import com.dxfeed.sdk.events.DxfgEventType;
 import com.dxfeed.sdk.events.DxfgIndexedEventSourceList;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
+import com.dxfeed.sdk.model.tx.TimeSeriesTxModel;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
+import java.util.function.Consumer;
+import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -808,6 +814,54 @@ public final class TxModelV4Native {
         }
 
         timeSeriesTxModelBuilder.write(result);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction(
+            final IsolateThread ignoredThread,
+            final DxfgTimeSeriesTxModelBuilderHandle builder,
+            final DxfgTimeSeriesTxModelEventPeekFunction eventPeek,
+            final VoidPointer userData,
+            @DxfgOut final WordPointer timeSeriesTxModelBuilder
+    ) {
+        if (timeSeriesTxModelBuilder.isNull()) {
+            throw new IllegalArgumentException("The `timeSeriesTxModelBuilder` pointer is null");
+        }
+
+        if (builder.isNull()) {
+            throw new IllegalArgumentException("The `source` handle is null");
+        }
+
+        @SuppressWarnings("unchecked")
+        final TimeSeriesTxModel.Builder<TimeSeriesEvent<?>> javaBuilder =
+                (TimeSeriesTxModel.Builder<TimeSeriesEvent<?>>)
+                        NativeUtils.MAPPER_TIME_SERIES_TX_MODEL_BUILDER.toJava(builder);
+
+        // A local class rather than a lambda keeps the captured word values in plain fields, as the listeners do.
+        final class NativeCall implements Consumer<TimeSeriesEvent<?>> {
+            @Override
+            public void accept(final TimeSeriesEvent<?> javaEvent) {
+                final DxfgEventType nativeEvent = NativeUtils.MAPPER_EVENT.toNative(javaEvent);
+
+                try {
+                    eventPeek.invoke(CurrentIsolate.getCurrentThread(), nativeEvent, userData);
+                } finally {
+                    NativeUtils.MAPPER_EVENT.release(nativeEvent);
+                }
+            }
+        }
+
+        // NULL removes the peek. The model calls the peek for each event before its listener gets the list.
+        final NativeEventPeek<TimeSeriesEvent<?>> javaEventPeek =
+                eventPeek.isNull() ? null : new NativeEventPeek<>(new NativeCall());
+
+        timeSeriesTxModelBuilder.write(
+                NativeUtils.MAPPER_TIME_SERIES_TX_MODEL_BUILDER.toNative(javaBuilder.withEventPeek(javaEventPeek)));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

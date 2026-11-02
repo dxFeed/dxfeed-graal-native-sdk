@@ -1132,12 +1132,13 @@
         <configuration>
           <!-- Only the tests: the other classes in src/test are programs with main(), not tests. -->
           <includes>
-            <include>com/dxfeed/sdk/model/tx/**/*Test.java</include>
+            <include>com/dxfeed/sdk/model/**/*Test.java</include>
             <include>com/dxfeed/sdk/feedfilter/**/*Test.java</include>
             <include>com/dxfeed/sdk/javac/**/*Test.java</include>
             <include>com/dxfeed/sdk/mappers/**/*Test.java</include>
             <include>com/dxfeed/sdk/ondemand/**/*Test.java</include>
             <include>com/dxfeed/sdk/orcs/**/*Test.java</include>
+            <include>com/dxfeed/sdk/schedule/**/*Test.java</include>
             <include>com/dxfeed/sdk/subscription/**/*Test.java</include>
             <include>com/dxfeed/sdk/system/**/*Test.java</include>
           </includes>

@@ -107,6 +107,19 @@
   (`dxfg_v4_DXFeedFilterListener_new()`), called on a thread of the SDK; a listener may add, remove or release
   listeners from its call. `DXFG_V4_FEATURE_FEED_FILTER` reports the family.
 
+* **\[MDAPI-490]\[GRAAL]** Day and session filters with user data, and an event peek of the time series model that
+  works. `dxfg_v4_DayFilter_newWithUserData()` and `dxfg_v4_SessionFilter_newWithUserData()` (`dxfg_v4_schedule.h`)
+  take the conditions of the Java constructors and a function with `void *userData`: a day or a session is accepted
+  when it passes the conditions and the function returns 1. A condition of `DXFG_V4_FILTER_ANY` (-1) is not checked;
+  a flag other than -1, 0 or 1 or an unknown session type fails with `IllegalArgumentException`. The function gets a
+  handle that the SDK releases after the call. The filters are plain Java objects:
+  `dxfg_v4_NativeListener_deactivateAll()` does not stop them.
+  `dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()` (experimental, `dxfg_v4_event_model.h`) calls a function
+  for each event before the listener gets the list, on the model's executor; NULL removes it, and it is not called
+  inside the tasks of a closed event queue or after `deactivateAll`.
+  `DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK` reports it. `dxfg_TimeSeriesTxModel_Builder_withEventPeek()` and
+  its v4 twin stay no-ops.
+
 ## v3.12.0
 
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the

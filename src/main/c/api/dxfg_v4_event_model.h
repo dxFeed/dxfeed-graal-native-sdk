@@ -1417,6 +1417,8 @@ int32_t dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick(
 /**
  * @brief Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java `Consumer`).
  *
+ * For an event peek that works, use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction().
+ *
  * Java: `TimeSeriesTxModel.Builder.withEventPeek(Consumer)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
@@ -1431,6 +1433,56 @@ int32_t dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick(
 DXFG_EXPERIMENTAL
 int32_t dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek(
     graal_isolatethread_t* thread, dxfg_v4_time_series_tx_model_builder_t* source, void* eventPeek,
+    DXFG_OUT dxfg_v4_time_series_tx_model_builder_t **timeSeriesTxModelBuilder);
+
+/**
+ * @brief The event peek function of a time series model, see
+ * dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction().
+ *
+ * The model calls it for each event of a transaction or a snapshot, in the order of the list, before its listener gets
+ * the list; it runs on the thread of the model's executor (the thread that calls the listener), not concurrently with
+ * itself for one model. The event is valid during the call only: the SDK frees it after the function returns.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] event The event; do not keep or release it.
+ * @param[in] userData The user data given to dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction().
+ * @experimental
+ * @since 3.13.0
+ */
+typedef void (*dxfg_v4_time_series_tx_model_event_peek_function)(graal_isolatethread_t *thread,
+                                                                  dxfg_v4_event_type_t *event, void *userData);
+
+/**
+ * @brief Sets the event peek of the model: a function that sees each event before the listener gets the list.
+ *
+ * The function is called as #dxfg_v4_time_series_tx_model_event_peek_function says. NULL removes the event peek set
+ * before, and so does dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek(); the last call before
+ * dxfg_v4_TimeSeriesTxModel_Builder_build() wins. The library reports the function with
+ * #DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK.
+ *
+ * The event peek is a native listener without a handle of its own: it is not called inside the tasks of a closed event
+ * queue (as the listeners are not) and after dxfg_v4_NativeListener_deactivateAll(); the release of the builder or
+ * model handles does not stop it. The function pointer and the user data must stay valid while the model can still
+ * deliver events: until the model is closed and its executor has no pending notifications, or until
+ * dxfg_v4_NativeListener_deactivateAll() returns.
+ *
+ * Java: `TimeSeriesTxModel.Builder.withEventPeek(Consumer)` with a `Consumer` that calls `eventPeek`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] source The builder handle; must not be NULL.
+ * @param[in] eventPeek The event peek function, or NULL for none.
+ * @param[in] userData The user data passed to `eventPeek`, may be NULL.
+ * @param[out] timeSeriesTxModelBuilder The pointer to the variable that receives the builder (release it with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
+ * @since 3.13.0
+ */
+DXFG_EXPERIMENTAL
+int32_t dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction(
+    graal_isolatethread_t *thread, dxfg_v4_time_series_tx_model_builder_t *source,
+    dxfg_v4_time_series_tx_model_event_peek_function eventPeek, void *userData,
     DXFG_OUT dxfg_v4_time_series_tx_model_builder_t **timeSeriesTxModelBuilder);
 
 /**

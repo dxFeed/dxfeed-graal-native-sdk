@@ -1601,7 +1601,8 @@ dxfg_time_series_tx_model_builder_t* dxfg_TimeSeriesTxModel_Builder_withConfirma
  *
  * Java: `TimeSeriesTxModel.Builder.withEventPeek(Consumer)`.
  *
- * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek() (experimental).
+ * @deprecated Use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek() (experimental), or
+ * dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction() (experimental) for an event peek that works.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] source The builder handle.
