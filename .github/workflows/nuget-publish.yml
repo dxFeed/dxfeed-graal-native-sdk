@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: MPL-2.0
+
+# Publishes the package DxFeed.Graal.Native of a GitHub release to nuget.org with Trusted Publishing: the job gets an
+# API key for one hour from nuget.org with the OIDC token of GitHub, so no key is stored. "Publish GitHub Release" in
+# TeamCity attaches the package (built by "Pack NuGet") to the release, runs this workflow and waits for it; it can also
+# be run by hand for a release. The policy on nuget.org (owner dxFeed) trusts this repository and this file name, and
+# the secret NUGET_USER is the nuget.org profile name of the user who created the policy (see .teamcity/README.MD).
+
+name: Publish NuGet
+
+run-name: Publish NuGet ${{ inputs.tag }} (${{ inputs.request }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag of the GitHub release that has the package, e.g. v3.13.0
+        required: true
+        type: string
+      request:
+        description: Who asked for the run; TeamCity passes its build id to find the run
+        required: false
+        default: manual
+        type: string
+
+permissions: {}
+
+# Two runs never push at the same time; a rerun of a published version is skipped by nuget.org.
+concurrency:
+  group: nuget-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read # gh release download
+      id-token: write # the OIDC token for nuget.org
+    steps:
+      - name: Download the package of the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -eu
+          case "$TAG" in
+            v[0-9]*) ;;
+            *) echo "::error::Not a release tag: $TAG"; exit 1 ;;
+          esac
+          PACKAGE="DxFeed.Graal.Native.${TAG#v}.nupkg"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$PACKAGE" --dir packages
+          ls -l packages
+          echo "PACKAGE=packages/$PACKAGE" >> "$GITHUB_ENV"
+
+      - name: Get a temporary API key of nuget.org
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      # The package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
+      # --skip-duplicate makes a rerun safe if a timed out push has been accepted after all.
+      - name: Push the package
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: >-
+          dotnet nuget push "$PACKAGE"
+          --source https://api.nuget.org/v3/index.json
+          --api-key "$NUGET_API_KEY"
+          --skip-duplicate
+          --timeout 1800

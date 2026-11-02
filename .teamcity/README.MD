@@ -269,6 +269,31 @@ otherwise (e.g. `jdk-25.0.x` and older) the `svm-core` Maven profile and `src/ma
 The `docker/nuget.Dockerfile` is used to build the docker image to create and publish NuGet packages.
 Documentation and examples of how to run the image can be found in the corresponding Dockerfile.
 
+The package `DxFeed.Graal.Native` of a release is published to nuget.org with
+[Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing) from GitHub Actions, so no
+nuget.org API key is stored (nuget.org keys live 30 days at most):
+
+1. `Pack NuGet` (Release chain, after `Build & Deploy [All]`) packs `NuGet/DxFeed.Graal.Native.nuspec` with the
+   archives of the release from `qd` and keeps the `.nupkg` as its artifact.
+2. `Publish GitHub Release` takes that package (an artifact dependency on the last successful `Pack NuGet`; the build
+   fails if its version is not the one of the tag), attaches it to the GitHub release with the zips, runs the workflow
+   [`.github/workflows/nuget-publish.yml`](../.github/workflows/nuget-publish.yml) of the GitHub mirror with
+   `gh workflow run` and polls the run with `gh run view` (not `gh run watch`, which does not work with a fine-grained
+   token); the build fails if the run fails.
+3. The workflow downloads the package from the GitHub release, gets a one-hour API key from nuget.org with the OIDC
+   token of the run (`NuGet/login`) and pushes the package (`--skip-duplicate`: a rerun of a published version passes).
+
+The workflow can also be run by hand in the Actions tab of the mirror with the tag of a release that has the package.
+
+One-time setup:
+
+- nuget.org, owner `dxFeed`: a Trusted Publishing policy for GitHub Actions, repository
+  `dxFeed/dxfeed-graal-native-sdk`, workflow file `nuget-publish.yml`, no environment.
+- The GitHub mirror: the repository secret `NUGET_USER` is the nuget.org profile name (not the e-mail) of the user who
+  created the policy.
+- `env.GH_TOKEN` of the root project (the token of `gh`) can also run and read the Actions workflows of the mirror
+  (fine-grained token: `Actions: Read and write`; classic token: `repo` and `workflow`).
+
 # Deploying Artifacts
 
 `mvn deploy` publishes the pom and the platform zips to the internal repositories

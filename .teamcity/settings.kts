@@ -40,7 +40,6 @@ project {
     params {
         param("env.GRAALVM_VERSION", "graal-25.4.4.1.1")
         param("env.GRAALVM_VERSION_MACOS_X64", "jdk-25.0.1")
-        password("env.NUGETORG_API_KEY", "credentialsJSON:56d935b1-7a10-4985-bb88-ac1a24ac2c4e", display = ParameterDisplay.HIDDEN)
         password("env.GH_TOKEN", "credentialsJSON:657ea93a-c18d-414f-be39-e12fb36fb13f", display = ParameterDisplay.HIDDEN)
     }
 
@@ -499,8 +498,11 @@ object BuildAndDeployForAll : BuildType({
     }
 })
 
+// The package is published by the workflow .github/workflows/nuget-publish.yml that "Publish GitHub Release" runs:
+// nuget.org gives Trusted Publishing only to GitHub Actions and GitLab, and its API keys live 30 days at most. The id
+// DeployNuget keeps the history of the build.
 object DeployNuget : BuildType({
-    name = "Deploy NuGet"
+    name = "Pack NuGet"
     artifactRules = "*.nupkg"
 
     mainRepository()
@@ -551,15 +553,12 @@ object DeployNuget : BuildType({
             formatStderrAsError = true
         }
         script {
-            name = "NuGet Pack and Deploy"
+            name = "NuGet Pack"
             scriptContent = """
                 git config --global safe.directory '*'
                 VERSION=$(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
                 nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
-                # The package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
-                # -SkipDuplicate makes a rerun safe if a timed out push has been accepted after all.
-                nuget push DxFeed.Graal.Native.${'$'}VERSION.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey %env.NUGETORG_API_KEY% -SkipDuplicate -Timeout 1800
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.NUGET, "--rm -m 8g")
@@ -576,17 +575,6 @@ object DeployNuget : BuildType({
 
     features {
         nexusDockerLogin()
-        notifications {
-            notifierSettings = slackNotifier {
-                connection = "PROJECT_EXT_137"
-                sendTo = "#graal-api"
-                messageFormat = verboseMessageFormat {
-                    addChanges = true
-                    maximumNumberOfChanges = 10
-                }
-            }
-            buildFinishedSuccessfully = true
-        }
     }
 
     requirements {
@@ -596,6 +584,8 @@ object DeployNuget : BuildType({
 
 object SyncGitHubWithMainAndPublishRelease : BuildType({
     name = "Publish GitHub Release"
+    description = "Pushes main and the release tag to GitHub, publishes the GitHub release with the archives and the " +
+        "NuGet package, and publishes the package to nuget.org with the workflow nuget-publish.yml"
 
     artifactRules = """
         release-artifacts/*.zip
@@ -603,6 +593,16 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
     """.trimIndent()
 
     mainRepository()
+
+    dependencies {
+        // The package that "Pack NuGet" has just built from the release tag (the step "Prepare GitHub release" checks
+        // its version).
+        artifacts(DeployNuget) {
+            buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "DxFeed.Graal.Native.*.nupkg => nuget"
+        }
+    }
 
     steps {
         script {
@@ -680,6 +680,14 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                         "${'$'}BASE_URL/${'$'}artifact" \
                         --output "release-artifacts/${'$'}artifact"
                 done < release-artifacts.txt
+
+                PACKAGE="nuget/DxFeed.Graal.Native.${'$'}VERSION.nupkg"
+                if [ ! -f "${'$'}PACKAGE" ]; then
+                    echo "No NuGet package of version ${'$'}VERSION from Pack NuGet:"
+                    ls -l nuget || true
+                    exit 1
+                fi
+                cp "${'$'}PACKAGE" release-artifacts/
 
                 #
                 # Extract the section:
@@ -821,17 +829,95 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
 
                     gh release upload "${'$'}TAG" \
                         release-artifacts/*.zip \
+                        release-artifacts/*.nupkg \
                         --clobber
                 else
                     echo "Creating release ${'$'}TAG"
 
                     gh release create "${'$'}TAG" \
                         release-artifacts/*.zip \
+                        release-artifacts/*.nupkg \
                         --verify-tag \
                         --title "${'$'}TAG" \
                         --prerelease="${'$'}PRE_RELEASE" \
                         --notes-file release-notes.md
                 fi
+            """.trimIndent()
+        }
+
+        script {
+            name = "Publish NuGet with GitHub Actions"
+            scriptContent = """
+                set -eu
+
+                TAG=$(git describe --tags --abbrev=0)
+                WORKFLOW=nuget-publish.yml
+                REQUEST="teamcity-%teamcity.build.id%"
+
+                export GH_REPO="dxFeed/dxfeed-graal-native-sdk"
+                # gh installed by the step "Publish GitHub release" (if env.PATH has not reached this step).
+                export PATH="${'$'}PATH:${'$'}HOME/.local/bin"
+
+                # GitHub may not know a workflow pushed with main a moment ago yet.
+                echo "Running ${'$'}WORKFLOW for ${'$'}TAG (${'$'}REQUEST)"
+                attempt=1
+                until gh workflow run "${'$'}WORKFLOW" --ref main -f tag="${'$'}TAG" -f request="${'$'}REQUEST"; do
+                    if [ "${'$'}attempt" -ge 5 ]; then
+                        echo "Cannot run ${'$'}WORKFLOW"
+                        exit 1
+                    fi
+                    attempt=$((attempt + 1))
+                    sleep 15
+                done
+
+                # The run is found by the request in its name (run-name of the workflow). An error of gh fails the step.
+                RUN_ID=""
+                for attempt in $(seq 1 30); do
+                    RUNS=$(
+                        gh run list \
+                            --workflow "${'$'}WORKFLOW" \
+                            --event workflow_dispatch \
+                            --limit 20 \
+                            --json databaseId,displayTitle \
+                            --jq ".[] | select(.displayTitle | endswith(\"(${'$'}REQUEST)\")) | .databaseId"
+                    )
+                    RUN_ID=$(echo "${'$'}RUNS" | head -n1)
+                    if [ -n "${'$'}RUN_ID" ]; then
+                        break
+                    fi
+                    sleep 10
+                done
+
+                if [ -z "${'$'}RUN_ID" ]; then
+                    echo "No run of ${'$'}WORKFLOW for ${'$'}REQUEST has appeared"
+                    exit 1
+                fi
+
+                echo "Run: https://github.com/${'$'}GH_REPO/actions/runs/${'$'}RUN_ID"
+
+                # Not gh run watch: it does not work with a fine-grained token. The build timeout limits the wait; five
+                # errors of gh in a row fail the step.
+                errors=0
+                while :; do
+                    if STATE=$(
+                        gh run view "${'$'}RUN_ID" --json status,conclusion --jq '.status + " " + .conclusion'
+                    ); then
+                        errors=0
+                    else
+                        errors=$((errors + 1))
+                        if [ "${'$'}errors" -ge 5 ]; then
+                            echo "Cannot get the state of the run ${'$'}RUN_ID"
+                            exit 1
+                        fi
+                        STATE="unknown"
+                    fi
+                    echo "Run ${'$'}RUN_ID: ${'$'}STATE"
+                    case "${'$'}STATE" in
+                        "completed success") break ;;
+                        completed*) echo "The run of ${'$'}WORKFLOW has failed: ${'$'}STATE"; exit 1 ;;
+                    esac
+                    sleep 30
+                done
             """.trimIndent()
         }
     }
@@ -847,6 +933,23 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
         sshAgent {
             teamcitySshKey = "sshkey_ed25519"
         }
+        // The release is complete when the package is on nuget.org.
+        notifications {
+            notifierSettings = slackNotifier {
+                connection = "PROJECT_EXT_137"
+                sendTo = "#graal-api"
+                messageFormat = verboseMessageFormat {
+                    addChanges = true
+                    maximumNumberOfChanges = 10
+                }
+            }
+            buildFinishedSuccessfully = true
+        }
+    }
+
+    failureConditions {
+        // The upload of the package and the run of the workflow take minutes; a hung run must not hold the agent.
+        executionTimeoutMin = 60
     }
 
     requirements {

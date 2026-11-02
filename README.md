@@ -959,9 +959,10 @@ The releases are built in [TeamCity](https://dxcity.in.devexperts.com/project/Md
    deploys the Linux x64 archives and the C API documentation.
 2. Then "Build & Deploy [All]" builds and deploys the archives of the other platforms and the XCFramework from the
    tag.
-3. Then "Deploy NuGet" publishes the `DxFeed.Graal.Native` package, and "Publish GitHub Release" pushes `main` and
-   the tag to GitHub and publishes the release with the archives and the notes of the version from
-   `ReleaseNotes.md`.
+3. Then "Pack NuGet" packs the `DxFeed.Graal.Native` package, and "Publish GitHub Release" pushes `main` and the tag
+   to GitHub, publishes the release with the archives, the package and the notes of the version from
+   `ReleaseNotes.md`, and publishes the package to nuget.org with a GitHub Actions workflow (see
+   [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
 4. After a release (not a pre-release), make its description the baseline of the [API description](#api-description)
    check and commit it to `main` (run `java` of the GraalVM of the build: the generator is a multi-file source program,
    which needs Java 22 or newer):
