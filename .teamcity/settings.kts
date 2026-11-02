@@ -40,7 +40,7 @@ project {
     params {
         param("env.GRAALVM_VERSION", "graal-25.4.4.1.1")
         param("env.GRAALVM_VERSION_MACOS_X64", "jdk-25.0.1")
-        password("env.NUGETORG_API_KEY", "credentialsJSON:4ba447c3-64f4-4a4c-8ff8-505258ddd420", display = ParameterDisplay.HIDDEN)
+        password("env.NUGETORG_API_KEY", "credentialsJSON:56d935b1-7a10-4985-bb88-ac1a24ac2c4e", display = ParameterDisplay.HIDDEN)
         password("env.GH_TOKEN", "credentialsJSON:657ea93a-c18d-414f-be39-e12fb36fb13f", display = ParameterDisplay.HIDDEN)
     }
 
