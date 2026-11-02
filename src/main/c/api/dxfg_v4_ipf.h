@@ -2416,6 +2416,105 @@ int32_t dxfg_v4_InstrumentProfileReader_readCompressed(
     DXFG_OUT dxfg_v4_instrument_profile_data_list **instrument_profiles);
 
 /**
+ * @brief Writes the instrument profiles from structures to a file.
+ *
+ * The name of the file selects the format, as in Java: a name that ends with `.zip` (in any case) gives a zip archive
+ * with one entry, named as the file without its directory and the `.zip` suffix; a name that ends with `.gz` gives gzip
+ * data; any other name gives plain text. The data is in the Instrument Profile Format: for each type of the profiles a
+ * header lists the fields that have values, the custom fields included, and the data ends with the `##COMPLETE` tag.
+ * dxfg_v4_InstrumentProfileReader_readFromFile() reads the file back. An existing file is overwritten.
+ *
+ * The structures are only read, as in dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles(): the custom fields
+ * of each structure are the ones its handle holds at the call. All the arguments are checked before the file is opened:
+ * a NULL argument or a NULL element of the list fails the call with `java.lang.IllegalArgumentException` and leaves the
+ * file as it was. An I/O error, e.g. a missing directory, fails the call with `java.io.IOException` (for a file that
+ * cannot be opened, its subclass `java.io.FileNotFoundException`); a file that was opened may be left incomplete.
+ *
+ * Java: `InstrumentProfileWriter.writeToFile(String, List)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] file The path of the file, a UTF-8 string; must not be NULL.
+ * @param[in] instrument_profiles The list of the structures of the instrument profiles; must not be NULL, may be empty.
+ * The caller keeps it.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_InstrumentProfileWriter_writeToFile(graal_isolatethread_t *thread, const char *file,
+                                                    const dxfg_v4_instrument_profile_data_list *instrument_profiles);
+
+/**
+ * @brief Writes the instrument profiles from handles to a file.
+ *
+ * The same as dxfg_v4_InstrumentProfileWriter_writeToFile(), for a list of handles: the format, the errors and the
+ * checks are the same. The handles are only read.
+ *
+ * Java: `InstrumentProfileWriter.writeToFile(String, List)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] file The path of the file, a UTF-8 string; must not be NULL.
+ * @param[in] instrument_profiles The list of the handles of the instrument profiles; must not be NULL, may be empty.
+ * The caller keeps it.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(graal_isolatethread_t *thread, const char *file,
+                                                           const dxfg_v4_instrument_profile_list *instrument_profiles);
+
+/**
+ * @brief Writes the instrument profiles from structures to memory, as a list of bytes.
+ *
+ * The bytes are the content of a file with the given name written by dxfg_v4_InstrumentProfileWriter_writeToFile():
+ * the name selects plain text, `.gz` or `.zip`, and gives the zip entry its name (without the directory and `.zip`);
+ * nothing is written to a file.
+ * dxfg_v4_ByteArrayInputStream_new() and dxfg_v4_InstrumentProfileReader_readWithAddress() read the bytes back. The
+ * list is never NULL on success, also for an empty list of profiles (the data still has the `##COMPLETE` tag). Data of
+ * more than 2147483639 bytes (`Integer.MAX_VALUE - 8`) does not fit a list: the call fails with
+ * `java.lang.IllegalStateException`.
+ *
+ * The structures are only read, and a NULL argument or a NULL element of the list fails the call with
+ * `java.lang.IllegalArgumentException`, as in dxfg_v4_InstrumentProfileWriter_writeToFile().
+ *
+ * Java: `InstrumentProfileWriter.write(OutputStream, String, List)` with a `ByteArrayOutputStream`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] name The name that selects the format, a UTF-8 string, e.g. `profiles.ipf.gz`; must not be NULL.
+ * @param[in] instrument_profiles The list of the structures of the instrument profiles; must not be NULL, may be empty.
+ * The caller keeps it.
+ * @param[out] bytes The pointer to the variable that receives the list of the bytes (release it with
+ * dxfg_v4_byte_list_release()); must not be NULL. On failure the variable is left unchanged.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_InstrumentProfileWriter_writeToBytes(graal_isolatethread_t *thread, const char *name,
+                                                     const dxfg_v4_instrument_profile_data_list *instrument_profiles,
+                                                     DXFG_OUT dxfg_v4_byte_list **bytes);
+
+/**
+ * @brief Writes the instrument profiles from handles to memory, as a list of bytes.
+ *
+ * The same as dxfg_v4_InstrumentProfileWriter_writeToBytes(), for a list of handles: the format, the errors and the
+ * checks are the same. The handles are only read.
+ *
+ * Java: `InstrumentProfileWriter.write(OutputStream, String, List)` with a `ByteArrayOutputStream`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] name The name that selects the format, a UTF-8 string, e.g. `profiles.ipf.gz`; must not be NULL.
+ * @param[in] instrument_profiles The list of the handles of the instrument profiles; must not be NULL, may be empty.
+ * The caller keeps it.
+ * @param[out] bytes The pointer to the variable that receives the list of the bytes (release it with
+ * dxfg_v4_byte_list_release()); must not be NULL. On failure the variable is left unchanged.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(graal_isolatethread_t *thread, const char *name,
+                                                            const dxfg_v4_instrument_profile_list *instrument_profiles,
+                                                            DXFG_OUT dxfg_v4_byte_list **bytes);
+
+/**
  * @brief Frees the structure of an instrument profile that the SDK has filled, and releases its custom fields handle.
  *
  * The structure itself is freed as well: use it for a structure that was returned by

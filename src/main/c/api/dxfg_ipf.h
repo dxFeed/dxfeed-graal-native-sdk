@@ -2101,10 +2101,14 @@ typedef struct dxfg_instrument_profile_custom_fields_t {
  * read: the SDK copies the strings, does not keep or free the pointers, treats a NULL string as an empty one and
  * ignores instrument_profile_custom_fields_hash.
  *
- * The custom fields are not copied: the Java instrument profile and the custom fields handle of the structure share
- * the same storage of the fields, both in a structure that the SDK fills and in a structure passed to the SDK. A
+ * The custom fields are not copied: the Java instrument profile and the custom fields handle of the structure start
+ * with the same storage of the fields, both in a structure that the SDK fills and in a structure passed to the SDK
+ * (the profile gets the storage the handle has at the call). The sharing lasts only while the storage has room: a
  * change made with dxfg_InstrumentProfileCustomFields_setField() and the like through that handle may change the
- * profile (e.g. the profile in a collector). To change the custom fields independently, make a copy with
+ * profile (e.g. the profile in a collector), but a change that adds a field may move the fields of the handle to a
+ * new, larger storage, and from then on the profile no longer sees the changes of the handle, nor the handle those of
+ * the profile. So do not rely on the sharing in either direction: to change the custom fields of a profile, pass the
+ * structure to the SDK again, and to change them independently, make a copy with
  * dxfg_InstrumentProfileCustomFields_new3() first.
  *
  * Every field is described with the corresponding dxfg_InstrumentProfile_get*() function.

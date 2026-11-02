@@ -12,6 +12,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <map>
 #include <mutex>
 #include <set>
@@ -780,6 +783,448 @@ TEST_CASE("Custom fields are made from a list of names and values, an empty list
             DXFG_EXECUTE_SUCCESSFULLY);
     CHECK(takeString(thread, value) == "2");
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &customFields->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+}
+
+namespace {
+
+// The directory of the files that the writer tests write, relative to the working directory of the test.
+const std::string WRITER_DIRECTORY = "v4-ipf-writer";
+
+// The names that select plain text, gzip and zip.
+const std::vector<std::string> WRITER_NAMES{"profiles.ipf", "profiles.ipf.gz", "profiles.ipf.zip"};
+
+bool endsWith(const std::string &string, const std::string &suffix) {
+    return string.size() >= suffix.size() && string.compare(string.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+std::string bytesToString(const dxfg_v4_byte_list *bytes) {
+    return bytes->size == 0 ? std::string{} : std::string(bytes->elements, static_cast<std::size_t>(bytes->size));
+}
+
+std::string fileToString(const std::string &file) {
+    std::ifstream stream(file, std::ios::binary);
+
+    REQUIRE(stream.good());
+
+    return {std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>()};
+}
+
+// Reads the profiles back from the bytes, as structures; the name is only the origin of the stream.
+dxfg_v4_instrument_profile_data_list *readBytes(graal_isolatethread_t *thread, const dxfg_v4_byte_list *bytes,
+                                                const std::string &name) {
+    dxfg_v4_instrument_profile_reader_t *reader = nullptr;
+    dxfg_v4_input_stream_t *stream = nullptr;
+    dxfg_v4_instrument_profile_data_list *profiles = nullptr;
+
+    REQUIRE(dxfg_v4_InstrumentProfileReader_new(thread, &reader) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_ByteArrayInputStream_new(thread, bytes->elements, bytes->size, &stream) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readWithAddress(thread, reader, stream, name.c_str(), &profiles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(profiles != nullptr);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &stream->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return profiles;
+}
+
+// Reads the profiles back from the file, as structures, and checks that the file was complete.
+dxfg_v4_instrument_profile_data_list *readFile(graal_isolatethread_t *thread, const std::string &file) {
+    dxfg_v4_instrument_profile_reader_t *reader = nullptr;
+    dxfg_v4_instrument_profile_data_list *profiles = nullptr;
+    int32_t complete = 0;
+
+    REQUIRE(dxfg_v4_InstrumentProfileReader_new(thread, &reader) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFile(thread, reader, file.c_str(), &profiles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(profiles != nullptr);
+    CHECK(dxfg_v4_InstrumentProfileReader_wasComplete(thread, reader, &complete) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(complete == 1);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return profiles;
+}
+
+const dxfg_v4_instrument_profile_data_t *findProfile(const dxfg_v4_instrument_profile_data_list *profiles,
+                                                     const std::string &symbol) {
+    for (int32_t i = 0; i < profiles->size; ++i) {
+        if (symbol == profiles->elements[i]->symbol) {
+            return profiles->elements[i];
+        }
+    }
+
+    return nullptr;
+}
+
+// The value of a custom field of the structure, "<none>" if the structure has no custom fields or not this one.
+std::string customField(graal_isolatethread_t *thread, const dxfg_v4_instrument_profile_data_t *profile,
+                        const char *name) {
+    REQUIRE(profile != nullptr);
+
+    if (profile->instrument_profile_custom_fields == nullptr) {
+        return "<none>";
+    }
+
+    char *value = nullptr;
+
+    REQUIRE(dxfg_v4_InstrumentProfileCustomFields_getField(thread, profile->instrument_profile_custom_fields, name,
+                                                           &value) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return value == nullptr ? "<none>" : takeString(thread, value);
+}
+
+// The line of the plain text that lists the fields of the type, e.g. "#STOCK::=TYPE,SYMBOL,...".
+std::string headerLine(const std::string &text, const std::string &type) {
+    const std::string start = "#" + type + "::=";
+    const auto begin = text.find(start);
+
+    if (begin == std::string::npos) {
+        return {};
+    }
+
+    return text.substr(begin, text.find('\n', begin) - begin);
+}
+
+// Checks the first bytes of the data: the gzip magic number, the zip local header or the text of a header line.
+void checkFormat(const std::string &data, const std::string &name) {
+    REQUIRE(data.size() >= 2);
+
+    if (endsWith(name, ".gz")) {
+        CHECK(static_cast<unsigned char>(data[0]) == 0x1F);
+        CHECK(static_cast<unsigned char>(data[1]) == 0x8B);
+    } else if (endsWith(name, ".zip")) {
+        CHECK(data.compare(0, 2, "PK") == 0);
+    } else {
+        CHECK(data[0] == '#');
+        CHECK(data.find("##COMPLETE") != std::string::npos);
+    }
+}
+
+} // namespace
+
+TEST_CASE("Instrument profiles are written to a file and to bytes, plain, gzip and zip, and read back",
+          "[V4Api][Ipf][Writer]") {
+    graal_isolatethread_t *thread = isolateThread();
+    dxfg_v4_instrument_profile_reader_t *reader = nullptr;
+    dxfg_v4_instrument_profile_data_list *profiles = nullptr;
+    dxfg_v4_instrument_profile_list *handles = nullptr;
+
+    REQUIRE(thread != nullptr);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_new(thread, &reader) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFile(thread, reader, V4_API_TEST_IPF_FILE, &profiles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFileAsHandles(thread, reader, V4_API_TEST_IPF_FILE, &handles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(profiles != nullptr);
+    REQUIRE(handles != nullptr);
+
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+    REQUIRE(std::filesystem::create_directories(WRITER_DIRECTORY));
+
+    for (const auto &name : WRITER_NAMES) {
+        INFO(name);
+
+        const std::string file = WRITER_DIRECTORY + "/" + name;
+        const std::string handlesFile = WRITER_DIRECTORY + "/handles-" + name;
+
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, file.c_str(), profiles) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(thread, handlesFile.c_str(), handles) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+
+        for (const auto &writtenFile : {file, handlesFile}) {
+            dxfg_v4_instrument_profile_data_list *readBack = readFile(thread, writtenFile);
+
+            checkFormat(fileToString(writtenFile), name);
+            CHECK(dataSymbols(readBack) == IPF_SYMBOLS);
+            CHECK(customField(thread, findProfile(readBack, "GOOG"), "QH_FEED") == "EDGX.1009");
+            CHECK(dxfg_v4_instrument_profile_data_list_release(thread, readBack) == DXFG_EXECUTE_SUCCESSFULLY);
+        }
+
+        dxfg_v4_byte_list *bytes = nullptr;
+        dxfg_v4_byte_list *handleBytes = nullptr;
+
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, name.c_str(), profiles, &bytes) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, name.c_str(), handles, &handleBytes) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(bytes != nullptr);
+        REQUIRE(handleBytes != nullptr);
+        checkFormat(bytesToString(bytes), name);
+        checkFormat(bytesToString(handleBytes), name);
+
+        // A zip entry holds the time of the writing; plain text and gzip data are the same as the file.
+        if (!endsWith(name, ".zip")) {
+            CHECK(bytesToString(bytes) == fileToString(file));
+            CHECK(bytesToString(handleBytes) == fileToString(file));
+        }
+
+        for (const auto *written : {bytes, handleBytes}) {
+            dxfg_v4_instrument_profile_data_list *readBack = readBytes(thread, written, name);
+
+            CHECK(dataSymbols(readBack) == IPF_SYMBOLS);
+            CHECK(customField(thread, findProfile(readBack, "GOOG"), "QH_FEED") == "EDGX.1009");
+            CHECK(dxfg_v4_instrument_profile_data_list_release(thread, readBack) == DXFG_EXECUTE_SUCCESSFULLY);
+        }
+
+        CHECK(dxfg_v4_byte_list_release(thread, bytes) == DXFG_EXECUTE_SUCCESSFULLY);
+        CHECK(dxfg_v4_byte_list_release(thread, handleBytes) == DXFG_EXECUTE_SUCCESSFULLY);
+    }
+
+    CHECK(dxfg_v4_instrument_profile_list_release(thread, handles) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_instrument_profile_data_list_release(thread, profiles) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+}
+
+TEST_CASE("An empty list of profiles gives a non-NULL list of bytes, a NULL argument or element fails",
+          "[V4Api][Ipf][Writer]") {
+    graal_isolatethread_t *thread = isolateThread();
+    dxfg_v4_instrument_profile_reader_t *reader = nullptr;
+    dxfg_v4_instrument_profile_data_list *profiles = nullptr;
+    dxfg_v4_instrument_profile_list *handles = nullptr;
+
+    REQUIRE(thread != nullptr);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_new(thread, &reader) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFile(thread, reader, V4_API_TEST_IPF_FILE, &profiles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFileAsHandles(thread, reader, V4_API_TEST_IPF_FILE, &handles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(profiles != nullptr);
+    REQUIRE(handles != nullptr);
+    REQUIRE(profiles->size > 0);
+    REQUIRE(handles->size > 0);
+
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+    REQUIRE(std::filesystem::create_directories(WRITER_DIRECTORY));
+
+    dxfg_v4_instrument_profile_data_list empty{0, nullptr};
+    dxfg_v4_instrument_profile_list emptyHandles{0, nullptr};
+
+    for (const auto &name : WRITER_NAMES) {
+        INFO(name);
+
+        dxfg_v4_byte_list *bytes = nullptr;
+        dxfg_v4_byte_list *handleBytes = nullptr;
+
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, name.c_str(), &empty, &bytes) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, name.c_str(), &emptyHandles,
+                                                                    &handleBytes) == DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(bytes != nullptr);
+        REQUIRE(handleBytes != nullptr);
+        CHECK(bytes->size > 0);
+        CHECK(bytes->elements != nullptr);
+        checkFormat(bytesToString(bytes), name);
+
+        dxfg_v4_instrument_profile_data_list *readBack = readBytes(thread, bytes, name);
+
+        CHECK(readBack->size == 0);
+        CHECK(dxfg_v4_instrument_profile_data_list_release(thread, readBack) == DXFG_EXECUTE_SUCCESSFULLY);
+        CHECK(dxfg_v4_byte_list_release(thread, bytes) == DXFG_EXECUTE_SUCCESSFULLY);
+        CHECK(dxfg_v4_byte_list_release(thread, handleBytes) == DXFG_EXECUTE_SUCCESSFULLY);
+    }
+
+    const std::string emptyFile = WRITER_DIRECTORY + "/empty.ipf";
+
+    REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, emptyFile.c_str(), &empty) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+
+    dxfg_v4_instrument_profile_data_list *emptyReadBack = readFile(thread, emptyFile);
+
+    CHECK(emptyReadBack->size == 0);
+    CHECK(dxfg_v4_instrument_profile_data_list_release(thread, emptyReadBack) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_byte_list_release(thread, nullptr) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    // The arguments are checked before anything is written: the file is not created, the out variable not written.
+    dxfg_v4_instrument_profile_data_t *elements[] = {profiles->elements[0], nullptr};
+    dxfg_v4_instrument_profile_data_list withNull{2, elements};
+    dxfg_v4_instrument_profile_data_list noElements{1, nullptr};
+    dxfg_v4_instrument_profile_t *handleElements[] = {handles->elements[0], nullptr};
+    dxfg_v4_instrument_profile_list handlesWithNull{2, handleElements};
+    const std::string file = WRITER_DIRECTORY + "/rejected.ipf";
+    dxfg_v4_byte_list *bytes = nullptr;
+
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, file.c_str(), &withNull) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, file.c_str(), &noElements) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, file.c_str(), nullptr) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, nullptr, profiles) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(thread, file.c_str(), &handlesWithNull) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(thread, file.c_str(), nullptr) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(thread, nullptr, handles) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK_FALSE(std::filesystem::exists(file));
+
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, "rejected.ipf", &withNull, &bytes) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, "rejected.ipf", nullptr, &bytes) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, nullptr, profiles, &bytes) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, "rejected.ipf", profiles, nullptr) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, "rejected.ipf", &handlesWithNull, &bytes) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, "rejected.ipf", nullptr, &bytes) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, nullptr, handles, &bytes) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes(thread, "rejected.ipf", handles, nullptr) ==
+          DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
+    CHECK(bytes == nullptr);
+
+    // A file in a missing directory cannot be opened: an IOException.
+    const std::string missing = WRITER_DIRECTORY + "/missing/profiles.ipf";
+
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, missing.c_str(), profiles) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.io.FileNotFoundException");
+    CHECK(dxfg_v4_InstrumentProfileWriter_writeHandlesToFile(thread, missing.c_str(), handles) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(thread) == "java.io.FileNotFoundException");
+    CHECK_FALSE(std::filesystem::exists(WRITER_DIRECTORY + "/missing"));
+
+    CHECK(dxfg_v4_instrument_profile_list_release(thread, handles) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_instrument_profile_data_list_release(thread, profiles) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+}
+
+TEST_CASE("The custom fields of profile structures are written and read back", "[V4Api][Ipf][Writer]") {
+    graal_isolatethread_t *thread = isolateThread();
+    dxfg_v4_instrument_profile_reader_t *reader = nullptr;
+    dxfg_v4_instrument_profile_data_list *profiles = nullptr;
+
+    REQUIRE(thread != nullptr);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_new(thread, &reader) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileReader_readFromFile(thread, reader, V4_API_TEST_IPF_FILE, &profiles) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(profiles != nullptr);
+
+    // Custom fields made from names and values.
+    const char *namesAndValues[] = {"V4_ALPHA", "alpha", "V4_BETA", "beta"};
+    dxfg_v4_string_list namesAndValuesList{4, namesAndValues};
+    dxfg_v4_instrument_profile_custom_fields_t *fromNamesAndValues = nullptr;
+
+    REQUIRE(dxfg_v4_InstrumentProfileCustomFields_newWithNamesAndValues(thread, &namesAndValuesList,
+                                                                        &fromNamesAndValues) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+
+    // Empty custom fields (an empty array in Java, not null), then a field set: the array grows.
+    dxfg_v4_instrument_profile_custom_fields_t *setOnEmpty = nullptr;
+
+    REQUIRE(dxfg_v4_InstrumentProfileCustomFields_new(thread, &setOnEmpty) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_InstrumentProfileCustomFields_setField(thread, setOnEmpty, "V4_GAMMA", "gamma") ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+
+    // Empty custom fields that stay empty.
+    dxfg_v4_instrument_profile_custom_fields_t *leftEmpty = nullptr;
+
+    REQUIRE(dxfg_v4_InstrumentProfileCustomFields_new(thread, &leftEmpty) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    // A profile read by the reader: its handle starts with the fields of the profile, the new fields grow the array.
+    dxfg_v4_instrument_profile_data_t *readProfile = profiles->elements[0];
+
+    REQUIRE(std::string(readProfile->symbol) == "GOOG");
+    REQUIRE(readProfile->instrument_profile_custom_fields != nullptr);
+
+    for (int i = 0; i < 8; ++i) {
+        const std::string name = "V4_DELTA_" + std::to_string(i);
+        const std::string value = "delta " + std::to_string(i);
+
+        REQUIRE(dxfg_v4_InstrumentProfileCustomFields_setField(thread, readProfile->instrument_profile_custom_fields,
+                                                               name.c_str(), value.c_str()) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+    }
+
+    char stockType[] = "STOCK";
+    char alphaSymbol[] = "V4_CF_ALPHA";
+    char gammaSymbol[] = "V4_CF_GAMMA";
+    char emptySymbol[] = "V4_CF_EMPTY";
+    dxfg_v4_instrument_profile_data_t alphaProfile{};
+    dxfg_v4_instrument_profile_data_t gammaProfile{};
+    dxfg_v4_instrument_profile_data_t emptyProfile{};
+
+    alphaProfile.type = stockType;
+    alphaProfile.symbol = alphaSymbol;
+    alphaProfile.instrument_profile_custom_fields = fromNamesAndValues;
+    gammaProfile.type = stockType;
+    gammaProfile.symbol = gammaSymbol;
+    gammaProfile.instrument_profile_custom_fields = setOnEmpty;
+    emptyProfile.type = stockType;
+    emptyProfile.symbol = emptySymbol;
+    emptyProfile.instrument_profile_custom_fields = leftEmpty;
+
+    dxfg_v4_instrument_profile_data_t *elements[] = {&alphaProfile, &gammaProfile, &emptyProfile, readProfile};
+    dxfg_v4_instrument_profile_data_list list{4, elements};
+
+    const auto checkReadBack = [thread](const dxfg_v4_instrument_profile_data_list *readBack) {
+        REQUIRE(readBack->size == 4);
+        CHECK(customField(thread, findProfile(readBack, "V4_CF_ALPHA"), "V4_ALPHA") == "alpha");
+        CHECK(customField(thread, findProfile(readBack, "V4_CF_ALPHA"), "V4_BETA") == "beta");
+        CHECK(customField(thread, findProfile(readBack, "V4_CF_GAMMA"), "V4_GAMMA") == "gamma");
+        CHECK(customField(thread, findProfile(readBack, "V4_CF_GAMMA"), "V4_ALPHA") == "<none>");
+        CHECK(customField(thread, findProfile(readBack, "V4_CF_EMPTY"), "V4_GAMMA") == "<none>");
+        CHECK(customField(thread, findProfile(readBack, "GOOG"), "QH_FEED") == "EDGX.1009");
+        CHECK(customField(thread, findProfile(readBack, "GOOG"), "V4_DELTA_0") == "delta 0");
+        CHECK(customField(thread, findProfile(readBack, "GOOG"), "V4_DELTA_7") == "delta 7");
+    };
+
+    for (const auto &name : WRITER_NAMES) {
+        INFO(name);
+
+        dxfg_v4_byte_list *bytes = nullptr;
+
+        REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToBytes(thread, name.c_str(), &list, &bytes) ==
+                DXFG_EXECUTE_SUCCESSFULLY);
+        REQUIRE(bytes != nullptr);
+
+        if (!endsWith(name, ".gz") && !endsWith(name, ".zip")) {
+            // The header of the type lists the names of the custom fields of all the profiles.
+            const std::string header = headerLine(bytesToString(bytes), "STOCK");
+
+            CHECK(header.find(",V4_ALPHA") != std::string::npos);
+            CHECK(header.find(",V4_BETA") != std::string::npos);
+            CHECK(header.find(",V4_GAMMA") != std::string::npos);
+            CHECK(header.find(",V4_DELTA_7") != std::string::npos);
+            CHECK(header.find(",QH_FEED") != std::string::npos);
+        }
+
+        dxfg_v4_instrument_profile_data_list *readBack = readBytes(thread, bytes, name);
+
+        checkReadBack(readBack);
+        CHECK(dxfg_v4_instrument_profile_data_list_release(thread, readBack) == DXFG_EXECUTE_SUCCESSFULLY);
+        CHECK(dxfg_v4_byte_list_release(thread, bytes) == DXFG_EXECUTE_SUCCESSFULLY);
+    }
+
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+    REQUIRE(std::filesystem::create_directories(WRITER_DIRECTORY));
+
+    const std::string file = WRITER_DIRECTORY + "/custom.ipf.gz";
+
+    REQUIRE(dxfg_v4_InstrumentProfileWriter_writeToFile(thread, file.c_str(), &list) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    dxfg_v4_instrument_profile_data_list *fileReadBack = readFile(thread, file);
+
+    checkReadBack(fileReadBack);
+    CHECK(dxfg_v4_instrument_profile_data_list_release(thread, fileReadBack) == DXFG_EXECUTE_SUCCESSFULLY);
+    std::filesystem::remove_all(WRITER_DIRECTORY);
+
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &fromNamesAndValues->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &setOnEmpty->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &leftEmpty->handler) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_instrument_profile_data_list_release(thread, profiles) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
 TEST_CASE("The state of an instrument profile connection is written as an enum value", "[V4Api][Ipf]") {

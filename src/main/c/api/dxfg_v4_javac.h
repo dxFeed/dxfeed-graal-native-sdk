@@ -63,6 +63,20 @@ typedef dxfg_rounding_mode_t dxfg_v4_rounding_mode_t;
 typedef dxfg_finalize_function dxfg_v4_finalize_function;
 
 /**
+ * @brief A list of bytes that a function returned: the array holds the bytes themselves.
+ *
+ * The functions that write data to memory return it, e.g. dxfg_v4_InstrumentProfileWriter_writeToBytes(). Release it
+ * with dxfg_v4_byte_list_release(). The bytes can be read back with dxfg_v4_ByteArrayInputStream_new().
+ * @since 3.13.0
+ */
+typedef struct dxfg_v4_byte_list {
+    /** The number of bytes; 0 for an empty list. */
+    int32_t size;
+    /** The array of `size` bytes; NULL for an empty list. */
+    char *elements;
+} dxfg_v4_byte_list;
+
+/**
  * Registers a function that is called with the user data after the Java object is garbage collected.
  *
  * The Java object is not collected while a handle of it exists, so the function is called after all the handles of
@@ -372,6 +386,18 @@ int32_t dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal
  */
 int32_t dxfg_v4_ByteArrayInputStream_new(graal_isolatethread_t *thread, const char *bytes, int32_t size,
                                          DXFG_OUT dxfg_v4_input_stream_t **inputStream);
+
+/**
+ * Releases a list of bytes that a function returned (e.g. dxfg_v4_InstrumentProfileWriter_writeToBytes()): frees the
+ * array of the bytes and the list itself.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] list The list to release. If it is NULL, nothing is done.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_byte_list_release(graal_isolatethread_t *thread, dxfg_v4_byte_list *list);
 
 /**
  * Requests a garbage collection. It is only for testing, e.g. of the functions registered by dxfg_v4_Object_finalize().

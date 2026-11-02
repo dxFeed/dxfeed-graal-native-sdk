@@ -138,7 +138,6 @@ public class InstrumentProfile2Mapper extends
     public void fillJava(final DxfgInstrumentProfile2Pointer nativeObject,
             final InstrumentProfile javaObject) {
         javaObject.setType(stringMapper.toJava(nativeObject.getType()));
-        javaObject.setType(stringMapper.toJava(nativeObject.getType()));
         javaObject.setSymbol(stringMapper.toJava(nativeObject.getSymbol()));
         javaObject.setDescription(stringMapper.toJava(nativeObject.getDescription()));
         javaObject.setLocalSymbol(stringMapper.toJava(nativeObject.getLocalSymbol()));

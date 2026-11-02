@@ -9,18 +9,22 @@ import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.subscription.EventQueue;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
 import org.graalvm.nativeimage.c.type.CLongPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
+import org.graalvm.word.WordFactory;
 
 /**
  * The v4 twins of the functions of {@link JavacNative}: each one calls the old function as a Java method
  * ({@link OlderEntryPoint} tells whether it failed) and returns its result through an out parameter (see
- * dxfg_v4_api.h).
+ * dxfg_v4_api.h). The release of a list of bytes has no older twin.
  */
 @CContext(JavacDirectives.class)
 public final class JavacV4Native {
@@ -410,6 +414,58 @@ public final class JavacV4Native {
         }
 
         inputStream.write(result);
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    /**
+     * Copies the data of the stream to a new {@code dxfg_v4_byte_list} that the caller releases with
+     * {@code dxfg_v4_byte_list_release}. The list is never NULL; its elements are NULL when the stream is empty.
+     *
+     * @param stream The stream with the data.
+     * @return The new list.
+     */
+    public static DxfgByteList toNativeByteList(final ByteListOutputStream stream) {
+        final int size = stream.size();
+        final CCharPointer elements = size == 0 ? WordFactory.nullPointer() : UnmanagedMemory.malloc(size);
+
+        try {
+            if (size > 0) {
+                CTypeConversion.asByteBuffer(elements, size).put(stream.buffer(), 0, size);
+            }
+
+            final DxfgByteList list = UnmanagedMemory.calloc(SizeOf.get(DxfgByteList.class));
+
+            list.setSize(size);
+            list.setElements(elements);
+
+            return list;
+        } catch (final Throwable throwable) {
+            if (elements.isNonNull()) {
+                UnmanagedMemory.free(elements);
+            }
+
+            throw throwable;
+        }
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_byte_list_release",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_byte_list_release(
+            final IsolateThread ignoredThread,
+            final DxfgByteList list
+    ) {
+        if (list.isNull()) {
+            return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+        }
+
+        if (list.getElements().isNonNull()) {
+            UnmanagedMemory.free(list.getElements());
+        }
+
+        UnmanagedMemory.free(list);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

@@ -70,6 +70,15 @@
   result wins: a later completion does nothing and returns success. `dxfg_Promise_failed()`,
   `dxfg_v4_Promise_failed()` and the `completeExceptionally` functions that take a `dxfg_exception_t` keep their
   behaviour; their descriptions point to the new functions.
+* **\[MDAPI-491]\[GRAAL]** The instrument profile writer (`dxfg_v4_ipf.h`):
+  `dxfg_v4_InstrumentProfileWriter_writeToFile()` writes a list of profile structures to a file and
+  `dxfg_v4_InstrumentProfileWriter_writeToBytes()` to memory, as a new `dxfg_v4_byte_list` (`dxfg_v4_javac.h`, released by `dxfg_v4_byte_list_release()`, never NULL on success);
+  `writeHandlesToFile()` and `writeHandlesToBytes()` do the same for a list of profile handles. As in Java, the name
+  selects plain text, `.gz` or `.zip`. The custom fields of the structures are written: the header lists their names.
+  A NULL argument or list element fails with `IllegalArgumentException` before anything is written, data over
+  `Integer.MAX_VALUE - 8` bytes with `IllegalStateException`. The description of `dxfg_instrument_profile2_t` no
+  longer says that the handle of its custom fields always shares them with the profile: a field added through the
+  handle may move them to a new storage.
 
 * **\[MDAPI-489]\[GRAAL]** Four members of the Java API that the SDK did not export, and the exceptions of the ORCS
   server with their classes. The new listeners stop on release and on `dxfg_v4_NativeListener_deactivateAll()`.
