@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['gamma_0',['gamma',['../structdxfg__greeks__t.html#a23b667592fe86941f2179912cfbf2e23',1,'dxfg_greeks_t::gamma'],['../structdxfg__theo__price__t.html#a4e22d447a664281a8759bd83c26fb551',1,'dxfg_theo_price_t::gamma']]],
+  ['glossary_1',['Glossary',['../group__Glossary.html',1,'']]],
+  ['glossary_20v4_2',['Glossary (v4)',['../group__V4__Glossary.html',1,'']]],
+  ['graal_5fattach_5fthread_3',['graal_attach_thread',['../graal__isolate_8h.html#adaaf0f534a87e0f43bf50b67a1c6da82',1,'graal_isolate.h']]],
+  ['graal_5fattach_5fthread_5ffn_5ft_4',['graal_attach_thread_fn_t',['../graal__isolate__dynamic_8h.html#a93c66740c745713d447cc592e539e12d',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fcreate_5fisolate_5',['graal_create_isolate',['../graal__isolate_8h.html#a3dffaccf18b0f6c777c247b22947ae62',1,'graal_isolate.h']]],
+  ['graal_5fcreate_5fisolate_5ffn_5ft_6',['graal_create_isolate_fn_t',['../graal__isolate__dynamic_8h.html#aa48d8f0ffc87ed503f4e0f9c97b23bf9',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fcreate_5fisolate_5fparams_5ft_7',['graal_create_isolate_params_t',['../graal__isolate_8h.html#a0bb5e939e94e7a24de483816c4315ee7',1,'graal_isolate.h']]],
+  ['graal_5fdetach_5fall_5fthreads_5fand_5ftear_5fdown_5fisolate_8',['graal_detach_all_threads_and_tear_down_isolate',['../graal__isolate_8h.html#a1e203cf376ae60794dd178429ba874c4',1,'graal_isolate.h']]],
+  ['graal_5fdetach_5fall_5fthreads_5fand_5ftear_5fdown_5fisolate_5ffn_5ft_9',['graal_detach_all_threads_and_tear_down_isolate_fn_t',['../graal__isolate__dynamic_8h.html#a1e9800d42bd543e7d956c0a52e14d7f8',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fdetach_5fthread_10',['graal_detach_thread',['../graal__isolate_8h.html#a92cf5dfbd4276b09fe00ee091ded000b',1,'graal_isolate.h']]],
+  ['graal_5fdetach_5fthread_5ffn_5ft_11',['graal_detach_thread_fn_t',['../graal__isolate__dynamic_8h.html#a32b82338591535cef174aa9451004678',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fget_5fcurrent_5fthread_12',['graal_get_current_thread',['../graal__isolate_8h.html#aa750d98024e07a8f8993a5020fc7be47',1,'graal_isolate.h']]],
+  ['graal_5fget_5fcurrent_5fthread_5ffn_5ft_13',['graal_get_current_thread_fn_t',['../graal__isolate__dynamic_8h.html#a17957801265e07a054045fcfd11c500e',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fget_5fisolate_14',['graal_get_isolate',['../graal__isolate_8h.html#af7458a8e140ce1460a87beedad34f7df',1,'graal_isolate.h']]],
+  ['graal_5fget_5fisolate_5ffn_5ft_15',['graal_get_isolate_fn_t',['../graal__isolate__dynamic_8h.html#a3564cbf1087c40c25869d6678613f769',1,'graal_isolate_dynamic.h']]],
+  ['graal_5fisolate_2eh_16',['graal_isolate.h',['../graal__isolate_8h.html',1,'']]],
+  ['graal_5fisolate_5fdynamic_2eh_17',['graal_isolate_dynamic.h',['../graal__isolate__dynamic_8h.html',1,'']]],
+  ['graal_5fisolate_5ft_18',['graal_isolate_t',['../graal__isolate_8h.html#a0cf7023f0e3929858271e4e3aab8e991',1,'graal_isolate.h']]],
+  ['graal_5fisolatethread_5ft_19',['graal_isolatethread_t',['../graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2',1,'graal_isolate.h']]],
+  ['graal_5ftear_5fdown_5fisolate_20',['graal_tear_down_isolate',['../graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b',1,'graal_isolate.h']]],
+  ['graal_5ftear_5fdown_5fisolate_5ffn_5ft_21',['graal_tear_down_isolate_fn_t',['../graal__isolate__dynamic_8h.html#a5713f0148b2e8374f6dea074c041ad78',1,'graal_isolate_dynamic.h']]]
+];
