@@ -1102,6 +1102,7 @@ object TestForLinux : BuildType({
 
     features {
         pullRequestsToMain()
+        javaTestsReport()
         cTestsReport()
         nexusDockerLogin()
     }
@@ -1164,6 +1165,7 @@ object TestForMacOS : BuildType({
 
     features {
         pullRequestsToMain()
+        javaTestsReport()
         cTestsReport()
     }
 

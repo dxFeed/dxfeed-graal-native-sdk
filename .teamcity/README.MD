@@ -159,8 +159,8 @@ minutes: the first run on an agent without the cache also installs the VS Build 
 
 - The builds run for every pull request to `main` (the branches `pull-requests/<N>`) and for every change of `main`.
 - The status of each build is published to the pull request in Bitbucket (with a link to the build). The results of the
-  tests are in the build in TeamCity (the JUnit report of CTest; on Windows also the Surefire report of the Java tests,
-  which TeamCity does not pick up by itself there because Maven runs inside a PowerShell script).
+  tests are in the build in TeamCity: the JUnit report of CTest and the Surefire report of the Java tests, which TeamCity
+  does not pick up by itself because Maven runs inside a script step (Docker, a shell or PowerShell).
 - A build configuration appears in TeamCity when `.teamcity/settings.kts` with it gets to `main`.
 
 One-time setup:
