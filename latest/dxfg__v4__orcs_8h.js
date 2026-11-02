@@ -6,6 +6,7 @@ var dxfg__v4__orcs_8h =
     [ "dxfg_v4_symbols_by_order_source_id_map_entry_t", "group__V4__OrcsApi.html#gaa182e6d54fb5017f8dc37330c3c5b155", null ],
     [ "dxfg_v4_symbols_by_order_source_map_entry_list", "group__V4__OrcsApi.html#gae060119c9d5de09b0328d00d8f949a1d", null ],
     [ "dxfg_v4_symbols_by_order_source_map_entry_t", "group__V4__OrcsApi.html#ga8967c8696328ea9873c3944627ad769f", null ],
+    [ "dxfg_v4_AuthOrderSource_create", "group__V4__OrcsApi.html#ga8fa7ad9c00b0cf22c33e8e64c2868150", null ],
     [ "dxfg_v4_AuthOrderSource_getByIds", "group__V4__OrcsApi.html#ga3c3ffadb4372eba51249fce964917d35", null ],
     [ "dxfg_v4_AuthOrderSource_getByOrderSources", "group__V4__OrcsApi.html#ga9d48c48217fde0c847709d000d23e8aa", null ],
     [ "dxfg_v4_PriceLevelChecker_validate", "group__V4__OrcsApi.html#gaefc2e31b37cf569f414f29065f4857c6", null ],

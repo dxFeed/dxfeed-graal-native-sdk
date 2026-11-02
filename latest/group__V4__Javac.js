@@ -1,6 +1,11 @@
 var group__V4__Javac =
 [
+    [ "dxfg_v4_byte_list", "structdxfg__v4__byte__list.html", [
+      [ "elements", "structdxfg__v4__byte__list.html#ade4d8d50fc17be8504a6891182b9e34f", null ],
+      [ "size", "structdxfg__v4__byte__list.html#ad6f0be871bf21b6058ef1b5453aa0d03", null ]
+    ] ],
     [ "dxfg_v4_auth_token_t", "group__V4__Javac.html#ga56b5876063319ce2a6342321550bf194", null ],
+    [ "dxfg_v4_byte_list", "group__V4__Javac.html#ga9b2d208a9b255461224f7dec6a649152", null ],
     [ "dxfg_v4_executor_t", "group__V4__Javac.html#ga23f297b8ff84137123986598c4967b82", null ],
     [ "dxfg_v4_finalize_function", "group__V4__Javac.html#ga282456a58e7883392f411a106958a3e7", null ],
     [ "dxfg_v4_input_stream_t", "group__V4__Javac.html#gabe5e7a74957c87d6469d641ebc26de20", null ],
@@ -25,6 +30,7 @@ var group__V4__Javac =
     [ "dxfg_v4_AuthToken_getUser", "group__V4__Javac.html#ga5444ea3c6a00560a96a482d55ccd64e5", null ],
     [ "dxfg_v4_AuthToken_getValue", "group__V4__Javac.html#ga95c112a377f25f8aab402abf65830e87", null ],
     [ "dxfg_v4_AuthToken_valueOf", "group__V4__Javac.html#ga0edede4813f0ef3415b216aa51ee813a", null ],
+    [ "dxfg_v4_byte_list_release", "group__V4__Javac.html#gafd3514e20fdc88cb9bf08ff2055c74a1", null ],
     [ "dxfg_v4_ByteArrayInputStream_new", "group__V4__Javac.html#ga5303f7a639fb982834a17f89a7da5b0d", null ],
     [ "dxfg_v4_Comparable_compareTo", "group__V4__Javac.html#gaf35618ff0c64203b9c620def8268e71e", null ],
     [ "dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new", "group__V4__Javac.html#gac370f979a7d014c8a88fa4ce8dbd904b", null ],

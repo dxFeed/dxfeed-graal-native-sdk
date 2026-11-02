@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -115,6 +115,10 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__V4__Sch
 <p>The v4 functions and type names of the group <a class="el" href="group__Schedule.html" title="Schedule">Schedule</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga3320f2644b7819e9d497a11067a7ab07" id="r_ga3320f2644b7819e9d497a11067a7ab07"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a>&#160;&#160;&#160;(-1)</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gacaff4ee56a5026b1b424138ce19fa303" id="r_gacaff4ee56a5026b1b424138ce19fa303"><td class="memItemLeft">typedef <a class="el" href="structdxfg__schedule__t.html">dxfg_schedule_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#gacaff4ee56a5026b1b424138ce19fa303">dxfg_v4_schedule_t</a></td></tr>
@@ -133,6 +137,8 @@ Typedefs</h2></td></tr>
 <tr class="memitem:gafbea4e60f5810caf50290ab30cfaa8d7" id="r_gafbea4e60f5810caf50290ab30cfaa8d7"><td class="memItemLeft">typedef <a class="el" href="structdxfg__day__filter__t.html">dxfg_day_filter_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#gafbea4e60f5810caf50290ab30cfaa8d7">dxfg_v4_day_filter_t</a></td></tr>
 <tr class="memdesc:gafbea4e60f5810caf50290ab30cfaa8d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java DayFilter object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.     <br /></td></tr>
 <tr class="memitem:ga2f949c8288c7d203303cbc8c422b609e" id="r_ga2f949c8288c7d203303cbc8c422b609e"><td class="memItemLeft">typedef <a class="el" href="group__Schedule.html#gaab3d160e2084d1c7e3ec7de181fd97f0">dxfg_day_filter_prepare_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga2f949c8288c7d203303cbc8c422b609e">dxfg_v4_day_filter_prepare_t</a></td></tr>
+<tr class="memitem:ga28cae096e16f1287e5ea78016e37ffa4" id="r_ga28cae096e16f1287e5ea78016e37ffa4"><td class="memItemLeft">typedef int32_t(*)&#160;</td><td class="memItemRight"><a class="el" href="#ga28cae096e16f1287e5ea78016e37ffa4">dxfg_v4_day_filter_user_data_function</a>(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga579ffc9f339970470e11ebeb30cfb323">dxfg_v4_day_t</a> *day, void *userData)</td></tr>
+<tr class="memitem:gaa0c4bf7beee3bf53f578cb7ababeb136" id="r_gaa0c4bf7beee3bf53f578cb7ababeb136"><td class="memItemLeft">typedef int32_t(*)&#160;</td><td class="memItemRight"><a class="el" href="#gaa0c4bf7beee3bf53f578cb7ababeb136">dxfg_v4_session_filter_user_data_function</a>(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaa7f9a9a17af9b6c3e492de3be88b0fa1">dxfg_v4_session_t</a> *session, void *userData)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -140,6 +146,8 @@ Functions</h2></td></tr>
 <tr class="memitem:ga220660a4a4b3f808511d6a4bf6970b8e" id="r_ga220660a4a4b3f808511d6a4bf6970b8e"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga220660a4a4b3f808511d6a4bf6970b8e">dxfg_v4_SessionFilter_getInstance</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Schedule.html#ga99668ad9a8802ed40ec877f0d8b294b2">dxfg_v4_session_filter_prepare_t</a> filter, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga6664a6463ed66cea9ac3136a3f8e7ab0">dxfg_v4_session_filter_t</a> **sessionFilter)</td></tr>
 <tr class="memitem:gad864eebe419168866b82e1654de58cc7" id="r_gad864eebe419168866b82e1654de58cc7"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gad864eebe419168866b82e1654de58cc7">dxfg_v4_DayFilter_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga8bed8ceca7f0e0b72bd18222705037a4">dxfg_v4_day_filter_function</a> filter, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gafbea4e60f5810caf50290ab30cfaa8d7">dxfg_v4_day_filter_t</a> **dayFilter)</td></tr>
 <tr class="memitem:ga6d8ecfdafaef2ab899bf15df2bd854f9" id="r_ga6d8ecfdafaef2ab899bf15df2bd854f9"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga6d8ecfdafaef2ab899bf15df2bd854f9">dxfg_v4_DayFilter_getInstance</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Schedule.html#gaab3d160e2084d1c7e3ec7de181fd97f0">dxfg_v4_day_filter_prepare_t</a> filter, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gafbea4e60f5810caf50290ab30cfaa8d7">dxfg_v4_day_filter_t</a> **dayFilter)</td></tr>
+<tr class="memitem:ga2ffe27e57e3201628a4682bef80484e2" id="r_ga2ffe27e57e3201628a4682bef80484e2"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, int32_t dayOfWeekMask, int32_t holiday, int32_t shortDay, int32_t trading, <a class="el" href="#ga28cae096e16f1287e5ea78016e37ffa4">dxfg_v4_day_filter_user_data_function</a> filter, void *userData, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gafbea4e60f5810caf50290ab30cfaa8d7">dxfg_v4_day_filter_t</a> **dayFilter)</td></tr>
+<tr class="memitem:gadb0f7db69364fb15bf84938c8db80fa8" id="r_gadb0f7db69364fb15bf84938c8db80fa8"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, int32_t type, int32_t trading, <a class="el" href="#gaa0c4bf7beee3bf53f578cb7ababeb136">dxfg_v4_session_filter_user_data_function</a> filter, void *userData, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga6664a6463ed66cea9ac3136a3f8e7ab0">dxfg_v4_session_filter_t</a> **sessionFilter)</td></tr>
 <tr class="memitem:ga6638d2afdcfffccdd2d55fe459ba912f" id="r_ga6638d2afdcfffccdd2d55fe459ba912f"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga6638d2afdcfffccdd2d55fe459ba912f">dxfg_v4_Schedule_getInstanceByProfileHandle</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__InstrumentProfile.html#ga5a02a83cb99181da96ef828d6380f010">dxfg_v4_instrument_profile_t</a> *instrumentProfile, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gacaff4ee56a5026b1b424138ce19fa303">dxfg_v4_schedule_t</a> **schedule)</td></tr>
 <tr class="memitem:ga313765ea2fd3bf6530da7448155d1e58" id="r_ga313765ea2fd3bf6530da7448155d1e58"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga313765ea2fd3bf6530da7448155d1e58">dxfg_v4_Schedule_getInstanceByDefinition</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *scheduleDefinition, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gacaff4ee56a5026b1b424138ce19fa303">dxfg_v4_schedule_t</a> **schedule)</td></tr>
 <tr class="memitem:ga45c03a174fc38e62c5c2f0637512bdec" id="r_ga45c03a174fc38e62c5c2f0637512bdec"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga45c03a174fc38e62c5c2f0637512bdec">dxfg_v4_Schedule_getInstanceByProfileHandleWithVenue</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__InstrumentProfile.html#ga5a02a83cb99181da96ef828d6380f010">dxfg_v4_instrument_profile_t</a> *instrumentProfile, const char *venue, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gacaff4ee56a5026b1b424138ce19fa303">dxfg_v4_schedule_t</a> **schedule)</td></tr>
@@ -207,7 +215,23 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The v4 functions and type names of the group <a class="el" href="group__Schedule.html" title="Schedule">Schedule</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </p>
-</div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
+</div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
+<a id="ga3320f2644b7819e9d497a11067a7ab07" name="ga3320f2644b7819e9d497a11067a7ab07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3320f2644b7819e9d497a11067a7ab07">&#9670;&#160;</a></span>DXFG_V4_FILTER_ANY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_FILTER_ANY&#160;&#160;&#160;(-1)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The value of a condition of <a class="el" href="#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData()</a> and <a class="el" href="#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData()</a> that is not checked (Java <span class="tt">null</span>): for a flag, -1 instead of 0 (false) or 1 (true); for the session type, -1 instead of a value of <a class="el" href="group__Schedule.html#ga2308eb6e98a8cb125e567db7a6726b93">dxfg_session_type_t</a>. </p><dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
 <a id="ga8bed8ceca7f0e0b72bd18222705037a4" name="ga8bed8ceca7f0e0b72bd18222705037a4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga8bed8ceca7f0e0b72bd18222705037a4">&#9670;&#160;</a></span>dxfg_v4_day_filter_function</h2>
 
@@ -269,6 +293,33 @@ Functions</h2></td></tr>
 <p>A handle of a Java DayFilter object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.    </p>
 <p>A filter for days used by the search functions.</p>
 <p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/schedule/DayFilter.html">Javadoc</a>    </p>
+
+</div>
+</div>
+<a id="ga28cae096e16f1287e5ea78016e37ffa4" name="ga28cae096e16f1287e5ea78016e37ffa4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga28cae096e16f1287e5ea78016e37ffa4">&#9670;&#160;</a></span>dxfg_v4_day_filter_user_data_function</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int32_t(*) dxfg_v4_day_filter_user_data_function(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga579ffc9f339970470e11ebeb30cfb323">dxfg_v4_day_t</a> *day, void *userData)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A custom day filter function with user data: tests whether a day is an acceptable result of a search, see <a class="el" href="#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData()</a>.</p>
+<p>The function is called by the search function that uses the filter (for example <a class="el" href="#ga3bc6c870a401b38dd1a22973649ec16b">dxfg_v4_Day_findNextDay()</a>), on the thread that called that search function, possibly several times during the call, and only for the days that pass the conditions given to <a class="el" href="#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData()</a>.</p>
+<p>The day handle is valid during the call only: the SDK releases it after the function returns, so the function must not release it.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">day</td><td>The day to test. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data given to <a class="el" href="#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData()</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if the day is accepted; any other value rejects it. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -368,6 +419,33 @@ Functions</h2></td></tr>
 <p>A handle of a Java SessionFilter object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.    </p>
 <p>A filter for sessions used by the search functions.</p>
 <p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/schedule/SessionFilter.html">Javadoc</a>    </p>
+
+</div>
+</div>
+<a id="gaa0c4bf7beee3bf53f578cb7ababeb136" name="gaa0c4bf7beee3bf53f578cb7ababeb136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa0c4bf7beee3bf53f578cb7ababeb136">&#9670;&#160;</a></span>dxfg_v4_session_filter_user_data_function</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int32_t(*) dxfg_v4_session_filter_user_data_function(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaa7f9a9a17af9b6c3e492de3be88b0fa1">dxfg_v4_session_t</a> *session, void *userData)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A custom session filter function with user data: tests whether a session is an acceptable result of a search, see <a class="el" href="#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData()</a>.</p>
+<p>The function is called by the search function that uses the filter (for example <a class="el" href="#gaf86edc78ee9d771334a80e14d21f4515">dxfg_v4_Day_findFirstSession()</a>), on the thread that called that search function, possibly several times during the call, and only for the sessions that pass the conditions given to <a class="el" href="#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData()</a>.</p>
+<p>The session handle is valid during the call only: the SDK releases it after the function returns, so the function must not release it.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">session</td><td>The session to test. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data given to <a class="el" href="#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData()</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if the session is accepted; any other value rejects it. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -1606,6 +1684,76 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="ga2ffe27e57e3201628a4682bef80484e2" name="ga2ffe27e57e3201628a4682bef80484e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2ffe27e57e3201628a4682bef80484e2">&#9670;&#160;</a></span>dxfg_v4_DayFilter_newWithUserData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_DayFilter_newWithUserData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>dayOfWeekMask</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>holiday</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>shortDay</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>trading</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ga28cae096e16f1287e5ea78016e37ffa4">dxfg_v4_day_filter_user_data_function</a></td>          <td class="paramname"><span class="paramname"><em>filter</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *</td>          <td class="paramname"><span class="paramname"><em>userData</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gafbea4e60f5810caf50290ab30cfaa8d7">dxfg_v4_day_filter_t</a> **</td>          <td class="paramname"><span class="paramname"><em>dayFilter</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a day filter with the conditions of the Java constructor and a custom function with user data.</p>
+<p>The filter accepts a day if the day passes the conditions and then the function returns 1 for it: the function is not called for a day that the conditions reject. A condition of <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> (or a mask of 0) is not checked.</p>
+<p>The filter is a plain Java object, not a listener: neither the release of its handle nor <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a> stops the calls of the function. The function pointer and the user data must stay valid while Java can still call the filter, which may outlive the handle (for example while a search function that got the filter runs on another thread).</p>
+<p>Java: <span class="tt">new DayFilter(int, Boolean, Boolean, Boolean)</span> with <span class="tt">DayFilter.accept(Day)</span> overridden to return <span class="tt">super.accept(day)</span> and then the result of <span class="tt">filter</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dayOfWeekMask</td><td>The bit mask of the accepted days of the week: bit N for the day of the week N (2 for Monday, 4 for Tuesday, ..., 128 for Sunday); 0 accepts any day of the week. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">holiday</td><td>1 to accept holidays only, 0 to accept the other days only, <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> for any day. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">shortDay</td><td>1 to accept short days only, 0 to accept the other days only, <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> for any day. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">trading</td><td>1 to accept trading days only, 0 to accept the non-trading days only, <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> for any day. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The function that tests a day; must not be NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data passed to <span class="tt">filter</span>, may be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dayFilter</td><td>The pointer to the variable that receives the new day filter (release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>); must not be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">holiday</span>, <span class="tt">shortDay</span> or <span class="tt">trading</span> is not -1, 0 or 1, or <span class="tt">filter</span> is NULL: <span class="tt">IllegalArgumentException</span>). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -3106,6 +3254,64 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="gadb0f7db69364fb15bf84938c8db80fa8" name="gadb0f7db69364fb15bf84938c8db80fa8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadb0f7db69364fb15bf84938c8db80fa8">&#9670;&#160;</a></span>dxfg_v4_SessionFilter_newWithUserData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_SessionFilter_newWithUserData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t</td>          <td class="paramname"><span class="paramname"><em>trading</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#gaa0c4bf7beee3bf53f578cb7ababeb136">dxfg_v4_session_filter_user_data_function</a></td>          <td class="paramname"><span class="paramname"><em>filter</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *</td>          <td class="paramname"><span class="paramname"><em>userData</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga6664a6463ed66cea9ac3136a3f8e7ab0">dxfg_v4_session_filter_t</a> **</td>          <td class="paramname"><span class="paramname"><em>sessionFilter</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a session filter with the conditions of the Java constructor and a custom function with user data.</p>
+<p>The filter accepts a session if the session passes the conditions and then the function returns 1 for it: the function is not called for a session that the conditions reject. A condition of <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> is not checked.</p>
+<p>The filter is a plain Java object, not a listener: neither the release of its handle nor <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a> stops the calls of the function. The function pointer and the user data must stay valid while Java can still call the filter, which may outlive the handle (for example while a search function that got the filter runs on another thread).</p>
+<p>Java: <span class="tt">new SessionFilter(SessionType, Boolean)</span> with <span class="tt">SessionFilter.accept(Session)</span> overridden to return <span class="tt">super.accept(session)</span> and then the result of <span class="tt">filter</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>The accepted session type, a value of <a class="el" href="group__Schedule.html#ga2308eb6e98a8cb125e567db7a6726b93">dxfg_session_type_t</a>, or <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> for any type. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">trading</td><td>1 to accept trading sessions only, 0 to accept the non-trading sessions only, <a class="el" href="#ga3320f2644b7819e9d497a11067a7ab07">DXFG_V4_FILTER_ANY</a> for any session. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The function that tests a session; must not be NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data passed to <span class="tt">filter</span>, may be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">sessionFilter</td><td>The pointer to the variable that receives the new session filter (release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>); must not be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">type</span> is neither -1 nor a value of <a class="el" href="group__Schedule.html#ga2308eb6e98a8cb125e567db7a6726b93">dxfg_session_type_t</a>, <span class="tt">trading</span> is not -1, 0 or 1, or <span class="tt">filter</span> is NULL: <span class="tt">IllegalArgumentException</span>). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>

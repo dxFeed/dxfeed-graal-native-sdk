@@ -14,5 +14,7 @@ var searchData=
   ['dxfg_5fsession_5ffilter_5fprepare_5ft_11',['dxfg_session_filter_prepare_t',['../group__Schedule.html#ga99668ad9a8802ed40ec877f0d8b294b2',1,'dxfg_schedule.h']]],
   ['dxfg_5fsession_5ftype_5ft_12',['dxfg_session_type_t',['../group__Schedule.html#ga2308eb6e98a8cb125e567db7a6726b93',1,'dxfg_schedule.h']]],
   ['dxfg_5fsymbol_5ftype_5ft_13',['dxfg_symbol_type_t',['../dxfg__events_8h.html#a9560f90bc9a4a8128e50fd8e7330c4a3',1,'dxfg_events.h']]],
-  ['dxfg_5ftimeseriestxmodelsortorder_5ft_14',['dxfg_TimeSeriesTxModelSortOrder_t',['../group__EventModel.html#ga469f0e2ac36302c3934ad6293a7d2abc',1,'dxfg_event_model.h']]]
+  ['dxfg_5ftimeseriestxmodelsortorder_5ft_14',['dxfg_TimeSeriesTxModelSortOrder_t',['../group__EventModel.html#ga469f0e2ac36302c3934ad6293a7d2abc',1,'dxfg_event_model.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5fkind_5ft_15',['dxfg_v4_on_demand_property_value_kind_t',['../group__V4__OnDemand.html#ga47346505d797940dd0be708249b7570b',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fready_5fsignal_5fkind_5ft_16',['dxfg_v4_ready_signal_kind_t',['../group__V4__EventQueue.html#ga5a5165dbd41574cec56364b8e55d3e87',1,'dxfg_v4_event_queue.h']]]
 ];

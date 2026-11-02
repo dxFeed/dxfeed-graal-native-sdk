@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -604,6 +604,7 @@ Functions</h2></td></tr>
 <p>Sets the executor of the notifications of the endpoints built by this builder: event processing, state changes, etc. </p>
 <p>Use it instead of the deprecated <a class="el" href="group__Endpoint.html#ga1d78f9dc111d39f789b84c39e6f65ad5" title="Changes the executor of the endpoint&#39;s notifications.">dxfg_DXEndpoint_executor()</a>.</p>
 <p>By default, the endpoint uses a thread pool with the size equal to the number of available processors (the <span class="tt">dxfeed.threadPoolSize</span> property for the feed roles and <span class="tt">dxpublisher.threadPoolSize</span> for the publisher). The executor must not reject the submitted tasks.</p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners of the endpoint and of the subscriptions that inherit it; those subscriptions are not attached to the queue (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a> for the limits). The executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span>.</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -210,6 +210,8 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ga8be9962e5fbe5591249f6eded7fb22fa" id="r_ga8be9962e5fbe5591249f6eded7fb22fa"><td class="memItemLeft">typedef <a class="el" href="dxfg__events_8h.html#aeb58eeda0f27808b66466c794ded5422">dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga8be9962e5fbe5591249f6eded7fb22fa">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded</a></td></tr>
 <tr class="memitem:ga53447ed590a9e0dce89e8924177fa16e" id="r_ga53447ed590a9e0dce89e8924177fa16e"><td class="memItemLeft">typedef <a class="el" href="dxfg__events_8h.html#aea4130fe4ce677a94954c7e15a199496">dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga53447ed590a9e0dce89e8924177fa16e">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved</a></td></tr>
 <tr class="memitem:ga11643151ccd324da85d23585a899e331" id="r_ga11643151ccd324da85d23585a899e331"><td class="memItemLeft">typedef <a class="el" href="dxfg__events_8h.html#abdc63612cbe25718635a013632a4703f">dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga11643151ccd324da85d23585a899e331">dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed</a></td></tr>
+<tr class="memitem:ga846468cd7b76074c6b54c8cf36a6524c" id="r_ga846468cd7b76074c6b54c8cf36a6524c"><td class="memItemLeft">typedef void(*)&#160;</td><td class="memItemRight"><a class="el" href="#ga846468cd7b76074c6b54c8cf36a6524c">dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged</a>(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, void *user_data)</td></tr>
+<tr class="memdesc:ga846468cd7b76074c6b54c8cf36a6524c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The callback of a subscription change listener: the configuration of the subscription changed.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -226,6 +228,8 @@ Functions</h2></td></tr>
 <tr class="memitem:ga40d48d5b38cc3c934f48708390b114c0" id="r_ga40d48d5b38cc3c934f48708390b114c0"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga40d48d5b38cc3c934f48708390b114c0">dxfg_v4_IndexedEventSource_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga37cb95058119c0b5b060e15cbac831b6">dxfg_v4_indexed_event_source_t</a> *source)</td></tr>
 <tr class="memitem:gaa4e540301983a0b1212a0429684e30e9" id="r_gaa4e540301983a0b1212a0429684e30e9"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaa4e540301983a0b1212a0429684e30e9">dxfg_v4_indexed_event_source_list_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gab8b11bd4659a6b10a217e30ae9a1e34b">dxfg_v4_indexed_event_source_list</a> *list)</td></tr>
 <tr class="memitem:ga82ecc272b6888f97db74554b387db0c2" id="r_ga82ecc272b6888f97db74554b387db0c2"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga82ecc272b6888f97db74554b387db0c2">dxfg_v4_ObservableSubscriptionChangeListener_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga8be9962e5fbe5591249f6eded7fb22fa">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded</a> function_symbolsAdded, <a class="el" href="#ga53447ed590a9e0dce89e8924177fa16e">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved</a> function_symbolsRemoved, <a class="el" href="#ga11643151ccd324da85d23585a899e331">dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed</a> function_subscriptionClosed, void *user_data, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga71d95581a1f518da811b1dd70d437144">dxfg_v4_observable_subscription_change_listener_t</a> **listener)</td></tr>
+<tr class="memitem:gab40a1987a21dd832b96191bb1e0588be" id="r_gab40a1987a21dd832b96191bb1e0588be"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gab40a1987a21dd832b96191bb1e0588be">dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#ga8be9962e5fbe5591249f6eded7fb22fa">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded</a> function_symbolsAdded, <a class="el" href="#ga53447ed590a9e0dce89e8924177fa16e">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved</a> function_symbolsRemoved, <a class="el" href="#ga11643151ccd324da85d23585a899e331">dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed</a> function_subscriptionClosed, <a class="el" href="#ga846468cd7b76074c6b54c8cf36a6524c">dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged</a> function_configurationChanged, void *user_data, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga71d95581a1f518da811b1dd70d437144">dxfg_v4_observable_subscription_change_listener_t</a> **listener)</td></tr>
+<tr class="memdesc:gab40a1987a21dd832b96191bb1e0588be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a listener of the changes of a subscription that is also told about the changes of its configuration.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The v4 functions and type names of <a class="el" href="dxfg__events_8h.html" title="dxFeed Graal Native SDK Events functions and types declarations">dxfg_events.h</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </p>
@@ -559,7 +563,8 @@ Functions</h2></td></tr>
 
 <p>The Nuam order event: an order with the data of the Nuam Exchange matching engine.    </p>
 <p>It is an indexed event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a262b869bf8452626c8ce57fb0208fdcd" title="NuamOrder (extends Order), an indexed event: an order of the Nuam Exchange.">DXFG_EVENT_NUAM_ORDER</a>.</p>
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html</a>    </p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamOrder.html</a></p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000001">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -577,7 +582,8 @@ Functions</h2></td></tr>
 
 <p>The Nuam time and sale event: a time and sale with the data of the Nuam Exchange.    </p>
 <p>It is a time series event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a26e469b4e555b6403d6d0f07aae3b23e" title="NuamTimeAndSale (extends TimeAndSale), a time series event (Nuam Exchange).">DXFG_EVENT_NUAM_TIME_AND_SALE</a>.</p>
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html</a>    </p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTimeAndSale.html</a></p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000002">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -595,7 +601,8 @@ Functions</h2></td></tr>
 
 <p>The Nuam trade event: a trade with the trade statistics of the Nuam Exchange.    </p>
 <p>It is a lasting event, its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64abd8cd1ed104d574c5872cc61e25fe659" title="NuamTrade (extends Trade), a lasting event: Nuam Exchange trade statistics.">DXFG_EVENT_NUAM_TRADE</a>.</p>
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html</a>    </p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/custom/NuamTrade.html</a></p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000003">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -613,6 +620,31 @@ Functions</h2></td></tr>
 
 <p>A handle of a Java ObservableSubscriptionChangeListener object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.    </p>
 <p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/ObservableSubscriptionChangeListener.html">Javadoc</a>    </p>
+
+</div>
+</div>
+<a id="ga846468cd7b76074c6b54c8cf36a6524c" name="ga846468cd7b76074c6b54c8cf36a6524c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga846468cd7b76074c6b54c8cf36a6524c">&#9670;&#160;</a></span>dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(*) dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, void *user_data)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The callback of a subscription change listener: the configuration of the subscription changed. </p>
+<p>The configuration is the non-functional settings of the subscription, such as its aggregation period: for example, <a class="el" href="group__V4__Subscription.html#ga98e44928af81973b0efa7776369a0de1">dxfg_v4_DXFeedSubscription_setAggregationPeriod()</a> with a value other than the current one calls it, the same value does not. It is called by the thread that changed the configuration, before that function returns, while the SDK holds the lock of the subscription.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">user_data</td><td>The user data passed to <a class="el" href="#gab40a1987a21dd832b96191bb1e0588be" title="Creates a listener of the changes of a subscription that is also told about the changes of its config...">dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged()</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -745,7 +777,8 @@ Functions</h2></td></tr>
 
 <p>The order imbalance event: the order book statistics during an auction.    </p>
 <p>It is a market event (neither lasting nor indexed), its <span class="tt">clazz</span> is <a class="el" href="dxfg__events_8h.html#a987053589a166cb10f2dd8e4d5173c64a527e5696324aa5b0f46572b4dd303bad" title="OrderImbalance, a market event (neither lasting nor indexed): auction imbalance.">DXFG_EVENT_ORDER_IMBALANCE</a>.</p>
-<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html</a>    </p>
+<p><a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html">https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderImbalance.html</a></p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000004">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1488,6 +1521,70 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="gab40a1987a21dd832b96191bb1e0588be" name="gab40a1987a21dd832b96191bb1e0588be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab40a1987a21dd832b96191bb1e0588be">&#9670;&#160;</a></span>dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ga8be9962e5fbe5591249f6eded7fb22fa">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded</a></td>          <td class="paramname"><span class="paramname"><em>function_symbolsAdded</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ga53447ed590a9e0dce89e8924177fa16e">dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved</a></td>          <td class="paramname"><span class="paramname"><em>function_symbolsRemoved</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ga11643151ccd324da85d23585a899e331">dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed</a></td>          <td class="paramname"><span class="paramname"><em>function_subscriptionClosed</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ga846468cd7b76074c6b54c8cf36a6524c">dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged</a></td>          <td class="paramname"><span class="paramname"><em>function_configurationChanged</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *</td>          <td class="paramname"><span class="paramname"><em>user_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga71d95581a1f518da811b1dd70d437144">dxfg_v4_observable_subscription_change_listener_t</a> **</td>          <td class="paramname"><span class="paramname"><em>listener</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a listener of the changes of a subscription that is also told about the changes of its configuration. </p>
+<p>It is <a class="el" href="#ga82ecc272b6888f97db74554b387db0c2">dxfg_v4_ObservableSubscriptionChangeListener_new()</a> with the fourth callback, <span class="tt">function_configurationChanged</span>. Each of the four callbacks may be NULL: the SDK does not call a NULL one. Add the listener to a subscription with <a class="el" href="group__V4__Subscription.html#ga1d1dca2d4664c8ae61383bf4ef4b8a29">dxfg_v4_DXFeedSubscription_addChangeListener()</a>. Releasing the last handle of the listener with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>, or <a class="el" href="group__V4__Javac.html#ga09d3698595682688fdc61c6a55bfd181">dxfg_v4_NativeListener_deactivate()</a> or <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a>, stops the calls: after that none of the functions is called or running (except a call on the deactivating thread itself), and the user data can be freed.</p>
+<p>Java: <span class="tt">ObservableSubscriptionChangeListener</span> (symbolsAdded(Set), symbolsRemoved(Set), subscriptionClosed(), configurationChanged()).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">function_symbolsAdded</td><td>The function called when symbols are added to the subscription, or NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">function_symbolsRemoved</td><td>The function called when symbols are removed from the subscription, or NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">function_subscriptionClosed</td><td>The function called when the subscription is closed or the listener is removed, or NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">function_configurationChanged</td><td>The function called when the configuration of the subscription changes, or NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">user_data</td><td>The user data passed to every function; the SDK does not use or free it. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">listener</td><td>The pointer to the variable that receives the listener handle (release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>); must not be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>

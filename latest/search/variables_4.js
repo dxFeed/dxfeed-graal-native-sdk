@@ -11,5 +11,6 @@ var searchData=
   ['description_8',['description',['../structdxfg__profile__t.html#a9fbe1f79136a05c8750e64594adca767',1,'dxfg_profile_t::description'],['../structdxfg__instrument__profile2__t.html#adb84dad1b462865a70aa78c2625b369c',1,'dxfg_instrument_profile2_t::description']]],
   ['display_5fquantity_9',['display_quantity',['../structdxfg__nuam__order__t.html#adc7bbc6e6bbb7af58d2173d50a74fcb0',1,'dxfg_nuam_order_t']]],
   ['dividend_10',['dividend',['../structdxfg__theo__price__t.html#a1a39260c0ee03727f3dd08c60044635a',1,'dxfg_theo_price_t::dividend'],['../structdxfg__series__t.html#aea66031b3d6be19b523d6e5af08b52a1',1,'dxfg_series_t::dividend']]],
-  ['dividend_5ffrequency_11',['dividend_frequency',['../structdxfg__profile__t.html#aeeef1c774940d409e148e8feab3ead88',1,'dxfg_profile_t']]]
+  ['dividend_5ffrequency_11',['dividend_frequency',['../structdxfg__profile__t.html#aeeef1c774940d409e148e8feab3ead88',1,'dxfg_profile_t']]],
+  ['double_5fvalue_12',['double_value',['../structdxfg__v4__on__demand__property__value__t.html#aeac643335738e88cc060b2ff0e4b4d10',1,'dxfg_v4_on_demand_property_value_t']]]
 ];

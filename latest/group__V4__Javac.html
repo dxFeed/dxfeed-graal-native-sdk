@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -115,6 +115,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__V4__Jav
 <p>The v4 functions and type names of the group <a class="el" href="group__Javac.html" title="Javac">Javac</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:dxfg_5Fv4_5Fbyte_5Flist" id="r_dxfg_5Fv4_5Fbyte_5Flist"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__v4__byte__list.html">dxfg_v4_byte_list</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of bytes that a function returned: the array holds the bytes themselves.  <a href="structdxfg__v4__byte__list.html#details">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga5f01c4f9c3e8d4dc863e4807169753ad" id="r_ga5f01c4f9c3e8d4dc863e4807169753ad"><td class="memItemLeft">typedef <a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga5f01c4f9c3e8d4dc863e4807169753ad">dxfg_v4_java_object_handler</a></td></tr>
@@ -143,6 +148,8 @@ Typedefs</h2></td></tr>
 <tr class="memdesc:gaf303d62d5560afad32685d9134d8df55"><td class="mdescLeft">&#160;</td><td class="mdescRight">The rounding behavior of numerical operations that can discard precision (java.math.RoundingMode), e.g. of <a class="el" href="group__PriceIncrementsFunctions.html#ga40e199fb80e8566b20007b50afb06295">dxfg_PriceIncrements_roundPrice3()</a>.     <br /></td></tr>
 <tr class="memitem:ga282456a58e7883392f411a106958a3e7" id="r_ga282456a58e7883392f411a106958a3e7"><td class="memItemLeft">typedef <a class="el" href="group__Javac.html#gaab2eef0e31bb9bdf47f3c0d5c5817217">dxfg_finalize_function</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga282456a58e7883392f411a106958a3e7">dxfg_v4_finalize_function</a></td></tr>
 <tr class="memdesc:ga282456a58e7883392f411a106958a3e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function registered by <a class="el" href="group__Javac.html#gae7cdf15be27f52b1169629db33367df7">dxfg_Object_finalize()</a>: called after the Java object has been garbage collected.     <br /></td></tr>
+<tr class="memitem:ga9b2d208a9b255461224f7dec6a649152" id="r_ga9b2d208a9b255461224f7dec6a649152"><td class="memItemLeft">typedef struct dxfg_v4_byte_list&#160;</td><td class="memItemRight"><a class="el" href="#ga9b2d208a9b255461224f7dec6a649152">dxfg_v4_byte_list</a></td></tr>
+<tr class="memdesc:ga9b2d208a9b255461224f7dec6a649152"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of bytes that a function returned: the array holds the bytes themselves.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -165,6 +172,7 @@ Functions</h2></td></tr>
 <tr class="memitem:gac370f979a7d014c8a88fa4ce8dbd904b" id="r_gac370f979a7d014c8a88fa4ce8dbd904b"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="group__V4__Feed.html#ga23f297b8ff84137123986598c4967b82">dxfg_v4_executor_t</a> **executor)</td></tr>
 <tr class="memitem:gac3b47c71f1d40d9bc247e9d4e390cc06" id="r_gac3b47c71f1d40d9bc247e9d4e390cc06"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gac3b47c71f1d40d9bc247e9d4e390cc06">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__Feed.html#ga23f297b8ff84137123986598c4967b82">dxfg_v4_executor_t</a> *executor)</td></tr>
 <tr class="memitem:ga5303f7a639fb982834a17f89a7da5b0d" id="r_ga5303f7a639fb982834a17f89a7da5b0d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga5303f7a639fb982834a17f89a7da5b0d">dxfg_v4_ByteArrayInputStream_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *bytes, int32_t size, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gabe5e7a74957c87d6469d641ebc26de20">dxfg_v4_input_stream_t</a> **inputStream)</td></tr>
+<tr class="memitem:gafd3514e20fdc88cb9bf08ff2055c74a1" id="r_gafd3514e20fdc88cb9bf08ff2055c74a1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gafd3514e20fdc88cb9bf08ff2055c74a1">dxfg_v4_byte_list_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__v4__byte__list.html">dxfg_v4_byte_list</a> *list)</td></tr>
 <tr class="memitem:ga193f3b604211245b01a1bd4af3752964" id="r_ga193f3b604211245b01a1bd4af3752964"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga193f3b604211245b01a1bd4af3752964">dxfg_v4_gc</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread)</td></tr>
 <tr class="memitem:gaf354b23237d9ac7e18b7fac807ddcc71" id="r_gaf354b23237d9ac7e18b7fac807ddcc71"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaf354b23237d9ac7e18b7fac807ddcc71">dxfg_v4_throw_exception</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga5f01c4f9c3e8d4dc863e4807169753ad">dxfg_v4_java_object_handler</a> **object)</td></tr>
 <tr class="memitem:ga2cf36a16dbb3187d82bb13df3b2ed6b4" id="r_ga2cf36a16dbb3187d82bb13df3b2ed6b4"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga2cf36a16dbb3187d82bb13df3b2ed6b4">dxfg_v4_TimeZone_getTimeZone</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *ID, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gab335918b308d84a4e11634b9a417bdee">dxfg_v4_time_zone_t</a> **timeZone)</td></tr>
@@ -228,6 +236,23 @@ Functions</h2></td></tr>
 
 <p>A handle of a Java AuthToken object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.    </p>
 <p>An authorization token: an authorization scheme (e.g. "Basic" or "Bearer") and its value. Create it with <a class="el" href="group__Javac.html#gadf44bdae3e6bcab404387c633b6fe931">dxfg_AuthToken_valueOf()</a> or one of the dxfg_AuthToken_create*() functions.    </p>
+
+</div>
+</div>
+<a id="ga9b2d208a9b255461224f7dec6a649152" name="ga9b2d208a9b255461224f7dec6a649152"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9b2d208a9b255461224f7dec6a649152">&#9670;&#160;</a></span>dxfg_v4_byte_list</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct dxfg_v4_byte_list dxfg_v4_byte_list</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A list of bytes that a function returned: the array holds the bytes themselves. </p>
+<p>The functions that write data to memory return it, e.g. <a class="el" href="group__V4__InstrumentProfile.html#ga9f6647b2a4b84064aab5a7bfd55f11cd" title="Writes the instrument profiles from structures to memory, as a list of bytes.">dxfg_v4_InstrumentProfileWriter_writeToBytes()</a>. Release it with <a class="el" href="#gafd3514e20fdc88cb9bf08ff2055c74a1">dxfg_v4_byte_list_release()</a>. The bytes can be read back with <a class="el" href="#ga5303f7a639fb982834a17f89a7da5b0d">dxfg_v4_ByteArrayInputStream_new()</a>. </p><dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -911,6 +936,37 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gafd3514e20fdc88cb9bf08ff2055c74a1" name="gafd3514e20fdc88cb9bf08ff2055c74a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafd3514e20fdc88cb9bf08ff2055c74a1">&#9670;&#160;</a></span>dxfg_v4_byte_list_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_byte_list_release </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdxfg__v4__byte__list.html">dxfg_v4_byte_list</a> *</td>          <td class="paramname"><span class="paramname"><em>list</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Releases a list of bytes that a function returned (e.g. <a class="el" href="group__V4__InstrumentProfile.html#ga9f6647b2a4b84064aab5a7bfd55f11cd" title="Writes the instrument profiles from structures to memory, as a list of bytes.">dxfg_v4_InstrumentProfileWriter_writeToBytes()</a>): frees the array of the bytes and the list itself.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The list to release. If it is NULL, nothing is done. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
 <a id="ga5303f7a639fb982834a17f89a7da5b0d" name="ga5303f7a639fb982834a17f89a7da5b0d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga5303f7a639fb982834a17f89a7da5b0d">&#9670;&#160;</a></span>dxfg_v4_ByteArrayInputStream_new()</h2>
 
@@ -1049,7 +1105,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">executor</td><td>The executor created by <a class="el" href="#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()</a>; any other executor makes the function fail. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">executor</td><td>The executor created by <a class="el" href="#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()</a>; any other executor (e.g. the executor of an event queue, <a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the function fail with <span class="tt">IllegalArgumentException</span>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1351,6 +1407,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Deactivates all the listeners of this isolate created by the <span class="tt">dxfg_*Listener_new</span> functions, as <a class="el" href="#ga09d3698595682688fdc61c6a55bfd181">dxfg_v4_NativeListener_deactivate()</a> does for one: waits for the listeners' callbacks that are in progress on other threads, after that no listener's function is called anymore, so the user data of the listeners can be freed. The listeners created afterwards are inactive from the start. The deactivation cannot be undone for the isolate.</p>
+<p>Then the function closes all the event queues of this isolate (<a class="el" href="group__V4__EventQueue.html#ga190bba419c7626c894f702864b8ad71a">dxfg_v4_EventQueue_close()</a>) and waits for the polls in progress on other threads: they return <a class="el" href="group__V4__EventQueue.html#ga36cc44daaa2a6ba62bdfe178c741be22" title="The result of dxfg_v4_EventQueue_poll() when the queue is closed.">DXFG_EVENT_QUEUE_CLOSED</a> or the events they have already retrieved. The queues created afterwards are closed from the start.</p>
 <p>The handles of the listeners stay valid and must be released as usual. Use <a class="el" href="group__V4__System.html#ga3c7ae00bdfc464776675196aac4b9e47" title="Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...">dxfg_v4_system_shutdown()</a> to deactivate the listeners and then close the endpoints. Only the listeners are deactivated: the handlers of <a class="el" href="group__V4__Feed.html#gaa4e7ca9410421b76f471dd116393f980" title="Adds a handler that is called when the promise is done.">dxfg_v4_Promise_whenDone()</a>, <a class="el" href="group__V4__Feed.html#ga20cd50132facc045ee7d0583b2d3d9c9" title="Adds a handler that is called by the given executor when the promise is done.">dxfg_v4_Promise_whenDoneAsync()</a>, the finalizers of <a class="el" href="#gad01b963a22e456bf5d2089f626b36253">dxfg_v4_Object_finalize()</a> and the filters of <a class="el" href="group__V4__Schedule.html#ga80b4c85fe6ae0ece61d051dd59236130">dxfg_v4_SessionFilter_new()</a> and <a class="el" href="group__V4__Schedule.html#gad864eebe419168866b82e1654de58cc7">dxfg_v4_DayFilter_new()</a> are still called.</p>
 <p>Calling it from a listener's callback is allowed (the function does not wait for that call), but not from the callbacks of two threads at once: each would wait for the other. Do not hold the locks that the listeners' functions may take while calling it, nor call it from an exit handler of a DLL (<span class="tt">DLL_PROCESS_DETACH</span>, a destructor of a static object of a DLL): a callback that waits for the loader lock never finishes.</p>
 <dl class="params"><dt>Parameters</dt><dd>

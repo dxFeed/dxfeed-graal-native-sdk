@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -170,7 +170,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Marks a deprecated function: the compilers warn where it is used. The function still works, see its description for the replacement. A successful result that any dxFeed Graal Native SDK function can return: the status of the functions that return <span class="tt">int32_t</span> status, <a class="el" href="#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) means that the function was executed without an exception. </p>
+<p>Marks a deprecated function: the compilers warn where it is used. The function still works, see its description for the replacement. Marks an experimental function: it may change or be removed in a minor release (see the tiers in <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>), and its description says so. The macro expands to nothing, unless the application defines it before the headers are included, e.g. <span class="tt">#define DXFG_EXPERIMENTAL [[deprecated("experimental")]]</span> in C++ or <span class="tt">-D'DXFG_EXPERIMENTAL=__attribute__((deprecated("experimental")))'</span> with GCC and Clang, so that the compilers warn where the experimental functions are used. A successful result that any dxFeed Graal Native SDK function can return: the status of the functions that return <span class="tt">int32_t</span> status, <a class="el" href="#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) means that the function was executed without an exception. </p>
 
 </div>
 </div>

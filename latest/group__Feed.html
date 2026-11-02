@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -1470,7 +1470,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Completes the promise exceptionally, with the given exception. </p>
-<p>The function does not work in this version: the SDK cannot convert a <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> into a Java exception, so a call with a non-NULL exception fails with IllegalStateException, and a call with NULL fails with NullPointerException. The promise is not changed.</p>
+<p>The function does not work in this version: the SDK cannot convert a <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> into a Java exception, so a call with a non-NULL exception fails with IllegalStateException, and a call with NULL fails with NullPointerException. The promise is not changed. Use <a class="el" href="group__V4__Feed.html#gaa1ba66dd261b93647aef8c599cc06dfa" title="Completes the promise exceptionally, with a new Java exception of the named class and the given messa...">dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage()</a> to fail a promise.</p>
 <p>Java: <span class="tt">Promise.completeExceptionally(Throwable)</span>.</p>
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000187">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Feed.html#gaff97d0dfd7318db1aa9e577024247a3c" title="Completes the promise exceptionally, with the given exception.">dxfg_v4_Promise_completeExceptionally()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -1585,7 +1585,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates a promise that is already failed, with the given exception. </p>
-<p>The function does not work in this version: the SDK cannot convert a <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> into a Java exception, so a call with a non-NULL exception fails with IllegalStateException and returns NULL. A call with a NULL exception does not fail either, but it creates a promise that is completed normally with a null result, not a failed one (the implementation calls <span class="tt">Promise.completed(Object)</span>). The Java method is static: the SDK does not use the state of <span class="tt">promise</span>.</p>
+<p>The function does not work in this version: the SDK cannot convert a <a class="el" href="structdxfg__exception__t.html" title="An exception that was thrown by the Java side: the class, the message, the stack trace and the cause.">dxfg_exception_t</a> into a Java exception, so a call with a non-NULL exception fails with IllegalStateException and returns NULL. A call with a NULL exception does not fail either, but it creates a promise that is completed normally with a null result, not a failed one (the implementation calls <span class="tt">Promise.completed(Object)</span>). The Java method is static: the SDK does not use the state of <span class="tt">promise</span>. Use <a class="el" href="group__V4__Feed.html#gaf2fcdf8df1964c8a85003dd51581c272" title="Creates a promise that is already failed, with a new Java exception of the named class and the given ...">dxfg_v4_Promise_failedWithClassNameAndMessage()</a> to create a failed promise.</p>
 <p>Java: <span class="tt">Promise.failed(Throwable)</span>.</p>
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000191">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Feed.html#ga6178965c26b1f38500c80ee74edb25b3" title="Creates a promise that is already failed, with the given exception.">dxfg_v4_Promise_failed()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>

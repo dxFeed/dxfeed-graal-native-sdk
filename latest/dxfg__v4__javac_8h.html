@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -119,6 +119,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dxfg__v4__java
 </div>
 <p><a href="dxfg__v4__javac_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:dxfg_5Fv4_5Fbyte_5Flist" id="r_dxfg_5Fv4_5Fbyte_5Flist"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__v4__byte__list.html">dxfg_v4_byte_list</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of bytes that a function returned: the array holds the bytes themselves.  <a href="structdxfg__v4__byte__list.html#details">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga5f01c4f9c3e8d4dc863e4807169753ad" id="r_ga5f01c4f9c3e8d4dc863e4807169753ad"><td class="memItemLeft">typedef <a class="el" href="structdxfg__java__object__handler.html">dxfg_java_object_handler</a>&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga5f01c4f9c3e8d4dc863e4807169753ad">dxfg_v4_java_object_handler</a></td></tr>
@@ -147,6 +152,8 @@ Typedefs</h2></td></tr>
 <tr class="memdesc:gaf303d62d5560afad32685d9134d8df55"><td class="mdescLeft">&#160;</td><td class="mdescRight">The rounding behavior of numerical operations that can discard precision (java.math.RoundingMode), e.g. of <a class="el" href="group__PriceIncrementsFunctions.html#ga40e199fb80e8566b20007b50afb06295">dxfg_PriceIncrements_roundPrice3()</a>.     <br /></td></tr>
 <tr class="memitem:ga282456a58e7883392f411a106958a3e7" id="r_ga282456a58e7883392f411a106958a3e7"><td class="memItemLeft">typedef <a class="el" href="group__Javac.html#gaab2eef0e31bb9bdf47f3c0d5c5817217">dxfg_finalize_function</a>&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga282456a58e7883392f411a106958a3e7">dxfg_v4_finalize_function</a></td></tr>
 <tr class="memdesc:ga282456a58e7883392f411a106958a3e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function registered by <a class="el" href="group__Javac.html#gae7cdf15be27f52b1169629db33367df7">dxfg_Object_finalize()</a>: called after the Java object has been garbage collected.     <br /></td></tr>
+<tr class="memitem:ga9b2d208a9b255461224f7dec6a649152" id="r_ga9b2d208a9b255461224f7dec6a649152"><td class="memItemLeft">typedef struct dxfg_v4_byte_list&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga9b2d208a9b255461224f7dec6a649152">dxfg_v4_byte_list</a></td></tr>
+<tr class="memdesc:ga9b2d208a9b255461224f7dec6a649152"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of bytes that a function returned: the array holds the bytes themselves.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -169,6 +176,7 @@ Functions</h2></td></tr>
 <tr class="memitem:gac370f979a7d014c8a88fa4ce8dbd904b" id="r_gac370f979a7d014c8a88fa4ce8dbd904b"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="group__V4__Feed.html#ga23f297b8ff84137123986598c4967b82">dxfg_v4_executor_t</a> **executor)</td></tr>
 <tr class="memitem:gac3b47c71f1d40d9bc247e9d4e390cc06" id="r_gac3b47c71f1d40d9bc247e9d4e390cc06"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#gac3b47c71f1d40d9bc247e9d4e390cc06">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__Feed.html#ga23f297b8ff84137123986598c4967b82">dxfg_v4_executor_t</a> *executor)</td></tr>
 <tr class="memitem:ga5303f7a639fb982834a17f89a7da5b0d" id="r_ga5303f7a639fb982834a17f89a7da5b0d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga5303f7a639fb982834a17f89a7da5b0d">dxfg_v4_ByteArrayInputStream_new</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *bytes, int32_t size, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="group__V4__Javac.html#gabe5e7a74957c87d6469d641ebc26de20">dxfg_v4_input_stream_t</a> **inputStream)</td></tr>
+<tr class="memitem:gafd3514e20fdc88cb9bf08ff2055c74a1" id="r_gafd3514e20fdc88cb9bf08ff2055c74a1"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#gafd3514e20fdc88cb9bf08ff2055c74a1">dxfg_v4_byte_list_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="structdxfg__v4__byte__list.html">dxfg_v4_byte_list</a> *list)</td></tr>
 <tr class="memitem:ga193f3b604211245b01a1bd4af3752964" id="r_ga193f3b604211245b01a1bd4af3752964"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga193f3b604211245b01a1bd4af3752964">dxfg_v4_gc</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread)</td></tr>
 <tr class="memitem:gaf354b23237d9ac7e18b7fac807ddcc71" id="r_gaf354b23237d9ac7e18b7fac807ddcc71"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#gaf354b23237d9ac7e18b7fac807ddcc71">dxfg_v4_throw_exception</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="group__V4__Javac.html#ga5f01c4f9c3e8d4dc863e4807169753ad">dxfg_v4_java_object_handler</a> **object)</td></tr>
 <tr class="memitem:ga2cf36a16dbb3187d82bb13df3b2ed6b4" id="r_ga2cf36a16dbb3187d82bb13df3b2ed6b4"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="group__V4__Javac.html#ga2cf36a16dbb3187d82bb13df3b2ed6b4">dxfg_v4_TimeZone_getTimeZone</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *ID, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="group__V4__Javac.html#gab335918b308d84a4e11634b9a417bdee">dxfg_v4_time_zone_t</a> **timeZone)</td></tr>

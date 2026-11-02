@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -149,6 +149,8 @@ Typedefs</h2></td></tr>
 <tr class="memdesc:ga74e18348882ee6f0362de810bd378472"><td class="mdescLeft">&#160;</td><td class="mdescRight">A handle of a Java TxModelListener object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.     <br /></td></tr>
 <tr class="memitem:ga2ae9c1ed0a0d7db7c53e38b079ee1a67" id="r_ga2ae9c1ed0a0d7db7c53e38b079ee1a67"><td class="memItemLeft">typedef <a class="el" href="group__EventModel.html#ga938c0a1149841370f9cc23b414f74e89">dxfg_TxModelListener_function_eventsReceived</a>&#160;</td><td class="memItemRight"><a class="el" href="#ga2ae9c1ed0a0d7db7c53e38b079ee1a67">dxfg_v4_TxModelListener_function_eventsReceived</a></td></tr>
 <tr class="memdesc:ga2ae9c1ed0a0d7db7c53e38b079ee1a67"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function of a <a class="el" href="structdxfg__tx__model__listener__t.html" title="A handle of a Java TxModelListener object; release it with dxfg_JavaObjectHandler_release().">dxfg_tx_model_listener_t</a>: called when one or more complete transactions are received.     <br /></td></tr>
+<tr class="memitem:gac9c5b1378e7f1d03f2ab8901e22b89c2" id="r_gac9c5b1378e7f1d03f2ab8901e22b89c2"><td class="memItemLeft">typedef void(*)&#160;</td><td class="memItemRight"><a class="el" href="#gac9c5b1378e7f1d03f2ab8901e22b89c2">dxfg_v4_time_series_tx_model_event_peek_function</a>(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__Events.html#ga2426fe40e75bfbc4eca6fc1994850647">dxfg_v4_event_type_t</a> *event, void *userData)</td></tr>
+<tr class="memdesc:gac9c5b1378e7f1d03f2ab8901e22b89c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The event peek function of a time series model, see <a class="el" href="#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -313,6 +315,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:gafd572d8d38e163d96c7bd175c714feb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether a new bar comes after the previous (closing) one, to confirm it (1), or alone (0, default).  <br /></td></tr>
 <tr class="memitem:ga7f3852354a0c6c8138b0dc23fa4754a4" id="r_ga7f3852354a0c6c8138b0dc23fa4754a4"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga7f3852354a0c6c8138b0dc23fa4754a4">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> *source, void *eventPeek, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> **timeSeriesTxModelBuilder)</td></tr>
 <tr class="memdesc:ga7f3852354a0c6c8138b0dc23fa4754a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java <span class="tt">Consumer</span>).  <br /></td></tr>
+<tr class="memitem:gad2a2a00ed40bc3c447f34e61b315b5a8" id="r_gad2a2a00ed40bc3c447f34e61b315b5a8"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gad2a2a00ed40bc3c447f34e61b315b5a8">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> *source, <a class="el" href="#gac9c5b1378e7f1d03f2ab8901e22b89c2">dxfg_v4_time_series_tx_model_event_peek_function</a> eventPeek, void *userData, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> **timeSeriesTxModelBuilder)</td></tr>
+<tr class="memdesc:gad2a2a00ed40bc3c447f34e61b315b5a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the event peek of the model: a function that sees each event before the listener gets the list.  <br /></td></tr>
 <tr class="memitem:ga9163db97725417396c30b3f0f739b91a" id="r_ga9163db97725417396c30b3f0f739b91a"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga9163db97725417396c30b3f0f739b91a">dxfg_v4_TimeSeriesTxModel_Builder_build</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> *source, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#ga05d4ae19011fb50db5168e301eb29b98">dxfg_v4_time_series_tx_model_t</a> **timeSeriesTxModel)</td></tr>
 <tr class="memdesc:ga9163db97725417396c30b3f0f739b91a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds the model (the symbol must be set).  <br /></td></tr>
 <tr class="memitem:gacb44ee99d4bdb2633de12ea0b40980ec" id="r_gacb44ee99d4bdb2633de12ea0b40980ec"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gacb44ee99d4bdb2633de12ea0b40980ec">dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> *source, int32_t isBatchProcessing, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> **timeSeriesTxModelBuilder)</td></tr>
@@ -562,6 +566,33 @@ Functions</h2></td></tr>
 
 <p>A handle of a Java TimeSeriesTxModel.Builder object; release it with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a>.    </p>
 <p>The builder of <a class="el" href="structdxfg__time__series__tx__model__t.html" title="A handle of a Java TimeSeriesTxModel object; release it with dxfg_JavaObjectHandler_release().">dxfg_time_series_tx_model_t</a>, see <a class="el" href="group__EventModel.html#gadbdc104aaf311021b6daf66051954a21" title="Creates a new builder of a model of the time-series events of the type.">dxfg_TimeSeriesTxModel_newBuilder()</a>.    </p>
+
+</div>
+</div>
+<a id="gac9c5b1378e7f1d03f2ab8901e22b89c2" name="gac9c5b1378e7f1d03f2ab8901e22b89c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac9c5b1378e7f1d03f2ab8901e22b89c2">&#9670;&#160;</a></span>dxfg_v4_time_series_tx_model_event_peek_function</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(*) dxfg_v4_time_series_tx_model_event_peek_function(<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__V4__Events.html#ga2426fe40e75bfbc4eca6fc1994850647">dxfg_v4_event_type_t</a> *event, void *userData)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The event peek function of a time series model, see <a class="el" href="#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>. </p>
+<p>The model calls it for each event of a transaction or a snapshot, in the order of the list, before its listener gets the list; it runs on the thread of the model's executor (the thread that calls the listener), not concurrently with itself for one model. The event is valid during the call only: the SDK frees it after the function returns.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">event</td><td>The event; do not keep or release it. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data given to <a class="el" href="#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000038">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -1004,6 +1035,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the executor that calls the listeners of the indexed event model. </p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners; the executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span> (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a>).</p>
 <p>Java: <span class="tt">IndexedEventModel.setExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1128,7 +1160,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000010">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1166,7 +1199,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000015">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1210,7 +1244,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000019">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1254,7 +1289,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000016">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1288,6 +1324,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the executor that calls the listener (by default, the executor of the feed). </p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners; the executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span> (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a>).</p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1298,7 +1335,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000022">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1342,7 +1380,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000018">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1386,7 +1425,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000021">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1430,7 +1470,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000017">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1474,7 +1515,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000014">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1518,7 +1560,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000020">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1550,7 +1593,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000013">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1588,7 +1632,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000011">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1626,7 +1671,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000006">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1664,7 +1710,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000008">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1702,7 +1749,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000009">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1740,7 +1788,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000005">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1778,7 +1827,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000012">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1817,7 +1867,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000007">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -2487,6 +2538,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the executor that calls the listeners of the order book model. </p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners; the executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span> (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a>).</p>
 <p>Java: <span class="tt">OrderBookModel.setExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -3056,6 +3108,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the executor that calls the listeners of the time-series event model. </p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners; the executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span> (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a>).</p>
 <p>Java: <span class="tt">TimeSeriesEventModel.setExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -3218,7 +3271,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000028">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3256,7 +3310,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000040">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3300,7 +3355,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000035">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3344,7 +3400,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000034">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3388,7 +3445,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000044">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3432,7 +3490,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000041">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3477,7 +3536,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000036">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3511,6 +3571,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java <span class="tt">Consumer</span>). </p>
+<p>For an event peek that works, use <a class="el" href="#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>.</p>
 <p>Java: <span class="tt">TimeSeriesTxModel.Builder.withEventPeek(Consumer)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -3521,7 +3582,62 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000037">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+
+</div>
+</div>
+<a id="gad2a2a00ed40bc3c447f34e61b315b5a8" name="gad2a2a00ed40bc3c447f34e61b315b5a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad2a2a00ed40bc3c447f34e61b315b5a8">&#9670;&#160;</a></span>dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> *</td>          <td class="paramname"><span class="paramname"><em>source</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#gac9c5b1378e7f1d03f2ab8901e22b89c2">dxfg_v4_time_series_tx_model_event_peek_function</a></td>          <td class="paramname"><span class="paramname"><em>eventPeek</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *</td>          <td class="paramname"><span class="paramname"><em>userData</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gaba37b9fb7243925df7cc3f9d3942a534">dxfg_v4_time_series_tx_model_builder_t</a> **</td>          <td class="paramname"><span class="paramname"><em>timeSeriesTxModelBuilder</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the event peek of the model: a function that sees each event before the listener gets the list. </p>
+<p>The function is called as <a class="el" href="#gac9c5b1378e7f1d03f2ab8901e22b89c2" title="The event peek function of a time series model, see dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFu...">dxfg_v4_time_series_tx_model_event_peek_function</a> says. NULL removes the event peek set before, and so does <a class="el" href="#ga7f3852354a0c6c8138b0dc23fa4754a4" title="Accepted for compatibility: the pointer is ignored, the model gets no event peek (a Java Consumer).">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek()</a>; the last call before <a class="el" href="#ga9163db97725417396c30b3f0f739b91a" title="Builds the model (the symbol must be set).">dxfg_v4_TimeSeriesTxModel_Builder_build()</a> wins. The library reports the function with <a class="el" href="group__V4__System.html#ga01ee98b18304011b23875d4b68f22338" title="The name of the feature &quot;time series model event peek&quot; (dxfg_v4_TimeSeriesTxModel_Builder_withEventPe...">DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK</a>.</p>
+<p>The event peek is a native listener without a handle of its own: it is not called inside the tasks of a closed event queue (as the listeners are not) and after <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a>; the release of the builder or model handles does not stop it. The function pointer and the user data must stay valid while the model can still deliver events: until the model is closed and its executor has no pending notifications, or until <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a> returns.</p>
+<p>Java: <span class="tt">TimeSeriesTxModel.Builder.withEventPeek(Consumer)</span> with a <span class="tt">Consumer</span> that calls <span class="tt">eventPeek</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">source</td><td>The builder handle; must not be NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">eventPeek</td><td>The event peek function, or NULL for none. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">userData</td><td>The user data passed to <span class="tt">eventPeek</span>, may be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">timeSeriesTxModelBuilder</td><td>The pointer to the variable that receives the builder (release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>); must not be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000039">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
 </div>
@@ -3555,6 +3671,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the executor that calls the listener (by default, the executor of the feed). </p>
+<p>The executor of a shared event queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) makes the polls of the queue call the listeners; the executor of a subscription attached to a queue is refused with <span class="tt">IllegalStateException</span> (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a>).</p>
 <p>Java: <span class="tt">AbstractTxModel.Builder.withExecutor(Executor)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -3565,7 +3682,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000047">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3609,7 +3727,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000043">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3653,7 +3772,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000032">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3697,7 +3817,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000046">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3741,7 +3862,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000042">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3785,7 +3907,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000033">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3829,7 +3952,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000045">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3861,7 +3985,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000031">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3899,7 +4024,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000029">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3937,7 +4063,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000024">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -3975,7 +4102,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000026">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -4013,7 +4141,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000027">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -4051,7 +4180,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000023">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -4089,7 +4219,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000030">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -4127,7 +4258,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000025">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -4172,7 +4304,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000048">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>

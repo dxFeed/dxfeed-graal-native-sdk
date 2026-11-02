@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -124,30 +124,34 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dxfg__v4__api_
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__catch__exception_8h.html">dxfg_v4_catch_exception.h</a>&quot;</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__endpoint_8h.html">dxfg_v4_endpoint.h</a>&quot;</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__event__model_8h.html">dxfg_v4_event_model.h</a>&quot;</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__events_8h.html">dxfg_v4_events.h</a>&quot;</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__feed_8h.html">dxfg_v4_feed.h</a>&quot;</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__glossary_8h.html">dxfg_v4_glossary.h</a>&quot;</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__indexed__event__tx__model_8h.html">dxfg_v4_indexed_event_tx_model.h</a>&quot;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__ipf_8h.html">dxfg_v4_ipf.h</a>&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__javac_8h.html">dxfg_v4_javac.h</a>&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__logging_8h.html">dxfg_v4_logging.h</a>&quot;</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__ondemand_8h.html">dxfg_v4_ondemand.h</a>&quot;</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__orcs_8h.html">dxfg_v4_orcs.h</a>&quot;</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__publisher_8h.html">dxfg_v4_publisher.h</a>&quot;</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__qds_8h.html">dxfg_v4_qds.h</a>&quot;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__schedule_8h.html">dxfg_v4_schedule.h</a>&quot;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__subscription_8h.html">dxfg_v4_subscription.h</a>&quot;</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__subscription__controller_8h.html">dxfg_v4_subscription_controller.h</a>&quot;</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__system_8h.html">dxfg_v4_system.h</a>&quot;</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_V4_API_H</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__event__queue_8h.html">dxfg_v4_event_queue.h</a>&quot;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__events_8h.html">dxfg_v4_events.h</a>&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__feed_8h.html">dxfg_v4_feed.h</a>&quot;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__feed__filter_8h.html">dxfg_v4_feed_filter.h</a>&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__glossary_8h.html">dxfg_v4_glossary.h</a>&quot;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__indexed__event__tx__model_8h.html">dxfg_v4_indexed_event_tx_model.h</a>&quot;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__ipf_8h.html">dxfg_v4_ipf.h</a>&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__javac_8h.html">dxfg_v4_javac.h</a>&quot;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__logging_8h.html">dxfg_v4_logging.h</a>&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__ondemand_8h.html">dxfg_v4_ondemand.h</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__orcs_8h.html">dxfg_v4_orcs.h</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__publisher_8h.html">dxfg_v4_publisher.h</a>&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__qds_8h.html">dxfg_v4_qds.h</a>&quot;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__schedule_8h.html">dxfg_v4_schedule.h</a>&quot;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__subscription_8h.html">dxfg_v4_subscription.h</a>&quot;</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__subscription__controller_8h.html">dxfg_v4_subscription_controller.h</a>&quot;</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &quot;<a class="code" href="dxfg__v4__system_8h.html">dxfg_v4_system.h</a>&quot;</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_V4_API_H</span></div>
 <div class="ttc" id="adxfg__v4__candlewebservice_8h_html"><div class="ttname"><a href="dxfg__v4__candlewebservice_8h.html">dxfg_v4_candlewebservice.h</a></div><div class="ttdoc">The v4 functions of dxfg_candlewebservice.h and the v4 names of its types (see the group CandleWebSer...</div></div>
 <div class="ttc" id="adxfg__v4__catch__exception_8h_html"><div class="ttname"><a href="dxfg__v4__catch__exception_8h.html">dxfg_v4_catch_exception.h</a></div><div class="ttdoc">The v4 functions of dxfg_catch_exception.h and the v4 names of its types (see the group Exceptions (v...</div></div>
 <div class="ttc" id="adxfg__v4__common_8h_html"><div class="ttname"><a href="dxfg__v4__common_8h.html">dxfg_v4_common.h</a></div><div class="ttdoc">The v4 functions of dxfg_common.h and the v4 names of its types (see the group Common (v4)).</div></div>
 <div class="ttc" id="adxfg__v4__endpoint_8h_html"><div class="ttname"><a href="dxfg__v4__endpoint_8h.html">dxfg_v4_endpoint.h</a></div><div class="ttdoc">The v4 functions of dxfg_endpoint.h and the v4 names of its types (see the group Endpoint (v4)).</div></div>
 <div class="ttc" id="adxfg__v4__event__model_8h_html"><div class="ttname"><a href="dxfg__v4__event__model_8h.html">dxfg_v4_event_model.h</a></div><div class="ttdoc">The v4 functions of dxfg_event_model.h and the v4 names of its types (see the group EventModel (v4)).</div></div>
+<div class="ttc" id="adxfg__v4__event__queue_8h_html"><div class="ttname"><a href="dxfg__v4__event__queue_8h.html">dxfg_v4_event_queue.h</a></div><div class="ttdoc">The event queue: the events of subscriptions received on the application&#39;s own thread,...</div></div>
 <div class="ttc" id="adxfg__v4__events_8h_html"><div class="ttname"><a href="dxfg__v4__events_8h.html">dxfg_v4_events.h</a></div><div class="ttdoc">The v4 functions of dxfg_events.h and the v4 names of its types (see the group Events (v4)).</div></div>
 <div class="ttc" id="adxfg__v4__feed_8h_html"><div class="ttname"><a href="dxfg__v4__feed_8h.html">dxfg_v4_feed.h</a></div><div class="ttdoc">The v4 functions of dxfg_feed.h and the v4 names of its types (see the group Feed (v4)).</div></div>
+<div class="ttc" id="adxfg__v4__feed__filter_8h_html"><div class="ttname"><a href="dxfg__v4__feed__filter_8h.html">dxfg_v4_feed_filter.h</a></div><div class="ttdoc">The filter of the subscriptions and the events by named categories of QD filter expressions,...</div></div>
 <div class="ttc" id="adxfg__v4__glossary_8h_html"><div class="ttname"><a href="dxfg__v4__glossary_8h.html">dxfg_v4_glossary.h</a></div><div class="ttdoc">The v4 functions of dxfg_glossary.h and the v4 names of its types (see the group Glossary (v4)).</div></div>
 <div class="ttc" id="adxfg__v4__indexed__event__tx__model_8h_html"><div class="ttname"><a href="dxfg__v4__indexed__event__tx__model_8h.html">dxfg_v4_indexed_event_tx_model.h</a></div><div class="ttdoc">The v4 functions of dxfg_indexed_event_tx_model.h and the v4 names of its types (see the group Indexe...</div></div>
 <div class="ttc" id="adxfg__v4__ipf_8h_html"><div class="ttname"><a href="dxfg__v4__ipf_8h.html">dxfg_v4_ipf.h</a></div><div class="ttdoc">The v4 functions of dxfg_ipf.h and the v4 names of its types (see the group InstrumentProfile (v4)).</div></div>

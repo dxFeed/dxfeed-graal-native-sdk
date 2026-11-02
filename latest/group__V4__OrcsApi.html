@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -150,6 +150,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga3c3ffadb4372eba51249fce964917d35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.  <br /></td></tr>
 <tr class="memitem:gad03f23b2f63ad32d90e0aa2733b34a93" id="r_gad03f23b2f63ad32d90e0aa2733b34a93"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gad03f23b2f63ad32d90e0aa2733b34a93">dxfg_v4_symbols_by_order_source_id_map_entry_list_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gaeb341768700743b4435503242feed32d">dxfg_v4_symbols_by_order_source_id_map_entry_list</a> *list)</td></tr>
 <tr class="memdesc:gad03f23b2f63ad32d90e0aa2733b34a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a list of the entries (the identifier of an order source, the symbols).  <br /></td></tr>
+<tr class="memitem:ga8fa7ad9c00b0cf22c33e8e64c2868150" id="r_ga8fa7ad9c00b0cf22c33e8e64c2868150"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga8fa7ad9c00b0cf22c33e8e64c2868150">dxfg_v4_AuthOrderSource_create</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const <a class="el" href="#gaeb341768700743b4435503242feed32d">dxfg_v4_symbols_by_order_source_id_map_entry_list</a> *symbolsByOrderSourceIdMapEntryList, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gae202c6a792b6b786806a60c35179849c">dxfg_v4_auth_order_source_t</a> **authOrderSource)</td></tr>
+<tr class="memdesc:ga8fa7ad9c00b0cf22c33e8e64c2868150"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an AuthOrderSource from the entries (the identifier of an order source, the symbols).  <br /></td></tr>
 <tr class="memitem:ga9d48c48217fde0c847709d000d23e8aa" id="r_ga9d48c48217fde0c847709d000d23e8aa"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga9d48c48217fde0c847709d000d23e8aa">dxfg_v4_AuthOrderSource_getByOrderSources</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gae202c6a792b6b786806a60c35179849c">dxfg_v4_auth_order_source_t</a> *authOrderSource, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gae060119c9d5de09b0328d00d8f949a1d">dxfg_v4_symbols_by_order_source_map_entry_list</a> **symbolsByOrderSourceMapEntryList)</td></tr>
 <tr class="memdesc:ga9d48c48217fde0c847709d000d23e8aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entries (an order source, the symbols) of an AuthOrderSource.  <br /></td></tr>
 <tr class="memitem:gaccc7fad15d9b3bc50837b1940d70f81d" id="r_gaccc7fad15d9b3bc50837b1940d70f81d"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaccc7fad15d9b3bc50837b1940d70f81d">dxfg_v4_symbols_by_order_source_map_entry_list_release</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="#gae060119c9d5de09b0328d00d8f949a1d">dxfg_v4_symbols_by_order_source_map_entry_list</a> *list)</td></tr>
@@ -265,6 +267,46 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="ga8fa7ad9c00b0cf22c33e8e64c2868150" name="ga8fa7ad9c00b0cf22c33e8e64c2868150"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8fa7ad9c00b0cf22c33e8e64c2868150">&#9670;&#160;</a></span>dxfg_v4_AuthOrderSource_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_AuthOrderSource_create </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#gaeb341768700743b4435503242feed32d">dxfg_v4_symbols_by_order_source_id_map_entry_list</a> *</td>          <td class="paramname"><span class="paramname"><em>symbolsByOrderSourceIdMapEntryList</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="#gae202c6a792b6b786806a60c35179849c">dxfg_v4_auth_order_source_t</a> **</td>          <td class="paramname"><span class="paramname"><em>authOrderSource</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates an AuthOrderSource from the entries (the identifier of an order source, the symbols). </p>
+<p>The list is only read and copied: the caller keeps its ownership and may free it after the call (a list that <a class="el" href="#ga3c3ffadb4372eba51249fce964917d35" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_v4_AuthOrderSource_getByIds()</a> returned is released with <a class="el" href="#gad03f23b2f63ad32d90e0aa2733b34a93" title="Frees a list of the entries (the identifier of an order source, the symbols).">dxfg_v4_symbols_by_order_source_id_map_entry_list_release()</a>). The whole list is checked before the AuthOrderSource is created: a NULL list, a NULL entry, a NULL symbol list, a NULL symbol or two entries with the same identifier fail the call with <span class="tt">IllegalArgumentException</span>. An empty list gives an AuthOrderSource without order sources. <a class="el" href="#ga3c3ffadb4372eba51249fce964917d35" title="Returns the entries (the identifier of an order source, the symbols) of an AuthOrderSource.">dxfg_v4_AuthOrderSource_getByIds()</a> of the result returns the same entries.</p>
+<p>Java: <span class="tt">AuthOrderSource.create(Map)</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">symbolsByOrderSourceIdMapEntryList</td><td>The entries. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">authOrderSource</td><td>The pointer to the variable that receives the AuthOrderSource (release the handle with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>); must not be NULL. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
 <a id="ga3c3ffadb4372eba51249fce964917d35" name="ga3c3ffadb4372eba51249fce964917d35"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga3c3ffadb4372eba51249fce964917d35">&#9670;&#160;</a></span>dxfg_v4_AuthOrderSource_getByIds()</h2>
 

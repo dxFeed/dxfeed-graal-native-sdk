@@ -117,8 +117,17 @@ var annotated_dup =
     [ "dxfg_trade_t", "structdxfg__trade__t.html", "structdxfg__trade__t" ],
     [ "dxfg_tx_model_listener_t", "structdxfg__tx__model__listener__t.html", "structdxfg__tx__model__listener__t" ],
     [ "dxfg_underlying_t", "structdxfg__underlying__t.html", "structdxfg__underlying__t" ],
+    [ "dxfg_v4_byte_list", "structdxfg__v4__byte__list.html", "structdxfg__v4__byte__list" ],
     [ "dxfg_v4_cfi_value_list", "structdxfg__v4__cfi__value__list.html", "structdxfg__v4__cfi__value__list" ],
     [ "dxfg_v4_double_list", "structdxfg__v4__double__list.html", "structdxfg__v4__double__list" ],
+    [ "dxfg_v4_event_queue_t", "structdxfg__v4__event__queue__t.html", "structdxfg__v4__event__queue__t" ],
+    [ "dxfg_v4_feed_filter_builder_t", "structdxfg__v4__feed__filter__builder__t.html", "structdxfg__v4__feed__filter__builder__t" ],
+    [ "dxfg_v4_feed_filter_listener_t", "structdxfg__v4__feed__filter__listener__t.html", "structdxfg__v4__feed__filter__listener__t" ],
+    [ "dxfg_v4_feed_filter_t", "structdxfg__v4__feed__filter__t.html", "structdxfg__v4__feed__filter__t" ],
+    [ "dxfg_v4_feed_filter_tracker_t", "structdxfg__v4__feed__filter__tracker__t.html", "structdxfg__v4__feed__filter__tracker__t" ],
+    [ "dxfg_v4_on_demand_property_change_listener_t", "structdxfg__v4__on__demand__property__change__listener__t.html", "structdxfg__v4__on__demand__property__change__listener__t" ],
+    [ "dxfg_v4_on_demand_property_value_t", "structdxfg__v4__on__demand__property__value__t.html", "structdxfg__v4__on__demand__property__value__t" ],
     [ "dxfg_v4_string_to_double_map_entry_list", "structdxfg__v4__string__to__double__map__entry__list.html", "structdxfg__v4__string__to__double__map__entry__list" ],
+    [ "dxfg_v4_tagged_event_list", "structdxfg__v4__tagged__event__list.html", "structdxfg__v4__tagged__event__list" ],
     [ "dxfg_wildcard_symbol_t", "structdxfg__wildcard__symbol__t.html", "structdxfg__wildcard__symbol__t" ]
 ];

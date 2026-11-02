@@ -1,13 +1,16 @@
 var dxfg__v4__schedule_8h =
 [
+    [ "DXFG_V4_FILTER_ANY", "group__V4__Schedule.html#ga3320f2644b7819e9d497a11067a7ab07", null ],
     [ "dxfg_v4_day_filter_function", "group__V4__Schedule.html#ga8bed8ceca7f0e0b72bd18222705037a4", null ],
     [ "dxfg_v4_day_filter_prepare_t", "group__V4__Schedule.html#ga2f949c8288c7d203303cbc8c422b609e", null ],
     [ "dxfg_v4_day_filter_t", "group__V4__Schedule.html#gafbea4e60f5810caf50290ab30cfaa8d7", null ],
+    [ "dxfg_v4_day_filter_user_data_function", "group__V4__Schedule.html#ga28cae096e16f1287e5ea78016e37ffa4", null ],
     [ "dxfg_v4_day_t", "group__V4__Schedule.html#ga579ffc9f339970470e11ebeb30cfb323", null ],
     [ "dxfg_v4_schedule_t", "group__V4__Schedule.html#gacaff4ee56a5026b1b424138ce19fa303", null ],
     [ "dxfg_v4_session_filter_function", "group__V4__Schedule.html#ga28456c8e67f8ffea0c54a8b1142e1176", null ],
     [ "dxfg_v4_session_filter_prepare_t", "group__V4__Schedule.html#ga52719ddce135be6d19a715a5db52a969", null ],
     [ "dxfg_v4_session_filter_t", "group__V4__Schedule.html#ga6664a6463ed66cea9ac3136a3f8e7ab0", null ],
+    [ "dxfg_v4_session_filter_user_data_function", "group__V4__Schedule.html#gaa0c4bf7beee3bf53f578cb7ababeb136", null ],
     [ "dxfg_v4_session_list", "group__V4__Schedule.html#ga78987a3c5ef61202b75c41f55f0c17f4", null ],
     [ "dxfg_v4_session_t", "group__V4__Schedule.html#gaa7f9a9a17af9b6c3e492de3be88b0fa1", null ],
     [ "dxfg_v4_session_type_t", "group__V4__Schedule.html#ga4bffb519b61c49b175c52c8413de226f", null ],
@@ -41,6 +44,7 @@ var dxfg__v4__schedule_8h =
     [ "dxfg_v4_Day_toString", "group__V4__Schedule.html#ga1cb369d596bc874f2c2be0ec4c287941", null ],
     [ "dxfg_v4_DayFilter_getInstance", "group__V4__Schedule.html#ga6d8ecfdafaef2ab899bf15df2bd854f9", null ],
     [ "dxfg_v4_DayFilter_new", "group__V4__Schedule.html#gad864eebe419168866b82e1654de58cc7", null ],
+    [ "dxfg_v4_DayFilter_newWithUserData", "group__V4__Schedule.html#ga2ffe27e57e3201628a4682bef80484e2", null ],
     [ "dxfg_v4_Schedule_downloadDefaults", "group__V4__Schedule.html#gad7cf6f4e62de45db4fb44c31975d3856", null ],
     [ "dxfg_v4_Schedule_findNearestSessionByTime", "group__V4__Schedule.html#ga22b64dd62101daa36c67d8423249170c", null ],
     [ "dxfg_v4_Schedule_getDayById", "group__V4__Schedule.html#ga1de5620ddb38dcfe7d299f96fb017f09", null ],
@@ -78,5 +82,6 @@ var dxfg__v4__schedule_8h =
     [ "dxfg_v4_Session_release", "group__V4__Schedule.html#ga9fecccade5c70e8ac2f7ad4dfba43e38", null ],
     [ "dxfg_v4_Session_toString", "group__V4__Schedule.html#ga9a182ee0555618c3fc8b5356427b2e4c", null ],
     [ "dxfg_v4_SessionFilter_getInstance", "group__V4__Schedule.html#ga220660a4a4b3f808511d6a4bf6970b8e", null ],
-    [ "dxfg_v4_SessionFilter_new", "group__V4__Schedule.html#ga80b4c85fe6ae0ece61d051dd59236130", null ]
+    [ "dxfg_v4_SessionFilter_new", "group__V4__Schedule.html#ga80b4c85fe6ae0ece61d051dd59236130", null ],
+    [ "dxfg_v4_SessionFilter_newWithUserData", "group__V4__Schedule.html#gadb0f7db69364fb15bf84938c8db80fa8", null ]
 ];

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.12.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
    </div>
   </td>
  </tr>
@@ -970,7 +970,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">subscriptionController</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
-<p>Java: <span class="tt">DXFeedSubscription.getSubscriptionController()</span>. </p>
+<p>Java: <span class="tt">DXFeedSubscription.getSubscriptionController()</span>.</p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000089">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1046,7 +1047,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">droppedEvents</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">droppedEvents</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000090">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 
 </div>
 </div>
@@ -1452,7 +1454,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Changes the executor that processes the event notifications of the subscription.</p>
-<p>The event listeners of the subscription are called by the threads of this executor. The subscription does not take the handle of the executor: release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a> when it is no longer needed.</p>
+<p>The event listeners of the subscription are called by the threads of this executor. The subscription does not take the handle of the executor: release it with <a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a> when it is no longer needed. The executor of a subscription attached to an event queue (<a class="el" href="group__V4__EventQueue.html#gab42af9074609146b0ab24875ac436ce0">dxfg_v4_EventQueue_new()</a>, <a class="el" href="group__V4__EventQueue.html#gaeb05b4a337685ea8924d5fd983b10ef2">dxfg_v4_EventQueue_attach()</a>) cannot be changed, and it cannot be set on another subscription: the function fails with <span class="tt">IllegalStateException</span>. The executor of a shared queue (<a class="el" href="group__V4__EventQueue.html#ga48281725b058aa97aa142caf0084301d">dxfg_v4_EventQueue_getExecutor()</a>) is accepted: the polls of the queue call the listeners, but the subscription is not attached and its events do not reach the lists of the polls (see <a class="el" href="group__V4__EventQueue.html" title="Event queue (v4)">Event queue (v4)</a> for the limits).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

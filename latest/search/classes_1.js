@@ -116,8 +116,17 @@ var searchData=
   ['dxfg_5ftrade_5ft_113',['dxfg_trade_t',['../structdxfg__trade__t.html',1,'']]],
   ['dxfg_5ftx_5fmodel_5flistener_5ft_114',['dxfg_tx_model_listener_t',['../structdxfg__tx__model__listener__t.html',1,'']]],
   ['dxfg_5funderlying_5ft_115',['dxfg_underlying_t',['../structdxfg__underlying__t.html',1,'']]],
-  ['dxfg_5fv4_5fcfi_5fvalue_5flist_116',['dxfg_v4_cfi_value_list',['../structdxfg__v4__cfi__value__list.html',1,'']]],
-  ['dxfg_5fv4_5fdouble_5flist_117',['dxfg_v4_double_list',['../structdxfg__v4__double__list.html',1,'']]],
-  ['dxfg_5fv4_5fstring_5fto_5fdouble_5fmap_5fentry_5flist_118',['dxfg_v4_string_to_double_map_entry_list',['../structdxfg__v4__string__to__double__map__entry__list.html',1,'']]],
-  ['dxfg_5fwildcard_5fsymbol_5ft_119',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
+  ['dxfg_5fv4_5fbyte_5flist_116',['dxfg_v4_byte_list',['../structdxfg__v4__byte__list.html',1,'']]],
+  ['dxfg_5fv4_5fcfi_5fvalue_5flist_117',['dxfg_v4_cfi_value_list',['../structdxfg__v4__cfi__value__list.html',1,'']]],
+  ['dxfg_5fv4_5fdouble_5flist_118',['dxfg_v4_double_list',['../structdxfg__v4__double__list.html',1,'']]],
+  ['dxfg_5fv4_5fevent_5fqueue_5ft_119',['dxfg_v4_event_queue_t',['../structdxfg__v4__event__queue__t.html',1,'']]],
+  ['dxfg_5fv4_5ffeed_5ffilter_5fbuilder_5ft_120',['dxfg_v4_feed_filter_builder_t',['../structdxfg__v4__feed__filter__builder__t.html',1,'']]],
+  ['dxfg_5fv4_5ffeed_5ffilter_5flistener_5ft_121',['dxfg_v4_feed_filter_listener_t',['../structdxfg__v4__feed__filter__listener__t.html',1,'']]],
+  ['dxfg_5fv4_5ffeed_5ffilter_5ft_122',['dxfg_v4_feed_filter_t',['../structdxfg__v4__feed__filter__t.html',1,'']]],
+  ['dxfg_5fv4_5ffeed_5ffilter_5ftracker_5ft_123',['dxfg_v4_feed_filter_tracker_t',['../structdxfg__v4__feed__filter__tracker__t.html',1,'']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fchange_5flistener_5ft_124',['dxfg_v4_on_demand_property_change_listener_t',['../structdxfg__v4__on__demand__property__change__listener__t.html',1,'']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5ft_125',['dxfg_v4_on_demand_property_value_t',['../structdxfg__v4__on__demand__property__value__t.html',1,'']]],
+  ['dxfg_5fv4_5fstring_5fto_5fdouble_5fmap_5fentry_5flist_126',['dxfg_v4_string_to_double_map_entry_list',['../structdxfg__v4__string__to__double__map__entry__list.html',1,'']]],
+  ['dxfg_5fv4_5ftagged_5fevent_5flist_127',['dxfg_v4_tagged_event_list',['../structdxfg__v4__tagged__event__list.html',1,'']]],
+  ['dxfg_5fwildcard_5fsymbol_5ft_128',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
 ];

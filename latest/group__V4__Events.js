@@ -21,6 +21,7 @@ var group__V4__Events =
     [ "dxfg_v4_nuam_time_and_sale_t", "group__V4__Events.html#ga5fbb7ab5bd19707266e479535da416c9", null ],
     [ "dxfg_v4_nuam_trade_t", "group__V4__Events.html#gaaf1757e339e9c5a71dfc2dae8afcce40", null ],
     [ "dxfg_v4_observable_subscription_change_listener_t", "group__V4__Events.html#ga71d95581a1f518da811b1dd70d437144", null ],
+    [ "dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged", "group__V4__Events.html#ga846468cd7b76074c6b54c8cf36a6524c", null ],
     [ "dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed", "group__V4__Events.html#ga11643151ccd324da85d23585a899e331", null ],
     [ "dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded", "group__V4__Events.html#ga8be9962e5fbe5591249f6eded7fb22fa", null ],
     [ "dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved", "group__V4__Events.html#ga53447ed590a9e0dce89e8924177fa16e", null ],
@@ -58,6 +59,7 @@ var group__V4__Events =
     [ "dxfg_v4_IndexedEventSource_newWithId", "group__V4__Events.html#gabb55fdb0055169cc4793b63990594936", null ],
     [ "dxfg_v4_IndexedEventSource_release", "group__V4__Events.html#ga40d48d5b38cc3c934f48708390b114c0", null ],
     [ "dxfg_v4_ObservableSubscriptionChangeListener_new", "group__V4__Events.html#ga82ecc272b6888f97db74554b387db0c2", null ],
+    [ "dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged", "group__V4__Events.html#gab40a1987a21dd832b96191bb1e0588be", null ],
     [ "dxfg_v4_symbol_list_release", "group__V4__Events.html#gaf1c13afa9a08c6a066b94d581a615ac5", null ],
     [ "dxfg_v4_Symbol_new", "group__V4__Events.html#ga5faeff62c2450a171bc9840c41898285", null ],
     [ "dxfg_v4_Symbol_release", "group__V4__Events.html#ga9afe591e9e35e1f1fffc02698e4fbbe9", null ]

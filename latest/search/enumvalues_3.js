@@ -88,5 +88,13 @@ var searchData=
   ['dxfg_5fsession_5ftype_5fafter_5fmarket_85',['DXFG_SESSION_TYPE_AFTER_MARKET',['../group__Schedule.html#gga2308eb6e98a8cb125e567db7a6726b93a9162aa7eb518f47d74e8d290b2aa0c2c',1,'dxfg_schedule.h']]],
   ['dxfg_5fsession_5ftype_5fno_5ftrading_86',['DXFG_SESSION_TYPE_NO_TRADING',['../group__Schedule.html#gga2308eb6e98a8cb125e567db7a6726b93a383057e67de5c6fe234cbfe7655dcf95',1,'dxfg_schedule.h']]],
   ['dxfg_5fsession_5ftype_5fpre_5fmarket_87',['DXFG_SESSION_TYPE_PRE_MARKET',['../group__Schedule.html#gga2308eb6e98a8cb125e567db7a6726b93a514ab7806a8da90bbbe595461781e057',1,'dxfg_schedule.h']]],
-  ['dxfg_5fsession_5ftype_5fregular_88',['DXFG_SESSION_TYPE_REGULAR',['../group__Schedule.html#gga2308eb6e98a8cb125e567db7a6726b93a8ab4d4214700137f1d185b9d0a46f32b',1,'dxfg_schedule.h']]]
+  ['dxfg_5fsession_5ftype_5fregular_88',['DXFG_SESSION_TYPE_REGULAR',['../group__Schedule.html#gga2308eb6e98a8cb125e567db7a6726b93a8ab4d4214700137f1d185b9d0a46f32b',1,'dxfg_schedule.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5fboolean_89',['DXFG_V4_ON_DEMAND_PROPERTY_VALUE_BOOLEAN',['../group__V4__OnDemand.html#gga47346505d797940dd0be708249b7570ba0594b2eb47e0e908ee71534d258c981d',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5fdouble_90',['DXFG_V4_ON_DEMAND_PROPERTY_VALUE_DOUBLE',['../group__V4__OnDemand.html#gga47346505d797940dd0be708249b7570baac812ee6b2205a099dada8ec3b53106e',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5fnull_91',['DXFG_V4_ON_DEMAND_PROPERTY_VALUE_NULL',['../group__V4__OnDemand.html#gga47346505d797940dd0be708249b7570ba56eb7c0aadd077d5b476188ad0344d6f',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5fother_92',['DXFG_V4_ON_DEMAND_PROPERTY_VALUE_OTHER',['../group__V4__OnDemand.html#gga47346505d797940dd0be708249b7570ba260a11fe0be75636b4c9ca16a555c01a',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5ftime_93',['DXFG_V4_ON_DEMAND_PROPERTY_VALUE_TIME',['../group__V4__OnDemand.html#gga47346505d797940dd0be708249b7570bad6fd26f6905d4a3fc79c819808b276a5',1,'dxfg_v4_ondemand.h']]],
+  ['dxfg_5fv4_5fready_5fsignal_5ffd_94',['DXFG_V4_READY_SIGNAL_FD',['../group__V4__EventQueue.html#gga5a5165dbd41574cec56364b8e55d3e87a76a78e4638c6df23f890d541577611dc',1,'dxfg_v4_event_queue.h']]],
+  ['dxfg_5fv4_5fready_5fsignal_5fnone_95',['DXFG_V4_READY_SIGNAL_NONE',['../group__V4__EventQueue.html#gga5a5165dbd41574cec56364b8e55d3e87a07341d51736491f941046d85df6698b8',1,'dxfg_v4_event_queue.h']]],
+  ['dxfg_5fv4_5fready_5fsignal_5fwindows_5fevent_96',['DXFG_V4_READY_SIGNAL_WINDOWS_EVENT',['../group__V4__EventQueue.html#gga5a5165dbd41574cec56364b8e55d3e87ac64ef0f74bd5ddfe12645881c60812f4',1,'dxfg_v4_event_queue.h']]]
 ];
