@@ -11,10 +11,13 @@ import com.devexperts.qd.util.QDConfig;
 import com.devexperts.util.ConfigUtil;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.api.DXFeedFilter;
+import com.dxfeed.api.DXFeedFilterTracker;
 import com.dxfeed.api.impl.DXEndpointImpl;
 import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
 import com.dxfeed.event.market.Order;
 import com.dxfeed.event.market.OrderSource;
+import com.dxfeed.event.market.Quote;
 import com.dxfeed.event.market.Side;
 import com.dxfeed.ipf.filter.IPFSymbolFilter;
 
@@ -59,6 +62,7 @@ public class NewCases {
         cases.put("newOrderSourcesCase", NewCases::newOrderSourcesCase);
         cases.put("eventsSerializationCase", NewCases::eventsSerializationCase);
         cases.put("connectorPropertiesCase", NewCases::connectorPropertiesCase);
+        cases.put("feedFilterCase", NewCases::feedFilterCase);
 
         // -Dcases=name1,name2 runs only the given cases
         var selected = System.getProperty("cases");
@@ -347,5 +351,35 @@ public class NewCases {
         }
         System.out.println("  no convertible value for " + type.getName());
         return "";
+    }
+
+    // DXFeedFilter (dxfg_v4_feed_filter.h): the builder finds DXFeedFilterFactory with the ServiceLoader; a filter of
+    // list, prefix and range categories and a dynamic IPF filter whose tracker calls its listener after an update.
+    public static void feedFilterCase() throws Exception {
+        var ipf = Files.createTempFile(Path.of("."), "feed-filter-", ".ipf");
+        try (DXEndpoint endpoint = DXEndpoint.create(DXEndpoint.Role.LOCAL_HUB)) {
+            DXFeedFilter filter = DXFeedFilter.newBuilder(endpoint)
+                    .withCategory("list", "IBM,MSFT")
+                    .withCategory("prefix", "A*")
+                    .withCategory("range", "range-N-P-")
+                    .build();
+            System.out.println(filter.getCategory(Quote.class, "IBM") + " " + filter.getCategory(Quote.class, "AAPL")
+                    + " " + filter.getCategory(Quote.class, "ORCL") + " " + filter.accept(Quote.class, "ZZZ")
+                    + " " + filter.getEventCategory(new Quote("MSFT")) + " " + filter.isDynamic());
+
+            Files.writeString(ipf, "#STOCK::=TYPE,SYMBOL\nSTOCK,IBM\n##COMPLETE\n");
+            var expression = "ipf[" + Path.of(".").relativize(ipf).toString().replace('\\', '/') + ",update=1s]";
+            DXFeedFilter dynamic = DXFeedFilter.newBuilder(endpoint).withCategory("ipf", expression).build();
+            DXFeedFilterTracker tracker = dynamic.getTracker();
+            var updated = new CountDownLatch(1);
+            tracker.addListener(updatedTracker -> updated.countDown());
+            Files.writeString(ipf, "#STOCK::=TYPE,SYMBOL\nSTOCK,MSFT\n##COMPLETE\n");
+            Files.setLastModifiedTime(ipf, java.nio.file.attribute.FileTime.fromMillis(
+                    System.currentTimeMillis() + 2000));
+            System.out.println("updated: " + updated.await(20, TimeUnit.SECONDS) + " "
+                    + tracker.getCurrentFilter().accept(Quote.class, "MSFT"));
+        } finally {
+            Files.deleteIfExists(ipf);
+        }
     }
 }

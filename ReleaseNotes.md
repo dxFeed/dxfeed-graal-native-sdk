@@ -98,6 +98,15 @@
     `java.lang.Exception` and now gives `IllegalArgumentException`, as in Java. The image registers for serialization
     the classes of the serialization whitelist of ORCS.
 
+* **\[MDAPI-492]\[GRAAL]** The feed filter of QD (`DXFeedFilter`, `dxfg_v4_feed_filter.h`, experimental): a filter
+  of named categories, each a QD filter expression (a list, a pattern, a range, an `ipf[...]` file), built with
+  `dxfg_v4_DXFeedFilter_newBuilder()`, `_Builder_withCategory()`, `_Builder_withCategories()` and `_Builder_build()`
+  for an endpoint. It accepts subscriptions and events (`_accept()`, `_acceptEvent()`) and names their first matching
+  category (`_getCategory()`, `_getEventCategory()`, NULL when none matches). A dynamic filter (an expression with an
+  update period) has a tracker (`dxfg_v4_DXFeedFilterTracker_*`) with the current version and listeners
+  (`dxfg_v4_DXFeedFilterListener_new()`), called on a thread of the SDK; a listener may add, remove or release
+  listeners from its call. `DXFG_V4_FEATURE_FEED_FILTER` reports the family.
+
 ## v3.12.0
 
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the

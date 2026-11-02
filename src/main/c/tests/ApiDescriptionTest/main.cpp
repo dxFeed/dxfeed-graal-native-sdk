@@ -85,6 +85,7 @@ TEST_CASE("The library supports every feature of the description", "[ApiDescript
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_SHARED_EVENT_QUEUE) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_FEED_FILTER) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -109,6 +110,31 @@ TEST_CASE("The ready signal function and its feature are experimental in the des
     CHECK(entryOf("dxfg_v4_EventQueue_setReadySignal").find("\"tier\": \"experimental\"") != std::string::npos);
     CHECK(entryOf("DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL").find("\"tier\": \"experimental\"") != std::string::npos);
     CHECK(entryOf("dxfg_v4_ready_signal_kind_t").find("\"tier\": \"experimental\"") != std::string::npos);
+}
+
+TEST_CASE("The feed filter functions, types and feature are experimental in the description", "[ApiDescription]") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+
+    for (const char *name :
+         {"dxfg_v4_DXFeedFilter_newBuilder", "dxfg_v4_DXFeedFilter_Builder_withCategory",
+          "dxfg_v4_DXFeedFilter_Builder_withCategories", "dxfg_v4_DXFeedFilter_Builder_build",
+          "dxfg_v4_DXFeedFilter_accept", "dxfg_v4_DXFeedFilter_acceptEvent", "dxfg_v4_DXFeedFilter_getCategory",
+          "dxfg_v4_DXFeedFilter_getEventCategory", "dxfg_v4_DXFeedFilter_isDynamic", "dxfg_v4_DXFeedFilter_getTracker",
+          "dxfg_v4_DXFeedFilterTracker_getCurrentFilter", "dxfg_v4_DXFeedFilterTracker_addListener",
+          "dxfg_v4_DXFeedFilterTracker_removeListener", "dxfg_v4_DXFeedFilterListener_new",
+          "dxfg_v4_feed_filter_builder_t", "dxfg_v4_feed_filter_t", "dxfg_v4_feed_filter_tracker_t",
+          "dxfg_v4_feed_filter_listener_t", "dxfg_v4_feed_filter_listener_func", "DXFG_V4_FEATURE_FEED_FILTER"}) {
+        INFO(name);
+        CHECK(entryOf(name).find("\"tier\": \"experimental\"") != std::string::npos);
+    }
 }
 
 } // namespace test

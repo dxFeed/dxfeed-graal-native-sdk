@@ -35,6 +35,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void feedFilterFeatureIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.FEED_FILTER));
+        assertTrue(SdkFeatures.isSupported("feed_filter"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

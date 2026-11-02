@@ -19,6 +19,7 @@
 #include "dxfg_v4_event_queue.h"
 #include "dxfg_v4_events.h"
 #include "dxfg_v4_feed.h"
+#include "dxfg_v4_feed_filter.h"
 #include "dxfg_v4_glossary.h"
 #include "dxfg_v4_indexed_event_tx_model.h"
 #include "dxfg_v4_ipf.h"

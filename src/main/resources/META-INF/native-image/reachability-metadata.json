@@ -2558,6 +2558,15 @@
       ]
     },
     {
+      "type": "com.dxfeed.api.impl.DXFeedFilterFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "com.dxfeed.api.impl.DXFeedScheme",
       "methods": [
         {
@@ -3997,6 +4006,9 @@
     },
     {
       "glob": "META-INF/services/com.dxfeed.api.DXEndpoint$Builder"
+    },
+    {
+      "glob": "META-INF/services/com.dxfeed.api.DXFeedFilterFactory"
     },
     {
       "glob": "META-INF/services/com.dxfeed.api.impl.EventDelegateFactory"

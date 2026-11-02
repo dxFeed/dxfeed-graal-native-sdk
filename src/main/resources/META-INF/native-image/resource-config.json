@@ -69,6 +69,8 @@
   }, {
     "pattern":"\\QMETA-INF/services/com.dxfeed.api.DXEndpoint$Builder\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/com.dxfeed.api.DXFeedFilterFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/com.dxfeed.api.impl.EventDelegateFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.dxfeed.ondemand.OnDemandService\\E"

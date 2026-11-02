@@ -158,6 +158,7 @@ TEST_CASE("The features of the headers are supported, unknown ones are not", "[S
     CHECK(isSupported(DXFG_V4_FEATURE_EVENT_QUEUE));
     CHECK(isSupported(DXFG_V4_FEATURE_SHARED_EVENT_QUEUE));
     CHECK(isSupported(DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL));
+    CHECK(isSupported(DXFG_V4_FEATURE_FEED_FILTER));
     CHECK_FALSE(isSupported("no_such_feature"));
     CHECK_FALSE(isSupported(""));
     CHECK(takeExceptionClassName(isolate.thread).empty());

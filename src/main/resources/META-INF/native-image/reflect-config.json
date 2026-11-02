@@ -2991,6 +2991,15 @@
     ]
   },
   {
+    "name": "com.dxfeed.api.impl.DXFeedFilterFactoryImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.dxfeed.api.impl.DXFeedScheme",
     "methods": [
       {

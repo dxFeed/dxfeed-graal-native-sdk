@@ -159,6 +159,15 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 #define DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL "event_queue_ready_signal"
 
 /**
+ * @brief The name of the feature "feed filter" (dxfg_v4_feed_filter.h: dxfg_v4_DXFeedFilter_newBuilder(),
+ * dxfg_v4_DXFeedFilter_Builder_build(), dxfg_v4_DXFeedFilterTracker_addListener() and the other functions of the group
+ * @ref V4_FeedFilter) for dxfg_v4_system_is_feature_supported().
+ * @experimental
+ * @since 3.13.0
+ */
+#define DXFG_V4_FEATURE_FEED_FILTER "feed_filter"
+
+/**
  * @brief Returns the version of the SDK release that the library belongs to, e.g. `3.13.0`.
  *
  * A wrapper that binds the functions by name checks the release before it binds the others. When the function

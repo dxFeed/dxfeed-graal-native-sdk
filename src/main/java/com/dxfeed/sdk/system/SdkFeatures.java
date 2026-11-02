@@ -35,7 +35,11 @@ public final class SdkFeatures {
     /** {@code DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL}: the ready signal of an event queue (MDAPI-485). */
     public static final String EVENT_QUEUE_READY_SIGNAL = "event_queue_ready_signal";
 
-    private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL);
+    /** {@code DXFG_V4_FEATURE_FEED_FILTER}: the feed filter, its builder, tracker and listener (MDAPI-492). */
+    public static final String FEED_FILTER = "feed_filter";
+
+    private static final Set<String> FEATURES =
+            Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL, FEED_FILTER);
 
     private SdkFeatures() {
     }
