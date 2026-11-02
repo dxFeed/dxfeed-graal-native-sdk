@@ -1,4 +1,4 @@
-## v3.13.0-rc2
+## v3.13.0
 
 * **\[MDAPI-466]\[GRAAL]** The event queue (`dxfg_v4_event_queue.h`): the events of a subscription received on the
   application's own thread, without callbacks. `dxfg_v4_EventQueue_new()` creates a queue on a subscription (on one
