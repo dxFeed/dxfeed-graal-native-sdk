@@ -27,7 +27,7 @@
 #    endif
 #endif
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -397,324 +397,339 @@ const std::vector<std::string> ABC{"A", "B", "C"};
 
 } // namespace
 
-TEST_CASE("A queue makes the object ready when events arrive: wait, reset, poll with the timeout 0",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("A queue makes the object ready when events arrive: wait, reset, poll with the timeout 0") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(exceptionOf(host).empty());
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(exceptionOf(host).empty());
 
-    // No work, no signal.
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            // No work, no signal.
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
 
-    // The first poll of a host that waits for the object returns the events.
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
-
-    std::vector<std::string> symbols{};
-
-    REQUIRE(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK_FALSE(symbols.empty());
-
-    // The events arrive in one delivery or more: the host goes on with its loop.
-    for (auto end = std::chrono::steady_clock::now() + RETURN_TIMEOUT;
-         symbols.size() < ABC.size() && std::chrono::steady_clock::now() < end;) {
-        if (host.object.waitAndReset(READY_TIMEOUT_MS)) {
-            host.poll(symbols);
-        }
-    }
-
-    CHECK(symbols == ABC);
-    CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
-
-    // Each poll arms the queue again: the next events make the object ready again.
-    REQUIRE(publishQuotes(host.hub, {{"B", 4}}));
-    CHECK(host.pollWhenReady(1) == std::vector<std::string>{"B"});
-    REQUIRE(publishQuotes(host.hub, {{"C", 5}}));
-    CHECK(host.pollWhenReady(1) == std::vector<std::string>{"C"});
-    CHECK(exceptionOf(host).empty());
-}
-
-TEST_CASE("A poll that stops at its limit makes the object ready again while work is left",
-          "[EventQueue][ReadySignal][Shared]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, true);
-
-    REQUIRE(host.ready);
-
-    // Three subscriptions on one queue: three tasks, since a single retrieval is not split by the limit.
-    REQUIRE(host.attach("A", 1));
-    REQUIRE(host.attach("B", 2));
-    REQUIRE(host.attach("C", 3));
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
-
-    // The other deliveries queue their tasks without a signal; they arrive in the queue during the settle time. A
-    // delivery that comes later finds the queue armed and signals by itself, so the loop below holds either way.
-    std::this_thread::sleep_for(SETTLE_TIME);
-
-    std::vector<std::string> symbols{};
-
-    for (int i = 1; i <= 3; ++i) {
-        INFO("poll " << i);
-        REQUIRE(host.poll(symbols, 1) == DXFG_EXECUTE_SUCCESSFULLY);
-        CHECK(symbols.size() == static_cast<std::size_t>(i));
-
-        if (i < 3) {
-            // The events remain: the poll signals before it returns.
+            // The first poll of a host that waits for the object returns the events.
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
             REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
+
+            std::vector<std::string> symbols{};
+
+            REQUIRE(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK_FALSE(symbols.empty());
+
+            // The events arrive in one delivery or more: the host goes on with its loop.
+            for (auto end = std::chrono::steady_clock::now() + RETURN_TIMEOUT;
+                 symbols.size() < ABC.size() && std::chrono::steady_clock::now() < end;) {
+                if (host.object.waitAndReset(READY_TIMEOUT_MS)) {
+                    host.poll(symbols);
+                }
+            }
+
+            CHECK(symbols == ABC);
+            CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
+
+            // Each poll arms the queue again: the next events make the object ready again.
+            REQUIRE(publishQuotes(host.hub, {{"B", 4}}));
+            CHECK(host.pollWhenReady(1) == std::vector<std::string>{"B"});
+            REQUIRE(publishQuotes(host.hub, {{"C", 5}}));
+            CHECK(host.pollWhenReady(1) == std::vector<std::string>{"C"});
+            CHECK(exceptionOf(host).empty());
         }
     }
-
-    CHECK(std::set<std::string>(symbols.begin(), symbols.end()) == std::set<std::string>(ABC.begin(), ABC.end()));
-
-    // Nothing is left: the object is not ready, and the next poll has no events.
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
-    CHECK(host.poll(symbols, 1) == DXFG_EVENT_QUEUE_NO_EVENTS);
-    CHECK(symbols.size() == 3);
-    CHECK(exceptionOf(host).empty());
 }
 
-TEST_CASE("A wake-up makes the object ready, the poll returns no events", "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("A poll that stops at its limit makes the object ready again while work is left") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, true);
 
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            REQUIRE(host.ready);
 
-    REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
+            // Three subscriptions on one queue: three tasks, since a single retrieval is not split by the limit.
+            REQUIRE(host.attach("A", 1));
+            REQUIRE(host.attach("B", 2));
+            REQUIRE(host.attach("C", 3));
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
+            REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
 
-    std::vector<std::string> symbols{};
+            // The other deliveries queue their tasks without a signal; they arrive in the queue during the settle time.
+            // A delivery that comes later finds the queue armed and signals by itself, so the loop below holds either
+            // way.
+            std::this_thread::sleep_for(SETTLE_TIME);
 
-    // The wake-up is consumed by this poll: without it the poll would wait for its timeout.
-    CHECK(host.poll(symbols, 0, POLL_TIMEOUT_MS) == DXFG_EVENT_QUEUE_NO_EVENTS);
-    CHECK(symbols.empty());
-    CHECK(exceptionOf(host).empty());
+            std::vector<std::string> symbols{};
 
-    // The queue is armed again.
-    REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(host.object.waitAndReset(READY_TIMEOUT_MS));
-    CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
-}
+            for (int i = 1; i <= 3; ++i) {
+                INFO("poll " << i);
+                REQUIRE(host.poll(symbols, 1) == DXFG_EXECUTE_SUCCESSFULLY);
+                CHECK(symbols.size() == static_cast<std::size_t>(i));
 
-TEST_CASE("The close of a queue on another thread makes the object ready, the poll returns closed",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+                if (i < 3) {
+                    // The events remain: the poll signals before it returns.
+                    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
+                }
+            }
 
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            CHECK(std::set<std::string>(symbols.begin(), symbols.end()) ==
+                  std::set<std::string>(ABC.begin(), ABC.end()));
 
-    auto *queue = host.queue;
-    Attached closer(isolate().isolate,
-                    [queue](graal_isolatethread_t *thread) { return dxfg_v4_EventQueue_close(thread, queue); });
-
-    REQUIRE(returnsWithin(closer));
-    CHECK(closer.join() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
-
-    std::vector<std::string> symbols{};
-    dxfg_v4_event_type_list *events = reinterpret_cast<dxfg_v4_event_type_list *>(1);
-
-    CHECK(dxfg_v4_EventQueue_poll(host.thread, host.queue, 0, 0, &events) == DXFG_EVENT_QUEUE_CLOSED);
-    CHECK(events == nullptr);
-    CHECK(host.poll(symbols, 0, POLL_TIMEOUT_MS) == DXFG_EVENT_QUEUE_CLOSED);
-    CHECK(exceptionOf(host).empty());
-}
-
-TEST_CASE("The close of a queue on another thread during a poll makes the object ready, the next poll returns closed",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
-
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-
-    // The host is inside a poll that waits for events.
-    auto *queue = host.queue;
-    Attached poller(isolate().isolate, [queue](graal_isolatethread_t *thread) {
-        dxfg_v4_event_type_list *events = nullptr;
-        const int32_t result = dxfg_v4_EventQueue_poll(thread, queue, POLL_TIMEOUT_MS, 0, &events);
-
-        if (result == DXFG_EXECUTE_SUCCESSFULLY) {
-            dxfg_v4_event_type_list_release(thread, events);
+            // Nothing is left: the object is not ready, and the next poll has no events.
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            CHECK(host.poll(symbols, 1) == DXFG_EVENT_QUEUE_NO_EVENTS);
+            CHECK(symbols.size() == 3);
+            CHECK(exceptionOf(host).empty());
         }
-
-        return result;
-    });
-
-    std::this_thread::sleep_for(SETTLE_TIME);
-    REQUIRE_FALSE(poller.returned());
-
-    Attached closer(isolate().isolate,
-                    [queue](graal_isolatethread_t *thread) { return dxfg_v4_EventQueue_close(thread, queue); });
-
-    REQUIRE(returnsWithin(closer));
-    CHECK(closer.join() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(returnsWithin(poller));
-    CHECK(poller.join() == DXFG_EVENT_QUEUE_CLOSED);
-
-    // The close signals once for the loop, whatever the poll in progress returned.
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
-
-    std::vector<std::string> symbols{};
-
-    CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_CLOSED);
-    CHECK(exceptionOf(host).empty());
+    }
 }
 
-TEST_CASE("After the removal of the signal the object stays not ready, polling still returns the events",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("A wake-up makes the object ready, the poll returns no events") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.removeSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(exceptionOf(host).empty());
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
 
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
-    CHECK(host.pollAll() == ABC);
+            REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
 
-    // Removing a signal that is not set is not an error.
-    CHECK(host.removeSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(exceptionOf(host).empty());
+            std::vector<std::string> symbols{};
+
+            // The wake-up is consumed by this poll: without it the poll would wait for its timeout.
+            CHECK(host.poll(symbols, 0, POLL_TIMEOUT_MS) == DXFG_EVENT_QUEUE_NO_EVENTS);
+            CHECK(symbols.empty());
+            CHECK(exceptionOf(host).empty());
+
+            // The queue is armed again.
+            REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(host.object.waitAndReset(READY_TIMEOUT_MS));
+            CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
+        }
+    }
 }
 
-TEST_CASE("A new signal replaces the old one", "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    // Declared first: closed after the queue, as the contract says.
-    ReadyObject other(mode);
-    Fixture host(mode, false);
+TEST_CASE("The close of a queue on another thread makes the object ready, the poll returns closed") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(other.valid());
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.setSignal(other) == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
 
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
-    REQUIRE(other.waitAndReset(READY_TIMEOUT_MS));
-    CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            auto *queue = host.queue;
+            Attached closer(isolate().isolate,
+                            [queue](graal_isolatethread_t *thread) { return dxfg_v4_EventQueue_close(thread, queue); });
 
-    std::vector<std::string> symbols{};
+            REQUIRE(returnsWithin(closer));
+            CHECK(closer.join() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
 
-    CHECK(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(symbols == std::vector<std::string>{"A"});
-    CHECK(exceptionOf(host).empty());
+            std::vector<std::string> symbols{};
+            dxfg_v4_event_type_list *events = reinterpret_cast<dxfg_v4_event_type_list *>(1);
+
+            CHECK(dxfg_v4_EventQueue_poll(host.thread, host.queue, 0, 0, &events) == DXFG_EVENT_QUEUE_CLOSED);
+            CHECK(events == nullptr);
+            CHECK(host.poll(symbols, 0, POLL_TIMEOUT_MS) == DXFG_EVENT_QUEUE_CLOSED);
+            CHECK(exceptionOf(host).empty());
+        }
+    }
 }
 
-TEST_CASE("A signal set while events are pending makes the object ready", "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("The close of a queue on another thread during a poll makes the object ready, the next poll returns closed") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
-    std::this_thread::sleep_for(SETTLE_TIME);
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
 
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
+            // The host is inside a poll that waits for events.
+            auto *queue = host.queue;
+            Attached poller(isolate().isolate, [queue](graal_isolatethread_t *thread) {
+                dxfg_v4_event_type_list *events = nullptr;
+                const int32_t result = dxfg_v4_EventQueue_poll(thread, queue, POLL_TIMEOUT_MS, 0, &events);
 
-    std::vector<std::string> symbols{};
+                if (result == DXFG_EXECUTE_SUCCESSFULLY) {
+                    dxfg_v4_event_type_list_release(thread, events);
+                }
 
-    CHECK(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(symbols == std::vector<std::string>{"A"});
-    CHECK(exceptionOf(host).empty());
+                return result;
+            });
+
+            std::this_thread::sleep_for(SETTLE_TIME);
+            REQUIRE_FALSE(poller.returned());
+
+            Attached closer(isolate().isolate,
+                            [queue](graal_isolatethread_t *thread) { return dxfg_v4_EventQueue_close(thread, queue); });
+
+            REQUIRE(returnsWithin(closer));
+            CHECK(closer.join() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(returnsWithin(poller));
+            CHECK(poller.join() == DXFG_EVENT_QUEUE_CLOSED);
+
+            // The close signals once for the loop, whatever the poll in progress returned.
+            REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
+
+            std::vector<std::string> symbols{};
+
+            CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_CLOSED);
+            CHECK(exceptionOf(host).empty());
+        }
+    }
 }
 
-TEST_CASE("A signal set while a wake-up is pending makes the object ready before the call returns",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("After the removal of the signal the object stays not ready, polling still returns the events") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
-    CHECK(host.object.waitAndReset(0));
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.removeSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(exceptionOf(host).empty());
 
-    std::vector<std::string> symbols{};
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}, {"B", 2}, {"C", 3}}));
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
+            CHECK(host.pollAll() == ABC);
 
-    CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
-    CHECK(exceptionOf(host).empty());
+            // Removing a signal that is not set is not an error.
+            CHECK(host.removeSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(exceptionOf(host).empty());
+        }
+    }
 }
 
-TEST_CASE("An object that is not usable is refused with an IllegalArgumentException, the signal stays",
-          "[EventQueue][ReadySignal]") {
-    const Mode mode = GENERATE(from_range(std::begin(MODES), std::end(MODES)));
-    INFO(modeName(mode));
-    Fixture host(mode, false);
+TEST_CASE("A new signal replaces the old one") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            // Declared first: closed after the queue, as the contract says.
+            ReadyObject other(mode);
+            Fixture host(mode, false);
 
-    REQUIRE(host.ready);
-    REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.ready);
+            REQUIRE(other.valid());
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.setSignal(other) == DXFG_EXECUTE_SUCCESSFULLY);
 
-    const auto refused = [&host](dxfg_v4_ready_signal_kind_t kind, int64_t handle) {
-        INFO("kind " << static_cast<int>(kind) << ", handle " << handle);
-        CHECK(dxfg_v4_EventQueue_setReadySignal(host.thread, host.queue, kind, handle) == DXFG_EXECUTE_FAIL);
-        CHECK(exceptionOf(host) == "java.lang.IllegalArgumentException");
-    };
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
+            REQUIRE(other.waitAndReset(READY_TIMEOUT_MS));
+            CHECK_FALSE(host.object.waitAndReset(NOT_READY_TIMEOUT_MS));
 
-#ifdef _WIN32
-    // The kind of another OS.
-    refused(OTHER_KIND, host.object.handle());
+            std::vector<std::string> symbols{};
 
-    // Not an event handle.
-    refused(OWN_KIND, 0);
-    refused(OWN_KIND, -1);
-#else
-    // The kind of another OS.
-    refused(OTHER_KIND, host.object.handle());
+            CHECK(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(symbols == std::vector<std::string>{"A"});
+            CHECK(exceptionOf(host).empty());
+        }
+    }
+}
 
-    // A blocking pipe.
-    int blocking[2];
+TEST_CASE("A signal set while events are pending makes the object ready") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    REQUIRE(makePipe(blocking, false));
-    refused(OWN_KIND, blocking[1]);
-    close(blocking[0]);
-    close(blocking[1]);
+            REQUIRE(host.ready);
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
+            std::this_thread::sleep_for(SETTLE_TIME);
 
-    // The read end of a non-blocking pipe.
-    int pipeFds[2];
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.object.waitAndReset(READY_TIMEOUT_MS));
 
-    REQUIRE(makePipe(pipeFds, true));
-    refused(OWN_KIND, pipeFds[0]);
-    close(pipeFds[0]);
+            std::vector<std::string> symbols{};
 
-    // A closed descriptor.
-    const int closedFd = pipeFds[1];
+            CHECK(host.poll(symbols) == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(symbols == std::vector<std::string>{"A"});
+            CHECK(exceptionOf(host).empty());
+        }
+    }
+}
 
-    close(closedFd);
-    refused(OWN_KIND, closedFd);
+TEST_CASE("A signal set while a wake-up is pending makes the object ready before the call returns") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
 
-    // Out of the range of descriptors.
-    refused(OWN_KIND, static_cast<int64_t>(INT32_MAX) + 1);
-    refused(OWN_KIND, -1);
-#endif
+            REQUIRE(host.ready);
+            REQUIRE(dxfg_v4_EventQueue_wakeUp(host.thread, host.queue) == DXFG_EXECUTE_SUCCESSFULLY);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+            CHECK(host.object.waitAndReset(0));
 
-    // A kind that does not exist.
-    refused(UNKNOWN_KIND, host.object.handle());
+            std::vector<std::string> symbols{};
 
-    // The refusals left the signal as it was.
-    REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
-    CHECK(host.pollWhenReady(1) == std::vector<std::string>{"A"});
+            CHECK(host.poll(symbols) == DXFG_EVENT_QUEUE_NO_EVENTS);
+            CHECK(exceptionOf(host).empty());
+        }
+    }
+}
+
+TEST_CASE("An object that is not usable is refused with an IllegalArgumentException, the signal stays") {
+    for (const Mode mode : MODES) {
+        SUBCASE(modeName(mode)) {
+            Fixture host(mode, false);
+
+            REQUIRE(host.ready);
+            REQUIRE(host.setSignal() == DXFG_EXECUTE_SUCCESSFULLY);
+
+            const auto refused = [&host](dxfg_v4_ready_signal_kind_t kind, int64_t handle) {
+                INFO("kind " << static_cast<int>(kind) << ", handle " << handle);
+                CHECK(dxfg_v4_EventQueue_setReadySignal(host.thread, host.queue, kind, handle) == DXFG_EXECUTE_FAIL);
+                CHECK(exceptionOf(host) == "java.lang.IllegalArgumentException");
+            };
+
+        #ifdef _WIN32
+            // The kind of another OS.
+            refused(OTHER_KIND, host.object.handle());
+
+            // Not an event handle.
+            refused(OWN_KIND, 0);
+            refused(OWN_KIND, -1);
+        #else
+            // The kind of another OS.
+            refused(OTHER_KIND, host.object.handle());
+
+            // A blocking pipe.
+            int blocking[2];
+
+            REQUIRE(makePipe(blocking, false));
+            refused(OWN_KIND, blocking[1]);
+            close(blocking[0]);
+            close(blocking[1]);
+
+            // The read end of a non-blocking pipe.
+            int pipeFds[2];
+
+            REQUIRE(makePipe(pipeFds, true));
+            refused(OWN_KIND, pipeFds[0]);
+            close(pipeFds[0]);
+
+            // A closed descriptor.
+            const int closedFd = pipeFds[1];
+
+            close(closedFd);
+            refused(OWN_KIND, closedFd);
+
+            // Out of the range of descriptors.
+            refused(OWN_KIND, static_cast<int64_t>(INT32_MAX) + 1);
+            refused(OWN_KIND, -1);
+        #endif
+
+            // A kind that does not exist.
+            refused(UNKNOWN_KIND, host.object.handle());
+
+            // The refusals left the signal as it was.
+            REQUIRE(publishQuotes(host.hub, {{"A", 1}}));
+            CHECK(host.pollWhenReady(1) == std::vector<std::string>{"A"});
+        }
+    }
 }
 
 #ifndef _WIN32
-TEST_CASE("A pipe whose read end is closed does not stop the process or the queue", "[EventQueue][ReadySignal]") {
+TEST_CASE("A pipe whose read end is closed does not stop the process or the queue") {
     Fixture host(Mode::PIPE, false);
 
     REQUIRE(host.ready);

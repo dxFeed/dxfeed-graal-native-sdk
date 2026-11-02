@@ -4,9 +4,9 @@
 // The teardown of an isolate while a thread polls an event queue with an infinite timeout: dxfg_v4_system_shutdown()
 // ends the poll with DXFG_EVENT_QUEUE_CLOSED, the thread detaches and graal_tear_down_isolate() returns. A hang is
 // the failure, so each case is a process of its own with a CTest timeout: an isolate is torn down once per process,
-// and CTest runs the cases one by one by their tags.
+// and CTest runs the cases one by one by their test suites.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -17,7 +17,7 @@
 namespace dxfg {
 namespace test {
 
-TEST_CASE("The isolate is torn down after a shutdown ends an infinite poll", "[EventQueue][Single]") {
+TEST_CASE("The isolate is torn down after a shutdown ends an infinite poll" * doctest::test_suite("Single")) {
     Isolate isolate{};
 
     REQUIRE(isolate.thread != nullptr);
@@ -57,7 +57,8 @@ TEST_CASE("The isolate is torn down after a shutdown ends an infinite poll", "[E
     CHECK(graal_tear_down_isolate(isolate.thread) == 0);
 }
 
-TEST_CASE("The isolate is torn down after a shutdown ends an infinite poll of a shared queue", "[EventQueue][Shared]") {
+TEST_CASE("The isolate is torn down after a shutdown ends an infinite poll of a shared queue" *
+          doctest::test_suite("Shared")) {
     Isolate isolate{};
 
     REQUIRE(isolate.thread != nullptr);

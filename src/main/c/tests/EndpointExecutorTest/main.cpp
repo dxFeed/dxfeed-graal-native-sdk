@@ -4,7 +4,7 @@
 // An endpoint built with dxfg_DXEndpoint_Builder_withExecutor() closes without an error. QDS 3.356 throws
 // NullPointerException from the last step of closing such an endpoint (QD-1801); the SDK ignores it.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 namespace dxfg {
@@ -42,7 +42,7 @@ dxfg_endpoint_t *buildEndpoint(graal_isolatethread_t *thread, dxfg_executor_t *e
 
 } // namespace
 
-TEST_CASE("An endpoint with an executor closes without an error", "[EndpointExecutor]") {
+TEST_CASE("An endpoint with an executor closes without an error") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -52,7 +52,7 @@ TEST_CASE("An endpoint with an executor closes without an error", "[EndpointExec
 
     REQUIRE(executor != nullptr);
 
-    SECTION("dxfg_DXEndpoint_close") {
+    SUBCASE("dxfg_DXEndpoint_close") {
         dxfg_endpoint_t *endpoint = buildEndpoint(thread, executor);
 
         REQUIRE(endpoint != nullptr);
@@ -61,7 +61,7 @@ TEST_CASE("An endpoint with an executor closes without an error", "[EndpointExec
         dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
     }
 
-    SECTION("dxfg_DXEndpoint_closeAndAwaitTermination") {
+    SUBCASE("dxfg_DXEndpoint_closeAndAwaitTermination") {
         dxfg_endpoint_t *endpoint = buildEndpoint(thread, executor);
 
         REQUIRE(endpoint != nullptr);
@@ -70,7 +70,7 @@ TEST_CASE("An endpoint with an executor closes without an error", "[EndpointExec
         dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
     }
 
-    SECTION("dxfg_system_close_all_and_await_termination closes the other endpoints too") {
+    SUBCASE("dxfg_system_close_all_and_await_termination closes the other endpoints too") {
         dxfg_endpoint_t *withExecutor = buildEndpoint(thread, executor);
         dxfg_endpoint_t *withDefault = buildEndpoint(thread, nullptr);
 

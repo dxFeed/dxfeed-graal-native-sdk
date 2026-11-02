@@ -5,7 +5,7 @@
 // thread, no listener is called after they return, a listener created afterwards is never called. The deactivation
 // cannot be undone for an isolate, so every test case creates its own isolate.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -156,8 +156,7 @@ struct ReleaseOnExit {
 
 } // namespace
 
-TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no listener is called",
-          "[Shutdown]") {
+TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no listener is called") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -196,7 +195,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll waits for a callback, then no li
     CHECK(later.calls() == 0);
 }
 
-TEST_CASE("dxfg_v4_NativeListener_deactivateAll called from a callback does not wait for that call", "[Shutdown]") {
+TEST_CASE("dxfg_v4_NativeListener_deactivateAll called from a callback does not wait for that call") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -220,7 +219,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll called from a callback does not 
     CHECK(deactivating.calls() == calls);
 }
 
-TEST_CASE("dxfg_v4_system_shutdown closes the endpoints after the callbacks", "[Shutdown]") {
+TEST_CASE("dxfg_v4_system_shutdown closes the endpoints after the callbacks") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 

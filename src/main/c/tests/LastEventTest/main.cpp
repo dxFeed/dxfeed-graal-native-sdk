@@ -6,7 +6,7 @@
 //
 // The memory checks need the heap statistics of glibc (mallinfo2), so they run on Linux only.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include <chrono>
@@ -170,7 +170,7 @@ template <typename Action> double heapGrowthPerIteration(Action action) {
 
 } // namespace
 
-TEST_CASE("dxfg_DXFeed_getLastEvent2 returns the last event when it is available", "[LastEvent]") {
+TEST_CASE("dxfg_DXFeed_getLastEvent2 returns the last event when it is available") {
     REQUIRE(hub().ready);
 
     const dxfg_profile_t given = callerProfile(WITH_DATA);
@@ -189,8 +189,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 returns the last event when it is available
     CHECK(dxfg_EventType_release(hub().thread, lastEvent) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("dxfg_DXFeed_getLastEvent2 returns a copy of the given event when the last event is not available",
-          "[LastEvent]") {
+TEST_CASE("dxfg_DXFeed_getLastEvent2 returns a copy of the given event when the last event is not available") {
     REQUIRE(hub().ready);
 
     for (const char *symbol : {NO_DATA, NOT_SUBSCRIBED}) {
@@ -213,7 +212,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 returns a copy of the given event when the 
     }
 }
 
-TEST_CASE("dxfg_DXFeed_getLastEvents2 returns the last events in the order of the given events", "[LastEvent]") {
+TEST_CASE("dxfg_DXFeed_getLastEvents2 returns the last events in the order of the given events") {
     REQUIRE(hub().ready);
 
     dxfg_profile_t given[] = {callerProfile(NO_DATA), callerProfile(WITH_DATA), callerProfile(NOT_SUBSCRIBED)};
@@ -242,7 +241,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvents2 returns the last events in the order of th
     CHECK(dxfg_CList_EventType_release(hub().thread, none) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 fail on a wrong argument", "[LastEvent]") {
+TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 fail on a wrong argument") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -251,7 +250,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 fail on a wr
     auto *const notSet = reinterpret_cast<dxfg_event_type_t *>(&thread);
     auto *const notSetList = reinterpret_cast<dxfg_event_type_list *>(&thread);
 
-    SECTION("dxfg_DXFeed_getLastEvent2") {
+    SUBCASE("dxfg_DXFeed_getLastEvent2") {
         dxfg_event_type_t *lastEvent = notSet;
 
         CHECK(dxfg_DXFeed_getLastEvent2(thread, feed, nullptr, &lastEvent) == DXFG_EXECUTE_FAIL);
@@ -275,7 +274,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 fail on a wr
         CHECK(clearException(thread));
     }
 
-    SECTION("dxfg_DXFeed_getLastEvents2") {
+    SUBCASE("dxfg_DXFeed_getLastEvents2") {
         dxfg_event_type_list *lastEvents = notSetList;
 
         CHECK(dxfg_DXFeed_getLastEvents2(thread, feed, nullptr, &lastEvents) == DXFG_EXECUTE_FAIL);
@@ -297,7 +296,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 fail on a wr
     }
 }
 
-TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 keep no memory", "[LastEvent]") {
+TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 keep no memory") {
     REQUIRE(hub().ready);
 
 #if defined(__GLIBC__)
@@ -332,7 +331,7 @@ TEST_CASE("dxfg_DXFeed_getLastEvent2 and dxfg_DXFeed_getLastEvents2 keep no memo
     INFO("Heap growth per dxfg_DXFeed_getLastEvents2: " << growth << " bytes");
     CHECK(growth < MAX_GROWTH_PER_ITERATION);
 #else
-    WARN("Skipped: needs the heap statistics of glibc");
+    MESSAGE("Skipped: needs the heap statistics of glibc");
 #endif
 }
 

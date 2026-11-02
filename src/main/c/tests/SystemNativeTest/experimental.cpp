@@ -6,7 +6,7 @@
 // SystemNativeTest_ExperimentalMarker checks that the compiler warns).
 #define DXFG_EXPERIMENTAL [[deprecated("experimental")]]
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -14,7 +14,7 @@
 namespace dxfg {
 namespace test {
 
-TEST_CASE("DXFG_EXPERIMENTAL defined by the application as a deprecation attribute", "[SystemNative][V4]") {
+TEST_CASE("DXFG_EXPERIMENTAL defined by the application as a deprecation attribute") {
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
 

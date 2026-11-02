@@ -5,7 +5,7 @@
 // in Java. The tests pass the events through the QD text tapes, where Java writes the attachment as
 // "<toString()> <Base64 of the serialized object>".
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include <cstdio>
@@ -246,7 +246,7 @@ struct CallerEvents {
 
 } // namespace
 
-TEST_CASE("The attachments written by Java are read in C as strings", "[EventAttachment]") {
+TEST_CASE("The attachments written by Java are read in C as strings") {
     REQUIRE(isolateThread() != nullptr);
 
     const auto path = tempPath("java");
@@ -276,7 +276,7 @@ TEST_CASE("The attachments written by Java are read in C as strings", "[EventAtt
     CHECK(events.at("Configuration:CFG-INTEGER").version == 3);
 }
 
-TEST_CASE("The attachments published from C are written as Java writes them", "[EventAttachment]") {
+TEST_CASE("The attachments published from C are written as Java writes them") {
     REQUIRE(isolateThread() != nullptr);
 
     const auto path = tempPath("c");
@@ -304,7 +304,7 @@ TEST_CASE("The attachments published from C are written as Java writes them", "[
     CHECK(events.configurationNull.attachment == nullptr);
 }
 
-TEST_CASE("The attachments are unchanged after a round trip C -> Java -> C", "[EventAttachment]") {
+TEST_CASE("The attachments are unchanged after a round trip C -> Java -> C") {
     REQUIRE(isolateThread() != nullptr);
 
     const auto path = tempPath("round-trip");
@@ -324,7 +324,7 @@ TEST_CASE("The attachments are unchanged after a round trip C -> Java -> C", "[E
     CHECK(events.at("Configuration:CFG-NULL").version == 2);
 }
 
-TEST_CASE("The attachment of an event created by the SDK is freed by the SDK", "[EventAttachment]") {
+TEST_CASE("The attachment of an event created by the SDK is freed by the SDK") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);

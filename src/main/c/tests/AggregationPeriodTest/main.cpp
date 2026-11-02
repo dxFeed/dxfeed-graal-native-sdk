@@ -16,7 +16,7 @@
 #    include <unistd.h>
 #endif
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include <atomic>
@@ -130,7 +130,7 @@ void onEvents(graal_isolatethread_t *, dxfg_event_type_list *, void *userData) {
 
 } // namespace
 
-TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod]") {
+TEST_CASE("The requested aggregation period of an endpoint") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -139,7 +139,7 @@ TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod
 
     REQUIRE(endpoint != nullptr);
 
-    SECTION("Not requested by default") {
+    SUBCASE("Not requested by default") {
         // A non-NULL value shows that the function writes NULL.
         dxfg_time_period_t *zero = dxfg_TimePeriod_ZERO(thread);
         dxfg_time_period_t *period = zero;
@@ -151,7 +151,7 @@ TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod
         dxfg_JavaObjectHandler_release(thread, &zero->handler);
     }
 
-    SECTION("Set and cleared in millis") {
+    SUBCASE("Set and cleared in millis") {
         REQUIRE(dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(thread, endpoint, 5000) == 0);
         CHECK(requestedMillis(thread, endpoint) == 5000);
 
@@ -169,7 +169,7 @@ TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod
         CHECK(requestedMillis(thread, endpoint) == -1);
     }
 
-    SECTION("Set and cleared with a time period") {
+    SUBCASE("Set and cleared with a time period") {
         dxfg_time_period_t *period = dxfg_TimePeriod_valueOf(thread, 2000);
 
         REQUIRE(period != nullptr);
@@ -181,7 +181,7 @@ TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod
         CHECK(requestedMillis(thread, endpoint) == -1);
     }
 
-    SECTION("Errors") {
+    SUBCASE("Errors") {
         REQUIRE(dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(thread, endpoint, 1000) == 0);
         CHECK(failed(thread, dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(thread, endpoint, 86400001)));
         CHECK(requestedMillis(thread, endpoint) == 1000);
@@ -192,7 +192,7 @@ TEST_CASE("The requested aggregation period of an endpoint", "[AggregationPeriod
     closeAndRelease(thread, endpoint);
 }
 
-TEST_CASE("The aggregation period info of an endpoint comes from the server", "[AggregationPeriod]") {
+TEST_CASE("The aggregation period info of an endpoint comes from the server") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -236,7 +236,7 @@ TEST_CASE("The aggregation period info of an endpoint comes from the server", "[
     closeAndRelease(thread, server);
 }
 
-TEST_CASE("The aggregation period info and the dropped events of a subscription", "[AggregationPeriod]") {
+TEST_CASE("The aggregation period info and the dropped events of a subscription") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);

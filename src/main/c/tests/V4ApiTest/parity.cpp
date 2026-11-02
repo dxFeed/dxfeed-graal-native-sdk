@@ -6,7 +6,7 @@
 // functions (the way integrators can silence it).
 #define DXFG_DEPRECATED(message)
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "isolate.hpp"
@@ -20,7 +20,7 @@
 namespace dxfg {
 namespace test {
 
-TEST_CASE("The older and the v4 functions create equal objects that each generation releases", "[V4Api][Parity]") {
+TEST_CASE("The older and the v4 functions create equal objects that each generation releases") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -52,7 +52,7 @@ TEST_CASE("The older and the v4 functions create equal objects that each generat
     CHECK(dxfg_v4_Exception_release(thread, exception) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The exception of a failed function is taken by either generation", "[V4Api][Parity]") {
+TEST_CASE("The exception of a failed function is taken by either generation") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -85,7 +85,7 @@ TEST_CASE("The exception of a failed function is taken by either generation", "[
     dxfg_Exception_release(thread, olderException);
 }
 
-TEST_CASE("A twin returns -1 where the older function returns INT32_MIN", "[V4Api][Parity]") {
+TEST_CASE("A twin returns -1 where the older function returns INT32_MIN") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -105,7 +105,7 @@ TEST_CASE("A twin returns -1 where the older function returns INT32_MIN", "[V4Ap
     dxfg_Exception_release(thread, exception);
 }
 
-TEST_CASE("A list that an older function returned is released by the v4 function", "[V4Api][Parity]") {
+TEST_CASE("A list that an older function returned is released by the v4 function") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -117,7 +117,7 @@ TEST_CASE("A list that an older function returned is released by the v4 function
     CHECK(dxfg_v4_string_list_release(thread, list) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A list of event types is released by the release function of either generation", "[V4Api][Parity]") {
+TEST_CASE("A list of event types is released by the release function of either generation") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -146,7 +146,7 @@ TEST_CASE("A list of event types is released by the release function of either g
     dxfg_JavaObjectHandler_release(thread, &subscription->handler);
 }
 
-TEST_CASE("A list of symbols is released by the release function of either generation", "[V4Api][Parity]") {
+TEST_CASE("A list of symbols is released by the release function of either generation") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -177,7 +177,7 @@ TEST_CASE("A list of symbols is released by the release function of either gener
     dxfg_JavaObjectHandler_release(thread, &subscription->handler);
 }
 
-TEST_CASE("dxfg_DXFeed_getLastEvent2 and its twin get the same event and fail alike", "[V4Api][Parity]") {
+TEST_CASE("dxfg_DXFeed_getLastEvent2 and its twin get the same event and fail alike") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -300,7 +300,7 @@ void failInListener(graal_isolatethread_t *thread, dxfg_event_type_list * /*even
 
 } // namespace
 
-TEST_CASE("A twin succeeds when a callback that it runs leaves an exception", "[V4Api][Parity]") {
+TEST_CASE("A twin succeeds when a callback that it runs leaves an exception") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -372,8 +372,7 @@ TEST_CASE("A twin succeeds when a callback that it runs leaves an exception", "[
     dxfg_JavaObjectHandler_release(thread, &executor->handler);
 }
 
-TEST_CASE("The older and the v4 readers give the same instrument profiles, each generation releases them",
-          "[V4Api][Parity]") {
+TEST_CASE("The older and the v4 readers give the same instrument profiles, each generation releases them") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -445,7 +444,7 @@ TEST_CASE("The older and the v4 readers give the same instrument profiles, each 
     dxfg_JavaObjectHandler_release(thread, &reader->handler);
 }
 
-TEST_CASE("The older and the v4 schedule and glossary functions give the same values", "[V4Api][Parity]") {
+TEST_CASE("The older and the v4 schedule and glossary functions give the same values") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -541,7 +540,7 @@ TEST_CASE("The older and the v4 schedule and glossary functions give the same va
     CHECK(dxfg_JavaObjectHandler_release(thread, &cfi->handler) == 0);
 }
 
-TEST_CASE("The older and the v4 functions of the services and the models give the same values", "[V4Api][Parity]") {
+TEST_CASE("The older and the v4 functions of the services and the models give the same values") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);

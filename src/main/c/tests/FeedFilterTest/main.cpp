@@ -7,7 +7,7 @@
 // listener on a thread of the SDK, the listener can add and remove listeners from its call, and it is silent after its
 // release and after dxfg_v4_NativeListener_deactivateAll().
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -267,7 +267,7 @@ std::string uniqueName(const char *prefix) {
 
 } // namespace
 
-TEST_CASE("A filter of prefix, list and range categories accepts and classifies symbols and events", "[FeedFilter]") {
+TEST_CASE("A filter of prefix, list and range categories accepts and classifies symbols and events") {
     Hub hub(isolate().thread);
     REQUIRE(hub.ready);
     const auto thread = hub.thread;
@@ -352,7 +352,7 @@ TEST_CASE("A filter of prefix, list and range categories accepts and classifies 
     CHECK(calls.get() == 0);
 }
 
-TEST_CASE("The builder refuses bad categories and stays usable", "[FeedFilter]") {
+TEST_CASE("The builder refuses bad categories and stays usable") {
     Hub hub(isolate().thread);
     REQUIRE(hub.ready);
     const auto thread = hub.thread;
@@ -451,7 +451,7 @@ TEST_CASE("The builder refuses bad categories and stays usable", "[FeedFilter]")
     CHECK(bad.handle == nullptr);
 }
 
-TEST_CASE("The functions refuse NULL handles and NULL out pointers", "[FeedFilter]") {
+TEST_CASE("The functions refuse NULL handles and NULL out pointers") {
     Hub hub(isolate().thread);
     REQUIRE(hub.ready);
     const auto thread = hub.thread;
@@ -526,7 +526,7 @@ TEST_CASE("The functions refuse NULL handles and NULL out pointers", "[FeedFilte
     CHECK(std::string(category) == "<unset>");
 }
 
-TEST_CASE("A dynamic filter calls its listener after an update until the listener is released", "[FeedFilter]") {
+TEST_CASE("A dynamic filter calls its listener after an update until the listener is released") {
     Hub hub(isolate().thread);
     REQUIRE(hub.ready);
     const auto thread = hub.thread;
@@ -570,7 +570,7 @@ TEST_CASE("A dynamic filter calls its listener after an update until the listene
     CHECK(takeExceptionClassName(thread).empty());
 }
 
-TEST_CASE("A listener adds and removes listeners and releases itself from its call", "[FeedFilter]") {
+TEST_CASE("A listener adds and removes listeners and releases itself from its call") {
     Hub hub(isolate().thread);
     REQUIRE(hub.ready);
     const auto thread = hub.thread;
@@ -617,7 +617,7 @@ TEST_CASE("A listener adds and removes listeners and releases itself from its ca
 }
 
 // The last case: deactivateAll() cannot be undone, so it runs in an isolate of its own.
-TEST_CASE("No listener is called after deactivateAll", "[FeedFilter]") {
+TEST_CASE("No listener is called after deactivateAll") {
     Isolate own;
     REQUIRE(own.thread != nullptr);
     Hub hub(own.thread);

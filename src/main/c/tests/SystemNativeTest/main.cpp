@@ -1,4 +1,4 @@
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -13,7 +13,7 @@
 namespace dxfg {
 namespace test {
 
-TEST_CASE("Check reads unset property", "[SystemNative]") {
+TEST_CASE("Check reads unset property") {
     // Setup graal.
     graal_isolate_t *isolate = nullptr;
     graal_isolatethread_t *thread = nullptr;
@@ -31,7 +31,7 @@ TEST_CASE("Check reads unset property", "[SystemNative]") {
     REQUIRE(graal_result == 0);
 }
 
-TEST_CASE("Check write/read property", "[SystemNative]") {
+TEST_CASE("Check write/read property") {
     // Setup graal.
     graal_isolate_t *isolate = nullptr;
     graal_isolatethread_t *thread = nullptr;
@@ -65,7 +65,7 @@ TEST_CASE("Check write/read property", "[SystemNative]") {
     REQUIRE(graal_result == 0);
 }
 
-TEST_CASE("Check in different isolate", "[SystemNative]") {
+TEST_CASE("Check in different isolate") {
     // Setup graal.
     graal_isolate_t *isolateFirst = nullptr;
     graal_isolatethread_t *threadFirst = nullptr;
@@ -117,7 +117,7 @@ TEST_CASE("Check in different isolate", "[SystemNative]") {
     REQUIRE(graal_result == 0);
 }
 
-TEST_CASE("The version is the one of the build", "[SystemNative][V4]") {
+TEST_CASE("The version is the one of the build") {
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
 
@@ -131,7 +131,7 @@ TEST_CASE("The version is the one of the build", "[SystemNative][V4]") {
     CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("The advanced revision is the one of the headers", "[SystemNative][V4]") {
+TEST_CASE("The advanced revision is the one of the headers") {
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
 
@@ -143,7 +143,7 @@ TEST_CASE("The advanced revision is the one of the headers", "[SystemNative][V4]
     CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("The features of the headers are supported, unknown ones are not", "[SystemNative][V4]") {
+TEST_CASE("The features of the headers are supported, unknown ones are not") {
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
 

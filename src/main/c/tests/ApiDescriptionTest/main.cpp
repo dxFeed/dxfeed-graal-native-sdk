@@ -4,7 +4,7 @@
 // The description of the C API that the build ships next to the library (dxfg-api.json) against the library itself:
 // the version, the advanced revision and the features of the description are the ones that the runtime reports.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -53,7 +53,7 @@ std::vector<std::string> features(const std::string &description) {
 
 } // namespace
 
-TEST_CASE("The description has the version of the library", "[ApiDescription]") {
+TEST_CASE("The description has the version of the library") {
     const auto description = readDescription();
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
@@ -65,7 +65,7 @@ TEST_CASE("The description has the version of the library", "[ApiDescription]") 
     REQUIRE(dxfg_v4_String_release(isolate.thread, version) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The description has the advanced revision of the library", "[ApiDescription]") {
+TEST_CASE("The description has the advanced revision of the library") {
     const auto description = readDescription();
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
@@ -76,7 +76,7 @@ TEST_CASE("The description has the advanced revision of the library", "[ApiDescr
     CHECK(revision == DXFG_V4_ADVANCED_REVISION);
 }
 
-TEST_CASE("The library supports every feature of the description", "[ApiDescription]") {
+TEST_CASE("The library supports every feature of the description") {
     const auto names = features(readDescription());
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
@@ -97,7 +97,7 @@ TEST_CASE("The library supports every feature of the description", "[ApiDescript
     }
 }
 
-TEST_CASE("The ready signal function and its feature are experimental in the description", "[ApiDescription]") {
+TEST_CASE("The ready signal function and its feature are experimental in the description") {
     const auto description = readDescription();
 
     // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
@@ -113,7 +113,7 @@ TEST_CASE("The ready signal function and its feature are experimental in the des
     CHECK(entryOf("dxfg_v4_ready_signal_kind_t").find("\"tier\": \"experimental\"") != std::string::npos);
 }
 
-TEST_CASE("The feed filter functions, types and feature are experimental in the description", "[ApiDescription]") {
+TEST_CASE("The feed filter functions, types and feature are experimental in the description") {
     const auto description = readDescription();
 
     // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
@@ -138,7 +138,7 @@ TEST_CASE("The feed filter functions, types and feature are experimental in the 
     }
 }
 
-TEST_CASE("The event peek function is experimental, the filters with user data are stable", "[ApiDescription]") {
+TEST_CASE("The event peek function is experimental, the filters with user data are stable") {
     const auto description = readDescription();
 
     // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).

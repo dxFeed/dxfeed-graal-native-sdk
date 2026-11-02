@@ -85,7 +85,7 @@ target_include_directories(${target}
 target_link_libraries(${target}
         PRIVATE
         ${DEFAULT_LIBRARIES}
-        Catch2::Catch2WithMain
+        doctest::doctest_with_main
         DxFeedGraalNativeSdk
         )
 
@@ -124,13 +124,14 @@ target_link_options(${target}
 # Testing
 #
 
-# An isolate is torn down once per process, so each case runs in a process of its own, selected by its tag; a tag that
-# matches no case fails instead of passing.
-add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "[Single]" -w NoTests)
-add_test(NAME ${target}Shared COMMAND $<TARGET_FILE:${target}> "[Shared]" -w NoTests)
+# An isolate is torn down once per process, so each case runs in a process of its own, selected by its test suite; a
+# test suite that matches no case fails instead of passing.
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> --test-suite=Single)
+add_test(NAME ${target}Shared COMMAND $<TARGET_FILE:${target}> --test-suite=Shared)
 
 # The teardown must not hang: a poll that waits forever would keep the isolate from being torn down.
 set_tests_properties(${target} ${target}Shared PROPERTIES TIMEOUT 10)
+set_tests_properties(${target} ${target}Shared PROPERTIES FAIL_REGULAR_EXPRESSION "test cases: *0 [|]")
 
 
 #

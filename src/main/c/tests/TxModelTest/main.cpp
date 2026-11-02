@@ -4,7 +4,7 @@
 // IndexedTxModel, TimeSeriesTxModel and TxModelListener through the C API: the models get the events published with
 // dxfg_DXPublisher_publishEvents to a LOCAL_HUB endpoint.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include <algorithm>
@@ -227,7 +227,7 @@ std::vector<std::string> sourceNames(dxfg_indexed_event_source_list *sources) {
 
 } // namespace
 
-TEST_CASE("IndexedTxModel delivers the snapshot and the updates of its source to the listener", "[TxModel]") {
+TEST_CASE("IndexedTxModel delivers the snapshot and the updates of its source to the listener") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -357,7 +357,7 @@ TEST_CASE("IndexedTxModel delivers the snapshot and the updates of its source to
     dxfg_IndexedEventSource_release(thread, ntv);
 }
 
-TEST_CASE("TimeSeriesTxModel delivers the snapshot from its time and the updates to the listener", "[TxModel]") {
+TEST_CASE("TimeSeriesTxModel delivers the snapshot from its time and the updates to the listener") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -566,7 +566,7 @@ struct PeekModel {
 
 } // namespace
 
-TEST_CASE("The event peek of a TimeSeriesTxModel sees each event before the listener gets the list", "[TxModel]") {
+TEST_CASE("The event peek of a TimeSeriesTxModel sees each event before the listener gets the list") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -603,7 +603,7 @@ TEST_CASE("The event peek of a TimeSeriesTxModel sees each event before the list
     }
 }
 
-TEST_CASE("NULL and the older no-op function remove the event peek of a TimeSeriesTxModel", "[TxModel]") {
+TEST_CASE("NULL and the older no-op function remove the event peek of a TimeSeriesTxModel") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -637,7 +637,7 @@ TEST_CASE("NULL and the older no-op function remove the event peek of a TimeSeri
     }
 }
 
-TEST_CASE("The event peek of a TimeSeriesTxModel is not called in the tasks of a closed event queue", "[TxModel]") {
+TEST_CASE("The event peek of a TimeSeriesTxModel is not called in the tasks of a closed event queue") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -689,7 +689,7 @@ TEST_CASE("The event peek of a TimeSeriesTxModel is not called in the tasks of a
     dxfg_v4_JavaObjectHandler_release(thread, &queue->handler);
 }
 
-TEST_CASE("dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction fails on NULL pointers", "[TxModel]") {
+TEST_CASE("dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction fails on NULL pointers") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);

@@ -6,7 +6,7 @@
 // the result and the exception that the handlers see, the classes of the exceptions in the image, the first result
 // that wins, the older functions that keep their behaviour, and the NULL arguments.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -113,7 +113,7 @@ Failure failNew(graal_isolatethread_t *thread, const char *className, const char
 
 } // namespace
 
-TEST_CASE("A new promise is not done; a completed one gives its result to the handler once", "[Promise]") {
+TEST_CASE("A new promise is not done; a completed one gives its result to the handler once") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -166,7 +166,7 @@ TEST_CASE("A new promise is not done; a completed one gives its result to the ha
     release(thread, promise);
 }
 
-TEST_CASE("A promise completed with NULL has a null result", "[Promise]") {
+TEST_CASE("A promise completed with NULL has a null result") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -184,7 +184,7 @@ TEST_CASE("A promise completed with NULL has a null result", "[Promise]") {
     release(thread, promise);
 }
 
-TEST_CASE("A failed promise gives the class and the message to the handler once", "[Promise]") {
+TEST_CASE("A failed promise gives the class and the message to the handler once") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -218,7 +218,7 @@ TEST_CASE("A failed promise gives the class and the message to the handler once"
     release(thread, promise);
 }
 
-TEST_CASE("Every class of the set is created as it is in the image", "[Promise]") {
+TEST_CASE("Every class of the set is created as it is in the image") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -240,32 +240,32 @@ TEST_CASE("Every class of the set is created as it is in the image", "[Promise]"
     CHECK(withoutMessage.message == "<null>");
 }
 
-TEST_CASE("A name outside the set gives a RuntimeException with the name in the message", "[Promise]") {
+TEST_CASE("A name outside the set gives a RuntimeException with the name in the message") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
-    SECTION("An exception class outside the set") {
+    SUBCASE("An exception class outside the set") {
         const Failure failure = failNew(thread, "java.lang.ArithmeticException", "boom");
 
         CHECK(failure.className == "java.lang.RuntimeException");
         CHECK(failure.message == "java.lang.ArithmeticException: boom");
     }
 
-    SECTION("A class that is not an exception") {
+    SUBCASE("A class that is not an exception") {
         const Failure failure = failNew(thread, "java.lang.String", "boom");
 
         CHECK(failure.className == "java.lang.RuntimeException");
         CHECK(failure.message == "java.lang.String: boom");
     }
 
-    SECTION("No such class, no message") {
+    SUBCASE("No such class, no message") {
         const Failure failure = failNew(thread, "com.example.NoSuchException", nullptr);
 
         CHECK(failure.className == "java.lang.RuntimeException");
         CHECK(failure.message == "com.example.NoSuchException");
     }
 
-    SECTION("A NULL or empty name") {
+    SUBCASE("A NULL or empty name") {
         for (const char *className : {static_cast<const char *>(nullptr), ""}) {
             const Failure failure = failNew(thread, className, "boom");
 
@@ -274,7 +274,7 @@ TEST_CASE("A name outside the set gives a RuntimeException with the name in the 
         }
     }
 
-    SECTION("A non-ASCII message") {
+    SUBCASE("A non-ASCII message") {
         const Failure failure = failNew(thread, "java.io.IOException", "\xD0\xBE\xD1\x88\xD0\xB8\xD0\xB1\xD0\xBA\xD0\xB0");
 
         CHECK(failure.className == "java.io.IOException");
@@ -282,7 +282,7 @@ TEST_CASE("A name outside the set gives a RuntimeException with the name in the 
     }
 }
 
-TEST_CASE("The first result wins: a value, then a failure", "[Promise]") {
+TEST_CASE("The first result wins: a value, then a failure") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -305,7 +305,7 @@ TEST_CASE("The first result wins: a value, then a failure", "[Promise]") {
     release(thread, promise);
 }
 
-TEST_CASE("The first result wins: a failure, then a value", "[Promise]") {
+TEST_CASE("The first result wins: a failure, then a value") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -339,7 +339,7 @@ TEST_CASE("The first result wins: a failure, then a value", "[Promise]") {
     release(thread, promise);
 }
 
-TEST_CASE("A cancelled promise ignores a later value and failure", "[Promise]") {
+TEST_CASE("A cancelled promise ignores a later value and failure") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -358,7 +358,7 @@ TEST_CASE("A cancelled promise ignores a later value and failure", "[Promise]") 
     release(thread, promise);
 }
 
-TEST_CASE("The static failed function gives an already failed promise", "[Promise]") {
+TEST_CASE("The static failed function gives an already failed promise") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -392,7 +392,7 @@ TEST_CASE("The static failed function gives an already failed promise", "[Promis
     release(thread, fallback);
 }
 
-TEST_CASE("The older failed and completeExceptionally functions keep their behaviour", "[Promise]") {
+TEST_CASE("The older failed and completeExceptionally functions keep their behaviour") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -428,7 +428,7 @@ TEST_CASE("The older failed and completeExceptionally functions keep their behav
     release(thread, source);
 }
 
-TEST_CASE("NULL handles and NULL out pointers fail with a thread exception", "[Promise]") {
+TEST_CASE("NULL handles and NULL out pointers fail with a thread exception") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 

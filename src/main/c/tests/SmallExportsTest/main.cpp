@@ -8,7 +8,7 @@
 // (dxfg_v4_OnDemandPropertyChangeListener_new(), dxfg_v4_OnDemandService_addPropertyChangeListener(),
 // dxfg_v4_OnDemandService_removePropertyChangeListener()).
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -296,8 +296,7 @@ constexpr int64_t REPLAY_TIME = 1'577'836'800'000;
 
 } // namespace
 
-TEST_CASE("configurationChanged is called once per changed aggregation period, not for the same one",
-          "[SmallExports][ConfigurationChanged]") {
+TEST_CASE("configurationChanged is called once per changed aggregation period, not for the same one") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -340,8 +339,7 @@ TEST_CASE("configurationChanged is called once per changed aggregation period, n
     releaseSubscription(thread, subscription);
 }
 
-TEST_CASE("Each NULL callback of the listener is skipped, the others are called",
-          "[SmallExports][ConfigurationChanged]") {
+TEST_CASE("Each NULL callback of the listener is skipped, the others are called") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -387,7 +385,7 @@ TEST_CASE("Each NULL callback of the listener is skipped, the others are called"
     }
 }
 
-TEST_CASE("A released listener is not called for a changed configuration", "[SmallExports][ConfigurationChanged]") {
+TEST_CASE("A released listener is not called for a changed configuration") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -409,8 +407,7 @@ TEST_CASE("A released listener is not called for a changed configuration", "[Sma
     CHECK(calls.subscriptionClosed == 0);
 }
 
-TEST_CASE("No listener of this ticket is called after dxfg_v4_NativeListener_deactivateAll",
-          "[SmallExports][DeactivateAll]") {
+TEST_CASE("No listener of this ticket is called after dxfg_v4_NativeListener_deactivateAll") {
     // A separate isolate: the deactivation is for the whole isolate.
     Isolate own{};
     graal_isolatethread_t *thread = own.thread;
@@ -449,7 +446,7 @@ TEST_CASE("No listener of this ticket is called after dxfg_v4_NativeListener_dea
     releaseSubscription(thread, subscription);
 }
 
-TEST_CASE("The listener with configurationChanged needs the out pointer", "[SmallExports][ConfigurationChanged]") {
+TEST_CASE("The listener with configurationChanged needs the out pointer") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -459,8 +456,7 @@ TEST_CASE("The listener with configurationChanged needs the out pointer", "[Smal
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("getFromTime returns INT64_MAX for a new time series subscription and then the time set",
-          "[SmallExports][GetFromTime]") {
+TEST_CASE("getFromTime returns INT64_MAX for a new time series subscription and then the time set") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -498,7 +494,7 @@ TEST_CASE("getFromTime returns INT64_MAX for a new time series subscription and 
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &subscription->sub.handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("getFromTime fails for a plain subscription and a NULL handle", "[SmallExports][GetFromTime]") {
+TEST_CASE("getFromTime fails for a plain subscription and a NULL handle") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -519,7 +515,7 @@ TEST_CASE("getFromTime fails for a plain subscription and a NULL handle", "[Smal
     releaseSubscription(thread, plain);
 }
 
-TEST_CASE("An AuthOrderSource created from entries returns the same entries", "[SmallExports][AuthOrderSource]") {
+TEST_CASE("An AuthOrderSource created from entries returns the same entries") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -546,49 +542,48 @@ TEST_CASE("An AuthOrderSource created from entries returns the same entries", "[
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &source->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("AuthOrderSource_create rejects a NULL list, entry, symbol list or symbol and a duplicate identifier",
-          "[SmallExports][AuthOrderSource]") {
+TEST_CASE("AuthOrderSource_create rejects a NULL list, entry, symbol list or symbol and a duplicate identifier") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
-    SECTION("a NULL list") {
+    SUBCASE("a NULL list") {
         requireCreateFails(thread, nullptr);
     }
 
-    SECTION("a NULL entry") {
+    SUBCASE("a NULL entry") {
         EntryList entries({{1, {"AAPL"}}, {2, {"IBM"}}});
 
         entries.setEntry(1, nullptr);
         requireCreateFails(thread, &entries.list);
     }
 
-    SECTION("a NULL symbol list") {
+    SUBCASE("a NULL symbol list") {
         EntryList entries({{1, {"AAPL"}}, {2, {"IBM"}}});
 
         entries.entry(1).symbols = nullptr;
         requireCreateFails(thread, &entries.list);
     }
 
-    SECTION("a NULL symbol") {
+    SUBCASE("a NULL symbol") {
         EntryList entries({{1, {"AAPL", nullptr}}});
 
         requireCreateFails(thread, &entries.list);
     }
 
-    SECTION("a duplicate identifier") {
+    SUBCASE("a duplicate identifier") {
         EntryList entries({{1, {"AAPL"}}, {2, {"IBM"}}, {1, {"MSFT"}}});
 
         requireCreateFails(thread, &entries.list);
     }
 
-    SECTION("a negative size") {
+    SUBCASE("a negative size") {
         EntryList entries({{1, {"AAPL"}}});
 
         entries.list.size = -1;
         requireCreateFails(thread, &entries.list);
     }
 
-    SECTION("a NULL out pointer") {
+    SUBCASE("a NULL out pointer") {
         EntryList entries({{1, {"AAPL"}}});
 
         CHECK(dxfg_v4_AuthOrderSource_create(thread, &entries.list, nullptr) == DXFG_EXECUTE_FAIL);
@@ -596,8 +591,7 @@ TEST_CASE("AuthOrderSource_create rejects a NULL list, entry, symbol list or sym
     }
 }
 
-TEST_CASE("The on-demand property listener sees the replay and the speed with their old and new values",
-          "[SmallExports][OnDemand]") {
+TEST_CASE("The on-demand property listener sees the replay and the speed with their old and new values") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -664,7 +658,7 @@ TEST_CASE("The on-demand property listener sees the replay and the speed with th
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &listener->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A released on-demand property listener is not called while it stays added", "[SmallExports][OnDemand]") {
+TEST_CASE("A released on-demand property listener is not called while it stays added") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 
@@ -684,7 +678,7 @@ TEST_CASE("A released on-demand property listener is not called while it stays a
     CHECK(dxfg_v4_OnDemandService_stopAndResume(thread, onDemand.service) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The on-demand property listener functions check their arguments", "[SmallExports][OnDemand]") {
+TEST_CASE("The on-demand property listener functions check their arguments") {
     graal_isolatethread_t *thread = isolate().thread;
     REQUIRE(thread != nullptr);
 

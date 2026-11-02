@@ -6,7 +6,7 @@
 // gate the result before the function is called, -1 means "any", the other invalid values fail the call, the filters
 // work in the search functions of a day and a schedule, and dxfg_v4_NativeListener_deactivateAll() does not stop them.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -157,8 +157,7 @@ void release(graal_isolatethread_t *thread, dxfg_v4_session_filter_t *filter) {
 
 } // namespace
 
-TEST_CASE("A day filter calls its function with the user data for the days that pass its conditions",
-          "[ScheduleFilter]") {
+TEST_CASE("A day filter calls its function with the user data for the days that pass its conditions") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -181,7 +180,7 @@ TEST_CASE("A day filter calls its function with the user data for the days that 
     dxfg_v4_Day_release(thread, wednesday);
 }
 
-TEST_CASE("A day filter accepts a day only when its function returns 1", "[ScheduleFilter]") {
+TEST_CASE("A day filter accepts a day only when its function returns 1") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -207,7 +206,7 @@ TEST_CASE("A day filter accepts a day only when its function returns 1", "[Sched
     dxfg_v4_Day_release(thread, wednesday);
 }
 
-TEST_CASE("The conditions of a day filter gate its result whatever the function says", "[ScheduleFilter]") {
+TEST_CASE("The conditions of a day filter gate its result whatever the function says") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -256,7 +255,7 @@ TEST_CASE("The conditions of a day filter gate its result whatever the function 
     dxfg_v4_Day_release(thread, wednesday);
 }
 
-TEST_CASE("A day filter with an invalid argument is not created", "[ScheduleFilter]") {
+TEST_CASE("A day filter with an invalid argument is not created") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -291,8 +290,7 @@ TEST_CASE("A day filter with an invalid argument is not created", "[ScheduleFilt
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("A session filter calls its function with the user data for the sessions that pass its conditions",
-          "[ScheduleFilter]") {
+TEST_CASE("A session filter calls its function with the user data for the sessions that pass its conditions") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -315,7 +313,7 @@ TEST_CASE("A session filter calls its function with the user data for the sessio
     dxfg_v4_Day_release(thread, friday);
 }
 
-TEST_CASE("The conditions of a session filter gate its result whatever the function says", "[ScheduleFilter]") {
+TEST_CASE("The conditions of a session filter gate its result whatever the function says") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -361,7 +359,7 @@ TEST_CASE("The conditions of a session filter gate its result whatever the funct
     dxfg_v4_Day_release(thread, friday);
 }
 
-TEST_CASE("A session filter with an invalid argument is not created", "[ScheduleFilter]") {
+TEST_CASE("A session filter with an invalid argument is not created") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -395,7 +393,7 @@ TEST_CASE("A session filter with an invalid argument is not created", "[Schedule
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("A session filter with user data works in a schedule search", "[ScheduleFilter]") {
+TEST_CASE("A session filter with user data works in a schedule search") {
     auto *thread = isolate().thread;
 
     REQUIRE(thread != nullptr);
@@ -437,7 +435,7 @@ TEST_CASE("A session filter with user data works in a schedule search", "[Schedu
     dxfg_v4_Day_release(thread, friday);
 }
 
-TEST_CASE("dxfg_v4_NativeListener_deactivateAll does not stop the filters with user data", "[ScheduleFilter]") {
+TEST_CASE("dxfg_v4_NativeListener_deactivateAll does not stop the filters with user data") {
     // An isolate of its own: deactivateAll() deactivates the listeners of the whole isolate.
     const Isolate own{};
     auto *thread = own.thread;

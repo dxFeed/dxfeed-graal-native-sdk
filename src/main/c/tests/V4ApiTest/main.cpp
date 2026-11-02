@@ -4,7 +4,7 @@
 // The dxfg_v4_ functions: status results, out parameters, NULL as "no value". This file calls the v4 functions only
 // (a deprecated function is a compile error here), parity.cpp compares them with the older ones.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "isolate.hpp"
@@ -57,7 +57,7 @@ std::string takeString(graal_isolatethread_t *thread, const char *string) {
 
 } // namespace
 
-TEST_CASE("A C11 translation unit includes dxfg_api.h and calls the v4 functions", "[V4Api]") {
+TEST_CASE("A C11 translation unit includes dxfg_api.h and calls the v4 functions") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -68,7 +68,7 @@ TEST_CASE("A C11 translation unit includes dxfg_api.h and calls the v4 functions
     CHECK(seconds == 15);
 }
 
-TEST_CASE("dxfg_v4_get_and_clear_thread_exception writes NULL when no exception is stored", "[V4Api]") {
+TEST_CASE("dxfg_v4_get_and_clear_thread_exception writes NULL when no exception is stored") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -82,7 +82,7 @@ TEST_CASE("dxfg_v4_get_and_clear_thread_exception writes NULL when no exception 
     CHECK(exception == nullptr);
 }
 
-TEST_CASE("A failed v4 function returns -1 and stores the exception, which is taken once", "[V4Api]") {
+TEST_CASE("A failed v4 function returns -1 and stores the exception, which is taken once") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -103,7 +103,7 @@ TEST_CASE("A failed v4 function returns -1 and stores the exception, which is ta
     CHECK(takeExceptionClassName(thread).empty());
 }
 
-TEST_CASE("A successful v4 function keeps the exception that an earlier failed one stored", "[V4Api]") {
+TEST_CASE("A successful v4 function keeps the exception that an earlier failed one stored") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -118,14 +118,14 @@ TEST_CASE("A successful v4 function keeps the exception that an earlier failed o
     CHECK_FALSE(takeExceptionClassName(thread).empty());
 }
 
-TEST_CASE("dxfg_v4_Exception_release accepts NULL", "[V4Api]") {
+TEST_CASE("dxfg_v4_Exception_release accepts NULL") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
     CHECK(dxfg_v4_Exception_release(thread, nullptr) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A NULL out pointer is an IllegalArgumentException", "[V4Api]") {
+TEST_CASE("A NULL out pointer is an IllegalArgumentException") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -137,7 +137,7 @@ TEST_CASE("A NULL out pointer is an IllegalArgumentException", "[V4Api]") {
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("dxfg_v4_Object_new and dxfg_v4_JavaObjectHandler_clone write a new handle", "[V4Api]") {
+TEST_CASE("dxfg_v4_Object_new and dxfg_v4_JavaObjectHandler_clone write a new handle") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -163,7 +163,7 @@ TEST_CASE("dxfg_v4_Object_new and dxfg_v4_JavaObjectHandler_clone write a new ha
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, object) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A NULL handle is an error, not a value", "[V4Api]") {
+TEST_CASE("A NULL handle is an error, not a value") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -174,7 +174,7 @@ TEST_CASE("A NULL handle is an error, not a value", "[V4Api]") {
     CHECK_FALSE(takeExceptionClassName(thread).empty());
 }
 
-TEST_CASE("A NULL string written to the out variable means no value", "[V4Api]") {
+TEST_CASE("A NULL string written to the out variable means no value") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -197,7 +197,7 @@ TEST_CASE("A NULL string written to the out variable means no value", "[V4Api]")
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &token->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The values are written to the out variables", "[V4Api]") {
+TEST_CASE("The values are written to the out variables") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -332,7 +332,7 @@ Hub &hub() {
 
 } // namespace
 
-TEST_CASE("An endpoint is created, connected and closed with the v4 functions", "[V4Api][Endpoint]") {
+TEST_CASE("An endpoint is created, connected and closed with the v4 functions") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -368,7 +368,7 @@ TEST_CASE("An endpoint is created, connected and closed with the v4 functions", 
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &endpoint->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("dxfg_v4_DXFeed_getLastEventIfSubscribed writes NULL without a subscription", "[V4Api][Endpoint]") {
+TEST_CASE("dxfg_v4_DXFeed_getLastEventIfSubscribed writes NULL without a subscription") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -388,7 +388,7 @@ TEST_CASE("dxfg_v4_DXFeed_getLastEventIfSubscribed writes NULL without a subscri
     CHECK(event == &marker);
 }
 
-TEST_CASE("dxfg_v4_DXFeed_getLastEvent writes a new event", "[V4Api][Endpoint]") {
+TEST_CASE("dxfg_v4_DXFeed_getLastEvent writes a new event") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -407,7 +407,7 @@ TEST_CASE("dxfg_v4_DXFeed_getLastEvent writes a new event", "[V4Api][Endpoint]")
     CHECK(dxfg_v4_EventType_release(thread, last) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A promise without an exception writes NULL, a cancelled one writes its exception", "[V4Api][Endpoint]") {
+TEST_CASE("A promise without an exception writes NULL, a cancelled one writes its exception") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -445,7 +445,7 @@ TEST_CASE("A promise without an exception writes NULL, a cancelled one writes it
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &promise->handler.handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("dxfg_v4_promise_list_release releases the promises", "[V4Api][Endpoint]") {
+TEST_CASE("dxfg_v4_promise_list_release releases the promises") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -485,7 +485,7 @@ std::set<std::string> stringSymbols(const dxfg_v4_symbol_list *symbols) {
 
 } // namespace
 
-TEST_CASE("The symbols of a subscription are written as symbol lists", "[V4Api][Endpoint]") {
+TEST_CASE("The symbols of a subscription are written as symbol lists") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -550,7 +550,7 @@ void onEvents(graal_isolatethread_t *, dxfg_v4_event_type_list *events, void *us
 
 } // namespace
 
-TEST_CASE("A listener made with the v4 functions receives a published event", "[V4Api][Endpoint]") {
+TEST_CASE("A listener made with the v4 functions receives a published event") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -620,7 +620,7 @@ std::vector<std::string> dataSymbols(const dxfg_v4_instrument_profile_data_list 
 
 } // namespace
 
-TEST_CASE("Instrument profiles are read from a file as structures and as handles", "[V4Api][Ipf]") {
+TEST_CASE("Instrument profiles are read from a file as structures and as handles") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_reader_t *reader = nullptr;
 
@@ -694,8 +694,7 @@ std::set<std::string> viewedSymbols(graal_isolatethread_t *thread, dxfg_v4_ipf_c
     return viewed;
 }
 
-TEST_CASE("A collector takes a list of instrument profiles, a list with a NULL element changes nothing",
-          "[V4Api][Ipf]") {
+TEST_CASE("A collector takes a list of instrument profiles, a list with a NULL element changes nothing") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_reader_t *reader = nullptr;
     dxfg_v4_instrument_profile_data_list *profiles = nullptr;
@@ -751,8 +750,7 @@ TEST_CASE("A collector takes a list of instrument profiles, a list with a NULL e
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("Custom fields are made from a list of names and values, an empty list may have NULL elements",
-          "[V4Api][Ipf]") {
+TEST_CASE("Custom fields are made from a list of names and values, an empty list may have NULL elements") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_custom_fields_t *customFields = nullptr;
     dxfg_v4_string_list *names = nullptr;
@@ -902,8 +900,7 @@ void checkFormat(const std::string &data, const std::string &name) {
 
 } // namespace
 
-TEST_CASE("Instrument profiles are written to a file and to bytes, plain, gzip and zip, and read back",
-          "[V4Api][Ipf][Writer]") {
+TEST_CASE("Instrument profiles are written to a file and to bytes, plain, gzip and zip, and read back") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_reader_t *reader = nullptr;
     dxfg_v4_instrument_profile_data_list *profiles = nullptr;
@@ -977,8 +974,7 @@ TEST_CASE("Instrument profiles are written to a file and to bytes, plain, gzip a
     std::filesystem::remove_all(WRITER_DIRECTORY);
 }
 
-TEST_CASE("An empty list of profiles gives a non-NULL list of bytes, a NULL argument or element fails",
-          "[V4Api][Ipf][Writer]") {
+TEST_CASE("An empty list of profiles gives a non-NULL list of bytes, a NULL argument or element fails") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_reader_t *reader = nullptr;
     dxfg_v4_instrument_profile_data_list *profiles = nullptr;
@@ -1100,7 +1096,7 @@ TEST_CASE("An empty list of profiles gives a non-NULL list of bytes, a NULL argu
     std::filesystem::remove_all(WRITER_DIRECTORY);
 }
 
-TEST_CASE("The custom fields of profile structures are written and read back", "[V4Api][Ipf][Writer]") {
+TEST_CASE("The custom fields of profile structures are written and read back") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_instrument_profile_reader_t *reader = nullptr;
     dxfg_v4_instrument_profile_data_list *profiles = nullptr;
@@ -1227,7 +1223,7 @@ TEST_CASE("The custom fields of profile structures are written and read back", "
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &reader->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The state of an instrument profile connection is written as an enum value", "[V4Api][Ipf]") {
+TEST_CASE("The state of an instrument profile connection is written as an enum value") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_ipf_collector_t *collector = nullptr;
     dxfg_v4_ipf_connection_t *connection = nullptr;
@@ -1255,7 +1251,7 @@ constexpr const char *SCHEDULE_DEFINITION = "(tz=America/New_York;0=p04000930r09
 
 } // namespace
 
-TEST_CASE("The days and the sessions of a schedule are written to the out variables", "[V4Api][Schedule]") {
+TEST_CASE("The days and the sessions of a schedule are written to the out variables") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_schedule_t *schedule = nullptr;
 
@@ -1340,7 +1336,7 @@ TEST_CASE("The days and the sessions of a schedule are written to the out variab
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &schedule->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("Price increments are written as a list of doubles and made from such a list", "[V4Api][Glossary]") {
+TEST_CASE("Price increments are written as a list of doubles and made from such a list") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_price_increments_t *priceIncrements = nullptr;
 
@@ -1402,8 +1398,7 @@ TEST_CASE("Price increments are written as a list of doubles and made from such 
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &priceIncrements->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("Additional underlyings are written as a list of map entries and made from such a list",
-          "[V4Api][Glossary]") {
+TEST_CASE("Additional underlyings are written as a list of map entries and made from such a list") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_additional_underlyings_t *underlyings = nullptr;
 
@@ -1481,7 +1476,7 @@ TEST_CASE("Additional underlyings are written as a list of map entries and made 
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &underlyings->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The values of a CFI code and of its attributes are written as lists of handles", "[V4Api][Glossary]") {
+TEST_CASE("The values of a CFI code and of its attributes are written as lists of handles") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_cfi_t *cfi = nullptr;
 
@@ -1517,7 +1512,7 @@ TEST_CASE("The values of a CFI code and of its attributes are written as lists o
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &cfi->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A system property is written to the out variable, a missing one as NULL", "[V4Api][System]") {
+TEST_CASE("A system property is written to the out variable, a missing one as NULL") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -1543,7 +1538,7 @@ TEST_CASE("A system property is written to the out variable, a missing one as NU
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("dxfg_v4_Tools_parseSymbols writes a list of strings", "[V4Api][Qds]") {
+TEST_CASE("dxfg_v4_Tools_parseSymbols writes a list of strings") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_string_list *symbols = nullptr;
 
@@ -1558,7 +1553,7 @@ TEST_CASE("dxfg_v4_Tools_parseSymbols writes a list of strings", "[V4Api][Qds]")
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
 }
 
-TEST_CASE("The filter of an order book model is written as an enum value", "[V4Api][Model]") {
+TEST_CASE("The filter of an order book model is written as an enum value") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_order_book_model_t *model = nullptr;
 
@@ -1645,7 +1640,7 @@ void releaseBuilder(graal_isolatethread_t *thread, int32_t status, dxfg_v4_index
 
 } // namespace
 
-TEST_CASE("An indexed tx model built with the v4 functions receives a published snapshot", "[V4Api][Model]") {
+TEST_CASE("An indexed tx model built with the v4 functions receives a published snapshot") {
     REQUIRE(hub().ready);
 
     graal_isolatethread_t *thread = hub().thread;
@@ -1734,7 +1729,7 @@ TEST_CASE("An indexed tx model built with the v4 functions receives a published 
     CHECK(dxfg_v4_IndexedEventSource_release(thread, source) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The on-demand service of an endpoint writes its state to the out variables", "[V4Api][OnDemand]") {
+TEST_CASE("The on-demand service of an endpoint writes its state to the out variables") {
     graal_isolatethread_t *thread = isolateThread();
     dxfg_v4_endpoint_t *endpoint = nullptr;
     dxfg_v4_on_demand_service_t *service = nullptr;
@@ -1773,7 +1768,7 @@ TEST_CASE("The on-demand service of an endpoint writes its state to the out vari
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &endpoint->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The symbol of an event model is written to the out variable, a missing one as NULL", "[V4Api][EventModel]") {
+TEST_CASE("The symbol of an event model is written to the out variable, a missing one as NULL") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -1812,7 +1807,7 @@ TEST_CASE("The symbol of an event model is written to the out variable, a missin
     CHECK(dxfg_v4_JavaObjectHandler_release(thread, &timeSeriesModel->handler) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("A failed call of a model or a service leaves the out variable unchanged", "[V4Api][EventModel]") {
+TEST_CASE("A failed call of a model or a service leaves the out variable unchanged") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);

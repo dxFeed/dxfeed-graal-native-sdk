@@ -84,7 +84,7 @@ target_include_directories(${target}
 target_link_libraries(${target}
         PRIVATE
         ${DEFAULT_LIBRARIES}
-        Catch2::Catch2WithMain
+        doctest::doctest_with_main
         DxFeedGraalNativeSdk
         )
 

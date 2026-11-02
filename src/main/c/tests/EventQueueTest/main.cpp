@@ -6,7 +6,7 @@
 // returned list; for a shared queue also the tags, the models on its executor, the misuse of an attach and the checks
 // of the executors. Shutdown cannot be undone for an isolate, so every test case creates its own isolate.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
@@ -332,7 +332,7 @@ struct TimeAndSaleEventModel {
 
 } // namespace
 
-TEST_CASE("dxfg_v4_EventQueue_poll reports each outcome", "[EventQueue]") {
+TEST_CASE("dxfg_v4_EventQueue_poll reports each outcome") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -382,7 +382,7 @@ TEST_CASE("dxfg_v4_EventQueue_poll reports each outcome", "[EventQueue]") {
     CHECK(dropped == 1);
 }
 
-TEST_CASE("dxfg_v4_system_shutdown ends a waiting poll with closed", "[EventQueue]") {
+TEST_CASE("dxfg_v4_system_shutdown ends a waiting poll with closed") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -402,7 +402,7 @@ TEST_CASE("dxfg_v4_system_shutdown ends a waiting poll with closed", "[EventQueu
     CHECK(poll.attached.join() == DXFG_EVENT_QUEUE_CLOSED);
 }
 
-TEST_CASE("dxfg_v4_NativeListener_deactivateAll ends a waiting poll with closed", "[EventQueue]") {
+TEST_CASE("dxfg_v4_NativeListener_deactivateAll ends a waiting poll with closed") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -429,7 +429,7 @@ TEST_CASE("dxfg_v4_NativeListener_deactivateAll ends a waiting poll with closed"
           DXFG_EVENT_QUEUE_CLOSED);
 }
 
-TEST_CASE("dxfg_v4_system_shutdown returns with pending events and no poll", "[EventQueue]") {
+TEST_CASE("dxfg_v4_system_shutdown returns with pending events and no poll") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -451,7 +451,7 @@ TEST_CASE("dxfg_v4_system_shutdown returns with pending events and no poll", "[E
     CHECK(state == DXFG_ENDPOINT_STATE_CLOSED);
 }
 
-TEST_CASE("The executor of a subscription with a queue cannot be changed", "[EventQueue]") {
+TEST_CASE("The executor of a subscription with a queue cannot be changed") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -492,7 +492,7 @@ TEST_CASE("The executor of a subscription with a queue cannot be changed", "[Eve
     dxfg_v4_JavaObjectHandler_release(thread, &executor->handler);
 }
 
-TEST_CASE("An endpoint close does not end a poll, a queue close does", "[EventQueue]") {
+TEST_CASE("An endpoint close does not end a poll, a queue close does") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -511,7 +511,7 @@ TEST_CASE("An endpoint close does not end a poll, a queue close does", "[EventQu
     CHECK(dxfg_v4_EventQueue_poll(thread, queued.queue, 200, 0, &events) == DXFG_EVENT_QUEUE_CLOSED);
 }
 
-TEST_CASE("A list returned by a poll outlives the queue, the subscription and the endpoint", "[EventQueue]") {
+TEST_CASE("A list returned by a poll outlives the queue, the subscription and the endpoint") {
     Isolate isolate{};
     auto *thread = isolate.thread;
     dxfg_v4_event_type_list *events = nullptr;
@@ -535,7 +535,7 @@ TEST_CASE("A list returned by a poll outlives the queue, the subscription and th
     CHECK(dxfg_v4_event_type_list_release(thread, events) == DXFG_EXECUTE_SUCCESSFULLY);
 }
 
-TEST_CASE("The events of a removed symbol are not returned by later polls", "[EventQueue]") {
+TEST_CASE("The events of a removed symbol are not returned by later polls") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -559,7 +559,7 @@ TEST_CASE("The events of a removed symbol are not returned by later polls", "[Ev
     CHECK(distinct == std::set<std::string>{"A"});
 }
 
-TEST_CASE("dxfg_v4_EventQueue_pollTagged tags the events of each attached subscription", "[EventQueue][Shared]") {
+TEST_CASE("dxfg_v4_EventQueue_pollTagged tags the events of each attached subscription") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -580,8 +580,7 @@ TEST_CASE("dxfg_v4_EventQueue_pollTagged tags the events of each attached subscr
     CHECK(symbolsWithTag(symbols, 2) == std::vector<std::string>{"A", "B", "C"});
 }
 
-TEST_CASE("A plain poll of a shared queue returns its events, a queue of a subscription tags them with 0",
-          "[EventQueue][Shared]") {
+TEST_CASE("A plain poll of a shared queue returns its events, a queue of a subscription tags them with 0") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -615,8 +614,7 @@ TEST_CASE("A plain poll of a shared queue returns its events, a queue of a subsc
     CHECK(pollTagged(thread, queued.queue, 1) == TaggedSymbols{{"C", 0}});
 }
 
-TEST_CASE("A detached subscription with symbols can be given a queue, then attached to the feed",
-          "[EventQueue][Shared]") {
+TEST_CASE("A detached subscription with symbols can be given a queue, then attached to the feed") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -646,8 +644,7 @@ TEST_CASE("A detached subscription with symbols can be given a queue, then attac
     dxfg_v4_JavaObjectHandler_release(thread, &bound->handler);
 }
 
-TEST_CASE("Models on the executor of a shared queue call their listeners in a poll, on the polling thread",
-          "[EventQueue][Shared]") {
+TEST_CASE("Models on the executor of a shared queue call their listeners in a poll, on the polling thread") {
     Isolate isolate{};
     // The calls outlive the hub, so a callback still in flight after a failed REQUIRE does not write into a destroyed one.
     ListenerCalls txCalls{};
@@ -703,7 +700,7 @@ TEST_CASE("Models on the executor of a shared queue call their listeners in a po
     dxfg_v4_JavaObjectHandler_release(thread, &executor->handler);
 }
 
-TEST_CASE("A misused dxfg_v4_EventQueue_attach fails with IllegalStateException", "[EventQueue][Shared]") {
+TEST_CASE("A misused dxfg_v4_EventQueue_attach fails with IllegalStateException") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -759,7 +756,7 @@ TEST_CASE("A misused dxfg_v4_EventQueue_attach fails with IllegalStateException"
     CHECK(executor == nullptr);
 }
 
-TEST_CASE("The executors of a shared queue are checked by kind", "[EventQueue][Shared]") {
+TEST_CASE("The executors of a shared queue are checked by kind") {
     Isolate isolate{};
     Hub hub(isolate.thread);
 
@@ -819,7 +816,7 @@ TEST_CASE("The executors of a shared queue are checked by kind", "[EventQueue][S
     dxfg_v4_JavaObjectHandler_release(thread, &attachmentExecutor->handler);
 }
 
-TEST_CASE("A subscription close keeps a shared poll open, the close of the queue ends it", "[EventQueue][Shared]") {
+TEST_CASE("A subscription close keeps a shared poll open, the close of the queue ends it") {
     Isolate isolate{};
     ListenerCalls calls{};
     Hub hub(isolate.thread);
@@ -852,15 +849,15 @@ TEST_CASE("A subscription close keeps a shared poll open, the close of the queue
 
     REQUIRE(poll.stillWaiting());
 
-    SECTION("by dxfg_v4_EventQueue_close") {
+    SUBCASE("by dxfg_v4_EventQueue_close") {
         CHECK(dxfg_v4_EventQueue_close(thread, shared.queue) == DXFG_EXECUTE_SUCCESSFULLY);
     }
 
-    SECTION("by dxfg_v4_system_shutdown") {
+    SUBCASE("by dxfg_v4_system_shutdown") {
         CHECK(dxfg_v4_system_shutdown(thread) == DXFG_EXECUTE_SUCCESSFULLY);
     }
 
-    SECTION("by dxfg_v4_NativeListener_deactivateAll") {
+    SUBCASE("by dxfg_v4_NativeListener_deactivateAll") {
         CHECK(dxfg_v4_NativeListener_deactivateAll(thread) == DXFG_EXECUTE_SUCCESSFULLY);
     }
 
@@ -868,7 +865,7 @@ TEST_CASE("A subscription close keeps a shared poll open, the close of the queue
     dxfg_v4_JavaObjectHandler_release(thread, &executor->handler);
 }
 
-TEST_CASE("A tagged list outlives the queue, the subscriptions and the endpoint", "[EventQueue][Shared]") {
+TEST_CASE("A tagged list outlives the queue, the subscriptions and the endpoint") {
     Isolate isolate{};
     auto *thread = isolate.thread;
     dxfg_v4_tagged_event_list *events = nullptr;

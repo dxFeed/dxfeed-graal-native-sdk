@@ -7,7 +7,7 @@
 // They need the heap statistics of glibc (mallinfo2), so they run on Linux only. There the SDK allocates with the libc
 // malloc, the same allocator as the test's strdup.
 
-#include <catch.hpp>
+#include <doctest.h>
 #include <dxfg_api.h>
 
 #if defined(__GLIBC__)
@@ -63,7 +63,7 @@ template <typename Action> double heapGrowthPerIteration(Action action) {
 
 } // namespace
 
-TEST_CASE("dxfg_EventType_release frees the strings of a NuamOrder", "[MemoryRelease]") {
+TEST_CASE("dxfg_EventType_release frees the strings of a NuamOrder") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -91,11 +91,11 @@ TEST_CASE("dxfg_EventType_release frees the strings of a NuamOrder", "[MemoryRel
     INFO("Heap growth per released NuamOrder: " << growth << " bytes");
     CHECK(growth < MAX_GROWTH_PER_ITERATION);
 #else
-    WARN("Skipped: needs the heap statistics of glibc");
+    MESSAGE("Skipped: needs the heap statistics of glibc");
 #endif
 }
 
-TEST_CASE("dxfg_Exception_release frees the strings of the stack trace", "[MemoryRelease]") {
+TEST_CASE("dxfg_Exception_release frees the strings of the stack trace") {
     graal_isolatethread_t *thread = isolateThread();
 
     REQUIRE(thread != nullptr);
@@ -121,7 +121,7 @@ TEST_CASE("dxfg_Exception_release frees the strings of the stack trace", "[Memor
     INFO("Heap growth per released exception: " << growth << " bytes");
     CHECK(growth < MAX_GROWTH_PER_ITERATION);
 #else
-    WARN("Skipped: needs the heap statistics of glibc");
+    MESSAGE("Skipped: needs the heap statistics of glibc");
 #endif
 }
 
