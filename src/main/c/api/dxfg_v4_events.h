@@ -172,6 +172,22 @@ typedef dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed
     dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed;
 
 /**
+ * @brief The callback of a subscription change listener: the configuration of the subscription changed.
+ *
+ * The configuration is the non-functional settings of the subscription, such as its aggregation period: for example,
+ * dxfg_v4_DXFeedSubscription_setAggregationPeriod() with a value other than the current one calls it, the same value
+ * does not. It is called by the thread that changed the configuration, before that function returns, while the SDK
+ * holds the lock of the subscription.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] user_data The user data passed to
+ * dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged().
+ * @since 3.13.0
+ */
+typedef void (*dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged)(
+    graal_isolatethread_t *thread, void *user_data);
+
+/**
  * Creates a symbol of the given type.
  *
  * Only #STRING, #CANDLE and #WILDCARD can be created here: for any other type the function fails.
@@ -365,6 +381,41 @@ int32_t dxfg_v4_ObservableSubscriptionChangeListener_new(
     dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,
     dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved function_symbolsRemoved,
     dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
+    void *user_data, DXFG_OUT dxfg_v4_observable_subscription_change_listener_t **listener);
+
+/**
+ * @brief Creates a listener of the changes of a subscription that is also told about the changes of its configuration.
+ *
+ * It is dxfg_v4_ObservableSubscriptionChangeListener_new() with the fourth callback,
+ * `function_configurationChanged`. Each of the four callbacks may be NULL: the SDK does not call a NULL one. Add the
+ * listener to a subscription with dxfg_v4_DXFeedSubscription_addChangeListener(). Releasing the last handle of the
+ * listener with dxfg_v4_JavaObjectHandler_release(), or dxfg_v4_NativeListener_deactivate() or
+ * dxfg_v4_NativeListener_deactivateAll(), stops the calls: after that none of the functions is called or running
+ * (except a call on the deactivating thread itself), and the user data can be freed.
+ *
+ * Java: `ObservableSubscriptionChangeListener` (symbolsAdded(Set), symbolsRemoved(Set), subscriptionClosed(),
+ * configurationChanged()).
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] function_symbolsAdded The function called when symbols are added to the subscription, or NULL.
+ * @param[in] function_symbolsRemoved The function called when symbols are removed from the subscription, or NULL.
+ * @param[in] function_subscriptionClosed The function called when the subscription is closed or the listener is
+ * removed, or NULL.
+ * @param[in] function_configurationChanged The function called when the configuration of the subscription changes, or
+ * NULL.
+ * @param[in] user_data The user data passed to every function; the SDK does not use or free it.
+ * @param[out] listener The pointer to the variable that receives the listener handle (release it with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged(
+    graal_isolatethread_t *thread,
+    dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,
+    dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved function_symbolsRemoved,
+    dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
+    dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged function_configurationChanged,
     void *user_data, DXFG_OUT dxfg_v4_observable_subscription_change_listener_t **listener);
 
 /** @} */ // end of V4_Events

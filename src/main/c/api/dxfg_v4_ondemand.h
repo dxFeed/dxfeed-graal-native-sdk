@@ -286,6 +286,144 @@ int32_t dxfg_v4_OnDemandService_stopAndClear(graal_isolatethread_t *thread, dxfg
 int32_t dxfg_v4_OnDemandService_setSpeed(graal_isolatethread_t *thread, dxfg_v4_on_demand_service_t *service,
                                          double speed);
 
+/**
+ * @brief The kind of the value of an on-demand service property (dxfg_v4_on_demand_property_value_t).
+ *
+ * The value is an `int32_t` in the structure. New kinds may be added.
+ * @since 3.13.0
+ */
+typedef enum dxfg_v4_on_demand_property_value_kind_t {
+    /** The value is null; no other field of the structure is set. */
+    DXFG_V4_ON_DEMAND_PROPERTY_VALUE_NULL = 0,
+    /** A boolean (the properties `replaySupported`, `replay` and `clear`) in `boolean_value`: 0 or 1. */
+    DXFG_V4_ON_DEMAND_PROPERTY_VALUE_BOOLEAN = 1,
+    /** A double (the property `speed`) in `double_value`. */
+    DXFG_V4_ON_DEMAND_PROPERTY_VALUE_DOUBLE = 2,
+    /** A time (the property `time`) in `time_value`, in milliseconds since 1970-01-01 00:00:00 UTC. */
+    DXFG_V4_ON_DEMAND_PROPERTY_VALUE_TIME = 3,
+    /** A value of another type (a property that a later version of the service may add); no other field is set. */
+    DXFG_V4_ON_DEMAND_PROPERTY_VALUE_OTHER = 4
+} dxfg_v4_on_demand_property_value_kind_t;
+
+/**
+ * @brief The old or the new value of an on-demand service property, passed to
+ * dxfg_v4_OnDemandPropertyChangeListener_function.
+ *
+ * `kind` tells which field holds the value; the other fields are 0.
+ * @since 3.13.0
+ */
+typedef struct dxfg_v4_on_demand_property_value_t {
+    /** The kind of the value, a #dxfg_v4_on_demand_property_value_kind_t: #DXFG_V4_ON_DEMAND_PROPERTY_VALUE_NULL when
+     * the value is null. */
+    int32_t kind;
+    /** The value of the kind #DXFG_V4_ON_DEMAND_PROPERTY_VALUE_BOOLEAN: 0 or 1. */
+    int32_t boolean_value;
+    /** The value of the kind #DXFG_V4_ON_DEMAND_PROPERTY_VALUE_DOUBLE. */
+    double double_value;
+    /** The value of the kind #DXFG_V4_ON_DEMAND_PROPERTY_VALUE_TIME, in milliseconds since 1970-01-01 00:00:00 UTC. */
+    int64_t time_value;
+} dxfg_v4_on_demand_property_value_t;
+
+/**
+ * @brief The handle of a listener of the property changes of an on-demand service.
+ *
+ * Created by dxfg_v4_OnDemandPropertyChangeListener_new(); release it with dxfg_v4_JavaObjectHandler_release().
+ * @since 3.13.0
+ */
+typedef struct dxfg_v4_on_demand_property_change_listener_t {
+    /** The handle of the Java object. */
+    dxfg_java_object_handler handler;
+} dxfg_v4_on_demand_property_change_listener_t;
+
+/**
+ * @brief The callback of a listener of the property changes of an on-demand service.
+ *
+ * The service calls it once per changed property: `replaySupported`, `replay`, `clear` (booleans), `speed` (a double)
+ * and `time` (a time). It is called on a thread of the executor of the endpoint of the service, not on the thread that
+ * changed the service, with no lock of the SDK held: the callback may add and remove listeners. The changes of one
+ * service are reported one at a time.
+ *
+ * The name and the values belong to the SDK and are valid only until the function returns.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] property_name The name of the property, a NUL-terminated UTF-8 string (NULL if the service reports a
+ * change of several properties at once, as a Java property change event without a name may do).
+ * @param[in] old_value The old value of the property.
+ * @param[in] new_value The new value of the property.
+ * @param[in] user_data The user data passed to dxfg_v4_OnDemandPropertyChangeListener_new().
+ * @since 3.13.0
+ */
+typedef void (*dxfg_v4_OnDemandPropertyChangeListener_function)(graal_isolatethread_t *thread,
+                                                                const char *property_name,
+                                                                const dxfg_v4_on_demand_property_value_t *old_value,
+                                                                const dxfg_v4_on_demand_property_value_t *new_value,
+                                                                void *user_data);
+
+/**
+ * @brief Creates a listener of the property changes of an on-demand service.
+ *
+ * Add it to a service with dxfg_v4_OnDemandService_addPropertyChangeListener(). Releasing the last handle of the
+ * listener with dxfg_v4_JavaObjectHandler_release(), or dxfg_v4_NativeListener_deactivate() or
+ * dxfg_v4_NativeListener_deactivateAll(), stops the calls: after that the function is not called or running (except a
+ * call on the deactivating thread itself), and the user data can be freed.
+ *
+ * Java: `java.beans.PropertyChangeListener` for `OnDemandService.addPropertyChangeListener(PropertyChangeListener)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] function The function called for every property change; must not be NULL.
+ * @param[in] user_data The user data passed to the function; the SDK does not use or free it.
+ * @param[out] listener The pointer to the variable that receives the listener handle (release it with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_OnDemandPropertyChangeListener_new(graal_isolatethread_t *thread,
+                                                   dxfg_v4_OnDemandPropertyChangeListener_function function,
+                                                   void *user_data,
+                                                   DXFG_OUT dxfg_v4_on_demand_property_change_listener_t **listener);
+
+/**
+ * @brief Adds a listener of the property changes to the on-demand service.
+ *
+ * The service keeps the listener until dxfg_v4_OnDemandService_removePropertyChangeListener(); the caller may release
+ * its handle earlier, which stops the calls. A listener added twice is called twice per change.
+ *
+ * Java: `OnDemandService.addPropertyChangeListener(PropertyChangeListener)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] service The service.
+ * @param[in] listener The listener created by dxfg_v4_OnDemandPropertyChangeListener_new(); the caller keeps its
+ * ownership.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_OnDemandService_addPropertyChangeListener(graal_isolatethread_t *thread,
+                                                          dxfg_v4_on_demand_service_t *service,
+                                                          dxfg_v4_on_demand_property_change_listener_t *listener);
+
+/**
+ * @brief Removes a listener of the property changes from the on-demand service.
+ *
+ * Removing a listener that was not added does nothing. A change that the service is reporting at that moment may still
+ * reach the listener; release its handle to stop the calls for sure. Remove the listener before releasing its last
+ * handle: a released handle cannot be passed here, and a listener that was released without being removed stays in
+ * the service (as a small Java object that is never called again).
+ *
+ * Java: `OnDemandService.removePropertyChangeListener(PropertyChangeListener)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] service The service.
+ * @param[in] listener The listener; the caller keeps its ownership.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_OnDemandService_removePropertyChangeListener(graal_isolatethread_t *thread,
+                                                             dxfg_v4_on_demand_service_t *service,
+                                                             dxfg_v4_on_demand_property_change_listener_t *listener);
+
 /** @} */ // end of V4_OnDemand
 
 #ifdef __cplusplus

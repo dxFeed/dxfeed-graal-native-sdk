@@ -3,16 +3,25 @@
 
 package com.dxfeed.sdk.ondemand;
 
+import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.endpoint.DxfgEndpoint;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
+import com.dxfeed.sdk.javac.NativeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Date;
+import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.StackValue;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CDoublePointer;
 import org.graalvm.nativeimage.c.type.CLongPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 
 /**
@@ -327,5 +336,113 @@ public final class OnDemandServiceV4Native {
         return OlderEntryPoint.failed(stored, result == ExceptionHandlerReturnMinusOne.EXECUTE_FAIL)
                 ? ExceptionHandlerReturnMinusOne.EXECUTE_FAIL
                 : result;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_OnDemandPropertyChangeListener_new",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_OnDemandPropertyChangeListener_new(
+            final IsolateThread ignoredThread,
+            final DxfgOnDemandPropertyChangeListenerFunction function,
+            final VoidPointer userData,
+            @DxfgOut final WordPointer listener
+    ) {
+        if (function.isNull()) {
+            throw new IllegalArgumentException("The `function` pointer is null");
+        }
+
+        if (listener.isNull()) {
+            throw new IllegalArgumentException("The `listener` pointer is null");
+        }
+
+        listener.write(NativeUtils.MAPPER_ON_DEMAND_PROPERTY_CHANGE_LISTENER.toNative(
+                new PropertyListener(function, userData)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_OnDemandService_addPropertyChangeListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_OnDemandService_addPropertyChangeListener(
+            final IsolateThread ignoredThread,
+            final DxfgOnDemandService dxfgOnDemandService,
+            final DxfgOnDemandPropertyChangeListener listener
+    ) {
+        NativeUtils.MAPPER_ON_DEMAND_SERVICE.toJava(dxfgOnDemandService).addPropertyChangeListener(
+                toJavaListener(listener));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_OnDemandService_removePropertyChangeListener",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_OnDemandService_removePropertyChangeListener(
+            final IsolateThread ignoredThread,
+            final DxfgOnDemandService dxfgOnDemandService,
+            final DxfgOnDemandPropertyChangeListener listener
+    ) {
+        NativeUtils.MAPPER_ON_DEMAND_SERVICE.toJava(dxfgOnDemandService).removePropertyChangeListener(
+                toJavaListener(listener));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    private static PropertyChangeListener toJavaListener(final DxfgOnDemandPropertyChangeListener listener) {
+        if (listener.isNull()) {
+            throw new IllegalArgumentException("The `listener` handle is null");
+        }
+
+        return NativeUtils.MAPPER_ON_DEMAND_PROPERTY_CHANGE_LISTENER.toJava(listener);
+    }
+
+    /**
+     * The listener of {@code dxfg_v4_OnDemandPropertyChangeListener_new}: it passes the name and the two values of a
+     * property change to the native function.
+     */
+    private static final class PropertyListener extends NativeListener implements PropertyChangeListener {
+        private final DxfgOnDemandPropertyChangeListenerFunction function;
+        private final VoidPointer userData;
+
+        PropertyListener(final DxfgOnDemandPropertyChangeListenerFunction function, final VoidPointer userData) {
+            this.function = function;
+            this.userData = userData;
+        }
+
+        @Override
+        public void propertyChange(final PropertyChangeEvent changeEvent) {
+            if (!enter()) {
+                return;
+            }
+            try {
+                final DxfgOnDemandPropertyValue oldValue = StackValue.get(DxfgOnDemandPropertyValue.class);
+                final DxfgOnDemandPropertyValue newValue = StackValue.get(DxfgOnDemandPropertyValue.class);
+
+                fillValue(oldValue, changeEvent.getOldValue());
+                fillValue(newValue, changeEvent.getNewValue());
+
+                final CCharPointer propertyName = NativeUtils.MAPPER_STRING.toNative(changeEvent.getPropertyName());
+                try {
+                    function.invoke(CurrentIsolate.getCurrentThread(), propertyName, oldValue, newValue, userData);
+                } finally {
+                    NativeUtils.MAPPER_STRING.release(propertyName);
+                }
+            } finally {
+                exit();
+            }
+        }
+
+        private static void fillValue(final DxfgOnDemandPropertyValue nativeValue, final Object javaValue) {
+            final int kind = OnDemandPropertyValueKind.of(javaValue);
+
+            nativeValue.setKind(kind);
+            nativeValue.setBooleanValue(kind == OnDemandPropertyValueKind.BOOLEAN && (Boolean) javaValue ? 1 : 0);
+            nativeValue.setDoubleValue(kind == OnDemandPropertyValueKind.DOUBLE ? (Double) javaValue : 0.0);
+            nativeValue.setTimeValue(kind == OnDemandPropertyValueKind.TIME ? ((Date) javaValue).getTime() : 0L);
+        }
     }
 }

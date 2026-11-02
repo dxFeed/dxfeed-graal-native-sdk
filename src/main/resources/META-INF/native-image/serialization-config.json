@@ -7,7 +7,16 @@
       "name": "com.devexperts.auth.AuthToken"
     },
     {
+      "name": "com.devexperts.io.MarshallingException"
+    },
+    {
       "name": "com.devexperts.rmi.RMIException"
+    },
+    {
+      "name": "com.devexperts.rmi.RMIExceptionType"
+    },
+    {
+      "name": "com.devexperts.util.InvalidFormatException"
     },
     {
       "name": "com.dxfeed.event.candle.Candle"
@@ -190,6 +199,15 @@
       "name": "com.dxfeed.orcs.api.AuthOrderSource"
     },
     {
+      "name": "com.dxfeed.orcs.qd.PriceLevelCandle"
+    },
+    {
+      "name": "java.io.EOFException"
+    },
+    {
+      "name": "java.io.InvalidClassException"
+    },
+    {
       "name": "java.io.IOException"
     },
     {
@@ -199,10 +217,28 @@
       "name": "java.io.ObjectStreamException"
     },
     {
+      "name": "java.io.UncheckedIOException"
+    },
+    {
+      "name": "java.io.UTFDataFormatException"
+    },
+    {
       "name": "java.lang.Boolean"
     },
     {
+      "name": "java.lang.Enum"
+    },
+    {
       "name": "java.lang.Exception"
+    },
+    {
+      "name": "java.lang.IllegalArgumentException"
+    },
+    {
+      "name": "java.lang.IllegalStateException"
+    },
+    {
+      "name": "java.lang.IndexOutOfBoundsException"
     },
     {
       "name": "java.lang.Integer"
@@ -214,7 +250,16 @@
       "name": "java.lang.Long"
     },
     {
+      "name": "java.lang.NegativeArraySizeException"
+    },
+    {
+      "name": "java.lang.NullPointerException"
+    },
+    {
       "name": "java.lang.Number"
+    },
+    {
+      "name": "java.lang.NumberFormatException"
     },
     {
       "name": "java.lang.Object[]"
@@ -236,6 +281,9 @@
     },
     {
       "name": "java.lang.Throwable"
+    },
+    {
+      "name": "java.lang.UnsupportedOperationException"
     },
     {
       "name": "java.rmi.dgc.Lease"
@@ -280,6 +328,9 @@
       "name": "java.util.Collections$EmptyList"
     },
     {
+      "name": "java.util.Collections$EmptyMap"
+    },
+    {
       "name": "java.util.Collections$UnmodifiableCollection"
     },
     {
@@ -290,6 +341,9 @@
     },
     {
       "name": "java.util.Collections$UnmodifiableRandomAccessList"
+    },
+    {
+      "name": "java.util.ConcurrentModificationException"
     },
     {
       "name": "java.util.HashMap"

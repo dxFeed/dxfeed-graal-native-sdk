@@ -232,6 +232,31 @@ int32_t dxfg_v4_symbols_by_order_source_id_map_entry_list_release(
     graal_isolatethread_t *thread, dxfg_v4_symbols_by_order_source_id_map_entry_list *list);
 
 /**
+ * @brief Creates an AuthOrderSource from the entries (the identifier of an order source, the symbols).
+ *
+ * The list is only read and copied: the caller keeps its ownership and may free it after the call (a list that
+ * dxfg_v4_AuthOrderSource_getByIds() returned is released with
+ * dxfg_v4_symbols_by_order_source_id_map_entry_list_release()). The whole list is checked before the AuthOrderSource
+ * is created: a NULL list, a NULL entry, a NULL symbol list, a NULL symbol or two entries with the same identifier
+ * fail the call with `IllegalArgumentException`. An empty list gives an AuthOrderSource without order sources.
+ * dxfg_v4_AuthOrderSource_getByIds() of the result returns the same entries.
+ *
+ * Java: `AuthOrderSource.create(Map)`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] symbolsByOrderSourceIdMapEntryList The entries.
+ * @param[out] authOrderSource The pointer to the variable that receives the AuthOrderSource (release the handle with
+ * dxfg_v4_JavaObjectHandler_release()); must not be NULL. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_AuthOrderSource_create(
+    graal_isolatethread_t *thread,
+    const dxfg_v4_symbols_by_order_source_id_map_entry_list *symbolsByOrderSourceIdMapEntryList,
+    DXFG_OUT dxfg_v4_auth_order_source_t **authOrderSource);
+
+/**
  * @brief Returns the entries (an order source, the symbols) of an AuthOrderSource.
  *
  * The list is a copy: it does not depend on the handle of the AuthOrderSource.

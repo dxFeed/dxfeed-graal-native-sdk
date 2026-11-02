@@ -4,7 +4,9 @@
 package com.dxfeed.sdk.feed;
 
 import com.dxfeed.api.DXFeedSubscription;
+import com.dxfeed.api.DXFeedTimeSeriesSubscription;
 import com.dxfeed.event.EventType;
+import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
@@ -14,6 +16,7 @@ import com.dxfeed.sdk.events.DxfgEventTypeListPointerPointer;
 import com.dxfeed.sdk.events.DxfgEventTypePointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
+import com.dxfeed.sdk.javac.JavaObjectHandler;
 import com.dxfeed.sdk.subscription.DxfgSubscription;
 import com.dxfeed.sdk.subscription.DxfgTimeSeriesSubscription;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
@@ -22,6 +25,7 @@ import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CConst;
+import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 
 /**
@@ -363,5 +367,36 @@ public final class FeedV4Native {
         return OlderEntryPoint.failed(stored, result == ExceptionHandlerReturnMinusOne.EXECUTE_FAIL)
                 ? ExceptionHandlerReturnMinusOne.EXECUTE_FAIL
                 : result;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_DXFeedTimeSeriesSubscription_getFromTime",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_DXFeedTimeSeriesSubscription_getFromTime(
+            final IsolateThread ignoredThread,
+            final DxfgTimeSeriesSubscription dxfgTimeSeriesSubscription,
+            @DxfgOut final CLongPointer fromTime
+    ) {
+        if (fromTime.isNull()) {
+            throw new IllegalArgumentException("The `fromTime` pointer is null");
+        }
+
+        if (dxfgTimeSeriesSubscription.isNull()) {
+            throw new IllegalArgumentException("The `sub` handle is null");
+        }
+
+        // Read as an Object first: a handle of a plain subscription fails with a clear message, not a cast error.
+        @SuppressWarnings("unchecked") final Object subscription = NativeUtils.MAPPER_JAVA_OBJECT_HANDLER.toJava(
+                (JavaObjectHandler<Object>) (JavaObjectHandler<?>) dxfgTimeSeriesSubscription);
+
+        if (!(subscription instanceof DXFeedTimeSeriesSubscription)) {
+            throw new IllegalArgumentException("The `sub` handle is not a time series subscription: "
+                    + (subscription == null ? "null" : subscription.getClass().getName()));
+        }
+
+        fromTime.write(((DXFeedTimeSeriesSubscription<?>) subscription).getFromTime());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 }

@@ -499,6 +499,27 @@ int32_t dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t *
                                                          dxfg_v4_time_series_subscription_t *sub, int64_t fromTime);
 
 /**
+ * @brief Returns the earliest time from which the time series subscription receives the events.
+ *
+ * It is the value set by dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime(), INT64_MAX for a new subscription. The
+ * handle must be one of a time series subscription (dxfg_v4_DXFeed_createTimeSeriesSubscription()): the handle of
+ * another subscription, cast to the type, fails the call with `IllegalArgumentException`.
+ *
+ * Java: `DXFeedTimeSeriesSubscription.getFromTime()`.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] sub The time series subscription.
+ * @param[out] fromTime The pointer to the variable that receives the time in milliseconds since 1970-01-01 00:00:00
+ * UTC; must not be NULL. It is written on success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @since 3.13.0
+ */
+int32_t dxfg_v4_DXFeedTimeSeriesSubscription_getFromTime(graal_isolatethread_t *thread,
+                                                         dxfg_v4_time_series_subscription_t *sub,
+                                                         DXFG_OUT int64_t *fromTime);
+
+/**
  * @brief Tells whether the promise is done: completed with a result, completed exceptionally or cancelled.
  *
  * Java: `Promise.isDone()`.

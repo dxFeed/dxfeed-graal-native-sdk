@@ -3,15 +3,24 @@
 
 package com.dxfeed.sdk.orcs;
 
+import com.dxfeed.orcs.api.AuthOrderSource;
+import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointer;
 import com.dxfeed.sdk.events.DxfgEventTypeListPointerPointer;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
+import com.dxfeed.sdk.javac.DxfgCStringListPointer;
+import com.dxfeed.sdk.orcs.mappers.Mappers;
 import com.dxfeed.sdk.source.DxfgIndexedEventSourcePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -285,5 +294,99 @@ public final class OrcsV4Native {
         return OlderEntryPoint.failed(stored, result == ExceptionHandlerReturnMinusOne.EXECUTE_FAIL)
                 ? ExceptionHandlerReturnMinusOne.EXECUTE_FAIL
                 : result;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_AuthOrderSource_create",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_AuthOrderSource_create(
+            final IsolateThread ignoredThread,
+            @CConst final DxfgSymbolsByOrderSourceIdMapEntryListPointer symbolsByOrderSourceIdMapEntryList,
+            @DxfgOut final DxfgAuthOrderSourceHandlePointer authOrderSource
+    ) {
+        if (authOrderSource.isNull()) {
+            throw new IllegalArgumentException("The `authOrderSource` pointer is null");
+        }
+
+        // The whole list is checked before Java sees it.
+        final Map<Integer, Set<String>> symbolsByOrderSourceId = toSymbolsByOrderSourceId(
+                symbolsByOrderSourceIdMapEntryList);
+
+        authOrderSource.write(Mappers.AUTH_ORDER_SOURCE_MAPPER.toNative(
+                AuthOrderSource.create(Collections.unmodifiableMap(symbolsByOrderSourceId))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // The map of the entries: a NULL list, entry, symbol list or symbol and a duplicate identifier are errors.
+    private static Map<Integer, Set<String>> toSymbolsByOrderSourceId(
+            final DxfgSymbolsByOrderSourceIdMapEntryListPointer entries
+    ) {
+        if (entries.isNull()) {
+            throw new IllegalArgumentException("The `symbolsByOrderSourceIdMapEntryList` list is null");
+        }
+
+        final int size = entries.getSize();
+
+        if (size < 0) {
+            throw new IllegalArgumentException("The size of the list is negative: " + size);
+        }
+
+        if (size > 0 && entries.getElements().isNull()) {
+            throw new IllegalArgumentException("The elements of the list are null");
+        }
+
+        final Map<Integer, Set<String>> result = new HashMap<>(Math.max(16, size * 2));
+
+        for (int i = 0; i < size; i++) {
+            final DxfgSymbolsByOrderSourceIdMapEntryPointer entry = entries.getElements().addressOf(i).read();
+
+            if (entry.isNull()) {
+                throw new IllegalArgumentException("The entry " + i + " is null");
+            }
+
+            final int orderSourceId = entry.getOrderSourceId();
+
+            if (result.containsKey(orderSourceId)) {
+                throw new IllegalArgumentException("The order source identifier " + orderSourceId
+                        + " is duplicated (the entry " + i + ")");
+            }
+
+            result.put(orderSourceId, toSymbols(entry.getSymbols(), i));
+        }
+
+        return result;
+    }
+
+    private static Set<String> toSymbols(final DxfgCStringListPointer symbols, final int entryIndex) {
+        if (symbols.isNull()) {
+            throw new IllegalArgumentException("The symbol list of the entry " + entryIndex + " is null");
+        }
+
+        final int size = symbols.getSize();
+
+        if (size < 0) {
+            throw new IllegalArgumentException(
+                    "The size of the symbol list of the entry " + entryIndex + " is negative: " + size);
+        }
+
+        if (size > 0 && symbols.getElements().isNull()) {
+            throw new IllegalArgumentException("The symbols of the entry " + entryIndex + " are null");
+        }
+
+        final Set<String> result = new HashSet<>(Math.max(16, size * 2));
+
+        for (int i = 0; i < size; i++) {
+            final String symbol = NativeUtils.MAPPER_STRING.toJava(symbols.getElements().addressOf(i).read());
+
+            if (symbol == null) {
+                throw new IllegalArgumentException("The symbol " + i + " of the entry " + entryIndex + " is null");
+            }
+
+            result.add(symbol);
+        }
+
+        return Collections.unmodifiableSet(result);
     }
 }

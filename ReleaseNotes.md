@@ -71,6 +71,24 @@
   `dxfg_v4_Promise_failed()` and the `completeExceptionally` functions that take a `dxfg_exception_t` keep their
   behaviour; their descriptions point to the new functions.
 
+* **\[MDAPI-489]\[GRAAL]** Four members of the Java API that the SDK did not export, and the exceptions of the ORCS
+  server with their classes. The new listeners stop on release and on `dxfg_v4_NativeListener_deactivateAll()`.
+  * `dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged()` (`dxfg_v4_events.h`) creates a
+    subscription change listener with the `configurationChanged` callback (called, for example, when the aggregation
+    period changes); each of its four callbacks may be NULL.
+  * `dxfg_v4_DXFeedTimeSeriesSubscription_getFromTime()` returns the time that
+    `dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime()` set.
+  * `dxfg_v4_AuthOrderSource_create()` creates an AuthOrderSource from the entries of identifiers and symbols; a NULL
+    entry, symbol list or symbol and a duplicate identifier fail the call.
+  * `dxfg_v4_OnDemandPropertyChangeListener_new()`, `dxfg_v4_OnDemandService_addPropertyChangeListener()` and
+    `dxfg_v4_OnDemandService_removePropertyChangeListener()` report the property changes of an on-demand service
+    (`replaySupported`, `replay`, `clear`, `speed`, `time`) with the old and the new values, each with its kind
+    (`DXFG_V4_ON_DEMAND_PROPERTY_VALUE_NULL` for null).
+  * The `PriceLevelService` functions (also the older `dxfg_PriceLevelService_*`) report the exceptions of the ORCS
+    server with their classes: an unsupported order source gave an `UndeclaredThrowableException` over
+    `java.lang.Exception` and now gives `IllegalArgumentException`, as in Java. The image registers for serialization
+    the classes of the serialization whitelist of ORCS.
+
 ## v3.12.0
 
 * **\[MDAPI-458]\[GRAAL]** The `dxfg_v4_` functions: the operations of the C API in one form. A v4 function returns the

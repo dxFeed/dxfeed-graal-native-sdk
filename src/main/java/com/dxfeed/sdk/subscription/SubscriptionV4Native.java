@@ -4,12 +4,15 @@
 package com.dxfeed.sdk.subscription;
 
 import com.dxfeed.api.DXFeedSubscription;
+import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
+import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.CInt32Pointer;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.events.DxfgEventClazz;
 import com.dxfeed.sdk.events.DxfgEventClazzList;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListener;
+import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionConfigurationChanged;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded;
 import com.dxfeed.sdk.events.DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved;
@@ -18,9 +21,12 @@ import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.feed.DxfgFeed;
 import com.dxfeed.sdk.javac.DxfgExecutorHandle;
 import com.dxfeed.sdk.javac.DxfgTimePeriodHandle;
+import com.dxfeed.sdk.javac.NativeListener;
 import com.dxfeed.sdk.subscriptioncontroller.DxfgSubscriptionControllerHandlePointer;
 import com.dxfeed.sdk.symbol.DxfgSymbol;
 import com.dxfeed.sdk.symbol.DxfgSymbolList;
+import java.util.Set;
+import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -769,5 +775,118 @@ public final class SubscriptionV4Native {
         listener.write(result);
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged(
+            final IsolateThread ignoredThread,
+            final DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded functionSymbolsAdded,
+            final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved,
+            final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed,
+            final DxfgObservableSubscriptionChangeListenerFunctionConfigurationChanged functionConfigurationChanged,
+            final VoidPointer userData,
+            @DxfgOut final WordPointer listener
+    ) {
+        if (listener.isNull()) {
+            throw new IllegalArgumentException("The `listener` pointer is null");
+        }
+
+        listener.write(NativeUtils.MAPPER_OBSERVABLE_SUBSCRIPTION_CHANGE_LISTENER.toNative(
+                new ChangeListener(
+                        functionSymbolsAdded,
+                        functionSymbolsRemoved,
+                        functionSubscriptionClosed,
+                        functionConfigurationChanged,
+                        userData)));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    /**
+     * The subscription change listener of
+     * {@code dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged}: each of its native functions
+     * may be NULL and is not called then.
+     */
+    private static final class ChangeListener extends NativeListener implements ObservableSubscriptionChangeListener {
+        private final DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded functionSymbolsAdded;
+        private final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved;
+        private final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed;
+        private final DxfgObservableSubscriptionChangeListenerFunctionConfigurationChanged functionConfigurationChanged;
+        private final VoidPointer userData;
+
+        ChangeListener(
+                final DxfgObservableSubscriptionChangeListenerFunctionSymbolsAdded functionSymbolsAdded,
+                final DxfgObservableSubscriptionChangeListenerFunctionSymbolsRemoved functionSymbolsRemoved,
+                final DxfgObservableSubscriptionChangeListenerFunctionSubscriptionClosed functionSubscriptionClosed,
+                final DxfgObservableSubscriptionChangeListenerFunctionConfigurationChanged functionConfigurationChanged,
+                final VoidPointer userData
+        ) {
+            this.functionSymbolsAdded = functionSymbolsAdded;
+            this.functionSymbolsRemoved = functionSymbolsRemoved;
+            this.functionSubscriptionClosed = functionSubscriptionClosed;
+            this.functionConfigurationChanged = functionConfigurationChanged;
+            this.userData = userData;
+        }
+
+        @Override
+        public void symbolsAdded(final Set<?> symbols) {
+            if (functionSymbolsAdded.isNull() || !enter()) {
+                return;
+            }
+            try {
+                final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                try {
+                    functionSymbolsAdded.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
+                } finally {
+                    NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                }
+            } finally {
+                exit();
+            }
+        }
+
+        @Override
+        public void symbolsRemoved(final Set<?> symbols) {
+            if (functionSymbolsRemoved.isNull() || !enter()) {
+                return;
+            }
+            try {
+                final DxfgSymbolList dxfgSymbolList = NativeUtils.MAPPER_SYMBOLS.toNativeList(symbols);
+                try {
+                    functionSymbolsRemoved.invoke(CurrentIsolate.getCurrentThread(), dxfgSymbolList, userData);
+                } finally {
+                    NativeUtils.MAPPER_SYMBOLS.release(dxfgSymbolList);
+                }
+            } finally {
+                exit();
+            }
+        }
+
+        @Override
+        public void subscriptionClosed() {
+            if (functionSubscriptionClosed.isNull() || !enter()) {
+                return;
+            }
+            try {
+                functionSubscriptionClosed.invoke(CurrentIsolate.getCurrentThread(), userData);
+            } finally {
+                exit();
+            }
+        }
+
+        @Override
+        public void configurationChanged() {
+            if (functionConfigurationChanged.isNull() || !enter()) {
+                return;
+            }
+            try {
+                functionConfigurationChanged.invoke(CurrentIsolate.getCurrentThread(), userData);
+            } finally {
+                exit();
+            }
+        }
     }
 }
