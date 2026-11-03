@@ -1,8 +1,14 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.12.0",
-  "advanced_revision": 0,
-  "features": [],
+  "sdk_version": "3.13.0",
+  "advanced_revision": 1,
+  "features": [
+    "event_queue",
+    "event_queue_ready_signal",
+    "feed_filter",
+    "shared_event_queue",
+    "time_series_tx_model_event_peek"
+  ],
   "headers": [
     {
       "name": "dxfg_api.h",
@@ -113,11 +119,19 @@
       "tier": "basic"
     },
     {
+      "name": "dxfg_v4_event_queue.h",
+      "tier": "basic"
+    },
+    {
       "name": "dxfg_v4_events.h",
       "tier": "basic"
     },
     {
       "name": "dxfg_v4_feed.h",
+      "tier": "basic"
+    },
+    {
+      "name": "dxfg_v4_feed_filter.h",
       "tier": "basic"
     },
     {
@@ -3502,7 +3516,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_DXFeedSubscription_getSubscriptionController()",
+        "message": "use dxfg_v4_DXFeedSubscription_getSubscriptionController() (experimental)",
         "replacements": [
           "dxfg_v4_DXFeedSubscription_getSubscriptionController"
         ]
@@ -3565,7 +3579,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents()",
+        "message": "use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents() (experimental)",
         "replacements": [
           "dxfg_v4_DXFeedSubscription_getTotalDroppedEvents"
         ]
@@ -6734,7 +6748,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_build()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_build() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_build"
         ]
@@ -6768,7 +6782,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_new()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_new() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_new"
         ]
@@ -6802,7 +6816,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod"
         ]
@@ -6835,7 +6849,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis"
         ]
@@ -6868,7 +6882,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit"
         ]
@@ -6901,7 +6915,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withExecutor()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withExecutor() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withExecutor"
         ]
@@ -6934,7 +6948,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withFeed()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withFeed() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withFeed"
         ]
@@ -6967,7 +6981,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withListener()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withListener() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withListener"
         ]
@@ -7000,7 +7014,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSource()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSource() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withSource"
         ]
@@ -7033,7 +7047,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSymbol()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withSymbol"
         ]
@@ -7066,7 +7080,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol"
         ]
@@ -7099,7 +7113,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Listener_new()",
+        "message": "use dxfg_v4_IndexedEventTxModel_Listener_new() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Listener_new"
         ]
@@ -7138,7 +7152,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_close()",
+        "message": "use dxfg_v4_IndexedEventTxModel_close() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_close"
         ]
@@ -7166,7 +7180,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol()",
+        "message": "use dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol"
         ]
@@ -7200,7 +7214,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSource()",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSource() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSource"
         ]
@@ -7234,7 +7248,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSubscriptionController()",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSubscriptionController() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSubscriptionController"
         ]
@@ -7268,7 +7282,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSymbol()",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSymbol"
         ]
@@ -7302,7 +7316,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_isClosed()",
+        "message": "use dxfg_v4_IndexedEventTxModel_isClosed() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_isClosed"
         ]
@@ -7335,7 +7349,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_newBuilder()",
+        "message": "use dxfg_v4_IndexedEventTxModel_newBuilder() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_newBuilder"
         ]
@@ -7398,7 +7412,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_build()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_build() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_build"
         ]
@@ -7427,7 +7441,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod"
         ]
@@ -7461,7 +7475,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withBatchProcessing"
         ]
@@ -7495,7 +7509,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withExecutor()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withExecutor() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withExecutor"
         ]
@@ -7529,7 +7543,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withFeed()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withFeed() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withFeed"
         ]
@@ -7563,7 +7577,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withListener()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withListener() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withListener"
         ]
@@ -7597,7 +7611,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing"
         ]
@@ -7631,7 +7645,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSources()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSources() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSources"
         ]
@@ -7665,7 +7679,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSymbol()",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSymbol"
         ]
@@ -7699,7 +7713,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_attach()",
+        "message": "use dxfg_v4_IndexedTxModel_attach() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_attach"
         ]
@@ -7732,7 +7746,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_close()",
+        "message": "use dxfg_v4_IndexedTxModel_close() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_close"
         ]
@@ -7760,7 +7774,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_detach()",
+        "message": "use dxfg_v4_IndexedTxModel_detach() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_detach"
         ]
@@ -7793,7 +7807,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_getSources()",
+        "message": "use dxfg_v4_IndexedTxModel_getSources() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_getSources"
         ]
@@ -7822,7 +7836,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_isBatchProcessing()",
+        "message": "use dxfg_v4_IndexedTxModel_isBatchProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_isBatchProcessing"
         ]
@@ -7850,7 +7864,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_isSnapshotProcessing()",
+        "message": "use dxfg_v4_IndexedTxModel_isSnapshotProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_isSnapshotProcessing"
         ]
@@ -7878,7 +7892,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_newBuilder()",
+        "message": "use dxfg_v4_IndexedTxModel_newBuilder() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_newBuilder"
         ]
@@ -7907,7 +7921,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_setAggregationPeriod()",
+        "message": "use dxfg_v4_IndexedTxModel_setAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_setAggregationPeriod"
         ]
@@ -7940,7 +7954,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_setSources()",
+        "message": "use dxfg_v4_IndexedTxModel_setSources() (experimental)",
         "replacements": [
           "dxfg_v4_IndexedTxModel_setSources"
         ]
@@ -16934,7 +16948,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_attach()",
+        "message": "use dxfg_v4_SubscriptionController_attach() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_attach"
         ]
@@ -16967,7 +16981,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_detach()",
+        "message": "use dxfg_v4_SubscriptionController_detach() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_detach"
         ]
@@ -17000,7 +17014,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriod()",
+        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_getAggregationPeriod"
         ]
@@ -17034,7 +17048,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriodMillis()",
+        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriodMillis() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_getAggregationPeriodMillis"
         ]
@@ -17067,7 +17081,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getEventsBatchLimit()",
+        "message": "use dxfg_v4_SubscriptionController_getEventsBatchLimit() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_getEventsBatchLimit"
         ]
@@ -17100,7 +17114,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getExecutor()",
+        "message": "use dxfg_v4_SubscriptionController_getExecutor() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_getExecutor"
         ]
@@ -17134,7 +17148,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriod()",
+        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_setAggregationPeriod"
         ]
@@ -17167,7 +17181,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriodMillis()",
+        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriodMillis() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_setAggregationPeriodMillis"
         ]
@@ -17200,7 +17214,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setEventsBatchLimit()",
+        "message": "use dxfg_v4_SubscriptionController_setEventsBatchLimit() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_setEventsBatchLimit"
         ]
@@ -17233,7 +17247,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setExecutor()",
+        "message": "use dxfg_v4_SubscriptionController_setExecutor() (experimental)",
         "replacements": [
           "dxfg_v4_SubscriptionController_setExecutor"
         ]
@@ -18204,7 +18218,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_build()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_build() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_build"
         ]
@@ -18233,7 +18247,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast"
         ]
@@ -18267,7 +18281,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents"
         ]
@@ -18301,7 +18315,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod"
         ]
@@ -18335,7 +18349,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing"
         ]
@@ -18369,7 +18383,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick"
         ]
@@ -18403,7 +18417,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withEventPeek"
         ]
@@ -18437,7 +18451,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withExecutor"
         ]
@@ -18471,7 +18485,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFeed()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFeed() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withFeed"
         ]
@@ -18505,7 +18519,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withFromTime"
         ]
@@ -18539,7 +18553,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withListener()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withListener() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withListener"
         ]
@@ -18573,7 +18587,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing"
         ]
@@ -18607,7 +18621,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSorting()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSorting() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSorting"
         ]
@@ -18641,7 +18655,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSymbol"
         ]
@@ -18675,7 +18689,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_attach()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_attach() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_attach"
         ]
@@ -18708,7 +18722,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_close()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_close() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_close"
         ]
@@ -18736,7 +18750,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_detach()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_detach() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_detach"
         ]
@@ -18769,7 +18783,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_getFromTime()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_getFromTime() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_getFromTime"
         ]
@@ -18797,7 +18811,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_isBatchProcessing()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_isBatchProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_isBatchProcessing"
         ]
@@ -18825,7 +18839,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing"
         ]
@@ -18853,7 +18867,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_newBuilder()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_newBuilder() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_newBuilder"
         ]
@@ -18882,7 +18896,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_setAggregationPeriod"
         ]
@@ -18915,7 +18929,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_setFromTime()",
+        "message": "use dxfg_v4_TimeSeriesTxModel_setFromTime() (experimental)",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_setFromTime"
         ]
@@ -19490,7 +19504,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TxModelListener_new()",
+        "message": "use dxfg_v4_TxModelListener_new() (experimental)",
         "replacements": [
           "dxfg_v4_TxModelListener_new"
         ]
@@ -20264,6 +20278,35 @@
         {
           "name": "additionalUnderlyings",
           "type": "dxfg_v4_additional_underlyings_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_AuthOrderSource_create",
+      "header": "dxfg_v4_orcs.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "symbolsByOrderSourceIdMapEntryList",
+          "type": "const dxfg_v4_symbols_by_order_source_id_map_entry_list *",
+          "out": false
+        },
+        {
+          "name": "authOrderSource",
+          "type": "dxfg_v4_auth_order_source_t **",
           "out": true,
           "release": "dxfg_v4_JavaObjectHandler_release"
         }
@@ -22343,6 +22386,450 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_DXFeedFilterListener_new",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "user_func",
+          "type": "dxfg_v4_feed_filter_listener_func",
+          "out": false
+        },
+        {
+          "name": "user_data",
+          "type": "void *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_feed_filter_listener_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilterTracker_addListener",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "tracker",
+          "type": "dxfg_v4_feed_filter_tracker_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_feed_filter_listener_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilterTracker_getCurrentFilter",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "tracker",
+          "type": "dxfg_v4_feed_filter_tracker_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilterTracker_removeListener",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "tracker",
+          "type": "dxfg_v4_feed_filter_tracker_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_feed_filter_listener_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_Builder_build",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "builder",
+          "type": "dxfg_v4_feed_filter_builder_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_Builder_withCategories",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "builder",
+          "type": "dxfg_v4_feed_filter_builder_t *",
+          "out": false
+        },
+        {
+          "name": "categoryNames",
+          "type": "const dxfg_v4_string_list *",
+          "out": false
+        },
+        {
+          "name": "filterExpressions",
+          "type": "const dxfg_v4_string_list *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_Builder_withCategory",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "builder",
+          "type": "dxfg_v4_feed_filter_builder_t *",
+          "out": false
+        },
+        {
+          "name": "categoryName",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "filterExpression",
+          "type": "const char *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_accept",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "eventType",
+          "type": "dxfg_v4_event_clazz_t",
+          "out": false
+        },
+        {
+          "name": "symbol",
+          "type": "dxfg_v4_symbol_t *",
+          "out": false
+        },
+        {
+          "name": "accepted",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_acceptEvent",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "event",
+          "type": "dxfg_v4_event_type_t *",
+          "out": false
+        },
+        {
+          "name": "accepted",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_getCategory",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "eventType",
+          "type": "dxfg_v4_event_clazz_t",
+          "out": false
+        },
+        {
+          "name": "symbol",
+          "type": "dxfg_v4_symbol_t *",
+          "out": false
+        },
+        {
+          "name": "category",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_getEventCategory",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "event",
+          "type": "dxfg_v4_event_type_t *",
+          "out": false
+        },
+        {
+          "name": "category",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_getTracker",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "tracker",
+          "type": "dxfg_v4_feed_filter_tracker_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_isDynamic",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_feed_filter_t *",
+          "out": false
+        },
+        {
+          "name": "dynamic",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXFeedFilter_newBuilder",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "endpoint",
+          "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        },
+        {
+          "name": "builder",
+          "type": "dxfg_v4_feed_filter_builder_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_DXFeedSubscription_addChangeListener",
       "header": "dxfg_v4_subscription.h",
       "tier": "stable",
@@ -23247,6 +23734,34 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_DXFeedTimeSeriesSubscription_getFromTime",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "sub",
+          "type": "dxfg_v4_time_series_subscription_t *",
+          "out": false
+        },
+        {
+          "name": "fromTime",
+          "type": "int64_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_DXFeedTimeSeriesSubscription_setFromTime",
       "header": "dxfg_v4_feed.h",
       "tier": "stable",
@@ -24022,6 +24537,60 @@
         {
           "name": "filter",
           "type": "dxfg_v4_day_filter_function",
+          "out": false
+        },
+        {
+          "name": "dayFilter",
+          "type": "dxfg_v4_day_filter_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DayFilter_newWithUserData",
+      "header": "dxfg_v4_schedule.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "dayOfWeekMask",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "holiday",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "shortDay",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "trading",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_day_filter_user_data_function",
+          "out": false
+        },
+        {
+          "name": "userData",
+          "type": "void *",
           "out": false
         },
         {
@@ -24875,6 +25444,306 @@
           "type": "const char **",
           "out": true,
           "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_attach",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "sub",
+          "type": "dxfg_v4_subscription_t *",
+          "out": false
+        },
+        {
+          "name": "tag",
+          "type": "int64_t",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_close",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_create",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_getDroppedEvents",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "droppedEvents",
+          "type": "int64_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_getExecutor",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "executor",
+          "type": "dxfg_v4_executor_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_new",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "sub",
+          "type": "dxfg_v4_subscription_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_poll",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "timeoutInMilliseconds",
+          "type": "int64_t",
+          "out": false
+        },
+        {
+          "name": "limit",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "events",
+          "type": "dxfg_v4_event_type_list **",
+          "out": true,
+          "release": "dxfg_v4_event_type_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_pollTagged",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "timeoutInMilliseconds",
+          "type": "int64_t",
+          "out": false
+        },
+        {
+          "name": "limit",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "events",
+          "type": "dxfg_v4_tagged_event_list **",
+          "out": true,
+          "release": "dxfg_v4_tagged_event_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_setReadySignal",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
+        },
+        {
+          "name": "kind",
+          "type": "dxfg_v4_ready_signal_kind_t",
+          "out": false
+        },
+        {
+          "name": "handle",
+          "type": "int64_t",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_EventQueue_wakeUp",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "queue",
+          "type": "dxfg_v4_event_queue_t *",
+          "out": false
         }
       ],
       "threads": "unknown"
@@ -28544,6 +29413,130 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_InstrumentProfileWriter_writeHandlesToBytes",
+      "header": "dxfg_v4_ipf.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "name",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "instrument_profiles",
+          "type": "const dxfg_v4_instrument_profile_list *",
+          "out": false
+        },
+        {
+          "name": "bytes",
+          "type": "dxfg_v4_byte_list **",
+          "out": true,
+          "release": "dxfg_v4_byte_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_InstrumentProfileWriter_writeHandlesToFile",
+      "header": "dxfg_v4_ipf.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "file",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "instrument_profiles",
+          "type": "const dxfg_v4_instrument_profile_list *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_InstrumentProfileWriter_writeToBytes",
+      "header": "dxfg_v4_ipf.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "name",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "instrument_profiles",
+          "type": "const dxfg_v4_instrument_profile_data_list *",
+          "out": false
+        },
+        {
+          "name": "bytes",
+          "type": "dxfg_v4_byte_list **",
+          "out": true,
+          "release": "dxfg_v4_byte_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_InstrumentProfileWriter_writeToFile",
+      "header": "dxfg_v4_ipf.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "file",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "instrument_profiles",
+          "type": "const dxfg_v4_instrument_profile_data_list *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_InstrumentProfile_getAdditionalUnderlyings",
       "header": "dxfg_v4_ipf.h",
       "tier": "stable",
@@ -31159,6 +32152,55 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_ObservableSubscriptionChangeListener_newWithConfigurationChanged",
+      "header": "dxfg_v4_events.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "function_symbolsAdded",
+          "type": "dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsAdded",
+          "out": false
+        },
+        {
+          "name": "function_symbolsRemoved",
+          "type": "dxfg_v4_ObservableSubscriptionChangeListener_function_symbolsRemoved",
+          "out": false
+        },
+        {
+          "name": "function_subscriptionClosed",
+          "type": "dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed",
+          "out": false
+        },
+        {
+          "name": "function_configurationChanged",
+          "type": "dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged",
+          "out": false
+        },
+        {
+          "name": "user_data",
+          "type": "void *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_observable_subscription_change_listener_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_ObservableSubscription_addChangeListener",
       "header": "dxfg_v4_publisher.h",
       "tier": "stable",
@@ -31299,6 +32341,68 @@
         {
           "name": "listener",
           "type": "dxfg_v4_observable_subscription_change_listener_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_OnDemandPropertyChangeListener_new",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "function",
+          "type": "dxfg_v4_OnDemandPropertyChangeListener_function",
+          "out": false
+        },
+        {
+          "name": "user_data",
+          "type": "void *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_on_demand_property_change_listener_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_OnDemandService_addPropertyChangeListener",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "service",
+          "type": "dxfg_v4_on_demand_service_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_on_demand_property_change_listener_t *",
           "out": false
         }
       ],
@@ -31544,6 +32648,34 @@
         {
           "name": "service",
           "type": "dxfg_v4_on_demand_service_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_OnDemandService_removePropertyChangeListener",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "service",
+          "type": "dxfg_v4_on_demand_service_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_on_demand_property_change_listener_t *",
           "out": false
         }
       ],
@@ -33235,6 +34367,34 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_Promise_complete",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "promise",
+          "type": "dxfg_v4_promise_t *",
+          "out": false
+        },
+        {
+          "name": "result",
+          "type": "dxfg_v4_java_object_handler *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_Promise_completeExceptionally",
       "header": "dxfg_v4_feed.h",
       "tier": "stable",
@@ -33257,6 +34417,39 @@
         {
           "name": "exception",
           "type": "dxfg_v4_exception_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_Promise_completeExceptionallyWithClassNameAndMessage",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "promise",
+          "type": "dxfg_v4_promise_t *",
+          "out": false
+        },
+        {
+          "name": "className",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "message",
+          "type": "const char *",
           "out": false
         }
       ],
@@ -33331,6 +34524,40 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_Promise_failedWithClassNameAndMessage",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "className",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "message",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "newPromise",
+          "type": "dxfg_v4_promise_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_Promise_getException",
       "header": "dxfg_v4_feed.h",
       "tier": "stable",
@@ -33355,6 +34582,35 @@
           "type": "dxfg_v4_exception_t **",
           "out": true,
           "release": "dxfg_v4_Exception_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_Promise_getResult",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "promise",
+          "type": "dxfg_v4_promise_t *",
+          "out": false
+        },
+        {
+          "name": "result",
+          "type": "dxfg_v4_java_object_handler **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
         }
       ],
       "threads": "unknown"
@@ -33467,6 +34723,30 @@
           "name": "done",
           "type": "int32_t *",
           "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_Promise_new",
+      "header": "dxfg_v4_feed.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "promise",
+          "type": "dxfg_v4_promise_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
         }
       ],
       "threads": "unknown"
@@ -34246,6 +35526,50 @@
         {
           "name": "filter",
           "type": "dxfg_v4_session_filter_function",
+          "out": false
+        },
+        {
+          "name": "sessionFilter",
+          "type": "dxfg_v4_session_filter_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_SessionFilter_newWithUserData",
+      "header": "dxfg_v4_schedule.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "type",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "trading",
+          "type": "int32_t",
+          "out": false
+        },
+        {
+          "name": "filter",
+          "type": "dxfg_v4_session_filter_user_data_function",
+          "out": false
+        },
+        {
+          "name": "userData",
+          "type": "void *",
           "out": false
         },
         {
@@ -36140,6 +37464,45 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction",
+      "header": "dxfg_v4_event_model.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "source",
+          "type": "dxfg_v4_time_series_tx_model_builder_t *",
+          "out": false
+        },
+        {
+          "name": "eventPeek",
+          "type": "dxfg_v4_time_series_tx_model_event_peek_function",
+          "out": false
+        },
+        {
+          "name": "userData",
+          "type": "void *",
+          "out": false
+        },
+        {
+          "name": "timeSeriesTxModelBuilder",
+          "type": "dxfg_v4_time_series_tx_model_builder_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withExecutor",
       "header": "dxfg_v4_event_model.h",
       "tier": "experimental",
@@ -37187,6 +38550,29 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_byte_list_release",
+      "header": "dxfg_v4_javac.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "list",
+          "type": "dxfg_v4_byte_list *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_cfi_value_list_release",
       "header": "dxfg_v4_glossary.h",
       "tier": "stable",
@@ -37787,6 +39173,29 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_system_get_advanced_revision",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "revision",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_system_get_property",
       "header": "dxfg_v4_system.h",
       "tier": "stable",
@@ -37811,6 +39220,58 @@
           "type": "const char **",
           "out": true,
           "release": "unknown"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_system_get_version",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "version",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_system_is_feature_supported",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "name",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "supported",
+          "type": "int32_t *",
+          "out": true
         }
       ],
       "threads": "unknown"
@@ -37879,6 +39340,29 @@
         {
           "name": "thread",
           "type": "graal_isolatethread_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_tagged_event_list_release",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "events",
+          "type": "dxfg_v4_tagged_event_list *",
           "out": false
         }
       ],
@@ -41470,6 +42954,24 @@
       "type": "dxfg_IndexedEventTxModel_Listener_eventsReceived_f"
     },
     {
+      "name": "dxfg_v4_ObservableSubscriptionChangeListener_function_configurationChanged",
+      "header": "dxfg_v4_events.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "void",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "user_data",
+          "type": "void *"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_ObservableSubscriptionChangeListener_function_subscriptionClosed",
       "header": "dxfg_v4_events.h",
       "tier": "stable",
@@ -41492,6 +42994,36 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved"
+    },
+    {
+      "name": "dxfg_v4_OnDemandPropertyChangeListener_function",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "void",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "property_name",
+          "type": "const char *"
+        },
+        {
+          "name": "old_value",
+          "type": "const dxfg_v4_on_demand_property_value_t *"
+        },
+        {
+          "name": "new_value",
+          "type": "const dxfg_v4_on_demand_property_value_t *"
+        },
+        {
+          "name": "user_data",
+          "type": "void *"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_TimeSeriesTxModelSortOrder_t",
@@ -41540,6 +43072,23 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_auth_token_t"
+    },
+    {
+      "name": "dxfg_v4_byte_list",
+      "header": "dxfg_v4_javac.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "size",
+          "type": "int32_t"
+        },
+        {
+          "name": "elements",
+          "type": "char *"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_candle_symbol_t",
@@ -41639,6 +43188,28 @@
       "type": "dxfg_day_filter_t"
     },
     {
+      "name": "dxfg_v4_day_filter_user_data_function",
+      "header": "dxfg_v4_schedule.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "int32_t",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "day",
+          "type": "dxfg_v4_day_t *"
+        },
+        {
+          "name": "userData",
+          "type": "void *"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_day_t",
       "header": "dxfg_v4_schedule.h",
       "tier": "stable",
@@ -41728,6 +43299,19 @@
       "type": "dxfg_event_clazz_t"
     },
     {
+      "name": "dxfg_v4_event_queue_t",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_event_type_list",
       "header": "dxfg_v4_events.h",
       "tier": "stable",
@@ -41774,6 +43358,76 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_feed_event_listener_t"
+    },
+    {
+      "name": "dxfg_v4_feed_filter_builder_t",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_feed_filter_listener_func",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "void",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "user_data",
+          "type": "void *"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_feed_filter_listener_t",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_feed_filter_t",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_feed_filter_tracker_t",
+      "header": "dxfg_v4_feed_filter.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_feed_t",
@@ -42176,6 +43830,73 @@
       "type": "dxfg_observable_subscription_t"
     },
     {
+      "name": "dxfg_v4_on_demand_property_change_listener_t",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_on_demand_property_value_kind_t",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "enum",
+      "enumerators": [
+        {
+          "name": "DXFG_V4_ON_DEMAND_PROPERTY_VALUE_NULL",
+          "value": "0"
+        },
+        {
+          "name": "DXFG_V4_ON_DEMAND_PROPERTY_VALUE_BOOLEAN",
+          "value": "1"
+        },
+        {
+          "name": "DXFG_V4_ON_DEMAND_PROPERTY_VALUE_DOUBLE",
+          "value": "2"
+        },
+        {
+          "name": "DXFG_V4_ON_DEMAND_PROPERTY_VALUE_TIME",
+          "value": "3"
+        },
+        {
+          "name": "DXFG_V4_ON_DEMAND_PROPERTY_VALUE_OTHER",
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_on_demand_property_value_t",
+      "header": "dxfg_v4_ondemand.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "kind",
+          "type": "int32_t"
+        },
+        {
+          "name": "boolean_value",
+          "type": "int32_t"
+        },
+        {
+          "name": "double_value",
+          "type": "double"
+        },
+        {
+          "name": "time_value",
+          "type": "int64_t"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_on_demand_service_t",
       "header": "dxfg_v4_ondemand.h",
       "tier": "stable",
@@ -42336,6 +44057,27 @@
       "type": "dxfg_quote_t"
     },
     {
+      "name": "dxfg_v4_ready_signal_kind_t",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "enum",
+      "enumerators": [
+        {
+          "name": "DXFG_V4_READY_SIGNAL_NONE",
+          "value": "0"
+        },
+        {
+          "name": "DXFG_V4_READY_SIGNAL_FD",
+          "value": "1"
+        },
+        {
+          "name": "DXFG_V4_READY_SIGNAL_WINDOWS_EVENT",
+          "value": "2"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_rounding_mode_t",
       "header": "dxfg_v4_javac.h",
       "tier": "stable",
@@ -42382,6 +44124,28 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_session_filter_t"
+    },
+    {
+      "name": "dxfg_v4_session_filter_user_data_function",
+      "header": "dxfg_v4_schedule.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "int32_t",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "session",
+          "type": "dxfg_v4_session_t *"
+        },
+        {
+          "name": "userData",
+          "type": "void *"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_session_list",
@@ -42553,6 +44317,27 @@
       "type": "dxfg_symbols_by_order_source_map_entry_t"
     },
     {
+      "name": "dxfg_v4_tagged_event_list",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "size",
+          "type": "int32_t"
+        },
+        {
+          "name": "elements",
+          "type": "dxfg_event_type_t **"
+        },
+        {
+          "name": "tags",
+          "type": "int64_t *"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_text_configuration_t",
       "header": "dxfg_v4_events.h",
       "tier": "stable",
@@ -42631,6 +44416,28 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_time_series_tx_model_builder_t"
+    },
+    {
+      "name": "dxfg_v4_time_series_tx_model_event_peek_function",
+      "header": "dxfg_v4_event_model.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "kind": "function_pointer",
+      "type": "void",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "event",
+          "type": "dxfg_v4_event_type_t *"
+        },
+        {
+          "name": "userData",
+          "type": "void *"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_time_series_tx_model_t",
@@ -42712,6 +44519,20 @@
   ],
   "macros": [
     {
+      "name": "DXFG_EVENT_QUEUE_CLOSED",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "((int32_t)2)"
+    },
+    {
+      "name": "DXFG_EVENT_QUEUE_NO_EVENTS",
+      "header": "dxfg_v4_event_queue.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "((int32_t)1)"
+    },
+    {
       "name": "DXFG_EXECUTE_FAIL",
       "header": "dxfg_common.h",
       "tier": "stable",
@@ -42731,6 +44552,55 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_ADVANCED_REVISION",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_FEATURE_EVENT_QUEUE",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "\"event_queue\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL",
+      "header": "dxfg_v4_system.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "value": "\"event_queue_ready_signal\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_FEED_FILTER",
+      "header": "dxfg_v4_system.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "value": "\"feed_filter\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_SHARED_EVENT_QUEUE",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "\"shared_event_queue\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK",
+      "header": "dxfg_v4_system.h",
+      "tier": "experimental",
+      "since": "3.13.0",
+      "value": "\"time_series_tx_model_event_peek\""
+    },
+    {
+      "name": "DXFG_V4_FILTER_ANY",
+      "header": "dxfg_v4_schedule.h",
+      "tier": "stable",
+      "since": "3.13.0",
+      "value": "(-1)"
     }
   ]
 }
