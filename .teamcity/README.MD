@@ -326,6 +326,16 @@ release. The zip is deployed like the other artifacts, and "Publish GitHub Relea
 version from `qd` to the GitHub release; "Publish C API Docs to GitHub Pages" puts the reference online (see below).
 To build the documentation locally: `mvn package -Dc-api-docs` (Doxygen must be in `PATH`).
 
+After `release:perform`, the step `release:update API baseline in docker` (`Util.apiBaselineUpdateScript` of
+`Common.kt`) makes the description of the API headers of the new tag the baseline of the API description check
+(`GenerateApiJson.java --update-baseline <tag>` in the GraalVM image, which has Java 22+), commits
+`scripts/check-api-headers/baseline/dxfg-api.json` to `main` as `dxcity` ("Update the API baseline to vX.Y.Z") if it
+changed, and pushes it to Stash over HTTPS with the token of `dxcity`; if a pull request moved `main` meanwhile, it
+rebases the commit on top and pushes again. A pre-release (`-rcN`) or a release built from a branch other than `main`
+leaves the baseline as it is. The step never fails the build: on an error it logs a warning, and the baseline is updated
+by hand (step 4 of "To release a new version" in the [README](../README.md)). "Publish GitHub Release" then pushes the
+commit to GitHub with `main`.
+
 # Syncing the C++ API with Jira
 
 The C++ API (`dxfeed-graal-cxx-api`) is on GitHub, so the Jira triggers of Bitbucket do not move its MDAPI tickets. The

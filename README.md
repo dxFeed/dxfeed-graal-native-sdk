@@ -963,17 +963,18 @@ The releases are built in [TeamCity](https://dxcity.in.devexperts.com/project/Md
    to GitHub, publishes the release with the archives, the package and the notes of the version from
    `ReleaseNotes.md`, and publishes the package to nuget.org with a GitHub Actions workflow (see
    [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
-4. After a release (not a pre-release), make its description the baseline of the [API description](#api-description)
-   check and commit it to `main` (run `java` of the GraalVM of the build: the generator is a multi-file source program,
-   which needs Java 22 or newer):
+4. For a release (not a pre-release), the Linux x64 release build also makes the description of its headers the
+   baseline of the [API description](#api-description) check and commits it to `main` ("Update the API baseline to
+   vX.Y.Z"). If that step failed, run it by hand with the `java` of the GraalVM of the build (the generator is a
+   multi-file source program, which needs Java 22 or newer) and commit the result:
 
    ```shell
    git fetch --tags
    java scripts/check-api-headers/GenerateApiJson.java --update-baseline v3.13.0 scripts/check-api-headers/baseline/dxfg-api.json
    ```
 
-   Until then the build warns that the baseline is older than the last release in `ReleaseNotes.md`; it keeps the
-   `since` of the declarations from the old baseline.
+   Until the baseline is updated, the build warns that it is older than the last release in `ReleaseNotes.md`; it
+   keeps the `since` of the declarations from the old baseline.
 
 #### Pre-releases
 

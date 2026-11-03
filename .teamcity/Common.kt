@@ -280,7 +280,8 @@ fun BuildSteps.cApiReferenceSteps(tagCommand: String, stepConditions: BuildStepC
 /**
  * The steps of the release builds of Linux x64: the header of the release notes, release:prepare, the C API reference
  * of the new tag (cApiReferenceSteps), release:perform (which deploys the release archive and packs that reference),
- * then the debug archive of the tag that the release has made.
+ * the baseline of the API description for a release (Util.apiBaselineUpdateScript), then the debug archive of the tag
+ * that the release has made.
  *
  * @param tagCommand the shell command that prints the tag of the release (v3.8.0)
  * @param prepareArguments the arguments of release:prepare before the credentials, with a trailing space if any
@@ -319,6 +320,14 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         """.trimIndent()
         formatStderrAsError = true
         inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
+    }
+
+    script {
+        name = "release:update API baseline in docker"
+        id = "release_update_api_baseline_in_docker"
+        scriptContent = Util.apiBaselineUpdateScript()
+        // Not formatStderrAsError: git writes the progress of a successful push to stderr, and a failure is a warning.
+        inDocker(Images.GRAALVM_LINUX_X64, "--rm")
     }
 
     script {
@@ -432,6 +441,74 @@ object Util {
 
             git add ReleaseNotes.md
             git commit -m "Add release notes header for ${'$'}TAG"
+        """.trimIndent()
+    }
+
+    /**
+     * Makes the description of the API headers of the tag that release:prepare has pushed the baseline of the API
+     * description check, commits it to main and pushes it to Stash. A pre-release (v3.13.0-rc1) leaves the baseline as
+     * it is. Runs in the GraalVM image: the generator is a multi-file source program, which needs Java 22 or newer.
+     *
+     * The release is deployed by then, so a failure here only logs a warning: the build and the release chain after it
+     * go on, and the builds of main keep warning about the old baseline until it is updated by hand (README.md).
+     */
+    fun apiBaselineUpdateScript(): String {
+        return """
+            set -u
+
+            (
+                set -e
+
+                BRANCH=$(git rev-parse --abbrev-ref HEAD)
+                if [ "${'$'}BRANCH" != main ]; then
+                    echo "The release is built from ${'$'}BRANCH, not from main: the API baseline stays as it is."
+                    exit 0
+                fi
+
+                TAG=$(git describe --abbrev=0)
+                case "${'$'}TAG" in
+                    *-*)
+                        echo "${'$'}TAG is a pre-release: the API baseline stays as it is."
+                        exit 0
+                        ;;
+                esac
+
+                # The container runs as root, the checkout belongs to the agent user.
+                git config --global --add safe.directory "${'$'}PWD"
+                git config --global user.name dxcity
+                git config --global user.email dxcity@bots.devexperts.com
+
+                BASELINE=scripts/check-api-headers/baseline/dxfg-api.json
+                java scripts/check-api-headers/GenerateApiJson.java --update-baseline "${'$'}TAG" "${'$'}BASELINE"
+
+                if git diff --quiet -- "${'$'}BASELINE"; then
+                    echo "The API baseline is already the description of ${'$'}TAG."
+                    exit 0
+                fi
+
+                git commit -m "Update the API baseline to ${'$'}TAG" -- "${'$'}BASELINE"
+
+                # Over HTTPS with the token of dxcity, as release:prepare pushes (the scm connection of pom.xml); the
+                # credential helper keeps the token out of the URL.
+                export BITBUCKET_TOKEN="%dxcity.token.bitbucket%"
+                REMOTE=https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git
+                stash() {
+                    git -c credential.helper= \
+                        -c credential.helper='!f() { echo username=dxcity; echo "password=${'$'}BITBUCKET_TOKEN"; }; f' "${'$'}@"
+                }
+
+                # A pull request merged during the release moves main: then the commit goes on top of it.
+                if ! stash push "${'$'}REMOTE" HEAD:refs/heads/main; then
+                    stash fetch "${'$'}REMOTE" main
+                    git rebase FETCH_HEAD
+                    stash push "${'$'}REMOTE" HEAD:refs/heads/main
+                fi
+            )
+            STATUS=${'$'}?
+
+            if [ "${'$'}STATUS" -ne 0 ]; then
+                echo "##teamcity[message text='The API baseline was not updated (exit code ${'$'}STATUS): update it by hand, see step 4 of To release a new version in README.md' status='WARNING']"
+            fi
         """.trimIndent()
     }
 

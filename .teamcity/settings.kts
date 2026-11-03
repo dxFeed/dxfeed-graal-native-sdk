@@ -38,8 +38,19 @@ project {
     vcsRoot(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags)
 
     params {
-        param("env.GRAALVM_VERSION", "graal-25.4.4.1.1")
-        param("env.GRAALVM_VERSION_MACOS_X64", "jdk-25.0.1")
+        text(
+            "env.GRAALVM_VERSION", "graal-25.4.4.1.1",
+            label = "GraalVM version",
+            description = "The GraalVM of the builds: the tag of its Docker images (graalvm:linux-x64-<version>) and " +
+                "the release on macOS and Windows agents. Examples: graal-25.4.4.1.1, jdk-25.0.1",
+            allowEmpty = false,
+        )
+        text(
+            "env.GRAALVM_VERSION_MACOS_X64", "jdk-25.0.1",
+            label = "GraalVM version for macOS x64",
+            description = "The GraalVM of the macOS x64 and iOS Simulator builds. Example: jdk-25.0.1",
+            allowEmpty = false,
+        )
         password("env.GH_TOKEN", "credentialsJSON:657ea93a-c18d-414f-be39-e12fb36fb13f", display = ParameterDisplay.HIDDEN)
     }
 
@@ -164,6 +175,8 @@ object Etc : Project({
 
 object ReleaseTheNextPatch : BuildType({
     name = "Release The Next Patch\\RC: Prepare The Release & Build & Deploy [Linux, x64][Release][Debug]"
+    description = "Releases the version of pom.xml without -SNAPSHOT (3.13.1-SNAPSHOT: v3.13.1), deploys the " +
+        "Linux x64 archives; then Build & Deploy [All] builds the other platforms"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -193,10 +206,17 @@ object ReleaseTheNextPatch : BuildType({
 
 object ReleaseMajorMinorPatchOrRc : BuildType({
     name = "Release (Major.Minor.Patch[-rcN]): Prepare The Release & Build & Deploy [Linux, x64][Release][Debug]"
+    description = "Releases the given version (tag vX.Y.Z[-rcN]), deploys the Linux x64 archives; then " +
+        "Build & Deploy [All] builds the other platforms"
     artifactRules = "*.zip"
 
     params {
-        text("env.RELEASE_VERSION", "", allowEmpty = false)
+        text(
+            "env.RELEASE_VERSION", "",
+            label = "Release version",
+            description = "The version to release, without v: X.Y.Z or X.Y.Z-rcN. Examples: 3.14.0, 3.14.0-rc1",
+            allowEmpty = false,
+        )
     }
 
     mainRepository()
@@ -219,6 +239,7 @@ object ReleaseMajorMinorPatchOrRc : BuildType({
 
 object BuildAndDeployForLinuxAarch64Release : BuildType({
     name = "Build & Deploy [Linux, aarch64][Release]"
+    description = "Deploys the Linux aarch64 archives of the latest tag to Nexus"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -247,6 +268,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
 
 object BuildAndDeployForLinuxAarch64Debug : BuildType({
     name = "Build & Deploy [Linux, aarch64][Debug]"
+    description = "Deploys the Linux aarch64 debug archives (-P buildDebug) of the latest tag to Nexus"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -275,6 +297,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
 
 object BuildAndDeployForLinuxAarch64 : BuildType({
     name = "Build & Deploy [Linux, aarch64]"
+    description = "The Release and Debug deploys of the Linux aarch64 archives of the latest tag"
     artifactRules = "*.zip"
     type = Type.COMPOSITE
 
@@ -290,6 +313,7 @@ object BuildAndDeployForLinuxAarch64 : BuildType({
 
 object BuildAndDeployForWindowsRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release]"
+    description = "Deploys the Windows x64 archives of the latest tag to Nexus"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -306,6 +330,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
 
 object BuildAndDeployForWindowsDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug]"
+    description = "Deploys the Windows x64 debug archives (-P buildDebug) of the latest tag to Nexus"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -328,6 +353,8 @@ object BuildAndDeployForWindowsDebug : BuildType({
  */
 object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
     name = "Build & Deploy [Windows, x64][Release][Static CRT]"
+    description = "Deploys the Windows x64 archives without the Visual C++ Redistributable (amd64-windows-static-crt, " +
+        "amd64-windows-static-lib) of the latest tag to Nexus"
     artifactRules = "target/*.zip"
 
     mainRepository()
@@ -345,6 +372,8 @@ object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
 /** The debug archives of the static C runtime (amd64-windows-debug-static-crt, amd64-windows-debug-static-lib). */
 object BuildAndDeployForWindowsStaticRuntimeDebug : BuildType({
     name = "Build & Deploy [Windows, x64][Debug][Static CRT]"
+    description = "Deploys the Windows x64 debug archives without the Visual C++ Redistributable " +
+        "(amd64-windows-debug-static-crt, amd64-windows-debug-static-lib) of the latest tag to Nexus"
     artifactRules = "target/*.zip"
 
     mainRepository()
@@ -361,6 +390,7 @@ object BuildAndDeployForWindowsStaticRuntimeDebug : BuildType({
 
 object BuildAndDeployForWindows : BuildType({
     name = "Build & Deploy [Windows]"
+    description = "The Release, Debug and Static CRT deploys of the Windows x64 archives of the latest tag"
     type = Type.COMPOSITE
     artifactRules = "*.zip"
 
@@ -382,6 +412,7 @@ object BuildAndDeployForWindows : BuildType({
 
 object BuildAndDeployForMacOsAndIOS : BuildType({
     name = "Build & Deploy [macOS, iOS]"
+    description = "Deploys the macOS (arm64, x86_64), iOS and iOS Simulator archives of the latest tag to Nexus"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -467,6 +498,8 @@ object BuildAndDeployXCFramework : BuildType({
 
 object BuildAndDeployForAll : BuildType({
     name = "Build & Deploy [All]"
+    description = "After a release build: the deploys of Linux aarch64, Windows, macOS, iOS and the XCFramework of " +
+        "the latest tag; then Pack NuGet"
     type = Type.COMPOSITE
     allowExternalStatus = true
     artifactRules = "*.zip"
@@ -503,6 +536,8 @@ object BuildAndDeployForAll : BuildType({
 // DeployNuget keeps the history of the build.
 object DeployNuget : BuildType({
     name = "Pack NuGet"
+    description = "After Build & Deploy [All]: packs DxFeed.Graal.Native.X.Y.Z.nupkg of the latest tag from its " +
+        "archives in Nexus (linux-x64, linux-arm64, osx-arm64, osx-x64, win-x64)"
     artifactRules = "*.nupkg"
 
     mainRepository()
@@ -1118,6 +1153,7 @@ object PublishCApiDocsToGitHubPages : BuildType({
 
 object BuildForLinux : BuildType({
     name = "Build [Linux, x64]"
+    description = "mvn clean package in the GraalVM image, without a deploy"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -1340,6 +1376,8 @@ object TestForWindows : BuildType({
 
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Docker Image [Linux, x64]"
+    description = "The GraalVM image of the Linux x64 builds, graalvm:linux-x64-<GraalVM version> " +
+        "(docker/graalvm-linux-x64.Dockerfile); run it after a change of env.GRAALVM_VERSION"
 
     mainRepository()
 
@@ -1399,6 +1437,8 @@ object BuildAndPushDocsCheckDockerImageForLinuxX64 : BuildType({
 
 object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
     name = "Build & Push a Docker Image [Linux, aarch64]"
+    description = "The GraalVM image of the Linux aarch64 builds, graalvm:linux-aarch64-<GraalVM version> " +
+        "(docker/graalvm-linux-aarch64.Dockerfile); run it after a change of env.GRAALVM_VERSION"
 
     mainRepository()
 
@@ -1417,13 +1457,14 @@ object BuildAndPushDockerImageForLinuxAarch64 : BuildType({
 
 object BuildForLinuxAarch64 : BuildType({
     name = "Build [Linux, aarch64]"
+    description = "mvn clean package in the GraalVM image, without a deploy"
     artifactRules = "target/*.zip"
 
     mainRepository()
 
     params {
-        // E.g. "-P buildDebug".
-        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean package",
+        text("maven.arguments", "", label = "Maven arguments",
+            description = "Added to mvn clean package. Example: -P buildDebug",
             display = ParameterDisplay.NORMAL, allowEmpty = true)
     }
 
@@ -1449,6 +1490,8 @@ object BuildForLinuxAarch64 : BuildType({
 
 object BuildAndPushDockerImageForWindowsX64 : BuildType({
     name = "Build & Push a Docker Image [Win, x64]"
+    description = "The GraalVM image of the Windows x64 builds in Docker, graalvm:win-x64-<GraalVM version> " +
+        "(docker/graalvm-win-x64-v2.Dockerfile); run it after a change of env.GRAALVM_VERSION"
 
     mainRepository()
 
@@ -1483,6 +1526,7 @@ object BuildAndPushDockerImageForWindowsX64 : BuildType({
 
 object BuildForWindows : BuildType({
     name = "Build [Win, x64]"
+    description = "mvn clean integration-test on the Windows agent, without a deploy"
     // With -DwindowsStaticRuntime=true, also the generated CRT shim and its list of functions, to look at. The archives
     // are not checked (verify).
     artifactRules = """
@@ -1494,9 +1538,11 @@ object BuildForWindows : BuildType({
     mainRepository()
 
     params {
-        // E.g. "-DwindowsStaticRuntime=true" (the archives without the Visual C++ Redistributable: -static-crt and
-        // -static-lib, which is packed at integration-test), "-P buildDebug".
-        text("maven.arguments", "", label = "Maven arguments", description = "Added to mvn clean integration-test",
+        // -DwindowsStaticRuntime=true: the archives without the Visual C++ Redistributable, -static-crt and
+        // -static-lib, which is packed at integration-test.
+        text("maven.arguments", "", label = "Maven arguments",
+            description = "Added to mvn clean integration-test. Examples: -P buildDebug, " +
+                "-DwindowsStaticRuntime=true (the archives without the Visual C++ Redistributable)",
             display = ParameterDisplay.NORMAL, allowEmpty = true)
     }
 
@@ -1511,6 +1557,7 @@ object BuildForWindows : BuildType({
 
 object BuildForWindowsInDocker : BuildType({
     name = "Build [Win, x64] in Docker"
+    description = "mvn clean package in the GraalVM image for Windows, without a deploy"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -1537,6 +1584,7 @@ object BuildForWindowsInDocker : BuildType({
 
 object BuildForMacOSAndIOS : BuildType({
     name = "Build [macOS, iOS]"
+    description = "The macOS (arm64, x86_64), iOS and iOS Simulator archives, without a deploy"
     artifactRules = "*.zip"
 
     mainRepository()
@@ -1570,10 +1618,21 @@ object BuildJreLibrariesForIOS : BuildType({
     """.trimIndent()
 
     params {
-        // The tags of oracle/graal: the GraalVM Community versions of the iOS build (graal-25.4.4.1.1, jdk-25.0.1, ...),
-        // for the arm64 slices and for the x86_64 slice of the simulator, as in prepareMacOS.
-        param("jre.ios.graal.tag", "%env.GRAALVM_VERSION%")
-        param("jre.ios.x64.graal.tag", "%env.GRAALVM_VERSION_MACOS_X64%")
+        // The tags of oracle/graal: the GraalVM Community versions of the iOS build, for the arm64 slices and for the
+        // x86_64 slice of the simulator, as in prepareMacOS.
+        text(
+            "jre.ios.graal.tag", "%env.GRAALVM_VERSION%",
+            label = "GraalVM tag (arm64)",
+            description = "The tag of oracle/graal for the iOS and iOS Simulator arm64 libraries. " +
+                "Examples: graal-25.4.4.1.1, jdk-25.0.1",
+            allowEmpty = false,
+        )
+        text(
+            "jre.ios.x64.graal.tag", "%env.GRAALVM_VERSION_MACOS_X64%",
+            label = "GraalVM tag (x86_64)",
+            description = "The tag of oracle/graal for the iOS Simulator x86_64 libraries. Example: jdk-25.0.1",
+            allowEmpty = false,
+        )
     }
 
     mainRepository()
@@ -1634,7 +1693,13 @@ object DetectVisualStudioVersion : BuildType({
     description = "Runs a check of the installed VS on each Windows agent separately"
 
     params {
-        param("env.DETECTED_VS_VERSION", "")
+        text(
+            "env.DETECTED_VS_VERSION", "",
+            label = "Detected VS version",
+            description = "Set by the build: the version of the first Visual Studio that vswhere lists. " +
+                "Example: 17.14.36310.24",
+            allowEmpty = true,
+        )
     }
 
     steps {
@@ -1766,9 +1831,15 @@ object CxxApiGitGubJiraSync : BuildType({
 
 object ListDockerImages : BuildType({
     name = "List Docker Images"
+    description = "Lists the tags of the graalvm and nuget images in the Docker registry"
 
     params {
-        param("env.target.repo", "nexus-docker-graalvm.in.devexperts.com")
+        text(
+            "env.target.repo", "nexus-docker-graalvm.in.devexperts.com",
+            label = "Docker registry",
+            description = "The registry whose images to list. Example: nexus-docker-graalvm.in.devexperts.com",
+            allowEmpty = false,
+        )
     }
 
     mainRepository()
