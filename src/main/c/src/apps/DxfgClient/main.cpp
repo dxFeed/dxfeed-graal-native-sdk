@@ -34,6 +34,7 @@
 #include "LastEventIfSubscribedCase.hpp"
 #include "LiveIpfCase.hpp"
 #include "LoggingCase.hpp"
+#include "MessageConnectorsCase.hpp"
 #include "OnDemandServiceCase.hpp"
 #include "OrcsCase.hpp"
 #include "OrderBookModelCase.hpp"
@@ -105,6 +106,7 @@ int main(int argc, char *argv[]) {
         lastEventIfSubscribedCase,
         liveIpfCase,
         loggingCase,
+        messageConnectorsCase,
         onDemandServiceCase,
         orcsCase,
         orderBookModelCase,

@@ -34,6 +34,7 @@ into your projects.
   * [Isolates](#isolates)
   * [Listeners](#listeners)
   * [Event queue](#event-queue)
+  * [Message connectors](#message-connectors)
   * [Shutdown](#shutdown)
   * [Network activity](#network-activity)
 - [Documentation](#documentation)
@@ -331,7 +332,7 @@ runs one (the `-D` options set system properties).
 
 | Area                       | Cases (short names)                                                                                                                    |
 |----------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoints, subscriptions   | `DxEndpointSubscriptionCase` (`es`), `DxEndpointTimeSeriesSubscriptionCase` (`ets`), `DxEndpointMonitoringCase` (`em`), `DxLinkCase` (`dxl`) |
+| Endpoints, subscriptions   | `DxEndpointSubscriptionCase` (`es`), `DxEndpointTimeSeriesSubscriptionCase` (`ets`), `DxEndpointMonitoringCase` (`em`), `MessageConnectorsCase` (`mc`), `DxLinkCase` (`dxl`) |
 | Last events, promises      | `GetLastEventCase` (`gle`), `LastEventIfSubscribedCase` (`le`), `PromiseCase` (`p`), `PromisesAllOfCase` (`pao`), `IndexedEventsPromiseCase` (`iep`) |
 | Models                     | `OrderBookModelCase` (`obm`), `IndexedEventModelCase` (`iem`), `TxIndexedEventModelCase` (`txiem`), `IndexedEventTxModelCase` (`ietxm`) |
 | Historical data            | `OnDemandServiceCase` (`ods`), `HistoryEndpointCase` (`he`)                                                                            |
@@ -357,8 +358,9 @@ A wrapper checks the library before it binds the other functions, with three fun
 - `dxfg_v4_system_get_version` writes the release version (`3.13.0`), released with `dxfg_v4_String_release`;
 - `dxfg_v4_system_get_advanced_revision` writes the revision of the experimental functions;
 - `dxfg_v4_system_is_feature_supported` tells whether a feature is supported (`DXFG_V4_FEATURE_EVENT_QUEUE`,
-  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`, `DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL`); an unknown name is not supported,
-  not an error.
+  `DXFG_V4_FEATURE_SHARED_EVENT_QUEUE`, `DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL`, `DXFG_V4_FEATURE_FEED_FILTER`,
+  `DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK`, `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` and the others of
+  `dxfg_v4_system.h`); an unknown name is not supported, not an error.
 
 Bind the stable functions always, and the experimental ones only when the revision equals
 `DXFG_V4_ADVANCED_REVISION` of the headers the wrapper was built with; otherwise treat the experimental part as
@@ -561,6 +563,85 @@ On Windows the object is an event: pass `(int64_t)(intptr_t)handle` of an auto-r
 Loops that cannot wait for a foreign object (the asyncio proactor loop and libuv on Windows) keep a reader thread that
 polls with a timeout. A signal without work is possible (its poll returns `DXFG_EVENT_QUEUE_NO_EVENTS`); work is never
 left without a signal. The contract is in the "Event queue" group of the C API reference.
+
+### Message connectors
+
+The message connectors of an endpoint (`dxfg_v4_message_connector.h`, since 3.14.0) tell what the endpoint is connected
+to and how much data flows: one connector per address of the address string. Check
+`dxfg_v4_system_is_feature_supported(thread, DXFG_V4_FEATURE_MESSAGE_CONNECTORS, &supported)` before binding the
+functions. A sketch without error handling:
+
+```c
+#include <inttypes.h>
+#include <stdio.h>
+
+#include "dxfg_api.h"
+
+// Called on the SDK thread `dxfg-MessageConnectorListener`; the handle is valid during the call only.
+static void onStateChanged(graal_isolatethread_t *thread, dxfg_v4_message_connector_t *connector, void *userData) {
+    int32_t state = -1;
+    dxfg_v4_MessageConnector_getState(thread, connector, &state);
+    printf("state %d\n", state); // the current state, which may be newer than the change that caused the call
+}
+
+void printConnectors(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint) {
+    dxfg_v4_message_connector_list *connectors = NULL;
+    dxfg_v4_DXEndpoint_getConnectors(thread, endpoint, &connectors);
+
+    for (int32_t i = 0; i < connectors->size; i++) {
+        dxfg_v4_message_connector_t *connector = connectors->elements[i];
+        const char *address = NULL;
+        dxfg_v4_string_list *current = NULL;
+        int32_t state = -1;
+        dxfg_v4_message_connector_stats_t stats;
+
+        dxfg_v4_MessageConnector_getAddress(thread, connector, &address); // the credentials are masked
+        dxfg_v4_MessageConnector_getCurrentAddresses(thread, connector, &current);
+        dxfg_v4_MessageConnector_getState(thread, connector, &state); // DXFG_V4_MESSAGE_CONNECTOR_STATE_*
+        dxfg_v4_MessageConnector_getStatistics(thread, connector, &stats);
+        printf("%s: state %d, %d current address(es), %" PRId64 " data records read\n", address, state,
+               current->size, stats.read_data_records);
+
+        dxfg_v4_String_release(thread, address);
+        dxfg_v4_string_list_release(thread, current);
+    }
+
+    dxfg_v4_message_connector_list_release(thread, connectors); // releases the connector handles too
+}
+
+void watchConnectors(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint) {
+    // The listener is experimental: bind it only when the library has the revision of the headers.
+    int32_t revision = -1;
+    dxfg_v4_system_get_advanced_revision(thread, &revision);
+
+    if (revision != DXFG_V4_ADVANCED_REVISION) {
+        return;
+    }
+
+    dxfg_v4_message_connector_listener_t *listener = NULL;
+    dxfg_v4_MessageConnectorListener_new(thread, &onStateChanged, NULL, &listener);
+    dxfg_v4_DXEndpoint_addMessageConnectorListener(thread, endpoint, listener);
+    printConnectors(thread, endpoint); // the listener gets the later changes only, not the current states
+    // ...
+    dxfg_v4_DXEndpoint_removeMessageConnectorListener(thread, endpoint, listener);
+    dxfg_v4_JavaObjectHandler_release(thread, &listener->handler); // waits for a call in progress
+}
+```
+
+- Lifetimes. `dxfg_v4_message_connector_list_release` releases the whole list with its handles; keep a connector
+  longer with `dxfg_v4_JavaObjectHandler_clone`. The handles may be released in any order, also after the endpoint
+  is closed. A connect to another address replaces the connectors (a replaced one answers as `DISCONNECTED`), so read
+  the list anew rather than keeping it.
+- Polling or a listener. Reading the list on a timer is enough for a status display. The listener is called on one
+  SDK thread for all the endpoints of the isolate, one call at a time; fast changes may come as one call, so it reads
+  the current state. It should return quickly; it may call any function of the SDK, `dxfg_v4_DXEndpoint_connect`
+  included.
+- Data flow. Data arrives when `read_data_records` grows between two reads of the statistics; `read_bytes` grows on
+  heartbeats too. The counters are never reset: compute the rates from the differences.
+- Shutdown. `dxfg_v4_system_shutdown` stops the listener thread; release the handles after it.
+
+The case `DxfgClient mc` ([MessageConnectorsCase](src/main/c/src/apps/DxfgClient/MessageConnectorsCase.hpp)) prints the
+connectors every second with the rates and the state changes from a listener.
 
 ### Shutdown
 

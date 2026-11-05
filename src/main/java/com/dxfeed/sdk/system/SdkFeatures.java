@@ -44,8 +44,14 @@ public final class SdkFeatures {
      */
     public static final String TIME_SERIES_TX_MODEL_EVENT_PEEK = "time_series_tx_model_event_peek";
 
+    /**
+     * {@code DXFG_V4_FEATURE_MESSAGE_CONNECTORS}: the message connectors of an endpoint, their getters and listener
+     * (MDAPI-478).
+     */
+    public static final String MESSAGE_CONNECTORS = "message_connectors";
+
     private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
-            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK);
+            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS);
 
     private SdkFeatures() {
     }

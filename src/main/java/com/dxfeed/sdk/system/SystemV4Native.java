@@ -6,6 +6,7 @@ package com.dxfeed.sdk.system;
 import static com.dxfeed.sdk.NativeUtils.MAPPER_STRING;
 
 import com.dxfeed.sdk.common.DxfgOut;
+import com.dxfeed.sdk.connector.ConnectorDispatcher;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.exception.OlderEntryPoint;
 import com.dxfeed.sdk.javac.NativeListener;
@@ -110,8 +111,10 @@ public final class SystemV4Native {
     ) throws InterruptedException {
         // The listeners first: no callback runs while the endpoints are closed or the queues run their tasks.
         // The queues before the endpoints: an endpoint waits until no task of a queue is pending.
+        // The thread of the connector listeners then has nothing to call and stops.
         NativeListener.deactivateAll();
         try {
+            ConnectorDispatcher.shutdown();
             EventQueue.closeAll();
         } finally {
             IsolateResources.closeAllAndAwaitTermination();

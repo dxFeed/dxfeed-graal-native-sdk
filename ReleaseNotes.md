@@ -1,3 +1,36 @@
+* **\[MDAPI-478]\[GRAAL]** The message connectors of an endpoint (`dxfg_v4_message_connector.h`): what an endpoint
+  is connected to and how much data flows, as `com.devexperts.qd.qtp.MessageConnector` reports it.
+  `dxfg_v4_DXEndpoint_getConnectors()` returns the current connectors, one per address of the address string, released
+  by `dxfg_v4_message_connector_list_release()`. A connector reports its name, kind (`DXFG_V4_MESSAGE_CONNECTOR_KIND_*`:
+  a client or a server socket, or another), configured address with the credentials masked, the addresses it is
+  connected to now, its state (`DXFG_V4_MESSAGE_CONNECTOR_STATE_*`: connecting, connected, disconnected), whether it is
+  active, its open and closed connection counts, and its statistics (`dxfg_v4_MessageConnector_getStatistics()`: bytes
+  and data records read and written, without resetting them). A connector listener (experimental:
+  `dxfg_v4_MessageConnectorListener_new()`, `dxfg_v4_DXEndpoint_addMessageConnectorListener()`,
+  `dxfg_v4_DXEndpoint_removeMessageConnectorListener()`) is called after the state changes, also of the connectors of
+  a later connect, on one thread of the SDK; `dxfg_v4_system_shutdown()` stops that thread.
+  `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` reports the family.
+
+### For integrators
+
+* Check `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` with `dxfg_v4_system_is_feature_supported()` before binding the connector
+  functions. Bind the experimental listener functions only when `dxfg_v4_system_get_advanced_revision()` equals
+  `DXFG_V4_ADVANCED_REVISION` of the headers the wrapper is built with.
+* `dxfg_v4_message_connector_list_release()` releases the list with all its handles; clone a connector with
+  `dxfg_v4_JavaObjectHandler_clone()` to keep it. The handles stay valid after the endpoint is closed. A connect to
+  another address replaces the connectors, so read the list anew. The connector handle passed to a listener is valid
+  during the call only.
+* For a status display, reading the connectors on a timer is enough. The listener is called on one thread of the SDK
+  for the whole isolate, one call at a time; fast changes of a connector may come as one call, so the listener reads
+  the current state. It should return quickly and may call any function of the SDK, `dxfg_v4_DXEndpoint_connect()`
+  included. Remove a listener before releasing it.
+* Data arrives when `read_data_records` grows between two reads of the statistics; `read_bytes` grows on heartbeats
+  too. The counters are never reset: compute the rates from the differences. `dxfg_v4_message_connector_stats_t`
+  keeps its layout; new counters will come with a new function.
+* In the explicit shutdown of the application, call `dxfg_v4_system_shutdown()` first (it also stops the listener
+  thread), then release the remaining handles.
+* The README section "Message connectors" has an example, and `DxfgClient mc` prints the connectors of an endpoint.
+
 ## v3.13.0
 
 * **\[MDAPI-466]\[GRAAL]** The event queue (`dxfg_v4_event_queue.h`): the events of a subscription received on the

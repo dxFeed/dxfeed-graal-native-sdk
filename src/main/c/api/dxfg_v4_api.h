@@ -25,6 +25,7 @@
 #include "dxfg_v4_ipf.h"
 #include "dxfg_v4_javac.h"
 #include "dxfg_v4_logging.h"
+#include "dxfg_v4_message_connector.h"
 #include "dxfg_v4_ondemand.h"
 #include "dxfg_v4_orcs.h"
 #include "dxfg_v4_publisher.h"

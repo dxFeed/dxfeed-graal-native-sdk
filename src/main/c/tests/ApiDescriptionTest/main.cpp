@@ -87,6 +87,7 @@ TEST_CASE("The library supports every feature of the description") {
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_FEED_FILTER) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_MESSAGE_CONNECTORS) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -156,6 +157,40 @@ TEST_CASE("The event peek function is experimental, the filters with user data a
     CHECK(entryOf("DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK").find(experimental) != std::string::npos);
     CHECK(entryOf("dxfg_v4_DayFilter_newWithUserData").find(stable) != std::string::npos);
     CHECK(entryOf("dxfg_v4_SessionFilter_newWithUserData").find(stable) != std::string::npos);
+}
+
+TEST_CASE("The connector getters and their feature are stable, the connector listener is experimental") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+    const auto experimental = std::string("\"tier\": \"experimental\"");
+    const auto stable = std::string("\"tier\": \"stable\"");
+
+    for (const char *name :
+         {"dxfg_v4_DXEndpoint_getConnectors", "dxfg_v4_message_connector_list_release",
+          "dxfg_v4_MessageConnector_getName", "dxfg_v4_MessageConnector_getKind", "dxfg_v4_MessageConnector_getAddress",
+          "dxfg_v4_MessageConnector_getCurrentAddresses", "dxfg_v4_MessageConnector_getState",
+          "dxfg_v4_MessageConnector_isActive", "dxfg_v4_MessageConnector_getConnectionCount",
+          "dxfg_v4_MessageConnector_getClosedConnectionCount", "dxfg_v4_MessageConnector_getStatistics",
+          "dxfg_v4_message_connector_t", "dxfg_v4_message_connector_list", "dxfg_v4_message_connector_stats_t",
+          "DXFG_V4_FEATURE_MESSAGE_CONNECTORS"}) {
+        INFO(name);
+        CHECK(entryOf(name).find(stable) != std::string::npos);
+    }
+
+    for (const char *name :
+         {"dxfg_v4_MessageConnectorListener_new", "dxfg_v4_DXEndpoint_addMessageConnectorListener",
+          "dxfg_v4_DXEndpoint_removeMessageConnectorListener", "dxfg_v4_message_connector_listener_t",
+          "dxfg_v4_message_connector_listener_func"}) {
+        INFO(name);
+        CHECK(entryOf(name).find(experimental) != std::string::npos);
+    }
 }
 
 } // namespace test

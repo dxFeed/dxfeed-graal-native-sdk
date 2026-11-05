@@ -7,6 +7,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.devexperts.auth.AuthToken;
 import com.devexperts.logging.InterceptableLoggingListener;
+import com.devexperts.qd.qtp.MessageConnector;
 import com.devexperts.util.TimeFormat;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
@@ -56,6 +57,9 @@ import com.dxfeed.schedule.SessionFilter;
 import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointBuilderHandle;
 import com.dxfeed.sdk.candlewebservice.DxfgHistoryEndpointHandle;
 import com.dxfeed.sdk.candlewebservice.HistoryEndpoint;
+import com.dxfeed.sdk.connector.ConnectorStateListener;
+import com.dxfeed.sdk.connector.DxfgMessageConnectorHandle;
+import com.dxfeed.sdk.connector.DxfgMessageConnectorListenerHandle;
 import com.dxfeed.sdk.endpoint.DxfgEndpoint;
 import com.dxfeed.sdk.feedfilter.DxfgFeedFilterBuilderHandle;
 import com.dxfeed.sdk.feedfilter.DxfgFeedFilterHandle;
@@ -257,6 +261,8 @@ public final class NativeUtils {
     public static final Mapper<DXFeedFilter, DxfgFeedFilterHandle> MAPPER_FEED_FILTER;
     public static final Mapper<DXFeedFilterTracker, DxfgFeedFilterTrackerHandle> MAPPER_FEED_FILTER_TRACKER;
     public static final Mapper<DXFeedFilterListener, DxfgFeedFilterListenerHandle> MAPPER_FEED_FILTER_LISTENER;
+    public static final Mapper<MessageConnector, DxfgMessageConnectorHandle> MAPPER_MESSAGE_CONNECTOR;
+    public static final Mapper<ConnectorStateListener, DxfgMessageConnectorListenerHandle> MAPPER_MESSAGE_CONNECTOR_LISTENER;
     public static final Mapper<TimePeriod, DxfgTimePeriodHandle> MAPPER_TIME_PERIOD;
     public static final Mapper<TimeFormat, DxfgTimeFormat> MAPPER_TIME_FORMAT;
     public static final Mapper<TimeZone, DxfgTimeZone> MAPPER_TIME_ZONE;
@@ -353,6 +359,9 @@ public final class NativeUtils {
         MAPPER_FEED_FILTER = new JavaObjectHandlerMapper<>();
         MAPPER_FEED_FILTER_TRACKER = new JavaObjectHandlerMapper<>();
         MAPPER_FEED_FILTER_LISTENER = new JavaObjectHandlerMapper<>();
+        // The handles of the connectors and their listeners are plain handles (dxfg_v4_message_connector.h).
+        MAPPER_MESSAGE_CONNECTOR = new JavaObjectHandlerMapper<>();
+        MAPPER_MESSAGE_CONNECTOR_LISTENER = new JavaObjectHandlerMapper<>();
         MAPPER_TIME_FORMAT = new TimeFormatMapper();
         MAPPER_TIME_PERIOD = new TimePeriodMapper();
         MAPPER_TIME_ZONE = new TimeZoneMapper();

@@ -47,6 +47,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void messageConnectorsFeatureIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.MESSAGE_CONNECTORS));
+        assertTrue(SdkFeatures.isSupported("message_connectors"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

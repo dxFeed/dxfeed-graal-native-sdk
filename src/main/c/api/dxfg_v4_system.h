@@ -176,6 +176,18 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 #define DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK "time_series_tx_model_event_peek"
 
 /**
+ * @brief The name of the feature "message connectors" (dxfg_v4_message_connector.h: dxfg_v4_DXEndpoint_getConnectors(),
+ * dxfg_v4_MessageConnector_getState(), dxfg_v4_MessageConnector_getStatistics() and the other functions of the group
+ * @ref V4_MessageConnector) for dxfg_v4_system_is_feature_supported().
+ *
+ * The getters are stable; the listener functions (dxfg_v4_MessageConnectorListener_new(),
+ * dxfg_v4_DXEndpoint_addMessageConnectorListener(), dxfg_v4_DXEndpoint_removeMessageConnectorListener()) are
+ * experimental.
+ * @since 3.14.0
+ */
+#define DXFG_V4_FEATURE_MESSAGE_CONNECTORS "message_connectors"
+
+/**
  * @brief Returns the version of the SDK release that the library belongs to, e.g. `3.13.0`.
  *
  * A wrapper that binds the functions by name checks the release before it binds the others. When the function
