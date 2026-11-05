@@ -40,7 +40,16 @@ extern "C" {
  *  dxfg_v4_DXEndpoint_addMessageConnectorListener() is called after the state changes of its connectors, also of the
  *  connectors that a later connect creates.
  *
- *  #DXFG_V4_FEATURE_MESSAGE_CONNECTORS reports the functions of the group.
+ *  The last connection error of a connector (dxfg_v4_MessageConnector_getLastError(), experimental) and of an endpoint
+ *  (dxfg_v4_DXEndpoint_getLastConnectionError()) tells why a connect failed or a connection dropped: the time, the
+ *  address, a category (#DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED and others), the exception and its message. The SDK
+ *  captures the errors from the log records of QD's default logging (`java.util.logging`), whether or not a logging
+ *  listener is set and at any `log.level`. With another `log.className` nothing is captured, and a level the user sets
+ *  on QD's loggers `com.devexperts.qd.qtp.MessageConnector`, `com.devexperts.qd.qtp.MessageAdapterConnection` or
+ *  `com.devexperts.connector.codec.ssl` themselves wins and may stop the capture.
+ *
+ *  #DXFG_V4_FEATURE_MESSAGE_CONNECTORS reports the functions of the group except the connection errors, which
+ *  #DXFG_V4_FEATURE_CONNECTION_ERRORS reports.
  *
  *  Java: `com.devexperts.qd.qtp.MessageConnector` of `com.dxfeed.api.impl.DXEndpointImpl.getQDEndpoint()`.
  *  @{
@@ -159,7 +168,8 @@ typedef struct dxfg_v4_message_connector_listener_t {
  * `dxfg-MessageConnectorListener`), never on a QD thread and never within the call that changes the state (e.g.
  * dxfg_v4_DXEndpoint_connect()), one call at a time. The function may call any function of the SDK on that thread,
  * including dxfg_v4_DXEndpoint_connect() of its endpoint, the getters of the connector and the release of its own
- * listener; it should return quickly, since the next call waits for it.
+ * listener; it should return quickly, since the next call waits for it. When the change is a connection error, the
+ * error is recorded before the call: dxfg_v4_MessageConnector_getLastError() returns it in the call already.
  *
  * @param[in] thread The current GraalVM Isolate's thread (the thread of the SDK that calls the function).
  * @param[in] connector The connector whose state changed. The handle is valid during the call only and is released by
@@ -433,6 +443,168 @@ int32_t dxfg_v4_DXEndpoint_addMessageConnectorListener(graal_isolatethread_t *th
 DXFG_EXPERIMENTAL
 int32_t dxfg_v4_DXEndpoint_removeMessageConnectorListener(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint,
                                                           dxfg_v4_message_connector_listener_t *listener);
+
+
+/**
+ * @brief The category of a connection error: none of the others (e.g. an error of the protocol or of the
+ * authentication).
+ *
+ * New categories may come in later versions: treat an unknown value as this one.
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_OTHER ((int32_t)0)
+
+/**
+ * @brief The category of a connection error: the host name of the address is not resolved (Java:
+ * `java.net.UnknownHostException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_DNS ((int32_t)1)
+
+/**
+ * @brief The category of a connection error: the connect failed, refused or timed out; QD reports both with one
+ * exception type (Java: `java.net.ConnectException`, `NoRouteToHostException`, `PortUnreachableException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED ((int32_t)2)
+
+/**
+ * @brief The category of a connection error: a read of an established connection timed out (Java:
+ * `java.net.SocketTimeoutException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_READ_TIMEOUT ((int32_t)3)
+
+/**
+ * @brief The category of a connection error: the remote side sent no data and no heartbeat within the heartbeat
+ * timeout (the address option `[heartbeatTimeout=...]`), so QD closed the connection; the error has no exception.
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_HEARTBEAT_TIMEOUT ((int32_t)4)
+
+/**
+ * @brief The category of a connection error: the remote side closed the connection (Java: `java.io.EOFException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_CLOSED_BY_REMOTE ((int32_t)5)
+
+/**
+ * @brief The category of a connection error: the TLS handshake or a TLS record failed, e.g. a `tls+` address of a
+ * port without TLS or a certificate that is not trusted (Java: `javax.net.ssl.SSLException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_TLS ((int32_t)6)
+
+/**
+ * @brief The category of a connection error: another I/O error, e.g. a connection reset (Java:
+ * `java.io.IOException`).
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_CONNECTION_ERROR_IO ((int32_t)7)
+
+/**
+ * @brief A connection error of a message connector (dxfg_v4_MessageConnector_getLastError(),
+ * dxfg_v4_DXEndpoint_getLastConnectionError()).
+ *
+ * A copy: it does not change when the connector records a newer error. The SDK allocates it with its strings: release
+ * it with dxfg_v4_ConnectionError_release().
+ * @experimental
+ * @since 3.14.0
+ */
+typedef struct dxfg_v4_connection_error_t {
+    /** The time of the error, in milliseconds since the epoch (UTC). */
+    int64_t time;
+    /**
+     * The address the connector was configured with (UTF-8), credentials masked: for a multi-host address the whole
+     * list, not the host that failed.
+     */
+    const char *address;
+    /** The category: one of the `DXFG_V4_CONNECTION_ERROR_*` values; treat an unknown value as other. */
+    int32_t category;
+    /** 1 if an established connection was dropped, 0 if a connect attempt failed. */
+    int32_t dropped;
+    /** The class name of the Java exception (UTF-8), e.g. `java.net.ConnectException`; NULL when there is none. */
+    const char *exception_class_name;
+    /**
+     * The message of the exception, or of QD's log record when there is no exception (UTF-8), credentials masked, at
+     * most 256 characters; NULL when there is none.
+     */
+    const char *message;
+    /** The number of errors of the connector up to this one, since the SDK started to watch it. */
+    int64_t count;
+} dxfg_v4_connection_error_t;
+
+/**
+ * @brief Returns the last connection error of a message connector: the newest failed connect or dropped connection.
+ *
+ * A successful connection clears nothing: the time tells how old the error is. The SDK watches the connectors of the
+ * endpoints it creates from their creation; a connector of another endpoint has no errors.
+ *
+ * Java: no counterpart; the SDK captures the errors from QD's log records.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] connector The connector; must not be NULL.
+ * @param[out] error The pointer to the variable that receives the error (release it with
+ * dxfg_v4_ConnectionError_release()), or NULL when the connector has had no error; must not be NULL. It is written on
+ * success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
+ * @since 3.14.0
+ */
+DXFG_EXPERIMENTAL
+int32_t dxfg_v4_MessageConnector_getLastError(graal_isolatethread_t *thread, dxfg_v4_message_connector_t *connector,
+                                              DXFG_OUT dxfg_v4_connection_error_t **error);
+
+/**
+ * @brief Returns the last connection error of an endpoint: the newest error of all its connectors.
+ *
+ * The error stays after a connect to another address replaced the connector that recorded it, and after the endpoint
+ * is closed; a successful connection clears nothing.
+ *
+ * Read the error in the connector listener (dxfg_v4_DXEndpoint_addMessageConnectorListener()), which is called after
+ * the error is recorded. The state change listener of the endpoint (dxfg_v4_DXEndpoint_addStateChangeListener()) gives
+ * no such order: QD computes the endpoint state on another thread, so the listener may be called before the error of
+ * that change is recorded; compare the time or the count of the error with those seen before. Failed connect attempts
+ * do not change the endpoint state at all: the endpoint stays connecting between them.
+ *
+ * Java: no counterpart; the SDK captures the errors from QD's log records.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] endpoint The endpoint; must not be NULL.
+ * @param[out] error The pointer to the variable that receives the error (release it with
+ * dxfg_v4_ConnectionError_release()), or NULL when the endpoint has had no error; must not be NULL. It is written on
+ * success only.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
+ * @since 3.14.0
+ */
+DXFG_EXPERIMENTAL
+int32_t dxfg_v4_DXEndpoint_getLastConnectionError(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint,
+                                                  DXFG_OUT dxfg_v4_connection_error_t **error);
+
+/**
+ * @brief Releases a connection error and its strings.
+ *
+ * @param[in] thread The current GraalVM Isolate's thread.
+ * @param[in] error The error (dxfg_v4_MessageConnector_getLastError(), dxfg_v4_DXEndpoint_getLastConnectionError());
+ * NULL is a no-op.
+ * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
+ * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
+ * @experimental
+ * @since 3.14.0
+ */
+DXFG_EXPERIMENTAL
+int32_t dxfg_v4_ConnectionError_release(graal_isolatethread_t *thread, dxfg_v4_connection_error_t *error);
 
 /** @} */
 

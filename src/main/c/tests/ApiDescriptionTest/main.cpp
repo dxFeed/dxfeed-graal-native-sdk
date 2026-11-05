@@ -88,6 +88,7 @@ TEST_CASE("The library supports every feature of the description") {
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_FEED_FILTER) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_MESSAGE_CONNECTORS) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_CONNECTION_ERRORS) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -159,7 +160,7 @@ TEST_CASE("The event peek function is experimental, the filters with user data a
     CHECK(entryOf("dxfg_v4_SessionFilter_newWithUserData").find(stable) != std::string::npos);
 }
 
-TEST_CASE("The connector getters and their feature are stable, the connector listener is experimental") {
+TEST_CASE("The connector getters are stable, the connector listener and connection errors experimental") {
     const auto description = readDescription();
 
     // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
@@ -187,7 +188,10 @@ TEST_CASE("The connector getters and their feature are stable, the connector lis
     for (const char *name :
          {"dxfg_v4_MessageConnectorListener_new", "dxfg_v4_DXEndpoint_addMessageConnectorListener",
           "dxfg_v4_DXEndpoint_removeMessageConnectorListener", "dxfg_v4_message_connector_listener_t",
-          "dxfg_v4_message_connector_listener_func"}) {
+          "dxfg_v4_message_connector_listener_func", "dxfg_v4_MessageConnector_getLastError",
+          "dxfg_v4_DXEndpoint_getLastConnectionError", "dxfg_v4_ConnectionError_release",
+          "dxfg_v4_connection_error_t", "DXFG_V4_CONNECTION_ERROR_OTHER", "DXFG_V4_CONNECTION_ERROR_IO",
+          "DXFG_V4_FEATURE_CONNECTION_ERRORS"}) {
         INFO(name);
         CHECK(entryOf(name).find(experimental) != std::string::npos);
     }

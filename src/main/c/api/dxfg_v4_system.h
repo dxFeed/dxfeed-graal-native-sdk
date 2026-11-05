@@ -188,6 +188,15 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 #define DXFG_V4_FEATURE_MESSAGE_CONNECTORS "message_connectors"
 
 /**
+ * @brief The name of the feature "connection errors" (dxfg_v4_message_connector.h:
+ * dxfg_v4_MessageConnector_getLastError(), dxfg_v4_DXEndpoint_getLastConnectionError(),
+ * dxfg_v4_ConnectionError_release()) for dxfg_v4_system_is_feature_supported().
+ * @experimental
+ * @since 3.14.0
+ */
+#define DXFG_V4_FEATURE_CONNECTION_ERRORS "connection_errors"
+
+/**
  * @brief Returns the version of the SDK release that the library belongs to, e.g. `3.13.0`.
  *
  * A wrapper that binds the functions by name checks the release before it binds the others. When the function

@@ -3,6 +3,7 @@
 
 package com.devexperts.logging;
 
+import com.dxfeed.sdk.connector.ConnectionErrors;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,14 +25,19 @@ public class InterceptableLogging extends DefaultLogging {
     /// The name of the property that allows to set the logging level to an err file.
     public static final String ERR_LEVEL = "err.level";
 
-    /// Logging level to console or to listener by default.
-    public static final String DEFAULT_LOG_LEVEL = Level.ALL.toString();
+    /// Logging level to console or to listener by default: the default level of the JUL root logger, which limited the
+    /// output before the levels also set the level of the root logger.
+    public static final String DEFAULT_LOG_LEVEL = Level.INFO.toString();
 
     /// Logging level to err file by default.
     public static final String DEFAULT_ERR_LEVEL = Level.WARNING.toString();
 
     static final Object lock = new Object();
     static InterceptableLoggingListener listener_;
+
+    // Guarded by lock: the root handlers are the ones this class configured (and so have the user's levels), not
+    // the ones of another logging implementation.
+    static boolean configured_;
 
     static Level getLogLevel(String propertyName, String defaultValue) {
         try {
@@ -79,6 +85,8 @@ public class InterceptableLogging extends DefaultLogging {
                 handler.setFormatter(new LogFormatter());
                 handler.setLevel(getLogLevel(LOG_LEVEL, DEFAULT_LOG_LEVEL));
                 root.addHandler(handler);
+                configured_ = true;
+                updateRootLevel(root);
             }
         }
     }
@@ -95,6 +103,7 @@ public class InterceptableLogging extends DefaultLogging {
 
             if (handlers.length > 0) {
                 handlers[0].setLevel(level); // console or listener, or log file
+                updateRootLevel(root);
             }
         }
     }
@@ -111,8 +120,35 @@ public class InterceptableLogging extends DefaultLogging {
 
             if (handlers.length > 1) {
                 handlers[1].setLevel(level); // err file
+                updateRootLevel(root);
             }
         }
+    }
+
+    /**
+     * Sets the level of the root logger to the most verbose level of the root handlers, so that the records below it
+     * are not created at all and the records of a more verbose handler level are; then the levels of the loggers that
+     * the SDK's connection error capture needs. Only for the handlers this class configured: the handlers of another
+     * logging implementation keep the root logger as it is (e.g. QD's console handler has the level ALL).
+     */
+    static void updateRootLevel(Logger root) {
+        if (!configured_) {
+            return;
+        }
+
+        Level level = null;
+
+        for (Handler handler : root.getHandlers()) {
+            if (level == null || handler.getLevel().intValue() < level.intValue()) {
+                level = handler.getLevel();
+            }
+        }
+
+        if (level != null) {
+            root.setLevel(level);
+        }
+
+        ConnectionErrors.loggingLevelsChanged();
     }
 
     @Override
@@ -158,6 +194,8 @@ public class InterceptableLogging extends DefaultLogging {
                         errors.put(err_file, e);
                     }
                 }
+                configured_ = true;
+                updateRootLevel(root);
             } catch (SecurityException e) {
                 // ignore -- does not have permission to change configuration
             }

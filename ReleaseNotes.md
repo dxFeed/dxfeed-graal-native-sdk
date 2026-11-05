@@ -10,6 +10,23 @@
   `dxfg_v4_DXEndpoint_removeMessageConnectorListener()`) is called after the state changes, also of the connectors of
   a later connect, on one thread of the SDK; `dxfg_v4_system_shutdown()` stops that thread.
   `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` reports the family.
+* **\[MDAPI-477]\[GRAAL]** The last connection error of a message connector and of an endpoint, and `log.level` that
+  really sets the level of logging.
+  * The last connection error (experimental, `dxfg_v4_message_connector.h`): why a connect failed or a connection
+    dropped. `dxfg_v4_MessageConnector_getLastError()` and `dxfg_v4_DXEndpoint_getLastConnectionError()` return a copy
+    (`dxfg_v4_connection_error_t`, released by `dxfg_v4_ConnectionError_release()`) or NULL: the time, the configured
+    address with the credentials masked, the category (`DXFG_V4_CONNECTION_ERROR_*`: DNS, connect failed (refused or
+    timed out), read timeout, heartbeat timeout, closed by remote, TLS, I/O, other), whether an established connection
+    dropped, the exception class name, a bounded message and the error count. The endpoint keeps its newest error
+    after a connect to another address; a successful connection clears nothing. The error is recorded before the
+    connector listener is called. The SDK captures the errors from QD's log records, without the logging listener and
+    at any `log.level`; with another `log.className` nothing is captured, and a level the user sets on QD's connector
+    loggers wins. `DXFG_V4_FEATURE_CONNECTION_ERRORS` reports the family.
+  * `log.level`, `err.level`, `dxfg_logging_set_log_level()` and `dxfg_logging_set_err_level()` (and their v4
+    functions) also set the level of the root logger of `java.util.logging` when `log.className` is
+    `com.devexperts.logging.InterceptableLogging`: `DEBUG` and `ALL` now produce the messages below `INFO`, and the
+    messages below the level are no longer created. The default `log.level` is `INFO`, which was already the effective
+    default.
 
 ### For integrators
 
@@ -30,6 +47,12 @@
 * In the explicit shutdown of the application, call `dxfg_v4_system_shutdown()` first (it also stops the listener
   thread), then release the remaining handles.
 * The README section "Message connectors" has an example, and `DxfgClient mc` prints the connectors of an endpoint.
+* Check `DXFG_V4_FEATURE_CONNECTION_ERRORS` and the advanced revision before binding the connection error functions.
+  Treat an unknown category as `DXFG_V4_CONNECTION_ERROR_OTHER`: new categories may come. Release every error with
+  `dxfg_v4_ConnectionError_release()`. Read the error in the connector listener or after a state other than
+  connected; its time tells how old it is.
+* An application that set `log.level` to `DEBUG` or `ALL` with `InterceptableLogging` now gets the debug messages it
+  asked for; set `INFO` to keep the output as before.
 
 ## v3.13.0
 

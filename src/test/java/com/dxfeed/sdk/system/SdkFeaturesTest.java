@@ -53,6 +53,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void connectionErrorsFeatureIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.CONNECTION_ERRORS));
+        assertTrue(SdkFeatures.isSupported("connection_errors"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

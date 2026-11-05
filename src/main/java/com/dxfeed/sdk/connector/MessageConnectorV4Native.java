@@ -11,14 +11,17 @@ import com.dxfeed.sdk.endpoint.DxfgEndpoint;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.struct.SizeOf;
 import org.graalvm.nativeimage.c.type.CCharPointerPointer;
 import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.nativeimage.c.type.CLongPointer;
 import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.nativeimage.c.type.WordPointer;
 import org.graalvm.word.PointerBase;
+import org.graalvm.word.WordFactory;
 
 /**
  * The functions of dxfg_v4_message_connector.h: the message connectors of an endpoint and the listeners of their
@@ -289,6 +292,76 @@ public final class MessageConnectorV4Native {
                 NativeUtils.MAPPER_MESSAGE_CONNECTOR_LISTENER.toJava(listener));
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_MessageConnector_getLastError",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_MessageConnector_getLastError(
+            final IsolateThread ignoredThread,
+            final DxfgMessageConnectorHandle connector,
+            @DxfgOut final WordPointer error
+    ) {
+        checkPointer(error, "error");
+
+        error.write(toNative(ConnectionErrors.getLastError(toJava(connector))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_DXEndpoint_getLastConnectionError",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_DXEndpoint_getLastConnectionError(
+            final IsolateThread ignoredThread,
+            final DxfgEndpoint endpoint,
+            @DxfgOut final WordPointer error
+    ) {
+        checkPointer(error, "error");
+        checkHandle(endpoint, "endpoint");
+
+        error.write(toNative(ConnectionErrors.getLastError(NativeUtils.MAPPER_ENDPOINT.toJava(endpoint))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
+            name = "dxfg_v4_ConnectionError_release",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_ConnectionError_release(
+            final IsolateThread ignoredThread,
+            final DxfgConnectionError error
+    ) {
+        if (error.isNonNull()) {
+            NativeUtils.MAPPER_STRING.release(error.getAddress());
+            NativeUtils.MAPPER_STRING.release(error.getExceptionClassName());
+            NativeUtils.MAPPER_STRING.release(error.getMessage());
+            UnmanagedMemory.free(error);
+        }
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    // A null error gives a null pointer; calloc, so that the strings not yet written are null.
+    private static DxfgConnectionError toNative(final ConnectionError error) {
+        if (error == null) {
+            return WordFactory.nullPointer();
+        }
+
+        final DxfgConnectionError nativeError = UnmanagedMemory.calloc(SizeOf.get(DxfgConnectionError.class));
+
+        nativeError.setTime(error.getTime());
+        nativeError.setAddress(NativeUtils.MAPPER_STRING.toNative(error.getAddress()));
+        nativeError.setCategory(error.getCategory());
+        nativeError.setDropped(error.isDropped() ? 1 : 0);
+        nativeError.setExceptionClassName(NativeUtils.MAPPER_STRING.toNative(error.getExceptionClassName()));
+        nativeError.setMessage(NativeUtils.MAPPER_STRING.toNative(error.getMessage()));
+        nativeError.setCount(error.getCount());
+
+        return nativeError;
     }
 
     static int toNativeState(final MessageConnectorState state) {

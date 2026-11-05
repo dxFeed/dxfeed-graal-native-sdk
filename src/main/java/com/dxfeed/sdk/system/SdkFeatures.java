@@ -50,8 +50,14 @@ public final class SdkFeatures {
      */
     public static final String MESSAGE_CONNECTORS = "message_connectors";
 
+    /**
+     * {@code DXFG_V4_FEATURE_CONNECTION_ERRORS}: the last connection error of a message connector and of an endpoint
+     * (MDAPI-477).
+     */
+    public static final String CONNECTION_ERRORS = "connection_errors";
+
     private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
-            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS);
+            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS);
 
     private SdkFeatures() {
     }

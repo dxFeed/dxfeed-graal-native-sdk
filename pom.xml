@@ -1132,6 +1132,7 @@
         <configuration>
           <!-- Only the tests: the other classes in src/test are programs with main(), not tests. -->
           <includes>
+            <include>com/devexperts/logging/**/*Test.java</include>
             <include>com/dxfeed/sdk/model/**/*Test.java</include>
             <include>com/dxfeed/sdk/connector/**/*Test.java</include>
             <include>com/dxfeed/sdk/feedfilter/**/*Test.java</include>

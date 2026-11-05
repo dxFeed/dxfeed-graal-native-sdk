@@ -34,6 +34,15 @@ extern "C" {
  *  The classes `InterceptableLogging` and `InterceptableLoggingListener` that the functions of this group call belong
  *  to the SDK (package `com.devexperts.logging`), not to the QD library.
  *
+ *  With `InterceptableLogging` the level `log.level` (the listener or the console or the log file, `INFO` by default)
+ *  and `err.level` (the err file) also set the level of the root logger of `java.util.logging` to the more verbose of
+ *  the two, so that the messages below it are not created at all and the more verbose ones (`DEBUG`, `ALL`) are.
+ *
+ *  The last connection errors of the message connectors (dxfg_v4_MessageConnector_getLastError()) do not depend on the
+ *  listener or on the levels: the SDK captures them with the default logging and with `InterceptableLogging`, also when
+ *  the level is `OFF`. With another `log.className` nothing is captured, and a level set on QD's loggers of the
+ *  connectors themselves wins (see @ref V4_MessageConnector).
+ *
  *  The ownership rules of the handles are described in the group @ref Javac.
  *  @{
  */
@@ -178,7 +187,7 @@ int32_t dxfg_logging_listener_new(graal_isolatethread_t *thread, dxfg_logging_li
  *
  * It toggles the logging: the existing handlers of the logging system are removed, so the messages are not logged to
  * the console and to files anymore, and the messages are given to the listener. The level of the messages that reach
- * the listener is taken from the system property `log.level` (all messages by default) and can be changed with
+ * the listener is taken from the system property `log.level` (`INFO` by default) and can be changed with
  * dxfg_logging_set_log_level().
  *
  * Only the first installed listener works: if a listener is already installed, the function does nothing. A NULL
@@ -204,6 +213,9 @@ int32_t dxfg_logging_set_listener(graal_isolatethread_t *thread, dxfg_logging_li
  * (see dxfg_logging_set_listener()), otherwise the console or the log file (`log.file`). If there is no such handler,
  * the function does nothing and returns #DXFG_EXECUTE_SUCCESSFULLY.
  *
+ * With the handlers of `InterceptableLogging` it also sets the level of the root logger to the more verbose of the
+ * two handler levels, so that the messages below it are not created at all.
+ *
  * Java: `InterceptableLogging.setLogLevel(Level)`.
  *
  * @deprecated Use dxfg_v4_logging_set_log_level().
@@ -222,7 +234,7 @@ int32_t dxfg_logging_set_log_level(graal_isolatethread_t *thread, dxfg_logging_l
  * The level is set for the second handler of the logging system: the file of the errors (`err.file`). If there is no
  * such handler (e.g. a listener is installed or `err.file` is not set), the function does nothing and returns
  * #DXFG_EXECUTE_SUCCESSFULLY. The default level of the err file is taken from the system property `err.level`
- * (warnings and errors by default).
+ * (warnings and errors by default). The level of the root logger is set as by the function of the log level.
  *
  * Java: `InterceptableLogging.setErrLevel(Level)`.
  *

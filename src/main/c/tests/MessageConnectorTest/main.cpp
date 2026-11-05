@@ -5,7 +5,9 @@
 // a publisher endpoint on a free loopback port reports its client connector as connected, with its addresses and
 // growing statistics; a client to a closed port reports connecting; the functions refuse NULL handles and pointers; the
 // lists and the handles outlive the endpoint and are released in any order. A listener gets the state changes on a
-// thread of the SDK and is silent once released; dxfg_v4_system_shutdown() waits for its call in progress.
+// thread of the SDK and is silent once released; dxfg_v4_system_shutdown() waits for its call in progress. A failed
+// connect and a connection closed by the server are recorded as the last connection errors of the connector and of
+// the endpoint before the listener call; a healthy connection has none and clears none.
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -15,6 +17,7 @@
 #else
 #    include <arpa/inet.h>
 #    include <netinet/in.h>
+#    include <sys/select.h>
 #    include <sys/socket.h>
 #    include <unistd.h>
 #endif
@@ -313,8 +316,13 @@ struct ConnectorListener {
     graal_isolatethread_t *thread;
     dxfg_v4_message_connector_listener_t *listener = nullptr;
 
-    ConnectorListener(graal_isolatethread_t *thread, StateCalls &calls) : thread(thread) {
-        REQUIRE(dxfg_v4_MessageConnectorListener_new(thread, &StateCalls::call, &calls, &listener) ==
+    ConnectorListener(graal_isolatethread_t *thread, StateCalls &calls)
+        : ConnectorListener(thread, &StateCalls::call, &calls) {
+    }
+
+    ConnectorListener(graal_isolatethread_t *thread, dxfg_v4_message_connector_listener_func function, void *userData)
+        : thread(thread) {
+        REQUIRE(dxfg_v4_MessageConnectorListener_new(thread, function, userData, &listener) ==
                 DXFG_EXECUTE_SUCCESSFULLY);
         REQUIRE(listener != nullptr);
     }
@@ -331,6 +339,189 @@ struct ConnectorListener {
             dxfg_v4_JavaObjectHandler_release(thread, &listener->handler);
             listener = nullptr;
         }
+    }
+};
+
+// A copy of a connection error; `present` is false when there was none.
+struct ErrorCopy {
+    bool present = false;
+    int64_t time = 0;
+    std::string address;
+    int32_t category = -1;
+    int32_t dropped = -1;
+    std::string exceptionClassName;
+    std::string message;
+    int64_t count = 0;
+};
+
+// Copies and releases the error; no doctest macros, so that a listener may call it on a thread of the SDK.
+ErrorCopy takeError(graal_isolatethread_t *thread, dxfg_v4_connection_error_t *error) {
+    ErrorCopy copy;
+
+    if (error != nullptr) {
+        copy.present = true;
+        copy.time = error->time;
+        copy.address = error->address != nullptr ? error->address : "";
+        copy.category = error->category;
+        copy.dropped = error->dropped;
+        copy.exceptionClassName = error->exception_class_name != nullptr ? error->exception_class_name : "";
+        copy.message = error->message != nullptr ? error->message : "";
+        copy.count = error->count;
+        dxfg_v4_ConnectionError_release(thread, error);
+    }
+
+    return copy;
+}
+
+ErrorCopy lastErrorOf(graal_isolatethread_t *thread, dxfg_v4_message_connector_t *connector) {
+    dxfg_v4_connection_error_t *error = nullptr;
+
+    REQUIRE(dxfg_v4_MessageConnector_getLastError(thread, connector, &error) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return takeError(thread, error);
+}
+
+ErrorCopy lastErrorOf(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint) {
+    dxfg_v4_connection_error_t *error = nullptr;
+
+    REQUIRE(dxfg_v4_DXEndpoint_getLastConnectionError(thread, endpoint, &error) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return takeError(thread, error);
+}
+
+std::int64_t nowMillis() {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               std::chrono::system_clock::now().time_since_epoch())
+        .count();
+}
+
+// The categories of the connection errors that a connector listener read in its calls (-1: no error yet).
+struct ErrorCalls {
+    std::mutex mutex;
+    std::vector<int32_t> categories;
+
+    static void call(graal_isolatethread_t *thread, dxfg_v4_message_connector_t *connector, void *userData) {
+        auto *self = static_cast<ErrorCalls *>(userData);
+        dxfg_v4_connection_error_t *error = nullptr;
+        int32_t category = -1;
+
+        if (dxfg_v4_MessageConnector_getLastError(thread, connector, &error) == DXFG_EXECUTE_SUCCESSFULLY) {
+            category = takeError(thread, error).category;
+        }
+
+        std::lock_guard lock(self->mutex);
+        self->categories.push_back(category);
+    }
+
+    bool saw(int32_t category) {
+        std::lock_guard lock(mutex);
+
+        for (const auto value : categories) {
+            if (value == category) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
+void closeSocket(NativeSocket s) {
+#ifdef _WIN32
+    closesocket(s);
+#else
+    close(s);
+#endif
+}
+
+// A loopback server that closes the output of every connection it accepts, so that the client reads the end of the
+// stream; it keeps the connections open until the end.
+struct ClosingServer {
+    NativeSocket listening = INVALID_NATIVE_SOCKET;
+    std::uint16_t port = 0;
+    std::atomic<bool> stopping{false};
+    std::vector<NativeSocket> accepted;
+    std::thread thread;
+
+    ClosingServer() {
+#ifdef _WIN32
+        WSADATA wsaData{};
+
+        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+            throw std::runtime_error("ClosingServer: WSAStartup failed");
+        }
+#endif
+
+        listening = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        sockaddr_in address{};
+        address.sin_family = AF_INET;
+        address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        address.sin_port = 0; // the OS picks a free port
+
+        SocketAddressLength length = sizeof(address);
+
+        if (listening == INVALID_NATIVE_SOCKET ||
+            bind(listening, reinterpret_cast<sockaddr *>(&address), sizeof(address)) != 0 ||
+            listen(listening, 8) != 0 || getsockname(listening, reinterpret_cast<sockaddr *>(&address), &length) != 0) {
+            stop();
+
+            throw std::runtime_error("ClosingServer: socket(), bind() or listen() failed");
+        }
+
+        port = ntohs(address.sin_port);
+        thread = std::thread([this] { run(); });
+    }
+
+    ClosingServer(const ClosingServer &) = delete;
+    ClosingServer &operator=(const ClosingServer &) = delete;
+
+    ~ClosingServer() {
+        stopping = true;
+
+        if (thread.joinable()) {
+            thread.join();
+        }
+
+        for (const auto s : accepted) {
+            closeSocket(s);
+        }
+
+        stop();
+    }
+
+  private:
+    void run() {
+        while (!stopping) {
+            fd_set readable;
+            FD_ZERO(&readable);
+            FD_SET(listening, &readable);
+            timeval timeout{0, 100000};
+
+            // The first argument is ignored on Windows.
+            if (select(static_cast<int>(listening) + 1, &readable, nullptr, nullptr, &timeout) > 0) {
+                const NativeSocket s = accept(listening, nullptr, nullptr);
+
+                if (s != INVALID_NATIVE_SOCKET) {
+#ifdef _WIN32
+                    shutdown(s, SD_SEND);
+#else
+                    shutdown(s, SHUT_WR);
+#endif
+                    accepted.push_back(s);
+                }
+            }
+        }
+    }
+
+    void stop() {
+        if (listening != INVALID_NATIVE_SOCKET) {
+            closeSocket(listening);
+            listening = INVALID_NATIVE_SOCKET;
+        }
+
+#ifdef _WIN32
+        WSACleanup();
+#endif
     }
 };
 
@@ -636,6 +827,140 @@ TEST_CASE("The listener functions refuse NULL arguments; a remove of a listener 
     CHECK(takeExceptionClassName(thread) == "java.lang.IllegalArgumentException");
     CHECK(dxfg_v4_DXEndpoint_removeMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
           DXFG_EXECUTE_SUCCESSFULLY);
+}
+
+TEST_CASE("A failed connect is a connect-failed error, recorded before the listener call; the endpoint has it too") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    CHECK_FALSE(lastErrorOf(thread, feed.endpoint).present);
+
+    static ErrorCalls calls{}; // Static: the listener may outlive the test case if it fails.
+    ConnectorListener listener(thread, &ErrorCalls::call, &calls);
+
+    REQUIRE(dxfg_v4_DXEndpoint_addMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+
+    const auto before = nowMillis();
+
+    REQUIRE(feed.connect("127.0.0.1:1"));
+    CHECK(waitFor([] { return calls.saw(DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED); }));
+
+    Connectors connectors(thread, feed.endpoint);
+    REQUIRE(connectors.size() == 1);
+
+    const auto error = lastErrorOf(thread, connectors[0]);
+    REQUIRE(error.present);
+    CHECK(error.category == DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED);
+    CHECK(error.time >= before);
+    CHECK(error.time <= nowMillis());
+    CHECK(error.address == "127.0.0.1:1");
+    CHECK(error.dropped == 0);
+    CHECK(error.exceptionClassName == "java.net.ConnectException");
+    CHECK(error.count >= 1);
+
+    const auto endpointError = lastErrorOf(thread, feed.endpoint);
+    REQUIRE(endpointError.present);
+    CHECK(endpointError.category == DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED);
+    CHECK(endpointError.address == "127.0.0.1:1");
+
+    REQUIRE(dxfg_v4_DXEndpoint_removeMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
+TEST_CASE("A connection that the server closes is a dropped connection, closed by remote") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    ClosingServer server;
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+
+    static ErrorCalls calls{}; // Static: the listener may outlive the test case if it fails.
+    ConnectorListener listener(thread, &ErrorCalls::call, &calls);
+
+    REQUIRE(dxfg_v4_DXEndpoint_addMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(feed.connect("127.0.0.1:" + std::to_string(server.port)));
+    CHECK(waitFor([] { return calls.saw(DXFG_V4_CONNECTION_ERROR_CLOSED_BY_REMOTE); }));
+
+    const auto error = lastErrorOf(thread, feed.endpoint);
+    REQUIRE(error.present);
+    CHECK(error.category == DXFG_V4_CONNECTION_ERROR_CLOSED_BY_REMOTE);
+    CHECK(error.dropped == 1);
+    CHECK(error.exceptionClassName == "java.io.EOFException");
+
+    REQUIRE(dxfg_v4_DXEndpoint_removeMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
+TEST_CASE("A healthy connection has no error; the endpoint keeps an error after a connect to another address") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    const auto port = std::to_string(findFreeLoopbackPort());
+    Endpoint publisher(thread, DXFG_ENDPOINT_ROLE_PUBLISHER);
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(publisher.ready);
+    REQUIRE(feed.ready);
+    REQUIRE(publisher.connect(":" + port));
+    REQUIRE(feed.connect("127.0.0.1:" + port));
+
+    {
+        Connectors clients(thread, feed.endpoint);
+        REQUIRE(clients.size() == 1);
+        REQUIRE(waitFor([&] { return stateOf(thread, clients[0]) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
+        CHECK_FALSE(lastErrorOf(thread, clients[0]).present);
+        CHECK_FALSE(lastErrorOf(thread, feed.endpoint).present);
+    }
+
+    REQUIRE(feed.connect("127.0.0.1:1"));
+    REQUIRE(waitFor([&] { return lastErrorOf(thread, feed.endpoint).present; }));
+
+    REQUIRE(feed.connect("127.0.0.1:" + port));
+
+    Connectors clients(thread, feed.endpoint);
+    REQUIRE(clients.size() == 1);
+    REQUIRE(waitFor([&] { return stateOf(thread, clients[0]) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
+    CHECK_FALSE(lastErrorOf(thread, clients[0]).present);
+
+    // A successful connection clears nothing.
+    const auto kept = lastErrorOf(thread, feed.endpoint);
+    REQUIRE(kept.present);
+    CHECK(kept.category == DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED);
+    CHECK(kept.address == "127.0.0.1:1");
+}
+
+TEST_CASE("The connection error functions refuse NULL arguments; a release of NULL succeeds") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    const std::string illegalArgument = "java.lang.IllegalArgumentException";
+    const auto fails = [&](int32_t result) {
+        return result == DXFG_EXECUTE_FAIL && takeExceptionClassName(thread) == illegalArgument;
+    };
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(feed.connect("127.0.0.1:1"));
+
+    Connectors connectors(thread, feed.endpoint);
+    REQUIRE(connectors.size() == 1);
+
+    dxfg_v4_connection_error_t *error = nullptr;
+
+    CHECK(fails(dxfg_v4_MessageConnector_getLastError(thread, nullptr, &error)));
+    CHECK(fails(dxfg_v4_MessageConnector_getLastError(thread, connectors[0], nullptr)));
+    CHECK(fails(dxfg_v4_DXEndpoint_getLastConnectionError(thread, nullptr, &error)));
+    CHECK(fails(dxfg_v4_DXEndpoint_getLastConnectionError(thread, feed.endpoint, nullptr)));
+    CHECK(error == nullptr);
+
+    CHECK(dxfg_v4_ConnectionError_release(thread, nullptr) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(takeExceptionClassName(thread).empty());
 }
 
 TEST_CASE("dxfg_v4_system_shutdown waits for a connector listener call in progress") {

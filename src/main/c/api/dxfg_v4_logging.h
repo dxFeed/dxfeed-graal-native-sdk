@@ -64,7 +64,7 @@ int32_t dxfg_v4_logging_listener_new(graal_isolatethread_t *thread, dxfg_v4_logg
  *
  * It toggles the logging: the existing handlers of the logging system are removed, so the messages are not logged to
  * the console and to files anymore, and the messages are given to the listener. The level of the messages that reach
- * the listener is taken from the system property `log.level` (all messages by default) and can be changed with
+ * the listener is taken from the system property `log.level` (`INFO` by default) and can be changed with
  * dxfg_v4_logging_set_log_level().
  *
  * Only the first installed listener works: if a listener is already installed, the function does nothing. A NULL
@@ -87,6 +87,9 @@ int32_t dxfg_v4_logging_set_listener(graal_isolatethread_t *thread, dxfg_v4_logg
  * (see dxfg_v4_logging_set_listener()), otherwise the console or the log file (`log.file`). If there is no such
  * handler, the function does nothing and returns #DXFG_EXECUTE_SUCCESSFULLY.
  *
+ * With the handlers of `InterceptableLogging` it also sets the level of the root logger to the more verbose of the
+ * two handler levels, so that the messages below it are not created at all.
+ *
  * Java: `InterceptableLogging.setLogLevel(Level)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
@@ -102,7 +105,7 @@ int32_t dxfg_v4_logging_set_log_level(graal_isolatethread_t *thread, dxfg_v4_log
  * The level is set for the second handler of the logging system: the file of the errors (`err.file`). If there is no
  * such handler (e.g. a listener is installed or `err.file` is not set), the function does nothing and returns
  * #DXFG_EXECUTE_SUCCESSFULLY. The default level of the err file is taken from the system property `err.level`
- * (warnings and errors by default).
+ * (warnings and errors by default). The level of the root logger is set as by the function of the log level.
  *
  * Java: `InterceptableLogging.setErrLevel(Level)`.
  *

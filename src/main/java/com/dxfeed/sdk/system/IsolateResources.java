@@ -4,6 +4,7 @@
 package com.dxfeed.sdk.system;
 
 import com.dxfeed.api.DXEndpoint;
+import com.dxfeed.sdk.connector.ConnectionErrors;
 import com.dxfeed.sdk.endpoint.EndpointCloser;
 import com.dxfeed.ipf.live.InstrumentProfileConnection;
 import java.util.ArrayList;
@@ -29,9 +30,22 @@ public final class IsolateResources {
     private IsolateResources() {
     }
 
-    public static synchronized DXEndpoint register(final DXEndpoint endpoint) {
+    /**
+     * Registers an endpoint created through the SDK; the first registration also starts to capture its connection
+     * errors. Registering it again changes nothing.
+     */
+    public static DXEndpoint register(final DXEndpoint endpoint) {
         if (endpoint != null) {
-            ENDPOINTS.add(endpoint);
+            final boolean added;
+
+            synchronized (IsolateResources.class) {
+                added = ENDPOINTS.add(endpoint);
+            }
+
+            // Outside the lock: it adds a QD listener, which QD calls under its own locks.
+            if (added) {
+                ConnectionErrors.watch(endpoint);
+            }
         }
         return endpoint;
     }
