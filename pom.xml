@@ -74,7 +74,7 @@
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
     <auther-api.version>549</auther-api.version>
-    <qd.version>3.356</qd.version>
+    <qd.version>3.357</qd.version>
     <orcs-api.version>549</orcs-api.version>
     <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
     <mdd-maven.url>https://repo.devexperts.com/repository/mdd-maven/</mdd-maven.url>
@@ -1136,6 +1136,7 @@
             <include>com/dxfeed/sdk/model/**/*Test.java</include>
             <include>com/dxfeed/sdk/connector/**/*Test.java</include>
             <include>com/dxfeed/sdk/feedfilter/**/*Test.java</include>
+            <include>com/dxfeed/sdk/ipf/**/*Test.java</include>
             <include>com/dxfeed/sdk/javac/**/*Test.java</include>
             <include>com/dxfeed/sdk/mappers/**/*Test.java</include>
             <include>com/dxfeed/sdk/ondemand/**/*Test.java</include>

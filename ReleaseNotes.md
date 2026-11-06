@@ -27,6 +27,15 @@
     `com.devexperts.logging.InterceptableLogging`: `DEBUG` and `ALL` now produce the messages below `INFO`, and the
     messages below the level are no longer created. The default `log.level` is `INFO`, which was already the effective
     default.
+* **\[MDAPI-479]\[GRAAL]** Migrated to QDS 3.357
+  (see the [QD release notes](https://github.com/devexperts/QD/blob/master/ReleaseNotes.txt)). The close of a live
+  instrument profile connection (`dxfg_InstrumentProfileConnection_close()`,
+  `dxfg_v4_InstrumentProfileConnection_close()`, `dxfg_v4_system_shutdown()`) now ends its thread and its connection to
+  the server at the next data from the server, a heartbeat at the latest (every 10 seconds), and nothing received after
+  the close reaches the collector (QD-1802). Before, the thread stayed in the socket read while the server kept the
+  stream open: the collector still got the updates and `graal_tear_down_isolate()` did not return. QDS 3.357 also fixes
+  the exception in `DXEndpoint.close()` of an endpoint built with an executor (QD-1801, worked around by the SDK) and an
+  `ArrayIndexOutOfBoundsException` in the distribution of concurrent subscriptions that closed connections (QD-1804).
 
 ### For integrators
 

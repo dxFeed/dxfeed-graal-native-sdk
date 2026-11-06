@@ -311,8 +311,11 @@ int32_t                                       dxfg_InstrumentProfileConnection_s
 /**
  * @brief Closes the connection.
  *
- * The state of the connection immediately changes to #DXFG_IPF_CONNECTION_STATE_CLOSED and the background update is
- * terminated. Closing a closed connection does nothing.
+ * The state of the connection immediately changes to #DXFG_IPF_CONNECTION_STATE_CLOSED and the background update
+ * stops: nothing that the connection receives after the call reaches the collector. Its thread and its connection to
+ * the server end when the next data arrives (a live server sends a heartbeat every 10 seconds) or at the 60-second read
+ * timeout. The collector may still notify its listeners about the updates received before the call: release a listener
+ * with dxfg_JavaObjectHandler_release() before freeing its user_data. Closing a closed connection does nothing.
  *
  * Java: `InstrumentProfileConnection.close()`.
  *
