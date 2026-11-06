@@ -5,7 +5,6 @@ package com.dxfeed.sdk.system;
 
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.sdk.connector.ConnectionErrors;
-import com.dxfeed.sdk.endpoint.EndpointCloser;
 import com.dxfeed.ipf.live.InstrumentProfileConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +73,7 @@ public final class IsolateResources {
             connection.close();
         }
         for (final DXEndpoint endpoint : endpoints) {
-            EndpointCloser.closeAndAwaitTermination(endpoint);
+            endpoint.closeAndAwaitTermination();
         }
     }
 }

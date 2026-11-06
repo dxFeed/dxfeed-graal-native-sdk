@@ -34,7 +34,7 @@
   the server at the next data from the server, a heartbeat at the latest (every 10 seconds), and nothing received after
   the close reaches the collector (QD-1802). Before, the thread stayed in the socket read while the server kept the
   stream open: the collector still got the updates and `graal_tear_down_isolate()` did not return. QDS 3.357 also fixes
-  the exception in `DXEndpoint.close()` of an endpoint built with an executor (QD-1801, worked around by the SDK) and an
+  the exception in `DXEndpoint.close()` of an endpoint built with an executor (QD-1801) and an
   `ArrayIndexOutOfBoundsException` in the distribution of concurrent subscriptions that closed connections (QD-1804).
 
 ### For integrators

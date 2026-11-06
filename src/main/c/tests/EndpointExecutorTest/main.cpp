@@ -1,8 +1,8 @@
 // Copyright (c) 2026 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-// An endpoint built with dxfg_DXEndpoint_Builder_withExecutor() closes without an error. QDS 3.356 throws
-// NullPointerException from the last step of closing such an endpoint (QD-1801); the SDK ignores it.
+// An endpoint built with dxfg_DXEndpoint_Builder_withExecutor() closes without an error. Before QDS 3.357 the last
+// step of closing such an endpoint threw NullPointerException (QD-1801).
 
 #include <doctest.h>
 #include <dxfg_api.h>
