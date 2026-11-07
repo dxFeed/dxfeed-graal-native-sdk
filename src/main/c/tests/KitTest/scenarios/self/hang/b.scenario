@@ -1,0 +1,5 @@
+# The mock stops answering: an error after the step deadline, and a fresh adapter for the next scenario.
+scenario self-hang-b
+
+send mock-ok
+send mock-hang

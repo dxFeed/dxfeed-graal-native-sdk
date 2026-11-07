@@ -211,6 +211,9 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
  *  To compile code that still uses them without the warnings, define the macro empty before the headers are included:
  *  `#define DXFG_DEPRECATED(message)` in the code, or `-DDXFG_DEPRECATED(message)=` on the command line of GCC and
  *  Clang. With MSVC, the warning is C4996 (`/wd4996` disables it).
+ *
+ *  A wrapper for another language builds on these rules: @ref wrapper_guide states what it may rely on and must do
+ *  (threads, ownership, outcomes, versioning, delivery), and the conformance kit that checks it.
  */
 
 #ifdef __cplusplus

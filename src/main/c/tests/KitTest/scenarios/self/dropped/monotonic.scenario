@@ -1,0 +1,9 @@
+# A monotonic check fails when the reported number of drops goes down (5, then 0).
+scenario self-fail-monotonic
+
+send publish ep TimeAndSale event_symbol=self-fail-monotonic.A price=1
+send publish ep TimeAndSale event_symbol=self-fail-monotonic.A price=2
+send publish ep TimeAndSale event_symbol=self-fail-monotonic.END price=0
+expect poll q 0 -> until self-fail-monotonic.END
+  monotonic dropped
+end

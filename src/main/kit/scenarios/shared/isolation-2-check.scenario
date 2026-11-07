@@ -1,0 +1,14 @@
+# Runs after kit-isolation-1-leave in the same adapter: the worker is free again, and only this scenario's events
+# arrive.
+scenario kit-isolation-2-check
+requires capability publisher
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-isolation-2-check.A
+send publish e Quote event_symbol=kit-isolation-2-check.A bid_price=2
+send poll-async q 10000
+expect await q 15000 -> events
+  event Quote event_symbol=kit-isolation-2-check.A bid_price=2
+end

@@ -1,0 +1,1 @@
+test.scenario:3: unknown event type Trade (no struct dxfg_trade_t)

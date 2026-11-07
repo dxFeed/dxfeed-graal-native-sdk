@@ -1,0 +1,3 @@
+scenario fixture-unknown-type
+send endpoint e local_hub
+send queue q e Quote,Trade

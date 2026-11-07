@@ -41,6 +41,20 @@
   instead of killing the process. The macOS x64 library is built with an older GraalVM, which installed them only in
   native executables. `-XX:-EnableSignalHandling` still turns them off, and a handler or `SIG_IGN` of the application is
   kept.
+* **\[MDAPI-503]\[GRAAL]** The wrapper guide and the conformance kit, for the authors of wrappers in other languages.
+  * The wrapper guide (`docs/wrapper-guide/` in every archive, the "Wrapper guide" of the C API reference) states the
+    contract between the SDK and a wrapper: threads and attachment (long-lived threads, releases from finalizers),
+    ownership, return codes and outcomes, tiers and the start-up check, which delivery to use for what, and what the
+    kit proves.
+  * The conformance kit (`kit/` in the archives with a dynamic library and `CMakeLists.txt`) checks a wrapper by
+    running it: a runner (C++17 source) sends the requests of scenarios over a line protocol to an adapter written in
+    the wrapper's language and checks the responses. The scenarios cover the fields of Quote, Profile, TimeAndSale,
+    Order, Candle and Message, the ownership of polled lists, the outcomes of a poll, conflation, streams and drops,
+    polls on other threads, the ready signal, shutdown and tear-down, and the skips of an advanced-revision mismatch.
+    They publish to a `DXFG_ENDPOINT_ROLE_LOCAL_HUB` endpoint in the adapter's process, with no network. A reference
+    adapter on the C API is included, and the SDK's CTest runs the kit with it on every platform.
+  * The build checks that the guide and the kit name only functions, types, features and event fields that the API
+    description has, none of them deprecated. No exported function is changed or added.
 
 ### For integrators
 
@@ -76,6 +90,8 @@
   "(experimental)" names an experimental function (the twins of `IndexedTxModel`, `TimeSeriesTxModel` and the other
   experimental Java API): it may change in a minor release, so a wrapper checks
   `dxfg_v4_system_get_advanced_revision()` before binding it. The experimental functions themselves are not removed.
+* Wrapper authors: read the wrapper guide, then write an adapter for the conformance kit and run it in strict mode on
+  every platform the wrapper supports (`kit/README.md` in the archive).
 
 ## v3.13.0
 

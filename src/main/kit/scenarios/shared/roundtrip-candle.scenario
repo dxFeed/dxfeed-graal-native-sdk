@@ -1,0 +1,13 @@
+# The fields of Candle, subscribed as a time series. The symbol has a period ({=m}, one minute, in its normal form):
+# without one, the candle is a trade and keeps only its close. The index is not Long.MAX_VALUE, which a history
+# record rejects.
+scenario kit-roundtrip-candle
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Candle
+send subscribe q kit-roundtrip-candle.A%7B%3Dm%7D from=0
+send publish e Candle event_symbol=kit-roundtrip-candle.A%7B%3Dm%7D index=7301444403200000000 count=5 open=1 high=inf low=-inf close=nan volume=1000 vwap=1.25 bid_volume=0.5 ask_volume=600 imp_volatility=0.2 open_interest=77
+expect poll q 1000 -> events
+  event Candle event_symbol=kit-roundtrip-candle.A{=m} event_flags=0 index=7301444403200000000 count=5 open=1 high=inf low=-inf close=nan volume=1000 vwap=1.25 bid_volume=0.5 ask_volume=600 imp_volatility=0.2 open_interest=77
+end

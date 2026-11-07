@@ -1,0 +1,18 @@
+# Stream events beyond the buffer of the queue are dropped, the oldest first, and counted: with a buffer of 100, a
+# burst of 1000 TimeAndSale events ends with the newest ones received, and received plus dropped equals published.
+scenario kit-drops
+requires capability publisher
+config max_buffer_size=100
+
+send endpoint e local_hub
+send queue q e TimeAndSale
+send subscribe q kit-drops.A kit-drops.END
+send publish-burst e TimeAndSale kit-drops.A 1000
+send publish e TimeAndSale event_symbol=kit-drops.END price=1
+expect poll q 1000 limit=10 -> until kit-drops.END
+  accounted kit-drops.A 1000
+  dropped >= 1
+  last kit-drops.A price=1000
+  increasing kit-drops.A price
+  monotonic dropped
+end

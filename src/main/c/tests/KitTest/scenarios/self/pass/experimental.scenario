@@ -1,0 +1,5 @@
+# Skipped as advanced-disabled when the adapter answers advanced=disabled.
+scenario self-experimental
+uses experimental
+
+send mock-ok

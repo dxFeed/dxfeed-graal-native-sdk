@@ -1,0 +1,7 @@
+# A scenario of its own process: config before start, and the exit code after teardown.
+scenario self-own-teardown
+config max_buffer_size=16
+
+send mock-ok
+send teardown
+exit 0

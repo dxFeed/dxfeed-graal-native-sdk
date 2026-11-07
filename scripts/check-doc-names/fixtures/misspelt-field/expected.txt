@@ -1,0 +1,1 @@
+test.scenario:4: unknown field bid_prise of Quote

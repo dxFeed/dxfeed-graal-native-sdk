@@ -1,0 +1,8 @@
+# A last check fails on another value of the last event.
+scenario self-fail-last
+
+send publish ep TimeAndSale event_symbol=self-fail-last.A price=1
+send publish ep TimeAndSale event_symbol=self-fail-last.END price=0
+expect poll q 0 -> until self-fail-last.END
+  last self-fail-last.A price=9
+end

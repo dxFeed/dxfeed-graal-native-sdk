@@ -1,0 +1,21 @@
+# A polled list belongs to the caller until it is released, and each list is released on its own: two lists are held,
+# the later one is released first, and the earlier one still reads the same.
+scenario kit-list-ownership
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e TimeAndSale
+send subscribe q kit-list-ownership.A
+send publish e TimeAndSale event_symbol=kit-list-ownership.A price=1
+expect poll q 1000 hold=first -> events
+  event TimeAndSale event_symbol=kit-list-ownership.A price=1
+end
+send publish e TimeAndSale event_symbol=kit-list-ownership.A price=2
+expect poll q 1000 hold=second -> events
+  event TimeAndSale event_symbol=kit-list-ownership.A price=2
+end
+send release second
+expect read first -> events
+  event TimeAndSale event_symbol=kit-list-ownership.A price=1
+end
+send release first

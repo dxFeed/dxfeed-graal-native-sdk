@@ -1,0 +1,14 @@
+# The fields of TimeAndSale, with the int64, int32 and int16 bounds. The LOCAL_HUB does not carry time_nano_part,
+# buyer and seller, writes an empty exchange_sale_conditions as NULL, and has no -0.
+scenario kit-roundtrip-time-and-sale
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e TimeAndSale
+send subscribe q kit-roundtrip-time-and-sale.A
+send publish e TimeAndSale event_symbol=kit-roundtrip-time-and-sale.A index=9223372036854775807 exchange_code=32767 price=10.5 size=inf bid_price=10.25 ask_price=10.75 exchange_sale_conditions=%C3%A9T flags=-2147483648 trade_id=9223372036854775807
+send publish e TimeAndSale event_symbol=kit-roundtrip-time-and-sale.A index=-1 exchange_code=-32768 price=nan size=3 bid_price=-inf exchange_sale_conditions=~ flags=2147483647 trade_id=-9223372036854775808
+expect poll q 1000 -> events
+  event TimeAndSale event_symbol=kit-roundtrip-time-and-sale.A event_flags=0 index=9223372036854775807 exchange_code=32767 price=10.5 size=inf bid_price=10.25 ask_price=10.75 exchange_sale_conditions=éT flags=-2147483648 trade_id=9223372036854775807
+  event TimeAndSale event_symbol=kit-roundtrip-time-and-sale.A index=-1 exchange_code=-32768 price=nan size=3 bid_price=-inf ask_price=0 exchange_sale_conditions=~ flags=2147483647 trade_id=-9223372036854775808
+end

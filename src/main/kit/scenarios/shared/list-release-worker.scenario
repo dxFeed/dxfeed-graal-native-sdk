@@ -1,0 +1,22 @@
+# Any attached thread may release a list: the main thread polls two lists, the worker thread releases the first, and
+# the second still reads the same.
+scenario kit-list-release-worker
+requires capability publisher
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e TimeAndSale
+send subscribe q kit-list-release-worker.A
+send publish e TimeAndSale event_symbol=kit-list-release-worker.A price=1
+expect poll q 1000 hold=first -> events
+  event TimeAndSale event_symbol=kit-list-release-worker.A price=1
+end
+send publish e TimeAndSale event_symbol=kit-list-release-worker.A price=2
+expect poll q 1000 hold=second -> events
+  event TimeAndSale event_symbol=kit-list-release-worker.A price=2
+end
+send release first thread=worker
+expect read second -> events
+  event TimeAndSale event_symbol=kit-list-release-worker.A price=2
+end
+send release second thread=worker

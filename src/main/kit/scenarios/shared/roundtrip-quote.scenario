@@ -1,0 +1,17 @@
+# The fields of Quote, published and polled back. The values are ones that the LOCAL_HUB keeps: it does not carry
+# event_time, time_millis_sequence and time_nano_part, keeps bid_time and ask_time in whole seconds, and stores prices
+# and sizes as decimals, which have no -0.
+scenario kit-roundtrip-quote
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-roundtrip-quote.A
+send publish e Quote event_symbol=kit-roundtrip-quote.A bid_time=1700000000000 bid_exchange_code=81 bid_price=1.25 bid_size=100.5 ask_time=-1000 ask_exchange_code=32767 ask_price=nan ask_size=inf
+expect poll q 1000 -> events
+  event Quote event_symbol=kit-roundtrip-quote.A event_time=0 bid_time=1700000000000 bid_exchange_code=81 bid_price=1.25 bid_size=100.5 ask_time=-1000 ask_exchange_code=32767 ask_price=nan ask_size=inf
+end
+send publish e Quote event_symbol=kit-roundtrip-quote.A bid_exchange_code=-32768 bid_price=-inf bid_size=0 ask_price=0.1 ask_size=1e15
+expect poll q 1000 -> events
+  event Quote event_symbol=kit-roundtrip-quote.A bid_time=0 bid_exchange_code=-32768 bid_price=-inf bid_size=0 ask_time=0 ask_exchange_code=0 ask_price=0.1 ask_size=1e15
+end

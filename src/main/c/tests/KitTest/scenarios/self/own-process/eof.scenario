@@ -1,0 +1,4 @@
+# Without an exit step, the runner closes stdin and expects the exit code 0.
+scenario self-own-eof
+
+send mock-ok

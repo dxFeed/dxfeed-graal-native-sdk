@@ -1,0 +1,15 @@
+# The attachment of Message (a UTF-8 string or NULL in C): non-ASCII, empty and NULL, on a non-ASCII symbol.
+scenario kit-roundtrip-message
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Message
+send subscribe q kit-roundtrip-message.%C3%A9
+send publish e Message event_symbol=kit-roundtrip-message.%C3%A9 attachment=%E2%82%AC%20100%25
+send publish e Message event_symbol=kit-roundtrip-message.%C3%A9 attachment=
+send publish e Message event_symbol=kit-roundtrip-message.%C3%A9 attachment=~
+expect poll q 1000 -> events
+  event Message event_symbol=kit-roundtrip-message.é attachment=€%20100%25
+  event Message event_symbol=kit-roundtrip-message.é attachment=
+  event Message event_symbol=kit-roundtrip-message.é attachment=~
+end

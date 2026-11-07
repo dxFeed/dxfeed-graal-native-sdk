@@ -1,0 +1,13 @@
+# A queue created on the main thread is polled on another attached thread (the worker).
+scenario kit-worker-poll
+requires capability publisher
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-worker-poll.A
+send publish e Quote event_symbol=kit-worker-poll.A bid_price=1
+send poll-async q 10000
+expect await q 15000 -> events
+  event Quote event_symbol=kit-worker-poll.A bid_price=1
+end

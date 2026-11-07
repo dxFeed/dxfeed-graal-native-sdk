@@ -1,0 +1,17 @@
+# Plain requests and an events matcher that needs two polls (the mock returns at most two events per poll).
+scenario self-basic
+
+send mock-ok
+expect mock-ok -> ok
+expect mock-error -> error
+expect mock-error -> reply error boom
+send publish ep Quote event_symbol=self-basic.A bid_price=1
+send publish ep Quote event_symbol=self-basic.A bid_price=2
+send publish ep Quote event_symbol=self-basic.A bid_price=3
+expect poll q 0 -> events
+  event Quote event_symbol=self-basic.A bid_price=1
+  event Quote event_symbol=self-basic.A bid_price=2
+  event Quote bid_price=3
+end
+expect poll q 0 -> outcome no_events
+expect poll q 0 -> count = 0

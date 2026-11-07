@@ -1,0 +1,14 @@
+# Leaves a held list and a poll that waits without a limit; the reset after the scenario must end the poll and
+# release everything (kit-isolation-2-check runs next).
+scenario kit-isolation-1-leave
+requires capability publisher
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-isolation-1-leave.A
+send publish e Quote event_symbol=kit-isolation-1-leave.A bid_price=1
+expect poll q 1000 hold=kept -> events
+  event Quote event_symbol=kit-isolation-1-leave.A bid_price=1
+end
+send poll-async q -1

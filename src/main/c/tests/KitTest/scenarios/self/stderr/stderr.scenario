@@ -1,0 +1,5 @@
+# 1 MB on stderr must not block the adapter; the failure shows the end of stderr.
+scenario self-stderr
+
+send mock-stderr 1048576
+send mock-error

@@ -1,0 +1,3 @@
+scenario fixture-unknown-feature
+requires feature no_such_feature
+send endpoint e local_hub

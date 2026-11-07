@@ -1,0 +1,7 @@
+# The comparison rules of protocol.md, "Comparison": the mock echoes what was published.
+scenario self-values
+
+send publish ep Message event_symbol=self-values.%C3%A9 attachment=~ text= price=1.50 size=-0 bid=nan ask=-inf count=-9223372036854775808 code=007
+expect poll q 0 -> events
+  event Message event_symbol=self-values.é attachment=~ text= price=1.5 size=-0 bid=nan ask=-inf count=-9223372036854775808 code=007
+end

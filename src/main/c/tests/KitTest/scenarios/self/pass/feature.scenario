@@ -1,0 +1,5 @@
+# Skipped as feature-absent when the adapter answers absent.
+scenario self-feature
+requires feature event_queue_ready_signal
+
+send mock-ok

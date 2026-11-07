@@ -1,0 +1,17 @@
+# The fields of Profile, with a non-ASCII, an empty and a NULL string and the int32 bounds. The LOCAL_HUB keeps
+# halt_start_time and halt_end_time in whole seconds of the int32 range, and doubles as decimals: no -0, and the
+# magnitudes stay within about 1e-9 .. 1e18.
+scenario kit-roundtrip-profile
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Profile
+send subscribe q kit-roundtrip-profile.A
+send publish e Profile event_symbol=kit-roundtrip-profile.A description=%E6%97%A5%E6%9C%AC%20Co. status_reason= halt_start_time=1700000000000 halt_end_time=-2147483648000 high_limit_price=nan low_limit_price=0.5 high_52_week_price=inf low_52_week_price=-inf beta=123456789.123 earnings_per_share=-1.5 dividend_frequency=4 ex_dividend_amount=0.33 ex_dividend_day_id=2147483647 shares=1e15 free_float=-1e-5 flags=-2147483648
+expect poll q 1000 -> events
+  event Profile event_symbol=kit-roundtrip-profile.A description=日本%20Co. status_reason= halt_start_time=1700000000000 halt_end_time=-2147483648000 high_limit_price=nan low_limit_price=0.5 high_52_week_price=inf low_52_week_price=-inf beta=123456789.123 earnings_per_share=-1.5 dividend_frequency=4 ex_dividend_amount=0.33 ex_dividend_day_id=2147483647 shares=1e15 free_float=-1e-5 flags=-2147483648
+end
+send publish e Profile event_symbol=kit-roundtrip-profile.A description=~ status_reason=Halted ex_dividend_day_id=-2147483648 flags=2147483647
+expect poll q 1000 -> events
+  event Profile event_symbol=kit-roundtrip-profile.A description=~ status_reason=Halted halt_start_time=0 high_limit_price=0 ex_dividend_day_id=-2147483648 flags=2147483647
+end

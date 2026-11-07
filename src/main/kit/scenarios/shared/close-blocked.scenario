@@ -1,0 +1,12 @@
+# Closing the queue ends a poll that waits without a limit with closed.
+scenario kit-close-blocked
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-close-blocked.A
+send poll-async q -1
+expect await q 200 -> reply pending
+send close-queue q
+expect await q 10000 -> outcome closed
+expect poll q 0 -> outcome closed

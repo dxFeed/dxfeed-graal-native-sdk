@@ -24,7 +24,8 @@ extern "C" {
  *
  *  The application polls an event queue (dxfg_v4_EventQueue_poll(), dxfg_v4_EventQueue_pollTagged()) on a thread
  *  of its own: the call waits for events and returns them as a list. No thread of the SDK calls the application, which
- *  suits the languages that cannot take a call from a foreign thread.
+ *  suits the languages that cannot take a call from a foreign thread. @ref wrapper_delivery compares it with the
+ *  listeners, the executors and the ready signal.
  *
  *  A queue has the subscriptions attached to it as its sources:
  *  - dxfg_v4_EventQueue_new() creates a queue bound to one subscription: the queue closes when the subscription

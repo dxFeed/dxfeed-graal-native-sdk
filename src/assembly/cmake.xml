@@ -1,8 +1,17 @@
 <!--SPDX-License-Identifier: MPL-2.0-->
-<!-- The CMake file that imports the library of the SDK (the archives of Windows, Linux and macOS). -->
+<!--
+  The CMake file that imports the library of the SDK (the archives of Windows, Linux and macOS), and the conformance
+  kit in kit/ next to it: its reference adapter builds on that CMake file (see src/main/kit/README.md).
+-->
 <component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1 http://maven.apache.org/xsd/assembly-component-2.1.1.xsd">
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/src/main/kit</directory>
+      <outputDirectory>kit</outputDirectory>
+    </fileSet>
+  </fileSets>
   <files>
     <file>
       <source>${project.basedir}/src/main/c/api/CMakeLists.txt</source>

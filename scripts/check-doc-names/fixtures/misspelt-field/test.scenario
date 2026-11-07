@@ -1,0 +1,4 @@
+scenario fixture-misspelt-field
+send endpoint e local_hub
+send queue q e Quote
+send publish e Quote event_symbol=A bid_prise=1

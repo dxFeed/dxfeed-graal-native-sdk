@@ -74,6 +74,7 @@
     <macos.manifest.skip>true</macos.manifest.skip>
     <graal.isolate.headers.check.skip>false</graal.isolate.headers.check.skip>
     <api.headers.check.skip>false</api.headers.check.skip>
+    <doc.names.check.skip>false</doc.names.check.skip>
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
@@ -1590,6 +1591,36 @@
                   <arg value="${project.basedir}/scripts/check-api-headers/baseline/dxfg-api.json" />
                   <arg value="${project.basedir}/ReleaseNotes.md" />
                   <arg value="${native.image.path}/dxfg-api.json" />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              The wrapper guide (docs/wrapper-guide) and the conformance kit (src/main/kit) name only what the
+              description of the C API has: every dxfg_/DXFG_ name exists and is not deprecated, and the features and
+              event fields of the scenarios exist (see scripts/check-doc-names/CheckDocNames.java). The self-test of the
+              check runs first, over scripts/check-doc-names/fixtures. It is declared after generate-api-description,
+              whose output it reads.
+            -->
+            <id>check-doc-names</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${doc.names.check.skip}</skip>
+              <target>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-doc-names/CheckDocNames.java" />
+                  <arg value="--self-test" />
+                  <arg value="${project.basedir}/scripts/check-doc-names/fixtures" />
+                </exec>
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="${project.basedir}/scripts/check-doc-names/CheckDocNames.java" />
+                  <arg value="${native.image.path}/dxfg-api.json" />
+                  <arg value="${project.basedir}/docs/wrapper-guide" />
+                  <arg value="${project.basedir}/src/main/kit" />
                 </exec>
               </target>
             </configuration>

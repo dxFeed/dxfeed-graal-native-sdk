@@ -5,8 +5,8 @@
 PROJECT_NAME           = "dxFeed Graal Native SDK"
 PROJECT_NUMBER         = $(DXFG_DOCS_VERSION)
 OUTPUT_DIRECTORY       = $(DXFG_DOCS_OUTPUT)
-INPUT                  = src/main/c/api
-FILE_PATTERNS          = *.h
+INPUT                  = src/main/c/api docs/wrapper-guide
+FILE_PATTERNS          = *.h *.md
 FULL_PATH_NAMES        = NO
 EXTRACT_ALL            = YES
 OPTIMIZE_OUTPUT_FOR_C  = YES

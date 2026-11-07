@@ -1,0 +1,21 @@
+# Each outcome of a poll: no_events on a timeout of 0, events, fail when the call breaks the contract (a negative
+# limit), and closed once the queue is closed. The queue stays usable after a failed poll.
+scenario kit-poll-outcomes
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-poll-outcomes.A
+expect poll q 0 -> outcome no_events
+send publish e Quote event_symbol=kit-poll-outcomes.A bid_price=1
+expect poll q 1000 -> events
+  event Quote event_symbol=kit-poll-outcomes.A bid_price=1
+end
+expect poll q 0 limit=-1 -> outcome fail
+send publish e Quote event_symbol=kit-poll-outcomes.A bid_price=2
+expect poll q 1000 -> events
+  event Quote event_symbol=kit-poll-outcomes.A bid_price=2
+end
+send close-queue q
+expect poll q 0 -> outcome closed
+expect poll q 1000 -> outcome closed

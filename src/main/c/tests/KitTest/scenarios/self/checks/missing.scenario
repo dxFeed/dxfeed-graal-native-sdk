@@ -1,0 +1,8 @@
+# An events matcher fails when fewer events arrive than it lists.
+scenario self-fail-missing
+
+send publish ep Quote event_symbol=self-fail-missing.A bid_price=1
+expect poll q 0 -> events
+  event Quote event_symbol=self-fail-missing.A bid_price=1
+  event Quote event_symbol=self-fail-missing.A bid_price=2
+end

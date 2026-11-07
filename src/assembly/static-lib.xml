@@ -58,6 +58,11 @@
       </excludes>
       <outputDirectory/>
     </fileSet>
+    <!-- The wrapper guide, also part of the C API reference. -->
+    <fileSet>
+      <directory>${project.basedir}/docs/wrapper-guide</directory>
+      <outputDirectory>docs/wrapper-guide</outputDirectory>
+    </fileSet>
     <fileSet>
       <directory>${project.build.directory}/docs</directory>
       <includes>

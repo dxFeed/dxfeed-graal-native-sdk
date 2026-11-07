@@ -1,0 +1,1 @@
+page.md:3: dxfg_free_strings is deprecated: use dxfg_v4_string_list_release

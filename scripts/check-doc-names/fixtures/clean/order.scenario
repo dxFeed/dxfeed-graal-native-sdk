@@ -1,0 +1,16 @@
+# Uses dxfg_v4_EventQueue_poll(); a field of order_base (index) and one of the market event (event_symbol).
+scenario fixture-clean
+requires feature event_queue_ready_signal
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Quote,Order
+send publish e Quote event_symbol=A bid_price=1.5
+send publish e Order event_symbol=A index=7 price=2 market_maker=X
+expect poll q 1000 -> events
+event Order event_symbol=A index=7 clazz=1
+end
+expect poll q 1000 -> until A
+last A bid_price=1.5
+increasing A index
+end

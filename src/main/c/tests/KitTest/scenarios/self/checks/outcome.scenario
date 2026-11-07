@@ -1,0 +1,5 @@
+# An outcome matcher fails on another outcome.
+scenario self-fail-outcome
+
+send publish ep Quote event_symbol=self-fail-outcome.A bid_price=1
+expect poll q 0 -> outcome no_events

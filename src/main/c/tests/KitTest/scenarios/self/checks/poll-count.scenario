@@ -1,0 +1,5 @@
+# A count matcher of one poll fails on another number of events.
+scenario self-fail-poll-count
+
+send publish ep Quote event_symbol=self-fail-poll-count.A bid_price=1
+expect poll q 0 -> count = 2

@@ -1,0 +1,23 @@
+# The ready signal: the SDK makes the adapter's OS object ready when events arrive (an eventfd or a pipe on Linux and
+# macOS, an event on Windows). The host then polls with a timeout of 0. Without a new publish no new signal follows.
+scenario kit-ready-signal
+requires capability publisher
+requires feature event_queue_ready_signal
+requires capability ready_signal
+uses experimental
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-ready-signal.A
+send ready-arm q
+send publish e Quote event_symbol=kit-ready-signal.A bid_price=1
+expect ready-wait q 10000 -> reply signaled
+expect poll q 0 -> events
+  event Quote event_symbol=kit-ready-signal.A bid_price=1
+end
+expect ready-wait q 500 -> reply timeout
+send publish e Quote event_symbol=kit-ready-signal.A bid_price=2
+expect ready-wait q 10000 -> reply signaled
+expect poll q 0 -> events
+  event Quote event_symbol=kit-ready-signal.A bid_price=2
+end

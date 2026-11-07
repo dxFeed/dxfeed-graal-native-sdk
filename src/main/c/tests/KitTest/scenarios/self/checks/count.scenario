@@ -1,0 +1,8 @@
+# A count check fails when fewer events arrived.
+scenario self-fail-count
+
+send publish ep TimeAndSale event_symbol=self-fail-count.A price=1
+send publish ep TimeAndSale event_symbol=self-fail-count.END price=0
+expect poll q 0 -> until self-fail-count.END
+  count self-fail-count.A = 2
+end

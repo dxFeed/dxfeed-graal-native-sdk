@@ -1,0 +1,18 @@
+# The fields of Order, the members of order_base flattened. An order of a size other than 0 needs a side in flags
+# (4 is the side BUY). The LOCAL_HUB does not carry time_nano_part, action_time, order_id, aux_order_id,
+# executed_size, trade_id, trade_price and trade_size, keeps count as an int32, writes an empty market_maker as NULL
+# and has no -0. The events of one symbol come in the order of their index, so each is polled alone.
+scenario kit-roundtrip-order
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Order
+send subscribe q kit-roundtrip-order.A
+send publish e Order event_symbol=kit-roundtrip-order.A index=1 time_sequence=-1 price=99.5 size=10 count=2147483647 flags=4 market_maker=%C3%A9MM
+expect poll q 1000 -> events
+  event Order event_symbol=kit-roundtrip-order.A event_flags=0 index=1 time_sequence=-1 price=99.5 size=10 count=2147483647 flags=4 market_maker=éMM
+end
+send publish e Order event_symbol=kit-roundtrip-order.A index=2 time_sequence=7301444403200000001 price=inf size=-inf count=-2147483648 flags=4 market_maker=~
+expect poll q 1000 -> events
+  event Order event_symbol=kit-roundtrip-order.A index=2 time_sequence=7301444403200000001 price=inf size=-inf count=-2147483648 flags=4 market_maker=~
+end

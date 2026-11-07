@@ -1,0 +1,13 @@
+# dxfg_v4_system_shutdown() ends a poll that waits without a limit with closed, and every later poll is closed too.
+# The adapter then exits with 0 at the end of its input.
+scenario kit-shutdown
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-shutdown.A
+send poll-async q -1
+expect await q 200 -> reply pending
+send shutdown
+expect await q 10000 -> outcome closed
+expect poll q 0 -> outcome closed

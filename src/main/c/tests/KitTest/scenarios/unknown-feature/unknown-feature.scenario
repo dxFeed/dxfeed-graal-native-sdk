@@ -1,0 +1,5 @@
+# The SDK reports a feature it does not know as unsupported, so the runner skips the scenario as feature-absent.
+scenario kit-test-unknown-feature
+requires feature kit_test_no_such_feature
+
+send endpoint e local_hub

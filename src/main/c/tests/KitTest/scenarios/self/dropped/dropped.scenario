@@ -1,0 +1,7 @@
+# A dropped check fails when the queue reports drops (the mock runs with --dropped 5).
+scenario self-fail-dropped
+
+send publish ep TimeAndSale event_symbol=self-fail-dropped.END price=0
+expect poll q 0 -> until self-fail-dropped.END
+  dropped = 0
+end

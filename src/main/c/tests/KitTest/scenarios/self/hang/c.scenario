@@ -1,0 +1,3 @@
+scenario self-hang-c
+
+send mock-ok

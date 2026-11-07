@@ -1,0 +1,9 @@
+# An increasing check fails when a value goes down.
+scenario self-fail-increasing
+
+send publish ep TimeAndSale event_symbol=self-fail-increasing.A price=2
+send publish ep TimeAndSale event_symbol=self-fail-increasing.A price=1
+send publish ep TimeAndSale event_symbol=self-fail-increasing.END price=0
+expect poll q 0 -> until self-fail-increasing.END
+  increasing self-fail-increasing.A price
+end

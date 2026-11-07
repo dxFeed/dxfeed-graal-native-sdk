@@ -1,0 +1,8 @@
+# An accounted check fails when received plus dropped differs from the published number.
+scenario self-fail-accounted
+
+send publish ep TimeAndSale event_symbol=self-fail-accounted.A price=1
+send publish ep TimeAndSale event_symbol=self-fail-accounted.END price=0
+expect poll q 0 -> until self-fail-accounted.END
+  accounted self-fail-accounted.A 2
+end

@@ -1,0 +1,4 @@
+scenario self-capability
+requires capability publisher
+
+send mock-ok

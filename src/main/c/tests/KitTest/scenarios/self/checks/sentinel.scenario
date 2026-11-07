@@ -1,0 +1,7 @@
+# An until matcher fails when the sentinel never arrives.
+scenario self-fail-sentinel
+
+send publish ep TimeAndSale event_symbol=self-fail-sentinel.A price=1
+expect poll q 0 -> until self-fail-sentinel.END
+  count self-fail-sentinel.A = 1
+end

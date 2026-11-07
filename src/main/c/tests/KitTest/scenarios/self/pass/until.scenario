@@ -1,0 +1,18 @@
+# The until matcher polls until the sentinel and checks everything received.
+scenario self-until
+
+send publish ep TimeAndSale event_symbol=self-until.A price=1
+send publish ep TimeAndSale event_symbol=self-until.A price=2
+send publish ep TimeAndSale event_symbol=self-until.A price=3
+send publish ep TimeAndSale event_symbol=self-until.A price=4
+send publish ep TimeAndSale event_symbol=self-until.END price=0
+expect poll q 0 -> until self-until.END
+  count self-until.A = 4
+  count self-until.A >= 1
+  count self-until.A <= 4
+  last self-until.A price=4
+  increasing self-until.A price
+  accounted self-until.A 4
+  dropped = 0
+  monotonic dropped
+end

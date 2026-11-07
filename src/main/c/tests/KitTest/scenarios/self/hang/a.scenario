@@ -1,0 +1,3 @@
+scenario self-hang-a
+
+send mock-ok

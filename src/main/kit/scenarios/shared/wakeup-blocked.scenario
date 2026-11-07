@@ -1,0 +1,17 @@
+# A wake-up ends a poll that waits without a limit with no_events. The wake-up may come before the worker starts the
+# poll: then it is kept for that poll, with the same outcome.
+scenario kit-wakeup-blocked
+requires capability publisher
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-wakeup-blocked.A
+send poll-async q -1
+expect await q 200 -> reply pending
+send wakeup q
+expect await q 10000 -> outcome no_events
+send publish e Quote event_symbol=kit-wakeup-blocked.A bid_price=1
+expect poll q 1000 -> events
+  event Quote event_symbol=kit-wakeup-blocked.A bid_price=1
+end

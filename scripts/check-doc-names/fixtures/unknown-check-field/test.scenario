@@ -1,0 +1,6 @@
+scenario fixture-unknown-check-field
+send endpoint e local_hub
+send queue q e Quote
+expect poll q 1000 -> until A
+last A ask_price=1
+end

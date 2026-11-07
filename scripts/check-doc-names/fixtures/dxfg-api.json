@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "sdk_version": "3.14.0",
+  "advanced_revision": 1,
+  "features": [
+    "event_queue",
+    "event_queue_ready_signal"
+  ],
+  "headers": [
+    {"name": "dxfg_api.h", "tier": "basic"},
+    {"name": "dxfg_v4_event_queue.h", "tier": "basic"}
+  ],
+  "functions": [
+    {"name": "dxfg_free_strings", "deprecated": {"message": "use dxfg_v4_string_list_release()", "replacements": ["dxfg_v4_string_list_release"]}},
+    {"name": "dxfg_v4_EventQueue_poll", "deprecated": null},
+    {"name": "dxfg_v4_string_list_release", "deprecated": null}
+  ],
+  "types": [
+    {"name": "dxfg_event_clazz_t", "kind": "enum", "enumerators": [{"name": "DXFG_EVENT_QUOTE", "value": null}, {"name": "DXFG_EVENT_ORDER", "value": null}]},
+    {"name": "dxfg_event_type_t", "kind": "struct", "fields": [{"name": "clazz", "type": "dxfg_event_clazz_t"}]},
+    {"name": "dxfg_market_event_t", "kind": "struct", "fields": [{"name": "event_type", "type": "dxfg_event_type_t"}, {"name": "event_symbol", "type": "const char *"}, {"name": "event_time", "type": "int64_t"}]},
+    {"name": "dxfg_v4_market_event_t", "kind": "alias", "type": "dxfg_market_event_t"},
+    {"name": "dxfg_quote_t", "kind": "struct", "fields": [{"name": "market_event", "type": "dxfg_market_event_t"}, {"name": "bid_price", "type": "double"}]},
+    {"name": "dxfg_order_base_t", "kind": "struct", "fields": [{"name": "market_event", "type": "dxfg_v4_market_event_t"}, {"name": "index", "type": "int64_t"}, {"name": "price", "type": "double"}]},
+    {"name": "dxfg_order_t", "kind": "struct", "fields": [{"name": "order_base", "type": "dxfg_order_base_t"}, {"name": "market_maker", "type": "const char *"}]}
+  ],
+  "macros": [
+    {"name": "DXFG_EVENT_QUEUE_CLOSED", "value": "((int32_t)2)"}
+  ]
+}

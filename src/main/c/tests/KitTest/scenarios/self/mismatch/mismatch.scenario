@@ -1,0 +1,7 @@
+# -0 and 0 differ as doubles.
+scenario self-mismatch
+
+send publish ep Quote event_symbol=self-mismatch.A bid_price=-0
+expect poll q 0 -> events
+  event Quote bid_price=0
+end

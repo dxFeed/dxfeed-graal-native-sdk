@@ -1,0 +1,19 @@
+# Quote is a lasting event: the queue conflates the updates of a symbol instead of buffering them, and drops none.
+# How many of the 1000 updates arrive depends on timing, so the checks are invariants: the last value wins, the
+# values that arrive keep their order, and nothing is counted as dropped.
+scenario kit-conflation-quote
+requires capability publisher
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-conflation-quote.A kit-conflation-quote.END
+send publish-burst e Quote kit-conflation-quote.A 1000
+send publish e Quote event_symbol=kit-conflation-quote.END bid_price=1
+expect poll q 1000 -> until kit-conflation-quote.END
+  last kit-conflation-quote.A bid_price=1000
+  count kit-conflation-quote.A >= 1
+  count kit-conflation-quote.A <= 1000
+  increasing kit-conflation-quote.A bid_price
+  dropped = 0
+  monotonic dropped
+end

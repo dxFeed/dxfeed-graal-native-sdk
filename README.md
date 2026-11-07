@@ -29,6 +29,7 @@ into your projects.
   * [Conventions](#conventions)
   * [Example](#example)
   * [Samples and wrappers](#samples-and-wrappers)
+  * [Wrapper guide and conformance kit](#wrapper-guide-and-conformance-kit)
   * [Version and features](#version-and-features)
   * [API description](#api-description)
   * [Isolates](#isolates)
@@ -351,6 +352,20 @@ The [C tests](src/main/c/tests) are small programs too. Our ready-made wrappers:
 - C++: [dxfeed-graal-cxx-api](https://github.com/dxFeed/dxfeed-graal-cxx-api)
 - Swift: [dxfeed-graal-swift-api](https://github.com/dxFeed/dxfeed-graal-swift-api)
 - Go: [dxfeed-graal-go-api](https://github.com/dxFeed/dxfeed-graal-go-api)
+
+### Wrapper guide and conformance kit
+
+For a wrapper of your own (3.14.0 and newer):
+
+- The [wrapper guide](docs/wrapper-guide/index.md) states the contract between the SDK and a wrapper: threads and
+  attachment, ownership, return codes and outcomes, tiers and the start-up check, which delivery to use for what. It
+  is the "Wrapper guide" of the C API reference, and every archive has it in `docs/wrapper-guide/`.
+- The conformance kit checks a wrapper by running it: a runner (C++17 source) sends the requests of scenarios to an
+  adapter that you write in the wrapper's language, and checks the responses against an endpoint with the role
+  `DXFG_ENDPOINT_ROLE_LOCAL_HUB`, with no network. The archives with a dynamic library and `CMakeLists.txt` have it in
+  `kit/`: the runner, the [protocol](src/main/kit/protocol.md), the scenarios and a reference adapter on the C API,
+  see [src/main/kit/README.md](src/main/kit/README.md). What it proves and what it cannot is on
+  [its page](docs/wrapper-guide/kit.md) of the guide.
 
 ### Version and features
 
@@ -986,6 +1001,7 @@ test, install and pack the project from the command line, as the CI does.
 | `scripts/windows-static-runtime/Test-StaticLibrary.ps1`        | Checks the `-static-lib` archive before the deploy: a program links with it with `/MT`, `/MTd`, `/MD` and `/MDd`, with and without `/DEBUG`, without linker warnings, exports nothing and works.                                                                               |
 | `scripts/windows-static-runtime/Test-StaticRuntime.ps1`        | Checks the `-static-crt` archive before the deploy: its DLL and a program built with `/MT` against it do not import the dynamic C runtime, and the program works, also in a Windows container without the Visual C++ Redistributable (`-Dwindows.static.runtime.check.image`). |
 | `src/main/c/build.cmd`, `src/main/c/build.sh`                  | Configure, build, test (ctest), install and pack the C/C++ samples (`DxfgClient`) and tests against the library in `target/native-image`.                                                                                                                                      |
+| `scripts/check-doc-names/CheckDocNames.java`                   | Checks in the `package` phase that the wrapper guide and the conformance kit name only what `dxfg-api.json` has: every `dxfg_`/`DXFG_` name exists and is not deprecated, the features and event fields of the scenarios exist (skip: `-Ddoc.names.check.skip`).               |
 | `jre-ios/build.py`                                             | Builds the JRE libraries for iOS, declares the platform of the iOS images, checks that they link and assembles the XCFramework, see [jre-ios](jre-ios/README.MD).                                                                                                              |
 
 **CI (`.teamcity`)**, see also [.teamcity/README.MD](.teamcity/README.MD)

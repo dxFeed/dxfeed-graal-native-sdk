@@ -1,0 +1,4 @@
+scenario self-exit
+
+send mock-ok
+send mock-exit 5

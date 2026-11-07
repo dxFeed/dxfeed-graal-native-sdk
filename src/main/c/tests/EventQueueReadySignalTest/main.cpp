@@ -31,6 +31,7 @@
 #include <dxfg_api.h>
 
 #include "Hub.hpp"
+#include "ReadyObject.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -57,8 +58,12 @@ constexpr int64_t POLL_TIMEOUT_MS = 10'000;
 constexpr auto RETURN_TIMEOUT = std::chrono::seconds(10);
 constexpr auto SETTLE_TIME = std::chrono::milliseconds(300);
 
-// The objects of the platform that a host gives to a queue.
-enum class Mode { EVENTFD, PIPE, EVENT };
+// The objects of the platform that a host gives to a queue, and the pipes (src/main/kit/adapter/ReadyObject.hpp).
+using kit::Mode;
+using kit::ReadyObject;
+#ifndef _WIN32
+using kit::makePipe;
+#endif
 
 #ifdef _WIN32
 constexpr Mode MODES[] = {Mode::EVENT};
@@ -87,138 +92,6 @@ const char *modeName(Mode mode) {
         return "event";
     }
 }
-
-#ifndef _WIN32
-// A pipe: fds[0] is the read end, fds[1] the write end; both ends are non-blocking if the flag is set.
-bool makePipe(int (&fds)[2], bool nonBlocking) {
-#    ifdef __linux__
-    return pipe2(fds, nonBlocking ? O_NONBLOCK : 0) == 0;
-#    else
-    if (pipe(fds) != 0) {
-        return false;
-    }
-
-    for (const int fd : fds) {
-        if (nonBlocking) {
-            const int flags = fcntl(fd, F_GETFL);
-
-            if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0) {
-                close(fds[0]);
-                close(fds[1]);
-
-                return false;
-            }
-        }
-    }
-
-    return true;
-#    endif
-}
-#endif
-
-// The OS object of the host: an object that the SDK makes ready, which the test waits for and resets. The object is
-// closed by the destructor, so a test closes its queue first.
-class ReadyObject {
-#ifdef _WIN32
-    HANDLE event_ = nullptr;
-#else
-    int readFd_ = -1;
-    int writeFd_ = -1;
-#endif
-
-  public:
-    explicit ReadyObject([[maybe_unused]] Mode mode) {
-#ifdef _WIN32
-        // Auto-reset: a wait resets it.
-        event_ = CreateEventW(nullptr, FALSE, FALSE, nullptr);
-#else
-#    ifdef __linux__
-        if (mode == Mode::EVENTFD) {
-            readFd_ = writeFd_ = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
-
-            return;
-        }
-#    endif
-        int fds[2];
-
-        if (mode == Mode::PIPE && makePipe(fds, true)) {
-            readFd_ = fds[0];
-            writeFd_ = fds[1];
-        }
-#endif
-    }
-
-    ReadyObject(const ReadyObject &) = delete;
-    ReadyObject &operator=(const ReadyObject &) = delete;
-
-    ~ReadyObject() {
-#ifdef _WIN32
-        if (event_ != nullptr) {
-            CloseHandle(event_);
-        }
-#else
-        closeReadEnd();
-
-        if (writeFd_ >= 0) {
-            close(writeFd_);
-        }
-#endif
-    }
-
-    bool valid() const {
-#ifdef _WIN32
-        return event_ != nullptr;
-#else
-        return writeFd_ >= 0;
-#endif
-    }
-
-    // What the host passes to the SDK: the descriptor (the write end of a pipe) or the HANDLE.
-    int64_t handle() const {
-#ifdef _WIN32
-        return static_cast<int64_t>(reinterpret_cast<intptr_t>(event_));
-#else
-        return writeFd_;
-#endif
-    }
-
-    // Waits for the object, then resets it: a poll of the descriptor, then a read until EAGAIN (an eventfd gives its
-    // counter at once); a wait for the auto-reset event. Returns false if the object is not ready within the timeout.
-    bool waitAndReset(int timeoutMs) {
-#ifdef _WIN32
-        return WaitForSingleObject(event_, static_cast<DWORD>(timeoutMs)) == WAIT_OBJECT_0;
-#else
-        pollfd descriptor{readFd_, POLLIN, 0};
-        int result;
-
-        do {
-            result = ::poll(&descriptor, 1, timeoutMs);
-        } while (result < 0 && errno == EINTR);
-
-        if (result <= 0 || (descriptor.revents & POLLIN) == 0) {
-            return false;
-        }
-
-        char buffer[64];
-
-        while (read(readFd_, buffer, sizeof buffer) > 0) {
-        }
-
-        return true;
-#endif
-    }
-
-#ifndef _WIN32
-    // Closes the read end of a pipe: the SDK writes to a pipe that nobody reads. The object cannot be waited for after.
-    void closeReadEnd() {
-        if (readFd_ >= 0 && readFd_ != writeFd_) {
-            close(readFd_);
-        }
-
-        readFd_ = -1;
-    }
-#endif
-};
 
 // The isolate of all the cases; the hubs and the queues of the cases are closed by the cases.
 Isolate &isolate() {

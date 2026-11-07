@@ -75,6 +75,7 @@ target_include_directories(${target}
         ${PROJECT_BINARY_DIR}/include
         ${PROJECT_BINARY_DIR}/source/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../common
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../kit/adapter
         )
 
 

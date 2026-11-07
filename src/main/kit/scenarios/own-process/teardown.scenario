@@ -1,0 +1,13 @@
+# teardown with a poll that waits without a limit: the shutdown ends the poll, the worker detaches, the isolate is
+# torn down, and the adapter exits with 0.
+scenario kit-teardown
+requires capability teardown
+requires capability async_poll
+
+send endpoint e local_hub
+send queue q e Quote
+send subscribe q kit-teardown.A
+send poll-async q -1
+expect await q 200 -> reply pending
+send teardown
+exit 0
