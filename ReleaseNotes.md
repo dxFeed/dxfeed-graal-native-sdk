@@ -69,6 +69,13 @@
   asked for; set `INFO` to keep the output as before.
 * On macOS x64 an application that relied on `SIGPIPE` keeping its default action (ending the process) now gets
   `EPIPE` from the write instead, as on the other platforms; a workaround that sets `SIG_IGN` itself can stay or go.
+* 4.0.0, the next major release, removes the deprecated functions of the C API (marked `DXFG_DEPRECATED`: the
+  functions that have a `dxfg_v4_` twin, `dxfg_free_strings()` and `dxfg_free_string_to_double_map_entries()`). To
+  find the calls, build with the deprecation warnings on (do not define `DXFG_DEPRECATED` empty and do not disable
+  the warning C4996 of MSVC), then move each call to the function that its warning names. A warning that ends in
+  "(experimental)" names an experimental function (the twins of `IndexedTxModel`, `TimeSeriesTxModel` and the other
+  experimental Java API): it may change in a minor release, so a wrapper checks
+  `dxfg_v4_system_get_advanced_revision()` before binding it. The experimental functions themselves are not removed.
 
 ## v3.13.0
 

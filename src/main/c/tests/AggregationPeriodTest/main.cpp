@@ -218,11 +218,12 @@ TEST_CASE("The aggregation period info of an endpoint comes from the server") {
     REQUIRE(dxfg_DXEndpoint_setRequestedAggregationPeriodMillis(thread, client, 500) == 0);
     REQUIRE(dxfg_DXEndpoint_connect(thread, client, clientAddress(port).c_str()) == 0);
 
-    // The server reports the period when the connection is established.
+    // The server reports the period when the connection is established. The client may first see the default period
+    // of the server (2000) and only then the one that answers its request (500 raised to the minimum, 1000).
     for (int i = 0; i < 1000; ++i) {
         REQUIRE(dxfg_DXEndpoint_getAggregationPeriodInfo(thread, client, &min, &max) == 0);
 
-        if (min >= 0) {
+        if (min == 1000 && max == 1000) {
             break;
         }
 

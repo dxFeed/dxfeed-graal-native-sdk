@@ -216,6 +216,8 @@ library.
 - **Deprecation.** The deprecated functions are marked `DXFG_DEPRECATED`: the compilers warn where they are used, and
   their descriptions name the replacements. To build code that still uses them without the warnings, define the macro
   empty before the headers: `#define DXFG_DEPRECATED(message)` (or disable the warning C4996 of MSVC).
+  The deprecated functions are removed in 4.0.0, the next major release: keep the warnings on to find their calls and
+  move each call to the function that its warning names.
 - **The v4 functions.** The `dxfg_v4_` functions (`dxfg_v4_<area>.h`, included by `dxfg_api.h`) do what the older
   functions do in one form: they return the `int32_t` status only, write the result to the last parameter, marked
   `DXFG_OUT`, take the exception with `dxfg_v4_get_and_clear_thread_exception`, return collections as

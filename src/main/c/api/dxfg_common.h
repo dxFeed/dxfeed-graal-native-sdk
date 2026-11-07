@@ -158,8 +158,9 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
  *  A function of the C API that has a `dxfg_v4_` twin is deprecated in favour of it. The twin is declared in a
  *  `dxfg_v4_<area>.h` header next to the header of the older function (dxfg_v4_api.h and dxfg_api.h include all of
  *  them). dxfg_free_strings() and dxfg_free_string_to_double_map_entries() have no twin and are deprecated: the v4
- *  functions return lists, released by their `dxfg_v4_<element>_list_release()` functions. A twin does the same as
- *  the older function, only its form differs:
+ *  functions return lists, released by their `dxfg_v4_<element>_list_release()` functions. The deprecated functions
+ *  are removed in 4.0.0, the next major release; their deprecation warnings name the functions to move to. A twin
+ *  does the same as the older function, only its form differs:
  *  - It returns `int32_t`: #DXFG_EXECUTE_SUCCESSFULLY (0) on success, #DXFG_EXECUTE_FAIL (-1) on error. The status is
  *    the only error signal: after -1, dxfg_v4_get_and_clear_thread_exception() gives the exception. A successful call
  *    does not clear an exception left by an earlier failed call that was not taken, so take it right after the error.

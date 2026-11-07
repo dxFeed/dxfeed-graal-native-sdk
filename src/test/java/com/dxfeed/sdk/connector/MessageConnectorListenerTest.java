@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import org.junit.Test;
 
@@ -29,26 +28,25 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
     // A listener that is deactivated stays silent this long while the connector keeps reconnecting.
     private static final long QUIET_MILLIS = 2000;
 
+    // One call of the listener. A single list of these keeps the connector, its state and the thread of a call
+    // together while the test reads them and the dispatcher adds more.
+    private record Call(MessageConnector connector, MessageConnectorState state, String thread) {
+    }
+
     private static final class RecordingListener extends ConnectorStateListener {
-        final List<MessageConnector> connectors = new CopyOnWriteArrayList<>();
-        final List<MessageConnectorState> states = new CopyOnWriteArrayList<>();
-        final List<String> threads = new CopyOnWriteArrayList<>();
-        final AtomicInteger calls = new AtomicInteger();
+        final List<Call> calls = new CopyOnWriteArrayList<>();
         volatile Consumer<MessageConnector> action = connector -> {
         };
 
         @Override
         protected void callNative(final MessageConnector connector) {
-            calls.incrementAndGet();
-            connectors.add(connector);
-            states.add(connector.getState());
-            threads.add(Thread.currentThread().getName());
+            calls.add(new Call(connector, connector.getState(), Thread.currentThread().getName()));
             action.accept(connector);
         }
 
         boolean saw(final MessageConnector connector, final MessageConnectorState state) {
-            for (int i = 0; i < connectors.size(); i++) {
-                if (connectors.get(i) == connector && states.get(i) == state) {
+            for (Call call : calls) {
+                if (call.connector() == connector && call.state() == state) {
                     return true;
                 }
             }
@@ -79,8 +77,8 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
         await("CONNECTED", () -> listener.saw(first, MessageConnectorState.CONNECTED));
 
-        for (String thread : listener.threads) {
-            assertEquals(ConnectorDispatcher.THREAD_NAME, thread);
+        for (Call call : listener.calls) {
+            assertEquals(ConnectorDispatcher.THREAD_NAME, call.thread());
         }
 
         // The publisher goes away: the client reports that it is not connected.
@@ -149,12 +147,12 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
         await("CONNECTED of both", () -> listener1.saw(connector1, MessageConnectorState.CONNECTED) &&
                 listener2.saw(connector2, MessageConnectorState.CONNECTED));
 
-        for (MessageConnector connector : listener1.connectors) {
-            assertTrue(connector == connector1);
+        for (Call call : listener1.calls) {
+            assertTrue(call.connector() == connector1);
         }
 
-        for (MessageConnector connector : listener2.connectors) {
-            assertTrue(connector == connector2);
+        for (Call call : listener2.calls) {
+            assertTrue(call.connector() == connector2);
         }
     }
 
@@ -177,11 +175,11 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
         ConnectorMonitor.addListener(feed, second);
         Thread.sleep(QUIET_MILLIS);
 
-        assertEquals(0, first.calls.get());
-        assertEquals(0, second.calls.get());
+        assertEquals(0, first.calls.size());
+        assertEquals(0, second.calls.size());
 
         feed.reconnect();
-        await("the calls of a reconnect", () -> first.calls.get() > 0 && second.calls.get() > 0);
+        await("the calls of a reconnect", () -> first.calls.size() > 0 && second.calls.size() > 0);
     }
 
     @Test
@@ -199,23 +197,23 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
         // A connector to a closed port reconnects again and again: a stream of state changes.
         feed.connect("127.0.0.1:1");
-        await("the first calls", () -> removed.calls.get() > 0 && deactivated.calls.get() > 0);
+        await("the first calls", () -> removed.calls.size() > 0 && deactivated.calls.size() > 0);
 
         ConnectorMonitor.removeListener(feed, removed);
         deactivated.deactivate();
         // A remove of a listener that is not added is no error.
         ConnectorMonitor.removeListener(feed, new RecordingListener());
 
-        final int removedCalls = removed.calls.get();
-        final int deactivatedCalls = deactivated.calls.get();
-        final int watched = watcher.calls.get();
+        final int removedCalls = removed.calls.size();
+        final int deactivatedCalls = deactivated.calls.size();
+        final int watched = watcher.calls.size();
 
         feed.reconnect();
-        await("a call of the listener that stays", () -> watcher.calls.get() > watched);
+        await("a call of the listener that stays", () -> watcher.calls.size() > watched);
         Thread.sleep(QUIET_MILLIS);
 
-        assertEquals(removedCalls, removed.calls.get());
-        assertEquals(deactivatedCalls, deactivated.calls.get());
+        assertEquals(removedCalls, removed.calls.size());
+        assertEquals(deactivatedCalls, deactivated.calls.size());
     }
 
     @Test
@@ -237,6 +235,6 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
         feed.reconnect();
         Thread.sleep(QUIET_MILLIS);
 
-        assertEquals(1, listener.calls.get());
+        assertEquals(1, listener.calls.size());
     }
 }
