@@ -33,6 +33,10 @@
     <debug.buildArg4>-DDXFG1=0</debug.buildArg4>
     <signal.buildArg1>-DDXFG1=0</signal.buildArg1>
     <signal.buildArg2>-DDXFG1=0</signal.buildArg2>
+    <svm-core.buildArg1>-DDXFG1=0</svm-core.buildArg1>
+    <svm-core.buildArg2>-DDXFG1=0</svm-core.buildArg2>
+    <svm-core.buildArg3>-DDXFG1=0</svm-core.buildArg3>
+    <svm-core.buildArg4>-DDXFG1=0</svm-core.buildArg4>
     <!--
       The http and https URL protocols are registered in reachability-metadata.json (the reflection of
       sun.net.www.protocol.http(s).Handler), which GraalVM 25.4+ reads instead of the deprecated enable-url-protocols.
@@ -278,6 +282,14 @@
         <url.protocols.buildArg>--enable-url-protocols=http,https</url.protocols.buildArg>
         <!-- The reachability metadata of newer plugin versions is not supported by older GraalVM versions. -->
         <graalvm-native-maven-plugin.version>0.10.6</graalvm-native-maven-plugin.version>
+        <!--
+          GraalVM before 25.4 installs the no-op handlers of SIGPIPE and SIGXFSZ only in a startup hook, which a shared
+          library never runs: IgnoredSignalsFeature installs them at isolate creation (MDAPI-501).
+        -->
+        <svm-core.buildArg1>--features=com.dxfeed.sdk.system.IgnoredSignalsFeature</svm-core.buildArg1>
+        <svm-core.buildArg2>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</svm-core.buildArg2>
+        <svm-core.buildArg3>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers=ALL-UNNAMED</svm-core.buildArg3>
+        <svm-core.buildArg4>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.option=ALL-UNNAMED</svm-core.buildArg4>
       </properties>
       <dependencies>
         <dependency>
@@ -1199,6 +1211,10 @@
             <buildArg>${debug.buildArg4}</buildArg>
             <buildArg>${signal.buildArg1}</buildArg>
             <buildArg>${signal.buildArg2}</buildArg>
+            <buildArg>${svm-core.buildArg1}</buildArg>
+            <buildArg>${svm-core.buildArg2}</buildArg>
+            <buildArg>${svm-core.buildArg3}</buildArg>
+            <buildArg>${svm-core.buildArg4}</buildArg>
             <buildArg>${macos.buildArg}</buildArg>
             <buildArg>${macos.x64.buildArg}</buildArg>
           </buildArgs>

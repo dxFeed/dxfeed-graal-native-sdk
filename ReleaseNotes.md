@@ -36,6 +36,11 @@
   stream open: the collector still got the updates and `graal_tear_down_isolate()` did not return. QDS 3.357 also fixes
   the exception in `DXEndpoint.close()` of an endpoint built with an executor (QD-1801) and an
   `ArrayIndexOutOfBoundsException` in the distribution of concurrent subscriptions that closed connections (QD-1804).
+* **\[MDAPI-501]\[GRAAL]** On macOS x64 `graal_create_isolate()` now installs the no-op handlers of `SIGPIPE` and
+  `SIGXFSZ`, as on Linux and macOS arm64 since 3.7.0: a write to a socket closed by the peer fails with an error
+  instead of killing the process. The macOS x64 library is built with an older GraalVM, which installed them only in
+  native executables. `-XX:-EnableSignalHandling` still turns them off, and a handler or `SIG_IGN` of the application is
+  kept.
 
 ### For integrators
 
@@ -62,6 +67,8 @@
   connected; its time tells how old it is.
 * An application that set `log.level` to `DEBUG` or `ALL` with `InterceptableLogging` now gets the debug messages it
   asked for; set `INFO` to keep the output as before.
+* On macOS x64 an application that relied on `SIGPIPE` keeping its default action (ending the process) now gets
+  `EPIPE` from the write instead, as on the other platforms; a workaround that sets `SIG_IGN` itself can stay or go.
 
 ## v3.13.0
 
