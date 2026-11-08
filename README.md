@@ -1050,43 +1050,49 @@ for `address[property=value]` (by reflection), so that all their setters get int
 
 ### To release a new version
 
-The releases are built in [TeamCity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNativeSdk), see
-[.teamcity/README.MD](.teamcity/README.MD):
+The releases are built by the Release chain of
+[TeamCity](https://dxcity.in.devexperts.com/project/Mdapi_DxfeedGraalNativeSdk), see
+[.teamcity/README.MD](.teamcity/README.MD). Only the first build is run by hand; each next build starts by itself when
+the one before it succeeds:
 
-1. Run "Build PATCH & Deploy [Linux, x64]" to release the next patch version, or "Build MAJOR.MINOR.PATCH & Deploy
-   [Linux, x64]" with `env.RELEASE_VERSION` (`3.9.0`, `3.9.0-rc1`) to release another one. It tags the version and
-   deploys the Linux x64 archives and the C API documentation.
-2. Then "Build & Deploy [All]" builds and deploys the archives of the other platforms and the XCFramework from the
-   tag.
-3. Then "Pack NuGet" packs the `DxFeed.Graal.Native` package, and "Publish GitHub Release" pushes `main` and the tag
-   to GitHub, publishes the release with the archives, the package and the notes of the version from
-   `ReleaseNotes.md`, and publishes the package to nuget.org with a GitHub Actions workflow (see
-   [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
-4. For a release (not a pre-release), the Linux x64 release build also makes the description of its headers the
-   baseline of the [API description](#api-description) check and commits it to `main` ("Update the API baseline to
-   vX.Y.Z"). If that step failed, run it by hand with the `java` of the GraalVM of the build (the generator is a
-   multi-file source program, which needs Java 22 or newer) and commit the result:
+1. Run "Release (Major.Minor.Patch[-rcN])" with `env.RELEASE_VERSION` (`3.14.0`, `3.14.0-rc1`), or "Release The Next
+   Patch\RC", which releases the version of `pom.xml` without `-SNAPSHOT` (`3.13.1-SNAPSHOT`: `3.13.1`). It tags the
+   version and deploys the Linux x64 archives and the C API documentation.
+2. "Build & Deploy [All]" builds and deploys the archives of the other platforms and the XCFramework from the tag.
+3. "Pack NuGet" packs the `DxFeed.Graal.Native` package.
+4. "Publish GitHub Release" pushes `main` and the tag to GitHub, publishes the release with the archives, the package
+   and the notes of the version from `ReleaseNotes.md`, and publishes the package to nuget.org with a GitHub Actions
+   workflow (see [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
+5. After it, "Release in Jira" releases the Jira version of the SDK and resolves its tickets (see
+   [Releasing the SDK in Jira](.teamcity/README.MD#releasing-the-sdk-in-jira); a pre-release changes nothing there),
+   and "Publish C API Docs to GitHub Pages" puts the C API reference of the release on
+   [GitHub Pages](.teamcity/README.MD#publishing-the-c-api-reference-to-github-pages).
 
-   ```shell
-   git fetch --tags
-   java scripts/check-api-headers/GenerateApiJson.java --update-baseline v3.13.0 scripts/check-api-headers/baseline/dxfg-api.json
-   ```
+For a release (not a pre-release), the Linux x64 release build also makes the description of its headers the
+baseline of the [API description](#api-description) check and commits it to `main` ("Update the API baseline to
+vX.Y.Z"). If that step failed, run it by hand with the `java` of the GraalVM of the build (the generator is a
+multi-file source program, which needs Java 22 or newer) and commit the result:
 
-   Until the baseline is updated, the build warns that it is older than the last release in `ReleaseNotes.md`; it
-   keeps the `since` of the declarations from the old baseline.
+```shell
+git fetch --tags
+java scripts/check-api-headers/GenerateApiJson.java --update-baseline v3.13.0 scripts/check-api-headers/baseline/dxfg-api.json
+```
+
+Until the baseline is updated, the build warns that it is older than the last release in `ReleaseNotes.md`; it keeps
+the `since` of the declarations from the old baseline.
 
 #### Pre-releases
 
-A pre-release (e.g. a release candidate) is released by "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]" with a
-version with a qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
+A pre-release (e.g. a release candidate) is released by "Release (Major.Minor.Patch[-rcN])" with a version with a
+qualifier: `env.RELEASE_VERSION=3.6.0-rc1`.
 
 - Use a qualifier that Maven orders before the release: `rc1`, `beta-1`, `alpha1`, `M1` (`3.6.0-rc1` < `3.6.0`).
   Maven orders unknown qualifiers such as `pre` or `draft` after the release (`3.6.0-pre` > `3.6.0`), so they look
   newer than the release in the repositories.
 - After a pre-release, the release plugin increments the number of the qualifier for the next development version:
-  `3.6.0-rc1` -> `3.6.0-rc2-SNAPSHOT` ("Build PATCH & Deploy [Linux, x64]" would release `3.6.0-rc2` then). Release
-  the final version with "Build MAJOR.MINOR.PATCH & Deploy [Linux, x64]" as well: `env.RELEASE_VERSION=3.6.0`, the next
-  development version is `3.6.1-SNAPSHOT`.
+  `3.6.0-rc1` -> `3.6.0-rc2-SNAPSHOT` ("Release The Next Patch\RC" would release `3.6.0-rc2` then). Release the final
+  version with "Release (Major.Minor.Patch[-rcN])" as well: `env.RELEASE_VERSION=3.6.0`, the next development version
+  is `3.6.1-SNAPSHOT`.
 - `ReleaseNotes.md`: the header of the new version replaces the headers of the pre-releases of the same version at
   the top (`## v3.6.0-rc2` replaces `## v3.6.0-rc1`, `## v3.6.0` replaces both), so the section of the version, and
   the notes of its GitHub release, list all the changes since the previous release. The GitHub release of a version
