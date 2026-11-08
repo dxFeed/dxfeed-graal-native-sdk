@@ -1,4 +1,4 @@
-## v3.14.0-rc2
+## v3.14.0
 
 * **\[MDAPI-478]\[GRAAL]** The message connectors of an endpoint (`dxfg_v4_message_connector.h`): what an endpoint
   is connected to and how much data flows, as `com.devexperts.qd.qtp.MessageConnector` reports it.
