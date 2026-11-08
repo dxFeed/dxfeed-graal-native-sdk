@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.devexperts.qd.qtp.MessageConnector;
 import com.devexperts.qd.qtp.MessageConnectorState;
+import com.devexperts.qd.stats.QDStats;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.DXFeedSubscription;
 import com.dxfeed.event.market.Quote;
@@ -101,15 +102,31 @@ public class MessageConnectorsTest extends ConnectorTestSupport {
         }
 
         assertTrue("No quote received", event != null);
-        await("the data record count",
-                () -> MessageConnectors.getStatistics(client).getReadDataRecords() > before.getReadDataRecords());
+
+        // The iOS builds have no qds-monitoring: QD keeps no statistics there, and the data record counts stay 0. The
+        // build says which case to expect, so that statistics lost elsewhere fail the test.
+        final boolean recordsCounted = client.getStats().getType() != QDStats.SType.VOID;
+
+        assertEquals("QD's statistics", Boolean.parseBoolean(System.getProperty("dxfg.test.qdMonitoring", "true")),
+                recordsCounted);
+
+        if (recordsCounted) {
+            await("the data record count",
+                    () -> MessageConnectors.getStatistics(client).getReadDataRecords() > before.getReadDataRecords());
+        }
 
         final MessageConnectorStatistics after = MessageConnectors.getStatistics(client);
 
         assertTrue(after.getReadBytes() > before.getReadBytes());
         assertTrue(after.getWrittenBytes() > 0);
         assertEquals(1, after.getActiveConnectionCount());
-        assertTrue(MessageConnectors.getStatistics(server).getWrittenDataRecords() > 0);
+
+        if (recordsCounted) {
+            assertTrue(MessageConnectors.getStatistics(server).getWrittenDataRecords() > 0);
+        } else {
+            assertEquals(0, after.getReadDataRecords());
+            assertEquals(0, MessageConnectors.getStatistics(server).getWrittenDataRecords());
+        }
 
         // Reading the statistics resets nothing.
         assertEquals(after.getReadDataRecords(), MessageConnectors.getStatistics(client).getReadDataRecords());

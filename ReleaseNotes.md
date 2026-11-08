@@ -7,11 +7,11 @@
   a client or a server socket, or another), configured address with the credentials masked, the addresses it is
   connected to now, its state (`DXFG_V4_MESSAGE_CONNECTOR_STATE_*`: connecting, connected, disconnected), whether it is
   active, its open and closed connection counts, and its statistics (`dxfg_v4_MessageConnector_getStatistics()`: bytes
-  and data records read and written, without resetting them). A connector listener (experimental:
-  `dxfg_v4_MessageConnectorListener_new()`, `dxfg_v4_DXEndpoint_addMessageConnectorListener()`,
-  `dxfg_v4_DXEndpoint_removeMessageConnectorListener()`) is called after the state changes, also of the connectors of
-  a later connect, on one thread of the SDK; `dxfg_v4_system_shutdown()` stops that thread.
-  `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` reports the family.
+  and data records read and written, without resetting them; the data record counts stay 0 on iOS and the iOS Simulator,
+  whose SDK has no QD monitoring). A connector listener (experimental: `dxfg_v4_MessageConnectorListener_new()`,
+  `dxfg_v4_DXEndpoint_addMessageConnectorListener()`, `dxfg_v4_DXEndpoint_removeMessageConnectorListener()`) is called
+  after the state changes, also of the connectors of a later connect, on one thread of the SDK;
+  `dxfg_v4_system_shutdown()` stops that thread. `DXFG_V4_FEATURE_MESSAGE_CONNECTORS` reports the family.
 * **\[MDAPI-477]\[GRAAL]** The last connection error of a message connector and of an endpoint, and `log.level` that
   really sets the level of logging.
   * The last connection error (experimental, `dxfg_v4_message_connector.h`): why a connect failed or a connection

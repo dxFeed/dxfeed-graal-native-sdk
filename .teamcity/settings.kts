@@ -422,7 +422,8 @@ object BuildAndDeployForMacOsAndIOS : BuildType({
 
         script {
             name = "Deploy"
-            scriptContent = Util.prepareMacOS() + """
+            // set -e: a failed build of one platform fails the step, not only the last one.
+            scriptContent = "set -e\n" + Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} -DmacIos=true clean deploy
@@ -1592,7 +1593,8 @@ object BuildForMacOSAndIOS : BuildType({
     steps {
         script {
             name = "Build"
-            scriptContent = Util.prepareMacOS() + """
+            // set -e: a failed build of one platform fails the step, not only the last one.
+            scriptContent = "set -e\n" + Util.prepareMacOS() + """
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIos=true clean package

@@ -129,6 +129,9 @@ typedef struct dxfg_v4_message_connector_list {
  *
  * The counters cover all the connections of the connector since it was created, the closed ones included. The layout
  * of the struct does not change: new counters will come with a new function.
+ *
+ * On iOS and the iOS Simulator, `read_data_records` and `written_data_records` stay 0: the SDK of these platforms has
+ * no QD monitoring (`qds-monitoring`), which keeps the statistics they come from. The other counters work there too.
  * @since 3.14.0
  */
 typedef struct dxfg_v4_message_connector_stats_t {
@@ -358,7 +361,8 @@ int32_t dxfg_v4_MessageConnector_getClosedConnectionCount(graal_isolatethread_t 
  * closed connections.
  *
  * Nothing is reset: other readers of QD's statistics see the same values. Data arrives when `read_data_records` grows
- * between two calls; `read_bytes` grows on heartbeats too.
+ * between two calls; `read_bytes` grows on heartbeats too. On iOS and the iOS Simulator the data record counters stay
+ * 0 (see dxfg_v4_message_connector_stats_t).
  *
  * Java: `MessageConnector.retrieveCompleteEndpointStats()`, and `QDStats.getValue(SValue)` of
  * `MessageConnector.getStats()` with `IO_DATA_READ_RECORDS` and `IO_DATA_WRITE_RECORDS`.

@@ -63,6 +63,8 @@
     <macIos>false</macIos>
     <notMacIos>true</notMacIos>
     <notIosSimulator>true</notIosSimulator>
+    <!-- Whether qds-monitoring, which keeps QD's statistics, is on the classpath: not in the iOS builds. -->
+    <qdMonitoring>true</qdMonitoring>
     <!--
       iOS and macOS: the python3 that runs jre-ios/build.py, which declares the platform of the iOS image
       (set-build-version), writes the manifest of the linker flags of the archive (manifest, link-flags.txt) and checks
@@ -927,6 +929,7 @@
         <!-- The native image of this build is the x86_64 one (jdk-25.0.1), see the mac-x86_64 profile. -->
         <graal.isolate.headers.check.skip>true</graal.isolate.headers.check.skip>
         <notIosSimulator>false</notIosSimulator>
+        <qdMonitoring>false</qdMonitoring>
       </properties>
       <dependencies>
         <dependency>
@@ -1012,6 +1015,7 @@
         <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
+        <qdMonitoring>false</qdMonitoring>
       </properties>
       <dependencies>
         <dependency>
@@ -1161,6 +1165,8 @@
           <systemPropertyVariables>
             <!-- As the build argument of native-image: the version that SdkFeatures reports. -->
             <dxfg.sdk.version>${project.version}</dxfg.sdk.version>
+            <!-- Whether the tests may expect QD's statistics (MessageConnectorsTest). -->
+            <dxfg.test.qdMonitoring>${qdMonitoring}</dxfg.test.qdMonitoring>
           </systemPropertyVariables>
         </configuration>
       </plugin>

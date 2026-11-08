@@ -112,6 +112,7 @@ public final class MessageConnectors {
 
     /**
      * Reads the statistics of a connector. Resets nothing: other readers of the QD statistics see the same values.
+     * Without {@code qds-monitoring} (the iOS builds) QD keeps no statistics, and the data record counts are 0.
      */
     public static MessageConnectorStatistics getStatistics(final MessageConnector connector) {
         Objects.requireNonNull(connector, "connector");
