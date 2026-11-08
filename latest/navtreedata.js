@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "dxFeed Graal Native SDK", "index.html", [
+    [ "Wrapper guide", "wrapper_guide.html", "wrapper_guide" ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Experimental declarations", "experimental.html", null ],
     [ "Topics", "topics.html", "topics" ],
@@ -53,16 +54,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"globals_eval.html",
-"group__EventModel.html#gaaa03fa83c7adfe489bba095ee9afd21c",
-"group__InstrumentProfile.html#gabec3b961303100922aabb302d71a56ce",
-"group__Schedule.html#ga653fbc4f054c09a54fa8ec9a2fdde930",
-"group__V4__EventModel.html#ga9637131bd9e06edc34e5d9db1982b11e",
-"group__V4__Glossary.html#gaa7e53bc3a5be4514e33372c69ebbd499",
-"group__V4__Javac.html#gab29c18011bc1cb1b345b5f6b7fc92f4e",
-"group__V4__System.html#gaff81951e37bd4714da88582908e3a661",
-"structdxfg__observable__list__model__listener__t.html#a71620e58210fa39fd9b9c1aa25b65bd2",
-"structdxfg__trade__base__t.html#a77e1037a5c4a74abe87b2a31d673cc07"
+"globals.html",
+"group__EventModel.html#ga94b1831a275d5f0fda688b13364279f9",
+"group__InstrumentProfile.html#gab2259e86197cb3056ec456520d7bcb1c",
+"group__Schedule.html#ga533a1191f97304fc2f7c9600f904604a",
+"group__V4__EventModel.html#ga861099a879eccbcd225111466c5f61b6",
+"group__V4__Glossary.html#ga992d9f2ea83f4d978c41223eaec5dd2f",
+"group__V4__Javac.html#ga9b2d208a9b255461224f7dec6a649152",
+"group__V4__Subscription.html#ga957e50e15323b60c0471a187e8d6194a",
+"structdxfg__market__maker__t.html#a14600ffc5aa869c09f794c6692be9b77",
+"structdxfg__theo__price__t.html#a8cbbd28ecee33fd11f84db89f28f7cae"
 ];
 
 const SYNCONMSG = 'click to disable panel synchronization';

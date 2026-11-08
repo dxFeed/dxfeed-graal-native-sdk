@@ -12,5 +12,6 @@ var searchData=
   ['display_5fquantity_9',['display_quantity',['../structdxfg__nuam__order__t.html#adc7bbc6e6bbb7af58d2173d50a74fcb0',1,'dxfg_nuam_order_t']]],
   ['dividend_10',['dividend',['../structdxfg__theo__price__t.html#a1a39260c0ee03727f3dd08c60044635a',1,'dxfg_theo_price_t::dividend'],['../structdxfg__series__t.html#aea66031b3d6be19b523d6e5af08b52a1',1,'dxfg_series_t::dividend']]],
   ['dividend_5ffrequency_11',['dividend_frequency',['../structdxfg__profile__t.html#aeeef1c774940d409e148e8feab3ead88',1,'dxfg_profile_t']]],
-  ['double_5fvalue_12',['double_value',['../structdxfg__v4__on__demand__property__value__t.html#aeac643335738e88cc060b2ff0e4b4d10',1,'dxfg_v4_on_demand_property_value_t']]]
+  ['double_5fvalue_12',['double_value',['../structdxfg__v4__on__demand__property__value__t.html#aeac643335738e88cc060b2ff0e4b4d10',1,'dxfg_v4_on_demand_property_value_t']]],
+  ['dropped_13',['dropped',['../structdxfg__v4__connection__error__t.html#a6ba830b0f36e6535c55e8e3da721fcd5',1,'dxfg_v4_connection_error_t']]]
 ];

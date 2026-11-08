@@ -21,5 +21,6 @@ var searchData=
   ['graal_5fisolate_5ft_18',['graal_isolate_t',['../graal__isolate_8h.html#a0cf7023f0e3929858271e4e3aab8e991',1,'graal_isolate.h']]],
   ['graal_5fisolatethread_5ft_19',['graal_isolatethread_t',['../graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2',1,'graal_isolate.h']]],
   ['graal_5ftear_5fdown_5fisolate_20',['graal_tear_down_isolate',['../graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b',1,'graal_isolate.h']]],
-  ['graal_5ftear_5fdown_5fisolate_5ffn_5ft_21',['graal_tear_down_isolate_fn_t',['../graal__isolate__dynamic_8h.html#a5713f0148b2e8374f6dea074c041ad78',1,'graal_isolate_dynamic.h']]]
+  ['graal_5ftear_5fdown_5fisolate_5ffn_5ft_21',['graal_tear_down_isolate_fn_t',['../graal__isolate__dynamic_8h.html#a5713f0148b2e8374f6dea074c041ad78',1,'graal_isolate_dynamic.h']]],
+  ['guide_22',['Wrapper guide',['../wrapper_guide.html',1,'']]]
 ];

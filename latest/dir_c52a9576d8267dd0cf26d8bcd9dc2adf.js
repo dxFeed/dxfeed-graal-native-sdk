@@ -36,6 +36,7 @@ var dir_c52a9576d8267dd0cf26d8bcd9dc2adf =
     [ "dxfg_v4_ipf.h", "dxfg__v4__ipf_8h.html", "dxfg__v4__ipf_8h" ],
     [ "dxfg_v4_javac.h", "dxfg__v4__javac_8h.html", "dxfg__v4__javac_8h" ],
     [ "dxfg_v4_logging.h", "dxfg__v4__logging_8h.html", "dxfg__v4__logging_8h" ],
+    [ "dxfg_v4_message_connector.h", "dxfg__v4__message__connector_8h.html", "dxfg__v4__message__connector_8h" ],
     [ "dxfg_v4_ondemand.h", "dxfg__v4__ondemand_8h.html", "dxfg__v4__ondemand_8h" ],
     [ "dxfg_v4_orcs.h", "dxfg__v4__orcs_8h.html", "dxfg__v4__orcs_8h" ],
     [ "dxfg_v4_publisher.h", "dxfg__v4__publisher_8h.html", "dxfg__v4__publisher_8h" ],

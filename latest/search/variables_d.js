@@ -4,7 +4,7 @@ var searchData=
   ['market_5fmaker_1',['market_maker',['../structdxfg__order__t.html#ab7406fcc440b60e39ee843d8f329678e',1,'dxfg_order_t']]],
   ['match_5fid_2',['match_id',['../structdxfg__nuam__time__and__sale__t.html#a04e81735f8dcdd42b4204d81044b4fe9',1,'dxfg_nuam_time_and_sale_t']]],
   ['matched_5fquantity_3',['matched_quantity',['../structdxfg__nuam__order__t.html#aa8712324c5b9ac2c581d2108e86739ad',1,'dxfg_nuam_order_t']]],
-  ['message_4',['message',['../structdxfg__exception__t.html#a354d2e683c6e01e94233d5ba2fb8087b',1,'dxfg_exception_t']]],
+  ['message_4',['message',['../structdxfg__exception__t.html#a354d2e683c6e01e94233d5ba2fb8087b',1,'dxfg_exception_t::message'],['../structdxfg__v4__connection__error__t.html#a139e2ec0e79a8d1ba6c71f02932c325f',1,'dxfg_v4_connection_error_t::message']]],
   ['method_5fname_5',['method_name',['../structdxfg__stack__trace__element__t.html#a1660560f183c8e0ae08a0e3842d03748',1,'dxfg_stack_trace_element_t']]],
   ['mmy_6',['mmy',['../structdxfg__instrument__profile2__t.html#afe487c4063e7f8b4e2e0050a590b5fd5',1,'dxfg_instrument_profile2_t']]],
   ['module_5fname_7',['module_name',['../structdxfg__stack__trace__element__t.html#ab239e74fb5e49f17e09fcb0635a8cfdb',1,'dxfg_stack_trace_element_t']]],

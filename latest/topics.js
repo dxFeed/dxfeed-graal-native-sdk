@@ -34,6 +34,7 @@ var topics =
     [ "InstrumentProfile (v4)", "group__V4__InstrumentProfile.html", "group__V4__InstrumentProfile" ],
     [ "Javac (v4)", "group__V4__Javac.html", "group__V4__Javac" ],
     [ "Logging (v4)", "group__V4__Logging.html", "group__V4__Logging" ],
+    [ "Message connectors (v4)", "group__V4__MessageConnector.html", "group__V4__MessageConnector" ],
     [ "OnDemand (v4)", "group__V4__OnDemand.html", "group__V4__OnDemand" ],
     [ "ORCS API (v4)", "group__V4__OrcsApi.html", "group__V4__OrcsApi" ],
     [ "Publisher (v4)", "group__V4__Publisher.html", "group__V4__Publisher" ],

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.14.0</span>
    </div>
   </td>
  </tr>
@@ -4201,7 +4201,7 @@ Futures,Jun-2009,ETH</span>.</p>
 </div><div class="memdoc">
 
 <p>Closes the connection. </p>
-<p>The state of the connection immediately changes to <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aa380eea4bbe9c7bf7c6bb1ba6a9865a29">DXFG_IPF_CONNECTION_STATE_CLOSED</a> and the background update is terminated. Closing a closed connection does nothing.</p>
+<p>The state of the connection immediately changes to <a class="el" href="#gga55f07fa7971091dbcd4ab677979c634aa380eea4bbe9c7bf7c6bb1ba6a9865a29">DXFG_IPF_CONNECTION_STATE_CLOSED</a> and the background update stops: nothing that the connection receives after the call reaches the collector. Its thread and its connection to the server end when the next data arrives (a live server sends a heartbeat every 10 seconds) or at the 60-second read timeout. The collector may still notify its listeners about the updates received before the call: release a listener with <a class="el" href="group__Javac.html#ga923b84ec33ec668fc59c89168c832dac">dxfg_JavaObjectHandler_release()</a> before freeing its user_data. Closing a closed connection does nothing.</p>
 <p>Java: <span class="tt">InstrumentProfileConnection.close()</span>.</p>
 <dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000264">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__InstrumentProfile.html#gaa6bbf6ead5f77d95340523fa14ac5af2" title="Closes the connection.">dxfg_v4_InstrumentProfileConnection_close()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>

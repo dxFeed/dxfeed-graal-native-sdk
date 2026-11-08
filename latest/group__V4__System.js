@@ -1,9 +1,11 @@
 var group__V4__System =
 [
     [ "DXFG_V4_ADVANCED_REVISION", "group__V4__System.html#gaaa1b2224c2c32cbcc22f475ab4972db4", null ],
+    [ "DXFG_V4_FEATURE_CONNECTION_ERRORS", "group__V4__System.html#ga3c6022295c693681093e8cab02248c97", null ],
     [ "DXFG_V4_FEATURE_EVENT_QUEUE", "group__V4__System.html#ga2bd91d32cda673e8c955ed4bc54f2c11", null ],
     [ "DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL", "group__V4__System.html#ga789bfc852d0146265a381c2c7105acfd", null ],
     [ "DXFG_V4_FEATURE_FEED_FILTER", "group__V4__System.html#gaad3bb12d3592eeacb2798e1d06eafd1e", null ],
+    [ "DXFG_V4_FEATURE_MESSAGE_CONNECTORS", "group__V4__System.html#ga9d4a7c677cef2f7f5a0e0a23fed0012f", null ],
     [ "DXFG_V4_FEATURE_SHARED_EVENT_QUEUE", "group__V4__System.html#gad1d9a26203f86a4889b8f64899a377d4", null ],
     [ "DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK", "group__V4__System.html#ga01ee98b18304011b23875d4b68f22338", null ],
     [ "dxfg_v4_system_close_all_and_await_termination", "group__V4__System.html#ga6724b7ccea9b2938c315f3771ef9ce8a", null ],

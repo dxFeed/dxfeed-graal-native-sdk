@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.14.0</span>
    </div>
   </td>
  </tr>
@@ -274,7 +274,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the logging level for the err file. </p>
-<p>The level is set for the second handler of the logging system: the file of the errors (<span class="tt">err.file</span>). If there is no such handler (e.g. a listener is installed or <span class="tt">err.file</span> is not set), the function does nothing and returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>. The default level of the err file is taken from the system property <span class="tt">err.level</span> (warnings and errors by default).</p>
+<p>The level is set for the second handler of the logging system: the file of the errors (<span class="tt">err.file</span>). If there is no such handler (e.g. a listener is installed or <span class="tt">err.file</span> is not set), the function does nothing and returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>. The default level of the err file is taken from the system property <span class="tt">err.level</span> (warnings and errors by default). The level of the root logger is set as by the function of the log level.</p>
 <p>Java: <span class="tt">InterceptableLogging.setErrLevel(Level)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -307,7 +307,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Installs the logging listener. </p>
-<p>It toggles the logging: the existing handlers of the logging system are removed, so the messages are not logged to the console and to files anymore, and the messages are given to the listener. The level of the messages that reach the listener is taken from the system property <span class="tt">log.level</span> (all messages by default) and can be changed with <a class="el" href="#ga4602991066c2ed75b1b37d76b90f9776" title="Sets the logging level for the listener or the console or the log file.">dxfg_v4_logging_set_log_level()</a>.</p>
+<p>It toggles the logging: the existing handlers of the logging system are removed, so the messages are not logged to the console and to files anymore, and the messages are given to the listener. The level of the messages that reach the listener is taken from the system property <span class="tt">log.level</span> (<span class="tt">INFO</span> by default) and can be changed with <a class="el" href="#ga4602991066c2ed75b1b37d76b90f9776" title="Sets the logging level for the listener or the console or the log file.">dxfg_v4_logging_set_log_level()</a>.</p>
 <p>Only the first installed listener works: if a listener is already installed, the function does nothing. A NULL listener does nothing as well. In both cases the function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>. The installed listener cannot be removed; release its handle (see <a class="el" href="#gafb6ab8002a67baad74969a21ce6737e6" title="Creates a new logging listener.">dxfg_v4_logging_listener_new()</a>) to stop its calls.</p>
 <p>Java: <span class="tt">InterceptableLogging.setListener(InterceptableLoggingListener)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -342,6 +342,7 @@ Functions</h2></td></tr>
 
 <p>Sets the logging level for the listener or the console or the log file. </p>
 <p>The level is set for the first handler of the logging system: the handler of the listener if one is installed (see <a class="el" href="#ga8483aab0dbe47f6464dc5e1f54435db3" title="Installs the logging listener.">dxfg_v4_logging_set_listener()</a>), otherwise the console or the log file (<span class="tt">log.file</span>). If there is no such handler, the function does nothing and returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a>.</p>
+<p>With the handlers of <span class="tt">InterceptableLogging</span> it also sets the level of the root logger to the more verbose of the two handler levels, so that the messages below it are not created at all.</p>
 <p>Java: <span class="tt">InterceptableLogging.setLogLevel(Level)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.14.0</span>
    </div>
   </td>
  </tr>
@@ -129,6 +129,10 @@ Macros</h2></td></tr>
 <tr class="memdesc:gaad3bb12d3592eeacb2798e1d06eafd1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "feed filter" (<a class="el" href="dxfg__v4__feed__filter_8h.html" title="The filter of the subscriptions and the events by named categories of QD filter expressions,...">dxfg_v4_feed_filter.h</a>: <a class="el" href="group__V4__FeedFilter.html#gacbae336b531ac8135aa18963349c9084" title="Creates a new builder of a feed filter for the endpoint, without categories.">dxfg_v4_DXFeedFilter_newBuilder()</a>, <a class="el" href="group__V4__FeedFilter.html#ga5d4eac881003eeca7660785449c63616" title="Builds a filter of the categories of the builder.">dxfg_v4_DXFeedFilter_Builder_build()</a>, <a class="el" href="group__V4__FeedFilter.html#gaaa99a354944c430c173444b05b0fa060" title="Adds a listener to the tracker: it is called after each later update of the filter.">dxfg_v4_DXFeedFilterTracker_addListener()</a> and the other functions of the group <a class="el" href="group__V4__FeedFilter.html" title="Feed filter (v4, experimental)">Feed filter (v4, experimental)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
 <tr class="memitem:ga01ee98b18304011b23875d4b68f22338" id="r_ga01ee98b18304011b23875d4b68f22338"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga01ee98b18304011b23875d4b68f22338">DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK</a>&#160;&#160;&#160;&quot;time_series_tx_model_event_peek&quot;</td></tr>
 <tr class="memdesc:ga01ee98b18304011b23875d4b68f22338"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "time series model event peek" (<a class="el" href="group__V4__EventModel.html#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+<tr class="memitem:ga9d4a7c677cef2f7f5a0e0a23fed0012f" id="r_ga9d4a7c677cef2f7f5a0e0a23fed0012f"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga9d4a7c677cef2f7f5a0e0a23fed0012f">DXFG_V4_FEATURE_MESSAGE_CONNECTORS</a>&#160;&#160;&#160;&quot;message_connectors&quot;</td></tr>
+<tr class="memdesc:ga9d4a7c677cef2f7f5a0e0a23fed0012f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "message connectors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#gaeb72d386e8901dcb1487437e6c9a10b4" title="Returns the current message connectors of an endpoint.">dxfg_v4_DXEndpoint_getConnectors()</a>, <a class="el" href="group__V4__MessageConnector.html#ga6669d8f3e7b381a05e3ee8caa70a9d7c" title="Returns the state of a message connector.">dxfg_v4_MessageConnector_getState()</a>, <a class="el" href="group__V4__MessageConnector.html#ga972b22a5fd181b80302e36492338ea8b" title="Reads the statistics of a message connector: the bytes and data records read and written,...">dxfg_v4_MessageConnector_getStatistics()</a> and the other functions of the group <a class="el" href="group__V4__MessageConnector.html" title="Message connectors (v4)">Message connectors (v4)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+<tr class="memitem:ga3c6022295c693681093e8cab02248c97" id="r_ga3c6022295c693681093e8cab02248c97"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga3c6022295c693681093e8cab02248c97">DXFG_V4_FEATURE_CONNECTION_ERRORS</a>&#160;&#160;&#160;&quot;connection_errors&quot;</td></tr>
+<tr class="memdesc:ga3c6022295c693681093e8cab02248c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "connection errors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#ga0a6f461c672ddc0e6bd29535118aa0e0" title="Returns the last connection error of a message connector: the newest failed connect or dropped connec...">dxfg_v4_MessageConnector_getLastError()</a>, <a class="el" href="group__V4__MessageConnector.html#gac44c8e780d9afb715d9284e41175e02c" title="Returns the last connection error of an endpoint: the newest error of all its connectors.">dxfg_v4_DXEndpoint_getLastConnectionError()</a>, <a class="el" href="group__V4__MessageConnector.html#ga1e0cc9a122227310326b82fd383d5f28" title="Releases a connection error and its strings.">dxfg_v4_ConnectionError_release()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -169,6 +173,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga3c6022295c693681093e8cab02248c97" name="ga3c6022295c693681093e8cab02248c97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3c6022295c693681093e8cab02248c97">&#9670;&#160;</a></span>DXFG_V4_FEATURE_CONNECTION_ERRORS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_FEATURE_CONNECTION_ERRORS&#160;&#160;&#160;&quot;connection_errors&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The name of the feature "connection errors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#ga0a6f461c672ddc0e6bd29535118aa0e0" title="Returns the last connection error of a message connector: the newest failed connect or dropped connec...">dxfg_v4_MessageConnector_getLastError()</a>, <a class="el" href="group__V4__MessageConnector.html#gac44c8e780d9afb715d9284e41175e02c" title="Returns the last connection error of an endpoint: the newest error of all its connectors.">dxfg_v4_DXEndpoint_getLastConnectionError()</a>, <a class="el" href="group__V4__MessageConnector.html#ga1e0cc9a122227310326b82fd383d5f28" title="Releases a connection error and its strings.">dxfg_v4_ConnectionError_release()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000121">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.14.0 </dd></dl>
+
+</div>
+</div>
 <a id="ga2bd91d32cda673e8c955ed4bc54f2c11" name="ga2bd91d32cda673e8c955ed4bc54f2c11"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga2bd91d32cda673e8c955ed4bc54f2c11">&#9670;&#160;</a></span>DXFG_V4_FEATURE_EVENT_QUEUE</h2>
 
@@ -199,7 +221,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "event queue ready signal" (<a class="el" href="group__V4__EventQueue.html#ga25017bb48333e5b8ae1c8e069b039bb9" title="Sets, replaces or removes the ready signal of the queue: the OS object that the SDK makes ready whene...">dxfg_v4_EventQueue_setReadySignal()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000101">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000118">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
@@ -217,8 +239,25 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "feed filter" (<a class="el" href="dxfg__v4__feed__filter_8h.html" title="The filter of the subscriptions and the events by named categories of QD filter expressions,...">dxfg_v4_feed_filter.h</a>: <a class="el" href="group__V4__FeedFilter.html#gacbae336b531ac8135aa18963349c9084" title="Creates a new builder of a feed filter for the endpoint, without categories.">dxfg_v4_DXFeedFilter_newBuilder()</a>, <a class="el" href="group__V4__FeedFilter.html#ga5d4eac881003eeca7660785449c63616" title="Builds a filter of the categories of the builder.">dxfg_v4_DXFeedFilter_Builder_build()</a>, <a class="el" href="group__V4__FeedFilter.html#gaaa99a354944c430c173444b05b0fa060" title="Adds a listener to the tracker: it is called after each later update of the filter.">dxfg_v4_DXFeedFilterTracker_addListener()</a> and the other functions of the group <a class="el" href="group__V4__FeedFilter.html" title="Feed filter (v4, experimental)">Feed filter (v4, experimental)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000102">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000119">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
+<a id="ga9d4a7c677cef2f7f5a0e0a23fed0012f" name="ga9d4a7c677cef2f7f5a0e0a23fed0012f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9d4a7c677cef2f7f5a0e0a23fed0012f">&#9670;&#160;</a></span>DXFG_V4_FEATURE_MESSAGE_CONNECTORS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_FEATURE_MESSAGE_CONNECTORS&#160;&#160;&#160;&quot;message_connectors&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The name of the feature "message connectors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#gaeb72d386e8901dcb1487437e6c9a10b4" title="Returns the current message connectors of an endpoint.">dxfg_v4_DXEndpoint_getConnectors()</a>, <a class="el" href="group__V4__MessageConnector.html#ga6669d8f3e7b381a05e3ee8caa70a9d7c" title="Returns the state of a message connector.">dxfg_v4_MessageConnector_getState()</a>, <a class="el" href="group__V4__MessageConnector.html#ga972b22a5fd181b80302e36492338ea8b" title="Reads the statistics of a message connector: the bytes and data records read and written,...">dxfg_v4_MessageConnector_getStatistics()</a> and the other functions of the group <a class="el" href="group__V4__MessageConnector.html" title="Message connectors (v4)">Message connectors (v4)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
+<p>The getters are stable; the listener functions (<a class="el" href="group__V4__MessageConnector.html#gad26ba2e5fa37d1cf2223c9140e13edc8" title="Creates a new listener of the state changes of the message connectors of an endpoint.">dxfg_v4_MessageConnectorListener_new()</a>, <a class="el" href="group__V4__MessageConnector.html#ga60ae3268f075fabe11d2ec6c90178b86" title="Adds a listener of the state changes of the message connectors to an endpoint.">dxfg_v4_DXEndpoint_addMessageConnectorListener()</a>, <a class="el" href="group__V4__MessageConnector.html#gaf338bc298f7994e2ed58f0040df50de2" title="Removes a listener of the state changes of the message connectors from an endpoint.">dxfg_v4_DXEndpoint_removeMessageConnectorListener()</a>) are experimental. </p><dl class="section since"><dt>Since</dt><dd>3.14.0 </dd></dl>
 
 </div>
 </div>
@@ -252,7 +291,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "time series model event peek" (<a class="el" href="group__V4__EventModel.html#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000103">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000120">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>

@@ -9,5 +9,6 @@ var searchData=
   ['cfi_20value_6',['CFI.Value',['../group__CFIValue.html',1,'']]],
   ['cfi_20value_20functions_7',['CFI.Value&apos; functions',['../group__CFIValueFunctions.html',1,'']]],
   ['common_8',['Common',['../group__Common.html',1,'']]],
-  ['common_20v4_9',['Common (v4)',['../group__V4__Common.html',1,'']]]
+  ['common_20v4_9',['Common (v4)',['../group__V4__Common.html',1,'']]],
+  ['connectors_20v4_10',['Message connectors (v4)',['../group__V4__MessageConnector.html',1,'']]]
 ];

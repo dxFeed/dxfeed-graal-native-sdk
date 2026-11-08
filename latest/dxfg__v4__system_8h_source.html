@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.13.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.14.0</span>
    </div>
   </td>
  </tr>
@@ -148,19 +148,23 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dxfg__v4__syst
 <div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span></div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga01ee98b18304011b23875d4b68f22338">  176</a></span><span class="preprocessor">#define DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK &quot;time_series_tx_model_event_peek&quot;</span></div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span></div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga3246a4368f9b9a8531f6713d1be07742">  191</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#ga3246a4368f9b9a8531f6713d1be07742">dxfg_v4_system_get_version</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <span class="keyword">const</span> <span class="keywordtype">char</span> **version);</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga93947aadbc5d342385aee354b49e8bf0">  205</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#ga93947aadbc5d342385aee354b49e8bf0">dxfg_v4_system_get_advanced_revision</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int32_t *revision);</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno"><a class="line" href="group__V4__System.html#gaa3e30ef33590b58e74e65a4298627776">  222</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#gaa3e30ef33590b58e74e65a4298627776">dxfg_v4_system_is_feature_supported</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                                            <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int32_t *supported);</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> <span class="comment">// end of V4_System</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>}</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span> </div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_V4_SYSTEM_H</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga9d4a7c677cef2f7f5a0e0a23fed0012f">  188</a></span><span class="preprocessor">#define DXFG_V4_FEATURE_MESSAGE_CONNECTORS &quot;message_connectors&quot;</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga3c6022295c693681093e8cab02248c97">  197</a></span><span class="preprocessor">#define DXFG_V4_FEATURE_CONNECTION_ERRORS &quot;connection_errors&quot;</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga3246a4368f9b9a8531f6713d1be07742">  212</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#ga3246a4368f9b9a8531f6713d1be07742">dxfg_v4_system_get_version</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <span class="keyword">const</span> <span class="keywordtype">char</span> **version);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno"><a class="line" href="group__V4__System.html#ga93947aadbc5d342385aee354b49e8bf0">  226</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#ga93947aadbc5d342385aee354b49e8bf0">dxfg_v4_system_get_advanced_revision</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int32_t *revision);</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno"><a class="line" href="group__V4__System.html#gaa3e30ef33590b58e74e65a4298627776">  243</a></span>int32_t <a class="code hl_function" href="group__V4__System.html#gaa3e30ef33590b58e74e65a4298627776">dxfg_v4_system_is_feature_supported</a>(<a class="code hl_typedef" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                                            <a class="code hl_define" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int32_t *supported);</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> <span class="comment">// end of V4_System</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>}</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="preprocessor">#endif </span><span class="comment">// DXFG_V4_SYSTEM_H</span></div>
 <div class="ttc" id="adxfg__system_8h_html"><div class="ttname"><a href="dxfg__system_8h.html">dxfg_system.h</a></div><div class="ttdoc">dxFeed Graal Native SDK System functions and types declarations</div></div>
 <div class="ttc" id="adxfg__v4__common_8h_html"><div class="ttname"><a href="dxfg__v4__common_8h.html">dxfg_v4_common.h</a></div><div class="ttdoc">The v4 functions of dxfg_common.h and the v4 names of its types (see the group Common (v4)).</div></div>
 <div class="ttc" id="agraal__isolate_8h_html_aa00ad74821ed5cfab0f750c01e7255b2"><div class="ttname"><a href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a></div><div class="ttdeci">struct __graal_isolatethread_t graal_isolatethread_t</div><div class="ttdoc">The state of one thread attached to an isolate: the first parameter (thread) of the SDK functions.</div><div class="ttdef"><b>Definition</b> graal_isolate.h:60</div></div>
