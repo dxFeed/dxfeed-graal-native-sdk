@@ -1,11 +1,13 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.13.0",
+  "sdk_version": "3.14.0",
   "advanced_revision": 1,
   "features": [
+    "connection_errors",
     "event_queue",
     "event_queue_ready_signal",
     "feed_filter",
+    "message_connectors",
     "shared_event_queue",
     "time_series_tx_model_event_peek"
   ],
@@ -152,6 +154,10 @@
     },
     {
       "name": "dxfg_v4_logging.h",
+      "tier": "basic"
+    },
+    {
+      "name": "dxfg_v4_message_connector.h",
       "tier": "basic"
     },
     {
@@ -21425,6 +21431,29 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_ConnectionError_release",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "error",
+          "type": "dxfg_v4_connection_error_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_DXEndpoint_Builder_build",
       "header": "dxfg_v4_endpoint.h",
       "tier": "stable",
@@ -21626,6 +21655,34 @@
         {
           "name": "role",
           "type": "dxfg_v4_endpoint_role_t",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXEndpoint_addMessageConnectorListener",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "endpoint",
+          "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_message_connector_listener_t *",
           "out": false
         }
       ],
@@ -21912,6 +21969,35 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_DXEndpoint_getConnectors",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "endpoint",
+          "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        },
+        {
+          "name": "connectors",
+          "type": "dxfg_v4_message_connector_list **",
+          "out": true,
+          "release": "dxfg_v4_message_connector_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_DXEndpoint_getEventTypes",
       "header": "dxfg_v4_endpoint.h",
       "tier": "stable",
@@ -22018,6 +22104,35 @@
           "type": "dxfg_v4_endpoint_t **",
           "out": true,
           "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXEndpoint_getLastConnectionError",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "endpoint",
+          "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        },
+        {
+          "name": "error",
+          "type": "dxfg_v4_connection_error_t **",
+          "out": true,
+          "release": "dxfg_v4_ConnectionError_release"
         }
       ],
       "threads": "unknown"
@@ -22234,6 +22349,34 @@
         {
           "name": "endpoint",
           "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_DXEndpoint_removeMessageConnectorListener",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "endpoint",
+          "type": "dxfg_v4_endpoint_t *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_message_connector_listener_t *",
           "out": false
         }
       ],
@@ -31801,6 +31944,324 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_MessageConnectorListener_new",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "user_func",
+          "type": "dxfg_v4_message_connector_listener_func",
+          "out": false
+        },
+        {
+          "name": "user_data",
+          "type": "void *",
+          "out": false
+        },
+        {
+          "name": "listener",
+          "type": "dxfg_v4_message_connector_listener_t **",
+          "out": true,
+          "release": "dxfg_v4_JavaObjectHandler_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getAddress",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "address",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getClosedConnectionCount",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "count",
+          "type": "int64_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getConnectionCount",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "count",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getCurrentAddresses",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "addresses",
+          "type": "dxfg_v4_string_list **",
+          "out": true,
+          "release": "dxfg_v4_string_list_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getKind",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "kind",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getLastError",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "error",
+          "type": "dxfg_v4_connection_error_t **",
+          "out": true,
+          "release": "dxfg_v4_ConnectionError_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getName",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "name",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getState",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "state",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_getStatistics",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "stats",
+          "type": "dxfg_v4_message_connector_stats_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_MessageConnector_isActive",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "active",
+          "type": "int32_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_NativeListener_deactivate",
       "header": "dxfg_v4_javac.h",
       "tier": "stable",
@@ -38971,6 +39432,29 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_message_connector_list_release",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connectors",
+          "type": "dxfg_v4_message_connector_list *",
+          "out": false
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_promise_list_release",
       "header": "dxfg_v4_feed.h",
       "tier": "stable",
@@ -43156,6 +43640,43 @@
       "type": "dxfg_configuration_t"
     },
     {
+      "name": "dxfg_v4_connection_error_t",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "time",
+          "type": "int64_t"
+        },
+        {
+          "name": "address",
+          "type": "const char *"
+        },
+        {
+          "name": "category",
+          "type": "int32_t"
+        },
+        {
+          "name": "dropped",
+          "type": "int32_t"
+        },
+        {
+          "name": "exception_class_name",
+          "type": "const char *"
+        },
+        {
+          "name": "message",
+          "type": "const char *"
+        },
+        {
+          "name": "count",
+          "type": "int64_t"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_daily_candle_t",
       "header": "dxfg_v4_events.h",
       "tier": "stable",
@@ -43756,6 +44277,104 @@
       "since": "3.12.0",
       "kind": "alias",
       "type": "dxfg_market_maker_t"
+    },
+    {
+      "name": "dxfg_v4_message_connector_list",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "size",
+          "type": "int32_t"
+        },
+        {
+          "name": "elements",
+          "type": "dxfg_v4_message_connector_t **"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_message_connector_listener_func",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "kind": "function_pointer",
+      "type": "void",
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *"
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *"
+        },
+        {
+          "name": "user_data",
+          "type": "void *"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_message_connector_listener_t",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_message_connector_stats_t",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "read_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "read_data_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_data_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "active_connection_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "closed_connection_count",
+          "type": "int64_t"
+        }
+      ]
+    },
+    {
+      "name": "dxfg_v4_message_connector_t",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "handler",
+          "type": "dxfg_java_object_handler"
+        }
+      ]
     },
     {
       "name": "dxfg_v4_message_t",
@@ -44561,6 +45180,69 @@
       "value": "((int32_t)1)"
     },
     {
+      "name": "DXFG_V4_CONNECTION_ERROR_CLOSED_BY_REMOTE",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)5)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)2)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_DNS",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_HEARTBEAT_TIMEOUT",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)4)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_IO",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)7)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_OTHER",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)0)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_READ_TIMEOUT",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)3)"
+    },
+    {
+      "name": "DXFG_V4_CONNECTION_ERROR_TLS",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "((int32_t)6)"
+    },
+    {
+      "name": "DXFG_V4_FEATURE_CONNECTION_ERRORS",
+      "header": "dxfg_v4_system.h",
+      "tier": "experimental",
+      "since": "3.14.0",
+      "value": "\"connection_errors\""
+    },
+    {
       "name": "DXFG_V4_FEATURE_EVENT_QUEUE",
       "header": "dxfg_v4_system.h",
       "tier": "stable",
@@ -44582,6 +45264,13 @@
       "value": "\"feed_filter\""
     },
     {
+      "name": "DXFG_V4_FEATURE_MESSAGE_CONNECTORS",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "\"message_connectors\""
+    },
+    {
       "name": "DXFG_V4_FEATURE_SHARED_EVENT_QUEUE",
       "header": "dxfg_v4_system.h",
       "tier": "stable",
@@ -44601,6 +45290,48 @@
       "tier": "stable",
       "since": "3.13.0",
       "value": "(-1)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_KIND_CLIENT_SOCKET",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)0)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_KIND_OTHER",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)2)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_KIND_SERVER_SOCKET",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)1)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTING",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)0)"
+    },
+    {
+      "name": "DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.14.0",
+      "value": "((int32_t)2)"
     }
   ]
 }
