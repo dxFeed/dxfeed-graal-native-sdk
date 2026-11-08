@@ -102,11 +102,19 @@ public class ConnectionErrorTest extends ConnectorTestSupport {
     }
 
     @Test
-    public void serverResetIsIo() throws Exception {
+    public void serverResetIsDropped() throws Exception {
         final DXEndpoint endpoint = watched().connect("127.0.0.1:" + startServer(Mode.RESET));
         final ConnectionError error = awaitError(endpoint);
+        final String recorded = error.getExceptionClassName() + ": " + error.getMessage();
 
-        assertEquals(ConnectionError.CATEGORY_IO, error.getCategory());
+        // A reset is reported to one call on the socket only. Usually the reader gets it, an I/O error; on Linux the
+        // writer of QD may take it first, and the reader then reads the end of the stream.
+        if (error.getCategory() == ConnectionError.CATEGORY_CLOSED_BY_REMOTE) {
+            assertEquals(recorded, "java.io.EOFException", error.getExceptionClassName());
+        } else {
+            assertEquals(recorded, ConnectionError.CATEGORY_IO, error.getCategory());
+        }
+
         assertTrue(error.isDropped());
     }
 
@@ -344,7 +352,11 @@ public class ConnectionErrorTest extends ConnectorTestSupport {
                             socket.shutdownOutput();
                             keep(socket);
                         }
+                        // A reset after the first bytes of the client: its writer is then idle, so the reset usually
+                        // reaches its reader. The socket is kept, so that the tear-down closes it if the read fails.
                         case RESET -> {
+                            keep(socket);
+                            socket.getInputStream().read();
                             socket.setSoLinger(true, 0);
                             socket.close();
                         }
