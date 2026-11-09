@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.14.0",
+  "sdk_version": "3.15.0",
   "advanced_revision": 1,
   "features": [
     "connection_errors",
