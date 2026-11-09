@@ -916,7 +916,7 @@ Find useful information in our self-service dxFeed Knowledge Base:
 
 ### Requirements
 
-- GraalVM `graalvm.version` of `pom.xml` (now GraalVM 25 Innovation 4, `graal-25.4.4.1.1`) in `JAVA_HOME`. The
+- GraalVM `graalvm.version` of `pom.xml` (now GraalVM 25 Innovation 5, `graal-25.5.5.0.3`) in `JAVA_HOME`. The
   macOS x64 and iOS Simulator libraries are built with GraalVM `jdk-25.0.1`, the last one published for macOS x64.
   See the [GraalVM versions](.teamcity/README.MD#graalvm-versions) that the build supports.
 - Maven 3.8 or later (the CI uses 3.8.9).

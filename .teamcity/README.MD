@@ -232,14 +232,14 @@ docker push nexus-docker-graalvm.in.devexperts.com/graalvm:<os>-<arch>-<version>
 
 Example build Windows docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.4.4.1.1 -f docker/graalvm-win-x64-v2.Dockerfile .
-docker push nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.4.4.1.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.5.5.0.3" -t nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.5.5.0.3 -f docker/graalvm-win-x64-v2.Dockerfile .
+docker push nexus-docker-graalvm.in.devexperts.com/graalvm:win-x64-graal-25.5.5.0.3
 ```
 
 Example build Linux docker image (from `.teamcity`):
 ```shell
-docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.4.4.1.1" -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.4.4.1.1 -f docker/graalvm-linux-x64.Dockerfile .
-docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.4.4.1.1
+docker build -m 8GB --build-arg GRAALVM_VERSION="graal-25.5.5.0.3" -t nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.5.5.0.3 -f docker/graalvm-linux-x64.Dockerfile .
+docker push nexus-docker-graalvm.in.devexperts.com/graalvm:linux-x64-graal-25.5.5.0.3
 ```
 
 ## GraalVM versions
@@ -251,11 +251,11 @@ and the argument of `scripts/install.sh graalvm` / `Install-GraalVM`) supports t
 |--------------------------------|---------------------------|------------------------------------------------------------|
 | `java<java_version>-<version>` | `java11-22.3.1`           | GraalVM CE, legacy numbering (before 2023)                 |
 | `jdk-<jdk_version>`            | `jdk-25.0.2`              | GraalVM Community, JDK-aligned releases                    |
-| `graal-<graal_version>`        | `graal-25.4.4.1.1`        | GraalVM Community, innovation releases (GraalVM 25.1+)     |
+| `graal-<graal_version>`        | `graal-25.5.5.0.3`        | GraalVM Community, innovation releases (GraalVM 25.1+)     |
 | `oracle-jdk-<jdk_version>`     | `oracle-jdk-25.0.4`       | Oracle GraalVM (GFTC license), JDK-aligned releases        |
-| `oracle-graal-<graal_version>` | `oracle-graal-25.4.4.1.1` | Oracle GraalVM (GFTC license), innovation releases         |
+| `oracle-graal-<graal_version>` | `oracle-graal-25.5.5.0.3` | Oracle GraalVM (GFTC license), innovation releases         |
 
-An innovation release `graal-25.4.4.1.1` is GraalVM 25 Innovation 4 based on JDK 25.0.4.1.1.
+An innovation release `graal-25.5.5.0.3` is GraalVM 25 Innovation 5 based on JDK 25.0.5.0.3.
 
 GraalVM for macOS x64 is no longer published after `jdk-25.0.1`, so the macOS x64 and iOS simulator
 builds use a separate `env.GRAALVM_VERSION_MACOS_X64` TeamCity parameter.

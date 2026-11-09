@@ -134,10 +134,10 @@ function Install-GraalVM
     $Suffix = "-$ReleaseTag.$FileExtension"
   }
   # Since GraalVM 25, in addition to the JDK-aligned releases (jdk-25.0.2), there are
-  # Innovation releases identified by the graal version, for example, graal-25.4.4.1.1,
-  # which is GraalVM 25 Innovation 4 based on JDK 25.0.4.1.1 (artifacts are named jdk-25i4-25.0.4.1.1).
+  # Innovation releases identified by the graal version, for example, graal-25.5.5.0.3,
+  # which is GraalVM 25 Innovation 5 based on JDK 25.0.5.0.3 (artifacts are named jdk-25i5-25.0.5.0.3).
   # The "oracle-" prefix selects Oracle GraalVM (GFTC license) instead of GraalVM Community,
-  # for example, oracle-jdk-25.0.4 or oracle-graal-25.4.4.1.1.
+  # for example, oracle-jdk-25.0.4 or oracle-graal-25.5.5.0.3.
   elseif ($Version -match "^(?<vendor>oracle-)?(?<kind>jdk|graal)-(?<number>.+)$")
   {
     $IsOracle = [bool]$Matches.vendor

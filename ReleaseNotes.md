@@ -1,3 +1,16 @@
+* **\[MDAPI-509]\[GRAAL]** The libraries are built with GraalVM 25.5 (`graal-25.5.5.0.3`, JDK 25.0.5.0.3). A library
+  trusts the root CAs of the JDK that builds it unless the application sets `javax.net.ssl.trustStore`, so it no
+  longer trusts the eMudhra and Comodo roots that JDK 25.0.5 removes (`comodoaaaca`, `emsigneccrootcag3`,
+  `emsignrootcag1`, `emsignrootcag2`) and rejects the eMudhra TLS CAs G3B that it blocks (CVE-2026-91403,
+  CVE-2026-114820). The macOS x64 and iOS Simulator x64 libraries are still built with GraalVM `jdk-25.0.1`, the last
+  one for macOS x64, but with the trust store of GraalVM 25.5; the distrust rules that later JDKs implement in code
+  (the Chunghwa ePKI Root CA) are not in them.
+
+### For integrators
+
+* A connection to a server whose certificate chains up to one of the removed roots now fails the TLS handshake. An
+  application that sets `javax.net.ssl.trustStore` keeps its own trust store.
+
 ## v3.14.0
 
 * **\[MDAPI-478]\[GRAAL]** The message connectors of an endpoint (`dxfg_v4_message_connector.h`): what an endpoint

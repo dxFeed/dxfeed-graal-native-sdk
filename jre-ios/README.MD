@@ -19,7 +19,7 @@ the application does not link). So the libraries are rebuilt whenever `env.GRAAL
 sources each slice is built from.
 
 The slices come from two GraalVM versions, as the images do: the arm64 slices from `env.GRAALVM_VERSION`
-(graal-25.4.4.1.1), the x86_64 slice of the simulator from `env.GRAALVM_VERSION_MACOS_X64` (jdk-25.0.1), since GraalVM
+(graal-25.5.5.0.3), the x86_64 slice of the simulator from `env.GRAALVM_VERSION_MACOS_X64` (jdk-25.0.1), since GraalVM
 for macOS x64 is no longer published after jdk-25.0.1. The native functions of the two differ too (JDK 25.0.1 has
 `Java_java_io_Console_istty`, JDK 25.0.4 has `Java_java_io_Console_ttyStatus` instead).
 
@@ -41,12 +41,12 @@ in `~/.graal/jre-ios/<version>`.
 ## Building the libraries on a Mac
 
 ```shell
-arch -arm64 python3 jre-ios/build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios/libraries
+arch -arm64 python3 jre-ios/build.py build --graal-tag graal-25.5.5.0.3 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios/libraries
 cp out/jre-ios/libraries/* jre-ios/
 ```
 
 `--graal-tag` is a tag of [oracle/graal](https://github.com/oracle/graal): `graal-<version>` for the GraalVM Community
-innovation releases (`graal-25.4.4.1.1`), `jdk-<version>` for the others (`jdk-25.0.1`); only GraalVM Community is
+innovation releases (`graal-25.5.5.0.3`), `jdk-<version>` for the others (`jdk-25.0.1`); only GraalVM Community is
 supported. `--x64-graal-tag` is the version for the x86_64 slice of the simulator (`--graal-tag` by default).
 `--ios-min-version` sets the minimum iOS version (12.0 by default).
 

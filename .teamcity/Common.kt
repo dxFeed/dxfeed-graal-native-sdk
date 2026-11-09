@@ -539,6 +539,17 @@ object Util {
                     .teamcity/scripts/install.sh graalvm "$1" "$2" "$3"
                 fi
             done
+
+            # Native Image embeds the trust store of the JDK that builds the image (lib/security/cacerts and
+            # blocked.certs). jdk-25.0.1 predates the CA changes of later JDKs (JDK-8395690 removed the eMudhra and
+            # Comodo roots, JDK-8395142 blocked the eMudhra CAs G3B), so the x64 builds take both files of the arm64
+            # GraalVM; keytool of the x64 one checks that it reads that cacerts.
+            for file in cacerts blocked.certs
+            do
+                cp -f "${'$'}{graalvm_arm64_path}/Contents/Home/lib/security/${'$'}{file}" \
+                    "${'$'}{graalvm_x64_path}/Contents/Home/lib/security/${'$'}{file}"
+            done
+            "${'$'}{graalvm_x64_path}/Contents/Home/bin/keytool" -list -cacerts -storepass changeit > /dev/null
         """
     }
 

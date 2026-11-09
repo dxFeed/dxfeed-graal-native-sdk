@@ -39,10 +39,10 @@ project {
 
     params {
         text(
-            "env.GRAALVM_VERSION", "graal-25.4.4.1.1",
+            "env.GRAALVM_VERSION", "graal-25.5.5.0.3",
             label = "GraalVM version",
             description = "The GraalVM of the builds: the tag of its Docker images (graalvm:linux-x64-<version>) and " +
-                "the release on macOS and Windows agents. Examples: graal-25.4.4.1.1, jdk-25.0.1",
+                "the release on macOS and Windows agents. Examples: graal-25.5.5.0.3, jdk-25.0.1",
             allowEmpty = false,
         )
         text(
@@ -1630,7 +1630,7 @@ object BuildJreLibrariesForIOS : BuildType({
             "jre.ios.graal.tag", "%env.GRAALVM_VERSION%",
             label = "GraalVM tag (arm64)",
             description = "The tag of oracle/graal for the iOS and iOS Simulator arm64 libraries. " +
-                "Examples: graal-25.4.4.1.1, jdk-25.0.1",
+                "Examples: graal-25.5.5.0.3, jdk-25.0.1",
             allowEmpty = false,
         )
         text(

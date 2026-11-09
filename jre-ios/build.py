@@ -10,7 +10,7 @@ both must come from the same sources: each slice is built from the sources of th
 builds its image (graal) and of the labs JDK that it is built on (labs-openjdk, found by mx). The x86_64 slice of the
 simulator has its own version, since GraalVM for macOS x64 is no longer published after jdk-25.0.1.
 
-    build.py build --graal-tag graal-25.4.4.1.1 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios
+    build.py build --graal-tag graal-25.5.5.0.3 --x64-graal-tag jdk-25.0.1 --work ~/.graal/jre-ios --out out/jre-ios
     build.py check --dir <unpacked graal-native-sdk-*-aarch64-ios.zip> --platform ios
     build.py set-build-version --file libDxFeedGraalNativeSdk.o --platform simulator
     build.py manifest --dir <the files of an archive> --platform ios --version 3.7.1
@@ -940,7 +940,7 @@ def main():
     build_parser = commands.add_parser('build', help='build the libraries')
     build_parser.add_argument('--graal-tag', required=True,
                               help='the tag of oracle/graal of the GraalVM Community used for the native image, '
-                                   'for example graal-25.4.4.1.1 or jdk-25.0.1')
+                                   'for example graal-25.5.5.0.3 or jdk-25.0.1')
     build_parser.add_argument('--x64-graal-tag',
                               help='the tag of the GraalVM used for the x86_64 image of the simulator '
                                    '(default: --graal-tag)')
