@@ -283,7 +283,8 @@ fun BuildSteps.cApiReferenceSteps(tagCommand: String, stepConditions: BuildStepC
  * the baseline of the API description for a release (Util.apiBaselineUpdateScript), then the debug archive of the tag
  * that the release has made.
  *
- * @param tagCommand the shell command that prints the tag of the release (v3.8.0)
+ * @param tagCommand the shell command that prints the tag of the release (v3.8.0); it runs in the GraalVM image, where
+ *        mvn needs Mvn.SETTINGS and Mvn.NEXUS
  * @param prepareArguments the arguments of release:prepare before the credentials, with a trailing space if any
  */
 fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
@@ -292,6 +293,8 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         id = "release_prepend_changelog_header"
         scriptContent = Util.releaseNotesHeaderScript(tagCommand)
         formatStderrAsError = true
+        // In the image of release:prepare: the Maven and Java of the agent are not the ones of the build.
+        inDocker(Images.GRAALVM_LINUX_X64, "--rm")
     }
 
     script {
@@ -489,12 +492,12 @@ object Util {
                 git commit -m "Update the API baseline to ${'$'}TAG" -- "${'$'}BASELINE"
 
                 # Over HTTPS with the token of dxcity, as release:prepare pushes (the scm connection of pom.xml); the
-                # credential helper keeps the token out of the URL.
+                # credential helper keeps the token out of the URL. The git of the image (1.8) takes an empty value
+                # (-c credential.helper=) for a missing one and fails; the container has no other helper to reset.
                 export BITBUCKET_TOKEN="%dxcity.token.bitbucket%"
                 REMOTE=https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git
                 stash() {
-                    git -c credential.helper= \
-                        -c credential.helper='!f() { echo username=dxcity; echo "password=${'$'}BITBUCKET_TOKEN"; }; f' "${'$'}@"
+                    git -c credential.helper='!f() { echo username=dxcity; echo "password=${'$'}BITBUCKET_TOKEN"; }; f' "${'$'}@"
                 }
 
                 # A pull request merged during the release moves main: then the commit goes on top of it.

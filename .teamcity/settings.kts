@@ -183,11 +183,15 @@ object ReleaseTheNextPatch : BuildType({
 
     steps {
         linuxReleaseSteps(
+                // With -q, Maven prints its errors to stdout, which the substitution would swallow: they go to stderr.
                 tagCommand = """
-                VERSION=$(mvn help:evaluate \
+                if ! VERSION=$(mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} --batch-mode help:evaluate \
                     -Dexpression=project.version \
                     -q \
-                    -DforceStdout)
+                    -DforceStdout); then
+                    echo "${'$'}VERSION" >&2
+                    exit 1
+                fi
                 VERSION=${'$'}{VERSION%-SNAPSHOT}
                 echo "v${'$'}VERSION"
             """.trimIndent(),
