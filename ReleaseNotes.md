@@ -1,3 +1,5 @@
+## v3.15.0-rc1
+
 * **\[MDAPI-509]\[GRAAL]** The libraries are built with GraalVM 25.5 (`graal-25.5.5.0.3`, JDK 25.0.5.0.3). A library
   trusts the root CAs of the JDK that builds it unless the application sets `javax.net.ssl.trustStore`, so it no
   longer trusts the eMudhra and Comodo roots that JDK 25.0.5 removes (`comodoaaaca`, `emsigneccrootcag3`,
