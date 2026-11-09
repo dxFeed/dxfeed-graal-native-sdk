@@ -9,8 +9,9 @@ and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-s
 it easily integrable
 into your projects.
 
-![qds](https://img.shields.io/badge/qds-v3.355-yellow)
-![mdd](https://img.shields.io/badge/mdd-v548-red)
+![QDS](https://img.shields.io/badge/QDS-v3.355-yellow)
+![MDD](https://img.shields.io/badge/MDD-v548-red)
+![GraalVM](https://img.shields.io/badge/GraalVM-25.5-orange)
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20linux--arm64%20%7C%20osx--x64%20%7C%20osx--arm64%20%7C%20ios%20%7C%20ios--simulator-lightgrey)
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](./LICENSE)
 
