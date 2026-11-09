@@ -1159,7 +1159,7 @@ object PublishCApiDocsToGitHubPages : BuildType({
 object BuildForLinux : BuildType({
     name = "Build [Linux, x64]"
     description = "mvn clean package in the GraalVM image, without a deploy"
-    artifactRules = "*.zip"
+    artifactRules = "target/*.zip"
 
     mainRepository()
 
@@ -1563,7 +1563,7 @@ object BuildForWindows : BuildType({
 object BuildForWindowsInDocker : BuildType({
     name = "Build [Win, x64] in Docker"
     description = "mvn clean package in the GraalVM image for Windows, without a deploy"
-    artifactRules = "*.zip"
+    artifactRules = "target/*.zip"
 
     mainRepository()
 
@@ -1590,7 +1590,7 @@ object BuildForWindowsInDocker : BuildType({
 object BuildForMacOSAndIOS : BuildType({
     name = "Build [macOS, iOS]"
     description = "The macOS (arm64, x86_64), iOS and iOS Simulator archives, without a deploy"
-    artifactRules = "*.zip"
+    artifactRules = "out/archives/*.zip"
 
     mainRepository()
 
@@ -1598,13 +1598,20 @@ object BuildForMacOSAndIOS : BuildType({
         script {
             name = "Build"
             // set -e: a failed build of one platform fails the step, not only the last one.
+            // Each build cleans target, so its archive is copied to out/archives right after it.
             scriptContent = "set -e\n" + Util.prepareMacOS() + """
+                rm -rf out/archives
+                mkdir -p out/archives
                 export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
+                cp target/*.zip out/archives/
                 arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIos=true clean package
+                cp target/*.zip out/archives/
                 export JAVA_HOME=${'$'}{graalvm_x64_path}/Contents/Home
                 arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} -DmacIosSimulator=true package
+                cp target/*.zip out/archives/
                 arch -x86_64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
+                cp target/*.zip out/archives/
             """.trimIndent()
             formatStderrAsError = true
         }
