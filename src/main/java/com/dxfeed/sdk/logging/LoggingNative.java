@@ -9,6 +9,7 @@ import com.dxfeed.sdk.NativeUtils;
 import com.dxfeed.sdk.common.DxfgOut;
 import com.dxfeed.sdk.exception.ExceptionHandlerReturnMinusOne;
 import com.dxfeed.sdk.javac.NativeListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
@@ -18,6 +19,16 @@ import org.graalvm.nativeimage.c.type.VoidPointer;
 
 @CContext(LoggingDirectives.class)
 public class LoggingNative {
+
+    private static final AtomicBoolean LISTENER_FAILURE_REPORTED = new AtomicBoolean();
+
+    // Reports to stderr the first failure of a logging listener call, once per isolate: the logging cannot report it.
+    private static void reportListenerFailure(final Throwable failure) {
+        if (LISTENER_FAILURE_REPORTED.compareAndSet(false, true)) {
+            System.err.println("dxfg: a logging listener call failed, its record is dropped (reported once): "
+                    + failure);
+        }
+    }
 
     @CEntryPoint(
             name = "dxfg_logging_listener_new",
@@ -52,17 +63,23 @@ public class LoggingNative {
                     var nativeLoggerName = NativeUtils.MAPPER_STRING.toNative(loggerName);
                     var nativeMessage = NativeUtils.MAPPER_STRING.toNative(message);
                     var nativeException = NativeUtils.MAPPER_EXCEPTION.toNative(exception);
-                    var naiveFormattedMessage = NativeUtils.MAPPER_STRING.toNative(formattedMessage);
+                    var nativeFormattedMessage = NativeUtils.MAPPER_STRING.toNative(formattedMessage);
 
-                    userFunc.invoke(CurrentIsolate.getCurrentThread(), DxfgLoggingLevel.of(level),
-                            timestamp, nativeThreadName, threadId, nativeLoggerName, nativeMessage,
-                            nativeException, naiveFormattedMessage, userData);
-
-                    NativeUtils.MAPPER_STRING.release(naiveFormattedMessage);
-                    NativeUtils.MAPPER_EXCEPTION.release(nativeException);
-                    NativeUtils.MAPPER_STRING.release(nativeMessage);
-                    NativeUtils.MAPPER_STRING.release(nativeLoggerName);
-                    NativeUtils.MAPPER_STRING.release(nativeThreadName);
+                    try {
+                        userFunc.invoke(CurrentIsolate.getCurrentThread(), DxfgLoggingLevel.of(level),
+                                timestamp, nativeThreadName, threadId, nativeLoggerName, nativeMessage,
+                                nativeException, nativeFormattedMessage, userData);
+                    } finally {
+                        NativeUtils.MAPPER_STRING.release(nativeFormattedMessage);
+                        NativeUtils.MAPPER_EXCEPTION.release(nativeException);
+                        NativeUtils.MAPPER_STRING.release(nativeMessage);
+                        NativeUtils.MAPPER_STRING.release(nativeLoggerName);
+                        NativeUtils.MAPPER_STRING.release(nativeThreadName);
+                    }
+                } catch (final Throwable t) {
+                    // The record is lost, but the code that logged goes on: Logger.log() must not throw into it.
+                    // Not logged: that would call this listener again.
+                    reportListenerFailure(t);
                 } finally {
                     exit();
                 }

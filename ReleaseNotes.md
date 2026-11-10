@@ -1,3 +1,9 @@
+* **\[MDAPI-513]\[GRAAL]** A logging listener (`dxfg_v4_logging_set_listener()`) at the level TRACE or ALL no
+  longer breaks the calls that log at a Java level the SDK has no constant for: since 3.14.0 such a call (for example
+  `dxfg_v4_DXEndpoint_connect()`, which logs at `FINER`) failed with `NullPointerException`. The listener now gets
+  `FINER` as TRACE, `CONFIG` as DEBUG and any other level as the next lower SDK level, and a failed listener call drops
+  its record instead of failing the code that logged (the first failure is reported to stderr).
+
 ## v3.15.0
 
 * **\[MDAPI-509]\[GRAAL]** The libraries are built with GraalVM 25.5 (`graal-25.5.5.0.3`, JDK 25.0.5.0.3). A library

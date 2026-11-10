@@ -1155,6 +1155,7 @@
             <include>com/dxfeed/sdk/feedfilter/**/*Test.java</include>
             <include>com/dxfeed/sdk/ipf/**/*Test.java</include>
             <include>com/dxfeed/sdk/javac/**/*Test.java</include>
+            <include>com/dxfeed/sdk/logging/**/*Test.java</include>
             <include>com/dxfeed/sdk/mappers/**/*Test.java</include>
             <include>com/dxfeed/sdk/ondemand/**/*Test.java</include>
             <include>com/dxfeed/sdk/orcs/**/*Test.java</include>

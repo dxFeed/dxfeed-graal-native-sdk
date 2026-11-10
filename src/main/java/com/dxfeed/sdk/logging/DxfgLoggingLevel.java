@@ -3,8 +3,6 @@
 
 package com.dxfeed.sdk.logging;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import org.graalvm.nativeimage.c.CContext;
 import org.graalvm.nativeimage.c.constant.CEnum;
@@ -23,26 +21,44 @@ public enum DxfgLoggingLevel {
     DXFG_LOGGING_LEVEL_OFF(Level.OFF),
     ;
 
-    private static final Map<Level, DxfgLoggingLevel> map = new HashMap<>();
-
-    static {
-        map.put(Level.ALL, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_ALL);
-        map.put(Level.FINEST, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_TRACE);
-        map.put(Level.FINE, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_DEBUG);
-        map.put(Level.INFO, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_INFO);
-        map.put(Level.WARNING, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_WARN);
-        map.put(Level.SEVERE, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_ERROR);
-        map.put(Level.OFF, DxfgLoggingLevel.DXFG_LOGGING_LEVEL_OFF);
-    }
-
     private final Level level;
 
     DxfgLoggingLevel(final Level level) {
         this.level = level;
     }
 
+    /**
+     * Returns the level a logging listener gets for a record of the given Java level: the highest SDK level that does
+     * not exceed it, so the levels without an SDK constant map to the next lower one ({@code FINER} to TRACE,
+     * {@code CONFIG} to DEBUG, a custom level between {@code WARNING} and {@code SEVERE} to WARN). {@code ALL} and
+     * {@code OFF} map to themselves, a level below {@code FINEST} to TRACE.
+     *
+     * @param level the level of the record, not {@code null}
+     * @return the SDK level, never {@code null}
+     */
     public static DxfgLoggingLevel of(final Level level) {
-        return map.get(level);
+        final int value = level.intValue();
+
+        if (value == Level.OFF.intValue()) {
+            return DXFG_LOGGING_LEVEL_OFF;
+        }
+        if (value == Level.ALL.intValue()) {
+            return DXFG_LOGGING_LEVEL_ALL;
+        }
+        if (value >= Level.SEVERE.intValue()) {
+            return DXFG_LOGGING_LEVEL_ERROR;
+        }
+        if (value >= Level.WARNING.intValue()) {
+            return DXFG_LOGGING_LEVEL_WARN;
+        }
+        if (value >= Level.INFO.intValue()) {
+            return DXFG_LOGGING_LEVEL_INFO;
+        }
+        if (value >= Level.FINE.intValue()) {
+            return DXFG_LOGGING_LEVEL_DEBUG;
+        }
+
+        return DXFG_LOGGING_LEVEL_TRACE;
     }
 
     @CEnumLookup

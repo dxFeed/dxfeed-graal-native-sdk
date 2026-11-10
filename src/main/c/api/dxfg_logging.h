@@ -105,7 +105,9 @@ typedef struct dxfg_logging_listener_t {
  * Java: `InterceptableLoggingListener.onLog(Level, long, String, long, String, String, Throwable, String)`.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
- * @param[in] level The level of the message.
+ * @param[in] level The level of the message. A Java level without a constant here is given as the next lower one:
+ * `FINER` as #DXFG_LOGGING_LEVEL_TRACE, `CONFIG` as #DXFG_LOGGING_LEVEL_DEBUG (since 3.16.0; before, a call that
+ * logged at such a level failed).
  * @param[in] timestamp The time of the message in milliseconds since the Unix epoch (UTC).
  * @param[in] thread_name The name of the Java thread that logged the message, a NUL-terminated UTF-8 string.
  * @param[in] thread_id The identifier of the Java thread that logged the message.
