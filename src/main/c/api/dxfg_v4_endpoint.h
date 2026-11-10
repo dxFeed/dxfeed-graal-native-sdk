@@ -124,7 +124,8 @@ int32_t dxfg_v4_DXEndpoint_Builder_withProperty(graal_isolatethread_t *thread, d
  *
  * The file is read in the format of a Java properties file (`java.util.Properties.load`) and every property that the
  * builder supports is set as by dxfg_v4_DXEndpoint_Builder_withProperty(). The unsupported properties are ignored.
- * An error is reported if the file cannot be read.
+ * An error is reported if the file cannot be read. The file is closed before the function returns, also on an error
+ * (since 3.16.0; before, it stayed open until the garbage collection, and on Windows it could not be deleted meanwhile).
  *
  * Java: `DXEndpoint.Builder.withProperties(Properties)`.
  *

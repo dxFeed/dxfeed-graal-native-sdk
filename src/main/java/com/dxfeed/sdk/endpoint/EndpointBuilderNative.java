@@ -12,6 +12,7 @@ import com.dxfeed.sdk.system.IsolateResources;
 import com.dxfeed.sdk.system.QdPropertyDefaults;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.CContext;
@@ -84,7 +85,11 @@ public final class EndpointBuilderNative {
             final CCharPointer pathToFile
     ) throws IOException {
         final Properties properties = new Properties();
-        properties.load(new FileInputStream(NativeUtils.MAPPER_STRING.toJava(pathToFile)));
+
+        try (final InputStream stream = new FileInputStream(NativeUtils.MAPPER_STRING.toJava(pathToFile))) {
+            properties.load(stream);
+        }
+
         NativeUtils.MAPPER_ENDPOINT_BUILDER.toJava(builder).withProperties(properties);
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }

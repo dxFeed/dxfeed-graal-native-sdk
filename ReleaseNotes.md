@@ -3,6 +3,10 @@
   `dxfg_v4_DXEndpoint_connect()`, which logs at `FINER`) failed with `NullPointerException`. The listener now gets
   `FINER` as TRACE, `CONFIG` as DEBUG and any other level as the next lower SDK level, and a failed listener call drops
   its record instead of failing the code that logged (the first failure is reported to stderr).
+* **\[MDAPI-514]\[GRAAL]** `dxfg_v4_DXEndpoint_Builder_withProperties()` and the deprecated
+  `dxfg_DXEndpoint_Builder_withProperties()` close the properties file before they return, also on an error. Before,
+  the file stayed open until the garbage collection: every call leaked a file handle, and on Windows the file could not
+  be deleted, renamed or rewritten meanwhile.
 
 ## v3.15.0
 
