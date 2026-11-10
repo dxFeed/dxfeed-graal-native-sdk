@@ -12,6 +12,10 @@
   Java `DXEndpoint.getInstance(Role)`. It is removed in 4.0.0. `dxfg_v4_message_connector.h` now documents what a
   connector answers after a replace, a disconnect or the close of its endpoint, that a listener added to a closed
   endpoint is never called, and that a server socket connector of `:7400` returns the address `*:7400`.
+* **\[MDAPI-520]\[GRAAL]** A new tool, [NetTest](src/main/c/src/apps/NetTest), publishes generated Trade or
+  TimeAndSale events through `dxfg_v4_DXPublisher_publishEvents()` at a fixed rate and prints the statistics line of
+  the QD tool `NetTest p`, so that publishing over the C API can be benchmarked like the QD API. It is built with the C
+  samples and is not part of the SDK archive.
 
 ### For integrators
 

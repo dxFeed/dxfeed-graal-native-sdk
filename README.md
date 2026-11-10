@@ -347,6 +347,9 @@ runs one (the `-D` options set system properties).
 | System                     | `SystemPropertiesCase` (`sp`), `LoggingCase` (`l`), `ExceptionCase` (`ex`), `ExecutorBaseOnConcurrentLinkedQueueCase` (`eb`), `FinalizeListenerCase` (`fl`) |
 | QDS tools                  | `Qds`: the QDS tools of the Java API (`DxfgClient qds connect demo.dxfeed.com:7300 Quote AAPL`)                                         |
 
+[NetTest](src/main/c/src/apps/NetTest) publishes generated events at a fixed rate and prints the statistics of the QD
+tool `NetTest p`, for publishing benchmarks over the C API.
+
 The [C tests](src/main/c/tests) are small programs too. Our ready-made wrappers:
 
 - .NET: [dxfeed-graal-net-api](https://github.com/dxFeed/dxfeed-graal-net-api)
