@@ -373,7 +373,7 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_
  *
  * Java: `DXEndpoint.create(DXEndpoint.Role)`.
  *
- * @deprecated Use dxfg_v4_DXEndpoint_getInstanceWithRole().
+ * @deprecated Use dxfg_v4_DXEndpoint_createWithRole().
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] role The role of the endpoint.
@@ -381,7 +381,7 @@ dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_
  * The caller owns the endpoint: close it with dxfg_DXEndpoint_close() or dxfg_DXEndpoint_closeAndAwaitTermination()
  * and free its handle with dxfg_JavaObjectHandler_release().
  */
-DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_getInstanceWithRole()")
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_createWithRole()")
 dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance2(graal_isolatethread_t *thread, dxfg_endpoint_role_t role);
 
 /**

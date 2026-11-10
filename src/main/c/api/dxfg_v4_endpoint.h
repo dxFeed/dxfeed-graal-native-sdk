@@ -232,6 +232,10 @@ int32_t dxfg_v4_DXEndpoint_getInstance(graal_isolatethread_t *thread, DXFG_OUT d
  *
  * Java: `DXEndpoint.create(DXEndpoint.Role)`.
  *
+ * @deprecated Use dxfg_v4_DXEndpoint_createWithRole(), which does the same: the name of this function promises the
+ * singleton of the Java `DXEndpoint.getInstance(Role)`, which it does not return. Deprecated since 3.16.0, removed in
+ * 4.0.0.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] role The role of the endpoint.
  * @param[out] endpoint The pointer to the variable that receives the new endpoint. The caller owns the endpoint: close
@@ -240,6 +244,7 @@ int32_t dxfg_v4_DXEndpoint_getInstance(graal_isolatethread_t *thread, DXFG_OUT d
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error. Use
  * dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
  */
+DXFG_DEPRECATED("use dxfg_v4_DXEndpoint_createWithRole()")
 int32_t dxfg_v4_DXEndpoint_getInstanceWithRole(graal_isolatethread_t *thread, dxfg_v4_endpoint_role_t role,
                                                DXFG_OUT dxfg_v4_endpoint_t **endpoint);
 

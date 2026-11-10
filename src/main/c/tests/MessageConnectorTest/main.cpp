@@ -540,6 +540,7 @@ TEST_CASE("A feed endpoint connected to a publisher reports its client connector
     REQUIRE(servers.size() == 1);
     CHECK(intValue(thread, servers[0], &dxfg_v4_MessageConnector_getKind) ==
           DXFG_V4_MESSAGE_CONNECTOR_KIND_SERVER_SOCKET);
+    CHECK(addressOf(thread, servers[0]) == "*:" + port); // QD names the address `:port` so.
     REQUIRE(waitFor([&] { return stateOf(thread, servers[0]) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
     CHECK(currentAddressesOf(thread, servers[0]).empty());
 
@@ -960,6 +961,127 @@ TEST_CASE("The connection error functions refuse NULL arguments; a release of NU
     CHECK(error == nullptr);
 
     CHECK(dxfg_v4_ConnectionError_release(thread, nullptr) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
+TEST_CASE("A connector of a disconnected endpoint is stopped and keeps its name, kind, address and statistics") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    const auto port = std::to_string(findFreeLoopbackPort());
+    Endpoint publisher(thread, DXFG_ENDPOINT_ROLE_PUBLISHER);
+    REQUIRE(publisher.ready);
+    REQUIRE(publisher.connect(":" + port));
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(feed.connect("127.0.0.1:" + port));
+
+    Connectors connectors(thread, feed.endpoint);
+    REQUIRE(connectors.size() == 1);
+    const auto connector = connectors[0];
+
+    REQUIRE(waitFor([&] { return stateOf(thread, connector) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
+    const auto name = nameOf(thread, connector);
+    const auto stats = statisticsOf(thread, connector);
+
+    REQUIRE(dxfg_v4_DXEndpoint_disconnect(thread, feed.endpoint) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    Connectors none(thread, feed.endpoint);
+    CHECK(none.size() == 0);
+
+    CHECK(waitFor([&] { return stateOf(thread, connector) == DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED; }));
+    CHECK(intValue(thread, connector, &dxfg_v4_MessageConnector_isActive) == 0);
+    CHECK(waitFor([&] { return intValue(thread, connector, &dxfg_v4_MessageConnector_getConnectionCount) == 0; }));
+    CHECK(currentAddressesOf(thread, connector).empty());
+    CHECK(nameOf(thread, connector) == name);
+    CHECK(intValue(thread, connector, &dxfg_v4_MessageConnector_getKind) ==
+          DXFG_V4_MESSAGE_CONNECTOR_KIND_CLIENT_SOCKET);
+    CHECK(addressOf(thread, connector) == "127.0.0.1:" + port);
+
+    const auto later = statisticsOf(thread, connector);
+    CHECK(later.read_bytes >= stats.read_bytes);
+    CHECK(later.written_bytes >= stats.written_bytes);
+    CHECK(later.read_data_records >= stats.read_data_records);
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
+TEST_CASE("A connector replaced by a connect to another address is stopped and keeps its address") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(feed.connect("127.0.0.1:1"));
+
+    Connectors first(thread, feed.endpoint);
+    REQUIRE(first.size() == 1);
+    const auto replaced = first[0];
+
+    REQUIRE(feed.connect("127.0.0.1:2"));
+
+    Connectors second(thread, feed.endpoint);
+    REQUIRE(second.size() == 1);
+    CHECK(addressOf(thread, second[0]) == "127.0.0.1:2");
+
+    CHECK(waitFor([&] { return stateOf(thread, replaced) == DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED; }));
+    CHECK(intValue(thread, replaced, &dxfg_v4_MessageConnector_isActive) == 0);
+    CHECK(intValue(thread, replaced, &dxfg_v4_MessageConnector_getConnectionCount) == 0);
+    CHECK(currentAddressesOf(thread, replaced).empty());
+    CHECK(addressOf(thread, replaced) == "127.0.0.1:1");
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
+TEST_CASE("A connector listener added to a closed endpoint is accepted and never called") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(dxfg_v4_DXEndpoint_close(thread, feed.endpoint) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    static StateCalls calls{}; // Static: the listener may outlive the test case if it fails.
+    ConnectorListener listener(thread, calls);
+
+    CHECK(dxfg_v4_DXEndpoint_addMessageConnectorListener(thread, feed.endpoint, listener.listener) ==
+          DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(takeExceptionClassName(thread).empty());
+
+    // A connect of a closed endpoint succeeds and creates no connector.
+    CHECK(feed.connect("127.0.0.1:1"));
+    CHECK(takeExceptionClassName(thread).empty());
+
+    Connectors none(thread, feed.endpoint);
+    CHECK(none.size() == 0);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    CHECK(calls.count == 0);
+}
+
+TEST_CASE("A connector of a closed endpoint keeps its last connection error") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(feed.connect("127.0.0.1:1"));
+
+    Connectors connectors(thread, feed.endpoint);
+    REQUIRE(connectors.size() == 1);
+    const auto connector = connectors[0];
+
+    REQUIRE(waitFor([&] { return lastErrorOf(thread, connector).present; }));
+    const auto before = lastErrorOf(thread, connector);
+
+    REQUIRE(dxfg_v4_DXEndpoint_close(thread, feed.endpoint) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(waitFor([&] { return stateOf(thread, connector) == DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED; }));
+
+    const auto after = lastErrorOf(thread, connector);
+    REQUIRE(after.present);
+    CHECK(after.category == DXFG_V4_CONNECTION_ERROR_CONNECT_FAILED);
+    CHECK(after.address == "127.0.0.1:1");
+    CHECK(after.count >= before.count);
+    CHECK(after.time >= before.time);
     CHECK(takeExceptionClassName(thread).empty());
 }
 

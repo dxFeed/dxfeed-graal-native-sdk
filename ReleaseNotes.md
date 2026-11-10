@@ -7,6 +7,16 @@
   `dxfg_DXEndpoint_Builder_withProperties()` close the properties file before they return, also on an error. Before,
   the file stayed open until the garbage collection: every call leaked a file handle, and on Windows the file could not
   be deleted, renamed or rewritten meanwhile.
+* **\[MDAPI-515]\[GRAAL]** `dxfg_v4_DXEndpoint_getInstanceWithRole()` is deprecated in favour of
+  `dxfg_v4_DXEndpoint_createWithRole()`, which does the same: despite its name it never returned the singleton of the
+  Java `DXEndpoint.getInstance(Role)`. It is removed in 4.0.0. `dxfg_v4_message_connector.h` now documents what a
+  connector answers after a replace, a disconnect or the close of its endpoint, that a listener added to a closed
+  endpoint is never called, and that a server socket connector of `:7400` returns the address `*:7400`.
+
+### For integrators
+
+* A call of `dxfg_v4_DXEndpoint_getInstanceWithRole()` now gives a deprecation warning, which fails a build that
+  treats warnings as errors; call `dxfg_v4_DXEndpoint_createWithRole()` instead.
 
 ## v3.15.0
 

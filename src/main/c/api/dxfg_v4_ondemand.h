@@ -35,7 +35,7 @@ typedef dxfg_on_demand_service_t dxfg_v4_on_demand_service_t;
  * @brief Returns the on-demand service of the default endpoint with the #DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED role.
  *
  * The endpoint is the application-wide default endpoint of that role (dxfg_v4_OnDemandService_getEndpoint() returns it;
- * dxfg_v4_DXEndpoint_getInstanceWithRole() creates a new endpoint instead), which is not connected to any other
+ * dxfg_v4_DXEndpoint_createWithRole() creates a new endpoint instead), which is not connected to any other
  * real-time or delayed data feed. It is created on the first call, is configured by the system properties and is closed
  * by dxfg_v4_system_close_all_and_await_termination(). To switch another feed to the replay and back, use
  * dxfg_v4_OnDemandService_getInstanceByEndpoint() with the endpoint of that feed.

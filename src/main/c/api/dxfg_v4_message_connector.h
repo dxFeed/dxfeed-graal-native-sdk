@@ -29,6 +29,11 @@ extern "C" {
  *  answers, as #DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED. A connect to the same address and
  *  dxfg_v4_DXEndpoint_reconnect() keep the connectors.
  *
+ *  A connector stopped by such a replace, by dxfg_v4_DXEndpoint_disconnect() or by the close of its endpoint stays
+ *  readable through its handle: its state is #DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED, it is not active, it has no
+ *  open connections and no current addresses, and it keeps its name, kind, address, statistics and last connection
+ *  error.
+ *
  *  Each value of a connector is current when it is read; the values are not read together as one consistent set.
  *  Reading them changes nothing: the statistics are not reset, and other readers (QD's JMX beans) see the same values.
  *
@@ -174,6 +179,10 @@ typedef struct dxfg_v4_message_connector_listener_t {
  * listener; it should return quickly, since the next call waits for it. When the change is a connection error, the
  * error is recorded before the call: dxfg_v4_MessageConnector_getLastError() returns it in the call already.
  *
+ * A call reads the state the connector has at the call, not the one that caused it: the first call for a connector
+ * that a connect creates may read #DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED, before a later call reads
+ * #DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTING.
+ *
  * @param[in] thread The current GraalVM Isolate's thread (the thread of the SDK that calls the function).
  * @param[in] connector The connector whose state changed. The handle is valid during the call only and is released by
  * the SDK; dxfg_v4_JavaObjectHandler_clone() keeps the connector after the call.
@@ -188,7 +197,8 @@ typedef void (*dxfg_v4_message_connector_listener_func)(graal_isolatethread_t *t
  * @brief Returns the current message connectors of an endpoint.
  *
  * Each call reads the connectors anew, so the connectors replaced by a connect to another address are never returned.
- * The list is empty for an endpoint that is not connected, that has the role `LOCAL_HUB`, or that is closed.
+ * The list is empty for an endpoint that is not connected (also after dxfg_v4_DXEndpoint_disconnect()), that has the
+ * role `LOCAL_HUB`, or that is closed.
  *
  * Java: `QDEndpoint.getConnectors()`.
  *
@@ -252,8 +262,10 @@ int32_t dxfg_v4_MessageConnector_getKind(graal_isolatethread_t *thread, dxfg_v4_
                                          DXFG_OUT int32_t *kind);
 
 /**
- * @brief Returns the address a message connector was configured with (e.g. `127.0.0.1:7300`, `:7400`), the user and
- * the password masked as in QD's log.
+ * @brief Returns the address a message connector was configured with (e.g. `127.0.0.1:7300`), the user and the
+ * password masked as in QD's log.
+ *
+ * A server socket connector of the address `:7400` returns `*:7400`.
  *
  * Java: `MessageConnector.getAddress()`, `LogUtil.hideCredentials(Object)`.
  *
@@ -364,6 +376,9 @@ int32_t dxfg_v4_MessageConnector_getClosedConnectionCount(graal_isolatethread_t 
  * between two calls; `read_bytes` grows on heartbeats too. On iOS and the iOS Simulator the data record counters stay
  * 0 (see dxfg_v4_message_connector_stats_t).
  *
+ * The open connections of the statistics count a new connection a moment after
+ * dxfg_v4_MessageConnector_getConnectionCount() does, so right after a connect the two may differ.
+ *
  * Java: `MessageConnector.retrieveCompleteEndpointStats()`, and `QDStats.getValue(SValue)` of
  * `MessageConnector.getStats()` with `IO_DATA_READ_RECORDS` and `IO_DATA_WRITE_RECORDS`.
  *
@@ -414,7 +429,8 @@ int32_t dxfg_v4_MessageConnectorListener_new(graal_isolatethread_t *thread,
  * The listener gets the changes of the current connectors of the endpoint and of the connectors that a later
  * dxfg_v4_DXEndpoint_connect() creates; it does not get the current states at the add, so read them with
  * dxfg_v4_DXEndpoint_getConnectors() after it. Adding a listener that is added already changes nothing. One listener
- * may be added to several endpoints.
+ * may be added to several endpoints. Adding a listener to a closed endpoint succeeds, and the listener is never called
+ * for it.
  *
  * Java: `QDEndpoint.addMessageConnectionListener(MessageConnectorListener)`.
  *
@@ -549,8 +565,9 @@ typedef struct dxfg_v4_connection_error_t {
 /**
  * @brief Returns the last connection error of a message connector: the newest failed connect or dropped connection.
  *
- * A successful connection clears nothing: the time tells how old the error is. The SDK watches the connectors of the
- * endpoints it creates from their creation; a connector of another endpoint has no errors.
+ * A successful connection clears nothing: the time tells how old the error is. Neither does a replace of the
+ * connector, a disconnect or the close of its endpoint: the connector keeps its last error. The SDK watches the
+ * connectors of the endpoints it creates from their creation; a connector of another endpoint has no errors.
  *
  * Java: no counterpart; the SDK captures the errors from QD's log records.
  *
