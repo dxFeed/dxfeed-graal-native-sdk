@@ -29,6 +29,13 @@
     <runtime.suffix />
     <!-- The build report of native-image (-H:BuildOutputJSONFile), the source of the build-info file. -->
     <native.image.build.report>${project.build.directory}/native-image-build-report.json</native.image.build.report>
+    <!--
+      native-maven-plugin passes the native-image options in an argument file (target/tmp/native-image-*.args) on every
+      platform, not only on Windows: the requested options of the build-info file come from it.
+    -->
+    <useArgFile>true</useArgFile>
+    <!-- The build fails on an empty value of the build-info file (false in the iOS builds: they have no report). -->
+    <build.info.values.check>true</build.info.values.check>
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
@@ -933,6 +940,7 @@
         <graal.isolate.headers.check.skip>true</graal.isolate.headers.check.skip>
         <notIosSimulator>false</notIosSimulator>
         <qdMonitoring>false</qdMonitoring>
+        <build.info.values.check>false</build.info.values.check>
       </properties>
       <dependencies>
         <dependency>
@@ -1019,6 +1027,7 @@
         <arch.name>aarch64-ios</arch.name>
         <notMacIos>false</notMacIos>
         <qdMonitoring>false</qdMonitoring>
+        <build.info.values.check>false</build.info.values.check>
       </properties>
       <dependencies>
         <dependency>
@@ -1593,6 +1602,21 @@
                   <condition>
                     <resourcecontains resource="${project.build.directory}/docs/${project.name}-build-info.properties"
                       substring="$${" />
+                  </condition>
+                </fail>
+                <fail message="Empty build-info values (no build report or argument file of native-image): ${project.build.directory}/docs/${project.name}-build-info.properties">
+                  <condition>
+                    <and>
+                      <istrue value="${build.info.values.check}" />
+                      <or>
+                        <equals arg1="${build.info.vendor.version}" arg2="" />
+                        <equals arg1="${build.info.optimization.level}" arg2="" />
+                        <equals arg1="${build.info.march}" arg2="" />
+                        <equals arg1="${build.info.garbage.collector}" arg2="" />
+                        <equals arg1="${build.info.c.compiler}" arg2="" />
+                        <equals arg1="${build.info.requested.options}" arg2="" />
+                      </or>
+                    </and>
                   </condition>
                 </fail>
               </target>
