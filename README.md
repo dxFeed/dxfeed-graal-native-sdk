@@ -964,6 +964,15 @@ builds the library of the current platform in `target/native-image` and its arch
   `integration-test` or a later one (`verify` checks the archives), the same build packs the image object into the
   static library of the SDK, the archive `amd64-windows-static-lib` (`amd64-windows-debug-static-lib`), see
   [Windows archives](#windows-archives).
+- `-Dsdk.variant=oracle` with `JAVA_HOME` at Oracle GraalVM of the `graalvm.version` of `pom.xml`: the build variant
+  `oracle`, `-O3` and the Serial GC, the archive `<platform>-oracle` (`amd64-linux`, `aarch64-linux`, `aarch64-osx`,
+  `amd64-windows`). `-Dsdk.variant=oracle-g1`: `-O3` and the G1 GC, the archive `<platform>-oracle-g1` (`amd64-linux`,
+  `aarch64-linux`, `aarch64-osx`); G1 supports one isolate per process, so its tests are run with
+  `ctest -LE multi-isolate`. The build fails on another GraalVM or platform, with `-P buildDebug` or
+  `-DwindowsStaticRuntime=true`, and when native-image did not resolve the level or the GC of the variant (the
+  `docs/graal-native-sdk-build-info.properties` of the archive).
+- `-Dsdk.optimize=O0`: the library is built at `-O0` (after the level of a variant), to tell a miscompilation from a
+  test failure; the archive keeps its name. Not for the iOS builds.
 
 ### IntelliJ IDEA
 

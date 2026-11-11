@@ -128,6 +128,8 @@ target_link_options(${target}
 #
 
 add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
+# Uses a second isolate or one created after a teardown: not run with the G1 GC (one isolate per process).
+set_tests_properties(${target} PROPERTIES LABELS multi-isolate)
 
 
 #

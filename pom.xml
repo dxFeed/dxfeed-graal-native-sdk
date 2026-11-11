@@ -27,6 +27,27 @@
     <debug.suffix />
     <!-- The C runtime of the Windows image: -static-crt in the windowsStaticRuntime profile. -->
     <runtime.suffix />
+    <!--
+      The build variant, -Dsdk.variant=<token> (see the variant-* profiles): empty for the regular build. The token
+      goes into the archive name and the classifier after the platform (${arch.name}${variant.suffix}), its native-image
+      options into variant.buildArg*.
+    -->
+    <sdk.variant />
+    <variant.suffix />
+    <!-- The platforms (${arch.name}) the variant is built for, the GC and the optimization level it must have. -->
+    <variant.platforms />
+    <variant.garbage.collector />
+    <variant.optimization.level />
+    <variant.buildArg1>-DDXFG1=0</variant.buildArg1>
+    <variant.buildArg2>-DDXFG1=0</variant.buildArg2>
+    <!-- The optimization level of the Oracle GraalVM variants. -->
+    <oracle.optimization.level>3</oracle.optimization.level>
+    <!--
+      -Dsdk.optimize=O0 (the optimize-O0 profile): the image is built at -O0, after the level of the variant, to tell a
+      miscompilation from a test failure. A diagnostic build: the archive gets no suffix of its own.
+    -->
+    <sdk.optimize />
+    <optimize.buildArg>-DDXFG1=0</optimize.buildArg>
     <!-- The build report of native-image (-H:BuildOutputJSONFile), the source of the build-info file. -->
     <native.image.build.report>${project.build.directory}/native-image-build-report.json</native.image.build.report>
     <!--
@@ -471,6 +492,63 @@
         <debug.buildArg4>-R:TearDownWarningSeconds=10</debug.buildArg4>
       </properties>
     </profile>
+    <!--
+      The build variants of Oracle GraalVM ${graalvm.version}, activated by -Dsdk.variant=<token>: the archive is
+      graal-native-sdk-<version>-<arch>-<os>-<token>.zip (the classifier <arch>-<os>-<token>).
+      - oracle: -O3 and the Serial GC, as the regular build otherwise.
+      - oracle-g1: -O3 and the G1 GC. G1 supports one isolate per process: a second isolate, or an isolate created
+        after a teardown, aborts the process (the C tests labelled multi-isolate).
+      No variant is built for macOS x64 (Oracle GraalVM for it stops at 25.0.1) or iOS.
+      The enforce-variant execution refuses another GraalVM, another platform and a variant together with buildDebug or
+      windowsStaticRuntime; create-build-info-file checks the optimization level and the GC that native-image resolved.
+    -->
+    <profile>
+      <id>variant-oracle</id>
+      <activation>
+        <property>
+          <name>sdk.variant</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <properties>
+        <variant.suffix>-oracle</variant.suffix>
+        <variant.platforms>amd64-linux aarch64-linux aarch64-osx amd64-windows</variant.platforms>
+        <variant.garbage.collector>Serial GC</variant.garbage.collector>
+        <variant.optimization.level>${oracle.optimization.level}</variant.optimization.level>
+        <variant.buildArg1>-O${oracle.optimization.level}</variant.buildArg1>
+        <variant.buildArg2>--gc=serial</variant.buildArg2>
+      </properties>
+    </profile>
+    <profile>
+      <id>variant-oracle-g1</id>
+      <activation>
+        <property>
+          <name>sdk.variant</name>
+          <value>oracle-g1</value>
+        </property>
+      </activation>
+      <properties>
+        <variant.suffix>-oracle-g1</variant.suffix>
+        <!-- Not on Windows: Oracle does not document G1 there. -->
+        <variant.platforms>amd64-linux aarch64-linux aarch64-osx</variant.platforms>
+        <variant.garbage.collector>G1 GC</variant.garbage.collector>
+        <variant.optimization.level>${oracle.optimization.level}</variant.optimization.level>
+        <variant.buildArg1>-O${oracle.optimization.level}</variant.buildArg1>
+        <variant.buildArg2>--gc=G1</variant.buildArg2>
+      </properties>
+    </profile>
+    <profile>
+      <id>optimize-O0</id>
+      <activation>
+        <property>
+          <name>sdk.optimize</name>
+          <value>O0</value>
+        </property>
+      </activation>
+      <properties>
+        <optimize.buildArg>-O0</optimize.buildArg>
+      </properties>
+    </profile>
     <profile>
       <id>mac</id>
       <activation>
@@ -740,6 +818,9 @@
                 <buildArg>${windows.static.runtime.buildArg6}</buildArg>
                 <buildArg>${windows.static.runtime.buildArg7}</buildArg>
                 <buildArg>${windows.static.runtime.buildArg8}</buildArg>
+                <buildArg>${variant.buildArg1}</buildArg>
+                <buildArg>${variant.buildArg2}</buildArg>
+                <buildArg>${optimize.buildArg}</buildArg>
               </buildArgs>
               <debug>${isDebug}</debug>
             </configuration>
@@ -862,7 +943,7 @@
                     <argument>-File</argument>
                     <argument>${project.basedir}/scripts/windows-static-runtime/Test-StaticRuntime.ps1</argument>
                     <argument>-Archive</argument>
-                    <argument>${project.build.directory}/${project.name}-${arch.name}${debug.suffix}${runtime.suffix}.zip</argument>
+                    <argument>${project.build.directory}/${project.name}-${arch.name}${variant.suffix}${debug.suffix}${runtime.suffix}.zip</argument>
                     <argument>-WorkDirectory</argument>
                     <argument>${windows.static.runtime.dir}/check</argument>
                     <argument>-Image</argument>
@@ -892,7 +973,7 @@
                     <argument>-File</argument>
                     <argument>${project.basedir}/scripts/windows-static-runtime/Test-StaticLibrary.ps1</argument>
                     <argument>-Archive</argument>
-                    <argument>${project.build.directory}/${project.name}-${arch.name}${debug.suffix}-static-lib.zip</argument>
+                    <argument>${project.build.directory}/${project.name}-${arch.name}${variant.suffix}${debug.suffix}-static-lib.zip</argument>
                     <argument>-WorkDirectory</argument>
                     <argument>${windows.static.runtime.dir}/check-static-lib</argument>
                   </arguments>
@@ -1133,6 +1214,69 @@
               </rules>
             </configuration>
           </execution>
+          <execution>
+            <!--
+              -Dsdk.variant and -Dsdk.optimize take only the known values; a variant profile is active only through
+              -Dsdk.variant; -Dsdk.optimize is not taken by the iOS builds (their buildArgs lists have no placeholder);
+              a variant is built only on its platforms, with Oracle GraalVM ${graalvm.version} (the release file of
+              java.home: a plain Oracle JDK has the same IMPLEMENTOR), without buildDebug and windowsStaticRuntime.
+            -->
+            <id>enforce-variant</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <evaluateBeanshell>
+                  <condition>"${sdk.variant}".matches("|oracle|oracle-g1")</condition>
+                  <message>Unknown build variant "${sdk.variant}": -Dsdk.variant takes oracle or oracle-g1.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${sdk.optimize}".matches("|O0")</condition>
+                  <message>Unknown optimization "${sdk.optimize}": -Dsdk.optimize takes O0.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${variant.suffix}".equals("${sdk.variant}".isEmpty() ? "" : "-${sdk.variant}")</condition>
+                  <message>The variant profiles follow -Dsdk.variant="${sdk.variant}", not -P (the archive suffix is "${variant.suffix}").</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${sdk.optimize}".isEmpty() || !"${arch.name}".contains("ios")</condition>
+                  <message>-Dsdk.optimize is not applied to the iOS builds.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${variant.suffix}".isEmpty() || " ${variant.platforms} ".contains(" ${arch.name} ")</condition>
+                  <message>The variant ${sdk.variant} is built only for ${variant.platforms}, not for ${arch.name}.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${variant.suffix}".isEmpty() || "${debug.suffix}${runtime.suffix}".isEmpty()</condition>
+                  <message>The variant ${sdk.variant} is not built with buildDebug or windowsStaticRuntime.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>
+                    boolean edition = true;
+                    if (!"${variant.suffix}".isEmpty()) {
+                      java.util.Properties release = new java.util.Properties();
+                      java.io.Reader reader = new java.io.FileReader(new java.io.File(System.getProperty("java.home"), "release"));
+                      try {
+                        release.load(reader);
+                      } finally {
+                        reader.close();
+                      }
+                      String implementor = release.getProperty("IMPLEMENTOR", "");
+                      String version = release.getProperty("GRAALVM_VERSION", "");
+                      edition = implementor.equals("\"Oracle Corporation\"") &amp;&amp; version.equals("\"${graalvm.version}\"");
+                      if (!edition) {
+                        System.err.println("[ERROR] The release file of " + System.getProperty("java.home") + ": IMPLEMENTOR="
+                          + implementor + ", GRAALVM_VERSION=" + version);
+                      }
+                    }
+                    edition;
+                  </condition>
+                  <message>The variant ${sdk.variant} is built with Oracle GraalVM ${graalvm.version} (IMPLEMENTOR="Oracle Corporation" and GRAALVM_VERSION="${graalvm.version}" in the release file): set JAVA_HOME to it.</message>
+                </evaluateBeanshell>
+              </rules>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -1238,6 +1382,10 @@
             <buildArg>${svm-core.buildArg4}</buildArg>
             <buildArg>${macos.buildArg}</buildArg>
             <buildArg>${macos.x64.buildArg}</buildArg>
+            <!-- The variant and then -O0: native-image takes the last -O. -->
+            <buildArg>${variant.buildArg1}</buildArg>
+            <buildArg>${variant.buildArg2}</buildArg>
+            <buildArg>${optimize.buildArg}</buildArg>
           </buildArgs>
           <debug>${isDebug}</debug>
         </configuration>
@@ -1591,6 +1739,7 @@
                 <property name="build.info.sdk.version" value="${project.version}" />
                 <property name="build.info.build.timestamp" value="${maven.build.timestamp}" />
                 <property name="build.info.target" value="${arch.name}" />
+                <property name="build.info.variant" value="${sdk.variant}" />
                 <copy file="${project.basedir}/src/assembly/build-info.properties"
                   tofile="${project.build.directory}/docs/${project.name}-build-info.properties" overwrite="true"
                   encoding="UTF-8" outputencoding="UTF-8">
@@ -1615,6 +1764,43 @@
                         <equals arg1="${build.info.garbage.collector}" arg2="" />
                         <equals arg1="${build.info.c.compiler}" arg2="" />
                         <equals arg1="${build.info.requested.options}" arg2="" />
+                      </or>
+                    </and>
+                  </condition>
+                </fail>
+                <!--
+                  A variant and -Dsdk.optimize=O0: native-image resolved the options the build asked for (a placeholder
+                  missing from one of the buildArgs lists, or a -O after it, would leave the library as it is).
+                -->
+                <condition property="build.info.expected.optimization.level" value="0"
+                  else="${variant.optimization.level}">
+                  <equals arg1="${sdk.optimize}" arg2="O0" />
+                </condition>
+                <fail message="native-image resolved -O${build.info.optimization.level}, the build expects -O${build.info.expected.optimization.level}: ${project.build.directory}/docs/${project.name}-build-info.properties">
+                  <condition>
+                    <and>
+                      <not>
+                        <equals arg1="${build.info.expected.optimization.level}" arg2="" />
+                      </not>
+                      <not>
+                        <equals arg1="${build.info.optimization.level}" arg2="${build.info.expected.optimization.level}" />
+                      </not>
+                    </and>
+                  </condition>
+                </fail>
+                <fail message="The variant ${sdk.variant} needs ${variant.garbage.collector} and Oracle GraalVM ${graalvm.version}, native-image resolved ${build.info.garbage.collector} and ${build.info.vendor.version}: ${project.build.directory}/docs/${project.name}-build-info.properties">
+                  <condition>
+                    <and>
+                      <not>
+                        <equals arg1="${variant.suffix}" arg2="" />
+                      </not>
+                      <or>
+                        <not>
+                          <equals arg1="${build.info.garbage.collector}" arg2="${variant.garbage.collector}" />
+                        </not>
+                        <not>
+                          <matches string="${build.info.vendor.version}" pattern="^Oracle GraalVM ${graalvm.version}\+" />
+                        </not>
                       </or>
                     </and>
                   </condition>

@@ -134,6 +134,8 @@ target_link_options(${target}
 #
 
 add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
+# Uses a second isolate or one created after a teardown: not run with the G1 GC (one isolate per process).
+set_tests_properties(${target} PROPERTIES LABELS multi-isolate)
 
 # A call of an experimental function with DXFG_EXPERIMENTAL defined as a deprecation attribute: the test builds it
 # with the deprecation warning as an error and passes when the compiler names the function and the message.
