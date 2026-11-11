@@ -16,6 +16,9 @@
   TimeAndSale events through `dxfg_v4_DXPublisher_publishEvents()` at a fixed rate and prints the statistics line of
   the QD tool `NetTest p`, so that publishing over the C API can be benchmarked like the QD API. It is built with the C
   samples and is not part of the SDK archive.
+* **\[MDAPI-522]\[GRAAL]** Every archive has `docs/graal-native-sdk-build-info.properties`: the SDK version, the
+  GraalVM that built the library, the optimization level, target machine and garbage collector that native-image
+  resolved, and the options the build passed to it. The libraries and the headers do not change.
 
 ### For integrators
 

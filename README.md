@@ -103,6 +103,11 @@ add_subdirectory(<the unpacked archive> graal-native-sdk)
 target_link_libraries(<your target> PRIVATE DxFeedGraalNativeSdk)
 ```
 
+Every archive has `docs/graal-native-sdk-build-info.properties`, which records how it was built: the SDK version, the
+GraalVM that built the library (its `release` file), what native-image resolved (the optimization level, the target
+machine of `-march`, the garbage collector, PGO, the C compiler) and the options the build passed to native-image.
+The iOS archives have no resolved values: their build stops before native-image reports them.
+
 The libraries for .NET are published to nuget.org as the package
 [DxFeed.Graal.Native](https://www.nuget.org/packages/DxFeed.Graal.Native). Inside Devexperts, the archives are also in
 the Maven repository `qd` of Nexus: `com.dxfeed:graal-native-sdk:<version>`, type `zip`, the classifier is the

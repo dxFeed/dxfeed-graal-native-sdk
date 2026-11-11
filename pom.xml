@@ -27,6 +27,8 @@
     <debug.suffix />
     <!-- The C runtime of the Windows image: -static-crt in the windowsStaticRuntime profile. -->
     <runtime.suffix />
+    <!-- The build report of native-image (-H:BuildOutputJSONFile), the source of the build-info file. -->
+    <native.image.build.report>${project.build.directory}/native-image-build-report.json</native.image.build.report>
     <debug.buildArg1>-DDXFG1=0</debug.buildArg1>
     <debug.buildArg2>-DDXFG1=0</debug.buildArg2>
     <debug.buildArg3>-DDXFG1=0</debug.buildArg3>
@@ -717,6 +719,7 @@
                   --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
                 <buildArg>-march=compatibility</buildArg>
+                <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
                 <buildArg>-H:NativeLinkerOption=${project.build.directory}\version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
                 <buildArg>${debug.buildArg2}</buildArg>
@@ -1213,6 +1216,7 @@
               --initialize-at-build-time=${initialize-at-build-time}
             </buildArg>
             <buildArg>-march=compatibility</buildArg>
+            <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
             <buildArg>${debug.buildArg1}</buildArg>
             <buildArg>${debug.buildArg2}</buildArg>
             <buildArg>${debug.buildArg3}</buildArg>
@@ -1479,9 +1483,16 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Create version file -->
+            <!--
+              Create version file. Also removes the build report and the argument files of a previous build in the same
+              target (a build without clean), so that the build-info file can only describe this build.
+            -->
             <configuration>
               <target>
+                <delete file="${native.image.build.report}" quiet="true" />
+                <delete quiet="true">
+                  <fileset dir="${project.build.directory}/tmp" includes="native-image-*.args" erroronmissingdir="false" />
+                </delete>
                 <echo file="${project.build.directory}/docs/${project.name}-version.inc" message="build.number=${project.version}-${maven.build.timestamp}" />
               </target>
             </configuration>
@@ -1490,6 +1501,102 @@
             </goals>
             <id>create-version-file</id>
             <phase>prepare-package</phase>
+          </execution>
+          <execution>
+            <!--
+              docs/graal-native-sdk-build-info.properties of every archive: how it was built (the template
+              src/assembly/build-info.properties). The values of native-image are the ones native-image resolved (its
+              build report) and the options the build requested (the argument file of native-maven-plugin, without the
+              paths of the build machine and the no-op placeholders -DDXFG1=0). The iOS builds have no report: they
+              stop when the object is written.
+            -->
+            <id>create-build-info-file</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target xmlns:if="ant:if" xmlns:rcmp="antlib:org.apache.tools.ant.types.resources.comparators">
+                <macrodef name="load-report-value">
+                  <attribute name="key" />
+                  <attribute name="property" />
+                  <sequential>
+                    <!-- The report is one line of JSON; a value is a string or an array of strings. -->
+                    <loadfile srcFile="${native.image.build.report}" property="@{property}" quiet="true"
+                      failonerror="false">
+                      <filterchain>
+                        <containsregex pattern="^.*&quot;@{key}&quot;:(&quot;[^&quot;]*&quot;|\[[^\]]*\]).*$"
+                          replace="\1" />
+                        <replaceregex pattern="[&quot;\[\]]" replace="" flags="g" />
+                        <striplinebreaks />
+                      </filterchain>
+                    </loadfile>
+                    <property name="@{property}" value="" />
+                  </sequential>
+                </macrodef>
+                <load-report-value key="vendor_version" property="build.info.vendor.version" />
+                <load-report-value key="java_version" property="build.info.java.version" />
+                <load-report-value key="optimization_level" property="build.info.optimization.level" />
+                <load-report-value key="march" property="build.info.march" />
+                <load-report-value key="garbage_collector" property="build.info.garbage.collector" />
+                <load-report-value key="pgo" property="build.info.pgo" />
+                <load-report-value key="c_compiler" property="build.info.c.compiler" />
+                <!-- The latest argument file of this build (create-version-file removes those of earlier builds). -->
+                <pathconvert property="build.info.args.file" setonempty="false">
+                  <last>
+                    <sort>
+                      <fileset dir="${project.build.directory}/tmp" includes="native-image-*.args"
+                        erroronmissingdir="false" />
+                      <rcmp:date />
+                    </sort>
+                  </last>
+                </pathconvert>
+                <!-- One option per line; the lines not starting with - are the values of -o, -cp and others. -->
+                <loadfile srcFile="${build.info.args.file}" property="build.info.requested.options" quiet="true"
+                  failonerror="false" if:set="build.info.args.file">
+                  <filterchain>
+                    <linecontainsregexp>
+                      <regexp pattern="^-" />
+                    </linecontainsregexp>
+                    <linecontainsregexp negate="true">
+                      <regexp
+                        pattern="^(-o|-cp|--class-path|-p|--module-path|--exclude-config|-DDXFG1=0)\s*$|^(-H:Name|-Dproject\.path|-H:CLibraryPath|-H:Path|-H:ConfigurationFileDirectories|-H:BuildOutputJSONFile|-H:TempDirectory)=" />
+                    </linecontainsregexp>
+                    <!-- A linker input given by a path (version.res, crt_shim.obj) keeps only its file name. -->
+                    <replaceregex pattern="^(-H:NativeLinkerOption=)(?:[A-Za-z]:)?[\\/].*[\\/]" replace="\1" />
+
+                    <prefixlines prefix=" " />
+                    <striplinebreaks />
+                    <trim />
+                  </filterchain>
+                </loadfile>
+                <property name="build.info.requested.options" value="" />
+                <loadproperties srcFile="${java.home}/release" prefix="build.info.release.">
+                  <filterchain>
+                    <replaceregex pattern="&quot;" replace="" flags="g" />
+                  </filterchain>
+                </loadproperties>
+                <property name="build.info.release.IMPLEMENTOR" value="" />
+                <property name="build.info.release.GRAALVM_VERSION" value="" />
+                <property name="build.info.release.JAVA_VERSION" value="" />
+                <property name="build.info.sdk.version" value="${project.version}" />
+                <property name="build.info.build.timestamp" value="${maven.build.timestamp}" />
+                <property name="build.info.target" value="${arch.name}" />
+                <copy file="${project.basedir}/src/assembly/build-info.properties"
+                  tofile="${project.build.directory}/docs/${project.name}-build-info.properties" overwrite="true"
+                  encoding="UTF-8" outputencoding="UTF-8">
+                  <filterchain>
+                    <expandproperties />
+                  </filterchain>
+                </copy>
+                <fail message="Unresolved build-info values: ${project.build.directory}/docs/${project.name}-build-info.properties">
+                  <condition>
+                    <resourcecontains resource="${project.build.directory}/docs/${project.name}-build-info.properties"
+                      substring="$${" />
+                  </condition>
+                </fail>
+              </target>
+            </configuration>
           </execution>
           <execution>
             <!--

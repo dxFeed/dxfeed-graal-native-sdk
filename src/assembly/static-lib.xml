@@ -67,6 +67,7 @@
       <directory>${project.build.directory}/docs</directory>
       <includes>
         <include>${project.name}-version.inc</include>
+        <include>${project.name}-build-info.properties</include>
       </includes>
       <outputDirectory>docs</outputDirectory>
     </fileSet>
