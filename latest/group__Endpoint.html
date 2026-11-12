@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.15.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.16.0</span>
    </div>
   </td>
  </tr>
@@ -1030,7 +1030,7 @@ Functions</h2></td></tr>
 <p>Creates a <b>new</b> endpoint with the given role on every call, the same as <a class="el" href="#gaba5212e4e8922a191f4349738e3b469d" title="Creates a new endpoint with the given role.">dxfg_DXEndpoint_create2()</a>. </p>
 <p>Unlike the Java <span class="tt">DXEndpoint.getInstance(Role)</span>, this function does not return a singleton: the SDK calls <span class="tt">DXEndpoint.create(Role)</span>. Prefer <a class="el" href="group__Builder.html#ga33a650b9c38510d9aee24b6f625c7cc7" title="Creates a new endpoint builder.">dxfg_DXEndpoint_newBuilder()</a> (or <a class="el" href="#gaba5212e4e8922a191f4349738e3b469d" title="Creates a new endpoint with the given role.">dxfg_DXEndpoint_create2()</a>) in the new code.</p>
 <p>Java: <span class="tt">DXEndpoint.create(DXEndpoint.Role)</span>.</p>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000024">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#gafebf6f4fd2fe7e894d47cdb55e86125c" title="Creates a new endpoint with the given role on every call, the same as dxfg_v4_DXEndpoint_createWithRo...">dxfg_v4_DXEndpoint_getInstanceWithRole()</a>.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000024">Deprecated</a></b></dt><dd>Use <a class="el" href="group__V4__Endpoint.html#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>

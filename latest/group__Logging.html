@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.15.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.16.0</span>
    </div>
   </td>
  </tr>
@@ -200,7 +200,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>The level of the message. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>The level of the message. A Java level without a constant here is given as the next lower one: <span class="tt">FINER</span> as <a class="el" href="#ggad073e2926c039c31b133b9c278e97fc1ab5d9c795f6fb94b0258af08e77834be7">DXFG_LOGGING_LEVEL_TRACE</a>, <span class="tt">CONFIG</span> as <a class="el" href="#ggad073e2926c039c31b133b9c278e97fc1a7b87b92605e941c6c7f5c01e190140ce">DXFG_LOGGING_LEVEL_DEBUG</a> (since 3.16.0; before, a call that logged at such a level failed). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">timestamp</td><td>The time of the message in milliseconds since the Unix epoch (UTC). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">thread_name</td><td>The name of the Java thread that logged the message, a NUL-terminated UTF-8 string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">thread_id</td><td>The identifier of the Java thread that logged the message. </td></tr>

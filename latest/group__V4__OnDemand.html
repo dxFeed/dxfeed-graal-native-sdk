@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.15.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.16.0</span>
    </div>
   </td>
  </tr>
@@ -482,7 +482,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the on-demand service of the default endpoint with the <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445af04b3deaa2904fe7bebf833c1f5292e8">DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED</a> role. </p>
-<p>The endpoint is the application-wide default endpoint of that role (<a class="el" href="#gaac35593372f1274a26dc63aad1b73188" title="Returns the endpoint that is associated with the service.">dxfg_v4_OnDemandService_getEndpoint()</a> returns it; <a class="el" href="group__V4__Endpoint.html#gafebf6f4fd2fe7e894d47cdb55e86125c" title="Creates a new endpoint with the given role on every call, the same as dxfg_v4_DXEndpoint_createWithRo...">dxfg_v4_DXEndpoint_getInstanceWithRole()</a> creates a new endpoint instead), which is not connected to any other real-time or delayed data feed. It is created on the first call, is configured by the system properties and is closed by <a class="el" href="group__V4__System.html#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a>. To switch another feed to the replay and back, use <a class="el" href="#gac790fe82f88a551462b1c124ea6eb79b" title="Returns the on-demand service of the specified endpoint.">dxfg_v4_OnDemandService_getInstanceByEndpoint()</a> with the endpoint of that feed.</p>
+<p>The endpoint is the application-wide default endpoint of that role (<a class="el" href="#gaac35593372f1274a26dc63aad1b73188" title="Returns the endpoint that is associated with the service.">dxfg_v4_OnDemandService_getEndpoint()</a> returns it; <a class="el" href="group__V4__Endpoint.html#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a> creates a new endpoint instead), which is not connected to any other real-time or delayed data feed. It is created on the first call, is configured by the system properties and is closed by <a class="el" href="group__V4__System.html#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a>. To switch another feed to the replay and back, use <a class="el" href="#gac790fe82f88a551462b1c124ea6eb79b" title="Returns the on-demand service of the specified endpoint.">dxfg_v4_OnDemandService_getInstanceByEndpoint()</a> with the endpoint of that feed.</p>
 <p>The call fails if the on-demand implementation is not available in the library.</p>
 <p>Java: <span class="tt">OnDemandService.getInstance()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>

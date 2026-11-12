@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.15.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.16.0</span>
    </div>
   </td>
  </tr>
@@ -682,7 +682,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the properties of the endpoints built by the builder from a properties file. </p>
-<p>The file is read in the format of a Java properties file (<span class="tt">java.util.Properties.load</span>) and every property that the builder supports is set as by <a class="el" href="#gae170a5b8816ee9e09376d8fdb0136f62" title="Sets a property of the endpoints built by the builder.">dxfg_v4_DXEndpoint_Builder_withProperty()</a>. The unsupported properties are ignored. An error is reported if the file cannot be read.</p>
+<p>The file is read in the format of a Java properties file (<span class="tt">java.util.Properties.load</span>) and every property that the builder supports is set as by <a class="el" href="#gae170a5b8816ee9e09376d8fdb0136f62" title="Sets a property of the endpoints built by the builder.">dxfg_v4_DXEndpoint_Builder_withProperty()</a>. The unsupported properties are ignored. An error is reported if the file cannot be read. The file is closed before the function returns, also on an error (since 3.16.0; before, it stayed open until the garbage collection, and on Windows it could not be deleted meanwhile).</p>
 <p>Java: <span class="tt">DXEndpoint.Builder.withProperties(Properties)</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1209,6 +1209,7 @@ Functions</h2></td></tr>
 <p>Creates a <b>new</b> endpoint with the given role on every call, the same as <a class="el" href="#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a>. </p>
 <p>Unlike the Java <span class="tt">DXEndpoint.getInstance(Role)</span>, this function does not return a singleton: the SDK calls <span class="tt">DXEndpoint.create(Role)</span>. Prefer <a class="el" href="#ga2de15206611e5db77d31ebc8b41ab6c9" title="Creates a new endpoint builder.">dxfg_v4_DXEndpoint_newBuilder()</a> (or <a class="el" href="#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a>) in the new code.</p>
 <p>Java: <span class="tt">DXEndpoint.create(DXEndpoint.Role)</span>.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000618">Deprecated</a></b></dt><dd>Use <a class="el" href="#ga0d65393ebf18695da85287faa9e4eef1" title="Creates a new endpoint with the given role.">dxfg_v4_DXEndpoint_createWithRole()</a>, which does the same: the name of this function promises the singleton of the Java <span class="tt">DXEndpoint.getInstance(Role)</span>, which it does not return. Deprecated since 3.16.0, removed in 4.0.0.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
