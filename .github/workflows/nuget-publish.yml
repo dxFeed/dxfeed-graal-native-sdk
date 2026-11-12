@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: MPL-2.0
 
-# Publishes the package DxFeed.Graal.Native of a GitHub release to nuget.org with Trusted Publishing: the job gets an
-# API key for one hour from nuget.org with the OIDC token of GitHub, so no key is stored. "Publish GitHub Release" in
-# TeamCity attaches the package (built by "Pack NuGet") to the release, runs this workflow and waits for it; it can also
-# be run by hand for a release. The policy on nuget.org (owner dxFeed) trusts this repository and this file name, and
-# the secret NUGET_USER is the nuget.org profile name of the user who created the policy (see .teamcity/README.MD).
+# Publishes the native packages of a GitHub release to nuget.org with Trusted Publishing: DxFeed.Graal.Native, and
+# DxFeed.Graal.Native.Oracle and DxFeed.Graal.Native.Oracle.G1 when the release has them (a build variant is published
+# only as a complete set). The job gets an API key for one hour from nuget.org with the OIDC token of GitHub, so no key
+# is stored. "Publish GitHub Release" in TeamCity attaches the packages (built by "Pack NuGet") to the release, runs
+# this workflow and waits for it; it can also be run by hand for a release. The policy on nuget.org (owner dxFeed)
+# trusts this repository and this file name, and the secret NUGET_USER is the nuget.org profile name of the user who
+# created the policy (see .teamcity/README.MD).
 
 name: Publish NuGet
 
@@ -14,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: The tag of the GitHub release that has the package, e.g. v3.13.0
+        description: The tag of the GitHub release that has the packages, e.g. v3.13.0
         required: true
         type: string
       request:
@@ -33,12 +35,12 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     permissions:
       contents: read # gh release download
       id-token: write # the OIDC token for nuget.org
     steps:
-      - name: Download the package of the release
+      - name: Download the packages of the release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
@@ -48,10 +50,18 @@ jobs:
             v[0-9]*) ;;
             *) echo "::error::Not a release tag: $TAG"; exit 1 ;;
           esac
-          PACKAGE="DxFeed.Graal.Native.${TAG#v}.nupkg"
-          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$PACKAGE" --dir packages
+          VERSION="${TAG#v}"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "DxFeed.Graal.Native.$VERSION.nupkg" --dir packages
+          # The packages of the build variants (NuGetPackage in .teamcity/Common.kt).
+          ASSETS=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')
+          for id in DxFeed.Graal.Native.Oracle DxFeed.Graal.Native.Oracle.G1; do
+            if grep -qxF "$id.$VERSION.nupkg" <<< "$ASSETS"; then
+              gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$id.$VERSION.nupkg" --dir packages
+            else
+              echo "No $id.$VERSION.nupkg in the release"
+            fi
+          done
           ls -l packages
-          echo "PACKAGE=packages/$PACKAGE" >> "$GITHUB_ENV"
 
       - name: Get a temporary API key of nuget.org
         id: login
@@ -59,14 +69,18 @@ jobs:
         with:
           user: ${{ secrets.NUGET_USER }}
 
-      # The package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
+      # A package is about 110 MB: the default timeout of 300 s is not enough for a slow upload.
       # --skip-duplicate makes a rerun safe if a timed out push has been accepted after all.
-      - name: Push the package
+      # DxFeed.Graal.Native.<version>.nupkg sorts first, so the regular package goes before the build variants.
+      - name: Push the packages
         env:
           NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
-        run: >-
-          dotnet nuget push "$PACKAGE"
-          --source https://api.nuget.org/v3/index.json
-          --api-key "$NUGET_API_KEY"
-          --skip-duplicate
-          --timeout 1800
+        run: |
+          set -eu
+          for package in packages/*.nupkg; do
+            dotnet nuget push "$package" \
+              --source https://api.nuget.org/v3/index.json \
+              --api-key "$NUGET_API_KEY" \
+              --skip-duplicate \
+              --timeout 1800
+          done

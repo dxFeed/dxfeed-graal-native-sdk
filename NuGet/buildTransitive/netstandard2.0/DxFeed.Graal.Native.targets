@@ -1,0 +1,18 @@
+<Project>
+    <!--
+        Packed as buildTransitive/netstandard2.0/<package id>.targets of DxFeed.Graal.Native, DxFeed.Graal.Native.Oracle
+        and DxFeed.Graal.Native.Oracle.G1 (MSBuildThisFileName is the package id); the .NET Framework targets import it.
+        DxFeedGraalNativePackages lists the imported packages: each package is imported once, and two of them in one
+        project fail the build, since both would put a library at the same runtimes/<runtime identifier>/native path.
+    -->
+    <PropertyGroup>
+        <DxFeedGraalNativePackages>$(DxFeedGraalNativePackages);$(MSBuildThisFileName)</DxFeedGraalNativePackages>
+    </PropertyGroup>
+
+    <Target Name="CheckDxFeedGraalNativePackages" BeforeTargets="PrepareForBuild">
+        <ItemGroup>
+            <_DxFeedGraalNativePackage Include="$(DxFeedGraalNativePackages)" />
+        </ItemGroup>
+        <Error Condition="'@(_DxFeedGraalNativePackage->Distinct()->Count())' &gt; '1'" Text="The project references several dxFeed native packages: @(_DxFeedGraalNativePackage->Distinct(), ', '). Keep one of them; to use a build variant with DxFeed.Graal.Net, exclude the assets of DxFeed.Graal.Native: &lt;PackageReference Include=&quot;DxFeed.Graal.Native&quot; Version=&quot;...&quot; ExcludeAssets=&quot;all&quot; /&gt;." />
+    </Target>
+</Project>

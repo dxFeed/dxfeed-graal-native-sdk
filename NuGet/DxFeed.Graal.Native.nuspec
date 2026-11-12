@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    One nuspec for the three native packages: DxFeed.Graal.Native and the build variants DxFeed.Graal.Native.Oracle and
+    DxFeed.Graal.Native.Oracle.G1. "Pack NuGet" in TeamCity copies this directory per package, puts the libraries of
+    the package's runtime identifiers into runtimes/ and passes the tokens:
+        nuget pack DxFeed.Graal.Native.nuspec -Version <version> -Properties "id=<package id>;readme=<README file>;note=<text>"
+    id: the package id; it also names the MSBuild files, which NuGet imports only as <package id>.targets.
+    readme: the file in docs/ packed as docs/README.md.
+    note: the sentence on the build variant at the end of the description, empty for the regular package.
+-->
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>DxFeed.Graal.Native</id>
+        <id>$id$</id>
         <version>$version$</version>
-        <description>The native libraries of the dxFeed Graal Native SDK: the dxFeed Java API compiled with GraalVM Native Image into a shared library with a C API, for Windows, Linux and macOS. Used by DxFeed.Graal.Net.</description>
+        <description>The native libraries of the dxFeed Graal Native SDK: the dxFeed Java API compiled with GraalVM Native Image into a shared library with a C API, for Windows, Linux and macOS. Used by DxFeed.Graal.Net. $note$</description>
         <authors>dxFeed API Team</authors>
         <copyright>Copyright © 2022 Devexperts LLC</copyright>
         <license type="expression">MPL-2.0</license>
@@ -19,11 +28,11 @@
     </metadata>
     <files>
         <file src="docs/images/favicon.png" target="docs/images/favicon.png" />
-        <file src="docs/README.md" target="docs/README.md" />
+        <file src="docs/$readme$" target="docs/README.md" />
         <file src="runtimes/**"  target="runtimes"/>
-        <file src="buildTransitive/net461/DxFeed.Graal.Native.targets" target="buildTransitive/net461/DxFeed.Graal.Native.targets" />
-        <file src="build/net461/DxFeed.Graal.Native.targets" target="build/net461/DxFeed.Graal.Native.targets" />
-        <file src="build/net461/DxFeed.Graal.Native.props" target="build/net461/DxFeed.Graal.Native.props" />
+        <file src="buildTransitive/net461/DxFeed.Graal.Native.targets" target="buildTransitive/net461/$id$.targets" />
+        <file src="buildTransitive/netstandard2.0/DxFeed.Graal.Native.targets" target="buildTransitive/netstandard2.0/$id$.targets" />
+        <file src="build/net461/DxFeed.Graal.Native.targets" target="build/net461/$id$.targets" />
         <file src="lib/netstandard2.0/_._" target="lib/netstandard2.0/_._" />
     </files>
 </package>

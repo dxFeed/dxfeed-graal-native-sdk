@@ -274,17 +274,26 @@ The package `DxFeed.Graal.Native` of a release is published to nuget.org with
 [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing) from GitHub Actions, so no
 nuget.org API key is stored (nuget.org keys live 30 days at most):
 
-1. `Pack NuGet` (Release chain, after `Build & Deploy [All]`) packs `NuGet/DxFeed.Graal.Native.nuspec` with the
-   archives of the release from `qd` and keeps the `.nupkg` as its artifact.
-2. `Publish GitHub Release` takes that package (an artifact dependency on the last successful `Pack NuGet`; the build
-   fails if its version is not the one of the tag), attaches it to the GitHub release with the zips, runs the workflow
+1. `Pack NuGet` (Release chain, after `Build & Deploy [All]`) packs the packages of `NuGetPackage` in `Common.kt` with
+   the archives of the release from `qd` and keeps the `.nupkg` files as its artifacts. `NuGet/` is the template of all
+   of them: per package, the build copies it, puts the libraries of the package's runtime identifiers into `runtimes/`
+   and passes the package id, its README and the note on the variant to `nuget pack -Properties`. The MSBuild files
+   are packed as `<package id>.targets`, which is the only name NuGet imports. `DxFeed.Graal.Native` needs all its
+   archives (the build fails otherwise); `DxFeed.Graal.Native.Oracle` and `DxFeed.Graal.Native.Oracle.G1` are packed
+   only when all the archives of their variant are in `qd` (otherwise a warning), that is, after `oracle.publish` /
+   `oracle-g1.publish` deployed them.
+2. `Publish GitHub Release` takes these packages (an artifact dependency on the last successful `Pack NuGet`; the build
+   fails if the version of `DxFeed.Graal.Native` is not the one of the tag; a variant package of another version is left
+   out), attaches them to the GitHub release with the zips, runs the workflow
    [`.github/workflows/nuget-publish.yml`](../.github/workflows/nuget-publish.yml) of the GitHub mirror with
    `gh workflow run` and polls the run with `gh run view` (not `gh run watch`, which does not work with a fine-grained
    token); the build fails if the run fails.
-3. The workflow downloads the package from the GitHub release, gets a one-hour API key from nuget.org with the OIDC
-   token of the run (`NuGet/login`) and pushes the package (`--skip-duplicate`: a rerun of a published version passes).
+3. The workflow downloads the packages of the version from the GitHub release (`DxFeed.Graal.Native` is required, the
+   variant packages are taken when the release has them), gets a one-hour API key from nuget.org with the OIDC token of
+   the run (`NuGet/login`) and pushes the packages, `DxFeed.Graal.Native` first (`--skip-duplicate`: a rerun of a
+   published version passes).
 
-The workflow can also be run by hand in the Actions tab of the mirror with the tag of a release that has the package.
+The workflow can also be run by hand in the Actions tab of the mirror with the tag of a release that has the packages.
 
 One-time setup:
 

@@ -68,12 +68,18 @@ object OracleGraalVM {
     const val VERSION = "%env.GRAALVM_VERSION_ORACLE%"
 }
 
-/** A platform of the build variants: arch.name of pom.xml, the first part of the classifier. */
-enum class VariantPlatform(val archName: String, val title: String) {
-    LINUX_X64("amd64-linux", "Linux, x64"),
-    LINUX_AARCH64("aarch64-linux", "Linux, aarch64"),
-    MACOS_ARM64("aarch64-osx", "macOS, arm64"),
-    WINDOWS_X64("amd64-windows", "Windows, x64"),
+/**
+ * A platform of the build variants: arch.name of pom.xml, the first part of the classifier; the runtime identifier and
+ * the library of the NuGet packages.
+ */
+enum class VariantPlatform(val archName: String, val title: String, val rid: String, val library: String) {
+    LINUX_X64("amd64-linux", "Linux, x64", "linux-x64", "libDxFeedGraalNativeSdk.so"),
+    LINUX_AARCH64("aarch64-linux", "Linux, aarch64", "linux-arm64", "libDxFeedGraalNativeSdk.so"),
+    MACOS_ARM64("aarch64-osx", "macOS, arm64", "osx-arm64", "libDxFeedGraalNativeSdk.dylib"),
+    WINDOWS_X64("amd64-windows", "Windows, x64", "win-x64", "DxFeedGraalNativeSdk.dll");
+
+    /** The library for Pack NuGet: <arch.name>:<runtime identifier>:<file in the archive>. */
+    val nugetLibrary: String get() = "$archName:$rid:$library"
 }
 
 /**
@@ -103,6 +109,54 @@ enum class Variant(val token: String, val platforms: List<VariantPlatform>, val 
 
     /** The name of the archive of [platform]; VERSION is a shell variable of the step. */
     fun archive(platform: String) = "graal-native-sdk-${'$'}{VERSION}-$platform-$token.zip"
+}
+
+/**
+ * A native NuGet package (NuGet/DxFeed.Graal.Native.nuspec, the tokens id, readme and note): DxFeed.Graal.Native from
+ * the regular archives, or the package of a build variant from the archives of the variant, packed only when all of
+ * them are in Nexus.
+ */
+enum class NuGetPackage(val id: String, val readme: String, val note: String, val variant: Variant?, val libraries: List<String>) {
+    REGULAR(
+        "DxFeed.Graal.Native",
+        "README.md",
+        "",
+        null,
+        listOf(
+            VariantPlatform.LINUX_X64.nugetLibrary,
+            VariantPlatform.LINUX_AARCH64.nugetLibrary,
+            VariantPlatform.MACOS_ARM64.nugetLibrary,
+            // macOS x64 has no build variant.
+            "x86_64-osx:osx-x64:libDxFeedGraalNativeSdk.dylib",
+            VariantPlatform.WINDOWS_X64.nugetLibrary
+        )
+    ),
+    ORACLE(
+        "DxFeed.Graal.Native.Oracle",
+        "README-Oracle.md",
+        "The build variant oracle: Oracle GraalVM, -O3 and the Serial GC, no macOS x64.",
+        Variant.ORACLE,
+        Variant.ORACLE.platforms.map { it.nugetLibrary }
+    ),
+    ORACLE_G1(
+        "DxFeed.Graal.Native.Oracle.G1",
+        "README-Oracle-G1.md",
+        "The build variant oracle-g1: Oracle GraalVM, -O3 and the G1 GC, one isolate per process, Linux and macOS arm64 only.",
+        Variant.ORACLE_G1,
+        Variant.ORACLE_G1.platforms.map { it.nugetLibrary }
+    );
+
+    init {
+        // nuget pack -Properties separates the tokens with ';' and the names from the values with '='.
+        require(!note.contains(';') && !note.contains('=')) { "The note of $id has ';' or '='" }
+    }
+
+    /** The suffix of the archive names after arch.name. */
+    val archiveSuffix: String get() = variant?.let { "-${it.token}" } ?: ""
+
+    /** The call of stage_package of the step "Download Artifacts" of Pack NuGet. */
+    val stageCommand: String
+        get() = "stage_package $id \"$archiveSuffix\" ${variant == null} $readme \"$note\" " + libraries.joinToString(" ")
 }
 
 /**

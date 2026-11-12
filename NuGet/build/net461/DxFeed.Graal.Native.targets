@@ -1,8 +1,4 @@
 <Project>
-    <PropertyGroup>
-        <!-- Ensure this targets file is only imported once -->
-        <DxFeedGraalNativeTargetsImported Condition="'$(DxFeedGraalNativeTargetsImported)' == ''">true</DxFeedGraalNativeTargetsImported>
-    </PropertyGroup>
-
-    <Import Project="$(MSBuildThisFileDirectory)..\..\buildTransitive\net461\DxFeed.Graal.Native.targets" Condition="'$(DxFeedGraalNativeTargetsImported)' == ''" />
+    <!-- Packed as build/net461/<package id>.targets: MSBuildThisFileName is the package id. -->
+    <Import Project="$(MSBuildThisFileDirectory)..\..\buildTransitive\net461\$(MSBuildThisFileName).targets" Condition="!$([System.String]::Copy(';$(DxFeedGraalNativePackages);').Contains(';$(MSBuildThisFileName);'))" />
 </Project>

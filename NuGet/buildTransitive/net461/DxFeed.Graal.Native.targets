@@ -1,9 +1,22 @@
 <Project>
+    <!--
+        Packed as buildTransitive/net461/<package id>.targets of DxFeed.Graal.Native, DxFeed.Graal.Native.Oracle and
+        DxFeed.Graal.Native.Oracle.G1: MSBuildThisFileName is the package id. The check of several native packages is
+        in the netstandard2.0 targets.
+    -->
+    <Import Project="$(MSBuildThisFileDirectory)..\netstandard2.0\$(MSBuildThisFileName).targets" />
+
+    <PropertyGroup>
+        <_DxFeedGraalNativeWindowsLibrary>$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\DxFeedGraalNativeSdk.dll</_DxFeedGraalNativeWindowsLibrary>
+    </PropertyGroup>
+
     <ItemGroup>
-        <NativeLibs Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\DxFeedGraalNativeSdk.dll" />
+        <NativeLibs Include="$(_DxFeedGraalNativeWindowsLibrary)" />
     </ItemGroup>
 
     <Target Name="CopyNativeLibs" AfterTargets="Build">
+        <!-- The property, not @(NativeLibs): the project may have NativeLibs items of its own. -->
+        <Error Condition="!Exists('$(_DxFeedGraalNativeWindowsLibrary)')" Text="$(MSBuildThisFileName) has no Windows x64 library (DxFeedGraalNativeSdk.dll) for .NET Framework; use DxFeed.Graal.Native or DxFeed.Graal.Native.Oracle." />
         <Message Importance="high" Text="Copying dxFeed native libs to $(OutputPath)" />
         <Copy SourceFiles="@(NativeLibs)" DestinationFolder="$(OutputPath)" />
     </Target>

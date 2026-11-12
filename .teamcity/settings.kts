@@ -624,63 +624,90 @@ object DeployOracleG1 : BuildType({
 object DeployNuget : BuildType({
     name = "Pack NuGet"
     description = "After Build & Deploy [All]: packs DxFeed.Graal.Native.X.Y.Z.nupkg of the latest tag from its " +
-        "archives in Nexus (linux-x64, linux-arm64, osx-arm64, osx-x64, win-x64)"
+        "archives in Nexus (linux-x64, linux-arm64, osx-arm64, osx-x64, win-x64), and the package of each build " +
+        "variant (DxFeed.Graal.Native.Oracle, DxFeed.Graal.Native.Oracle.G1) whose archives are all in Nexus"
     artifactRules = "*.nupkg"
 
     mainRepository()
 
     steps {
+        // NuGet/ is the template of every package: nuget-staging/<package id> gets a copy with the libraries of the
+        // package's runtime identifiers, nuget-staging/<package id>.properties the tokens of the nuspec.
         script {
             name = "Download Artifacts"
             scriptContent = """
-                download_file() {
-                  version=$1
-                  path_to_save=$2
-                  file_name=$3
-                  os=$4
-                  platform=$5
-                  extension="zip"
+                set -eu
 
-                  base_url="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk"
-                  archive_name="graal-native-sdk-${'$'}{version}-${'$'}{platform}-${'$'}{os}.${'$'}{extension}"
-                  url="${'$'}{base_url}/${'$'}{version}/${'$'}{archive_name}"
+                VERSION=$(git describe --abbrev=0)
+                VERSION=${'$'}{VERSION#"v"}
+                BASE_URL="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk/${'$'}{VERSION}"
 
-                  mkdir -p "${'$'}path_to_save"
-                  tmp_dir=$(mktemp -d)
+                rm -rf nuget-staging
+                rm -f ./*.nupkg
+                mkdir nuget-staging
 
-                  if ! (cd "${'$'}tmp_dir" && curl -LO -f "${'$'}url"); then
-                    echo "Failed to download: ${'$'}url"
-                    rm -rf "${'$'}tmp_dir"
-                    exit 1
-                  fi
+                # stage_package <id> <archive suffix> <required> <readme> <note> <arch.name>:<rid>:<library>...
+                # A missing archive of a required package fails the step; a build variant with a missing archive is
+                # not packed (it is published only as a complete set). No percent signs: TeamCity reads them as
+                # parameter references.
+                stage_package() {
+                    id=$1
+                    suffix=$2
+                    required=$3
+                    readme=$4
+                    note=$5
+                    shift 5
 
-                  if ! unzip -o "${'$'}{tmp_dir}/${'$'}{archive_name}" "${'$'}file_name" -d "${'$'}path_to_save"; then
-                    echo "Failed to extract ${'$'}file_name from ${'$'}{archive_name}"
-                    rm -rf "${'$'}tmp_dir"
-                    exit 1
-                  fi
+                    dir="nuget-staging/${'$'}{id}"
+                    mkdir -p "${'$'}{dir}"
+                    cp -R NuGet/. "${'$'}{dir}/"
+                    rm -rf "${'$'}{dir}/runtimes"
 
-                  rm -rf "${'$'}tmp_dir"
+                    for entry in "${'$'}@"; do
+                        arch=$(echo "${'$'}{entry}" | cut -d: -f1)
+                        rid=$(echo "${'$'}{entry}" | cut -d: -f2)
+                        library=$(echo "${'$'}{entry}" | cut -d: -f3)
+                        archive="graal-native-sdk-${'$'}{VERSION}-${'$'}{arch}${'$'}{suffix}.zip"
+
+                        if ! curl --fail --location --silent --retry 3 --output "nuget-staging/${'$'}{archive}" "${'$'}{BASE_URL}/${'$'}{archive}"; then
+                            if [ "${'$'}{required}" = true ]; then
+                                echo "Failed to download: ${'$'}{BASE_URL}/${'$'}{archive}"
+                                exit 1
+                            fi
+                            echo "##teamcity[message text='${'$'}{id} is not packed: no ${'$'}{archive} in Nexus' status='WARNING']"
+                            rm -rf "${'$'}{dir}"
+                            return 0
+                        fi
+
+                        mkdir -p "${'$'}{dir}/runtimes/${'$'}{rid}/native"
+                        if ! unzip -o "nuget-staging/${'$'}{archive}" "${'$'}{library}" -d "${'$'}{dir}/runtimes/${'$'}{rid}/native"; then
+                            echo "Failed to extract ${'$'}{library} from ${'$'}{archive}"
+                            exit 1
+                        fi
+                        rm -f "nuget-staging/${'$'}{archive}"
+                    done
+
+                    echo "id=${'$'}{id};readme=${'$'}{readme};note=${'$'}{note}" > "nuget-staging/${'$'}{id}.properties"
+                    echo "${'$'}{id}: staged"
                 }
 
-                version=$(git describe --abbrev=0)
-                version=${'$'}{version#"v"}
-
-                download_file "${'$'}version" "NuGet/runtimes/linux-x64/native" "libDxFeedGraalNativeSdk.so" "linux" "amd64"
-                download_file "${'$'}version" "NuGet/runtimes/linux-arm64/native" "libDxFeedGraalNativeSdk.so" "linux" "aarch64"
-                download_file "${'$'}version" "NuGet/runtimes/osx-arm64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "aarch64"
-                download_file "${'$'}version" "NuGet/runtimes/osx-x64/native" "libDxFeedGraalNativeSdk.dylib" "osx" "x86_64"
-                download_file "${'$'}version" "NuGet/runtimes/win-x64/native" "DxFeedGraalNativeSdk.dll" "windows" "amd64"
+                ${NuGetPackage.values().joinToString("\n                ") { it.stageCommand }}
             """.trimIndent()
             formatStderrAsError = true
         }
         script {
             name = "NuGet Pack"
             scriptContent = """
+                set -eu
+
                 git config --global safe.directory '*'
                 VERSION=$(git describe --abbrev=0)
                 VERSION=${'$'}{VERSION#"v"}
-                nuget pack NuGet/DxFeed.Graal.Native.nuspec -Version ${'$'}VERSION
+
+                for properties in nuget-staging/*.properties; do
+                    id=$(basename "${'$'}{properties}" .properties)
+                    nuget pack "nuget-staging/${'$'}{id}/DxFeed.Graal.Native.nuspec" -Version "${'$'}{VERSION}" -Properties "$(cat "${'$'}{properties}")" -OutputDirectory .
+                done
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.NUGET, "--rm -m 8g")
@@ -707,7 +734,7 @@ object DeployNuget : BuildType({
 object SyncGitHubWithMainAndPublishRelease : BuildType({
     name = "Publish GitHub Release"
     description = "Pushes main and the release tag to GitHub, publishes the GitHub release with the archives and the " +
-        "NuGet package, and publishes the package to nuget.org with the workflow nuget-publish.yml"
+        "NuGet packages, and publishes the packages to nuget.org with the workflow nuget-publish.yml"
 
     artifactRules = """
         release-artifacts/*.zip
@@ -836,6 +863,15 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                     exit 1
                 fi
                 cp "${'$'}PACKAGE" release-artifacts/
+
+                # The packages of the build variants: Pack NuGet packs one only when all its archives are in Nexus.
+                for id in ${NuGetPackage.values().filter { it.variant != null }.joinToString(" ") { it.id }}; do
+                    if [ -f "nuget/${'$'}{id}.${'$'}{VERSION}.nupkg" ]; then
+                        cp "nuget/${'$'}{id}.${'$'}{VERSION}.nupkg" release-artifacts/
+                    else
+                        echo "No ${'$'}{id} package of version ${'$'}{VERSION}"
+                    fi
+                done
 
                 #
                 # Extract the section:

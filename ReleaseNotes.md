@@ -19,6 +19,8 @@
 * **\[MDAPI-522]\[GRAAL]** Every archive has `docs/graal-native-sdk-build-info.properties`: the SDK version, the
   GraalVM that built the library, the optimization level, target machine and garbage collector that native-image
   resolved, and the options the build passed to it. The libraries and the headers do not change.
+* **\[MDAPI-522]\[GRAAL]** The NuGet package `DxFeed.Graal.Native` no longer gives the warning MSB4011 (the targets
+  imported twice) in .NET Framework projects.
 
 ### For integrators
 
