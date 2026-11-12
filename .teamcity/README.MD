@@ -13,6 +13,7 @@
 - [Creating and Publishing GraalVM Docker Image for Project Build](#creating-and-publishing-graalvm-docker-image-for-project-build)
 - [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 - [Deploying Artifacts](#deploying-artifacts)
+- [Build Variants (Oracle GraalVM)](#build-variants-oracle-graalvm)
 - [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
 - [Releasing the SDK in Jira](#releasing-the-sdk-in-jira)
 - [Publishing the C API Reference to GitHub Pages](#publishing-the-c-api-reference-to-github-pages)
@@ -335,6 +336,38 @@ rebases the commit on top and pushes again. A pre-release (`-rcN`) or a release 
 leaves the baseline as it is. The step never fails the build: on an error it logs a warning, and the baseline is updated
 by hand (step 4 of "To release a new version" in the [README](../README.md)). "Publish GitHub Release" then pushes the
 commit to GitHub with `main`.
+
+# Build Variants (Oracle GraalVM)
+
+The build variants `oracle` and `oracle-g1` (`-Dsdk.variant`, see "Build variants" in the [README](../README.md)) are
+built with Oracle GraalVM of the `graalvm.version` of the regular build: the `env.GRAALVM_VERSION_ORACLE` parameter,
+`oracle-%env.GRAALVM_VERSION%` by default (`OracleGraalVM` in `Common.kt`). The macOS and Windows agents install it like
+GraalVM CE (`~/.graal/<version>-osx-arm64`, `C:\BuildCache\graalvm-<version>-win-x64`). The Linux images are the regular
+ones with Oracle GraalVM: after a GraalVM bump, run "Build & Push a Docker Image [Linux, x64]" and "[Linux, aarch64]"
+with `env.GRAALVM_VERSION` set to the Oracle version (`oracle-graal-<graal_version>`), which pushes
+`graalvm:linux-<arch>-oracle-graal-<graal_version>`.
+
+Tests (`testForLinux`, `testForMacOS`, `testForWindows` of `Common.kt` with a `TestKind`):
+
+- `Test [<platform>][oracle]` for Linux x64, macOS arm64 and Windows x64, and `Test [<platform>][oracle-g1]` for Linux x64
+  and macOS arm64 (`ctest -LE multi-isolate`: G1 allows one isolate per process) run the steps of the regular tests for
+  every change of `main` and every night, not for the pull requests.
+- `Test [<platform>][oracle][O0]` for Linux x64 and macOS arm64 builds the `oracle` library at `-O0`
+  (`-Dsdk.optimize=O0`) every week. A test that fails in `Test [...][oracle]` and passes here may be a miscompilation
+  at `-O3`; the comparison is by hand.
+
+Release chain (`variantBuild` and `variantDeploy` of `Common.kt`):
+
+- `Build [<platform>][<variant>]` builds the archive of the variant from the latest tag (`mvn package`, no deploy) and
+  keeps it as its artifact only when the build succeeds.
+- `Deploy [<variant>]` runs after the regular deploys of the platforms. It takes the archives of the variant builds and
+  deploys them with `deploy:deploy-file` (classifier `<arch.name>-<variant>`) only when all of them are built and the
+  switch `oracle.publish` / `oracle-g1.publish` of the Release chain project is on (`false` by default). An archive
+  that Nexus already has is skipped, so a rerun after a failed upload deploys the rest. A failed variant build leaves the
+  set incomplete: the deploy then logs a warning and deploys nothing, and the release goes on without the variant.
+- `Build & Deploy [All]` waits for both deploys (a failure there does not cancel it), so the variants are in Nexus before
+  `Pack NuGet` and `Publish GitHub Release` start. `Publish GitHub Release` takes the archives of a variant only when
+  those of all its platforms are in Nexus.
 
 # Syncing the C++ API with Jira
 

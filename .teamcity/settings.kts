@@ -51,6 +51,14 @@ project {
             description = "The GraalVM of the macOS x64 and iOS Simulator builds. Example: jdk-25.0.1",
             allowEmpty = false,
         )
+        text(
+            "env.GRAALVM_VERSION_ORACLE", "oracle-%env.GRAALVM_VERSION%",
+            label = "Oracle GraalVM version",
+            description = "The Oracle GraalVM of the build variants (-Dsdk.variant): the tag of their Docker images and " +
+                "the release on macOS and Windows agents; pom.xml requires the graalvm.version of the regular build. " +
+                "Example: oracle-graal-25.5.5.0.3",
+            allowEmpty = false,
+        )
         password("env.GH_TOKEN", "credentialsJSON:657ea93a-c18d-414f-be39-e12fb36fb13f", display = ParameterDisplay.HIDDEN)
     }
 
@@ -82,6 +90,20 @@ object ReleaseChain : Project({
     name = "Release chain"
     description = "Started by the release builds: the archives of the platforms, the XCFramework, NuGet, the GitHub release and the Jira release"
 
+    // The switches of the build variants: Deploy [<variant>] deploys the variant (and so the GitHub release takes it)
+    // only when its switch is on.
+    params {
+        for (variant in Variant.values()) {
+            checkbox(
+                variant.publishParameter, "false",
+                label = "Publish ${variant.token}",
+                description = "Deploy [${variant.token}] deploys the ${variant.token} archives of the release to " +
+                    "Nexus, and Publish GitHub Release takes them",
+                checked = "true", unchecked = "false",
+            )
+        }
+    }
+
     buildType(BuildAndDeployForAll)
     buildType(BuildAndDeployForLinuxAarch64)
     buildType(BuildAndDeployForLinuxAarch64Release)
@@ -93,6 +115,15 @@ object ReleaseChain : Project({
     buildType(BuildAndDeployForWindowsStaticRuntimeDebug)
     buildType(BuildAndDeployForMacOsAndIOS)
     buildType(BuildAndDeployXCFramework)
+    buildType(BuildOracleForLinux)
+    buildType(BuildOracleForLinuxAarch64)
+    buildType(BuildOracleForMacOS)
+    buildType(BuildOracleForWindows)
+    buildType(DeployOracle)
+    buildType(BuildOracleG1ForLinux)
+    buildType(BuildOracleG1ForLinuxAarch64)
+    buildType(BuildOracleG1ForMacOS)
+    buildType(DeployOracleG1)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(ReleaseInJira)
@@ -109,6 +140,15 @@ object ReleaseChain : Project({
         BuildAndDeployForWindowsStaticRuntimeDebug,
         BuildAndDeployForMacOsAndIOS,
         BuildAndDeployXCFramework,
+        BuildOracleForLinux,
+        BuildOracleForLinuxAarch64,
+        BuildOracleForMacOS,
+        BuildOracleForWindows,
+        DeployOracle,
+        BuildOracleG1ForLinux,
+        BuildOracleG1ForLinuxAarch64,
+        BuildOracleG1ForMacOS,
+        DeployOracleG1,
         DeployNuget,
         SyncGitHubWithMainAndPublishRelease,
         ReleaseInJira,
@@ -160,11 +200,19 @@ object Checks : Project({
 
 object Tests : Project({
     name = "Tests"
-    description = "Started for the pull requests to main and for main"
+    description = "Started for the pull requests to main and for main; the tests of the build variants for main, " +
+        "every night and every week (-O0)"
 
     buildType(TestForLinux)
     buildType(TestForMacOS)
     buildType(TestForWindows)
+    buildType(TestOracleForLinux)
+    buildType(TestOracleForMacOS)
+    buildType(TestOracleForWindows)
+    buildType(TestOracleG1ForLinux)
+    buildType(TestOracleG1ForMacOS)
+    buildType(TestOracleO0ForLinux)
+    buildType(TestOracleO0ForMacOS)
 })
 
 object Etc : Project({
@@ -503,8 +551,8 @@ object BuildAndDeployXCFramework : BuildType({
 
 object BuildAndDeployForAll : BuildType({
     name = "Build & Deploy [All]"
-    description = "After a release build: the deploys of Linux aarch64, Windows, macOS, iOS and the XCFramework of " +
-        "the latest tag; then Pack NuGet"
+    description = "After a release build: the deploys of Linux aarch64, Windows, macOS, iOS, the XCFramework and the " +
+        "build variants of the latest tag; then Pack NuGet"
     type = Type.COMPOSITE
     allowExternalStatus = true
     artifactRules = "*.zip"
@@ -533,7 +581,41 @@ object BuildAndDeployForAll : BuildType({
         snapshot(BuildAndDeployXCFramework) {
             onDependencyFailure = FailureAction.CANCEL
         }
+        // The variants are in Nexus before Pack NuGet and Publish GitHub Release start; a failed variant does not stop
+        // the release (Deploy [<variant>] skips an incomplete set by itself).
+        snapshot(DeployOracle) {
+            onDependencyFailure = FailureAction.IGNORE
+            onDependencyCancel = FailureAction.IGNORE
+        }
+        snapshot(DeployOracleG1) {
+            onDependencyFailure = FailureAction.IGNORE
+            onDependencyCancel = FailureAction.IGNORE
+        }
     }
+})
+
+// The build variants (Oracle GraalVM, -Dsdk.variant): one build per platform, then one deploy per variant (Common.kt).
+object BuildOracleForLinux : BuildType({ variantBuild(Variant.ORACLE, VariantPlatform.LINUX_X64) })
+object BuildOracleForLinuxAarch64 : BuildType({ variantBuild(Variant.ORACLE, VariantPlatform.LINUX_AARCH64) })
+object BuildOracleForMacOS : BuildType({ variantBuild(Variant.ORACLE, VariantPlatform.MACOS_ARM64) })
+object BuildOracleForWindows : BuildType({ variantBuild(Variant.ORACLE, VariantPlatform.WINDOWS_X64) })
+object DeployOracle : BuildType({
+    variantDeploy(
+        Variant.ORACLE,
+        listOf(BuildOracleForLinux, BuildOracleForLinuxAarch64, BuildOracleForMacOS, BuildOracleForWindows),
+        listOf(BuildAndDeployForLinuxAarch64, BuildAndDeployForWindows, BuildAndDeployForMacOsAndIOS)
+    )
+})
+
+object BuildOracleG1ForLinux : BuildType({ variantBuild(Variant.ORACLE_G1, VariantPlatform.LINUX_X64) })
+object BuildOracleG1ForLinuxAarch64 : BuildType({ variantBuild(Variant.ORACLE_G1, VariantPlatform.LINUX_AARCH64) })
+object BuildOracleG1ForMacOS : BuildType({ variantBuild(Variant.ORACLE_G1, VariantPlatform.MACOS_ARM64) })
+object DeployOracleG1 : BuildType({
+    variantDeploy(
+        Variant.ORACLE_G1,
+        listOf(BuildOracleG1ForLinux, BuildOracleG1ForLinuxAarch64, BuildOracleG1ForMacOS),
+        listOf(BuildAndDeployForLinuxAarch64, BuildAndDeployForWindows, BuildAndDeployForMacOsAndIOS)
+    )
 })
 
 // The package is published by the workflow .github/workflows/nuget-publish.yml that "Publish GitHub Release" runs:
@@ -702,6 +784,32 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                     echo "No ZIP artifacts found for version ${'$'}VERSION"
                     exit 1
                 fi
+
+                #
+                # A build variant goes to the release only with the archives of all its platforms (Deploy [<variant>]).
+                # The names are exact, so the oracle set never matches the oracle-g1 archives.
+                #
+                keep_complete_variant() {
+                    variant=${'$'}1
+                    shift
+                    found=0
+                    for platform in "${'$'}@"; do
+                        if grep -qxF "graal-native-sdk-${'$'}VERSION-${'$'}platform-${'$'}variant.zip" release-artifacts.txt; then
+                            found=${'$'}((found + 1))
+                        fi
+                    done
+                    if [ "${'$'}found" -eq 0 ]; then
+                        echo "No ${'$'}variant archives"
+                    elif [ "${'$'}found" -lt "${'$'}#" ]; then
+                        echo "##teamcity[message text='Only ${'$'}found of ${'$'}# ${'$'}variant archives are in Nexus: the release takes none of them' status='WARNING']"
+                        for platform in "${'$'}@"; do
+                            { grep -vxF "graal-native-sdk-${'$'}VERSION-${'$'}platform-${'$'}variant.zip" release-artifacts.txt || true; } > release-artifacts.tmp
+                            mv release-artifacts.tmp release-artifacts.txt
+                        done
+                    fi
+                }
+                keep_complete_variant ${Variant.ORACLE.token} ${Variant.ORACLE.platformList}
+                keep_complete_variant ${Variant.ORACLE_G1.token} ${Variant.ORACLE_G1.platformList}
 
                 echo "Artifacts:"
                 cat release-artifacts.txt
@@ -1183,201 +1291,20 @@ object BuildForLinux : BuildType({
     }
 })
 
-object TestForLinux : BuildType({
-    name = "Test [Linux, x64]"
-    description = "Builds the library, runs the C tests (src/main/c, CTest) and checks the C API documentation for the pull requests to main and for main"
+object TestForLinux : BuildType({ testForLinux(TestKind()) })
+object TestForMacOS : BuildType({ testForMacOS(TestKind()) })
+object TestForWindows : BuildType({ testForWindows(TestKind()) })
 
-    mainRepository()
+// The tests of the build variants (Oracle GraalVM, -Dsdk.variant); oracle-g1 has no Windows build.
+object TestOracleForLinux : BuildType({ testForLinux(TestKind(Variant.ORACLE)) })
+object TestOracleForMacOS : BuildType({ testForMacOS(TestKind(Variant.ORACLE)) })
+object TestOracleForWindows : BuildType({ testForWindows(TestKind(Variant.ORACLE)) })
+object TestOracleG1ForLinux : BuildType({ testForLinux(TestKind(Variant.ORACLE_G1)) })
+object TestOracleG1ForMacOS : BuildType({ testForMacOS(TestKind(Variant.ORACLE_G1)) })
 
-    steps {
-        script {
-            name = "Build the library"
-            scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
-            """.trimIndent()
-            formatStderrAsError = true
-            inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
-        }
-
-        script {
-            // The library is built for glibc 2.17 (Oracle Linux 7); the tests are built and run on Oracle Linux 9.
-            name = "Build and run the C tests"
-            scriptContent = """
-                set -eu
-                cd src/main/c
-                rm -rf build bin
-                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
-                cmake --build --preset=build-release --config=Release -j$(nproc)
-                ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml
-            """.trimIndent()
-            inDocker(Images.CPP_TEST_LINUX_X64, "--rm -m 4g")
-        }
-
-        script {
-            // Fails the build on any Doxygen warning (MDAPI-443). It needs only the headers, so it runs after a failed
-            // step too: a documentation warning does not hide the results of the tests, nor a failed build the warnings.
-            name = "Check the C API documentation"
-            executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
-            scriptContent = """
-                set -u
-                log=target/c-api-docs-check/warnings.log
-                doxygen --version
-                rm -rf target/c-api-docs-check
-                mkdir -p target/c-api-docs-check
-                doxygen docs/Doxyfile.check || { echo "Doxygen failed with exit code ${'$'}?"; exit 1; }
-                if [ ! -f "${'$'}log" ]; then
-                    echo "Doxygen wrote no warnings log"
-                    exit 1
-                fi
-                echo "Warnings: ${'$'}(grep -c -E ': (warning|error):' "${'$'}log")"
-                if [ -s "${'$'}log" ]; then
-                    cat "${'$'}log"
-                    echo "Describe the declarations above: the build fails until docs/Doxyfile.check reports no warning"
-                    exit 1
-                fi
-            """.trimIndent()
-            inDocker(Images.DOCS_CHECK_LINUX_X64, "--rm")
-        }
-    }
-
-    triggers {
-        mainAndPullRequests()
-    }
-
-    features {
-        pullRequestsToMain()
-        javaTestsReport()
-        cTestsReport()
-        nexusDockerLogin()
-    }
-
-    requirements {
-        linuxAgent()
-    }
-})
-
-object TestForMacOS : BuildType({
-    name = "Test [macOS, arm64]"
-    description = "Builds the library and runs the C tests (src/main/c, CTest) on the macOS host, without Docker, for the pull requests to main and for main"
-
-    mainRepository()
-
-    steps {
-        script {
-            name = "Build the library"
-            scriptContent = Util.prepareMacOS() + """
-                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
-                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
-            """.trimIndent()
-            formatStderrAsError = true
-        }
-
-        script {
-            // The build installs CMake into ~/.graal (the version is CMake in Common.kt); the compilers come from the Xcode
-            // Command Line Tools.
-            name = "Build and run the C tests"
-            // The whole step runs as arm64, as the library does: CMakeLists.txt picks the architecture by the host
-            // processor, so under Rosetta (x86_64) the tests would be built for x86_64.
-            scriptContent = """
-                set -eu
-                if [ "$(uname -m)" != arm64 ] && [ -z "${'$'}{TEST_ARM64_REEXEC:-}" ]; then
-                    TEST_ARM64_REEXEC=1 exec arch -arm64 /bin/bash "$0"
-                fi
-                if [ "$(uname -m)" != arm64 ]; then
-                    echo "The C tests must run as arm64, but uname -m is $(uname -m)"
-                    exit 1
-                fi
-                cmake_install_path=~/.graal/cmake-${CMake.VERSION}
-                if [ ! -x "${'$'}{cmake_install_path}/CMake.app/Contents/bin/cmake" ]; then
-                    rm -rf "${'$'}{cmake_install_path}"
-                    .teamcity/scripts/install.sh cmake_macos ${CMake.VERSION} ${CMake.MACOS_SHA256} "${'$'}{cmake_install_path}"
-                fi
-                export PATH="${'$'}{cmake_install_path}/CMake.app/Contents/bin:${'$'}{PATH}"
-                cmake --version
-                cd src/main/c
-                rm -rf build bin
-                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
-                cmake --build --preset=build-release --config=Release -j$(sysctl -n hw.ncpu)
-                ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml
-            """.trimIndent()
-        }
-    }
-
-    triggers {
-        mainAndPullRequests()
-    }
-
-    features {
-        pullRequestsToMain()
-        javaTestsReport()
-        cTestsReport()
-    }
-
-    failureConditions {
-        // The mac agents are shared with the releases: a hung build must not hold one.
-        executionTimeoutMin = 30
-    }
-
-    requirements {
-        macAgent()
-    }
-})
-
-object TestForWindows : BuildType({
-    name = "Test [Windows, x64]"
-    description = "Builds the library and runs the C tests (src/main/c, CTest) on the Windows agent, without Docker, for the pull requests to main and for main"
-
-    mainRepository()
-
-    steps {
-        mavenWithPowerShell("Build the library", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package")
-
-        // The build installs CMake into C:\BuildCache (the version is CMake in Common.kt); the compilers are the VS Build
-        // Tools that prepareWinLocal sets up. The Visual Studio generator is multi-config, hence --config and -C Release,
-        // and the instance is pinned to those Build Tools in case the agent has another Visual Studio.
-        powerShellWithWinLocal("Build and run the C tests", """
-
-            ${'$'}cmakeInstallPath = "C:\BuildCache\cmake-${CMake.VERSION}"
-            if (-not (Test-Path "${'$'}cmakeInstallPath\bin\cmake.exe")) {
-                Install-CMake -Version "${CMake.VERSION}" -Sha256 "${CMake.WINDOWS_X64_SHA256}" -InstallPath ${'$'}cmakeInstallPath
-            }
-            ${'$'}env:PATH = "${'$'}cmakeInstallPath\bin;${'$'}env:PATH"
-            cmake --version
-            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-
-            Set-Location src\main\c
-            foreach (${'$'}dir in "build", "bin") {
-                if (Test-Path ${'$'}dir) { Remove-Item -LiteralPath ${'$'}dir -Recurse -Force }
-            }
-            cmake --preset=conf-release -G "Visual Studio 17 2022" "-DCMAKE_GENERATOR_INSTANCE=${'$'}vsInstallPath" -DCMAKE_BUILD_TYPE=Release .
-            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-            cmake --build --preset=build-release --config=Release --parallel
-            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-            ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml
-            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-        """.trimIndent())
-    }
-
-    triggers {
-        mainAndPullRequests()
-    }
-
-    features {
-        pullRequestsToMain()
-        javaTestsReport()
-        cTestsReport()
-    }
-
-    failureConditions {
-        // The Windows agents are shared with the releases: a hung build must not hold one. The first run on an agent
-        // without the cache also installs the VS Build Tools.
-        executionTimeoutMin = 60
-    }
-
-    requirements {
-        windowsAgent()
-    }
-})
+// The -O0 reference of the oracle tests, for both back ends (AMD64 and AArch64).
+object TestOracleO0ForLinux : BuildType({ testForLinux(TestKind(Variant.ORACLE, optimizeO0 = true)) })
+object TestOracleO0ForMacOS : BuildType({ testForMacOS(TestKind(Variant.ORACLE, optimizeO0 = true)) })
 
 object BuildAndPushDockerImageForLinuxX64 : BuildType({
     name = "Build & Push a Docker Image [Linux, x64]"

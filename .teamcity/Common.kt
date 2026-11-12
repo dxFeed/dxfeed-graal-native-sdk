@@ -2,9 +2,11 @@
 // settings.kts belong to the script class, and the objects of the configurations cannot use them.
 
 import jetbrains.buildServer.configs.kotlin.BuildFeatures
+import jetbrains.buildServer.configs.kotlin.BuildStep
 import jetbrains.buildServer.configs.kotlin.BuildStepConditions
 import jetbrains.buildServer.configs.kotlin.BuildSteps
 import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.FailureAction
 import jetbrains.buildServer.configs.kotlin.Requirements
 import jetbrains.buildServer.configs.kotlin.Triggers
 import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
@@ -15,6 +17,8 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.triggers.ScheduleTrigger
+import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
@@ -47,9 +51,96 @@ object Images {
     const val GRAALVM_LINUX_X64 = "$REGISTRY/graalvm:linux-x64-%env.GRAALVM_VERSION%"
     const val GRAALVM_LINUX_AARCH64 = "$REGISTRY/graalvm:linux-aarch64-%env.GRAALVM_VERSION%"
     const val GRAALVM_WINDOWS_X64 = "$REGISTRY/graalvm:win-x64-%env.GRAALVM_VERSION%"
+    // The images of the build variants: the same Dockerfiles with Oracle GraalVM (see OracleGraalVM).
+    const val GRAALVM_ORACLE_LINUX_X64 = "$REGISTRY/graalvm:linux-x64-${OracleGraalVM.VERSION}"
+    const val GRAALVM_ORACLE_LINUX_AARCH64 = "$REGISTRY/graalvm:linux-aarch64-${OracleGraalVM.VERSION}"
     const val CPP_TEST_LINUX_X64 = "$REGISTRY/cpp-test:linux-x64-ol9"
     const val DOCS_CHECK_LINUX_X64 = "$REGISTRY/docs-check:linux-x64-doxygen-${Doxygen.VERSION}"
     const val NUGET = "$REGISTRY/nuget:6.9.1"
+}
+
+/**
+ * The Oracle GraalVM of the build variants (pom.xml requires Oracle GraalVM of graalvm.version for -Dsdk.variant): the
+ * tag of the Linux images and the release on the macOS and Windows agents. The Linux images come from the regular
+ * image builds run with env.GRAALVM_VERSION set to this value (.teamcity/README.MD, "Build variants").
+ */
+object OracleGraalVM {
+    const val VERSION = "%env.GRAALVM_VERSION_ORACLE%"
+}
+
+/** A platform of the build variants: arch.name of pom.xml, the first part of the classifier. */
+enum class VariantPlatform(val archName: String, val title: String) {
+    LINUX_X64("amd64-linux", "Linux, x64"),
+    LINUX_AARCH64("aarch64-linux", "Linux, aarch64"),
+    MACOS_ARM64("aarch64-osx", "macOS, arm64"),
+    WINDOWS_X64("amd64-windows", "Windows, x64"),
+}
+
+/**
+ * A build variant of the SDK (-Dsdk.variant, "Build variants" in README.md): the archive
+ * graal-native-sdk-<version>-<arch.name>-<token>.zip of each of its platforms, published only as a complete set and
+ * only with the switch <token>.publish on.
+ */
+enum class Variant(val token: String, val platforms: List<VariantPlatform>, val ctestArguments: String) {
+    ORACLE(
+        "oracle",
+        listOf(VariantPlatform.LINUX_X64, VariantPlatform.LINUX_AARCH64, VariantPlatform.MACOS_ARM64, VariantPlatform.WINDOWS_X64),
+        ""
+    ),
+
+    // G1 aborts on a second isolate and on the re-creation of one (one isolate per process): the tests labelled
+    // multi-isolate do not run. Oracle documents no G1 on Windows.
+    ORACLE_G1(
+        "oracle-g1",
+        listOf(VariantPlatform.LINUX_X64, VariantPlatform.LINUX_AARCH64, VariantPlatform.MACOS_ARM64),
+        " -LE multi-isolate"
+    );
+
+    val publishParameter: String get() = "$token.publish"
+
+    /** The arch.name of the platforms, separated by spaces (for a shell loop). */
+    val platformList: String get() = platforms.joinToString(" ") { it.archName }
+
+    /** The name of the archive of [platform]; VERSION is a shell variable of the step. */
+    fun archive(platform: String) = "graal-native-sdk-${'$'}{VERSION}-$platform-$token.zip"
+}
+
+/**
+ * What a Test configuration builds and tests: the regular SDK (GraalVM CE; the pull requests and main), a build
+ * variant (Oracle GraalVM; main and every night), or a variant at -O0 (every week): the reference for the failures of
+ * the variant, since a test that fails at -O3 and passes at -O0 may be a miscompilation. The comparison is by hand.
+ */
+data class TestKind(val variant: Variant? = null, val optimizeO0: Boolean = false) {
+    val nameSuffix: String
+        get() = if (variant == null) "" else "[${variant.token}]" + if (optimizeO0) "[O0]" else ""
+
+    private val mavenOptions: List<String>
+        get() = listOfNotNull(variant?.let { "-Dsdk.variant=${it.token}" }, if (optimizeO0) "-Dsdk.optimize=O0" else null)
+
+    /** The Maven options of the build, with a leading space ("" for the regular build). */
+    val mavenArguments: String get() = mavenOptions.joinToString("") { " $it" }
+
+    /** The same, quoted for PowerShell, which splits an unquoted -Da.b=c at the dot. */
+    val powerShellMavenArguments: String get() = mavenOptions.joinToString("") { " \"$it\"" }
+
+    val ctestArguments: String get() = variant?.ctestArguments ?: ""
+
+    val graalvmVersion: String get() = if (variant == null) "%env.GRAALVM_VERSION%" else OracleGraalVM.VERSION
+
+    fun description(regular: String): String = when {
+        variant == null -> regular
+        optimizeO0 -> "Builds the ${variant.token} library at -O0 (-Dsdk.variant=${variant.token} -Dsdk.optimize=O0) " +
+            "and runs the C tests every week: a test that fails in the ${variant.token} tests and passes here may be " +
+            "a miscompilation"
+        else -> "Builds the ${variant.token} library (-Dsdk.variant=${variant.token}, Oracle GraalVM) and runs the " +
+            "C tests for main and every night"
+    }
+
+    fun triggers(triggers: Triggers) = when {
+        variant == null -> triggers.mainAndPullRequests()
+        optimizeO0 -> triggers.weekly()
+        else -> triggers.mainAndNightly()
+    }
 }
 
 /** The Doxygen release of the image that checks the C API documentation (docker/docs-check-linux-x64.Dockerfile). */
@@ -117,6 +208,34 @@ fun Triggers.mainAndPullRequests() {
             +:<default>
             +:pull-requests/*
         """.trimIndent()
+    }
+}
+
+/** The tests of the build variants run for main and every night, not for the pull requests (Oracle -O3 builds are slow). */
+fun Triggers.mainAndNightly() {
+    vcs {
+        branchFilter = "+:<default>"
+    }
+    schedule {
+        schedulingPolicy = daily {
+            hour = 2
+        }
+        branchFilter = "+:<default>"
+        triggerBuild = always()
+        withPendingChangesOnly = false
+    }
+}
+
+/** The -O0 reference tests of the build variants run every week for main. */
+fun Triggers.weekly() {
+    schedule {
+        schedulingPolicy = weekly {
+            dayOfWeek = ScheduleTrigger.DAY.Sunday
+            hour = 3
+        }
+        branchFilter = "+:<default>"
+        triggerBuild = always()
+        withPendingChangesOnly = false
     }
 }
 
@@ -367,25 +486,33 @@ fun BuildSteps.buildAndPushDockerImage(image: String, buildArguments: String) {
 
 /**
  * Runs a PowerShell script on a Windows agent after Util.prepareWinLocal, which installs MSVC, Maven and GraalVM if
- * needed and sets their environment for this step only.
+ * needed and sets their environment for this step only; [graalvmVersion] is the GraalVM of the step.
  */
-fun BuildSteps.powerShellWithWinLocal(stepName: String, script: String) {
+fun BuildSteps.powerShellWithWinLocal(
+    stepName: String,
+    script: String,
+    graalvmVersion: String = "%env.GRAALVM_VERSION%"
+) {
     powerShell {
         name = stepName
         scriptMode = script {
-            content = Util.prepareWinLocal() + script
+            content = Util.prepareWinLocal(graalvmVersion) + script
         }
         formatStderrAsError = true
     }
 }
 
 /** Runs Maven with PowerShell on a Windows agent (see powerShellWithWinLocal). */
-fun BuildSteps.mavenWithPowerShell(stepName: String, mavenArguments: String) {
+fun BuildSteps.mavenWithPowerShell(
+    stepName: String,
+    mavenArguments: String,
+    graalvmVersion: String = "%env.GRAALVM_VERSION%"
+) {
     powerShellWithWinLocal(stepName, """
 
         mvn ${Mvn.SETTINGS} $mavenArguments
         if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
-    """.trimIndent())
+    """.trimIndent(), graalvmVersion)
 }
 
 /** The shell and PowerShell scripts that the build configurations share. */
@@ -515,7 +642,7 @@ object Util {
         """.trimIndent()
     }
 
-    fun prepareMacOS(): String {
+    private fun prepareMacOSMaven(): String {
         return """
             mvn_version=3.8.9
             mvn_install_path=~/.graal/maven-${'$'}{mvn_version}
@@ -526,7 +653,25 @@ object Util {
             fi
 
             mvn=${'$'}{mvn_install_path}/bin/mvn
+"""
+    }
 
+    /**
+     * Maven and GraalVM [graalvmVersion] for macOS arm64 only (graalvm_arm64_path), for the builds of a variant on a
+     * macOS agent: they need no GraalVM for macOS x64.
+     */
+    fun prepareMacOSArm64(graalvmVersion: String): String {
+        return prepareMacOSMaven() + """
+            graalvm_arm64_path=~/.graal/$graalvmVersion-osx-arm64
+            if [ ! -x "${'$'}{graalvm_arm64_path}/Contents/Home/bin/java" ]; then
+                rm -rf "${'$'}{graalvm_arm64_path}"
+                .teamcity/scripts/install.sh graalvm "$graalvmVersion" osx-arm64 "${'$'}{graalvm_arm64_path}"
+            fi
+        """
+    }
+
+    fun prepareMacOS(): String {
+        return prepareMacOSMaven() + """
             # GraalVM for macOS x64 is no longer published after jdk-25.0.1,
             # so the x64 (and iOS simulator) builds use their own version.
             graalvm_arm64_path=~/.graal/%env.GRAALVM_VERSION%-osx-arm64
@@ -553,7 +698,7 @@ object Util {
         """
     }
 
-    fun prepareWinLocal(): String {
+    fun prepareWinLocal(graalvmVersion: String = "%env.GRAALVM_VERSION%"): String {
         return """
             ${'$'}ErrorActionPreference = 'Stop'
 
@@ -594,7 +739,7 @@ object Util {
             ${'$'}env:Path = "${'$'}mvnInstallPath\bin;${'$'}env:Path"
 
             # --- 4. Download GraalVM if not already cached ---
-            ${'$'}graalVersion = "%env.GRAALVM_VERSION%"
+            ${'$'}graalVersion = "$graalvmVersion"
             ${'$'}graalInstallPath = "C:\BuildCache\graalvm-${'$'}graalVersion-win-x64"
             if (-not (Test-Path "${'$'}graalInstallPath\bin\java.exe")) {
                 Write-Host "GraalVM ${'$'}graalVersion not found in cache, installing..."
@@ -609,5 +754,404 @@ object Util {
             where.exe java
             where.exe mvn
         """.trimIndent()
+    }
+}
+
+/**
+ * Test [Linux, x64] of [kind]: builds the library in the GraalVM image and runs the C tests in the test image; the
+ * regular build also checks the C API documentation (a variant has the same headers).
+ */
+fun BuildType.testForLinux(kind: TestKind) {
+    name = "Test [Linux, x64]${kind.nameSuffix}"
+    description = kind.description("Builds the library, runs the C tests (src/main/c, CTest) and checks the C API documentation for the pull requests to main and for main")
+
+    mainRepository()
+
+    steps {
+        script {
+            name = "Build the library"
+            scriptContent = """
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package${kind.mavenArguments}
+            """.trimIndent()
+            formatStderrAsError = true
+            inDocker(if (kind.variant == null) Images.GRAALVM_LINUX_X64 else Images.GRAALVM_ORACLE_LINUX_X64, "--rm -m 8g")
+        }
+
+        script {
+            // The library is built for glibc 2.17 (Oracle Linux 7); the tests are built and run on Oracle Linux 9.
+            name = "Build and run the C tests"
+            scriptContent = """
+                set -eu
+                cd src/main/c
+                rm -rf build bin
+                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
+                cmake --build --preset=build-release --config=Release -j$(nproc)
+                ctest --test-dir build/conf-release -C Release --output-on-failure --output-junit ctest-junit.xml${kind.ctestArguments}
+            """.trimIndent()
+            inDocker(Images.CPP_TEST_LINUX_X64, "--rm -m 4g")
+        }
+
+        if (kind.variant == null) {
+            script {
+                // Fails the build on any Doxygen warning (MDAPI-443). It needs only the headers, so it runs after a failed
+                // step too: a documentation warning does not hide the results of the tests, nor a failed build the warnings.
+                name = "Check the C API documentation"
+                executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
+                scriptContent = """
+                    set -u
+                    log=target/c-api-docs-check/warnings.log
+                    doxygen --version
+                    rm -rf target/c-api-docs-check
+                    mkdir -p target/c-api-docs-check
+                    doxygen docs/Doxyfile.check || { echo "Doxygen failed with exit code ${'$'}?"; exit 1; }
+                    if [ ! -f "${'$'}log" ]; then
+                        echo "Doxygen wrote no warnings log"
+                        exit 1
+                    fi
+                    echo "Warnings: ${'$'}(grep -c -E ': (warning|error):' "${'$'}log")"
+                    if [ -s "${'$'}log" ]; then
+                        cat "${'$'}log"
+                        echo "Describe the declarations above: the build fails until docs/Doxyfile.check reports no warning"
+                        exit 1
+                    fi
+                """.trimIndent()
+                inDocker(Images.DOCS_CHECK_LINUX_X64, "--rm")
+            }
+        }
+    }
+
+    triggers {
+        kind.triggers(this)
+    }
+
+    features {
+        if (kind.variant == null) {
+            pullRequestsToMain()
+        }
+        javaTestsReport()
+        cTestsReport()
+        nexusDockerLogin()
+    }
+
+    requirements {
+        linuxAgent()
+    }
+}
+
+/** Test [macOS, arm64] of [kind]: builds the library and runs the C tests on the macOS host, without Docker. */
+fun BuildType.testForMacOS(kind: TestKind) {
+    name = "Test [macOS, arm64]${kind.nameSuffix}"
+    description = kind.description("Builds the library and runs the C tests (src/main/c, CTest) on the macOS host, without Docker, for the pull requests to main and for main")
+
+    mainRepository()
+
+    steps {
+        script {
+            name = "Build the library"
+            scriptContent = (if (kind.variant == null) Util.prepareMacOS() else Util.prepareMacOSArm64(kind.graalvmVersion)) + """
+                export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
+                arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package${kind.mavenArguments}
+            """.trimIndent()
+            formatStderrAsError = true
+        }
+
+        script {
+            // The build installs CMake into ~/.graal (the version is CMake in Common.kt); the compilers come from the Xcode
+            // Command Line Tools.
+            name = "Build and run the C tests"
+            // The whole step runs as arm64, as the library does: CMakeLists.txt picks the architecture by the host
+            // processor, so under Rosetta (x86_64) the tests would be built for x86_64.
+            scriptContent = """
+                set -eu
+                if [ "$(uname -m)" != arm64 ] && [ -z "${'$'}{TEST_ARM64_REEXEC:-}" ]; then
+                    TEST_ARM64_REEXEC=1 exec arch -arm64 /bin/bash "$0"
+                fi
+                if [ "$(uname -m)" != arm64 ]; then
+                    echo "The C tests must run as arm64, but uname -m is $(uname -m)"
+                    exit 1
+                fi
+                cmake_install_path=~/.graal/cmake-${CMake.VERSION}
+                if [ ! -x "${'$'}{cmake_install_path}/CMake.app/Contents/bin/cmake" ]; then
+                    rm -rf "${'$'}{cmake_install_path}"
+                    .teamcity/scripts/install.sh cmake_macos ${CMake.VERSION} ${CMake.MACOS_SHA256} "${'$'}{cmake_install_path}"
+                fi
+                export PATH="${'$'}{cmake_install_path}/CMake.app/Contents/bin:${'$'}{PATH}"
+                cmake --version
+                cd src/main/c
+                rm -rf build bin
+                cmake --preset=conf-release -DCMAKE_BUILD_TYPE=Release .
+                cmake --build --preset=build-release --config=Release -j$(sysctl -n hw.ncpu)
+                ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml${kind.ctestArguments}
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        kind.triggers(this)
+    }
+
+    features {
+        if (kind.variant == null) {
+            pullRequestsToMain()
+        }
+        javaTestsReport()
+        cTestsReport()
+    }
+
+    failureConditions {
+        // The mac agents are shared with the releases: a hung build must not hold one. Oracle -O3 builds take longer.
+        executionTimeoutMin = if (kind.variant == null) 30 else 60
+    }
+
+    requirements {
+        macAgent()
+    }
+}
+
+/** Test [Windows, x64] of [kind]: builds the library and runs the C tests on the Windows agent, without Docker. */
+fun BuildType.testForWindows(kind: TestKind) {
+    name = "Test [Windows, x64]${kind.nameSuffix}"
+    description = kind.description("Builds the library and runs the C tests (src/main/c, CTest) on the Windows agent, without Docker, for the pull requests to main and for main")
+
+    mainRepository()
+
+    steps {
+        mavenWithPowerShell(
+            "Build the library",
+            "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package${kind.powerShellMavenArguments}",
+            kind.graalvmVersion
+        )
+
+        // The build installs CMake into C:\BuildCache (the version is CMake in Common.kt); the compilers are the VS Build
+        // Tools that prepareWinLocal sets up. The Visual Studio generator is multi-config, hence --config and -C Release,
+        // and the instance is pinned to those Build Tools in case the agent has another Visual Studio.
+        powerShellWithWinLocal("Build and run the C tests", """
+
+            ${'$'}cmakeInstallPath = "C:\BuildCache\cmake-${CMake.VERSION}"
+            if (-not (Test-Path "${'$'}cmakeInstallPath\bin\cmake.exe")) {
+                Install-CMake -Version "${CMake.VERSION}" -Sha256 "${CMake.WINDOWS_X64_SHA256}" -InstallPath ${'$'}cmakeInstallPath
+            }
+            ${'$'}env:PATH = "${'$'}cmakeInstallPath\bin;${'$'}env:PATH"
+            cmake --version
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+
+            Set-Location src\main\c
+            foreach (${'$'}dir in "build", "bin") {
+                if (Test-Path ${'$'}dir) { Remove-Item -LiteralPath ${'$'}dir -Recurse -Force }
+            }
+            cmake --preset=conf-release -G "Visual Studio 17 2022" "-DCMAKE_GENERATOR_INSTANCE=${'$'}vsInstallPath" -DCMAKE_BUILD_TYPE=Release .
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+            cmake --build --preset=build-release --config=Release --parallel
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+            ctest --test-dir build/conf-release -C Release --timeout 300 --output-on-failure --output-junit ctest-junit.xml${kind.ctestArguments}
+            if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+        """.trimIndent(), kind.graalvmVersion)
+    }
+
+    triggers {
+        kind.triggers(this)
+    }
+
+    features {
+        if (kind.variant == null) {
+            pullRequestsToMain()
+        }
+        javaTestsReport()
+        cTestsReport()
+    }
+
+    failureConditions {
+        // The Windows agents are shared with the releases: a hung build must not hold one. The first run on an agent
+        // without the cache also installs the VS Build Tools. Oracle -O3 builds take longer.
+        executionTimeoutMin = if (kind.variant == null) 60 else 90
+    }
+
+    requirements {
+        windowsAgent()
+    }
+}
+
+/**
+ * Build [<platform>][<variant>] of the release chain: builds the archive of [variant] for [platform] from the latest
+ * tag, without a deploy (Deploy [<variant>] decides). Only a successful build copies its archive to staged/, the
+ * artifact of the configuration, so a failed build gives the deploy nothing to take.
+ */
+fun BuildType.variantBuild(variant: Variant, platform: VariantPlatform) {
+    name = "Build [${platform.title}][${variant.token}]"
+    description = "Builds the ${variant.token} archive (${platform.archName}-${variant.token}) of the latest tag for " +
+        "Deploy [${variant.token}]"
+    artifactRules = "staged/*.zip"
+
+    mainRepository()
+
+    val archive = "target/graal-native-sdk-*-${platform.archName}-${variant.token}.zip"
+    steps {
+        when (platform) {
+            VariantPlatform.LINUX_X64, VariantPlatform.LINUX_AARCH64 -> {
+                checkoutLatestTag()
+                script {
+                    name = "Build"
+                    scriptContent = """
+                        set -e
+                        rm -rf staged
+                        mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package -Dsdk.variant=${variant.token}
+                        mkdir staged
+                        cp $archive staged/
+                    """.trimIndent()
+                    formatStderrAsError = true
+                    if (platform == VariantPlatform.LINUX_X64) {
+                        inDocker(Images.GRAALVM_ORACLE_LINUX_X64, "--rm -m 8g")
+                    } else {
+                        inDocker(Images.GRAALVM_ORACLE_LINUX_AARCH64, "--rm")
+                    }
+                }
+            }
+
+            VariantPlatform.MACOS_ARM64 -> {
+                checkoutLatestTag()
+                script {
+                    name = "Build"
+                    scriptContent = "set -e\n" + Util.prepareMacOSArm64(OracleGraalVM.VERSION) + """
+                        rm -rf staged
+                        export JAVA_HOME=${'$'}{graalvm_arm64_path}/Contents/Home
+                        arch -arm64 ${'$'}{mvn} ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package -Dsdk.variant=${variant.token}
+                        mkdir staged
+                        cp $archive staged/
+                    """.trimIndent()
+                    formatStderrAsError = true
+                }
+            }
+
+            VariantPlatform.WINDOWS_X64 -> {
+                checkoutLatestTagWithPowerShell()
+                powerShellWithWinLocal("Build", """
+
+                    if (Test-Path staged) { Remove-Item -LiteralPath staged -Recurse -Force }
+                    mvn ${Mvn.SETTINGS} ${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package "-Dsdk.variant=${variant.token}"
+                    if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
+                    New-Item -ItemType Directory staged | Out-Null
+                    Copy-Item $archive staged
+                """.trimIndent(), OracleGraalVM.VERSION)
+            }
+        }
+    }
+
+    if (platform == VariantPlatform.LINUX_X64 || platform == VariantPlatform.LINUX_AARCH64) {
+        features {
+            nexusDockerLogin()
+        }
+    }
+
+    failureConditions {
+        // The agents are shared with the regular release, which waits for the variant builds.
+        executionTimeoutMin = 60
+    }
+
+    requirements {
+        when (platform) {
+            VariantPlatform.LINUX_X64 -> linuxAgent()
+            VariantPlatform.LINUX_AARCH64 -> macAgentForLinuxAarch64()
+            VariantPlatform.MACOS_ARM64 -> macAgent()
+            VariantPlatform.WINDOWS_X64 -> windowsAgent()
+        }
+    }
+}
+
+/**
+ * Deploy [<variant>] of the release chain: takes the archives of the variant [builds] (one per platform of the variant,
+ * in their order) and, with the switch
+ * <variant>.publish on, deploys them to Nexus under the release version (classifier <arch.name>-<variant>), where
+ * Publish GitHub Release takes them. It runs after the regular deploys of the platforms ([regularDeploys]), so a variant
+ * is never in Nexus without its release.
+ *
+ * Only a complete set is deployed. A failed variant build leaves the set incomplete: the deploy then skips the variant
+ * with a warning and the release goes on without it. An archive that Nexus already has is skipped, so a rerun after a
+ * failed upload deploys the rest.
+ */
+fun BuildType.variantDeploy(variant: Variant, builds: List<BuildType>, regularDeploys: List<BuildType>) {
+    require(builds.size == variant.platforms.size) { "One build per platform of ${variant.token}, in their order" }
+    name = "Deploy [${variant.token}]"
+    description = "After the regular deploys: deploys the ${variant.token} archives of the latest tag to Nexus when " +
+        "${variant.publishParameter} is on and all of them are built"
+
+    mainRepository()
+
+    steps {
+        checkoutLatestTag()
+
+        script {
+            name = "Deploy"
+            // git runs in the container as another user than the owner of the checkout, hence safe.directory.
+            scriptContent = """
+                set -eu
+                TAG=$(git -c safe.directory='*' describe --abbrev=0)
+                VERSION=${'$'}{TAG#v}
+                BASE_URL="https://maven.in.devexperts.com/repository/qd/com/dxfeed/graal-native-sdk/${'$'}{VERSION}"
+
+                missing=""
+                for platform in ${variant.platformList}; do
+                    if [ ! -f "staged/${'$'}{platform}/${variant.archive("${'$'}{platform}")}" ]; then
+                        missing="${'$'}{missing} ${'$'}{platform}"
+                    fi
+                done
+                if [ -n "${'$'}{missing}" ]; then
+                    echo "##teamcity[message text='No ${variant.token} archive for:${'$'}{missing}. Nothing is deployed, the release goes on without ${variant.token}' status='WARNING']"
+                    echo "##teamcity[buildStatus text='${variant.token} set incomplete, nothing deployed']"
+                    exit 0
+                fi
+
+                if [ "%${variant.publishParameter}%" != "true" ]; then
+                    echo "${variant.publishParameter} is off: the ${variant.token} archives are not deployed"
+                    echo "##teamcity[buildStatus text='${variant.publishParameter} off, nothing deployed']"
+                    exit 0
+                fi
+
+                for platform in ${variant.platformList}; do
+                    archive="${variant.archive("${'$'}{platform}")}"
+                    if curl --head --fail --location --silent --retry 3 --max-time 60 --output /dev/null "${'$'}{BASE_URL}/${'$'}{archive}"; then
+                        echo "${'$'}{archive} is already in Nexus: skipped"
+                        continue
+                    fi
+                    # The repository of distributionManagement of the pom (qd), with the credentials of .teamcity/settings.xml.
+                    mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="staged/${'$'}{platform}/${'$'}{archive}" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier="${'$'}{platform}-${variant.token}" -Dpackaging=zip -DgeneratePom=false
+                done
+            """.trimIndent()
+            formatStderrAsError = true
+            inDocker(Images.GRAALVM_LINUX_X64, "--rm")
+        }
+    }
+
+    dependencies {
+        // A failed or cancelled variant build does not stop the deploy: it sees the incomplete set and skips the variant.
+        variant.platforms.zip(builds).forEach { (platform, build) ->
+            dependency(build) {
+                snapshot {
+                    onDependencyFailure = FailureAction.IGNORE
+                    onDependencyCancel = FailureAction.IGNORE
+                }
+                artifacts {
+                    cleanDestination = true
+                    artifactRules = "?:*.zip => staged/${platform.archName}"
+                }
+            }
+        }
+        regularDeploys.forEach { deploy ->
+            snapshot(deploy) {
+                onDependencyFailure = FailureAction.CANCEL
+            }
+        }
+    }
+
+    failureConditions {
+        // Build & Deploy [All] waits for this config: a hung upload must not hold the release chain.
+        executionTimeoutMin = 30
+    }
+
+    features {
+        nexusDockerLogin()
+    }
+
+    requirements {
+        linuxAgent()
     }
 }
