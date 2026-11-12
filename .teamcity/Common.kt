@@ -13,6 +13,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.dockerRegistryConnections
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
+import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
@@ -22,7 +23,10 @@ import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
-/** The Maven options of the builds: the settings with the repositories, and the credentials of the dxcity bot. */
+/**
+ * The Maven options of the builds: the settings with the repositories, and the Nexus credentials of the dxcity bot.
+ * Maven never logs in to Stash: the release plugin neither pushes nor clones (see linuxReleaseSteps).
+ */
 object Mvn {
     const val SETTINGS = "--settings \".teamcity/settings.xml\""
 
@@ -32,13 +36,9 @@ object Mvn {
     // The public repository of the releases (mdd-maven, see deploy-mdd-maven of the pom).
     const val REPO = "-Drepo.user=%dxcity.namecode.nexus% -Drepo.password=%dxcity.passcode.nexus%"
 
-    // The SCM credentials of Maven (Bitbucket), for the release plugin.
-    const val BITBUCKET = "-Dusername=dxcity -Dpassword=%dxcity.token.bitbucket%"
-
     // The same for PowerShell, which needs the arguments with "=" in quotes.
     const val POWERSHELL_NEXUS = "\"-Dnexus.user=%dxcity.namecode.nexus%\" \"-Dnexus.password=%dxcity.passcode.nexus%\""
     const val POWERSHELL_REPO = "\"-Drepo.user=%dxcity.namecode.nexus%\" \"-Drepo.password=%dxcity.passcode.nexus%\""
-    const val POWERSHELL_BITBUCKET = "\"-Dusername=dxcity\" \"-Dpassword=%dxcity.token.bitbucket%\""
 
     // The Windows archive linked with the static C runtime, checked in a servercore container (the base image of the
     // Windows build image, already on the agents; Hyper-V isolation on their Windows 11).
@@ -228,6 +228,24 @@ object GitHub {
     const val SSH_COMMAND = "export GIT_SSH_COMMAND=\"ssh -o UserKnownHostsFile='%teamcity.build.checkoutDir%/.teamcity/github_known_hosts' -o StrictHostKeyChecking=yes\""
 }
 
+/**
+ * git over SSH to Stash in the release builds, which push the release and the API baseline with the key of dxcity
+ * (stashSshAgent): no password of dxcity, which a failed login elsewhere can lock in Bitbucket.
+ */
+object Stash {
+    const val SSH_URL = "ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git"
+
+    /** The export that makes git check Stash against the host key of .teamcity/stash_known_hosts, as GitHub.SSH_COMMAND. */
+    const val SSH_COMMAND = "export GIT_SSH_COMMAND=\"ssh -o UserKnownHostsFile='%teamcity.build.checkoutDir%/.teamcity/stash_known_hosts' -o StrictHostKeyChecking=yes\""
+}
+
+/** The SSH agent with the key of dxcity, the key of the VCS root, for the git of the steps on the agent (Stash). */
+fun BuildFeatures.stashSshAgent() {
+    sshAgent {
+        teamcitySshKey = "dxcity for GIT"
+    }
+}
+
 /** The repository of the SDK (the name of its object is its id in TeamCity). */
 fun BuildType.mainRepository() {
     vcs {
@@ -296,17 +314,16 @@ fun Triggers.weekly() {
 /**
  * Builds the pull requests to main and reports the result of the build to the pull request in Bitbucket.
  *
- * The credentials are the ones the release management team set up for dxcity: a TeamCity secure value for the pull
- * request detection and a refreshable token of the dxcity user for the commit statuses.
+ * Both use the refreshable token of the dxcity user that the release management team set up, not the password of
+ * dxcity: a failed login elsewhere can lock it in Bitbucket.
  */
 fun BuildFeatures.pullRequestsToMain() {
     pullRequests {
         vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
         provider = bitbucketServer {
             serverUrl = "https://stash.in.devexperts.com"
-            authType = password {
-                username = "dxcity"
-                password = "credentialsJSON:103397d4-1bf1-4c41-a0aa-bb40ea0a2591"
+            authType = storedToken {
+                tokenId = DXCITY_BITBUCKET_TOKEN
             }
             filterTargetBranch = "+:refs/heads/main"
             usePullRequestBranches = true
@@ -318,11 +335,15 @@ fun BuildFeatures.pullRequestsToMain() {
         publisher = bitbucketServer {
             url = "%bitbucket.server.url%"
             authType = storedToken {
-                tokenId = "tc_token_id:CID_54855d913f384940c4cc970605eb96ff:60:a566fb5b-bdb7-48d9-a206-0d66eec35762"
+                tokenId = DXCITY_BITBUCKET_TOKEN
             }
         }
     }
 }
+
+/** The refreshable Bitbucket token of the dxcity user in TeamCity (a reference to the token, not its value). */
+private const val DXCITY_BITBUCKET_TOKEN =
+    "tc_token_id:CID_54855d913f384940c4cc970605eb96ff:60:a566fb5b-bdb7-48d9-a206-0d66eec35762"
 
 /** The results of the C tests (CTest, `--output-junit` in src/main/c/build/conf-release). */
 fun BuildFeatures.cTestsReport() {
@@ -455,14 +476,18 @@ fun BuildSteps.cApiReferenceSteps(tagCommand: String, stepConditions: BuildStepC
 }
 
 /**
- * The steps of the release builds of Linux x64: the header of the release notes, release:prepare, the C API reference
- * of the new tag (cApiReferenceSteps), release:perform (which deploys the release archive and packs that reference),
- * the baseline of the API description for a release (Util.apiBaselineUpdateScript), then the debug archive of the tag
- * that the release has made.
+ * The steps of the release builds of Linux x64: the header of the release notes, release:prepare, the push of the
+ * release to Stash, the C API reference of the new tag (cApiReferenceSteps), release:perform (which deploys the release
+ * archive and packs that reference), the baseline of the API description for a release (Util.apiBaselineUpdateScript
+ * and Util.apiBaselinePushScript), then the debug archive of the tag that the release has made.
+ *
+ * Maven never logs in to Stash: release:prepare commits and tags without pushing (pushChanges=false), the git of the
+ * agent pushes over SSH with the key of dxcity (the build needs stashSshAgent), and release:perform checks the tag out
+ * of the local repository (localCheckout=true). The Maven steps run in the GraalVM image, which has no SSH agent.
  *
  * @param tagCommand the shell command that prints the tag of the release (v3.8.0); it runs in the GraalVM image, where
  *        mvn needs Mvn.SETTINGS and Mvn.NEXUS
- * @param prepareArguments the arguments of release:prepare before the credentials, with a trailing space if any
+ * @param prepareArguments the arguments of release:prepare, with a trailing space if any
  */
 fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
     script {
@@ -480,13 +505,34 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         scriptContent = """
             git config --global user.name dxcity
             git config --global user.email dxcity@bots.devexperts.com
-            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} release:clean release:prepare $prepareArguments${Mvn.BITBUCKET}
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} release:clean release:prepare ${prepareArguments}-DpushChanges=false
         """.trimIndent()
         formatStderrAsError = true
         inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
     }
 
-    // The tag that release:prepare has pushed, as in release:checkout latest tag.
+    script {
+        name = "release:push to Stash"
+        id = "release_push_to_stash"
+        // On the agent, with the SSH agent of the build: the branch of the release (as release:prepare would push it)
+        // gets the commits of the release notes header and of release:prepare, the tag is the release.
+        scriptContent = """
+            set -eu
+            ${Stash.SSH_COMMAND}
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            if [ "${'$'}BRANCH" = HEAD ]; then
+                echo "The release is not on a branch (detached HEAD): nothing is pushed."
+                exit 1
+            fi
+            TAG=$(git describe --abbrev=0)
+            # The branch first: if it is rejected (a pull request merged meanwhile), the tag is not published either.
+            git push "${Stash.SSH_URL}" "HEAD:refs/heads/${'$'}BRANCH"
+            git push "${Stash.SSH_URL}" "refs/tags/${'$'}TAG"
+        """.trimIndent()
+        // Not formatStderrAsError: git writes the progress of a successful push to stderr.
+    }
+
+    // The tag that release:prepare has made, as in release:checkout latest tag.
     cApiReferenceSteps("git describe --abbrev=0")
 
     script {
@@ -495,7 +541,7 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         scriptContent = """
             git config --global user.name dxcity
             git config --global user.email dxcity@bots.devexperts.com
-            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} \
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} -DlocalCheckout=true \
                 -Darguments="-Dc-api-docs -Dc-api-docs.html=${CApiReference.HTML}" release:perform
         """.trimIndent()
         formatStderrAsError = true
@@ -506,8 +552,15 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         name = "release:update API baseline in docker"
         id = "release_update_api_baseline_in_docker"
         scriptContent = Util.apiBaselineUpdateScript()
-        // Not formatStderrAsError: git writes the progress of a successful push to stderr, and a failure is a warning.
+        // Not formatStderrAsError: a failure is a warning.
         inDocker(Images.GRAALVM_LINUX_X64, "--rm")
+    }
+
+    script {
+        name = "release:push API baseline to Stash"
+        id = "release_push_api_baseline_to_stash"
+        scriptContent = Util.apiBaselinePushScript()
+        // Not formatStderrAsError: git writes the progress of a successful push to stderr, and a failure is a warning.
     }
 
     script {
@@ -520,7 +573,7 @@ fun BuildSteps.linuxReleaseSteps(tagCommand: String, prepareArguments: String) {
         name = "release:deploy debug"
         id = "release_deploy_debug"
         scriptContent = """
-            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} clean deploy -P buildDebug
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy -P buildDebug
         """.trimIndent()
         formatStderrAsError = true
         inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
@@ -633,9 +686,10 @@ object Util {
     }
 
     /**
-     * Makes the description of the API headers of the tag that release:prepare has pushed the baseline of the API
-     * description check, commits it to main and pushes it to Stash. A pre-release (v3.13.0-rc1) leaves the baseline as
-     * it is. Runs in the GraalVM image: the generator is a multi-file source program, which needs Java 22 or newer.
+     * Makes the description of the API headers of the tag that release:prepare has made the baseline of the API
+     * description check and commits it to main; apiBaselinePushScript pushes the commit. A pre-release (v3.13.0-rc1)
+     * leaves the baseline as it is. Runs in the GraalVM image: the generator is a multi-file source program, which needs
+     * Java 22 or newer.
      *
      * The release is deployed by then, so a failure here only logs a warning: the build and the release chain after it
      * go on, and the builds of main keep warning about the old baseline until it is updated by hand (README.md).
@@ -643,6 +697,11 @@ object Util {
     fun apiBaselineUpdateScript(): String {
         return """
             set -u
+
+            # The container runs as root: .git goes back to the agent user, whose git pushes the commit (and may rebase
+            # it) in the next step.
+            owner="${'$'}(stat -c '%u:%g' .git)"
+            trap 'chown -R "${'$'}owner" .git' EXIT
 
             (
                 set -e
@@ -675,27 +734,48 @@ object Util {
                 fi
 
                 git commit -m "Update the API baseline to ${'$'}TAG" -- "${'$'}BASELINE"
-
-                # Over HTTPS with the token of dxcity, as release:prepare pushes (the scm connection of pom.xml); the
-                # credential helper keeps the token out of the URL. The git of the image (1.8) takes an empty value
-                # (-c credential.helper=) for a missing one and fails; the container has no other helper to reset.
-                export BITBUCKET_TOKEN="%dxcity.token.bitbucket%"
-                REMOTE=https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git
-                stash() {
-                    git -c credential.helper='!f() { echo username=dxcity; echo "password=${'$'}BITBUCKET_TOKEN"; }; f' "${'$'}@"
-                }
-
-                # A pull request merged during the release moves main: then the commit goes on top of it.
-                if ! stash push "${'$'}REMOTE" HEAD:refs/heads/main; then
-                    stash fetch "${'$'}REMOTE" main
-                    git rebase FETCH_HEAD
-                    stash push "${'$'}REMOTE" HEAD:refs/heads/main
-                fi
             )
             STATUS=${'$'}?
 
             if [ "${'$'}STATUS" -ne 0 ]; then
                 echo "##teamcity[message text='The API baseline was not updated (exit code ${'$'}STATUS): update it by hand, see step 4 of To release a new version in README.md' status='WARNING']"
+            fi
+        """.trimIndent()
+    }
+
+    /**
+     * Pushes the commit of apiBaselineUpdateScript to main in Stash, if it made one: on the agent, over SSH with the
+     * key of dxcity (Stash, stashSshAgent). As there, a failure only logs a warning.
+     */
+    fun apiBaselinePushScript(): String {
+        return """
+            set -u
+
+            (
+                set -e
+
+                TAG=$(git describe --abbrev=0)
+                BASELINE=scripts/check-api-headers/baseline/dxfg-api.json
+                if git diff --quiet "${'$'}TAG" HEAD -- "${'$'}BASELINE"; then
+                    echo "No new API baseline since ${'$'}TAG: nothing to push."
+                    exit 0
+                fi
+
+                ${Stash.SSH_COMMAND}
+
+                # A pull request merged during the release moves main: then the commit goes on top of it.
+                if ! git push "${Stash.SSH_URL}" HEAD:refs/heads/main; then
+                    git fetch "${Stash.SSH_URL}" main
+                    git -c user.name=dxcity -c user.email=dxcity@bots.devexperts.com rebase FETCH_HEAD
+                    git push "${Stash.SSH_URL}" HEAD:refs/heads/main
+                fi
+            )
+            STATUS=${'$'}?
+
+            if [ "${'$'}STATUS" -ne 0 ]; then
+                # A conflicting rebase would leave the checkout unusable for the next steps.
+                git rebase --abort 2>/dev/null || true
+                echo "##teamcity[message text='The API baseline was not pushed (exit code ${'$'}STATUS): push it by hand, see step 4 of To release a new version in README.md' status='WARNING']"
             fi
         """.trimIndent()
     }
@@ -829,7 +909,7 @@ fun BuildType.testForLinux(kind: TestKind) {
         script {
             name = "Build the library"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package${kind.mavenArguments}
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package${kind.mavenArguments}
             """.trimIndent()
             formatStderrAsError = true
             inDocker(if (kind.variant == null) Images.GRAALVM_LINUX_X64 else Images.GRAALVM_ORACLE_LINUX_X64, "--rm -m 8g")
@@ -976,7 +1056,7 @@ fun BuildType.testForWindows(kind: TestKind) {
     steps {
         mavenWithPowerShell(
             "Build the library",
-            "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package${kind.powerShellMavenArguments}",
+            "${Mvn.POWERSHELL_NEXUS} clean package${kind.powerShellMavenArguments}",
             kind.graalvmVersion
         )
 
@@ -1052,7 +1132,7 @@ fun BuildType.variantBuild(variant: Variant, platform: VariantPlatform) {
                     scriptContent = """
                         set -e
                         rm -rf staged
-                        mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package -Dsdk.variant=${variant.token}
+                        mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package -Dsdk.variant=${variant.token}
                         mkdir staged
                         cp $archive staged/
                     """.trimIndent()
@@ -1085,7 +1165,7 @@ fun BuildType.variantBuild(variant: Variant, platform: VariantPlatform) {
                 powerShellWithWinLocal("Build", """
 
                     if (Test-Path staged) { Remove-Item -LiteralPath staged -Recurse -Force }
-                    mvn ${Mvn.SETTINGS} ${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean package "-Dsdk.variant=${variant.token}"
+                    mvn ${Mvn.SETTINGS} ${Mvn.POWERSHELL_NEXUS} clean package "-Dsdk.variant=${variant.token}"
                     if (${'$'}LASTEXITCODE -ne 0) { exit ${'$'}LASTEXITCODE }
                     New-Item -ItemType Directory staged | Out-Null
                     Copy-Item $archive staged

@@ -250,6 +250,7 @@ object ReleaseTheNextPatch : BuildType({
 
     features {
         nexusDockerLogin()
+        stashSshAgent()
     }
 
     requirements {
@@ -283,6 +284,7 @@ object ReleaseMajorMinorPatchOrRc : BuildType({
 
     features {
         nexusDockerLogin()
+        stashSshAgent()
     }
 
     requirements {
@@ -303,7 +305,7 @@ object BuildAndDeployForLinuxAarch64Release : BuildType({
         script {
             name = "Deploy"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} clean deploy
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
@@ -332,7 +334,7 @@ object BuildAndDeployForLinuxAarch64Debug : BuildType({
         script {
             name = "Deploy Debug"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} ${Mvn.BITBUCKET} clean deploy -P buildDebug
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.REPO} clean deploy -P buildDebug
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
@@ -373,7 +375,7 @@ object BuildAndDeployForWindowsRelease : BuildType({
 
     steps {
         checkoutLatestTagWithPowerShell()
-        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy")
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} clean deploy")
     }
 
     requirements {
@@ -390,7 +392,7 @@ object BuildAndDeployForWindowsDebug : BuildType({
 
     steps {
         checkoutLatestTagWithPowerShell()
-        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy -P buildDebug")
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} clean deploy -P buildDebug")
     }
 
     requirements {
@@ -414,7 +416,7 @@ object BuildAndDeployForWindowsStaticRuntimeRelease : BuildType({
 
     steps {
         checkoutLatestTagWithPowerShell()
-        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy ${Mvn.POWERSHELL_STATIC_RUNTIME}")
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} clean deploy ${Mvn.POWERSHELL_STATIC_RUNTIME}")
     }
 
     requirements {
@@ -433,7 +435,7 @@ object BuildAndDeployForWindowsStaticRuntimeDebug : BuildType({
 
     steps {
         checkoutLatestTagWithPowerShell()
-        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} ${Mvn.POWERSHELL_BITBUCKET} clean deploy -P buildDebug ${Mvn.POWERSHELL_STATIC_RUNTIME}")
+        mavenWithPowerShell("Deploy", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_REPO} clean deploy -P buildDebug ${Mvn.POWERSHELL_STATIC_RUNTIME}")
     }
 
     requirements {
@@ -1312,7 +1314,7 @@ object BuildForLinux : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 8g")
@@ -1441,7 +1443,7 @@ object BuildForLinuxAarch64 : BuildType({
         script {
             name = "Build"
             scriptContent = """
-                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package %maven.arguments%
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package %maven.arguments%
             """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_LINUX_AARCH64, "--rm")
@@ -1516,7 +1518,7 @@ object BuildForWindows : BuildType({
     }
 
     steps {
-        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} ${Mvn.POWERSHELL_BITBUCKET} clean integration-test %maven.arguments%")
+        mavenWithPowerShell("Build", "${Mvn.POWERSHELL_NEXUS} clean integration-test %maven.arguments%")
     }
 
     requirements {
@@ -1535,7 +1537,7 @@ object BuildForWindowsInDocker : BuildType({
         script {
             name = "Build"
             scriptContent = """
-            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} ${Mvn.BITBUCKET} clean package
+            mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package
         """.trimIndent()
             formatStderrAsError = true
             inDocker(Images.GRAALVM_WINDOWS_X64, "--rm -m 8g", ScriptBuildStep.ImagePlatform.Windows)

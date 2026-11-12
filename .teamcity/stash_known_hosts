@@ -1,0 +1,3 @@
+# The SSH host key of Stash for git in the release builds, which push the release and the API baseline over SSH
+# (Stash.SSH_COMMAND in Common.kt). Fingerprint: SHA256:fbPmKiAFmJ1LMpLnKbd1hDqO80CtHdHUC6Mm64Ulqg8 (RSA).
+[stash.in.devexperts.com]:7999 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjhBwdYdd9+pedHqIIg/Wrf7r2x+5Bz6uZTDfl/Nkc7wghs5v3motwdjmY3AtPqDbgdiD5FqhnlISSAB5JGJGFcSQyMm8sf1AG4RC2jUxIO+4kh0ULNCXEEkD8NBBpXQyTNy2zRZ6UxvcRO03jQrKGZ+HVvI0JaUTb7b6+NRHACZDaaIQQENh8Mmw9baRwunN9oB+6HRxivV5jmZxKi1Clmja8ZtNCWrOo8wMdQjSCuFWWw/G3ybNTX6P0xf751sKxL0k3FLuqUwfKCiOxOqfYtkF9BDUJXnxntDOKCVP75kd2vtYSpEpxs0LdXqovufj0Eq4b57q1nG8mhdy+gitZ

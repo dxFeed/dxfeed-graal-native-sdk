@@ -336,12 +336,23 @@ release. The zip is deployed like the other artifacts, and "Publish GitHub Relea
 version from `qd` to the GitHub release; "Publish C API Docs to GitHub Pages" puts the reference online (see below).
 To build the documentation locally: `mvn package -Dc-api-docs` (Doxygen must be in `PATH`).
 
+The release builds push to Stash over SSH, never with the password of `dxcity` (a failed login with it elsewhere can
+lock the account in Bitbucket). `release:prepare` commits and tags without pushing (`-DpushChanges=false`); the step
+`release:push to Stash` then pushes the branch of the release and the tag with the git of the agent and the key
+`dxcity for GIT` of the VCS root, which the SSH Agent feature of the build holds (`stashSshAgent` and `Stash` of
+`Common.kt`; the host key of Stash is pinned in `.teamcity/stash_known_hosts`). The branch goes first: if a pull request
+moved it during the release, the push is rejected, nothing is published or deployed, and the release is run again. If
+only the tag push fails, the branch already has the release commits but the build has stopped before `release:perform`:
+tag the `[maven-release-plugin] prepare release vX.Y.Z` commit by hand and deploy that tag by hand.
+`release:perform` checks the tag out of the local repository (`-DlocalCheckout=true`). The pull request builds detect the pull requests and publish
+their statuses with the refreshable Bitbucket token of `dxcity` (`pullRequestsToMain`).
+
 After `release:perform`, the step `release:update API baseline in docker` (`Util.apiBaselineUpdateScript` of
 `Common.kt`) makes the description of the API headers of the new tag the baseline of the API description check
-(`GenerateApiJson.java --update-baseline <tag>` in the GraalVM image, which has Java 22+), commits
+(`GenerateApiJson.java --update-baseline <tag>` in the GraalVM image, which has Java 22+) and commits
 `scripts/check-api-headers/baseline/dxfg-api.json` to `main` as `dxcity` ("Update the API baseline to vX.Y.Z") if it
-changed, and pushes it to Stash over HTTPS with the token of `dxcity`; if a pull request moved `main` meanwhile, it
-rebases the commit on top and pushes again. A pre-release (`-rcN`) or a release built from a branch other than `main`
+changed; the step `release:push API baseline to Stash` (`Util.apiBaselinePushScript`) pushes it over SSH, and if a
+pull request moved `main` meanwhile, it rebases the commit on top and pushes again. A pre-release (`-rcN`) or a release built from a branch other than `main`
 leaves the baseline as it is. The step never fails the build: on an error it logs a warning, and the baseline is updated
 by hand (step 4 of "To release a new version" in the [README](../README.md)). "Publish GitHub Release" then pushes the
 commit to GitHub with `main`.

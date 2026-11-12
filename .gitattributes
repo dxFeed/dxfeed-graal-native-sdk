@@ -4,8 +4,9 @@
 # Patches are applied with git apply on macOS, their context lines must keep LF line endings.
 *.patch text eol=lf
 
-# The pinned SSH host keys of github.com are read by ssh on the Linux agents.
+# The pinned SSH host keys of github.com and Stash are read by ssh on the Linux agents.
 .teamcity/github_known_hosts text eol=lf
+.teamcity/stash_known_hosts text eol=lf
 
 # The description of the C API is compared byte for byte: its expected outputs and the baseline keep LF line endings.
 scripts/check-api-headers/**/*.json text eol=lf
