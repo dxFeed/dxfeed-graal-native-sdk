@@ -50,6 +50,8 @@ struct Options {
     std::optional<std::int64_t> durationMillis{};
     // The system properties (-D<key>=<value>) in the command line order.
     std::vector<std::pair<std::string, std::string>> properties{};
+    // The arguments of the isolate (-Xmx, -Xms, -Xmn, -XX:<option>) as they are, in the command line order.
+    std::vector<std::string> isolateArguments{};
 };
 
 // The result of the parsing: the options, or the message of the first error.

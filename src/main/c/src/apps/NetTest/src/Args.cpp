@@ -155,6 +155,24 @@ struct Parser {
         return true;
     }
 
+    // The isolate checks the -XX: options and the values of -Xmx, -Xms and -Xmn (a wrong one fails its creation), but
+    // ignores the other -X arguments, so that a typo there would go unnoticed: they are rejected here.
+    bool parseIsolateArgument(const std::string &argument) {
+        const bool hasValue = argument.size() > 4;
+        const bool heapSize = hasValue && (argument.compare(0, 4, "-Xmx") == 0 || argument.compare(0, 4, "-Xms") == 0 ||
+                                           argument.compare(0, 4, "-Xmn") == 0);
+        const bool runtimeOption = hasValue && argument.compare(0, 4, "-XX:") == 0;
+
+        if (!heapSize && !runtimeOption) {
+            return fail(argument + " is not an option of the isolate, which takes -Xmx<size>, -Xms<size>, -Xmn<size> " +
+                        "and -XX:<option>");
+        }
+
+        options.isolateArguments.push_back(argument);
+
+        return true;
+    }
+
     bool run(const std::vector<std::string> &args) {
         if (args.size() < 2) {
             return fail("no mode");
@@ -261,6 +279,10 @@ struct Parser {
                 return fail("unsupported QD flag: -c (the collector)");
             } else if (argument.compare(0, 2, "-D") == 0) {
                 if (!parseProperty(argument)) {
+                    return false;
+                }
+            } else if (argument.compare(0, 2, "-X") == 0) {
+                if (!parseIsolateArgument(argument)) {
                     return false;
                 }
             } else if (!argument.empty() && argument[0] == '-' && argument.size() > 1) {
@@ -411,6 +433,9 @@ std::string usageText() {
            "  --legacy             publish through the deprecated dxfg_DXPublisher_publishEvents\n"
            "  --duration <time>    end the run after the time (ms, s or m); Ctrl+C ends it at once\n"
            "  -D<key>=<value>      set a system property before the first endpoint is created\n"
+           "  -Xmx<size>, -Xms<size>, -Xmn<size>\n"
+           "                       the maximum, initial and young generation heap sizes of the isolate (512m, 1g)\n"
+           "  -XX:<option>         an option of the isolate (for example -XX:+PrintGC -XX:+PrintGCSummary)\n"
            "\n"
            "The consumer mode 'c' and the QD flags -c, /r and /s symbol splits, {len,max} symbol lengths and the\n"
            "rate limiter bucket ;<time> are not supported.\n";

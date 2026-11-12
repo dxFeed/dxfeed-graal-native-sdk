@@ -23,6 +23,7 @@ platform.
 ```text
 NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>] [--batch <n>]
         [--event Trade|TimeAndSale] [--reuse] [--legacy] [--duration <time>] [-D<key>=<value>...]
+        [-Xmx<size>] [-Xms<size>] [-Xmn<size>] [-XX:<option>...]
 ```
 
 | Option                   | Meaning                                                                                       |
@@ -40,15 +41,16 @@ NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>
 | `--legacy`               | publish through the deprecated `dxfg_DXPublisher_publishEvents()`                             |
 | `--duration <time>`      | end the run after this time; Ctrl+C (SIGINT, SIGTERM) ends it at once                         |
 | `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Ddxscheme.nanoTime=true`       |
+| `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
 
 Every event carries the current time: Trade in `time_sequence`, TimeAndSale in `index` (seconds, milliseconds and a
 22-bit sequence per instance), the rest of the nanoseconds in `time_nano_part`. A consumer computes the business lag
 from it as for QD NetTest's own records.
 
-Exit codes: 0 after `--duration` or Ctrl+C, 2 for invalid arguments, 1 for a failed start (unreadable IPF file, failed
-endpoint, malformed address, a `:port` that does not start listening within 3 s, for example because it is in use) or
-a failed publishing call. Connecting is asynchronous: a `host:port` without a listener is not an error, the tool runs
-and reports `connections 0` until a peer is there.
+Exit codes: 0 after `--duration` or Ctrl+C, 2 for invalid arguments (also an option that the isolate rejects), 1 for a
+failed start (unreadable IPF file, failed endpoint, malformed address, a `:port` that does not start listening within
+3 s, for example because it is in use) or a failed publishing call. Connecting is asynchronous: a `host:port` without a
+listener is not an error, the tool runs and reports `connections 0` until a peer is there.
 
 ## Statistics
 
@@ -91,6 +93,37 @@ per endpoint and per connector, for example:
 I 261110 181108.014 {NetTest.1} Subscription: 0; Sticky: 0; Storage: 0; Buffer: 0; Dropped: 0; Read: 0 Bps; Write: 0 Bps; CPU: 1.94%
     ServerSocket-Agent *:47123 [0] Read: 0 Bps; Write: 0 Bps
 ```
+
+## GC of the isolate
+
+The SDK library runs in a Graal isolate with the Serial GC, and its heap may grow to 80% of the RAM by default. The
+`-Xmx`, `-Xms`, `-Xmn` and `-XX:` arguments go to the isolate when it is created, in the command line order; an
+unknown `-XX:` option or a wrong value fails the start with exit code 2, and the isolate prints the reason to stderr.
+The isolate would ignore other `-X` arguments, so the tool rejects them (`-Xss64k`, a typo such as `-Xnm2m`), also with
+2. The useful options:
+
+| Option                   | Effect                                                                                        |
+|--------------------------|-----------------------------------------------------------------------------------------------|
+| `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>` | the maximum, the initial and the young generation sizes of the heap (`512m`, `1g`) |
+| `-XX:+PrintGC`           | a line per collection: its number, kind, heap before and after, pause                        |
+| `-XX:+PrintGCSummary`    | the counts, times and allocated bytes of all collections, at the end of the run              |
+| `-XX:+VerboseGC`, `-XX:+PrintGCTimes` | the generations and the phase times of every collection (verbose)               |
+| `-XX:PrintFlags=`        | lists the options of the isolate and exits with 0 without a run                               |
+
+The GC output goes to stderr, together with the SDK's log:
+
+```text
+[0.167s] GC(0) Pause Incremental GC (Collect on allocation) 4.00M->2.00M 22.029ms
+...
+GC summary
+  Incremental GC count: 16
+  Incremental GC time: 0.331s
+  Complete GC count: 0
+  ...
+  GC load: 18%
+```
+
+At the end of the run the tool closes all endpoints and tears the isolate down, which prints the summary.
 
 ## Differences from QD NetTest
 

@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // The core of the NetTest publisher tool (src/apps/NetTest) in one process: the command line (the options, the
-// rejected QD flags, the validation, the durations and rates, the -D properties), the symbol pool (an IPF file in file
-// order, the deterministic generated symbols) and the event pools (the batch fill of Trade and TimeAndSale with and
-// without reuse), the rate limiter, the instances with their generators, the statistics formatter and the reporter.
+// rejected QD flags, the validation, the durations and rates, the -D properties, the isolate arguments), the symbol
+// pool (an IPF file in file order, the deterministic generated symbols) and the event pools (the batch fill of Trade
+// and TimeAndSale with and without reuse), the rate limiter, the instances with their generators, the statistics
+// formatter and the reporter.
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -25,6 +26,7 @@
 #include <NetTest/EventPool.hpp>
 #include <NetTest/RateLimiter.hpp>
 #include <NetTest/Run.hpp>
+#include <NetTest/Sdk.hpp>
 #include <NetTest/Statistics.hpp>
 #include <NetTest/StopControl.hpp>
 #include <NetTest/SymbolPool.hpp>
@@ -127,6 +129,7 @@ TEST_CASE("U1: the defaults of a minimal command line") {
     CHECK_FALSE(result.options.reuse);
     CHECK_FALSE(result.options.legacy);
     CHECK(result.options.properties.empty());
+    CHECK(result.options.isolateArguments.empty());
 }
 
 TEST_CASE("U1: every option lands in the options") {
@@ -175,6 +178,18 @@ TEST_CASE("U1: every option lands in the options") {
         CHECK(result.options.properties[1] == std::make_pair(std::string("monitoring.stat"), std::string("10s")));
         CHECK(result.options.properties[2] == std::make_pair(std::string("k"), std::string("a=b")));
         CHECK(result.options.properties[3] == std::make_pair(std::string("empty"), std::string("")));
+    }
+
+    SUBCASE("isolate arguments keep their order and text, apart from the -D properties") {
+        const auto result = parse({"p", ":7000", "-S", "1", "-Xmx64m", "-XX:+PrintGC", "-Dk=v",
+                                   "-XX:TearDownWarningSeconds=10", "-Xms16m", "-Xmn2m"});
+
+        REQUIRE(result.ok);
+        CHECK(result.options.isolateArguments == std::vector<std::string>{"-Xmx64m", "-XX:+PrintGC",
+                                                                          "-XX:TearDownWarningSeconds=10", "-Xms16m",
+                                                                          "-Xmn2m"});
+        REQUIRE(result.options.properties.size() == 1);
+        CHECK(result.options.properties[0] == std::make_pair(std::string("k"), std::string("v")));
     }
 
     SUBCASE("flags may come before the address") {
@@ -252,6 +267,11 @@ TEST_CASE("U1: invalid command lines are rejected") {
     requireRejected({"p", ":7000", "-S", "10", "--unknown"}, "--unknown");
     requireRejected({"p", ":7000", "-S", "10", "-Dnovalue"}, "-D");
     requireRejected({"p", ":7000", "-S", "10", "-D=value"}, "-D");
+    // The isolate would ignore the -X arguments other than the heap sizes, so a typo must not reach it.
+    for (const std::string argument : {"-X", "-XX", "-XX:", "-Xmx", "-Xfoo", "-Xss64k", "-Xnm2m", "-XXfoo"}) {
+        CAPTURE(argument);
+        requireRejected({"p", ":7000", "-S", "10", argument}, argument + " is not an option of the isolate");
+    }
     requireRejected({"p", ":7000", "extra", "-S", "10"}, "extra");
 }
 
@@ -294,9 +314,24 @@ TEST_CASE("U1: the usage text names the modes and the flags") {
     CHECK(usage.find("Usage: NetTest p") != std::string::npos);
 
     for (const auto *flag : {"-S", "-C", "-r", "-s", "-n", "--batch", "--event", "--reuse", "--legacy", "--duration",
-                             "-D<key>=<value>"}) {
+                             "-D<key>=<value>", "-Xmx<size>", "-XX:<option>"}) {
         CHECK(usage.find(flag) != std::string::npos);
     }
+}
+
+TEST_CASE("U1: the isolate takes the -X and -XX: arguments and rejects an unknown one") {
+    graal_isolate_t *isolate = nullptr;
+    graal_isolatethread_t *thread = nullptr;
+
+    // A second isolate of the process, created and torn down here; the shared one of the other tests stays.
+    REQUIRE(createIsolate({"-Xmx64m", "-XX:TearDownWarningSeconds=10"}, &isolate, &thread) == 0);
+    REQUIRE(thread != nullptr);
+    CHECK(tearDownIsolate(thread));
+
+    isolate = nullptr;
+    thread = nullptr;
+    CHECK(createIsolate({"-XX:+NetTestNoSuchOption"}, &isolate, &thread) == ISOLATE_ARGUMENT_PARSING_FAILED);
+    CHECK(createIsolate({"-Xmx64q"}, &isolate, &thread) == ISOLATE_ARGUMENT_PARSING_FAILED);
 }
 
 TEST_CASE("U1: -D properties reach the system properties of the isolate") {

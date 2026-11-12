@@ -1,3 +1,9 @@
+* **\[MDAPI-526]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) passes its `-Xmx<size>`, `-Xms<size>`,
+  `-Xmn<size>` and `-XX:<option>` arguments to the Graal isolate, as `java` takes them (`-Xmx512m -XX:+PrintGC`), so
+  that the heap and the GC log of the isolate can be set for a benchmark; an option that the isolate rejects, or
+  another `-X` argument, exits with 2. At the end of the run the tool closes all endpoints and tears the isolate down,
+  so `-XX:+PrintGCSummary` prints its summary.
+
 ## v3.16.0
 
 * **\[MDAPI-513]\[GRAAL]** A logging listener (`dxfg_v4_logging_set_listener()`) at the level TRACE or ALL no
