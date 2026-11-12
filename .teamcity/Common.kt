@@ -107,8 +107,11 @@ enum class Variant(val token: String, val platforms: List<VariantPlatform>, val 
     /** The arch.name of the platforms, separated by spaces (for a shell loop). */
     val platformList: String get() = platforms.joinToString(" ") { it.archName }
 
-    /** The name of the archive of [platform]; VERSION is a shell variable of the step. */
+    /** The name of the archive of [platform] in Nexus and in the GitHub release; VERSION is a shell variable of the step. */
     fun archive(platform: String) = "graal-native-sdk-${'$'}{VERSION}-$platform-$token.zip"
+
+    /** The name of the archive of [platform] that mvn package builds in target/: no version (finalName of the pom). */
+    fun builtArchive(platform: String) = "graal-native-sdk-$platform-$token.zip"
 }
 
 /**
@@ -1122,7 +1125,7 @@ fun BuildType.variantBuild(variant: Variant, platform: VariantPlatform) {
 
     mainRepository()
 
-    val archive = "target/graal-native-sdk-*-${platform.archName}-${variant.token}.zip"
+    val archive = "target/${variant.builtArchive(platform.archName)}"
     steps {
         when (platform) {
             VariantPlatform.LINUX_X64, VariantPlatform.LINUX_AARCH64 -> {
@@ -1228,7 +1231,7 @@ fun BuildType.variantDeploy(variant: Variant, builds: List<BuildType>, regularDe
 
                 missing=""
                 for platform in ${variant.platformList}; do
-                    if [ ! -f "staged/${'$'}{platform}/${variant.archive("${'$'}{platform}")}" ]; then
+                    if [ ! -f "staged/${'$'}{platform}/${variant.builtArchive("${'$'}{platform}")}" ]; then
                         missing="${'$'}{missing} ${'$'}{platform}"
                     fi
                 done
@@ -1251,7 +1254,7 @@ fun BuildType.variantDeploy(variant: Variant, builds: List<BuildType>, regularDe
                         continue
                     fi
                     # The repository of distributionManagement of the pom (qd), with the credentials of .teamcity/settings.xml.
-                    mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="staged/${'$'}{platform}/${'$'}{archive}" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier="${'$'}{platform}-${variant.token}" -Dpackaging=zip -DgeneratePom=false
+                    mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} org.apache.maven.plugins:maven-deploy-plugin:3.2.0:deploy-file -DrepositoryId=qd -Durl=https://maven.in.devexperts.com/content/repositories/qd/ -Dfile="staged/${'$'}{platform}/${variant.builtArchive("${'$'}{platform}")}" -DgroupId=com.dxfeed -DartifactId=graal-native-sdk -Dversion="${'$'}{VERSION}" -Dclassifier="${'$'}{platform}-${variant.token}" -Dpackaging=zip -DgeneratePom=false
                 done
             """.trimIndent()
             formatStderrAsError = true
