@@ -5,7 +5,7 @@
 
   <groupId>com.dxfeed</groupId>
   <artifactId>graal-native-sdk</artifactId>
-  <version>3.15.1-SNAPSHOT</version>
+  <version>3.16.0-rc1</version>
 
   <properties>
     <maven.plugin.validation>VERBOSE</maven.plugin.validation>
@@ -255,7 +255,7 @@
     <url>https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</url>
     <connection>scm:git:https://stash.in.devexperts.com/scm/mdapi/dxfeed-graal-native-sdk.git</connection>
 <!--    <connection>scm:git:ssh://git@stash.in.devexperts.com:7999/mdapi/dxfeed-graal-native-sdk.git</connection>-->
-    <tag>HEAD</tag>
+    <tag>v3.16.0-rc1</tag>
   </scm>
 
   <distributionManagement>
@@ -1679,11 +1679,9 @@
                   <attribute name="property" />
                   <sequential>
                     <!-- The report is one line of JSON; a value is a string or an array of strings. -->
-                    <loadfile srcFile="${native.image.build.report}" property="@{property}" quiet="true"
-                      failonerror="false">
+                    <loadfile srcFile="${native.image.build.report}" property="@{property}" quiet="true" failonerror="false">
                       <filterchain>
-                        <containsregex pattern="^.*&quot;@{key}&quot;:(&quot;[^&quot;]*&quot;|\[[^\]]*\]).*$"
-                          replace="\1" />
+                        <containsregex pattern="^.*&quot;@{key}&quot;:(&quot;[^&quot;]*&quot;|\[[^\]]*\]).*$" replace="\1" />
                         <replaceregex pattern="[&quot;\[\]]" replace="" flags="g" />
                         <striplinebreaks />
                       </filterchain>
@@ -1702,22 +1700,19 @@
                 <pathconvert property="build.info.args.file" setonempty="false">
                   <last>
                     <sort>
-                      <fileset dir="${project.build.directory}/tmp" includes="native-image-*.args"
-                        erroronmissingdir="false" />
+                      <fileset dir="${project.build.directory}/tmp" includes="native-image-*.args" erroronmissingdir="false" />
                       <rcmp:date />
                     </sort>
                   </last>
                 </pathconvert>
                 <!-- One option per line; the lines not starting with - are the values of -o, -cp and others. -->
-                <loadfile srcFile="${build.info.args.file}" property="build.info.requested.options" quiet="true"
-                  failonerror="false" if:set="build.info.args.file">
+                <loadfile srcFile="${build.info.args.file}" property="build.info.requested.options" quiet="true" failonerror="false" if:set="build.info.args.file">
                   <filterchain>
                     <linecontainsregexp>
                       <regexp pattern="^-" />
                     </linecontainsregexp>
                     <linecontainsregexp negate="true">
-                      <regexp
-                        pattern="^(-o|-cp|--class-path|-p|--module-path|--exclude-config|-DDXFG1=0)\s*$|^(-H:Name|-Dproject\.path|-H:CLibraryPath|-H:Path|-H:ConfigurationFileDirectories|-H:BuildOutputJSONFile|-H:TempDirectory)=" />
+                      <regexp pattern="^(-o|-cp|--class-path|-p|--module-path|--exclude-config|-DDXFG1=0)\s*$|^(-H:Name|-Dproject\.path|-H:CLibraryPath|-H:Path|-H:ConfigurationFileDirectories|-H:BuildOutputJSONFile|-H:TempDirectory)=" />
                     </linecontainsregexp>
                     <!-- A linker input given by a path (version.res, crt_shim.obj) keeps only its file name. -->
                     <replaceregex pattern="^(-H:NativeLinkerOption=)(?:[A-Za-z]:)?[\\/].*[\\/]" replace="\1" />
@@ -1740,17 +1735,14 @@
                 <property name="build.info.build.timestamp" value="${maven.build.timestamp}" />
                 <property name="build.info.target" value="${arch.name}" />
                 <property name="build.info.variant" value="${sdk.variant}" />
-                <copy file="${project.basedir}/src/assembly/build-info.properties"
-                  tofile="${project.build.directory}/docs/${project.name}-build-info.properties" overwrite="true"
-                  encoding="UTF-8" outputencoding="UTF-8">
+                <copy file="${project.basedir}/src/assembly/build-info.properties" tofile="${project.build.directory}/docs/${project.name}-build-info.properties" overwrite="true" encoding="UTF-8" outputencoding="UTF-8">
                   <filterchain>
                     <expandproperties />
                   </filterchain>
                 </copy>
                 <fail message="Unresolved build-info values: ${project.build.directory}/docs/${project.name}-build-info.properties">
                   <condition>
-                    <resourcecontains resource="${project.build.directory}/docs/${project.name}-build-info.properties"
-                      substring="$${" />
+                    <resourcecontains resource="${project.build.directory}/docs/${project.name}-build-info.properties" substring="$${" />
                   </condition>
                 </fail>
                 <fail message="Empty build-info values (no build report or argument file of native-image): ${project.build.directory}/docs/${project.name}-build-info.properties">
@@ -1772,8 +1764,7 @@
                   A variant and -Dsdk.optimize=O0: native-image resolved the options the build asked for (a placeholder
                   missing from one of the buildArgs lists, or a -O after it, would leave the library as it is).
                 -->
-                <condition property="build.info.expected.optimization.level" value="0"
-                  else="${variant.optimization.level}">
+                <condition property="build.info.expected.optimization.level" value="0" else="${variant.optimization.level}">
                   <equals arg1="${sdk.optimize}" arg2="O0" />
                 </condition>
                 <fail message="native-image resolved -O${build.info.optimization.level}, the build expects -O${build.info.expected.optimization.level}: ${project.build.directory}/docs/${project.name}-build-info.properties">
