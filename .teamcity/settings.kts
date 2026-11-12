@@ -91,11 +91,12 @@ object ReleaseChain : Project({
     description = "Started by the release builds: the archives of the platforms, the XCFramework, NuGet, the GitHub release and the Jira release"
 
     // The switches of the build variants: Deploy [<variant>] deploys the variant (and so the GitHub release takes it)
-    // only when its switch is on.
+    // only when its switch is on. On since 3.16.0; turn a switch off when the licence of Oracle GraalVM for the
+    // graalvm.version no longer allows the redistribution (see "Build Variants" in .teamcity/README.MD).
     params {
         for (variant in Variant.values()) {
             checkbox(
-                variant.publishParameter, "false",
+                variant.publishParameter, "true",
                 label = "Publish ${variant.token}",
                 description = "Deploy [${variant.token}] deploys the ${variant.token} archives of the release to " +
                     "Nexus, and Publish GitHub Release takes them",

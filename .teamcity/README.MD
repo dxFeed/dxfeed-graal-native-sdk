@@ -371,12 +371,17 @@ Release chain (`variantBuild` and `variantDeploy` of `Common.kt`):
   keeps it as its artifact only when the build succeeds.
 - `Deploy [<variant>]` runs after the regular deploys of the platforms. It takes the archives of the variant builds and
   deploys them with `deploy:deploy-file` (classifier `<arch.name>-<variant>`) only when all of them are built and the
-  switch `oracle.publish` / `oracle-g1.publish` of the Release chain project is on (`false` by default). An archive
+  switch `oracle.publish` / `oracle-g1.publish` of the Release chain project is on (`true` since 3.16.0). An archive
   that Nexus already has is skipped, so a rerun after a failed upload deploys the rest. A failed variant build leaves the
   set incomplete: the deploy then logs a warning and deploys nothing, and the release goes on without the variant.
 - `Build & Deploy [All]` waits for both deploys (a failure there does not cancel it), so the variants are in Nexus before
   `Pack NuGet` and `Publish GitHub Release` start. `Publish GitHub Release` takes the archives of a variant only when
   those of all its platforms are in Nexus.
+
+The variants are redistributed under the
+[GraalVM Free Terms and Conditions](https://www.oracle.com/downloads/licenses/graal-free-license.html). At every bump of
+`graalvm.version`, check the licence of the new Oracle GraalVM release: if it is no longer under these terms, turn the
+switches off before the release.
 
 # Syncing the C++ API with Jira
 

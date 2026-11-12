@@ -21,6 +21,13 @@
   resolved, and the options the build passed to it. The libraries and the headers do not change.
 * **\[MDAPI-522]\[GRAAL]** The NuGet package `DxFeed.Graal.Native` no longer gives the warning MSB4011 (the targets
   imported twice) in .NET Framework projects.
+* **\[MDAPI-522]\[GRAAL]** Two build variants, built with Oracle GraalVM at `-O3`, come with the regular archives:
+  `oracle` (the Serial GC; Linux x64 and arm64, macOS arm64, Windows x64) and `oracle-g1` (the G1 GC, one isolate per
+  process; Linux x64 and arm64, macOS arm64). Their archives end with `-oracle` and `-oracle-g1`
+  (`graal-native-sdk-<version>-amd64-linux-oracle.zip`), and the NuGet packages `DxFeed.Graal.Native.Oracle` and
+  `DxFeed.Graal.Native.Oracle.G1` replace `DxFeed.Graal.Native`. The C API and the library names are the same. The
+  libraries contain the Oracle GraalVM runtime, distributed under the GraalVM Free Terms and Conditions. See
+  [Build variants](README.md#build-variants).
 
 ### For integrators
 

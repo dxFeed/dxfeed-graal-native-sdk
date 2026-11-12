@@ -25,6 +25,7 @@ into your projects.
   * [Windows archives](#windows-archives)
   * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
+  * [Build variants](#build-variants)
   * [Windows on ARM and 32-bit systems](#windows-on-arm-and-32-bit-systems)
 - [Using the C API](#using-the-c-api)
   * [Conventions](#conventions)
@@ -91,7 +92,9 @@ The archives of every version are attached to its
 | `graal-native-sdk-<version>-c-api-docs-html.zip`          | The C API documentation (HTML)                                                |
 
 The Linux and Windows archives have `-debug` variants (`amd64-windows-debug-static-crt`,
-`amd64-windows-debug-static-lib`), see [Debug builds](#debug-builds). Which Windows archive to take: see
+`amd64-windows-debug-static-lib`), see [Debug builds](#debug-builds). Some archives also have the build variants
+`-oracle` and `-oracle-g1`, built with Oracle GraalVM, see [Build variants](#build-variants). Which Windows archive to
+take: see
 [Windows archives](#windows-archives). There are no archives for Windows on ARM and 32-bit systems: see
 [Windows on ARM and 32-bit systems](#windows-on-arm-and-32-bit-systems).
 
@@ -181,6 +184,35 @@ gdb unwinds through the SDK using `libDxFeedGraalNativeSdk.so.debug`. The unwind
 for the SDK entry points does not describe the saved `rbp`, so gdb stops at the first application frame
 that is addressed by `rbp` (`previous frame inner to this frame`). To get the full stack in gdb, build the calling
 code with `-fomit-frame-pointer`.
+
+### Build variants
+
+The regular archives are built with GraalVM Community Edition at `-O2`. Two build variants of the same version are
+built with Oracle GraalVM at `-O3`, for the platforms where Oracle GraalVM supports them. They have the same C API,
+headers, library names and layout as the regular archives, and the token of the variant at the end of the archive name:
+
+| Variant     | GraalVM        | Optimization | GC     | Isolates per process | Default maximum heap | Archives                                                       |
+|-------------|----------------|--------------|--------|----------------------|----------------------|----------------------------------------------------------------|
+| (regular)   | GraalVM CE     | `-O2`        | Serial | several              | 80 % of RAM          | all, see the table above                                       |
+| `oracle`    | Oracle GraalVM | `-O3`        | Serial | several              | 80 % of RAM          | `amd64-linux`, `aarch64-linux`, `aarch64-osx`, `amd64-windows` |
+| `oracle-g1` | Oracle GraalVM | `-O3`        | G1     | one                  | 25 % of RAM          | `amd64-linux`, `aarch64-linux`, `aarch64-osx`                  |
+
+For example, `graal-native-sdk-<version>-amd64-linux-oracle.zip` and
+`graal-native-sdk-<version>-aarch64-osx-oracle-g1.zip`; the classifier in the Maven repository is the platform and the
+variant (`amd64-linux-oracle`). The debug, static C runtime, static library and iOS archives have no variants. Oracle
+GraalVM has no macOS x64 build, so there is no macOS x64 variant and no XCFramework. For .NET, the packages
+[DxFeed.Graal.Native.Oracle](https://www.nuget.org/packages/DxFeed.Graal.Native.Oracle) and
+[DxFeed.Graal.Native.Oracle.G1](https://www.nuget.org/packages/DxFeed.Graal.Native.Oracle.G1) replace
+`DxFeed.Graal.Native` of the same version.
+
+**One isolate per process in `oracle-g1`.** A second `graal_create_isolate`, or one after `graal_tear_down_isolate`,
+aborts the process. Create one isolate and keep it for the lifetime of the process.
+
+`docs/graal-native-sdk-build-info.properties` of an archive records the variant and what native-image resolved for it.
+
+**License.** The libraries of the variants are built with Oracle GraalVM and contain its runtime, which is distributed
+under the [GraalVM Free Terms and Conditions](https://www.oracle.com/downloads/licenses/graal-free-license.html); the
+code of the SDK stays under MPL-2.0.
 
 ### Windows on ARM and 32-bit systems
 
@@ -1133,3 +1165,5 @@ ready to answer any questions and help with the transition.
 ## License
 
 MPL-2.0
+
+<!-- ping -->

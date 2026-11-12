@@ -20,6 +20,14 @@ API with P/Invoke.
 
 The libraries are in `runtimes/<runtime identifier>/native`. The Linux libraries need glibc 2.17 or later.
 
+## Build variants
+
+The libraries of this package are built with GraalVM Community Edition at `-O2`. Packages of the same version with
+libraries built with Oracle GraalVM at `-O3` replace it:
+[DxFeed.Graal.Native.Oracle](https://www.nuget.org/packages/DxFeed.Graal.Native.Oracle/) (the Serial GC, no `osx-x64`)
+and [DxFeed.Graal.Native.Oracle.G1](https://www.nuget.org/packages/DxFeed.Graal.Native.Oracle.G1/) (the G1 GC, one
+isolate per process, no Windows and no `osx-x64`). Their pages show how to use them with DxFeed.Graal.Net.
+
 ## How the library gets to the application
 
 * .NET Core and .NET 5 or later: the .NET SDK copies the library of the runtime identifier of the application, as
