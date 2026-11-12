@@ -293,7 +293,12 @@ fun Triggers.weekly() {
     }
 }
 
-/** Builds the pull requests to main and reports the result of the build to the pull request in Bitbucket. */
+/**
+ * Builds the pull requests to main and reports the result of the build to the pull request in Bitbucket.
+ *
+ * The credentials are the ones the release management team set up for dxcity: a TeamCity secure value for the pull
+ * request detection and a refreshable token of the dxcity user for the commit statuses.
+ */
 fun BuildFeatures.pullRequestsToMain() {
     pullRequests {
         vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
@@ -301,7 +306,7 @@ fun BuildFeatures.pullRequestsToMain() {
             serverUrl = "https://stash.in.devexperts.com"
             authType = password {
                 username = "dxcity"
-                password = "%dxcity.token.bitbucket%"
+                password = "credentialsJSON:103397d4-1bf1-4c41-a0aa-bb40ea0a2591"
             }
             filterTargetBranch = "+:refs/heads/main"
             usePullRequestBranches = true
@@ -311,10 +316,9 @@ fun BuildFeatures.pullRequestsToMain() {
     commitStatusPublisher {
         vcsRootExtId = "${SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags.id}"
         publisher = bitbucketServer {
-            url = "https://stash.in.devexperts.com"
-            authType = password {
-                userName = "dxcity"
-                password = "%dxcity.token.bitbucket%"
+            url = "%bitbucket.server.url%"
+            authType = storedToken {
+                tokenId = "tc_token_id:CID_54855d913f384940c4cc970605eb96ff:60:a566fb5b-bdb7-48d9-a206-0d66eec35762"
             }
         }
     }
