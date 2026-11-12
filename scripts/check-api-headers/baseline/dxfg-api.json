@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.15.0",
+  "sdk_version": "3.16.0",
   "advanced_revision": 1,
   "features": [
     "connection_errors",
@@ -2588,9 +2588,9 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_DXEndpoint_getInstanceWithRole()",
+        "message": "use dxfg_v4_DXEndpoint_createWithRole()",
         "replacements": [
-          "dxfg_v4_DXEndpoint_getInstanceWithRole"
+          "dxfg_v4_DXEndpoint_createWithRole"
         ]
       },
       "returns": {
@@ -22084,7 +22084,12 @@
       "header": "dxfg_v4_endpoint.h",
       "tier": "stable",
       "since": "3.12.0",
-      "deprecated": null,
+      "deprecated": {
+        "message": "use dxfg_v4_DXEndpoint_createWithRole()",
+        "replacements": [
+          "dxfg_v4_DXEndpoint_createWithRole"
+        ]
+      },
       "returns": {
         "type": "int32_t"
       },
