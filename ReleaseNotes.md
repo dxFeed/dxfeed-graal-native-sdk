@@ -1,3 +1,5 @@
+## v3.16.0-rc1
+
 * **\[MDAPI-513]\[GRAAL]** A logging listener (`dxfg_v4_logging_set_listener()`) at the level TRACE or ALL no
   longer breaks the calls that log at a Java level the SDK has no constant for: since 3.14.0 such a call (for example
   `dxfg_v4_DXEndpoint_connect()`, which logs at `FINER`) failed with `NullPointerException`. The listener now gets
