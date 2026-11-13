@@ -367,6 +367,14 @@ fun BuildFeatures.javaTestsReport() {
     }
 }
 
+/** The JUnit reports of NetTestApi (tools/nettest): its unit tests and the tests of its all-in-one jar. */
+fun BuildFeatures.netTestApiTestsReport() {
+    xmlReport {
+        reportType = XmlReport.XmlReportType.JUNIT
+        rules = "tools/nettest/target/surefire-reports/*.xml"
+    }
+}
+
 /** The release builds and the deploys check out the tag that the release has just made. */
 fun BuildSteps.checkoutLatestTag() {
     script {
@@ -934,6 +942,17 @@ fun BuildType.testForLinux(kind: TestKind) {
 
         if (kind.variant == null) {
             script {
+                // The Java benchmark tool subclasses package-private classes of qds-tools: a QD bump that breaks it fails
+                // the pull request of the bump. Its own project, not part of the archive (tools/nettest/README.md).
+                name = "Build and test NetTestApi"
+                scriptContent = """
+                    mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} --batch-mode -f tools/nettest/pom.xml clean verify
+                """.trimIndent()
+                formatStderrAsError = true
+                inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 4g")
+            }
+
+            script {
                 // Fails the build on any Doxygen warning (MDAPI-443). It needs only the headers, so it runs after a failed
                 // step too: a documentation warning does not hide the results of the tests, nor a failed build the warnings.
                 name = "Check the C API documentation"
@@ -968,6 +987,7 @@ fun BuildType.testForLinux(kind: TestKind) {
     features {
         if (kind.variant == null) {
             pullRequestsToMain()
+            netTestApiTestsReport()
         }
         javaTestsReport()
         cTestsReport()

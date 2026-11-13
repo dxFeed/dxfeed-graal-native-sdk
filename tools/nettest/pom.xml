@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--SPDX-License-Identifier: MPL-2.0-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    NetTestApi: a publisher benchmark through the dxFeed event layer, added to QD's Tools (see README.md). A separate
+    project, not a module of the root pom, and not part of the SDK archive. The version is a placeholder: the release
+    build sets it from the release tag (versions:set) before it deploys.
+  -->
+  <groupId>com.dxfeed</groupId>
+  <artifactId>graal-native-sdk-nettest</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <properties>
+    <!-- Must equal qd.version of the root pom.xml: QdVersionTest fails the build otherwise. -->
+    <qd.version>3.357</qd.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>dxfeed-api</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>dxlib</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>qds</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>qds-file</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>qds-monitoring</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>qds-tools</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.devexperts.qd</groupId>
+      <artifactId>mars</artifactId>
+      <version>${qd.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>qd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd/</url>
+    </repository>
+    <repository>
+      <id>qd-maven</id>
+      <url>https://repo.devexperts.com/repository/qd-maven/</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>qd</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd/</url>
+    </repository>
+    <snapshotRepository>
+      <id>qd-snapshot</id>
+      <url>https://maven.in.devexperts.com/content/repositories/qd-snapshot/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.15.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <systemPropertyVariables>
+            <!-- The location of the root pom.xml for QdVersionTest. -->
+            <nettest.rootPom>${project.basedir}/../../pom.xml</nettest.rootPom>
+            <!-- The all-in-one jar for the *IT tests. -->
+            <nettest.shadedJar>${project.build.directory}/${project.build.finalName}-all.jar</nettest.shadedJar>
+            <nettest.qdVersion>${qd.version}</nettest.qdVersion>
+          </systemPropertyVariables>
+          <excludes>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <!-- The tests of the all-in-one jar run after the package phase has built it. -->
+            <id>shaded-jar-tests</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <excludes combine.self="override" />
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- The executable all-in-one jar: java -jar graal-native-sdk-nettest-<version>-all.jar NetTestApi ... -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>all</shadedClassifierName>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <!-- QD's Tools finds its tools, NetTestApi among them, through the merged service files. -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.devexperts.qd.tools.Tools</mainClass>
+                  <manifestEntries>
+                    <!-- QD prints the version of its packages from the manifest ("Using QDS-..."). -->
+                    <Implementation-Version>${qd.version}</Implementation-Version>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

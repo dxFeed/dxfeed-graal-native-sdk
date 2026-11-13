@@ -3,6 +3,12 @@
   that the heap and the GC log of the isolate can be set for a benchmark; an option that the isolate rejects, or
   another `-X` argument, exits with 2. At the end of the run the tool closes all endpoints and tears the isolate down,
   so `-XX:+PrintGCSummary` prints its summary.
+* **\[MDAPI-527]\[GRAAL]** A new Java tool, [NetTestApi](tools/nettest), publishes generated Trade or TimeAndSale
+  events through the `DXPublisher` of the dxFeed Java API with the command line of
+  [NetTest](src/main/c/src/apps/NetTest) and prints the statistics line of the QD tool `NetTest p`, so that the event
+  layer can be benchmarked in Java next to the C API and QD. It is a tool of QD's `Tools` and is deployed with every
+  release as `com.dxfeed:graal-native-sdk-nettest` (the all-in-one jar has the classifier `all`); it is not part of the
+  SDK archives. The NetTest README now says that a TimeAndSale consumer needs `-c stream`.
 
 ## v3.16.0
 

@@ -80,9 +80,12 @@ NetTest p :6666 -S 50000@symbols.ipf -r */1M -s 10s --duration 7m
 java -Dcom.devexperts.qd.tools.NetTest.record=Trade -jar qds-tools.jar NetTest c localhost:6666 -S 50000@symbols.ipf
 ```
 
-For `--event TimeAndSale` drop the property (TimeAndSale is QD NetTest's default record); the consumer may need
-`-c stream`, since a ticker collector keeps only the last TimeAndSale per symbol. Against a mux, run the publisher with
-`:6666` and point the mux's distributor connector at it.
+For `--event TimeAndSale` drop the property (TimeAndSale is QD NetTest's default record) and give the consumer
+`-c stream`: the publisher feeds TimeAndSale to the stream and the history contracts only, so the default ticker
+consumer gets nothing and reports `data 0 rps`. Against a mux, run the publisher with `:6666` and point the mux's
+distributor connector at it.
+
+The same benchmark in Java, through the dxFeed API without the SDK, is [NetTestApi](../../../../../../tools/nettest/README.md).
 
 ## Uplink monitoring
 

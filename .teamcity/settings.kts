@@ -125,6 +125,7 @@ object ReleaseChain : Project({
     buildType(BuildOracleG1ForLinuxAarch64)
     buildType(BuildOracleG1ForMacOS)
     buildType(DeployOracleG1)
+    buildType(DeployNetTestApi)
     buildType(DeployNuget)
     buildType(SyncGitHubWithMainAndPublishRelease)
     buildType(ReleaseInJira)
@@ -150,6 +151,7 @@ object ReleaseChain : Project({
         BuildOracleG1ForLinuxAarch64,
         BuildOracleG1ForMacOS,
         DeployOracleG1,
+        DeployNetTestApi,
         DeployNuget,
         SyncGitHubWithMainAndPublishRelease,
         ReleaseInJira,
@@ -554,8 +556,8 @@ object BuildAndDeployXCFramework : BuildType({
 
 object BuildAndDeployForAll : BuildType({
     name = "Build & Deploy [All]"
-    description = "After a release build: the deploys of Linux aarch64, Windows, macOS, iOS, the XCFramework and the " +
-        "build variants of the latest tag; then Pack NuGet"
+    description = "After a release build: the deploys of Linux aarch64, Windows, macOS, iOS, the XCFramework, the " +
+        "build variants and NetTestApi of the latest tag; then Pack NuGet"
     type = Type.COMPOSITE
     allowExternalStatus = true
     artifactRules = "*.zip"
@@ -594,6 +596,54 @@ object BuildAndDeployForAll : BuildType({
             onDependencyFailure = FailureAction.IGNORE
             onDependencyCancel = FailureAction.IGNORE
         }
+        // The benchmark tool is not part of the SDK: a failed deploy of it does not stop the release and can be rerun
+        // alone.
+        snapshot(DeployNetTestApi) {
+            onDependencyFailure = FailureAction.IGNORE
+            onDependencyCancel = FailureAction.IGNORE
+        }
+    }
+})
+
+object DeployNetTestApi : BuildType({
+    name = "Deploy [NetTestApi]"
+    description = "Builds and tests NetTestApi (tools/nettest) of the latest tag and deploys it to Nexus with the " +
+        "version of the tag: com.dxfeed:graal-native-sdk-nettest, the jar and the all-in-one jar (classifier all)"
+
+    mainRepository()
+
+    steps {
+        checkoutLatestTag()
+
+        script {
+            name = "Build, test and deploy"
+            // release:prepare versions only the root pom: the tool takes the version from the tag. The repository of
+            // its distributionManagement (qd) allows a redeploy, so a rerun deploys the same version again. git runs in
+            // the container as another user than the owner of the checkout, hence safe.directory.
+            scriptContent = """
+                set -eu
+                TAG=$(git -c safe.directory='*' describe --abbrev=0)
+                VERSION=${'$'}{TAG#v}
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} --batch-mode -f tools/nettest/pom.xml org.codehaus.mojo:versions-maven-plugin:2.18.0:set -DnewVersion="${'$'}{VERSION}" -DgenerateBackupPoms=false
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} --batch-mode -f tools/nettest/pom.xml clean deploy
+            """.trimIndent()
+            formatStderrAsError = true
+            inDocker(Images.GRAALVM_LINUX_X64, "--rm -m 4g")
+        }
+    }
+
+    features {
+        netTestApiTestsReport()
+        nexusDockerLogin()
+    }
+
+    failureConditions {
+        // Build & Deploy [All] waits for this config: a hung upload must not hold the release chain.
+        executionTimeoutMin = 30
+    }
+
+    requirements {
+        linuxAgent()
     }
 })
 
