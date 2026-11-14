@@ -11,6 +11,10 @@
   layer can be benchmarked in Java next to the C API and QD. It is a tool of QD's `Tools` and is deployed with every
   release as `com.dxfeed:graal-native-sdk-nettest` (the all-in-one jar has the classifier `all`); it is not part of the
   SDK archives. The NetTest README now says that a TimeAndSale consumer needs `-c stream`.
+* **\[MDAPI-528]\[GRAAL]** The last connection error (`dxfg_v4_MessageConnector_getLastError()`,
+  `dxfg_v4_DXEndpoint_getLastConnectionError()`) is no longer lost when QD's other socket thread of the connection
+  closes it first. In a few percent of the connections, a TLS failure (for example, a `tls+` address of a plain port)
+  was reported only by the next connect attempt, 10–20 s later.
 
 ## v3.16.0
 

@@ -16,8 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * the endpoint ({@link ConnectionErrors#watch(DXEndpoint)}) or with its first listener, and adds one QD listener to the
  * QD endpoint, which QD also adds to the connectors that a later {@code connect} creates. QD calls it on its socket
  * threads and on the thread of a {@code connect} or a {@code close}, under its locks, so it only attributes the error
- * its thread captured and passes the connector to {@link ConnectorDispatcher}, which calls the listeners on its own
- * thread.
+ * its thread (or the other thread of its socket connection) captured and passes the connector to
+ * {@link ConnectorDispatcher}, which calls the listeners on its own thread.
  */
 final class ConnectorMonitor implements MessageConnectorListener {
 
@@ -99,19 +99,36 @@ final class ConnectorMonitor implements MessageConnectorListener {
 
     @Override
     public void stateChanged(final MessageConnector connector) {
-        // Taken on every change, so that a record never waits on a pooled thread for a later change.
-        final ConnectionErrorCapture.Pending pending = ConnectionErrorCapture.take();
+        // Taken on every change, so that a record never waits on a pooled thread for a later change. When this thread
+        // closed its socket connection, the other thread of the connection may log the failure after this notification.
+        final ConnectionErrorCapture.Pending pending = ConnectionErrorCapture.takeOrAwait(
+                ConnectionErrorCapture.isClosedWorkerThread() ? late -> attributeLate(connector, late) : null);
 
         if (pending != null) {
-            final ConnectionError error = ConnectionErrors.record(connector, pending);
-
-            if (error != null) {
-                // Before the listeners are called, so that they read it.
-                lastError = error;
-            }
+            attribute(connector, pending);
         }
 
         if (!listeners.isEmpty()) {
+            ConnectorDispatcher.enqueue(this, connector);
+        }
+    }
+
+    private boolean attribute(final MessageConnector connector, final ConnectionErrorCapture.Pending pending) {
+        final ConnectionError error = ConnectionErrors.record(connector, pending);
+
+        if (error == null) {
+            return false;
+        }
+
+        // Before the listeners are called, so that they read it.
+        lastError = error;
+        return true;
+    }
+
+    // On the thread that logged the failure after the notification of its closed connection: the listeners are called
+    // once more, so that they read the error.
+    private void attributeLate(final MessageConnector connector, final ConnectionErrorCapture.Pending pending) {
+        if (attribute(connector, pending) && !listeners.isEmpty()) {
             ConnectorDispatcher.enqueue(this, connector);
         }
     }
