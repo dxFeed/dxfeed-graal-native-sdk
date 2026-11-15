@@ -89,6 +89,7 @@ TEST_CASE("The library supports every feature of the description") {
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_TIME_SERIES_TX_MODEL_EVENT_PEEK) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_MESSAGE_CONNECTORS) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_CONNECTION_ERRORS) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_RUNTIME_STATISTICS) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -194,6 +195,24 @@ TEST_CASE("The connector getters are stable, the connector listener and connecti
           "DXFG_V4_FEATURE_CONNECTION_ERRORS"}) {
         INFO(name);
         CHECK(entryOf(name).find(experimental) != std::string::npos);
+    }
+}
+
+TEST_CASE("The runtime statistics function, struct and feature are stable") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier is one of its first fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+
+    for (const char *name :
+         {"dxfg_v4_system_get_runtime_statistics", "dxfg_v4_runtime_stats_t", "DXFG_V4_FEATURE_RUNTIME_STATISTICS"}) {
+        INFO(name);
+        CHECK(entryOf(name).find("\"tier\": \"stable\"") != std::string::npos);
     }
 }
 

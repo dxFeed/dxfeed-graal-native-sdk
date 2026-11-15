@@ -15,6 +15,12 @@
   `dxfg_v4_DXEndpoint_getLastConnectionError()`) is no longer lost when QD's other socket thread of the connection
   closes it first. In a few percent of the connections, a TLS failure (for example, a `tls+` address of a plain port)
   was reported only by the next connect attempt, 10–20 s later.
+* **\[MDAPI-529]\[GRAAL]** A new function, `dxfg_v4_system_get_runtime_statistics()`, reads the runtime statistics
+  of the isolate into a `dxfg_v4_runtime_stats_t`: the heap used, committed and maximum, the young and full garbage
+  collections with their time, the eden, survivor and old generation use, the live, peak, daemon and started threads,
+  the uptime, the CPU time of the process and the available processors. A value that the platform or the GC does not
+  give is -1: the GC and heap pool fields on G1, and the allocated bytes with GraalVM 25.5. The feature
+  `DXFG_V4_FEATURE_RUNTIME_STATISTICS` tells whether the library has the function.
 
 ## v3.16.0
 

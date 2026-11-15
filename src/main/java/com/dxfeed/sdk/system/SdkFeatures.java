@@ -56,8 +56,13 @@ public final class SdkFeatures {
      */
     public static final String CONNECTION_ERRORS = "connection_errors";
 
+    /**
+     * {@code DXFG_V4_FEATURE_RUNTIME_STATISTICS}: the runtime statistics of the isolate (MDAPI-529).
+     */
+    public static final String RUNTIME_STATISTICS = "runtime_statistics";
+
     private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
-            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS);
+            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS, RUNTIME_STATISTICS);
 
     private SdkFeatures() {
     }

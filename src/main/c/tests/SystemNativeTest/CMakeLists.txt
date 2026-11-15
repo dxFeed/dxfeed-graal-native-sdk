@@ -106,6 +106,8 @@ target_compile_definitions(${target}
         PRIVATE
         ${DEFAULT_COMPILE_DEFINITIONS}
         DXFG_TEST_SDK_VERSION="${CMAKE_MATCH_1}"
+        # How the tested library was built (its GC): the build-info file of the same Maven build.
+        DXFG_TEST_BUILD_INFO="${GRAAL_CUSTOM_BIN_LOCATION}../docs/graal-native-sdk-build-info.properties"
         )
 
 

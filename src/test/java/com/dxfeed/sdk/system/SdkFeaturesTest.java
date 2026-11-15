@@ -59,6 +59,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void runtimeStatisticsFeatureIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.RUNTIME_STATISTICS));
+        assertTrue(SdkFeatures.isSupported("runtime_statistics"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

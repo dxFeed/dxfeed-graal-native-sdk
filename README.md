@@ -513,6 +513,13 @@ An unknown `-XX:` option or a wrong value fails `graal_create_isolate`, unless `
 the library at run time (`dlopen`/`dlsym`, `LoadLibrary`/`GetProcAddress`); include it before `dxfg_api.h`, as both
 headers have the same include guard. The C API documentation describes both headers.
 
+`dxfg_v4_system_get_runtime_statistics()` (`dxfg_v4_system.h`, since 3.17.0) reads the heap use, the garbage
+collections, the threads and the uptime of the isolate and the CPU time of the process into a
+`dxfg_v4_runtime_stats_t`; the counters are cumulative, so a benchmark or a monitor reads it periodically and reports
+the change. A value that the platform or the GC does not give is -1. The header documents the unit and the
+availability of each field. A wrapper that loads the library at run time checks `DXFG_V4_FEATURE_RUNTIME_STATISTICS`
+with `dxfg_v4_system_is_feature_supported()` first.
+
 ### Listeners
 
 A listener created by a `dxfg_*Listener_new` function calls its function with the user data until it is deactivated:

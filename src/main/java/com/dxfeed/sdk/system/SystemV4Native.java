@@ -178,4 +178,40 @@ public final class SystemV4Native {
 
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
+
+    @CEntryPoint(
+            name = "dxfg_v4_system_get_runtime_statistics",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_get_runtime_statistics(
+            final IsolateThread ignoredThread,
+            @DxfgOut final DxfgRuntimeStats stats
+    ) {
+        if (stats.isNull()) {
+            throw new IllegalArgumentException("The `stats` pointer is null");
+        }
+
+        final RuntimeStatistics statistics = RuntimeStatistics.read();
+
+        stats.setHeapUsedBytes(statistics.getHeapUsedBytes());
+        stats.setHeapCommittedBytes(statistics.getHeapCommittedBytes());
+        stats.setHeapMaxBytes(statistics.getHeapMaxBytes());
+        stats.setYoungGcCount(statistics.getYoungGcCount());
+        stats.setYoungGcTimeMs(statistics.getYoungGcTimeMs());
+        stats.setFullGcCount(statistics.getFullGcCount());
+        stats.setFullGcTimeMs(statistics.getFullGcTimeMs());
+        stats.setThreadCount(statistics.getThreadCount());
+        stats.setPeakThreadCount(statistics.getPeakThreadCount());
+        stats.setProcessCpuTimeNs(statistics.getProcessCpuTimeNs());
+        stats.setUptimeMs(statistics.getUptimeMs());
+        stats.setAllocatedBytes(statistics.getAllocatedBytes());
+        stats.setEdenUsedBytes(statistics.getEdenUsedBytes());
+        stats.setSurvivorUsedBytes(statistics.getSurvivorUsedBytes());
+        stats.setOldUsedBytes(statistics.getOldUsedBytes());
+        stats.setDaemonThreadCount(statistics.getDaemonThreadCount());
+        stats.setTotalStartedThreadCount(statistics.getTotalStartedThreadCount());
+        stats.setAvailableProcessors(statistics.getAvailableProcessors());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
 }
