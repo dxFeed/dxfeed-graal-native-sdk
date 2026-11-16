@@ -3,10 +3,10 @@
 
 # The process smoke test of NetTest: runs the built tool and checks its exit code and its output.
 #   NETTEST            the NetTest executable (the SDK library lies next to it)
-#   STATISTICS_HEADER  Statistics.hpp, the one source of the summary line expression (SUMMARY_LINE_REGEX)
+#   STATISTICS_HEADER  Statistics.hpp, the one source of the line expressions (SUMMARY_LINE_REGEX, RUNTIME_LINE_REGEX)
 #
 # 1. A run of 3 seconds against a client address without a listener (no port to pick: connections stay 0): the exit code
-#    is 0 and the output has summary lines with published records.
+#    is 0 and the output has summary lines with published records and runtime lines with the heap of the isolate.
 # 2. A run with an unknown flag: the exit code is not 0 and stderr names the flag.
 # 3. A run with the GC options of the isolate: the exit code is 0, and stderr has a GC line and, after the tear-down of
 #    the isolate, the GC summary.
@@ -23,6 +23,15 @@ endif ()
 set(summary_regex "${CMAKE_MATCH_1}")
 
 message(STATUS "The summary line expression: ${summary_regex}")
+
+# The expression of the runtime line: two adjacent string literals in the header, joined here as C++ joins them.
+if (NOT header MATCHES "RUNTIME_LINE_REGEX =[ \r\n]*\"([^\"]+)\"[ \r\n]*\"([^\"]+)\"")
+    message(FATAL_ERROR "RUNTIME_LINE_REGEX is not found in ${STATISTICS_HEADER}")
+endif ()
+
+set(runtime_regex "${CMAKE_MATCH_1}${CMAKE_MATCH_2}")
+
+message(STATUS "The runtime line expression: ${runtime_regex}")
 
 # 1. The run.
 execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 -r */5k -s 1s --duration 3s
@@ -47,6 +56,15 @@ endif ()
 # At */5k for 3 seconds a working tool publishes in every full period.
 if (NOT output MATCHES "data [1-9][0-9,]* rps")
     message(FATAL_ERROR "The statistics show no published records")
+endif ()
+
+if (NOT output MATCHES "${runtime_regex}")
+    message(FATAL_ERROR "The output has no line that matches: ${runtime_regex}")
+endif ()
+
+# The heap is given on every GC; the GC values may be n/a (G1).
+if (NOT output MATCHES "NetTestRuntime-NetTest[*][}] heap [0-9,]+ MB of [0-9,]+ MB")
+    message(FATAL_ERROR "The runtime line shows no heap values")
 endif ()
 
 # 2. The unknown flag.

@@ -16,8 +16,30 @@ constexpr std::int64_t NANOS_PER_SECOND = 1'000'000'000;
 constexpr std::int64_t NANOS_PER_MICRO = 1'000;
 constexpr std::int64_t NANOS_PER_MILLI = 1'000'000;
 
+constexpr std::int64_t BYTES_PER_MB = 1024 * 1024;
+
 // The shortest last block that the reporter prints at the stop.
 constexpr std::int64_t MIN_LAST_BLOCK_NANOS = NANOS_PER_SECOND;
+
+constexpr const char *ABSENT_TEXT = "n/a";
+
+bool present(std::int64_t value) {
+    return value >= 0;
+}
+
+std::string megabytes(std::int64_t bytes) {
+    return present(bytes) ? groupDigits(bytes / BYTES_PER_MB) + " MB" : ABSENT_TEXT;
+}
+
+// The growth of a cumulative counter, or absent when either value is absent or the counter went back.
+std::int64_t growth(std::int64_t previous, std::int64_t current) {
+    return present(previous) && present(current) && current >= previous ? current - previous : RUNTIME_VALUE_ABSENT;
+}
+
+// The sum of two growths, absent when either is absent.
+std::int64_t sum(std::int64_t first, std::int64_t second) {
+    return present(first) && present(second) ? first + second : RUNTIME_VALUE_ABSENT;
+}
 
 } // namespace
 
@@ -107,6 +129,28 @@ StatisticsSnapshot makeSnapshot(const std::string &name, const StatisticsSample 
     return snapshot;
 }
 
+std::string formatRuntime(const std::string &name, const RuntimeSample &previous, const RuntimeSample &current,
+                          std::int64_t periodNanos) {
+    const auto gcCount = sum(growth(previous.youngGcCount, current.youngGcCount),
+                             growth(previous.fullGcCount, current.fullGcCount));
+    const auto gcTimeMs = sum(growth(previous.youngGcTimeMs, current.youngGcTimeMs),
+                              growth(previous.fullGcTimeMs, current.fullGcTimeMs));
+    const auto cpuNanos = growth(previous.processCpuTimeNs, current.processCpuTimeNs);
+
+    std::string text = "{*NetTestRuntime-" + name + "*} heap " + megabytes(current.heapUsedBytes) + " of " +
+                       megabytes(current.heapCommittedBytes) + ", gc ";
+
+    text += present(gcCount) && present(gcTimeMs)
+                ? groupDigits(gcCount) + " (" + groupDigits(gcTimeMs) + " ms)"
+                : std::string(ABSENT_TEXT);
+    text += ", cpu ";
+    // The CPU nanoseconds of the period are far below the int64 range divided by 100.
+    text += present(cpuNanos) && periodNanos > 0 ? groupDigits(cpuNanos * 100 / periodNanos) + "%"
+                                                 : std::string(ABSENT_TEXT);
+
+    return text;
+}
+
 ReporterClock systemReporterClock(StopControl &stop) {
     using Clock = std::chrono::system_clock;
 
@@ -131,6 +175,17 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
     auto previousTime = clock.nowNanos();
     bool primed = false;
 
+    // The block and, after it, the runtime line, in one text, so that nothing printed elsewhere comes between them.
+    const auto print = [&](const StatisticsSample &current, std::int64_t length) {
+        std::string text = formatStatistics(makeSnapshot(name, previous, current, length));
+
+        if (previous.runtime.has_value() && current.runtime.has_value()) {
+            text += "\n" + formatRuntime(name, *previous.runtime, *current.runtime, length);
+        }
+
+        sink(text + "\n");
+    };
+
     // The ticks are the multiples of the period of the wall clock; the next one is always after the current time, so a
     // late wake-up never moves the later ticks.
     while (clock.sleepUntilNanos((clock.nowNanos() / periodNanos + 1) * periodNanos)) {
@@ -138,7 +193,7 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
         const auto currentTime = clock.nowNanos();
 
         if (primed) {
-            sink(formatStatistics(makeSnapshot(name, previous, current, currentTime - previousTime)) + "\n");
+            print(current, currentTime - previousTime);
         }
 
         primed = true;
@@ -151,7 +206,7 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
 
     // A shorter last block is mostly the noise of its few batches, so it is not printed.
     if (currentTime - previousTime >= MIN_LAST_BLOCK_NANOS) {
-        sink(formatStatistics(makeSnapshot(name, previous, current, currentTime - previousTime)) + "\n");
+        print(current, currentTime - previousTime);
     }
 }
 

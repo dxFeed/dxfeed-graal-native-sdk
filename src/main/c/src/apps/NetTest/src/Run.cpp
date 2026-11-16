@@ -190,6 +190,28 @@ class Instance {
     }
 };
 
+// The runtime values of the isolate; all absent when the call fails.
+RuntimeSample readRuntime(graal_isolatethread_t *thread) {
+    dxfg_v4_runtime_stats_t stats{};
+    RuntimeSample sample;
+
+    if (dxfg_v4_system_get_runtime_statistics(thread, &stats) != DXFG_EXECUTE_SUCCESSFULLY) {
+        takeThreadException(thread);
+
+        return sample;
+    }
+
+    sample.heapUsedBytes = stats.heap_used_bytes;
+    sample.heapCommittedBytes = stats.heap_committed_bytes;
+    sample.youngGcCount = stats.young_gc_count;
+    sample.youngGcTimeMs = stats.young_gc_time_ms;
+    sample.fullGcCount = stats.full_gc_count;
+    sample.fullGcTimeMs = stats.full_gc_time_ms;
+    sample.processCpuTimeNs = stats.process_cpu_time_ns;
+
+    return sample;
+}
+
 // A thread attached to the isolate for its whole body: attaches once, detaches at the exit.
 template <typename Function> std::thread attachedThread(graal_isolate_t *isolate, Function function) {
     return std::thread([isolate, function = std::move(function)] {
@@ -263,7 +285,8 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
         stop.request();
     };
 
-    // The reporter reads the counters and the connections of the instances; it stops after the generators.
+    // The reporter reads the counters and the connections of the instances and the runtime values of the isolate; it
+    // stops after the generators.
     StopControl reporterStop;
     std::thread reporter = attachedThread(isolate, [&](graal_isolatethread_t *reporterThread) {
         if (reporterThread == nullptr) {
@@ -282,6 +305,8 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
                                                 instance->counters.weightedNanos.load(std::memory_order_relaxed)});
                     sample.connections += instance->connections(reporterThread);
                 }
+
+                sample.runtime = readRuntime(reporterThread);
 
                 return sample;
             },

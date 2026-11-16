@@ -59,12 +59,24 @@ At every multiple of the period on the wall clock (the first tick only starts th
 ```text
 {*NetTestProducerSide-NetTest*} data 1,000,012 rps, lag 41 us, instances 1, connections 1
     NetTest.1 data 1,000,012 rps, lag 41 us
+{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 3 (15 ms), cpu 85%
 ```
 
 - `data`: records handed to the publishing function per second.
 - `lag`: the time to build a batch and publish it, weighted by its records; the wait for the rate limiter is not
   included.
 - `connections`: open connections of all instances' connectors.
+
+The last line of the block shows the Graal isolate, as `dxfg_v4_system_get_runtime_statistics()` reads it:
+
+- `heap`: the used and the committed heap now, in MB (MiB, rounded down).
+- `gc`: the young and full collections of the period and their total time.
+- `cpu`: the CPU time of the whole process in the period as a share of the period's length, so it goes above 100% when
+  several cores are busy.
+
+A value that the isolate does not give is `n/a`: with the G1 GC (the oracle-g1 variant of the SDK) the line shows
+`gc n/a`. The summary line keeps the QD NetTest format; parsers that read it are not affected by the new line, which
+has its own prefix.
 
 When the run stops, a last block covers the time since the last tick, scaled by its real length; a last block shorter
 than one second is not printed.
@@ -128,6 +140,10 @@ GC summary
 
 At the end of the run the tool closes all endpoints and tears the isolate down, which prints the summary.
 
+The `gc` value of the runtime line in [Statistics](#statistics) needs no option: it counts the same collections as
+`-XX:+PrintGC` (`Incremental GC` as young, `Complete GC` as full) per statistics period, with their collection time
+in milliseconds as the GC beans of the isolate report it.
+
 ## Differences from QD NetTest
 
 - Only the publisher mode `p`. The consumer mode `c`, `-c`, symbol splits `/r` and `/s`, symbol lengths `{len,max}`
@@ -139,4 +155,5 @@ At the end of the run the tool closes all endpoints and tears the isolate down, 
 - Generated symbols differ from QD NetTest's: runs that mix the two tools must use `-S <total>@<file>`.
 - The statistics line has no QD log prefix (`I yymmdd hhmmss.mmm `); parsers match from `{*`.
 - A last, partial block of one second or more is printed at stop.
+- Each block ends with the runtime line of the isolate (`{*NetTestRuntime-<name>*}`), which QD NetTest does not print.
 - `-C` above 1 with a `:port` address is rejected: the instances would compete for one port.

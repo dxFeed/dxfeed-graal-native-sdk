@@ -21,6 +21,9 @@
   the uptime, the CPU time of the process and the available processors. A value that the platform or the GC does not
   give is -1: the GC and heap pool fields on G1, and the allocated bytes with GraalVM 25.5. The feature
   `DXFG_V4_FEATURE_RUNTIME_STATISTICS` tells whether the library has the function.
+  [NetTest](src/main/c/src/apps/NetTest) prints a runtime line after each statistics block: the heap used and
+  committed, the collections of the period with their time, and the CPU load of the process
+  (`{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 3 (15 ms), cpu 85%`); the summary line is unchanged.
 
 ## v3.16.0
 

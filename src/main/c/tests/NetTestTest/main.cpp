@@ -1159,6 +1159,13 @@ TEST_CASE("U3: the stop request before the duration ends the run with 0 and the 
     // No tick of the hour period came (the wall clock rarely crosses an hour in the run), so the last statistics cover
     // the whole run of more than one second.
     CHECK(summaryLines(outcome.output).size() == 1);
+
+    // The runtime line of the isolate closes the block; the heap is given on every GC.
+    const auto lines = linesOf(outcome.output);
+
+    REQUIRE_FALSE(lines.empty());
+    CHECK(std::regex_match(lines.back(), std::regex(RUNTIME_LINE_REGEX)));
+    CHECK(std::regex_search(lines.back(), std::regex("heap [0-9,]+ MB of [0-9,]+ MB")));
 }
 
 TEST_CASE("U3: SIGINT ends the run like the stop request does") {
@@ -1321,6 +1328,107 @@ TEST_CASE("U4: the summary line expression matches the summary line and nothing 
 
 namespace {
 
+constexpr std::int64_t MB = 1024 * 1024;
+
+// The runtime values of a Serial GC isolate: 120 MB of 256 MB of heap, the GC counters and the CPU time.
+RuntimeSample runtimeOf(std::int64_t youngCount, std::int64_t youngMs, std::int64_t fullCount, std::int64_t fullMs,
+                        std::int64_t cpuNanos) {
+    RuntimeSample sample;
+
+    sample.heapUsedBytes = 120 * MB + MB / 2;
+    sample.heapCommittedBytes = 256 * MB;
+    sample.youngGcCount = youngCount;
+    sample.youngGcTimeMs = youngMs;
+    sample.fullGcCount = fullCount;
+    sample.fullGcTimeMs = fullMs;
+    sample.processCpuTimeNs = cpuNanos;
+
+    return sample;
+}
+
+} // namespace
+
+TEST_CASE("U4: the runtime line sums the young and full collections of the period") {
+    CHECK(formatRuntime("NetTest", runtimeOf(2, 10, 0, 0, 0), runtimeOf(5, 25, 0, 0, SECOND), SECOND) ==
+          "{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 3 (15 ms), cpu 100%");
+    CHECK(formatRuntime("Bench", runtimeOf(2, 10, 1, 40, 0), runtimeOf(5, 25, 2, 100, 0), SECOND) ==
+          "{*NetTestRuntime-Bench*} heap 120 MB of 256 MB, gc 4 (75 ms), cpu 0%");
+}
+
+TEST_CASE("U4: the runtime line prints n/a for the GC values that the isolate does not give (G1)") {
+    const auto line = formatRuntime("NetTest", runtimeOf(-1, -1, -1, -1, 0), runtimeOf(-1, -1, -1, -1, 0), SECOND);
+
+    CHECK(line == "{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc n/a, cpu 0%");
+    CHECK(line.find("gc 0") == std::string::npos);
+}
+
+TEST_CASE("U4: a GC value that appears or goes back in the period prints n/a, not a delta") {
+    // Absent in the previous sample only.
+    CHECK(formatRuntime("NetTest", runtimeOf(-1, -1, 0, 0, 0), runtimeOf(5, 25, 0, 0, 0), SECOND).find("gc n/a") !=
+          std::string::npos);
+    // The full GC absent: the sum is not printed as the young part alone.
+    CHECK(formatRuntime("NetTest", runtimeOf(2, 10, -1, -1, 0), runtimeOf(5, 25, -1, -1, 0), SECOND).find("gc n/a") !=
+          std::string::npos);
+    // A counter lower than before.
+    CHECK(formatRuntime("NetTest", runtimeOf(5, 25, 0, 0, 0), runtimeOf(2, 10, 0, 0, 0), SECOND).find("gc n/a") !=
+          std::string::npos);
+}
+
+TEST_CASE("U4: the CPU load is the CPU time of the period over its length") {
+    const auto cpuOf = [](std::int64_t previousNanos, std::int64_t currentNanos, std::int64_t periodNanos) {
+        const auto line = formatRuntime("NetTest", runtimeOf(0, 0, 0, 0, previousNanos),
+                                        runtimeOf(0, 0, 0, 0, currentNanos), periodNanos);
+
+        return line.substr(line.rfind(", cpu ") + 6);
+    };
+
+    CHECK(cpuOf(0, SECOND * 3 / 2, SECOND) == "150%");      // several cores
+    CHECK(cpuOf(SECOND, SECOND + SECOND / 4, SECOND) == "25%");
+    CHECK(cpuOf(0, 25 * SECOND, 10 * SECOND) == "250%");
+    CHECK(cpuOf(-1, SECOND, SECOND) == "n/a");
+    CHECK(cpuOf(0, -1, SECOND) == "n/a");
+    CHECK(cpuOf(0, SECOND, 0) == "n/a");
+}
+
+TEST_CASE("U4: the runtime line prints n/a for an absent heap value") {
+    auto current = runtimeOf(0, 0, 0, 0, 0);
+
+    current.heapUsedBytes = -1;
+
+    CHECK(formatRuntime("NetTest", runtimeOf(0, 0, 0, 0, 0), current, SECOND) ==
+          "{*NetTestRuntime-NetTest*} heap n/a of 256 MB, gc 0 (0 ms), cpu 0%");
+
+    current.heapCommittedBytes = -1;
+
+    CHECK(formatRuntime("NetTest", runtimeOf(0, 0, 0, 0, 0), current, SECOND) ==
+          "{*NetTestRuntime-NetTest*} heap n/a of n/a, gc 0 (0 ms), cpu 0%");
+    CHECK(formatRuntime("NetTest", RuntimeSample{}, RuntimeSample{}, SECOND) ==
+          "{*NetTestRuntime-NetTest*} heap n/a of n/a, gc n/a, cpu n/a");
+}
+
+TEST_CASE("U4: the runtime line expression matches the runtime lines and not the summary line") {
+    const std::regex runtime(RUNTIME_LINE_REGEX);
+    const std::regex summary(SUMMARY_LINE_REGEX);
+    const auto serial = formatRuntime("NetTest", runtimeOf(2, 10, 0, 0, 0), runtimeOf(1'005, 2'025, 0, 0, SECOND),
+                                      SECOND);
+    const auto absent = formatRuntime("NetTest", RuntimeSample{}, RuntimeSample{}, SECOND);
+    const auto g1 = formatRuntime("NetTest", runtimeOf(-1, -1, -1, -1, 0), runtimeOf(-1, -1, -1, -1, 0), SECOND);
+    const auto block = formatStatistics(snapshotOf(SECOND, 1, {{1000, 1000 * 20'000LL}}));
+
+    CHECK(std::regex_match(serial, runtime));
+    CHECK(std::regex_match(absent, runtime));
+    CHECK(std::regex_match(g1, runtime));
+    CHECK_FALSE(std::regex_match(serial, summary));
+
+    for (const auto &line : linesOf(block)) {
+        CHECK_FALSE(std::regex_match(line, runtime));
+    }
+
+    CHECK_FALSE(std::regex_match("{*NetTestRuntime-NetTest*} heap 1 MB of 2 MB, gc 0 (0 ms)", runtime));
+}
+
+namespace {
+
 // A clock of the reporter that jumps: each sleep sets the time to its target and ends the reporter when the target is
 // after the stop time (the time then becomes the stop time).
 struct FakeClock {
@@ -1402,6 +1510,49 @@ TEST_CASE("U4: the reporter primes on the first tick and prints on the whole sec
         CHECK(block.text.back() == '\n');
         CHECK(lines[0] == "{*NetTestProducerSide-NetTest*} data 1,000 rps, lag 20 us, instances 1, connections 2");
     }
+}
+
+TEST_CASE("U4: with runtime values the runtime line follows each block, the last one included") {
+    FakeClock fake;
+    std::vector<Printed> printed;
+    const std::int64_t start = 1000 * SECOND;
+
+    fake.now = start;
+    fake.stopAt = start + 5 * SECOND + SECOND / 2; // ticks of 2 s at 1002 (primes), 1004, then the last block of 1.5 s
+
+    // 2 young collections of 5 ms each in every whole second, and half a core of CPU time.
+    const auto source = [&] {
+        const std::int64_t elapsed = fake.now - start;
+        const std::int64_t seconds = elapsed / SECOND;
+        StatisticsSample sample;
+
+        sample.instances.push_back({0, 0});
+        sample.runtime = runtimeOf(2 * seconds, 10 * seconds, 0, 0, elapsed / 2);
+
+        return sample;
+    };
+
+    runReporter("NetTest", 2000, fake.clock(), source, [&](const std::string &text) {
+        printed.push_back({fake.now, text});
+    });
+
+    REQUIRE(printed.size() == 2);
+
+    const std::regex summary(SUMMARY_LINE_REGEX);
+    const std::regex runtime(RUNTIME_LINE_REGEX);
+
+    for (const auto &block : printed) {
+        const auto lines = linesOf(block.text);
+
+        REQUIRE(lines.size() == 3);
+        CHECK(block.text.back() == '\n');
+        CHECK(std::regex_match(lines[0], summary));
+        CHECK(std::regex_match(lines[2], runtime));
+    }
+
+    CHECK(linesOf(printed[0].text)[2] == "{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 4 (20 ms), cpu 50%");
+    // The last block of 1.5 s holds one whole second (from 4 to 5) of collections; the CPU load uses its real length.
+    CHECK(linesOf(printed[1].text)[2] == "{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 2 (10 ms), cpu 50%");
 }
 
 namespace {
