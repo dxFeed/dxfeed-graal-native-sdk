@@ -76,6 +76,7 @@ Every period the tool logs:
 ```text
 I 261113 141024.007 {*NetTestApiProducerSide-NetTest*} data 1,767,033 rps, lag 57 us, instances 1, connections 1
     NetTest.1 data 1,767,033 rps, lag 57 us
+I 261113 141024.009 {*NetTestRuntime-NetTest*} heap 137 MB of 491 MB, gc 3 (19 ms), cpu 102%
 ```
 
 - `data`: events handed to `publishEvents` per second.
@@ -83,7 +84,19 @@ I 261113 141024.007 {*NetTestApiProducerSide-NetTest*} data 1,767,033 rps, lag 5
   included.
 - `connections`: open connections of all instances' connectors.
 
-The line is QD NetTest's own (`NetTestStatisticsCollector`), so the parsers of QD NetTest read it.
+The first two lines are QD NetTest's own (`NetTestStatisticsCollector`), so the parsers of QD NetTest read them.
+
+The last line shows the JVM, in the format of the C tool's runtime line of the isolate, so that one load can be
+compared between the JVM and the Graal isolate:
+
+- `heap`: the used and the committed heap now, in MB (MiB, rounded down).
+- `gc`: the stop-the-world collections of the period and their total time, summed over the JVM's collectors. The
+  concurrent cycles of G1 (`G1 Concurrent GC`), ZGC and Shenandoah (`... Cycles`) are not counted, so with ZGC and
+  Shenandoah `gc` counts their pauses, and their concurrent work shows only in `cpu`.
+- `cpu`: the CPU time of the whole process in the period as a share of the period's length, so it goes above 100% when
+  several cores are busy. The `CPU` of QD's `{NetTest.1}` monitoring line is divided by the number of processors.
+
+A value that the JVM does not give is `n/a`.
 
 ## Differences from the C tool
 

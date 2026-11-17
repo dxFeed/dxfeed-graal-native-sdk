@@ -120,7 +120,8 @@ class NetTestApiProducerSide extends NetTestSide {
             generators.add(generator);
             threads.add(generator);
         }
-        qdEndpoint(endpoints.get(0)).registerMonitoringTask(statisticsCollector);
+        qdEndpoint(endpoints.get(0)).registerMonitoringTask(
+            new NetTestApiRuntime.Reporter(statisticsCollector, config.name));
         for (NetTestApiGeneratorThread generator : generators) {
             generator.start();
         }

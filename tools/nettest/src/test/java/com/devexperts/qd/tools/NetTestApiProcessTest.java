@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.Test;
 
@@ -30,6 +31,9 @@ public class NetTestApiProcessTest {
     private static final Pattern TOTAL_LINE = Pattern.compile(
         "\\{\\*NetTestApiProducerSide-NetTest\\*} data [\\d,]+ rps, lag [\\d,]+ us, instances 1, connections \\d+");
     private static final Pattern INSTANCE_LINE = Pattern.compile("\\n\\s+NetTest\\.1 data [\\d,]+ rps, lag [\\d,]+ us");
+    // The child JVM gives every value of the runtime line.
+    private static final Pattern RUNTIME_LINE = Pattern.compile(
+        "\\{\\*NetTestRuntime-NetTest\\*} heap [\\d,]+ MB of [\\d,]+ MB, gc [\\d,]+ \\([\\d,]+ ms\\), cpu [\\d,]+%");
     private static final long DEADLINE_SECONDS = 30;
 
     @Test
@@ -40,6 +44,9 @@ public class NetTestApiProcessTest {
         assertEquals(process.describe(), 0, process.waitForExit());
         assertTrue(process.describe(), TOTAL_LINE.matcher(process.output()).find());
         assertTrue(process.describe(), INSTANCE_LINE.matcher(process.output()).find());
+        Matcher instance = INSTANCE_LINE.matcher(process.output());
+        Matcher runtime = RUNTIME_LINE.matcher(process.output());
+        assertTrue(process.describe(), instance.find() && runtime.find() && runtime.start() > instance.end());
         assertTrue(process.describe(), process.output().contains("Closed 1 endpoint(s)"));
     }
 

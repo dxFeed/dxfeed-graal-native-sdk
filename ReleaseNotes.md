@@ -24,6 +24,10 @@
   [NetTest](src/main/c/src/apps/NetTest) prints a runtime line after each statistics block: the heap used and
   committed, the collections of the period with their time, and the CPU load of the process
   (`{*NetTestRuntime-NetTest*} heap 120 MB of 256 MB, gc 3 (15 ms), cpu 85%`); the summary line is unchanged.
+* **\[MDAPI-533]\[GRAAL]** [NetTestApi](tools/nettest) prints the same runtime line for its JVM after each statistics
+  block, so that the heap, the GC and the CPU load of one benchmark can be compared between the JVM and the Graal
+  isolate. `gc` counts the stop-the-world collections of all collectors; the concurrent cycles of G1, ZGC and
+  Shenandoah are not counted. The QD NetTest lines are unchanged.
 
 ## v3.16.0
 
