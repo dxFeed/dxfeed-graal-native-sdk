@@ -950,11 +950,11 @@ TEST_CASE("U3: two generators share the rate of one limiter") {
     firstThread.join();
     secondThread.join();
 
-    INFO("batches taken: " << first << " and " << second);
+    // The limiter is one budget for all generators and promises nothing about the split: on a loaded machine one
+    // thread may not be scheduled within the second at all, so only the total is checked.
+    INFO("batches taken: " << first.load() << " and " << second.load());
     CHECK(first + second >= 98);
     CHECK(first + second <= 102);
-    CHECK(first > 0);
-    CHECK(second > 0);
 }
 
 TEST_CASE("U3: a rate below the batch size releases a batch every batch/rate seconds") {
