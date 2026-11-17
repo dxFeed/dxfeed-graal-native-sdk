@@ -132,6 +132,7 @@ var annotated_dup =
     [ "dxfg_v4_message_connector_t", "structdxfg__v4__message__connector__t.html", "structdxfg__v4__message__connector__t" ],
     [ "dxfg_v4_on_demand_property_change_listener_t", "structdxfg__v4__on__demand__property__change__listener__t.html", "structdxfg__v4__on__demand__property__change__listener__t" ],
     [ "dxfg_v4_on_demand_property_value_t", "structdxfg__v4__on__demand__property__value__t.html", "structdxfg__v4__on__demand__property__value__t" ],
+    [ "dxfg_v4_runtime_stats_t", "structdxfg__v4__runtime__stats__t.html", "structdxfg__v4__runtime__stats__t" ],
     [ "dxfg_v4_string_to_double_map_entry_list", "structdxfg__v4__string__to__double__map__entry__list.html", "structdxfg__v4__string__to__double__map__entry__list" ],
     [ "dxfg_v4_tagged_event_list", "structdxfg__v4__tagged__event__list.html", "structdxfg__v4__tagged__event__list" ],
     [ "dxfg_wildcard_symbol_t", "structdxfg__wildcard__symbol__t.html", "structdxfg__wildcard__symbol__t" ]

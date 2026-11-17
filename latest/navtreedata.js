@@ -54,16 +54,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"globals.html",
-"group__EventModel.html#ga94b1831a275d5f0fda688b13364279f9",
-"group__InstrumentProfile.html#gab2259e86197cb3056ec456520d7bcb1c",
-"group__Schedule.html#ga533a1191f97304fc2f7c9600f904604a",
-"group__V4__EventModel.html#ga861099a879eccbcd225111466c5f61b6",
-"group__V4__Glossary.html#ga992d9f2ea83f4d978c41223eaec5dd2f",
-"group__V4__Javac.html#ga9b2d208a9b255461224f7dec6a649152",
-"group__V4__Subscription.html#ga957e50e15323b60c0471a187e8d6194a",
-"structdxfg__market__maker__t.html#a14600ffc5aa869c09f794c6692be9b77",
-"structdxfg__theo__price__t.html#a8cbbd28ecee33fd11f84db89f28f7cae"
+"functions_y.html",
+"group__EventModel.html#ga938c0a1149841370f9cc23b414f74e89",
+"group__InstrumentProfile.html#gaac518a32277bec22fd434d99bd263334",
+"group__Schedule.html#ga506506d80fb473e6d84741b5fc746de6",
+"group__V4__EventModel.html#ga8207dd4080e077aacfc02a34cd88c245",
+"group__V4__Glossary.html#ga94bb6361017398e3f04e32ef430841bb",
+"group__V4__Javac.html#ga9832c9cdcb84ac01e37040dff683d777",
+"group__V4__Subscription.html#ga81567042e2267f1086866123effea227",
+"structdxfg__market__event__t.html#aa8eebb92788be779a60f32d3f1884bd7",
+"structdxfg__text__message__t.html#acaefd489e508f054f26af606978ae2ef"
 ];
 
 const SYNCONMSG = 'click to disable panel synchronization';

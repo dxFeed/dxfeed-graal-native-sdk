@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"functions_y.html":[4,2,0,24],
+"globals.html":[5,1,0],
 "globals.html":[5,1,0,0],
 "globals_a.html":[5,1,0,1],
 "globals_c.html":[5,1,0,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "group__EventModel.html#ga81a764ae6de38aa247795ee6649fc6f7":[3,5,23],
 "group__EventModel.html#ga8662add991106d01161cda81e5d34c8d":[3,5,84],
 "group__EventModel.html#ga8fe251164f35176454fa343ad69b47be":[3,5,48],
-"group__EventModel.html#ga90d04a0aba5703542652de202dd4b5fc":[3,5,35],
-"group__EventModel.html#ga938c0a1149841370f9cc23b414f74e89":[3,5,26],
-"group__EventModel.html#ga94463d9fc73b2ef214515161465797dd":[3,5,118]
+"group__EventModel.html#ga90d04a0aba5703542652de202dd4b5fc":[3,5,35]
 };

@@ -6,5 +6,7 @@ var searchData=
   ['forward_5fprice_3',['forward_price',['../structdxfg__series__t.html#aedc45417d76888f61bbcfbba464bf944',1,'dxfg_series_t']]],
   ['free_5ffloat_4',['free_float',['../structdxfg__profile__t.html#a1095b0f7fbe4c6fe8ec773991ad83a18',1,'dxfg_profile_t']]],
   ['from_5ftime_5',['from_time',['../structdxfg__time__series__subscription__symbol__t.html#a7175c52804688c083fd8ccf638cb6838',1,'dxfg_time_series_subscription_symbol_t']]],
-  ['front_5fvolatility_6',['front_volatility',['../structdxfg__underlying__t.html#aca07c06331384f3eab5d2e836cba6458',1,'dxfg_underlying_t']]]
+  ['front_5fvolatility_6',['front_volatility',['../structdxfg__underlying__t.html#aca07c06331384f3eab5d2e836cba6458',1,'dxfg_underlying_t']]],
+  ['full_5fgc_5fcount_7',['full_gc_count',['../structdxfg__v4__runtime__stats__t.html#a1ae6b91b77beb6a010acea0177b6d753',1,'dxfg_v4_runtime_stats_t']]],
+  ['full_5fgc_5ftime_5fms_8',['full_gc_time_ms',['../structdxfg__v4__runtime__stats__t.html#a4c71a1b70d6efcabc50b5f8e01c27dd7',1,'dxfg_v4_runtime_stats_t']]]
 ];

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.16.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.17.0</span>
    </div>
   </td>
  </tr>
@@ -115,6 +115,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('group__V4__Sys
 <p>The v4 functions and type names of the group <a class="el" href="group__System.html" title="System">System</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:dxfg_5Fv4_5Fruntime_5Fstats_5Ft" id="r_dxfg_5Fv4_5Fruntime_5Fstats_5Ft"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structdxfg__v4__runtime__stats__t.html">dxfg_v4_runtime_stats_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The runtime statistics of the isolate and its process (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>).  <a href="structdxfg__v4__runtime__stats__t.html#details">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:gaaa1b2224c2c32cbcc22f475ab4972db4" id="r_gaaa1b2224c2c32cbcc22f475ab4972db4"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#gaaa1b2224c2c32cbcc22f475ab4972db4">DXFG_V4_ADVANCED_REVISION</a>&#160;&#160;&#160;((int32_t)1)</td></tr>
@@ -133,6 +138,13 @@ Macros</h2></td></tr>
 <tr class="memdesc:ga9d4a7c677cef2f7f5a0e0a23fed0012f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "message connectors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#gaeb72d386e8901dcb1487437e6c9a10b4" title="Returns the current message connectors of an endpoint.">dxfg_v4_DXEndpoint_getConnectors()</a>, <a class="el" href="group__V4__MessageConnector.html#ga6669d8f3e7b381a05e3ee8caa70a9d7c" title="Returns the state of a message connector.">dxfg_v4_MessageConnector_getState()</a>, <a class="el" href="group__V4__MessageConnector.html#ga972b22a5fd181b80302e36492338ea8b" title="Reads the statistics of a message connector: the bytes and data records read and written,...">dxfg_v4_MessageConnector_getStatistics()</a> and the other functions of the group <a class="el" href="group__V4__MessageConnector.html" title="Message connectors (v4)">Message connectors (v4)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
 <tr class="memitem:ga3c6022295c693681093e8cab02248c97" id="r_ga3c6022295c693681093e8cab02248c97"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga3c6022295c693681093e8cab02248c97">DXFG_V4_FEATURE_CONNECTION_ERRORS</a>&#160;&#160;&#160;&quot;connection_errors&quot;</td></tr>
 <tr class="memdesc:ga3c6022295c693681093e8cab02248c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "connection errors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#ga0a6f461c672ddc0e6bd29535118aa0e0" title="Returns the last connection error of a message connector: the newest failed connect or dropped connec...">dxfg_v4_MessageConnector_getLastError()</a>, <a class="el" href="group__V4__MessageConnector.html#gac44c8e780d9afb715d9284e41175e02c" title="Returns the last connection error of an endpoint: the newest error of all its connectors.">dxfg_v4_DXEndpoint_getLastConnectionError()</a>, <a class="el" href="group__V4__MessageConnector.html#ga1e0cc9a122227310326b82fd383d5f28" title="Releases a connection error and its strings.">dxfg_v4_ConnectionError_release()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+<tr class="memitem:gaee725d60e625e3ccb1e4874296cf1e70" id="r_gaee725d60e625e3ccb1e4874296cf1e70"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#gaee725d60e625e3ccb1e4874296cf1e70">DXFG_V4_FEATURE_RUNTIME_STATISTICS</a>&#160;&#160;&#160;&quot;runtime_statistics&quot;</td></tr>
+<tr class="memdesc:gaee725d60e625e3ccb1e4874296cf1e70"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "runtime statistics" (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>, <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga3394b9a0ce36c1c8ac97f49de45c12c5" id="r_ga3394b9a0ce36c1c8ac97f49de45c12c5"><td class="memItemLeft">typedef struct dxfg_v4_runtime_stats_t&#160;</td><td class="memItemRight"><a class="el" href="#ga3394b9a0ce36c1c8ac97f49de45c12c5">dxfg_v4_runtime_stats_t</a></td></tr>
+<tr class="memdesc:ga3394b9a0ce36c1c8ac97f49de45c12c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The runtime statistics of the isolate and its process (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>).  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -152,6 +164,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga93947aadbc5d342385aee354b49e8bf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the advanced revision of the library: the revision of its experimental functions.  <br /></td></tr>
 <tr class="memitem:gaa3e30ef33590b58e74e65a4298627776" id="r_gaa3e30ef33590b58e74e65a4298627776"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gaa3e30ef33590b58e74e65a4298627776">dxfg_v4_system_is_feature_supported</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *name, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> int32_t *supported)</td></tr>
 <tr class="memdesc:gaa3e30ef33590b58e74e65a4298627776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tells whether the library supports a feature, e.g. <a class="el" href="#ga2bd91d32cda673e8c955ed4bc54f2c11" title="The name of the feature &quot;event queue&quot; (dxfg_v4_event_queue.h: dxfg_v4_EventQueue_new(),...">DXFG_V4_FEATURE_EVENT_QUEUE</a>.  <br /></td></tr>
+<tr class="memitem:ga98b5dff55916dd4666e8add20503c20a" id="r_ga98b5dff55916dd4666e8add20503c20a"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga98b5dff55916dd4666e8add20503c20a">dxfg_v4_system_get_runtime_statistics</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__v4__runtime__stats__t.html">dxfg_v4_runtime_stats_t</a> *stats)</td></tr>
+<tr class="memdesc:ga98b5dff55916dd4666e8add20503c20a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the runtime statistics of the isolate and its process: heap, garbage collections, threads, process CPU time and uptime (see <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The v4 functions and type names of the group <a class="el" href="group__System.html" title="System">System</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </p>
@@ -261,6 +275,23 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gaee725d60e625e3ccb1e4874296cf1e70" name="gaee725d60e625e3ccb1e4874296cf1e70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaee725d60e625e3ccb1e4874296cf1e70">&#9670;&#160;</a></span>DXFG_V4_FEATURE_RUNTIME_STATISTICS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_FEATURE_RUNTIME_STATISTICS&#160;&#160;&#160;&quot;runtime_statistics&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The name of the feature "runtime statistics" (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>, <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
+<dl class="section since"><dt>Since</dt><dd>3.17.0 </dd></dl>
+
+</div>
+</div>
 <a id="gad1d9a26203f86a4889b8f64899a377d4" name="gad1d9a26203f86a4889b8f64899a377d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad1d9a26203f86a4889b8f64899a377d4">&#9670;&#160;</a></span>DXFG_V4_FEATURE_SHARED_EVENT_QUEUE</h2>
 
@@ -293,6 +324,25 @@ Functions</h2></td></tr>
 <p>The name of the feature "time series model event peek" (<a class="el" href="group__V4__EventModel.html#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
 <dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000120">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
+<a id="ga3394b9a0ce36c1c8ac97f49de45c12c5" name="ga3394b9a0ce36c1c8ac97f49de45c12c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3394b9a0ce36c1c8ac97f49de45c12c5">&#9670;&#160;</a></span>dxfg_v4_runtime_stats_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct dxfg_v4_runtime_stats_t dxfg_v4_runtime_stats_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The runtime statistics of the isolate and its process (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>). </p>
+<p>Every field is -1 when the platform or the garbage collector does not give the value, otherwise it is 0 or more. Each value is read on its own, so the struct is not one atomic snapshot: a heap value and a GC count may come from moments around one collection. The layout of the struct does not change: new values will come with a new function.</p>
+<p>The heap pool and GC fields follow the Serial GC, the GC of the SDK builds. A build with another GC (G1) has no such pools and collectors, and these fields are -1 there. <span class="tt">allocated_bytes</span> is -1 on every platform with GraalVM 25.5. The values were checked on Linux x64, macOS arm64 and Windows x64. </p><dl class="section since"><dt>Since</dt><dd>3.17.0 </dd></dl>
 
 </div>
 </div>
@@ -394,6 +444,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error. Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+
+</div>
+</div>
+<a id="ga98b5dff55916dd4666e8add20503c20a" name="ga98b5dff55916dd4666e8add20503c20a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga98b5dff55916dd4666e8add20503c20a">&#9670;&#160;</a></span>dxfg_v4_system_get_runtime_statistics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_system_get_runtime_statistics </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__v4__runtime__stats__t.html">dxfg_v4_runtime_stats_t</a> *</td>          <td class="paramname"><span class="paramname"><em>stats</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the runtime statistics of the isolate and its process: heap, garbage collections, threads, process CPU time and uptime (see <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>). </p>
+<p>A value that the platform or the GC does not give is -1, and the call still succeeds. Reading changes nothing: the counters are cumulative since the isolate started, and the caller computes the change between two calls. The first call initializes the sources and may take some milliseconds: call it once at start-up to take the cost out of a measurement. The function works after <a class="el" href="#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a> too.</p>
+<p>Java: <span class="tt">ManagementFactory</span> (<span class="tt">MemoryMXBean</span>, <span class="tt">GarbageCollectorMXBean</span>, <span class="tt">MemoryPoolMXBean</span>, <span class="tt">ThreadMXBean</span>, <span class="tt">RuntimeMXBean</span>), <span class="tt">ProcessHandle.current().info().totalCpuDuration()</span> and <span class="tt">Runtime.availableProcessors()</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">stats</td><td>The pointer to the structure that receives the statistics; must not be NULL. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">stats</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.17.0 </dd></dl>
 
 </div>
 </div>

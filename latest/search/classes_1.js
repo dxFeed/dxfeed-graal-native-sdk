@@ -131,7 +131,8 @@ var searchData=
   ['dxfg_5fv4_5fmessage_5fconnector_5ft_128',['dxfg_v4_message_connector_t',['../structdxfg__v4__message__connector__t.html',1,'']]],
   ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fchange_5flistener_5ft_129',['dxfg_v4_on_demand_property_change_listener_t',['../structdxfg__v4__on__demand__property__change__listener__t.html',1,'']]],
   ['dxfg_5fv4_5fon_5fdemand_5fproperty_5fvalue_5ft_130',['dxfg_v4_on_demand_property_value_t',['../structdxfg__v4__on__demand__property__value__t.html',1,'']]],
-  ['dxfg_5fv4_5fstring_5fto_5fdouble_5fmap_5fentry_5flist_131',['dxfg_v4_string_to_double_map_entry_list',['../structdxfg__v4__string__to__double__map__entry__list.html',1,'']]],
-  ['dxfg_5fv4_5ftagged_5fevent_5flist_132',['dxfg_v4_tagged_event_list',['../structdxfg__v4__tagged__event__list.html',1,'']]],
-  ['dxfg_5fwildcard_5fsymbol_5ft_133',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
+  ['dxfg_5fv4_5fruntime_5fstats_5ft_131',['dxfg_v4_runtime_stats_t',['../structdxfg__v4__runtime__stats__t.html',1,'']]],
+  ['dxfg_5fv4_5fstring_5fto_5fdouble_5fmap_5fentry_5flist_132',['dxfg_v4_string_to_double_map_entry_list',['../structdxfg__v4__string__to__double__map__entry__list.html',1,'']]],
+  ['dxfg_5fv4_5ftagged_5fevent_5flist_133',['dxfg_v4_tagged_event_list',['../structdxfg__v4__tagged__event__list.html',1,'']]],
+  ['dxfg_5fwildcard_5fsymbol_5ft_134',['dxfg_wildcard_symbol_t',['../structdxfg__wildcard__symbol__t.html',1,'']]]
 ];
