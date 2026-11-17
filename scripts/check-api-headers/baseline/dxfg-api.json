@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.16.0",
+  "sdk_version": "3.17.0",
   "advanced_revision": 1,
   "features": [
     "connection_errors",
@@ -8,6 +8,7 @@
     "event_queue_ready_signal",
     "feed_filter",
     "message_connectors",
+    "runtime_statistics",
     "shared_event_queue",
     "time_series_tx_model_event_peek"
   ],
@@ -39714,6 +39715,29 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_system_get_runtime_statistics",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.17.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "stats",
+          "type": "dxfg_v4_runtime_stats_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_system_get_version",
       "header": "dxfg_v4_system.h",
       "tier": "stable",
@@ -44710,6 +44734,87 @@
       "type": "dxfg_rounding_mode_t"
     },
     {
+      "name": "dxfg_v4_runtime_stats_t",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.17.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "heap_used_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "heap_committed_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "heap_max_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "young_gc_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "young_gc_time_ms",
+          "type": "int64_t"
+        },
+        {
+          "name": "full_gc_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "full_gc_time_ms",
+          "type": "int64_t"
+        },
+        {
+          "name": "thread_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "peak_thread_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "process_cpu_time_ns",
+          "type": "int64_t"
+        },
+        {
+          "name": "uptime_ms",
+          "type": "int64_t"
+        },
+        {
+          "name": "allocated_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "eden_used_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "survivor_used_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "old_used_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "daemon_thread_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "total_started_thread_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "available_processors",
+          "type": "int64_t"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_schedule_t",
       "header": "dxfg_v4_schedule.h",
       "tier": "stable",
@@ -45274,6 +45379,13 @@
       "tier": "stable",
       "since": "3.14.0",
       "value": "\"message_connectors\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_RUNTIME_STATISTICS",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.17.0",
+      "value": "\"runtime_statistics\""
     },
     {
       "name": "DXFG_V4_FEATURE_SHARED_EVENT_QUEUE",
