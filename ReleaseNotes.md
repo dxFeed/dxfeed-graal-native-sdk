@@ -1,4 +1,4 @@
-## v3.17.0-rc1
+## v3.17.0-rc2
 
 * **\[MDAPI-526]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) passes its `-Xmx<size>`, `-Xms<size>`,
   `-Xmn<size>` and `-XX:<option>` arguments to the Graal isolate, as `java` takes them (`-Xmx512m -XX:+PrintGC`), so
