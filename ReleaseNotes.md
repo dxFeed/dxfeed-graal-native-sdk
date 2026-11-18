@@ -1,3 +1,7 @@
+* **\[MDAPI-565]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) builds against an unpacked SDK archive, outside the
+  build of the library: `cmake -S src/main/c/src/apps/NetTest -B <dir> -DDXFG_SDK_DIR=<unpacked archive>`, with the
+  SDK library copied next to the executable. The C test `NetTestStandalone` builds it this way against the archive of
+  the build and runs it once, so the C tests now need the archive of `mvn package` in `target/`.
 * **\[MDAPI-540]\[GRAAL]** A new page of the wrapper guide, the [NetTest specification](docs/wrapper-guide/nettest.md)
   (`nettest/1`), is the contract of the NetTests of all language APIs, so that one benchmark stand runs them side by
   side: the command line, the events and their pools, the output lines, the consumer, the summary file, the metrics and

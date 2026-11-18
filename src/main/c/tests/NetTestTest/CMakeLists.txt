@@ -150,6 +150,50 @@ add_test(NAME NetTestProcess
         -P "${CMAKE_CURRENT_SOURCE_DIR}/NetTestProcess.cmake")
 set_tests_properties(NetTestProcess PROPERTIES TIMEOUT 60)
 
+# NetTest built against the SDK archive in target/ as a user builds it outside the repository (src/apps/NetTest as the
+# top-level project), with the generator and the compilers of this build, then run once.
+if (WIN32)
+    set(standalone_arch "amd64-windows")
+elseif (APPLE)
+    if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+        set(standalone_arch "aarch64-osx")
+    else ()
+        set(standalone_arch "x86_64-osx")
+    endif ()
+elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64)$")
+    set(standalone_arch "aarch64-linux")
+else ()
+    set(standalone_arch "amd64-linux")
+endif ()
+
+# The generator settings that this platform and generator define (an undefined one is an error of --warn-uninitialized
+# in the presets).
+set(standalone_options "")
+
+foreach (setting PLATFORM TOOLSET INSTANCE)
+    if (DEFINED CMAKE_GENERATOR_${setting})
+        list(APPEND standalone_options "-D${setting}=${CMAKE_GENERATOR_${setting}}")
+    endif ()
+endforeach ()
+
+if (DEFINED CMAKE_OSX_ARCHITECTURES)
+    list(APPEND standalone_options "-DOSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
+endif ()
+
+add_test(NAME NetTestStandalone
+        COMMAND ${CMAKE_COMMAND}
+        "-DARCHIVE_GLOB=${CMAKE_CURRENT_SOURCE_DIR}/../../../../../target/graal-native-sdk-${standalone_arch}*.zip"
+        "-DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}/../../src/apps/NetTest"
+        "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/NetTestStandalone"
+        "-DCONFIG=$<CONFIG>"
+        "-DGENERATOR=${CMAKE_GENERATOR}"
+        ${standalone_options}
+        "-DC_COMPILER=${CMAKE_C_COMPILER}"
+        "-DCXX_COMPILER=${CMAKE_CXX_COMPILER}"
+        "-DSTATISTICS_HEADER=${CMAKE_CURRENT_SOURCE_DIR}/../../src/apps/NetTest/include/NetTest/Statistics.hpp"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/NetTestStandalone.cmake")
+set_tests_properties(NetTestStandalone PROPERTIES TIMEOUT 300)
+
 
 #
 # Custom commands

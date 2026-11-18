@@ -23,6 +23,25 @@ cmake --build --preset=build-release --config=Release --target NetTest
 The executable and the SDK library are in `src/main/c/bin/Release` (Windows) or the build output directory of your
 platform.
 
+### Build against an SDK archive
+
+The tool also builds without the build of the library: against an unpacked SDK archive of a release (or the archive
+that `mvn package` puts into `target/`), with this directory as the top-level CMake project. `DXFG_SDK_DIR` names the
+directory with the archive's `CMakeLists.txt` and headers; CMake 3.21 or later and a C++17 compiler are needed.
+
+```shell
+cmake -S src/main/c/src/apps/NetTest -B build-nettest -DDXFG_SDK_DIR=<unpacked archive> -DCMAKE_BUILD_TYPE=Release
+cmake --build build-nettest --config Release
+```
+
+The build copies the SDK library next to the executable (`build-nettest/Release` with a multi-config generator such as
+Visual Studio, `build-nettest` otherwise), and the rpath on Linux and macOS is `$ORIGIN` or `@loader_path`, so the
+directory can be copied to another machine as is. The compiler flags are those of the build in the tree
+(`src/main/c/cmake/PlatformOptions.cmake` and `CompileOptions.cmake`).
+
+The C test `NetTestStandalone` builds the tool this way against the archive in `target/` and runs it once; it fails
+when `target/` has no archive of the platform, so run `mvn package` before the C tests.
+
 ## Command line
 
 ```text

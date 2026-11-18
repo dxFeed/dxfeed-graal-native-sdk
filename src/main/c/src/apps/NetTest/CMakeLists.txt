@@ -5,6 +5,34 @@
 #
 # The tool is not installed: no install() rule, so neither the SDK archive nor the cpack zip contains it.
 #
+# Two ways to build it:
+#   - in the tree: src/main/c adds this directory, with the SDK library that the build of the repository has made;
+#   - against an SDK archive: this directory is the top-level project, DXFG_SDK_DIR names the unpacked archive, whose
+#     CMakeLists.txt defines the imported target DxFeedGraalNativeSdk:
+#       cmake -S src/main/c/src/apps/NetTest -B build-nettest -DDXFG_SDK_DIR=<unpacked archive>
+#       cmake --build build-nettest --config Release
+#
+
+if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    cmake_minimum_required(VERSION 3.21)
+    project(NetTest LANGUAGES C CXX)
+
+    # A relative path given with -D is taken from the current directory (a cache entry of the type PATH).
+    set(DXFG_SDK_DIR "" CACHE PATH "The unpacked SDK archive to build against")
+
+    if (NOT EXISTS "${DXFG_SDK_DIR}/CMakeLists.txt" OR NOT EXISTS "${DXFG_SDK_DIR}/dxfg_api.h")
+        message(FATAL_ERROR "Set DXFG_SDK_DIR to an unpacked SDK archive (the directory with CMakeLists.txt and "
+                "dxfg_api.h), not '${DXFG_SDK_DIR}'")
+    endif ()
+
+    # The same compiler flags, rpath and default options as the build in the tree.
+    include("${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/PlatformOptions.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake")
+
+    # The tool has no install rule, so the library needs none either (CMP0077: the option of the archive keeps this).
+    set(GRAAL_NATIVE_SDK_INSTALL OFF)
+    add_subdirectory("${DXFG_SDK_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/DxFeedGraalNativeSdk")
+endif ()
 
 set(core NetTestCore)
 set(target NetTest)
