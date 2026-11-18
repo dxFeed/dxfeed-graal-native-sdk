@@ -1,3 +1,10 @@
+* **\[MDAPI-541]\[GRAAL]** On macOS x64 and the iOS Simulator x64, whose libraries are built with GraalVM
+  jdk-25.0.1, `graal_create_isolate()` now prints to stderr why it rejects an isolate option (`Error: <reason>`)
+  before it returns 22, as on the other platforms; before, it returned 22 without a word.
+  [NetTest](src/main/c/src/apps/NetTest) names the options it passed to the isolate when the isolate rejects one, on
+  every platform (`NetTest: the isolate rejected one of the options: -Xmx64m -XX:+NetTestNoSuchOption`), instead of
+  pointing at a reason above, and accepts `-Xss<size>`, the stack size of the threads that the isolate starts.
+
 ## v3.17.0
 
 * **\[MDAPI-526]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) passes its `-Xmx<size>`, `-Xms<size>`,

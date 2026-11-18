@@ -23,7 +23,7 @@ platform.
 ```text
 NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>] [--batch <n>]
         [--event Trade|TimeAndSale] [--reuse] [--legacy] [--duration <time>] [-D<key>=<value>...]
-        [-Xmx<size>] [-Xms<size>] [-Xmn<size>] [-XX:<option>...]
+        [-Xmx<size>] [-Xms<size>] [-Xmn<size>] [-Xss<size>] [-XX:<option>...]
 ```
 
 | Option                   | Meaning                                                                                       |
@@ -41,7 +41,7 @@ NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>
 | `--legacy`               | publish through the deprecated `dxfg_DXPublisher_publishEvents()`                             |
 | `--duration <time>`      | end the run after this time; Ctrl+C (SIGINT, SIGTERM) ends it at once                         |
 | `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Ddxscheme.nanoTime=true`       |
-| `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
+| `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-Xss<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
 
 Every event carries the current time: Trade in `time_sequence`, TimeAndSale in `index` (seconds, milliseconds and a
 22-bit sequence per instance), the rest of the nanoseconds in `time_nano_part`. A consumer computes the business lag
@@ -112,14 +112,14 @@ I 261110 181108.014 {NetTest.1} Subscription: 0; Sticky: 0; Storage: 0; Buffer: 
 ## GC of the isolate
 
 The SDK library runs in a Graal isolate with the Serial GC, and its heap may grow to 80% of the RAM by default. The
-`-Xmx`, `-Xms`, `-Xmn` and `-XX:` arguments go to the isolate when it is created, in the command line order; an
-unknown `-XX:` option or a wrong value fails the start with exit code 2, and the isolate prints the reason to stderr.
-The isolate would ignore other `-X` arguments, so the tool rejects them (`-Xss64k`, a typo such as `-Xnm2m`), also with
-2. The useful options:
+`-Xmx`, `-Xms`, `-Xmn`, `-Xss` and `-XX:` arguments go to the isolate when it is created, in the command line order.
+The isolate would ignore other `-X` arguments, so the tool rejects them (a typo such as `-Xnm2m`) with exit code 2 and
+its usage text. The useful options:
 
 | Option                   | Effect                                                                                        |
 |--------------------------|-----------------------------------------------------------------------------------------------|
 | `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>` | the maximum, the initial and the young generation sizes of the heap (`512m`, `1g`) |
+| `-Xss<size>`             | the stack size of the threads that the isolate starts (`1m`)                                  |
 | `-XX:+PrintGC`           | a line per collection: its number, kind, heap before and after, pause                        |
 | `-XX:+PrintGCSummary`    | the counts, times and allocated bytes of all collections, at the end of the run              |
 | `-XX:+VerboseGC`, `-XX:+PrintGCTimes` | the generations and the phase times of every collection (verbose)               |
@@ -143,6 +143,23 @@ At the end of the run the tool closes all endpoints and tears the isolate down, 
 The `gc` value of the runtime line in [Statistics](#statistics) needs no option: it counts the same collections as
 `-XX:+PrintGC` (`Incremental GC` as young, `Complete GC` as full) per statistics period, with their collection time
 in milliseconds as the GC beans of the isolate report it.
+
+### A rejected option
+
+An unknown `-XX:` option or a wrong value (`-Xmx64q`) fails the creation of the isolate. GraalVM prints its reason to
+stderr, and the tool then prints one line that names the options it passed to the isolate, exactly as given, in the
+command line order, separated by one space, and exits with 2 without a usage text; stdout stays empty:
+
+```text
+Error: Could not find option 'NetTestNoSuchOption'. Use -XX:PrintFlags= to list all available options.
+NetTest: the isolate rejected one of the options: -Xmx64m -XX:+NetTestNoSuchOption
+```
+
+The tool's line is the same on every platform and in the NetTest of every language API; a parser matches it with
+
+```text
+^NetTest: the isolate rejected one of the options: ([^ \t\r\n]+(?: [^ \t\r\n]+)*)$
+```
 
 ## Differences from QD NetTest
 

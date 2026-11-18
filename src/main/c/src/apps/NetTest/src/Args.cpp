@@ -155,17 +155,17 @@ struct Parser {
         return true;
     }
 
-    // The isolate checks the -XX: options and the values of -Xmx, -Xms and -Xmn (a wrong one fails its creation), but
-    // ignores the other -X arguments, so that a typo there would go unnoticed: they are rejected here.
+    // The isolate checks the -XX: options and the values of -Xmx, -Xms, -Xmn and -Xss (a wrong one fails its creation),
+    // but ignores the other -X arguments, so that a typo there would go unnoticed: they are rejected here.
     bool parseIsolateArgument(const std::string &argument) {
         const bool hasValue = argument.size() > 4;
-        const bool heapSize = hasValue && (argument.compare(0, 4, "-Xmx") == 0 || argument.compare(0, 4, "-Xms") == 0 ||
-                                           argument.compare(0, 4, "-Xmn") == 0);
+        const bool size = hasValue && (argument.compare(0, 4, "-Xmx") == 0 || argument.compare(0, 4, "-Xms") == 0 ||
+                                       argument.compare(0, 4, "-Xmn") == 0 || argument.compare(0, 4, "-Xss") == 0);
         const bool runtimeOption = hasValue && argument.compare(0, 4, "-XX:") == 0;
 
-        if (!heapSize && !runtimeOption) {
-            return fail(argument + " is not an option of the isolate, which takes -Xmx<size>, -Xms<size>, -Xmn<size> " +
-                        "and -XX:<option>");
+        if (!size && !runtimeOption) {
+            return fail(argument + " is not an option of the isolate, which takes -Xmx<size>, -Xms<size>, -Xmn<size>, " +
+                        "-Xss<size> and -XX:<option>");
         }
 
         options.isolateArguments.push_back(argument);
@@ -435,6 +435,7 @@ std::string usageText() {
            "  -D<key>=<value>      set a system property before the first endpoint is created\n"
            "  -Xmx<size>, -Xms<size>, -Xmn<size>\n"
            "                       the maximum, initial and young generation heap sizes of the isolate (512m, 1g)\n"
+           "  -Xss<size>           the stack size of the threads that the isolate starts (1m)\n"
            "  -XX:<option>         an option of the isolate (for example -XX:+PrintGC -XX:+PrintGCSummary)\n"
            "\n"
            "The consumer mode 'c' and the QD flags -c, /r and /s symbol splits, {len,max} symbol lengths and the\n"

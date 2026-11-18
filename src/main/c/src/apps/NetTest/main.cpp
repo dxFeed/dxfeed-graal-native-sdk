@@ -81,7 +81,8 @@ int main(int argc, char *argv[]) {
 
     if (const int created = createIsolate(options.isolateArguments, &isolate, &thread); created != 0) {
         if (created == ISOLATE_ARGUMENT_PARSING_FAILED) {
-            std::cerr << "NetTest: the isolate rejected an -X or -XX: option (the reason is above)\n";
+            // The reason that the isolate prints (GraalVM "Error: ...") stays above the line.
+            std::cerr << isolateRejectionLine(options.isolateArguments) << "\n";
 
             return EXIT_BAD_ARGUMENTS;
         }

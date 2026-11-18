@@ -18,10 +18,15 @@ namespace nettest {
 // of GraalVM); the isolate prints the reason to stderr.
 constexpr int ISOLATE_ARGUMENT_PARSING_FAILED = 22;
 
-// Creates the isolate with the arguments (-Xmx<size>, -XX:<option>; an unknown -XX: option or a wrong value fails the
-// creation, other -X arguments are ignored), or with the defaults when there are none, and attaches the current thread.
-// Returns the result of graal_create_isolate(): 0 on success.
+// Creates the isolate with the arguments (-Xmx<size>, -Xss<size>, -XX:<option>; an unknown -XX: option or a wrong value
+// fails the creation, other -X arguments are ignored), or with the defaults when there are none, and attaches the current
+// thread. Returns the result of graal_create_isolate(): 0 on success.
 int createIsolate(const std::vector<std::string> &arguments, graal_isolate_t **isolate, graal_isolatethread_t **thread);
+
+// The line that NetTest prints to stderr when the isolate rejects one of its arguments, the same byte for byte in the
+// NetTest of every language API: "NetTest: the isolate rejected one of the options: " and the arguments, as they are,
+// in the command line order, separated by one space; no newline.
+std::string isolateRejectionLine(const std::vector<std::string> &arguments);
 
 // Closes all the endpoints (dxfg_v4_system_close_all_and_await_termination()) and tears the isolate down, so that the
 // options that print at the tear-down (-XX:+PrintGCSummary) print. The other threads must be detached. Returns false

@@ -59,6 +59,17 @@ int createIsolate(const std::vector<std::string> &arguments, graal_isolate_t **i
     return graal_create_isolate(&params, isolate, thread);
 }
 
+std::string isolateRejectionLine(const std::vector<std::string> &arguments) {
+    std::string line = "NetTest: the isolate rejected one of the options:";
+
+    for (const auto &argument : arguments) {
+        line += ' ';
+        line += argument;
+    }
+
+    return line;
+}
+
 bool tearDownIsolate(graal_isolatethread_t *thread) {
     // The threads of an open endpoint would block the tear-down forever.
     const bool closed = dxfg_v4_system_close_all_and_await_termination(thread) == DXFG_EXECUTE_SUCCESSFULLY;

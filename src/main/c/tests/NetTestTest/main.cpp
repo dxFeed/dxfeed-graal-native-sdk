@@ -182,12 +182,12 @@ TEST_CASE("U1: every option lands in the options") {
 
     SUBCASE("isolate arguments keep their order and text, apart from the -D properties") {
         const auto result = parse({"p", ":7000", "-S", "1", "-Xmx64m", "-XX:+PrintGC", "-Dk=v",
-                                   "-XX:TearDownWarningSeconds=10", "-Xms16m", "-Xmn2m"});
+                                   "-XX:TearDownWarningSeconds=10", "-Xms16m", "-Xmn2m", "-Xss1m"});
 
         REQUIRE(result.ok);
         CHECK(result.options.isolateArguments == std::vector<std::string>{"-Xmx64m", "-XX:+PrintGC",
                                                                           "-XX:TearDownWarningSeconds=10", "-Xms16m",
-                                                                          "-Xmn2m"});
+                                                                          "-Xmn2m", "-Xss1m"});
         REQUIRE(result.options.properties.size() == 1);
         CHECK(result.options.properties[0] == std::make_pair(std::string("k"), std::string("v")));
     }
@@ -267,8 +267,8 @@ TEST_CASE("U1: invalid command lines are rejected") {
     requireRejected({"p", ":7000", "-S", "10", "--unknown"}, "--unknown");
     requireRejected({"p", ":7000", "-S", "10", "-Dnovalue"}, "-D");
     requireRejected({"p", ":7000", "-S", "10", "-D=value"}, "-D");
-    // The isolate would ignore the -X arguments other than the heap sizes, so a typo must not reach it.
-    for (const std::string argument : {"-X", "-XX", "-XX:", "-Xmx", "-Xfoo", "-Xss64k", "-Xnm2m", "-XXfoo"}) {
+    // The isolate would ignore the -X arguments other than the heap and stack sizes, so a typo must not reach it.
+    for (const std::string argument : {"-X", "-XX", "-XX:", "-Xmx", "-Xss", "-Xfoo", "-Xsx1m", "-Xnm2m", "-XXfoo"}) {
         CAPTURE(argument);
         requireRejected({"p", ":7000", "-S", "10", argument}, argument + " is not an option of the isolate");
     }
@@ -314,7 +314,7 @@ TEST_CASE("U1: the usage text names the modes and the flags") {
     CHECK(usage.find("Usage: NetTest p") != std::string::npos);
 
     for (const auto *flag : {"-S", "-C", "-r", "-s", "-n", "--batch", "--event", "--reuse", "--legacy", "--duration",
-                             "-D<key>=<value>", "-Xmx<size>", "-XX:<option>"}) {
+                             "-D<key>=<value>", "-Xmx<size>", "-Xss<size>", "-XX:<option>"}) {
         CHECK(usage.find(flag) != std::string::npos);
     }
 }
@@ -324,7 +324,7 @@ TEST_CASE("U1: the isolate takes the -X and -XX: arguments and rejects an unknow
     graal_isolatethread_t *thread = nullptr;
 
     // A second isolate of the process, created and torn down here; the shared one of the other tests stays.
-    REQUIRE(createIsolate({"-Xmx64m", "-XX:TearDownWarningSeconds=10"}, &isolate, &thread) == 0);
+    REQUIRE(createIsolate({"-Xmx64m", "-Xss1m", "-XX:TearDownWarningSeconds=10"}, &isolate, &thread) == 0);
     REQUIRE(thread != nullptr);
     CHECK(tearDownIsolate(thread));
 
@@ -332,6 +332,15 @@ TEST_CASE("U1: the isolate takes the -X and -XX: arguments and rejects an unknow
     thread = nullptr;
     CHECK(createIsolate({"-XX:+NetTestNoSuchOption"}, &isolate, &thread) == ISOLATE_ARGUMENT_PARSING_FAILED);
     CHECK(createIsolate({"-Xmx64q"}, &isolate, &thread) == ISOLATE_ARGUMENT_PARSING_FAILED);
+    CHECK(createIsolate({"-Xss64q"}, &isolate, &thread) == ISOLATE_ARGUMENT_PARSING_FAILED);
+}
+
+TEST_CASE("U1: the rejection line names the isolate arguments as they are") {
+    CHECK(isolateRejectionLine({"-XX:+NetTestNoSuchOption"}) ==
+          "NetTest: the isolate rejected one of the options: -XX:+NetTestNoSuchOption");
+    // The command line order, repeats kept, one space between, no quoting.
+    CHECK(isolateRejectionLine({"-Xmx64m", "-XX:+Foo", "-Xmx64m", "-XX:Path=a b"}) ==
+          "NetTest: the isolate rejected one of the options: -Xmx64m -XX:+Foo -Xmx64m -XX:Path=a b");
 }
 
 TEST_CASE("U1: -D properties reach the system properties of the isolate") {

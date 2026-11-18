@@ -104,8 +104,9 @@ if (NOT errors MATCHES "GC summary")
     message(FATAL_ERROR "stderr has no GC summary of -XX:+PrintGCSummary: the isolate was not torn down")
 endif ()
 
-# 4. The rejected option.
-execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 --duration 1s -XX:+NetTestNoSuchOption
+# 4. The rejected option. The tool's own line names the isolate options on every platform; the reason that GraalVM
+# prints ("Error: ...") comes above it.
+execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 --duration 1s -Xmx64m -XX:+NetTestNoSuchOption
         RESULT_VARIABLE code
         OUTPUT_VARIABLE output
         ERROR_VARIABLE errors
@@ -116,6 +117,21 @@ if (NOT "${code}" STREQUAL "2")
     message(FATAL_ERROR "NetTest exited with ${code} on an option that the isolate rejects, expected 2")
 endif ()
 
-if (NOT errors MATCHES "NetTestNoSuchOption")
-    message(FATAL_ERROR "stderr does not name the option NetTestNoSuchOption")
+if (NOT output STREQUAL "")
+    message(FATAL_ERROR "NetTest printed to stdout on an option that the isolate rejects")
+endif ()
+
+# The last line of stderr, byte for byte: the platform newline after it and nothing else.
+if (WIN32)
+    set(newline "\r?\n")
+else ()
+    set(newline "\n")
+endif ()
+
+if (NOT errors MATCHES "(^|\n)NetTest: the isolate rejected one of the options: -Xmx64m -XX:\\+NetTestNoSuchOption${newline}$")
+    message(FATAL_ERROR "stderr does not end with the rejection line naming -Xmx64m -XX:+NetTestNoSuchOption")
+endif ()
+
+if (NOT errors MATCHES "Error: [^\n]*NetTestNoSuchOption")
+    message(FATAL_ERROR "stderr has no reason of the isolate naming NetTestNoSuchOption")
 endif ()
