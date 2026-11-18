@@ -222,6 +222,7 @@ object Etc : Project({
     name = "Etc."
 
     buildType(CxxApiGitGubJiraSync)
+    buildType(GoApiGitHubJiraSync)
 })
 
 object ReleaseTheNextPatch : BuildType({
@@ -1779,83 +1780,18 @@ object CxxApiGitGubJiraSync : BuildType({
     name = "[DXFCXX]: GitHub -> Jira Sync & EMail On Release"
     description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-cxx-api"
 
-    maxRunningBuilds = 1
+    gitHubJiraSync("cxx_api_jira_sync.py", resendExample = "v8.1.0")
+})
 
-    // The descriptions are shown in the Run dialog (Run with the "..." button), where the values can be changed for a run.
-    params {
-        select(
-            "env.DRY_RUN", "0",
-            label = "Dry run",
-            description = "1: only read GitHub and Jira and log the changes that the build would make; 0: make them",
-            options = listOf("Make the changes" to "0", "Only log the changes" to "1"),
-        )
-        text(
-            "env.MAIL_TO", "anatoly.kalin@devexperts.com",
-            label = "Release mail: To",
-            description = "The comma-separated recipients of the release mail; empty: no mail. " +
-                "Example: dxfeed-team@devexperts.com, someone@devexperts.com",
-            allowEmpty = true,
-        )
-        text(
-            "env.MAIL_CC", "",
-            label = "Release mail: Cc",
-            description = "The comma-separated copies of the release mail. Example: someone@devexperts.com",
-            allowEmpty = true,
-        )
-        text(
-            "env.RESEND_MAIL", "",
-            label = "Resend the release mail",
-            description = "A tag to send the mail of its GitHub release again (to To and Cc above). Example: v8.1.0",
-            allowEmpty = true,
-        )
-        text(
-            "env.RELINK", "",
-            label = "Relink tickets",
-            description = "The comma-separated tickets to link their PRs and branches again, into the groups of the " +
-                "branches, with the status of the checks. Example: MDAPI-427, MDAPI-428",
-            allowEmpty = true,
-        )
-    }
+/**
+ * The same for the Go API (dxfeed-graal-go-api on GitHub), with the Jira versions graal-go-api vX.Y.Z (see
+ * .teamcity/jira-sync/go_api_jira_sync.py). The schedule is off until a run with env.DRY_RUN = 1 has been checked.
+ */
+object GoApiGitHubJiraSync : BuildType({
+    name = "[DXFGO]: GitHub -> Jira Sync & EMail On Release"
+    description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-go-api"
 
-    vcs {
-        root(SshGitStashInDevexpertsCom7999mdapiDxfeedGraalNativeSdkGitRefsHeadsMainTags, "+:.teamcity/jira-sync")
-    }
-
-    steps {
-        script {
-            name = "Sync"
-            // GH_TOKEN (env.GH_TOKEN of the project) raises the rate limit of the GitHub API.
-            scriptContent = """
-                export JIRA_URL="%jira.url%"
-                export JIRA_TOKEN="%dxcity.token.jira%"
-                python3 .teamcity/jira-sync/cxx_api_jira_sync.py
-            """.trimIndent()
-        }
-    }
-
-    triggers {
-        schedule {
-            schedulingPolicy = cron {
-                seconds = "0"
-                minutes = "0/5"
-                hours = "*"
-                dayOfMonth = "*"
-                month = "*"
-                dayOfWeek = "?"
-            }
-            branchFilter = "+:<default>"
-            triggerBuild = always()
-            withPendingChangesOnly = false
-        }
-    }
-
-    failureConditions {
-        executionTimeoutMin = 5
-    }
-
-    requirements {
-        linuxAgent()
-    }
+    gitHubJiraSync("go_api_jira_sync.py", resendExample = "v0.5.0", scheduled = false)
 })
 
 object ListDockerImages : BuildType({

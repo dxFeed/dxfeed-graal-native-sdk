@@ -57,7 +57,9 @@ TASK_WORKFLOW = {
 }
 
 NOW = datetime.datetime(2026, 10, 5, 12, 0, tzinfo=datetime.timezone.utc)
-GITHUB = "https://api.github.com/repos/dxFeed/dxfeed-graal-cxx-api/"
+CXX_REPOSITORY = "dxFeed/dxfeed-graal-cxx-api"
+GITHUB_REPOS = "https://api.github.com/repos/"
+GITHUB = f"{GITHUB_REPOS}{CXX_REPOSITORY}/"
 JIRA = "https://jira.test/rest/api/2/"
 
 
@@ -67,7 +69,7 @@ def status(status_id):
 
 
 def pull_request(number, title, branch="feature/x", state="open", draft=False, merged_at=None, base="main",
-                 updated_at="2026-10-05T11:00:00Z"):
+                 updated_at="2026-10-05T11:00:00Z", repository=CXX_REPOSITORY):
     return {
         "number": number,
         "title": title,
@@ -77,17 +79,17 @@ def pull_request(number, title, branch="feature/x", state="open", draft=False, m
         "draft": draft,
         "merged_at": merged_at,
         "updated_at": updated_at,
-        "html_url": f"https://github.com/dxFeed/dxfeed-graal-cxx-api/pull/{number}",
+        "html_url": f"https://github.com/{repository}/pull/{number}",
     }
 
 
-def release(tag, prerelease=False, draft=False, published_at="2026-10-05T10:00:00Z"):
+def release(tag, prerelease=False, draft=False, published_at="2026-10-05T10:00:00Z", repository=CXX_REPOSITORY):
     return {
         "tag_name": tag,
         "prerelease": prerelease,
         "draft": draft,
         "published_at": published_at,
-        "html_url": f"https://github.com/dxFeed/dxfeed-graal-cxx-api/releases/tag/{tag}",
+        "html_url": f"https://github.com/{repository}/releases/tag/{tag}",
         "body_html": "<ul>\n<li><strong>[MDAPI-1][C++]</strong> A wrapped<br>\nline</li>\n</ul>",
         "body_text": "[MDAPI-1][C++] A wrapped line",
     }
@@ -110,9 +112,14 @@ class FakeMailer:
 
 
 class FakeServer:
-    """GitHub and Jira: the state of the tests, and the changes that the sync makes."""
+    """
+    GitHub and Jira: the state of the tests, and the changes that the sync makes. repository: the one of the sync;
+    property: the name of its issue property (the "property" of an issue; the other names are in "properties").
+    """
 
-    def __init__(self):
+    def __init__(self, repository=CXX_REPOSITORY, property="cxx-api-github-sync"):
+        self.github_url = f"{GITHUB_REPOS}{repository}/"
+        self.property = property
         self.pulls = []
         self.events = []
         self.check_runs = {}  # the sha -> the check runs
@@ -136,14 +143,15 @@ class FakeServer:
             "resolution": RESOLUTIONS.get(status_id),
             "fixVersions": list(fix_versions),
             "property": prop,
+            "properties": {},
         }
 
     def version(self, version_id, name, released):
         self.versions.append({"id": version_id, "name": name, "released": released, "archived": False})
 
     def request(self, method, url, headers, body=None):
-        if url.startswith(GITHUB):
-            return self.github(url[len(GITHUB):])
+        if url.startswith(self.github_url):
+            return self.github(url[len(self.github_url):])
 
         assert url.startswith(JIRA), url
         path = url[len(JIRA):]
@@ -231,6 +239,18 @@ class FakeServer:
             return None
 
         if rest.startswith("/properties/"):
+            name = rest[len("/properties/"):]
+
+            if name != self.property:
+                if method == "PUT":
+                    issue["properties"][name] = body
+                    return None
+
+                if name not in issue["properties"]:
+                    raise HttpError(method, path, 404, "No property")
+
+                return {"key": name, "value": issue["properties"][name]}
+
             if method == "PUT":
                 issue["property"] = body
                 return None

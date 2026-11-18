@@ -1,8 +1,9 @@
 """
 Moves the MDAPI tickets of an API on GitHub through the Jira workflow, as the Jira triggers of Bitbucket do for the
 internal repositories, and releases the Jira versions of its GitHub releases. An entry script gives the repository
-(RepoConfig): cxx_api_jira_sync.py (dxfeed-graal-cxx-api). The text below says graal-cxx-api for the prefix of the
-Jira versions of the repository.
+(RepoConfig): cxx_api_jira_sync.py (dxfeed-graal-cxx-api), go_api_jira_sync.py (dxfeed-graal-go-api). The text below
+says graal-cxx-api for the prefix of the Jira versions of the repository. The builds of the repositories are
+independent: each sees only its own PRs, so a ticket belongs to one repository.
 
 The pull requests updated and the branches created during the last LOOKBACK_HOURS, in the order of their times (the
 tickets are the MDAPI keys of the title and the branch of a PR, of the name of a branch). The development starts with
