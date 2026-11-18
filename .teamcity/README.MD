@@ -489,9 +489,10 @@ renames the placeholder `graal-go-api v0.4.1` that the first merge after `v0.4.0
 `go-api-github-sync`, the release mail `[release][DXFGO]` to the same recipients. The two builds share the steps
 (`gitHubJiraSync` in `Common.kt`) and nothing else: each sees only the pull requests of its repository, so a ticket
 belongs to one repository (a ticket with pull requests in both moves on with the first merge and gets the fix version
-of that repository alone). The schedule of the Go build is off (`scheduled = false`) until a run with `env.DRY_RUN` =
-`1` in the Run dialog has been checked: the Jira version `graal-go-api v0.4.0` has to be there and released, or else
-the first merge creates `graal-go-api v0.0.1` and the release `v0.4.0` renames it, releases it and sends its mail.
+of that repository alone). A build for another repository starts with `scheduled = false` until a run with
+`env.DRY_RUN` = `1` in the Run dialog has been checked: the Jira version of its last release has to be there and
+released, or else the first merge creates the placeholder `v0.0.1` and that release renames it, releases it and sends
+its mail.
 The code that the build shares with `Release in Jira` (below) is in `jira-sync/jira_sync_common.py`: the clients of
 GitHub and Jira, the log, the mail, the dry run and the transitions.
 

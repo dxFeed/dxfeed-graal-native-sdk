@@ -1785,13 +1785,13 @@ object CxxApiGitGubJiraSync : BuildType({
 
 /**
  * The same for the Go API (dxfeed-graal-go-api on GitHub), with the Jira versions graal-go-api vX.Y.Z (see
- * .teamcity/jira-sync/go_api_jira_sync.py). The schedule is off until a run with env.DRY_RUN = 1 has been checked.
+ * .teamcity/jira-sync/go_api_jira_sync.py).
  */
 object GoApiGitHubJiraSync : BuildType({
     name = "[DXFGO]: GitHub -> Jira Sync & EMail On Release"
     description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-go-api"
 
-    gitHubJiraSync("go_api_jira_sync.py", resendExample = "v0.5.0", scheduled = false)
+    gitHubJiraSync("go_api_jira_sync.py", resendExample = "v0.5.0")
 })
 
 object ListDockerImages : BuildType({
