@@ -1,8 +1,8 @@
 """
-The parts that the Jira automation of the C++ API (cxx_api_jira_sync.py) and of the SDK releases (sdk_jira_release.py)
-share: JSON over HTTP, the REST clients of GitHub and Jira, the build log, the release mail, and the changes of the
-tickets that the dry run only logs. The project, the repository and the version names are the arguments of the
-scripts.
+The parts that the Jira automation of the API repositories on GitHub (github_jira_sync.py) and of the SDK releases
+(sdk_jira_release.py) share: JSON over HTTP, the REST clients of GitHub and Jira, the build log, the release mail, and
+the changes of the tickets that the dry run only logs. The project, the repository and the version names are the
+arguments of the scripts.
 
 Python 3.10 (the TeamCity agents), the standard library only.
 """

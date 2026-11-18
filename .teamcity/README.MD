@@ -408,7 +408,7 @@ switches off before the release.
 # Syncing the C++ API with Jira
 
 The C++ API (`dxfeed-graal-cxx-api`) is on GitHub, so the Jira triggers of Bitbucket do not move its MDAPI tickets. The
-`C++ API: GitHub to Jira` build (Etc.) does it every 10 minutes with `jira-sync/cxx_api_jira_sync.py`, as the `dxcity`
+`C++ API: GitHub to Jira` build (Etc.) does it every 5 minutes with `jira-sync/cxx_api_jira_sync.py`, as the `dxcity`
 bot (`%dxcity.token.jira%`):
 
 - a branch with the MDAPI key is created (`feature/MDAPI-NNN-...`, `bugfix/MDAPI-NNN-...`, any name with the key) or a
@@ -477,9 +477,12 @@ the Jira version. A failed mail leaves the version unreleased: the next run trie
 again, run the build with `env.RESEND_MAIL` set to its tag (`v8.1.0`) in the Run dialog, where `env.MAIL_TO` and
 `env.MAIL_CC` can be changed for that run too; the recipients of every release are the values in `settings.kts`.
 
-`env.DRY_RUN` of the build is `0`: the build makes the changes. Set it to `1` to only read GitHub and Jira (including
-the transitions available to `dxcity`) and log the changes that it would make. The tests (no network):
-`python3 -m unittest` in `jira-sync`.
+`env.DRY_RUN` of the build is `0` (the default of the script too): the build makes the changes. Set it to `1` to only
+read GitHub and Jira (including the transitions available to `dxcity`) and log the changes that it would make. The
+tests (no network): `python3 -m unittest` in `jira-sync`.
+`cxx_api_jira_sync.py` only gives the repository and its names (`RepoConfig`: the GitHub repository, the prefix of the
+Jira versions, the issue property, the release mail) to `jira-sync/github_jira_sync.py`, the sync itself, which can
+serve another API repository on GitHub the same way.
 The code that the build shares with `Release in Jira` (below) is in `jira-sync/jira_sync_common.py`: the clients of
 GitHub and Jira, the log, the mail, the dry run and the transitions.
 
