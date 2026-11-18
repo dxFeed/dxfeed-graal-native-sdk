@@ -26,6 +26,7 @@ into your projects.
   * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
   * [Build variants](#build-variants)
+  * [Security updates of GraalVM and the JDK](#security-updates-of-graalvm-and-the-jdk)
   * [Windows on ARM and 32-bit systems](#windows-on-arm-and-32-bit-systems)
 - [Using the C API](#using-the-c-api)
   * [Conventions](#conventions)
@@ -213,6 +214,25 @@ aborts the process. Create one isolate and keep it for the lifetime of the proce
 **License.** The libraries of the variants are built with Oracle GraalVM and contain its runtime, which is distributed
 under the [GraalVM Free Terms and Conditions](https://www.oracle.com/downloads/licenses/graal-free-license.html); the
 code of the SDK stays under MPL-2.0.
+
+### Security updates of GraalVM and the JDK
+
+A library contains the JDK classes and the compiled code of the GraalVM that built it, so a security fix of the JDK or
+of GraalVM reaches an application only with a new version of the SDK. The release notes of a version that changes the
+GraalVM name the GraalVM of its platforms, and `docs/graal-native-sdk-build-info.properties` of an archive names the GraalVM that built
+its library.
+
+The SDK follows the Critical Patch Updates of the JDK (the third Tuesday of January, April, July and October) and the
+GraalVM releases that fix vulnerabilities between them: a version built with the fixed GraalVM is released within 30
+days, and at once when a fixed vulnerability is known to affect the libraries (see
+[Security updates](#security-updates) in the release instructions).
+
+**macOS x64 and the iOS Simulator x64.** No GraalVM newer than GraalVM for JDK 25.0.1 is released for macOS x64, so the
+`x86_64-osx` library, the x64 library of `ios-simulator` and the macOS x64 and iOS Simulator x64 parts of the
+XCFramework are built with it. They get no security fixes of the JDK or of GraalVM made after JDK 25.0.1 (October 2025);
+only their trust store (`cacerts`, `blocked.certs`) comes from the GraalVM of the other platforms. They stay supported.
+On Apple silicon, use the arm64 libraries; on an Intel Mac, take this into account when the application connects to
+servers that you do not control.
 
 ### Windows on ARM and 32-bit systems
 
@@ -1139,6 +1159,26 @@ java scripts/check-api-headers/GenerateApiJson.java --update-baseline v3.13.0 sc
 
 Until the baseline is updated, the build warns that it is older than the last release in `ReleaseNotes.md`; it keeps
 the `since` of the declarations from the old baseline.
+
+#### Security updates
+
+A library carries the JDK of the GraalVM that built it (see
+[Security updates of GraalVM and the JDK](#security-updates-of-graalvm-and-the-jdk)), so the SDK is rebuilt when
+GraalVM fixes a vulnerability:
+
+1. After each Critical Patch Update of the JDK (the third Tuesday of January, April, July and October) and each GraalVM
+   release that fixes vulnerabilities between them (the
+   [release calendar](https://www.graalvm.org/release-calendar/) and the
+   [vulnerability advisories](https://www.graalvm.org/vulnerability-advisories/) of GraalVM), check the fixed
+   vulnerabilities against the libraries: the JDK classes and the compiler intrinsics in them, and what the SDK and QDS
+   use.
+2. Update the GraalVM: `graalvm.version` in `pom.xml` and `env.GRAALVM_VERSION` in `.teamcity/settings.kts`, then rebuild
+   the GraalVM images of the CI (the TeamCity builds that build `.teamcity/docker/graalvm-*.Dockerfile`), once more
+   with `env.GRAALVM_VERSION=oracle-<version>` for the images of the Oracle GraalVM variants (see "Build Variants (Oracle GraalVM)" in
+   [.teamcity/README.MD](.teamcity/README.MD)). Check whether a newer GraalVM exists for macOS x64
+   (`env.GRAALVM_VERSION_MACOS_X64`).
+3. Release within 30 days of the GraalVM release, at once when a fixed vulnerability affects the libraries. The release
+   notes of the version name the GraalVM of each platform.
 
 #### Pre-releases
 

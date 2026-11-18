@@ -1,3 +1,15 @@
+* **\[MDAPI-542]\[GRAAL]** The README describes how the SDK follows the security fixes of GraalVM and the JDK
+  ([Security updates of GraalVM and the JDK](README.md#security-updates-of-graalvm-and-the-jdk)): a library contains
+  the JDK of the GraalVM that built it, and a version built with the fixed GraalVM is released within 30 days of a
+  Critical Patch Update or of a GraalVM release that fixes vulnerabilities, at once when a fix concerns the libraries.
+  The GraalVM of the platforms: GraalVM Community 25.5.5.0.3 (JDK 25.0.5) for Linux, Windows, macOS arm64, iOS and the
+  iOS Simulator arm64; Oracle GraalVM 25.5.5.0.3 for the `oracle` and `oracle-g1` variants; GraalVM Community for JDK
+  25.0.1 for macOS x64 and the iOS Simulator x64, the last GraalVM released for macOS x64. These two stay supported but
+  get no security fixes of the JDK or GraalVM made after JDK 25.0.1. The libraries are not affected by
+  CVE-2026-114938 (the AVX-512 Base64 decoder): the Linux x64 and Windows x64 libraries are built for the baseline
+  x86-64 CPU (`-march=compatibility`) and Native Image checks only AVX and AVX2 at run time, so the AVX-512 code is not
+  in them; the macOS x64 and iOS Simulator x64 libraries are built with GraalVM for JDK 25.0.1, which predates that
+  code; the arm64 libraries have no such code.
 * **\[MDAPI-565]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) builds against an unpacked SDK archive, outside the
   build of the library: `cmake -S src/main/c/src/apps/NetTest -B <dir> -DDXFG_SDK_DIR=<unpacked archive>`, with the
   SDK library copied next to the executable. The C test `NetTestStandalone` builds it this way against the archive of
