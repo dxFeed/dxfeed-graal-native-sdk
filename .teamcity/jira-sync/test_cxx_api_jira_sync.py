@@ -137,8 +137,9 @@ class FakeServer:
         self.changes = []
         self.links = []
 
-    def issue(self, key, status_id, fix_versions=(), prop=None):
+    def issue(self, key, status_id, fix_versions=(), prop=None, components=()):
         self.issues[key] = {
+            "components": list(components),
             "status": status(status_id),
             "resolution": RESOLUTIONS.get(status_id),
             "fixVersions": list(fix_versions),
@@ -193,6 +194,20 @@ class FakeServer:
 
         if path.startswith("search?"):
             jql = urllib.parse.parse_qs(path[len("search?"):])["jql"][0]
+            ownerless = re.match(
+                r'project = MDAPI AND component = "([^"]+)" AND status = (\d+) AND fixVersion is EMPTY '
+                r"ORDER BY key$", jql)
+
+            if ownerless:
+                component, status_id = ownerless.groups()
+                return {"issues": [
+                    {"key": key,
+                     "fields": {"status": issue["status"], "resolution": issue["resolution"], "summary": key}}
+                    for key, issue in sorted(self.issues.items())
+                    if component in issue["components"] and issue["status"]["id"] == status_id
+                    and not issue["fixVersions"]
+                ]}
+
             version_id = re.match(r"fixVersion = (\S+)", jql).group(1)
             return {"issues": [
                 {"key": key, "fields": {"status": issue["status"], "resolution": issue["resolution"], "summary": key}}

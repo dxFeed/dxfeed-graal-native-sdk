@@ -34,6 +34,9 @@ class GoSyncTest(unittest.TestCase):
     def status_of(self, key):
         return self.server.issues[key]["status"]["id"]
 
+    def status_and_fix_versions(self, key):
+        return self.status_of(key), self.server.issues[key]["fixVersions"]
+
     def fix_version_names(self, key):
         names = {version["id"]: version["name"] for version in self.server.versions}
         return [names[i] for i in self.server.issues[key]["fixVersions"]]
@@ -92,6 +95,54 @@ class GoSyncTest(unittest.TestCase):
         subject, body_html, text = mailer.sent[0]
         self.assertEqual("[release][DXFGO] dxFeed Graal Go API v0.5.0", subject)
         self.assertIn("https://pkg.go.dev/github.com/dxfeed/dxfeed-graal-go-api", text)
+
+    def test_release_takes_the_ownerless_tickets_of_the_component(self):
+        self.released_go_and_cxx_versions()
+        self.server.version("101", "graal-cxx-api v8.1.1", False)
+        self.server.version("201", "graal-go-api v0.4.1", False)
+        self.server.issue("MDAPI-1", WAITING_FOR_BUILD, fix_versions=["201"])
+        # Moved by the merge of its change of the CI in the SDK: no PR of the Go repository, no fix version.
+        self.server.issue("MDAPI-2", WAITING_FOR_BUILD, components=["dxfeed-graal-api", "dxfeed-graal-go-api"])
+        # Not of the release: another component, not in Waiting for build, a fix version of another line.
+        self.server.issue("MDAPI-3", WAITING_FOR_BUILD, components=["dxfeed-graal-native-sdk"])
+        self.server.issue("MDAPI-4", IN_DEVELOPMENT, components=["dxfeed-graal-go-api"])
+        self.server.issue("MDAPI-5", WAITING_FOR_BUILD, fix_versions=["101"], components=["dxfeed-graal-go-api"])
+        # Merged here, but the fix version failed at the merge: left to be set by hand.
+        self.server.issue("MDAPI-6", WAITING_FOR_BUILD, prop={"opened": [7], "merged": [7]},
+                          components=["dxfeed-graal-go-api"])
+        self.server.releases = [release("v0.5.0", repository=GO_REPOSITORY),
+                                release("v0.4.0", published_at="2026-09-07T10:00:00Z", repository=GO_REPOSITORY)]
+        self.server.compare[("v0.4.0", "v0.5.0")] = ["[MDAPI-1][GO] X (#5)"]
+
+        self.assertEqual(0, self.run_sync())
+
+        self.assertEqual((RESOLVED, ["201"]), self.status_and_fix_versions("MDAPI-2"))
+        self.assertEqual(RESOLVED, self.status_of("MDAPI-1"))
+        self.assertEqual((WAITING_FOR_BUILD, []), self.status_and_fix_versions("MDAPI-3"))
+        self.assertEqual((IN_DEVELOPMENT, []), self.status_and_fix_versions("MDAPI-4"))
+        self.assertEqual((WAITING_FOR_BUILD, ["101"]),
+                         self.status_and_fix_versions("MDAPI-5"))
+        self.assertEqual((WAITING_FOR_BUILD, []), self.status_and_fix_versions("MDAPI-6"))
+        log = self.out.getvalue()
+        self.assertIn("MDAPI-2: fix version graal-go-api v0.5.0 (no fix version, dxfeed-graal-go-api)", log)
+        self.assertIn("MDAPI-6 is in Waiting for build after a merged PR of the repository", log)
+        self.assertNotIn("MDAPI-2 has the fix version", log)  # no commits in the repository: no warning
+
+    def test_dry_run_only_logs_the_ownerless_tickets(self):
+        self.released_go_and_cxx_versions()
+        self.server.version("201", "graal-go-api v0.4.1", False)
+        self.server.issue("MDAPI-2", WAITING_FOR_BUILD, components=["dxfeed-graal-go-api"])
+        self.server.releases = [release("v0.5.0", repository=GO_REPOSITORY)]
+
+        log = engine.Log(self.out)
+        github = engine.GitHub(self.server, None, go.CONFIG)
+        jira = engine.Jira(self.server, "https://jira.test", "token", go.CONFIG)
+        engine.Sync(go.CONFIG, github, jira, log, True, since=NOW - datetime.timedelta(hours=48)).run()
+
+        self.assertEqual((WAITING_FOR_BUILD, []), self.status_and_fix_versions("MDAPI-2"))
+        self.assertEqual([], self.server.changes)
+        self.assertIn("[dry run] MDAPI-2: fix version graal-go-api v0.5.0 (no fix version, dxfeed-graal-go-api)",
+                      self.out.getvalue())
 
 
 if __name__ == "__main__":

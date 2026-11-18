@@ -456,6 +456,8 @@ A published GitHub release `vX.Y.Z` (not a draft, not a pre-release) releases th
 - if there is no version of that name, the only unreleased `graal-cxx-api` version of the major of the tag (the
   placeholder of the next release of the line) is renamed to it, or else the version is created;
 - the unreleased versions of the earlier majors (a new major is released) give their tickets to it and are archived;
+- the tickets of the component of the API (`dxfeed-graal-cxx-api`) in Waiting for build without a fix version (moved
+  by a merge elsewhere, as a change of its CI in this repository) get the version and are its tickets too;
 - its tickets in Waiting for build are resolved (the transition `Resolve`, as the Release Steps of MDAPI do), as well
   as those in Waiting for test (left from the time with the testing step); the tickets in Testing stay as they are;
 - its unfinished tickets (In development, Waiting for review and the other statuses not of the category "done") move
@@ -481,15 +483,16 @@ again, run the build with `env.RESEND_MAIL` set to its tag (`v8.1.0`) in the Run
 read GitHub and Jira (including the transitions available to `dxcity`) and log the changes that it would make. The
 tests (no network): `python3 -m unittest` in `jira-sync`.
 `cxx_api_jira_sync.py` only gives the repository and its names (`RepoConfig`: the GitHub repository, the prefix of the
-Jira versions, the issue property, the release mail) to `jira-sync/github_jira_sync.py`, the sync itself.
+Jira versions, the Jira component, the issue property, the release mail) to `jira-sync/github_jira_sync.py`, the sync
+itself.
 
-The Go API (`dxfeed-graal-go-api`) is synced the same way by the `[DXFGO]: GitHub -> Jira Sync & EMail On Release`
-build (Etc.) with `jira-sync/go_api_jira_sync.py`: the Jira versions `graal-go-api vX.Y.Z` (the release `v0.5.0`
-renames the placeholder `graal-go-api v0.4.1` that the first merge after `v0.4.0` creates), the issue property
-`go-api-github-sync`, the release mail `[release][DXFGO]` to the same recipients. The two builds share the steps
-(`gitHubJiraSync` in `Common.kt`) and nothing else: each sees only the pull requests of its repository, so a ticket
-belongs to one repository (a ticket with pull requests in both moves on with the first merge and gets the fix version
-of that repository alone). A build for another repository starts with `scheduled = false` until a run with
+The Go API (`dxfeed-graal-go-api`) is synced the same way by the `[DXFGO]: GitHub -> Jira Sync & EMail On Release` build
+(Etc.) with `jira-sync/go_api_jira_sync.py`: the Jira versions `graal-go-api vX.Y.Z` (the release `v0.5.0` renames the
+placeholder `graal-go-api v0.4.1` that the first merge after `v0.4.0` creates), the component `dxfeed-graal-go-api`, the
+issue property `go-api-github-sync`, the release mail `[release][DXFGO]` to the same recipients. The two builds share
+the steps (`gitHubJiraSync` in `Common.kt`) and nothing else: each sees only the pull requests of its repository, so a
+ticket belongs to one repository (a ticket with pull requests in both moves on with the first merge and gets the fix
+version of that repository alone). A build for another repository starts with `scheduled = false` until a run with
 `env.DRY_RUN` = `1` in the Run dialog has been checked: the Jira version of its last release has to be there and
 released, or else the first merge creates the placeholder `v0.0.1` and that release renames it, releases it and sends
 its mail.

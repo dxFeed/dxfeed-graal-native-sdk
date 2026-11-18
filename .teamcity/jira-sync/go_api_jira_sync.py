@@ -19,6 +19,7 @@ CONFIG = engine.RepoConfig(
     product="dxFeed Graal Go API",
     mail_tag="DXFGO",
     documentation_url="https://pkg.go.dev/github.com/dxfeed/dxfeed-graal-go-api",
+    component="dxfeed-graal-go-api",
 )
 
 if __name__ == "__main__":

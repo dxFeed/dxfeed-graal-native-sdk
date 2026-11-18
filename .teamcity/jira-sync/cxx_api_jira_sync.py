@@ -20,6 +20,7 @@ CONFIG = engine.RepoConfig(
     product="dxFeed Graal C++ API",
     mail_tag="DXFCXX",
     documentation_url="https://dxfeed.github.io/dxfeed-graal-cxx-api/",
+    component="dxfeed-graal-cxx-api",
 )
 
 

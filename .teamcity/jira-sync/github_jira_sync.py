@@ -44,6 +44,8 @@ A published GitHub release vX.Y.Z (not a draft, not a pre-release) newer than th
   - the Jira version is the one of that name, or else the only unreleased graal-cxx-api version of the major of the tag
     (the placeholder of the next release of the line), which is renamed, or else a new one;
   - the unreleased versions of the earlier majors (a new major is released) give their tickets to it and are archived;
+  - the tickets of the Jira component of the API (RepoConfig.component) in Waiting for build without a fix version
+    (moved by a merge elsewhere, as a change of its CI in the SDK) get the version and are its tickets too;
   - its tickets in Waiting for build -> Resolved (the transition "Resolve", as the Release Steps of MDAPI do), and in
     Waiting for test (the tickets of the time with the testing step) -> Resolved if there is such a transition;
   - its tickets in Testing stay as they are;
@@ -90,6 +92,8 @@ class RepoConfig:
     documentation_url: str
     # The base branches of the merged PRs that move their tickets to Waiting for build.
     merge_base_pattern: re.Pattern = re.compile(r"^(main|release/.+)$")
+    # The Jira component of the API: its tickets in Waiting for build without a fix version go to the next release.
+    component: str = ""
 
 
 JIRA_PROJECT = "MDAPI"
@@ -947,6 +951,7 @@ class Sync(Workflow):
                 version = self.ensure_version(name, versions)
 
         tickets = self.jira.issues(f"fixVersion = {version['id']} ORDER BY key")
+        ownerless = self.ownerless_tickets(name, version, tickets)
 
         # The earlier lines end with this release (main has them all, and they are not maintained after it): their
         # unreleased versions give their tickets to it and are archived.
@@ -968,7 +973,7 @@ class Sync(Workflow):
         self.log.info(f"  tickets: {', '.join(keys) or 'none'}")
 
         if previous is not None:
-            self.check_commits(previous["tag_name"], release["tag_name"], keys)
+            self.check_commits(previous["tag_name"], release["tag_name"], keys, ownerless)
 
         unresolved = []
 
@@ -1009,6 +1014,42 @@ class Sync(Workflow):
                     lambda: self.jira.update_version(version["id"], {"released": True, "releaseDate": date}))
         version["released"] = True
 
+    def ownerless_tickets(self, name, version, tickets):
+        """
+        The tickets of the component of the API in Waiting for build without a fix version (no PR of the repository
+        has moved them, as the changes of its CI in the SDK): they get the version of the release, are added to its
+        tickets and resolved with them. Their keys. A ticket with a merged PR of the repository is not one of them: its
+        fix version was not set at the merge (see set_fix_version), and is left to be set by hand.
+        """
+        if not self.config.component:
+            return []
+
+        candidates = self.jira.issues(f'project = {JIRA_PROJECT} AND component = "{self.config.component}" AND '
+                                      f"status = {WAITING_FOR_BUILD} AND fixVersion is EMPTY ORDER BY key")
+        ownerless = []
+
+        for ticket in candidates:
+            key = ticket["key"]
+
+            try:
+                if self.jira.property(key).get("merged"):
+                    self.log.warning(f"{key} is in Waiting for build after a merged PR of the repository, without a "
+                                     f"fix version: set it by hand")
+                    continue
+
+                self.change(f"{key}: fix version {name} (no fix version, {self.config.component})",
+                            lambda key=key: self.jira.add_fix_version(key, version["id"]))
+            except HttpError as e:
+                self.log.problem(f"{key}: the fix version {name} is not set: {e}")
+                continue
+
+            ownerless.append(key)
+
+            if all(other["key"] != key for other in tickets):
+                tickets.append(ticket)
+
+        return ownerless
+
     def mail(self, release, version):
         """Sends the release mail to the recipients (if any); False if it fails."""
         if self.mailer is None or not self.mailer.to:
@@ -1038,8 +1079,11 @@ class Sync(Workflow):
         major, minor, patch = version_tuple(number)
         return self.ensure_version(f"{self.config.version_prefix}{major}.{minor}.{patch + 1}", versions)
 
-    def check_commits(self, previous_tag, tag, keys):
-        """Warns about the tickets of the commits of the release without the version, and the other way round."""
+    def check_commits(self, previous_tag, tag, keys, ownerless=()):
+        """
+        Warns about the tickets of the commits of the release without the version, and the other way round (but the
+        ownerless tickets, which have no commits in the repository).
+        """
         committed = set()
 
         for message in self.github.commit_messages(previous_tag, tag):
@@ -1048,7 +1092,7 @@ class Sync(Workflow):
         for key in sorted(committed - set(keys)):
             self.log.warning(f"{key} is in the commits {previous_tag}..{tag} but has no fix version {tag}")
 
-        for key in sorted(set(keys) - committed):
+        for key in sorted(set(keys) - committed - set(ownerless)):
             self.log.warning(f"{key} has the fix version {tag} but no commits {previous_tag}..{tag}")
 
 
