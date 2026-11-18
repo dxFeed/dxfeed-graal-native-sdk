@@ -5,6 +5,11 @@ rate and prints statistics in the format of the QD tool `NetTest p` (qds-tools),
 can be measured with the same mux, consumer and parsers as the QD API. It is written in C++17 and calls only the
 `dxfg_` functions of the SDK headers.
 
+The NetTests of all language APIs follow one contract, the [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md)
+(`nettest/1`). Its table of the SDK tools shows the sections this tool follows, and
+[Differences from the specification](#differences-from-the-specification) lists what it does not do yet. This README
+describes the options the tool has.
+
 The tool is built with the C tests and samples and is not part of the SDK archive.
 
 ## Build
@@ -40,12 +45,18 @@ NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>
 | `--reuse`                | republish the pre-built events in place; without it every batch is copied into new events, as an application that creates its events would do |
 | `--legacy`               | publish through the deprecated `dxfg_DXPublisher_publishEvents()`                             |
 | `--duration <time>`      | end the run after this time; Ctrl+C (SIGINT, SIGTERM) ends it at once                         |
-| `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Ddxscheme.nanoTime=true`       |
+| `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Dmonitoring.stat=10s`; `-Ddxscheme.nanoTime` also goes to the builder of every endpoint (see below) |
 | `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-Xss<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
 
 Every event carries the current time: Trade in `time_sequence`, TimeAndSale in `index` (seconds, milliseconds and a
 22-bit sequence per instance), the rest of the nanoseconds in `time_nano_part`. A consumer computes the business lag
 from it as for QD NetTest's own records.
+
+Every endpoint is built with `dxscheme.nanoTime=true` on its builder, so the nanosecond part goes on the wire without
+an option; `-Ddxscheme.nanoTime=false` turns it off for a run against peers without it. The nanosecond part reaches a
+consumer only when every hop has the property: a multiplexor needs `-Ddxscheme.nanoTime=true` on its command line, and
+a STREAM_FEED consumer needs it on its own builder (the system property reaches only PUBLISHER and FEED endpoints). A
+hop without it still passes the events, with the nanosecond part 0.
 
 Exit codes: 0 after `--duration` or Ctrl+C, 2 for invalid arguments (also an option that the isolate rejects), 1 for a
 failed start (unreadable IPF file, failed endpoint, malformed address, a `:port` that does not start listening within
@@ -155,11 +166,25 @@ Error: Could not find option 'NetTestNoSuchOption'. Use -XX:PrintFlags= to list 
 NetTest: the isolate rejected one of the options: -Xmx64m -XX:+NetTestNoSuchOption
 ```
 
-The tool's line is the same on every platform and in the NetTest of every language API; a parser matches it with
+The tool's line is the same on every platform and in the NetTest of every language API; a parser matches it with the
+expression `isolate_rejection` of the specification:
 
 ```text
-^NetTest: the isolate rejected one of the options: ([^ \t\r\n]+(?: [^ \t\r\n]+)*)$
+^NetTest: the isolate rejected one of the options: ([^ \t\r\n]+( [^ \t\r\n]+)*)$
 ```
+
+## Differences from the specification
+
+What the tool does not do yet of the [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md):
+
+- Only the mode `p`: no consumer, so no e2e lag, `--warmup`, `--summary` or `--metrics-port`.
+- No `-c` and no `--role`: the endpoints are always PUBLISHER, which writes Trade to the ticker and the stream
+  contracts and TimeAndSale to the stream contract.
+- No long names of the short options (`--rate-limit`, `--stat`, `--name`), no `--option=value` and no `--help`, so
+  no `spec_version` line.
+- `-w` prints `unknown flag -w` instead of the text of the specification.
+- The rate limiter is a token bucket (capacity the larger of the rate and the batch, a spin below 500 us) instead of a
+  schedule from the first grant with catch-up and no busy wait, so the tool reports no schedule slip.
 
 ## Differences from QD NetTest
 

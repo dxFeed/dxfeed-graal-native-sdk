@@ -433,6 +433,7 @@ std::string usageText() {
            "  --legacy             publish through the deprecated dxfg_DXPublisher_publishEvents\n"
            "  --duration <time>    end the run after the time (ms, s or m); Ctrl+C ends it at once\n"
            "  -D<key>=<value>      set a system property before the first endpoint is created\n"
+           "                       (dxscheme.nanoTime also goes to the builder of every endpoint, default true)\n"
            "  -Xmx<size>, -Xms<size>, -Xmn<size>\n"
            "                       the maximum, initial and young generation heap sizes of the isolate (512m, 1g)\n"
            "  -Xss<size>           the stack size of the threads that the isolate starts (1m)\n"
@@ -452,6 +453,18 @@ bool applySystemProperties(graal_isolatethread_t *thread, const Options &options
     }
 
     return true;
+}
+
+std::string endpointNanoTime(const Options &options) {
+    std::string value = "true";
+
+    for (const auto &[key, given] : options.properties) {
+        if (key == NANO_TIME_PROPERTY) {
+            value = given;
+        }
+    }
+
+    return value;
 }
 
 } // namespace nettest

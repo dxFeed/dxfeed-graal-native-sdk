@@ -1,3 +1,11 @@
+* **\[MDAPI-540]\[GRAAL]** A new page of the wrapper guide, the [NetTest specification](docs/wrapper-guide/nettest.md)
+  (`nettest/1`), is the contract of the NetTests of all language APIs, so that one benchmark stand runs them side by
+  side: the command line, the events and their pools, the output lines, the consumer, the summary file, the metrics and
+  the exit codes, with a kit of test vectors in `docs/wrapper-guide/nettest/`. [NetTest](src/main/c/src/apps/NetTest)
+  and [NetTestApi](tools/nettest) now build every endpoint with `dxscheme.nanoTime=true`, so their events carry the
+  nanosecond part of the time without an option, also through STREAM_FEED consumers; `-Ddxscheme.nanoTime=false` turns
+  it off, and a peer without the property still receives the events, with the nanosecond part 0. Their READMEs list
+  how they differ from the specification.
 * **\[MDAPI-541]\[GRAAL]** On macOS x64 and the iOS Simulator x64, whose libraries are built with GraalVM
   jdk-25.0.1, `graal_create_isolate()` now prints to stderr why it rejects an isolate option (`Error: <reason>`)
   before it returns 22, as on the other platforms; before, it returned 22 without a word.

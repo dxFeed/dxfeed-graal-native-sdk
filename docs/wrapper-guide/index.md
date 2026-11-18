@@ -11,6 +11,8 @@ The rules of the `dxfg_v4_` functions themselves are in @ref V4_Conventions.
 - @subpage wrapper_versioning &ndash; the tiers, the start-up check, the features and the API description.
 - @subpage wrapper_delivery &ndash; which delivery of data to use for what.
 - @subpage wrapper_kit &ndash; what the conformance kit proves about a wrapper, and what it cannot.
+- @subpage wrapper_nettest &ndash; the NetTest specification: the benchmark tool that every API built on the wrappers
+  provides.
 
 A wrapper that follows these pages and passes the kit in strict mode on every platform it supports is conformant for
 what the kit covers; the limits are on @ref wrapper_kit.

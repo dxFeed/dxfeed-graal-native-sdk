@@ -81,8 +81,9 @@ class Instance {
         return publisher_;
     }
 
-    // Creates the PUBLISHER endpoint of the name and its publisher; returns false and fills the error on a failure.
-    bool create(const std::string &name, std::string &error) {
+    // Creates the PUBLISHER endpoint of the name, with the value of dxscheme.nanoTime on its builder, and its publisher;
+    // returns false and fills the error on a failure.
+    bool create(const std::string &name, const std::string &nanoTime, std::string &error) {
         dxfg_v4_endpoint_builder_t *builder = nullptr;
 
         if (dxfg_v4_DXEndpoint_newBuilder(thread_, &builder) != DXFG_EXECUTE_SUCCESSFULLY) {
@@ -95,6 +96,8 @@ class Instance {
                                DXFG_EXECUTE_SUCCESSFULLY &&
                            dxfg_v4_DXEndpoint_Builder_withName(thread_, builder, name.c_str()) ==
                                DXFG_EXECUTE_SUCCESSFULLY &&
+                           dxfg_v4_DXEndpoint_Builder_withProperty(thread_, builder, NANO_TIME_PROPERTY,
+                                                                   nanoTime.c_str()) == DXFG_EXECUTE_SUCCESSFULLY &&
                            dxfg_v4_DXEndpoint_Builder_build(thread_, builder, &endpoint_) ==
                                DXFG_EXECUTE_SUCCESSFULLY;
 
@@ -247,6 +250,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
     graal_isolate_t *isolate = graal_get_isolate(thread);
     std::vector<std::unique_ptr<Instance>> instances;
     std::string error;
+    const auto nanoTime = endpointNanoTime(options);
 
     for (std::int32_t index = 1; index <= options.instances; ++index) {
         const auto name = options.name + "." + std::to_string(index);
@@ -254,7 +258,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
                                                    0x9E3779B97F4A7C15ULL * static_cast<std::uint64_t>(index));
 
         // An instance that failed to start is destroyed here, so the endpoints created before it close below.
-        if (!instance->create(name, error) || !instance->connect(name, options.address, error)) {
+        if (!instance->create(name, nanoTime, error) || !instance->connect(name, options.address, error)) {
             result.exitCode = EXIT_FAILURE;
             result.error = error;
 

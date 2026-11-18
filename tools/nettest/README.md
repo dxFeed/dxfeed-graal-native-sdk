@@ -10,6 +10,11 @@ It is a tool of QD's `Tools` (`NetTestApi`, next to `NetTest`), in the package `
 the symbols, the rate limiter and the statistics of QD NetTest without changing QD. It is a separate Maven project, not
 a module of the SDK build and not part of the SDK archives.
 
+The NetTests of all language APIs follow one contract, the [NetTest specification](../../docs/wrapper-guide/nettest.md)
+(`nettest/1`). Its table of the SDK tools shows the sections this tool follows, and
+[Differences from the specification](#differences-from-the-specification) lists what it does not do yet. This README
+describes the options the tool has.
+
 ## Getting the tool
 
 It is deployed with every SDK release as `com.dxfeed:graal-native-sdk-nettest:<version>`, to the same repository as
@@ -53,7 +58,7 @@ The options have the meaning and the limits of the C tool:
 | `--reuse`                | republish the pre-built events; without it every batch is made of new event objects, as an application that creates its events would do |
 | `--role`                 | the role of the endpoints: `PUBLISHER` (default) or `STREAM_PUBLISHER`; this tool only        |
 | `--duration <time>`      | end the run after this time; Ctrl+C (SIGINT, SIGTERM) ends it at once, a second Ctrl+C halts the JVM |
-| `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Ddxscheme.nanoTime=true`       |
+| `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Dmonitoring.stat=10s`; `-Ddxscheme.nanoTime` also goes to the builder of every endpoint (see below) |
 
 Not taken: `--legacy` (the C tool's deprecated publishing call), the `-X` and `-XX:` options (JVM options: put them
 before `-jar`, see [Differences from the C tool](#differences-from-the-c-tool)), and the QD NetTest flags that the C
@@ -63,6 +68,13 @@ and name the argument. Of several `-r`, the last one counts.
 Every event carries the current time: `setTimeNanos()` and a 22-bit sequence per instance (`setSequence()`), as the
 C tool fills `time_sequence` (Trade) or `index` (TimeAndSale) and `time_nano_part`. A consumer computes the business
 lag from it as for QD NetTest's own records.
+
+Every endpoint is built with `dxscheme.nanoTime=true` on its builder, so the nanosecond part goes on the wire without
+an option; `-Ddxscheme.nanoTime=false` (or the same JVM option before `-jar`) turns it off for a run against peers
+without it. The nanosecond part reaches a consumer only when every hop has the property: a multiplexor needs
+`-Ddxscheme.nanoTime=true` on its command line, and a STREAM_FEED consumer needs it on its own builder (the system
+property reaches only PUBLISHER and FEED endpoints). A hop without it still passes the events, with the nanosecond
+part 0.
 
 Exit codes: 0 after `--duration` or Ctrl+C, 2 for invalid arguments, 1 for a failed start (unreadable IPF file, failed
 endpoint, a `:port` that does not start listening within 3 s, for example because it is in use) or a failed publishing
@@ -97,6 +109,22 @@ compared between the JVM and the Graal isolate:
   several cores are busy. The `CPU` of QD's `{NetTest.1}` monitoring line is divided by the number of processors.
 
 A value that the JVM does not give is `n/a`.
+
+## Differences from the specification
+
+What the tool does not do yet of the [NetTest specification](../../docs/wrapper-guide/nettest.md):
+
+- Only the mode `p`: no consumer, so no e2e lag, `--warmup`, `--summary` or `--metrics-port`.
+- `--role` without `-c`: `-c` exits with 2.
+- The statistics label is `NetTestApiProducerSide` instead of `NetTestProducerSide`.
+- The events come from another generator: `SplittableRandom` seeded with the instance number, prices from 100.00 to
+  9999.99 and a table row per event in turn, not the xorshift64* pools of the specification; the generated symbols
+  are QD NetTest's. So the payload differs from the C tool's.
+- Other error texts: an unknown option prints QD's `Unrecognized option: <name>`, a number out of its limits prints
+  the value without quotes, and the texts of a malformed `-r`, of `-c` and of `-X` differ from the specification's.
+  No `--option=value` and no `--help` with the `spec_version` line.
+- The rate limiter is QD's token bucket, which grants what is available up to `--batch`, instead of a schedule from
+  the first grant with catch-up, so the tool reports no schedule slip.
 
 ## Differences from the C tool
 

@@ -82,6 +82,13 @@ std::string usageText();
 // false and fills the error with the key of the first failure.
 bool applySystemProperties(graal_isolatethread_t *thread, const Options &options, std::string &error);
 
+// The property of the nanosecond part of the event time, which the tool sets on the builder of every endpoint.
+inline constexpr const char *NANO_TIME_PROPERTY = "dxscheme.nanoTime";
+
+// The value of NANO_TIME_PROPERTY for the builders: the last -Ddxscheme.nanoTime of the command line, "true" without
+// one. The system property alone does not reach the endpoints of the stream roles, so the builder carries it.
+std::string endpointNanoTime(const Options &options);
+
 } // namespace nettest
 } // namespace dxfg
 

@@ -180,6 +180,19 @@ TEST_CASE("U1: every option lands in the options") {
         CHECK(result.options.properties[3] == std::make_pair(std::string("empty"), std::string("")));
     }
 
+    SUBCASE("the builders get dxscheme.nanoTime=true unless the command line gives it, the last value wins") {
+        const auto none = parse({"p", ":7000", "-S", "1", "-Dmonitoring.stat=10s"});
+        const auto off = parse({"p", ":7000", "-S", "1", "-Ddxscheme.nanoTime=false"});
+        const auto last = parse({"p", ":7000", "-S", "1", "-Ddxscheme.nanoTime=false", "-Ddxscheme.nanoTime=true"});
+
+        REQUIRE(none.ok);
+        REQUIRE(off.ok);
+        REQUIRE(last.ok);
+        CHECK(endpointNanoTime(none.options) == "true");
+        CHECK(endpointNanoTime(off.options) == "false");
+        CHECK(endpointNanoTime(last.options) == "true");
+    }
+
     SUBCASE("isolate arguments keep their order and text, apart from the -D properties") {
         const auto result = parse({"p", ":7000", "-S", "1", "-Xmx64m", "-XX:+PrintGC", "-Dk=v",
                                    "-XX:TearDownWarningSeconds=10", "-Xms16m", "-Xmn2m", "-Xss1m"});
@@ -1779,7 +1792,36 @@ graal_isolatethread_t *endToEndThread() {
     return isolateThread();
 }
 
-// A FEED endpoint on a thread of its own: after a delay, when the server socket of the tool listens, it subscribes to
+// The endpoint that collects the events and how its process gets the nanosecond part of the time.
+struct FeedSetup {
+    dxfg_v4_endpoint_role_t role = DXFG_ENDPOINT_ROLE_FEED;
+    // The value of dxscheme.nanoTime on the builder of the endpoint; none when empty.
+    std::string nanoTime{};
+    // Whether the system property dxscheme.nanoTime=true is set before the first endpoint (see endToEndThread()).
+    bool systemProperty = true;
+};
+
+// Builds the endpoint of the setup; 0 on a success.
+std::int32_t buildFeedEndpoint(graal_isolatethread_t *thread, const FeedSetup &setup, dxfg_v4_endpoint_t **endpoint) {
+    dxfg_v4_endpoint_builder_t *builder = nullptr;
+    std::int32_t code = dxfg_v4_DXEndpoint_newBuilder(thread, &builder);
+
+    code = code != 0 ? code : dxfg_v4_DXEndpoint_Builder_withRole(thread, builder, setup.role);
+
+    if (code == 0 && !setup.nanoTime.empty()) {
+        code = dxfg_v4_DXEndpoint_Builder_withProperty(thread, builder, NANO_TIME_PROPERTY, setup.nanoTime.c_str());
+    }
+
+    code = code != 0 ? code : dxfg_v4_DXEndpoint_Builder_build(thread, builder, endpoint);
+
+    if (builder != nullptr) {
+        dxfg_v4_JavaObjectHandler_release(thread, &builder->handler);
+    }
+
+    return code;
+}
+
+// A feed endpoint on a thread of its own: after a delay, when the server socket of the tool listens, it subscribes to
 // the symbols for one event class and counts what arrives.
 class CollectingFeed {
     std::atomic<bool> release_{false};
@@ -1787,9 +1829,9 @@ class CollectingFeed {
 
   public:
     CollectingFeed(graal_isolate_t *isolate, Collected &collected, const std::vector<std::string> &symbols,
-                   const std::string &port) {
-        thread_ = std::make_unique<test::Attached>(isolate, [this, &collected, &symbols,
-                                                             port](graal_isolatethread_t *thread) -> std::int32_t {
+                   const std::string &port, const FeedSetup &setup) {
+        thread_ = std::make_unique<test::Attached>(isolate, [this, &collected, &symbols, port,
+                                                             setup](graal_isolatethread_t *thread) -> std::int32_t {
             std::this_thread::sleep_for(std::chrono::milliseconds(700));
 
             dxfg_v4_endpoint_t *endpoint = nullptr;
@@ -1797,7 +1839,7 @@ class CollectingFeed {
             dxfg_v4_subscription_t *subscription = nullptr;
             dxfg_v4_feed_event_listener_t *listener = nullptr;
             const auto eventClass = collected.kind == EventKind::TRADE ? DXFG_EVENT_TRADE : DXFG_EVENT_TIME_AND_SALE;
-            std::int32_t code = dxfg_v4_DXEndpoint_createWithRole(thread, DXFG_ENDPOINT_ROLE_FEED, &endpoint);
+            std::int32_t code = buildFeedEndpoint(thread, setup, &endpoint);
 
             code = code != 0 ? code : dxfg_v4_DXEndpoint_getFeed(thread, endpoint, &feed);
             code = code != 0 ? code : dxfg_v4_DXFeed_createSubscription(thread, feed, eventClass, &subscription);
@@ -1866,8 +1908,9 @@ struct EndToEnd {
     Collected collected{};
     std::int32_t feedCode = -1;
 
-    EndToEnd(EventKind kind, const std::vector<std::string> &flags, const std::string &duration) {
-        const auto thread = endToEndThread();
+    EndToEnd(EventKind kind, const std::vector<std::string> &flags, const std::string &duration,
+             const FeedSetup &setup = {}) {
+        const auto thread = setup.systemProperty ? endToEndThread() : isolateThread();
         const auto port = freePort();
         const auto symbols = generateSymbols(100);
 
@@ -1875,7 +1918,7 @@ struct EndToEnd {
         collected.poolSymbols = asSet(symbols);
         collected.startMillis = nowMillis();
 
-        CollectingFeed feed(graal_get_isolate(thread), collected, symbols, port);
+        CollectingFeed feed(graal_get_isolate(thread), collected, symbols, port, setup);
         std::vector<std::string> args{":" + port, "-S", "100", "-r", "*/2k", "-s", "1s", "--duration", duration};
 
         args.insert(args.end(), flags.begin(), flags.end());
@@ -1885,6 +1928,34 @@ struct EndToEnd {
 };
 
 } // namespace
+
+// The tool sets dxscheme.nanoTime on the builder of its endpoints. These cases run in a process without the system
+// property (the ctest entry NetTestTest.StreamFeed), and a STREAM_FEED endpoint takes the nanosecond part only from
+// its own builder property, so the nanosecond part arrives only when the builder of the tool switches it on.
+TEST_CASE("StreamFeed: a STREAM_FEED endpoint receives the nanosecond part by default") {
+    const EndToEnd run(EventKind::TRADE, {}, "3s", {DXFG_ENDPOINT_ROLE_STREAM_FEED, "true", false});
+
+    INFO("the output: " << run.outcome.output);
+    CHECK(run.outcome.result.exitCode == 0);
+    CHECK(run.feedCode == 0);
+    CHECK(run.collected.events >= 100);
+    CHECK(run.collected.foreignSymbols == 0);
+    CHECK(run.collected.badNanoPart == 0);
+    CHECK(run.collected.withNanoPart > 0);
+}
+
+TEST_CASE("StreamFeed: -Ddxscheme.nanoTime=false switches the nanosecond part off, the events still arrive") {
+    const EndToEnd run(EventKind::TRADE, {"-Ddxscheme.nanoTime=false"}, "3s",
+                       {DXFG_ENDPOINT_ROLE_STREAM_FEED, "true", false});
+
+    INFO("the output: " << run.outcome.output);
+    CHECK(run.outcome.result.exitCode == 0);
+    CHECK(run.feedCode == 0);
+    CHECK(run.collected.events >= 100);
+    CHECK(run.collected.foreignSymbols == 0);
+    CHECK(run.collected.badNanoPart == 0);
+    CHECK(run.collected.withNanoPart == 0);
+}
 
 TEST_CASE("E2E: a feed endpoint receives the published Trade events with the nanosecond part") {
     const EndToEnd run(EventKind::TRADE, {}, "5s");

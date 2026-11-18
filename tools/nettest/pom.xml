@@ -118,9 +118,26 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <excludes combine.self="override" />
+              <excludes combine.self="override">
+                <exclude>**/NanoTimeSystemPropertyIT.java</exclude>
+              </excludes>
               <includes>
                 <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- A JVM with the system property alone: what the roles make of it. -->
+            <id>nano-time-system-property</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <argLine>-Ddxscheme.nanoTime=true</argLine>
+              <excludes combine.self="override" />
+              <includes>
+                <include>**/NanoTimeSystemPropertyIT.java</include>
               </includes>
             </configuration>
           </execution>

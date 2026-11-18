@@ -100,6 +100,8 @@ target_compile_definitions(${target}
         PRIVATE
         ${DEFAULT_COMPILE_DEFINITIONS}
         NETTEST_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+        # The kit of the NetTest specification, which KitTest.cpp checks the tool against.
+        NETTEST_KIT_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../../../../docs/wrapper-guide/nettest"
         )
 
 
@@ -127,13 +129,17 @@ target_link_options(${target}
 # Testing
 #
 
-# The cases of one process: the unit cases, and the end to end cases ("E2E: ...") in a process of their own, because
-# dxscheme.nanoTime must be set before the first endpoint of the process. Each entry has its own timeout.
-add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "--test-case-exclude=E2E*")
+# The cases of one process: the unit cases, the end to end cases ("E2E: ...") in a process of their own, because the
+# system property dxscheme.nanoTime must be set before the first endpoint of the process, and the cases of the builder
+# property ("StreamFeed: ...") in a process that never sets the system property. Each entry has its own timeout.
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "--test-case-exclude=E2E*,StreamFeed*")
 set_tests_properties(${target} PROPERTIES TIMEOUT 60)
 
 add_test(NAME ${target}.EndToEnd COMMAND $<TARGET_FILE:${target}> "--test-case=E2E*")
 set_tests_properties(${target}.EndToEnd PROPERTIES TIMEOUT 60)
+
+add_test(NAME ${target}.StreamFeed COMMAND $<TARGET_FILE:${target}> "--test-case=StreamFeed*")
+set_tests_properties(${target}.StreamFeed PROPERTIES TIMEOUT 60)
 
 # The built tool in a process: the exit code and the statistics line (the expression is read from Statistics.hpp).
 # The SDK library lies next to the tool (a post-build copy of its target), the rpath is $ORIGIN or @loader_path.

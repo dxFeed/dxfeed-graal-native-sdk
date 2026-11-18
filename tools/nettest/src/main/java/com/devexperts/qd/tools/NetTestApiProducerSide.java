@@ -27,6 +27,9 @@ class NetTestApiProducerSide extends NetTestSide {
     static final long START_TIMEOUT_MILLIS = 3_000;
     private static final long JOIN_TIMEOUT_MILLIS = 5_000;
 
+    /** The property of the nanosecond part of the event time, which the tool sets on the builder of every endpoint. */
+    static final String NANO_TIME_PROPERTY = "dxscheme.nanoTime";
+
     final NetTestApi.Settings settings;
     final NetTestApi.Stop stop;
     final RateLimiter rateLimiter; // shared by all generators, guarded by itself; null without -r
@@ -127,15 +130,28 @@ class NetTestApiProducerSide extends NetTestSide {
         }
     }
 
-    /** Creates the endpoint of the instance; the statistics period goes to the first one. */
+    /**
+     * Creates the endpoint of the instance with {@link #NANO_TIME_PROPERTY} on its builder; the statistics period goes
+     * to the first one.
+     */
     DXEndpoint createEndpoint(int index) {
         DXEndpoint.Builder builder = DXEndpoint.newBuilder()
             .withRole(settings.role)
-            .withName(config.name + "." + index);
+            .withName(config.name + "." + index)
+            .withProperty(NANO_TIME_PROPERTY, endpointNanoTime(System.getProperty(NANO_TIME_PROPERTY)));
         if (index == 1) {
             builder.withProperty("monitoring.stat", settings.statPeriod.toString());
         }
         return builder.build();
+    }
+
+    /**
+     * The value of {@link #NANO_TIME_PROPERTY} for the builders: the given {@code -Ddxscheme.nanoTime}, or
+     * {@code "true"} without one. The system property alone does not reach the endpoints of the stream roles, so the
+     * builder carries it.
+     */
+    static String endpointNanoTime(String given) {
+        return given != null ? given : "true";
     }
 
     NetTestApiGeneratorThread createGenerator(int index, DXEndpoint endpoint) {
