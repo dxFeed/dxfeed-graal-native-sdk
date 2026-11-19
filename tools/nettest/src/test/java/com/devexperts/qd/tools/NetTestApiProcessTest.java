@@ -56,7 +56,10 @@ public class NetTestApiProcessTest {
             "-s", "1s", "--summary", summary.toString(), "--metrics-port", "0");
         String url = process.awaitMetricsUrl();
         process.awaitOutput(PRODUCER_LINE);
-        NetTestApiChecks.checkScrape(NetTestApiChecks.scrape(url), "producer", "NetTest");
+        String scrape = NetTestApiChecks.scrape(url);
+        NetTestApiChecks.checkScrape(scrape, "producer", "NetTest");
+        // The publisher's connector lag means nothing, so p does not export it.
+        assertTrue(scrape, !scrape.contains("nettest_connector_lag_seconds_total"));
 
         assertEquals(process.describe(), 0, process.waitForExit());
         assertBlocks(process, "Producer");
@@ -69,6 +72,7 @@ public class NetTestApiProcessTest {
         assertTrue(json.toString(), json.get("records").asLong() > 0);
         assertTrue(json.toString(), json.get("schedule_slip").isObject());
         assertTrue(json.toString(), json.get("e2e_lag").isNull());
+        assertTrue(json.toString(), json.get("connectors").get(0).get("v2").get("read_rtt_us").isIntegralNumber());
         assertTrue("the temporary file is renamed", !Files.exists(Paths.get(summary + ".tmp")));
     }
 
@@ -99,6 +103,12 @@ public class NetTestApiProcessTest {
             assertEquals(json.toString(), "measure", last.get("phase").asText());
             assertTrue(json.toString(), json.get("e2e_lag").get("count").asLong() > 0);
             assertTrue(json.toString(), json.get("publish_call").isNull());
+            // The connector statistics v2: each instance writes the subscription of the symbols.
+            assertEquals(json.toString(), 2, json.get("connectors").size());
+            for (JsonNode connector : json.get("connectors")) {
+                assertTrue(json.toString(), connector.get("v2").get("written_sub_records").asLong() >= 100);
+            }
+            assertTrue(scrape, scrape.contains("\nnettest_connector_lag_seconds_total{tool=\"java-api\""));
         } finally {
             producer.side.finish();
         }

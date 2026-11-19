@@ -42,6 +42,15 @@ nettest_connector_read_records_total{tool="java-api",side="consumer",name="bench
 # HELP nettest_connector_written_records_total The data records written by the connectors.
 # TYPE nettest_connector_written_records_total counter
 nettest_connector_written_records_total{tool="java-api",side="consumer",name="bench"} 0
+# HELP nettest_connector_lag_seconds_total The sum of the connector lags of the data records read.
+# TYPE nettest_connector_lag_seconds_total counter
+nettest_connector_lag_seconds_total{tool="java-api",side="consumer",name="bench"} 31499.85
+# HELP nettest_connector_rtt_seconds_total The sum of the round-trip times of the records read and written by the connectors.
+# TYPE nettest_connector_rtt_seconds_total counter
+nettest_connector_rtt_seconds_total{tool="java-api",side="consumer",name="bench"} 42039.8
+# HELP nettest_connector_sub_records_total The subscription records read and written by the connectors.
+# TYPE nettest_connector_sub_records_total counter
+nettest_connector_sub_records_total{tool="java-api",side="consumer",name="bench"} 200000
 # HELP nettest_runtime_heap_used_bytes The used heap.
 # TYPE nettest_runtime_heap_used_bytes gauge
 nettest_runtime_heap_used_bytes{tool="java-api",side="consumer",name="bench"} 325058560

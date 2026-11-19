@@ -29,12 +29,22 @@ inline constexpr std::array<std::int64_t, 13> LAG_BUCKET_BOUNDS_NANOS{
     50'000,     100'000,    250'000,     500'000,     1'000'000,   2'500'000,    5'000'000,
     10'000'000, 25'000'000, 50'000'000, 100'000'000, 250'000'000, 1'000'000'000};
 
-// The connector statistics v1 summed over the connectors of all instances.
+// The value of a connector statistic v2 when the SDK does not have them
+// (DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS).
+constexpr std::int64_t CONNECTOR_V2_ABSENT = -1;
+
+// The connector statistics summed over the connectors of all instances: v1, and v2 or CONNECTOR_V2_ABSENT.
 struct ConnectorTotals {
     std::int64_t readBytes = 0;
     std::int64_t writtenBytes = 0;
     std::int64_t readRecords = 0;
     std::int64_t writtenRecords = 0;
+    // The subscription records read and written.
+    std::int64_t subRecords = CONNECTOR_V2_ABSENT;
+    // The sum of the lags of the data records read, in microseconds.
+    std::int64_t readLagMicros = CONNECTOR_V2_ABSENT;
+    // The sum of the round-trip times of the records read and written, in microseconds.
+    std::int64_t rttMicros = CONNECTOR_V2_ABSENT;
 };
 
 // The counters of a run. The generators, the listeners and the reporter write them; /metrics and the summary read them.
@@ -61,6 +71,10 @@ struct LiveCounters {
     std::atomic<std::int64_t> connectorWrittenBytes{0};
     std::atomic<std::int64_t> connectorReadRecords{0};
     std::atomic<std::int64_t> connectorWrittenRecords{0};
+    // The connector statistics v2 at the last tick of the reporter; CONNECTOR_V2_ABSENT without them.
+    std::atomic<std::int64_t> connectorSubRecords{CONNECTOR_V2_ABSENT};
+    std::atomic<std::int64_t> connectorReadLagMicros{CONNECTOR_V2_ABSENT};
+    std::atomic<std::int64_t> connectorRttMicros{CONNECTOR_V2_ABSENT};
 
     // The runtime values at the last tick of the reporter; RUNTIME_VALUE_ABSENT when the isolate does not give them.
     std::atomic<std::int64_t> heapUsedBytes{RUNTIME_VALUE_ABSENT};

@@ -421,13 +421,21 @@ file(READ "${work}/metrics.txt" metrics)
 
 foreach (expected "# TYPE nettest_info gauge" "nettest_info{tool=\"c-api\",side=\"producer\",name=\"NetTest\""
         "# TYPE nettest_records_total counter" "# TYPE nettest_schedule_slip_seconds gauge"
-        "nettest_connections{tool=\"c-api\",side=\"producer\",name=\"NetTest\",connection=\"1\"}")
+        "nettest_connections{tool=\"c-api\",side=\"producer\",name=\"NetTest\",connection=\"1\"}"
+        "# TYPE nettest_connector_rtt_seconds_total counter" "# TYPE nettest_connector_sub_records_total counter")
     string(FIND "${metrics}" "${expected}" at)
 
     if (at EQUAL -1)
         message(FATAL_ERROR "the scrape of /metrics has no '${expected}':\n${metrics}")
     endif ()
 endforeach ()
+
+# The publisher's connector lag means nothing, so `p` does not export it.
+string(FIND "${metrics}" "nettest_connector_lag_seconds_total" at)
+
+if (NOT at EQUAL -1)
+    message(FATAL_ERROR "the scrape of /metrics of p has nettest_connector_lag_seconds_total:\n${metrics}")
+endif ()
 
 read_summary("${work}/p-summary.json" producer ok 0)
 string(JSON warmup GET "${summary}" config warmup_ms)

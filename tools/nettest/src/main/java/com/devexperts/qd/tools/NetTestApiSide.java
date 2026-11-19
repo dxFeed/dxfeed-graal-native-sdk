@@ -357,7 +357,7 @@ abstract class NetTestApiSide {
         return count;
     }
 
-    /** The statistics v1 of the connectors, read at the last tick or at the end of the run. */
+    /** The statistics of the connectors, read at the last tick or at the end of the run. */
     List<ConnectorStatistics> connectorStatistics() {
         return connectorStatistics;
     }
@@ -440,7 +440,10 @@ abstract class NetTestApiSide {
         log.info("Closed " + toClose.size() + " endpoint(s)");
     }
 
-    /** The statistics v1 of one connector (NetTest specification, section "Connector statistics"). */
+    /**
+     * The statistics v1 and v2 of one connector (NetTest specification, section "Connector statistics"); the QD of the
+     * tool always has v2. The lags and the round-trip times are sums in microseconds.
+     */
     static final class ConnectorStatistics {
         final String address;
         final long readBytes;
@@ -449,26 +452,33 @@ abstract class NetTestApiSide {
         final long writtenDataRecords;
         final long activeConnections;
         final long closedConnections;
+        final long readSubRecords;
+        final long writtenSubRecords;
+        final long readDataLagMicros;
+        final long writtenDataLagMicros;
+        final long readRttMicros;
+        final long writtenRttMicros;
 
-        ConnectorStatistics(String address, long readBytes, long writtenBytes, long readDataRecords,
-            long writtenDataRecords, long activeConnections, long closedConnections)
-        {
-            this.address = address;
-            this.readBytes = readBytes;
-            this.writtenBytes = writtenBytes;
-            this.readDataRecords = readDataRecords;
-            this.writtenDataRecords = writtenDataRecords;
-            this.activeConnections = activeConnections;
-            this.closedConnections = closedConnections;
+        private ConnectorStatistics(MessageConnector connector) {
+            EndpointStats endpointStats = connector.retrieveCompleteEndpointStats();
+            QDStats stats = connector.getStats();
+            address = connector.getAddress();
+            readBytes = endpointStats.getReadBytes();
+            writtenBytes = endpointStats.getWrittenBytes();
+            readDataRecords = value(stats, QDStats.SValue.IO_DATA_READ_RECORDS);
+            writtenDataRecords = value(stats, QDStats.SValue.IO_DATA_WRITE_RECORDS);
+            activeConnections = endpointStats.getActiveConnectionCount();
+            closedConnections = endpointStats.getClosedConnectionCount();
+            readSubRecords = value(stats, QDStats.SValue.IO_SUB_READ_RECORDS);
+            writtenSubRecords = value(stats, QDStats.SValue.IO_SUB_WRITE_RECORDS);
+            readDataLagMicros = value(stats, QDStats.SValue.IO_DATA_READ_LAGS);
+            writtenDataLagMicros = value(stats, QDStats.SValue.IO_DATA_WRITE_LAGS);
+            readRttMicros = value(stats, QDStats.SValue.IO_READ_RTTS);
+            writtenRttMicros = value(stats, QDStats.SValue.IO_WRITE_RTTS);
         }
 
         static ConnectorStatistics of(MessageConnector connector) {
-            EndpointStats endpointStats = connector.retrieveCompleteEndpointStats();
-            QDStats stats = connector.getStats();
-            return new ConnectorStatistics(connector.getAddress(), endpointStats.getReadBytes(),
-                endpointStats.getWrittenBytes(), value(stats, QDStats.SValue.IO_DATA_READ_RECORDS),
-                value(stats, QDStats.SValue.IO_DATA_WRITE_RECORDS), endpointStats.getActiveConnectionCount(),
-                endpointStats.getClosedConnectionCount());
+            return new ConnectorStatistics(connector);
         }
 
         private static long value(QDStats stats, QDStats.SValue value) {

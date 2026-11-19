@@ -30,6 +30,7 @@ final class NetTestApiMetrics {
         "0.005", "0.01", "0.025", "0.05", "0.1", "0.25", "1"};
 
     private static final double NANOS_PER_SECOND = 1e9;
+    private static final double MICROS_PER_SECOND = 1e6;
     private static final double MILLIS_PER_SECOND = 1e3;
 
     private final HttpServer server;
@@ -182,12 +183,18 @@ final class NetTestApiMetrics {
         long writtenBytes = 0;
         long readRecords = 0;
         long writtenRecords = 0;
+        long subRecords = 0;
+        long readLagMicros = 0;
+        long rttMicros = 0;
         List<NetTestApiSide.ConnectorStatistics> connectors = side.connectorStatistics();
         for (NetTestApiSide.ConnectorStatistics connector : connectors) {
             readBytes += connector.readBytes;
             writtenBytes += connector.writtenBytes;
             readRecords += connector.readDataRecords;
             writtenRecords += connector.writtenDataRecords;
+            subRecords += connector.readSubRecords + connector.writtenSubRecords;
+            readLagMicros += connector.readDataLagMicros;
+            rttMicros += connector.readRttMicros + connector.writtenRttMicros;
         }
         family(text, "nettest_connector_read_bytes_total", "counter", "The bytes read by the connectors.");
         sample(text, "nettest_connector_read_bytes_total", labels, Long.toString(readBytes));
@@ -198,6 +205,18 @@ final class NetTestApiMetrics {
         family(text, "nettest_connector_written_records_total", "counter",
             "The data records written by the connectors.");
         sample(text, "nettest_connector_written_records_total", labels, Long.toString(writtenRecords));
+        // The connector statistics v2; the publisher's lag means nothing (no time marks on its path).
+        if (consumer) {
+            family(text, "nettest_connector_lag_seconds_total", "counter",
+                "The sum of the connector lags of the data records read.");
+            sample(text, "nettest_connector_lag_seconds_total", labels, microsAsSeconds(readLagMicros));
+        }
+        family(text, "nettest_connector_rtt_seconds_total", "counter",
+            "The sum of the round-trip times of the records read and written by the connectors.");
+        sample(text, "nettest_connector_rtt_seconds_total", labels, microsAsSeconds(rttMicros));
+        family(text, "nettest_connector_sub_records_total", "counter",
+            "The subscription records read and written by the connectors.");
+        sample(text, "nettest_connector_sub_records_total", labels, Long.toString(subRecords));
 
         NetTestApiRuntime.Sample runtime = NetTestApiRuntime.read();
         if (runtime.heapUsedBytes >= 0) {
@@ -233,6 +252,10 @@ final class NetTestApiMetrics {
 
     private static String seconds(long nanos) {
         return Double.toString(nanos / NANOS_PER_SECOND);
+    }
+
+    private static String microsAsSeconds(long micros) {
+        return Double.toString(micros / MICROS_PER_SECOND);
     }
 
     /** Escapes a label value: the backslash, the double quote and the line feed. */

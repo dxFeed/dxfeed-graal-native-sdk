@@ -189,7 +189,8 @@ TEST_CASE("Kit: /metrics of the producer is metrics-sample-producer.txt byte for
     counters.publish.calls = 2'100'000;
     counters.publish.slipLastNanos = 12'000;
     counters.connections[0] = 1;
-    counters.setConnectors({1200, 6'825'000'000, 0, 210'000'000});
+    // v2: 100,000 subscription records read; a round-trip time of 200 us over the data and subscription records.
+    counters.setConnectors({1200, 6'825'000'000, 0, 210'000'000, 100'000, 0, 42'020'000'000});
     counters.heapUsedBytes = 125'829'120;
     counters.heapCommittedBytes = 268'435'456;
     counters.gcCount = 312;
@@ -223,7 +224,9 @@ TEST_CASE("Kit: /metrics of the consumer is metrics-sample-consumer.txt byte for
     counters.addLags(buckets, 209'999'000, 85'049'595'000'000, 0);
     counters.connections[0] = 1;
     counters.connections[1] = 1;
-    counters.setConnectors({6'825'000'000, 1200, 209'999'000, 0});
+    // v2: 200,000 subscription records written; a connector lag of 150 us over the data records read and a round-trip
+    // time of 200 us over the data and subscription records.
+    counters.setConnectors({6'825'000'000, 1200, 209'999'000, 0, 200'000, 31'499'850'000, 42'039'800'000});
     counters.heapUsedBytes = 325'058'560;
     counters.heapCommittedBytes = 1'073'741'824;
     counters.gcCount = 41;
@@ -247,6 +250,50 @@ TEST_CASE("Metrics: a value that the tool does not have gets no sample line") {
     CHECK(text.find("nettest_schedule_slip_seconds{") == std::string::npos);
     CHECK(text.find("nettest_runtime_heap_used_bytes{") == std::string::npos);
     CHECK(text.find("nettest_runtime_cpu_seconds_total{") == std::string::npos);
+}
+
+TEST_CASE("Metrics: without the connector statistics v2 their families are absent and those of v1 stay") {
+    for (const std::string side : {"producer", "consumer"}) {
+        LiveCounters counters(1);
+
+        counters.setConnectors({10, 20, 30, 40});
+
+        const MetricsInfo info{side, "NetTest", "", "STREAM_FEED", "Trade", "stream", false};
+        const auto text = formatMetrics(info, counters);
+
+        INFO(text);
+        CHECK(text.find("# TYPE nettest_connector_read_bytes_total counter\n") != std::string::npos);
+        CHECK(text.find("nettest_connector_written_records_total{tool=\"c-api\",side=\"" + side +
+                        "\",name=\"NetTest\"} 40\n") != std::string::npos);
+        CHECK(text.find("nettest_connector_lag_seconds_total") == std::string::npos);
+        CHECK(text.find("nettest_connector_rtt_seconds_total") == std::string::npos);
+        CHECK(text.find("nettest_connector_sub_records_total") == std::string::npos);
+    }
+}
+
+TEST_CASE("Metrics: the connector statistics v2 are counters in seconds and records, the lag on the consumer only") {
+    for (const std::string side : {"producer", "consumer"}) {
+        LiveCounters counters(1);
+
+        counters.setConnectors({10, 20, 30, 40, 7, 1'500'001, 2'000'000});
+
+        const MetricsInfo info{side, "NetTest", "", "STREAM_FEED", "Trade", "stream", false};
+        const auto text = formatMetrics(info, counters);
+        const auto labels = "{tool=\"c-api\",side=\"" + side + "\",name=\"NetTest\"}";
+
+        INFO(text);
+        CHECK(text.find("# TYPE nettest_connector_rtt_seconds_total counter\nnettest_connector_rtt_seconds_total" +
+                        labels + " 2\n") != std::string::npos);
+        CHECK(text.find("# TYPE nettest_connector_sub_records_total counter\nnettest_connector_sub_records_total" +
+                        labels + " 7\n") != std::string::npos);
+
+        if (side == "consumer") {
+            CHECK(text.find("# TYPE nettest_connector_lag_seconds_total counter\nnettest_connector_lag_seconds_total" +
+                            labels + " 1.500001\n") != std::string::npos);
+        } else {
+            CHECK(text.find("nettest_connector_lag_seconds_total") == std::string::npos);
+        }
+    }
 }
 
 TEST_CASE("Metrics: the lags fall into the buckets of nettest_e2e_lag_seconds, a negative one into the first") {
@@ -509,7 +556,15 @@ RunReport producerReport() {
     connector.writtenBytes = 3'000'000;
     connector.writtenDataRecords = 100'000;
     connector.activeConnections = 1;
+    // Distinct values, so that a key on the wrong field shows.
+    connector.v2 = ConnectorSummaryV2{1, 2, 3, 4, 5, 6};
     report.connectors.push_back(connector);
+
+    // A connector of an SDK without the statistics v2.
+    ConnectorSummary v1Only;
+
+    v1Only.address = ":7002";
+    report.connectors.push_back(v1Only);
     report.runtime.heapUsedMb = 40;
     report.runtime.heapCommittedMb = 256;
     report.runtime.gcCount = 2;
@@ -591,6 +646,19 @@ TEST_CASE("Kit: the summary of a producer has every key that nettest-summary.sch
     }
 
     CHECK(records == value["records"].asInteger());
+
+    const auto &connectors = value["connectors"].array;
+
+    REQUIRE(connectors.size() == 2);
+    CHECK(connectors.at(0)["v1"]["written_data_records"].asInteger() == 100'000);
+    CHECK(connectors.at(0)["v2"]["read_sub_records"].asInteger() == 1);
+    CHECK(connectors.at(0)["v2"]["written_sub_records"].asInteger() == 2);
+    CHECK(connectors.at(0)["v2"]["data_read_lag_us"].asInteger() == 3);
+    CHECK(connectors.at(0)["v2"]["data_write_lag_us"].asInteger() == 4);
+    CHECK(connectors.at(0)["v2"]["read_rtt_us"].asInteger() == 5);
+    CHECK(connectors.at(0)["v2"]["write_rtt_us"].asInteger() == 6);
+    CHECK(connectors.at(1)["v1"].has("read_bytes"));
+    CHECK(connectors.at(1)["v2"].isNull());
 
     // The check of the schema is not empty: an empty name breaks its minLength.
     auto unnamed = options;

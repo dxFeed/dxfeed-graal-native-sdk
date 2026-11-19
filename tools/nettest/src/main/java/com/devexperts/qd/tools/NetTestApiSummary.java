@@ -175,7 +175,14 @@ final class NetTestApiSummary {
             json.field("active_connections", connector.activeConnections);
             json.field("closed_connections", connector.closedConnections);
             json.end();
-            json.field("v2", null);
+            json.key("v2").begin();
+            json.field("read_sub_records", connector.readSubRecords);
+            json.field("written_sub_records", connector.writtenSubRecords);
+            json.field("data_read_lag_us", connector.readDataLagMicros);
+            json.field("data_write_lag_us", connector.writtenDataLagMicros);
+            json.field("read_rtt_us", connector.readRttMicros);
+            json.field("write_rtt_us", connector.writtenRttMicros);
+            json.end();
             json.end();
         }
         json.endArray();

@@ -183,15 +183,13 @@ With `--metrics-port` the tool serves `GET /metrics` in the text format of Prome
 (`text/plain; version=0.0.4; charset=utf-8`), one thread on the JDK's HTTP server, with the metrics of the
 specification for the side: the records per instance, on `c` the histogram of the lag and the negative lags, on `p`
 the time and the number of the publishing calls and, with `-r`, the schedule slip; the open connections, the bytes
-and the connections of the connectors, and the runtime of the JVM. The default host `127.0.0.1` keeps them local;
-give `0.0.0.0:<port>` for a scrape from another host.
+and the records of the connectors, their round-trip time, subscription records and, on `c`, lag (the
+`QDStats.SValue.IO_*` counters of the connectors), and the runtime of the JVM. The default host `127.0.0.1` keeps
+them local; give `0.0.0.0:<port>` for a scrape from another host.
 
 ## Differences from the specification
 
-What the tool does not do yet of the [NetTest specification](../../docs/wrapper-guide/nettest.md):
-
-- The connector statistics come from QD's connector statistics only: `v2` of each connector in the summary is `null`,
-  and `/metrics` has none of its series.
+None: the tool follows the whole [NetTest specification](../../docs/wrapper-guide/nettest.md).
 
 ## Differences from the C tool
 

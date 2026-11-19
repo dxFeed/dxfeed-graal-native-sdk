@@ -185,30 +185,51 @@ class Endpoint {
         return total;
     }
 
-    // The statistics v1 of the connectors of the endpoint, with their addresses when asked; a connector whose
-    // statistics cannot be read is left out.
-    std::vector<ConnectorSummary> connectorStatistics(graal_isolatethread_t *readingThread, bool withAddress) const {
+    // The statistics of the connectors of the endpoint: v2 (one call that has v1 too) when asked, else v1; with their
+    // addresses when asked. A connector whose statistics cannot be read is left out.
+    std::vector<ConnectorSummary> connectorStatistics(graal_isolatethread_t *readingThread, bool v2,
+                                                      bool withAddress) const {
         std::vector<ConnectorSummary> summaries;
         const ConnectorList connectors(readingThread, endpoint_);
 
         for (std::int32_t index = 0; index < connectors.size(); ++index) {
-            dxfg_v4_message_connector_stats_t stats{};
-
-            if (dxfg_v4_MessageConnector_getStatistics(readingThread, connectors[index], &stats) !=
-                DXFG_EXECUTE_SUCCESSFULLY) {
-                takeThreadException(readingThread);
-
-                continue;
-            }
-
             ConnectorSummary summary;
+            // Both structs name the values of v1 alike.
+            const auto copyV1 = [&summary](const auto &stats) {
+                summary.readBytes = stats.read_bytes;
+                summary.writtenBytes = stats.written_bytes;
+                summary.readDataRecords = stats.read_data_records;
+                summary.writtenDataRecords = stats.written_data_records;
+                summary.activeConnections = stats.active_connection_count;
+                summary.closedConnections = stats.closed_connection_count;
+            };
 
-            summary.readBytes = stats.read_bytes;
-            summary.writtenBytes = stats.written_bytes;
-            summary.readDataRecords = stats.read_data_records;
-            summary.writtenDataRecords = stats.written_data_records;
-            summary.activeConnections = stats.active_connection_count;
-            summary.closedConnections = stats.closed_connection_count;
+            if (v2) {
+                dxfg_v4_message_connector_io_stats_t stats{};
+
+                if (dxfg_v4_MessageConnector_getIoStatistics(readingThread, connectors[index], &stats) !=
+                    DXFG_EXECUTE_SUCCESSFULLY) {
+                    takeThreadException(readingThread);
+
+                    continue;
+                }
+
+                copyV1(stats);
+                summary.v2 = ConnectorSummaryV2{stats.read_sub_records,     stats.written_sub_records,
+                                                stats.read_data_lag_sum_us, stats.written_data_lag_sum_us,
+                                                stats.read_rtt_sum_us,      stats.written_rtt_sum_us};
+            } else {
+                dxfg_v4_message_connector_stats_t stats{};
+
+                if (dxfg_v4_MessageConnector_getStatistics(readingThread, connectors[index], &stats) !=
+                    DXFG_EXECUTE_SUCCESSFULLY) {
+                    takeThreadException(readingThread);
+
+                    continue;
+                }
+
+                copyV1(stats);
+            }
 
             if (withAddress) {
                 const char *address = nullptr;
@@ -704,6 +725,20 @@ class Watchdog {
 // How often the waiting thread of the run checks the watchdog.
 constexpr std::chrono::milliseconds WATCHDOG_PERIOD{200};
 
+// Whether the SDK has the connector statistics v2 (dxfg_v4_MessageConnector_getIoStatistics()); a failed check is no.
+bool hasConnectorStatisticsV2(graal_isolatethread_t *thread) {
+    std::int32_t supported = 0;
+
+    if (dxfg_v4_system_is_feature_supported(thread, DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS, &supported) !=
+        DXFG_EXECUTE_SUCCESSFULLY) {
+        takeThreadException(thread);
+
+        return false;
+    }
+
+    return supported != 0;
+}
+
 } // namespace
 
 std::string runStatusName(RunStatus status) {
@@ -751,6 +786,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
     const bool producer = options.mode == Mode::PRODUCER;
     const auto role = endpointRole(options);
     const auto nanoTime = endpointNanoTime(options);
+    const bool connectorStatisticsV2 = hooks.connectorStatisticsV2 && hasConnectorStatisticsV2(thread);
     std::unique_ptr<LiveCounters> ownCounters;
 
     if (live == nullptr || live->instanceCount < options.instances) {
@@ -873,6 +909,12 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
                 StatisticsSample sample;
                 ConnectorTotals totals;
 
+                if (connectorStatisticsV2) {
+                    totals.subRecords = 0;
+                    totals.readLagMicros = 0;
+                    totals.rttMicros = 0;
+                }
+
                 for (std::size_t index = 0; index < endpoints.size(); ++index) {
                     const auto *endpoint = endpoints[index];
                     const auto connections = endpoint->connections(reporterThread);
@@ -882,11 +924,18 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
                     sample.connections += connections;
                     counters.connections[index].store(connections, std::memory_order_relaxed);
 
-                    for (const auto &connector : endpoint->connectorStatistics(reporterThread, false)) {
+                    for (const auto &connector :
+                         endpoint->connectorStatistics(reporterThread, connectorStatisticsV2, false)) {
                         totals.readBytes += connector.readBytes;
                         totals.writtenBytes += connector.writtenBytes;
                         totals.readRecords += connector.readDataRecords;
                         totals.writtenRecords += connector.writtenDataRecords;
+
+                        if (connector.v2.has_value()) {
+                            totals.subRecords += connector.v2->readSubRecords + connector.v2->writtenSubRecords;
+                            totals.readLagMicros += connector.v2->readDataLagMicros;
+                            totals.rttMicros += connector.v2->readRttMicros + connector.v2->writtenRttMicros;
+                        }
                     }
                 }
 
@@ -1054,7 +1103,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
     }
 
     for (const auto *endpoint : endpoints) {
-        for (auto &connector : endpoint->connectorStatistics(thread, true)) {
+        for (auto &connector : endpoint->connectorStatistics(thread, connectorStatisticsV2, true)) {
             report.connectors.push_back(std::move(connector));
         }
     }

@@ -24,6 +24,7 @@
 
 #include <NetTest/Args.hpp>
 #include <NetTest/EventPool.hpp>
+#include <NetTest/Metrics.hpp>
 #include <NetTest/RateLimiter.hpp>
 #include <NetTest/Run.hpp>
 #include <NetTest/Sdk.hpp>
@@ -2254,7 +2255,7 @@ namespace {
 // Runs the tool of the mode on a thread of the isolate, which may be another thread than the one of the test case, so
 // it asserts nothing: a command line or a symbol pool that fails comes as the error of the result with the exit code 2.
 Outcome runMode(graal_isolatethread_t *thread, const std::string &mode, std::vector<std::string> args,
-                StopControl &stop, const RunHooks &hooks = {}) {
+                StopControl &stop, const RunHooks &hooks = {}, LiveCounters *live = nullptr) {
     Outcome outcome;
 
     args.insert(args.begin(), mode);
@@ -2280,7 +2281,7 @@ Outcome runMode(graal_isolatethread_t *thread, const std::string &mode, std::vec
     std::ostringstream output;
     const auto start = Steady::now();
 
-    outcome.result = runNetTest(thread, parsed.options, symbols.symbols, stop, output, hooks);
+    outcome.result = runNetTest(thread, parsed.options, symbols.symbols, stop, output, hooks, live);
     outcome.seconds = secondsSince(start);
     outcome.output = output.str();
 
@@ -2543,6 +2544,120 @@ TEST_CASE("Consumer: --warmup starts at the first record and keeps the warm-up r
     CHECK(report.e2eLag->count < report.records);
     CHECK(report.e2eLag->count <= measuredRecords + 1000);
     CHECK(report.e2eLag->p50Ns.has_value());
+}
+
+namespace {
+
+// The tool on `p` and on `c` in the same isolate with the hooks and the /metrics text of each side after the run.
+struct ScrapedRun {
+    Outcome producer;
+    Outcome consumer;
+    std::string producerMetrics;
+    std::string consumerMetrics;
+};
+
+ScrapedRun scrapedRun(const RunHooks &hooks) {
+    const auto port = freePort();
+    ScrapedRun run;
+    LiveCounters producerCounters(1);
+    LiveCounters consumerCounters(1);
+    StopControl producerStop;
+
+    test::Attached producerThread(graal_get_isolate(isolateThread()), [&](graal_isolatethread_t *thread) {
+        run.producer = runMode(thread, "p", {":" + port, "-S", "100", "-r", "*/1k", "-s", "1s", "--duration", "5s"},
+                               producerStop, hooks, &producerCounters);
+
+        return std::int32_t{0};
+    });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(700));
+
+    StopControl consumerStop;
+
+    run.consumer = runMode(isolateThread(), "c", {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "3s"},
+                           consumerStop, hooks, &consumerCounters);
+    CHECK(producerThread.join() == 0);
+    run.producerMetrics =
+        formatMetrics({"producer", "NetTest", "", "STREAM_PUBLISHER", "Trade", "stream", true}, producerCounters);
+    run.consumerMetrics =
+        formatMetrics({"consumer", "NetTest", "", "STREAM_FEED", "Trade", "stream", false}, consumerCounters);
+
+    return run;
+}
+
+// The value of the one series of a family of /metrics, or -1 without it; the type must be `type`.
+double seriesValue(const std::string &metrics, const std::string &family, const std::string &type) {
+    if (metrics.find("# TYPE " + family + " " + type + "\n") == std::string::npos) {
+        return -1;
+    }
+
+    const auto at = metrics.find("\n" + family + "{");
+
+    if (at == std::string::npos) {
+        return -1;
+    }
+
+    const auto value = metrics.find("} ", at) + 2;
+
+    return std::stod(metrics.substr(value, metrics.find('\n', value) - value));
+}
+
+} // namespace
+
+TEST_CASE("Consumer: /metrics of the c run has the connector statistics v2 and that of the p run no connector lag") {
+    const auto run = scrapedRun({});
+
+    INFO("the producer: " << run.producer.result.error << "\n" << run.producerMetrics);
+    INFO("the consumer: " << run.consumer.result.error << "\n" << run.consumerMetrics);
+    REQUIRE(run.producer.result.exitCode == 0);
+    REQUIRE(run.consumer.result.exitCode == 0);
+
+    // The consumer subscribes the 100 symbols: the producer reads the subscription, the consumer writes it.
+    CHECK(seriesValue(run.consumerMetrics, "nettest_connector_lag_seconds_total", "counter") >= 0);
+    CHECK(seriesValue(run.consumerMetrics, "nettest_connector_rtt_seconds_total", "counter") >= 0);
+    CHECK(seriesValue(run.consumerMetrics, "nettest_connector_sub_records_total", "counter") >= 100);
+    CHECK(seriesValue(run.consumerMetrics, "nettest_connector_read_records_total", "counter") > 0);
+    CHECK(run.producerMetrics.find("nettest_connector_lag_seconds_total") == std::string::npos);
+    CHECK(seriesValue(run.producerMetrics, "nettest_connector_rtt_seconds_total", "counter") >= 0);
+    CHECK(seriesValue(run.producerMetrics, "nettest_connector_sub_records_total", "counter") >= 100);
+    CHECK(seriesValue(run.producerMetrics, "nettest_connector_written_records_total", "counter") > 0);
+
+    REQUIRE(run.consumer.result.report.connectors.size() == 1);
+    REQUIRE(run.consumer.result.report.connectors[0].v2.has_value());
+    CHECK(run.consumer.result.report.connectors[0].v2->writtenSubRecords >= 100);
+    REQUIRE(run.producer.result.report.connectors.size() == 1);
+    REQUIRE(run.producer.result.report.connectors[0].v2.has_value());
+    CHECK(run.producer.result.report.connectors[0].v2->readSubRecords >= 100);
+}
+
+TEST_CASE("Consumer: without the connector statistics v2 (simulated) /metrics and the summary keep v1 only") {
+    RunHooks hooks;
+
+    hooks.connectorStatisticsV2 = false;
+
+    const auto run = scrapedRun(hooks);
+
+    INFO("the producer: " << run.producer.result.error << "\n" << run.producerMetrics);
+    INFO("the consumer: " << run.consumer.result.error << "\n" << run.consumerMetrics);
+    REQUIRE(run.producer.result.exitCode == 0);
+    REQUIRE(run.consumer.result.exitCode == 0);
+
+    for (const auto *metrics : {&run.producerMetrics, &run.consumerMetrics}) {
+        CHECK(metrics->find("nettest_connector_lag_seconds_total") == std::string::npos);
+        CHECK(metrics->find("nettest_connector_rtt_seconds_total") == std::string::npos);
+        CHECK(metrics->find("nettest_connector_sub_records_total") == std::string::npos);
+        CHECK(seriesValue(*metrics, "nettest_connector_read_bytes_total", "counter") > 0);
+        CHECK(seriesValue(*metrics, "nettest_connector_written_bytes_total", "counter") > 0);
+    }
+
+    CHECK(seriesValue(run.consumerMetrics, "nettest_connector_read_records_total", "counter") > 0);
+    CHECK(seriesValue(run.producerMetrics, "nettest_connector_written_records_total", "counter") > 0);
+
+    for (const auto *outcome : {&run.producer, &run.consumer}) {
+        REQUIRE(outcome->result.report.connectors.size() == 1);
+        CHECK_FALSE(outcome->result.report.connectors[0].v2.has_value());
+        CHECK(outcome->result.report.connectors[0].readBytes > 0);
+    }
 }
 
 TEST_CASE("Consumer: the watchdog stops the consumer when the records stop and the connection stays open") {

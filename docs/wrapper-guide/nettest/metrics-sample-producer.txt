@@ -28,6 +28,12 @@ nettest_connector_read_records_total{tool="c-api",side="producer",name="bench"} 
 # HELP nettest_connector_written_records_total The data records written by the connectors.
 # TYPE nettest_connector_written_records_total counter
 nettest_connector_written_records_total{tool="c-api",side="producer",name="bench"} 210000000
+# HELP nettest_connector_rtt_seconds_total The sum of the round-trip times of the records read and written by the connectors.
+# TYPE nettest_connector_rtt_seconds_total counter
+nettest_connector_rtt_seconds_total{tool="c-api",side="producer",name="bench"} 42020
+# HELP nettest_connector_sub_records_total The subscription records read and written by the connectors.
+# TYPE nettest_connector_sub_records_total counter
+nettest_connector_sub_records_total{tool="c-api",side="producer",name="bench"} 100000
 # HELP nettest_runtime_heap_used_bytes The used heap.
 # TYPE nettest_runtime_heap_used_bytes gauge
 nettest_runtime_heap_used_bytes{tool="c-api",side="producer",name="bench"} 125829120

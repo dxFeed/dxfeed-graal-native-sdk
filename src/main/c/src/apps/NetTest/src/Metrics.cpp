@@ -270,6 +270,9 @@ void LiveCounters::setConnectors(const ConnectorTotals &totals) {
     connectorWrittenBytes.store(totals.writtenBytes, std::memory_order_relaxed);
     connectorReadRecords.store(totals.readRecords, std::memory_order_relaxed);
     connectorWrittenRecords.store(totals.writtenRecords, std::memory_order_relaxed);
+    connectorSubRecords.store(totals.subRecords, std::memory_order_relaxed);
+    connectorReadLagMicros.store(totals.readLagMicros, std::memory_order_relaxed);
+    connectorRttMicros.store(totals.rttMicros, std::memory_order_relaxed);
 }
 
 std::size_t lagBucketIndex(std::int64_t lagNanos) {
@@ -359,6 +362,27 @@ std::string formatMetrics(const MetricsInfo &info, const LiveCounters &counters)
                 load(counters.connectorReadRecords));
     text.single("nettest_connector_written_records_total", "counter", "The data records written by the connectors.",
                 load(counters.connectorWrittenRecords));
+
+    // The connector statistics v2: absent without them; the publisher's lag means nothing (no time marks on its path).
+    const auto readLagMicros = load(counters.connectorReadLagMicros);
+    const auto rttMicros = load(counters.connectorRttMicros);
+    const auto subRecords = load(counters.connectorSubRecords);
+
+    if (!producer && readLagMicros >= 0) {
+        text.single("nettest_connector_lag_seconds_total", "counter",
+                    "The sum of the connector lags of the data records read.", readLagMicros * 1000, true);
+    }
+
+    if (rttMicros >= 0) {
+        text.single("nettest_connector_rtt_seconds_total", "counter",
+                    "The sum of the round-trip times of the records read and written by the connectors.",
+                    rttMicros * 1000, true);
+    }
+
+    if (subRecords >= 0) {
+        text.single("nettest_connector_sub_records_total", "counter",
+                    "The subscription records read and written by the connectors.", subRecords);
+    }
 
     const auto gcTimeMs = load(counters.gcTimeMs);
 

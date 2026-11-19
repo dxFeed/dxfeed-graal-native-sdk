@@ -166,7 +166,22 @@ std::string connectorOf(const ConnectorSummary &connector) {
                         .add("closed_connections", std::to_string(connector.closedConnections))
                         .text();
 
-    return Object().add("address", jsonString(connector.address)).add("v1", v1).add("v2", "null").text();
+    std::string v2 = "null";
+
+    if (connector.v2.has_value()) {
+        const auto &values = *connector.v2;
+
+        v2 = Object()
+                 .add("read_sub_records", std::to_string(values.readSubRecords))
+                 .add("written_sub_records", std::to_string(values.writtenSubRecords))
+                 .add("data_read_lag_us", std::to_string(values.readDataLagMicros))
+                 .add("data_write_lag_us", std::to_string(values.writtenDataLagMicros))
+                 .add("read_rtt_us", std::to_string(values.readRttMicros))
+                 .add("write_rtt_us", std::to_string(values.writtenRttMicros))
+                 .text();
+    }
+
+    return Object().add("address", jsonString(connector.address)).add("v1", v1).add("v2", v2).text();
 }
 
 template <typename Item, typename Format>

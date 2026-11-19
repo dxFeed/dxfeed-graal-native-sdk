@@ -318,7 +318,8 @@ directory that does not exist or cannot be written exits with 2. All keys are al
               "cpu_percent_mean": 87},
   "connectors": [{"address": "127.0.0.1:7002", "v1": {"read_bytes": 0, "written_bytes": 0,
                   "read_data_records": 0, "written_data_records": 0, "active_connections": 1,
-                  "closed_connections": 0}, "v2": null}]
+                  "closed_connections": 0}, "v2": {"read_sub_records": 0, "written_sub_records": 100000,
+                  "data_read_lag_us": 0, "data_write_lag_us": 0, "read_rtt_us": 0, "write_rtt_us": 0}}]
 }
 ```
 
@@ -370,13 +371,19 @@ to it. The port is bound at the start; a port in use exits with 1 before the fir
 
 ## Connector statistics {#wrapper_nettest_connectors}
 
-- v1 (SDK 3.14.0 and newer): the bytes and the data records read and written, the open and the closed connections;
-  cumulative.
-- v2 (a later SDK version): adds the subscription records read and written, the sums of the data read and write lag
-  and of the read and write round-trip times in microseconds; cumulative. The connector lag is the growth of the lag
-  sum over the growth of the data records; the round-trip time is the growth of the read plus write sums over the
-  growth of the data and subscription records of both directions; both are 0 until the first heartbeat. The publisher
-  has no time marks on its path, so its lag means nothing and is not exported on `p`.
+- v1 (SDK 3.14.0 and newer, `dxfg_v4_MessageConnector_getStatistics()`): the bytes and the data records read and
+  written, the open and the closed connections; cumulative.
+- v2 (SDK 3.18.0 and newer, `dxfg_v4_MessageConnector_getIoStatistics()` when
+  `dxfg_v4_system_is_feature_supported()` reports `DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS`; in Java the
+  `QDStats.SValue.IO_*` counters of the connector): adds the subscription records read and written, the sums of the
+  data read and write lag and of the read and write round-trip times in microseconds; cumulative. The connector lag is
+  the growth of the lag sum over the growth of the data records; the round-trip time is the growth of the read plus
+  write sums over the growth of the data and subscription records of both directions; both are 0 until the first
+  heartbeat. The publisher has no time marks on its path, so its lag means nothing and is not exported on `p`.
+- On `/metrics`, `nettest_connector_lag_seconds_total` is the sum of the data read lags, so the connector lag of a
+  window is its growth over that of `nettest_connector_read_records_total`; `nettest_connector_rtt_seconds_total` is
+  the read plus write sums and `nettest_connector_sub_records_total` the subscription records of both directions.
+  Without v2 the three families are absent and the `v2` of each connector in the summary is `null`.
 - A tool reads the connector statistics at most once per interval.
 
 ## Exit codes and status {#wrapper_nettest_exit}
@@ -466,6 +473,6 @@ README of each tool lists how it differs from this page until then.
 | @ref wrapper_nettest_time | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c` and the `NetTestMetrics` line | 3.18.0 |
 | @ref wrapper_nettest_consumer | 3.18.0 | 3.18.0 |
-| @ref wrapper_nettest_summary | 3.18.0; `qd_version` and the values of `build` are null, connector statistics v1 only | 3.18.0 with `v2` of the connectors `null` |
-| @ref wrapper_nettest_metrics | 3.18.0; connector statistics v1 only | 3.18.0 without the series of `v2` |
+| @ref wrapper_nettest_summary | 3.18.0; `qd_version` and the values of `build` are null | 3.18.0 |
+| @ref wrapper_nettest_metrics | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_exit | 3.18.0 | 3.18.0 |

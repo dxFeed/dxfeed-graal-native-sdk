@@ -20,7 +20,7 @@
   publisher's statistics is `NetTestProducerSide` instead of `NetTestApiProducerSide`, with a line per instance also
   for one instance.
 * **\[MDAPI-576]\[GRAAL]** [NetTestApi](tools/nettest) follows the whole
-  [NetTest specification](docs/wrapper-guide/nettest.md) except the `v2` connector statistics: `--summary <file>`
+  [NetTest specification](docs/wrapper-guide/nettest.md): `--summary <file>`
   writes the JSON summary `nettest-summary/1` with the intervals, the end-to-end lag percentiles (HdrHistogram), the
   publishing calls, the schedule slip and the runtime, also after `no_data`, `nano_missing` or Ctrl+C;
   `--metrics-port [<host>:]<port>` serves `/metrics` in the Prometheus text format and prints the `NetTestMetrics`
@@ -95,6 +95,10 @@
   struct and the feature are stable. `dxfg_v4_MessageConnector_getStatistics()` and its struct are unchanged; the
   header now says that a stopped connector (replaced, disconnected or closed) reads 0 for the data records of its
   statistics, as for the new I/O counters, since QD closes them: only the bytes and the connection counts stay.
+  [NetTest](src/main/c/src/apps/NetTest) reads the new statistics when the library has the feature, and
+  [NetTestApi](tools/nettest) reads the same counters of its QD: both export `nettest_connector_lag_seconds_total` (on
+  `c` only), `nettest_connector_rtt_seconds_total` and `nettest_connector_sub_records_total` on `/metrics` and fill the
+  `v2` of each connector in the summary, as the [NetTest specification](docs/wrapper-guide/nettest.md) defines.
 
 ### For integrators
 

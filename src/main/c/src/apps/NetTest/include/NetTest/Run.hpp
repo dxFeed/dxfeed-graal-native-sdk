@@ -80,6 +80,9 @@ struct RunHooks {
     // The timeouts of the starvation watchdog.
     std::chrono::milliseconds noDataAfterRecord = NO_DATA_AFTER_RECORD;
     std::chrono::milliseconds noDataAfterConnect = NO_DATA_AFTER_CONNECT;
+    // false reads the connector statistics as an SDK without DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS does: v1
+    // only.
+    bool connectorStatisticsV2 = true;
 };
 
 // Starts the instances of the mode of the options and runs them with the reporter until the stop is requested, the

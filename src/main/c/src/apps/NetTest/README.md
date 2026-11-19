@@ -209,7 +209,11 @@ A failure before the run (an endpoint, an IPF file) still writes a summary with 
 
 `--metrics-port` serves `GET /metrics` over HTTP/1.0 in the Prometheus text format with the metrics of the
 specification: the records, the connections, the e2e lag histogram and the negative lags on `c`, the publishing time,
-calls and the schedule slip on `p`, the connector statistics and the runtime of the isolate. Every series has the
+calls and the schedule slip on `p`, the connector statistics and the runtime of the isolate. The connector statistics
+v2 (`nettest_connector_lag_seconds_total` on `c`, `nettest_connector_rtt_seconds_total`,
+`nettest_connector_sub_records_total`, and `v2` of the summary's connectors) come from
+`dxfg_v4_MessageConnector_getIoStatistics()` and are absent with a library without
+`DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS`. Every series has the
 labels `tool="c-api"`, `side` and `name`; the per-instance series have `connection="1".."C"`. A scrape reads only the
 counters of the tool and never calls the SDK; the reporter refreshes the connector and runtime values once per
 statistics period.
@@ -314,8 +318,6 @@ expression `isolate_rejection` of the specification:
 What the tool does not do yet of the [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md):
 
 - The summary has `qd_version` and the values of `build` as `null`: the SDK does not report them.
-- Connector statistics v1 only: the summary's `v2` is `null`, and `/metrics` has no `nettest_connector_lag_seconds_total`,
-  `nettest_connector_rtt_seconds_total` and `nettest_connector_sub_records_total`.
 
 ## Differences from QD NetTest
 

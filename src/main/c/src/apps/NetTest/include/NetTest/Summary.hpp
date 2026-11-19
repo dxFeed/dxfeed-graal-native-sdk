@@ -68,7 +68,18 @@ struct SlipSummary {
     std::optional<std::int64_t> growthNsPerSecond{};
 };
 
-// The statistics v1 of a connector at the end of the run; v2 is not read.
+// The statistics v2 of a connector beyond v1 (dxfg_v4_MessageConnector_getIoStatistics()): the subscription records
+// and the sums of the lags and of the round-trip times, in microseconds.
+struct ConnectorSummaryV2 {
+    std::int64_t readSubRecords = 0;
+    std::int64_t writtenSubRecords = 0;
+    std::int64_t readDataLagMicros = 0;
+    std::int64_t writtenDataLagMicros = 0;
+    std::int64_t readRttMicros = 0;
+    std::int64_t writtenRttMicros = 0;
+};
+
+// The statistics of a connector at the end of the run: v1, and v2 when the SDK has them.
 struct ConnectorSummary {
     std::string address{};
     std::int64_t readBytes = 0;
@@ -77,6 +88,7 @@ struct ConnectorSummary {
     std::int64_t writtenDataRecords = 0;
     std::int64_t activeConnections = 0;
     std::int64_t closedConnections = 0;
+    std::optional<ConnectorSummaryV2> v2{};
 };
 
 // The runtime of the run: the heap at the end, the collections and the CPU time between the first and the last sample.
