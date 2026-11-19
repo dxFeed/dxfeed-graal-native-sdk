@@ -459,13 +459,13 @@ README of each tool lists how it differs from this page until then.
 
 | Section | C API `NetTest` | Java `NetTestApi` |
 |---|---|---|
-| @ref wrapper_nettest_cli | 3.18.0 without the options of the consumer, summary and metrics sections | 3.18.0 |
+| @ref wrapper_nettest_cli | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_roles | 3.18.0 | 3.18.0 |
-| @ref wrapper_nettest_rate | not yet: a token bucket | 3.18.0 |
+| @ref wrapper_nettest_rate | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_events | 3.16.0 | 3.18.0 |
 | @ref wrapper_nettest_time | 3.18.0 | 3.18.0 |
-| @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c`; no `NetTestMetrics` line | 3.18.0 |
-| @ref wrapper_nettest_consumer | 3.18.0 without `--warmup`, the histogram and `symbols_seen` | 3.18.0 |
-| @ref wrapper_nettest_summary | not yet | 3.18.0 with `v2` of the connectors `null` |
-| @ref wrapper_nettest_metrics | not yet | 3.18.0 without the series of `v2` |
-| @ref wrapper_nettest_exit | 3.17.0 without the summary file | 3.18.0 |
+| @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c` and the `NetTestMetrics` line | 3.18.0 |
+| @ref wrapper_nettest_consumer | 3.18.0 | 3.18.0 |
+| @ref wrapper_nettest_summary | 3.18.0; `qd_version` and the values of `build` are null, connector statistics v1 only | 3.18.0 with `v2` of the connectors `null` |
+| @ref wrapper_nettest_metrics | 3.18.0; connector statistics v1 only | 3.18.0 without the series of `v2` |
+| @ref wrapper_nettest_exit | 3.18.0 | 3.18.0 |

@@ -1,3 +1,10 @@
+* **\[MDAPI-577]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) writes the JSON summary of the
+  [NetTest specification](docs/wrapper-guide/nettest.md) (`--summary <file>`, schema `nettest-summary/1`) with the
+  intervals, the e2e lag percentiles of an HdrHistogram, the publishing time, the schedule slip, the runtime and the
+  connector statistics, and serves them in the Prometheus text format (`--metrics-port [<host>:]<port>`, the line
+  `{*NetTestMetrics-<name>*}`). `--warmup <time>` marks the first intervals as warm-up and leaves them out of the
+  totals. `-r` keeps an intended schedule from the first batch that sleeps without a busy wait and catches up after a
+  delay, instead of the token bucket; the statistics lines are as before.
 * **\[MDAPI-582]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) generates the symbols of QD NetTest
   (`java.util.Random` with the seed of QD's `SymbolGenerator`) in the order of first appearance, so a run that mixes it
   with QD NetTest or `NetTestApi` and `-S <n>` gets the whole stream; before, the two sets barely overlapped and only

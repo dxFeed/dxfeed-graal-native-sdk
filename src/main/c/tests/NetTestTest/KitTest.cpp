@@ -240,9 +240,8 @@ std::string settingOf(const Options &options, const std::string &key) {
         return std::to_string(options.periodMillis);
     }
 
-    // The warm-up is not an option of this tool yet.
     if (key == "warmup_ms") {
-        return "null";
+        return number(options.warmupMillis);
     }
 
     if (key == "duration_ms") {
@@ -295,11 +294,6 @@ std::string kitValueText(const kit::Json &value) {
     }
 }
 
-// The sections of cli-vectors.json that name the options of later tickets (--warmup, --summary, --metrics-port).
-bool isLaterSection(const std::string &section) {
-    return section == "consumer" || section == "summary" || section == "metrics";
-}
-
 // The tool has the isolate arguments and the legacy publishing call, so an entry that needs their absence is skipped.
 bool needsAbsentFeature(const kit::Json &entry) {
     if (!entry.has("requires")) {
@@ -321,7 +315,7 @@ TEST_CASE("Kit: the parser gives the settings and the errors of cli-vectors.json
     const auto vectors = kitFile("cli-vectors.json");
 
     for (const auto &entry : nonEmpty(vectors["vectors"])) {
-        if (isLaterSection(entry["section"].asString()) || needsAbsentFeature(entry)) {
+        if (needsAbsentFeature(entry)) {
             ++skipped;
 
             continue;
@@ -368,8 +362,8 @@ TEST_CASE("Kit: the parser gives the settings and the errors of cli-vectors.json
         ++checked;
     }
 
-    MESSAGE("cli-vectors.json: " << checked << " checked, " << skipped << " skipped (later tickets or !features)");
-    CHECK(checked >= 60);
+    MESSAGE("cli-vectors.json: " << checked << " checked, " << skipped << " skipped (!features)");
+    CHECK(checked >= 68);
 }
 
 TEST_CASE("Kit: the isolate rejection line matches its expression") {

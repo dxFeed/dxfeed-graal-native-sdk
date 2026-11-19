@@ -3,80 +3,46 @@
 
 #include <NetTest/RateLimiter.hpp>
 
-#include <algorithm>
-#include <thread>
+#include <cmath>
 
 namespace dxfg {
 namespace nettest {
 
-namespace {
-
-constexpr std::chrono::microseconds SPIN_LIMIT{500};
-
-} // namespace
-
-RateLimiter::RateLimiter(std::int64_t recordsPerSecond, std::int64_t batch, StopControl &stop, Clock::time_point start)
-    : stop_(stop), recordsPerSecond_(static_cast<double>(recordsPerSecond)),
-      capacity_(static_cast<double>(std::max(recordsPerSecond, batch))), lastRefill_(start) {
+RateLimiter::RateLimiter(std::int64_t recordsPerSecond, std::int64_t batch, StopControl &stop)
+    : stop_(stop), batchNanos_(static_cast<double>(batch) * 1e9 / static_cast<double>(recordsPerSecond)) {
 }
 
-void RateLimiter::refill(Clock::time_point now, double limit) {
-    if (now <= lastRefill_) {
-        return;
+RateLimiter::Clock::time_point RateLimiter::due(Clock::time_point start, std::int64_t k) const {
+    return start + std::chrono::nanoseconds(std::llround(static_cast<double>(k) * batchNanos_));
+}
+
+std::optional<RateLimiter::Clock::time_point> RateLimiter::acquire() {
+    Clock::time_point dueTime;
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        if (!start_.has_value()) {
+            start_ = Clock::now();
+        }
+
+        dueTime = due(*start_, next_++);
     }
 
-    const double seconds = std::chrono::duration<double>(now - lastRefill_).count();
-
-    tokens_ = std::min(limit, tokens_ + seconds * recordsPerSecond_);
-    lastRefill_ = now;
-}
-
-bool RateLimiter::tryAcquire(std::int64_t tokens) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    const double needed = static_cast<double>(tokens);
-
-    refill(Clock::now(), std::max(capacity_, needed));
-
-    if (tokens_ < needed) {
-        return false;
-    }
-
-    tokens_ -= needed;
-
-    return true;
-}
-
-bool RateLimiter::acquire(std::int64_t tokens) {
-    const double needed = static_cast<double>(tokens);
-
+    // A wait may end early (a spurious wake-up of the condition variable): the time left is measured again.
     while (!stop_.stopped()) {
-        double missing = 0;
+        const auto left = dueTime - Clock::now();
 
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-
-            refill(Clock::now(), std::max(capacity_, needed));
-
-            if (tokens_ >= needed) {
-                tokens_ -= needed;
-
-                return true;
-            }
-
-            missing = needed - tokens_;
+        if (left <= Clock::duration::zero()) {
+            return dueTime;
         }
 
-        const auto delay = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::duration<double>(missing / recordsPerSecond_));
-
-        if (delay < SPIN_LIMIT) {
-            std::this_thread::yield();
-        } else if (stop_.waitFor(delay)) {
-            return false;
+        if (stop_.waitFor(left)) {
+            break;
         }
     }
 
-    return false;
+    return std::nullopt;
 }
 
 } // namespace nettest

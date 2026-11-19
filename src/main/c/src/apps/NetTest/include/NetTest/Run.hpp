@@ -10,8 +10,10 @@
 
 #include <NetTest/Args.hpp>
 #include <NetTest/Generator.hpp>
+#include <NetTest/Metrics.hpp>
 #include <NetTest/Statistics.hpp>
 #include <NetTest/StopControl.hpp>
+#include <NetTest/Summary.hpp>
 #include <NetTest/SymbolPool.hpp>
 
 #include <dxfg_api.h>
@@ -66,6 +68,8 @@ struct RunResult {
     // The records handed to the publishing call (on `p`) or received (on `c`), in total and per instance.
     std::int64_t records = 0;
     std::vector<std::int64_t> instanceRecords{};
+    // What the summary file writes about the run.
+    RunReport report{};
 };
 
 // The seams of the tests; the defaults are the behaviour of the tool.
@@ -82,9 +86,10 @@ struct RunHooks {
 // duration of the options passes or the run fails (a publishing call on `p`; the watchdog or the nanosecond check on
 // `c`), then stops and joins the threads, prints the last statistics and closes the endpoints. The statistics go to
 // `out`, flushed. The thread is the attached thread of the caller; the properties of the options are not applied here
-// (applySystemProperties()).
+// (applySystemProperties()). The live counters, which /metrics reads, must have the instances of the options; without
+// them the run keeps its own.
 RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, const Symbols &symbols, StopControl &stop,
-                     std::ostream &out, const RunHooks &hooks = {});
+                     std::ostream &out, const RunHooks &hooks = {}, LiveCounters *live = nullptr);
 
 // The symbols of consumer instance `instance` (from 1) of `instances`: those with the index j (from 0) where
 // j % instances == instance - 1, in the order of the set.
@@ -109,6 +114,9 @@ class SignalWatcher {
     SignalWatcher(const SignalWatcher &) = delete;
     SignalWatcher &operator=(const SignalWatcher &) = delete;
     ~SignalWatcher();
+
+    // Whether a signal came since the construction.
+    bool received() const;
 };
 
 } // namespace nettest

@@ -48,9 +48,11 @@ when `target/` has no archive of the platform, so run `mvn package` before the C
 ```text
 NetTest p <address> -S <symbols> [-C <n>] [-r */<rate>] [-s <period>] [-n <name>] [-c stream|ticker]
         [--event Trade|TimeAndSale] [--role <role>] [--batch <n>] [--reuse] [--legacy] [--duration <time>]
+        [--warmup <time>] [--summary <file>] [--metrics-port [<host>:]<port>]
         [-D<key>=<value>...] [-Xmx<size>] [-Xms<size>] [-Xmn<size>] [-Xss<size>] [-XX:<option>...]
 NetTest c <address> -S <symbols> [-C <n>] [-s <period>] [-n <name>] [-c stream|ticker]
         [--event Trade|TimeAndSale] [--role <role>] [--duration <time>]
+        [--warmup <time>] [--summary <file>] [--metrics-port [<host>:]<port>]
         [-D<key>=<value>...] [-Xmx<size>] [-Xms<size>] [-Xmn<size>] [-Xss<size>] [-XX:<option>...]
 NetTest --help
 ```
@@ -62,7 +64,7 @@ NetTest --help
 | `-S <total>@<file>`      | the first `<total>` symbols of an IPF file, in file order; fewer give a warning, none an error |
 | `-S <total>`             | the `<total>` distinct symbols of QD NetTest, in the order of first appearance                |
 | `-C <n>`                 | instances: endpoints `NetTest.1` ... `NetTest.<n>`; on `p` one generator thread each with the whole pool each, on `c` instance `i` subscribes the symbols `j` with `j % n == i - 1`; not above 1 with `:port` |
-| `-r`, `--rate-limit */<rate>` | `p`: the total rate of all instances in records per second, with `k`, `M` or `G`; without it the generators run flat out |
+| `-r`, `--rate-limit */<rate>` | `p`: the total rate of all instances in records per second, with `k`, `M` or `G`, kept as a schedule (see [The schedule](#the-schedule)); without it the generators run flat out |
 | `-s`, `--stat <period>`  | the statistics period, default `10s` (`ms`, `s`, `m`)                                         |
 | `-n`, `--name <name>`    | the name in the statistics line, default `NetTest`                                            |
 | `-c`, `--collector <contract>` | `stream` or `ticker`: the contract that the consumer receives and the default roles (see [Roles](#roles)); `history` is reserved |
@@ -72,6 +74,9 @@ NetTest --help
 | `--reuse`                | `p`: republish the pre-built events in place; without it every batch is copied into new events, as an application that creates its events would do |
 | `--legacy`               | `p`: publish through the deprecated `dxfg_DXPublisher_publishEvents()`                        |
 | `--duration <time>`      | end the run after this time; Ctrl+C (SIGINT, SIGTERM) ends it at once                         |
+| `--warmup <time>`        | the statistics intervals that start within this time are `warmup` in the summary and stay out of its e2e lag totals; the time counts from the first record on `c` and from the first batch on `p` |
+| `--summary <file>`       | write the JSON summary of the run at the end (see [Summary file](#summary-file)); a directory that does not exist or cannot be written exits with 2 at the start |
+| `--metrics-port [<host>:]<port>` | serve `GET /metrics` in the Prometheus text format (see [Metrics](#metrics)); the host defaults to `127.0.0.1`, port 0 takes a free port; a port in use exits with 1 before the first endpoint |
 | `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Dmonitoring.stat=10s`; `-Ddxscheme.nanoTime` also goes to the builder of every endpoint (see below) |
 | `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-Xss<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
 | `--help`                 | print the usage text with the line `spec_version nettest/1` and exit with 0                   |
@@ -103,6 +108,15 @@ part 0.
 `FEED` for Trade receives the ticker contract, which conflates the events of a symbol: its rate is not the rate of the
 producer.
 
+### The schedule
+
+With `-r` the generators of all instances share one schedule: from the first grant `t0`, batch `k` (counted over all
+instances) is due at `T(k) = t0 + k * batch / rate`. A generator that is ahead sleeps until `T(k)` with the platform's
+sleep, without a busy wait; one that is behind gets its batch at once and catches up without a bound, so no batch is
+dropped. The clock read after the wait stamps the events of the batch, and the slip of the batch is that time minus
+`T(k)`, 0 when on time. The summary and `/metrics` report the slip; the statistics lines do not. Without `-r` there is
+no schedule and no slip.
+
 ### The consumer
 
 Each instance of `c` creates its subscription and its listener, adds the listener, then its symbols, and connects
@@ -121,8 +135,9 @@ NetTest: nano_missing: the first 1000 events have the nanosecond part 0: a hop o
 ```
 
 Exit codes: 0 after `--duration`, Ctrl+C or `--help`; 2 for invalid arguments (also an option that the isolate
-rejects); 1 for a failed start (unreadable IPF file, failed endpoint, malformed address, a `:port` that does not start
-listening within 3 s, for example because it is in use), a failed publishing call, `no_data` or `nano_missing`.
+rejects, or a `--summary` path that cannot be written); 1 for a failed start (unreadable IPF file, failed endpoint,
+malformed address, a `:port` that does not start listening within 3 s, for example because it is in use, a metrics
+port in use), a failed publishing call, `no_data`, `nano_missing` or a failed write of the summary file.
 Connecting is asynchronous: a `host:port` without a listener is not an error, the tool runs and reports
 `connections 0` until a peer is there.
 
@@ -167,7 +182,42 @@ has its own prefix.
 When the run stops, a last block covers the time since the last tick, scaled by its real length; a last block shorter
 than one second is not printed.
 
+With `--metrics-port`, one line at the start, after the port is bound, gives the address to scrape:
+
+```text
+{*NetTestMetrics-NetTest*} http://127.0.0.1:9464/metrics
+```
+
 The SDK's log, including the QDS monitoring, goes to stderr.
+
+## Summary file
+
+`--summary <file>` writes the JSON summary of the specification (schema `nettest-summary/1`) after the last
+statistics block and before the isolate is torn down: first to `<file>.tmp`, then renamed to `<file>`. It holds the
+configuration, the status and the exit code, every statistics interval with its `phase` (`warmup` or `measure`),
+records and e2e lag percentiles, and the totals of the run:
+
+- `c`: `e2e_lag` with the percentiles of an HdrHistogram (1 ns to 3600 s, 3 significant digits) over the measured
+  intervals, the count of negative lags, and `symbols_seen`, the distinct symbols received.
+- `p`: `publish_call` (the calls, the events and the time of the fill and the publishing call) and, with `-r`,
+  `schedule_slip` (the maximum, the slip at the end and its growth per second).
+- Both: the runtime of the isolate and the statistics of every connector.
+
+A failure before the run (an endpoint, an IPF file) still writes a summary with the status `error`.
+
+## Metrics
+
+`--metrics-port` serves `GET /metrics` over HTTP/1.0 in the Prometheus text format with the metrics of the
+specification: the records, the connections, the e2e lag histogram and the negative lags on `c`, the publishing time,
+calls and the schedule slip on `p`, the connector statistics and the runtime of the isolate. Every series has the
+labels `tool="c-api"`, `side` and `name`; the per-instance series have `connection="1".."C"`. A scrape reads only the
+counters of the tool and never calls the SDK; the reporter refreshes the connector and runtime values once per
+statistics period.
+
+```shell
+NetTest c localhost:6666 -S 1000 --metrics-port 9464 --summary run.json --warmup 30s --duration 5m
+curl -s http://127.0.0.1:9464/metrics
+```
 
 ## Running against QD NetTest and NetTestApi
 
@@ -263,11 +313,9 @@ expression `isolate_rejection` of the specification:
 
 What the tool does not do yet of the [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md):
 
-- No `--warmup`, `--summary` and `--metrics-port`, so no summary file, no `/metrics`, no histogram of the e2e lag and
-  no `NetTestMetrics` line; the starvation watchdog and the nanosecond check report their status on stderr and in the
-  exit code only.
-- The rate limiter is a token bucket (capacity the larger of the rate and the batch, a spin below 500 us) instead of a
-  schedule from the first grant with catch-up and no busy wait, so the tool reports no schedule slip.
+- The summary has `qd_version` and the values of `build` as `null`: the SDK does not report them.
+- Connector statistics v1 only: the summary's `v2` is `null`, and `/metrics` has no `nettest_connector_lag_seconds_total`,
+  `nettest_connector_rtt_seconds_total` and `nettest_connector_sub_records_total`.
 
 ## Differences from QD NetTest
 
@@ -275,8 +323,8 @@ What the tool does not do yet of the [NetTest specification](../../../../../../d
 - The default event is Trade; QD NetTest's default record is TimeAndSale.
 - The default roles are those of the specification: QD NetTest's consumer without `-c` reads the ticker contract, this
   tool's reads the stream contract (`STREAM_FEED`).
-- `-r` is one budget for all instances, as in QD NetTest, but the limiter takes a whole batch before the batch is
-  built and never goes into debt.
+- `-r` is one budget for all instances, as in QD NetTest, but kept as a schedule of whole batches that catches up
+  after a delay (see [The schedule](#the-schedule)).
 - `lag` on `p` excludes the limiter wait; QD NetTest's includes it. `lag` on `c` is the e2e lag with the nanosecond
   part.
 - Generated symbols are the set of QD NetTest in the order of first appearance; QD NetTest's order is that of a

@@ -938,10 +938,10 @@ double secondsSince(Steady::time_point start) {
 }
 
 // Takes batches with acquire() on the calling thread until the deadline; counts those taken before it.
-int takeBatchesUntil(RateLimiter &limiter, std::int64_t batch, Steady::time_point deadline) {
+int takeBatchesUntil(RateLimiter &limiter, Steady::time_point deadline) {
     int taken = 0;
 
-    while (limiter.acquire(batch)) {
+    while (limiter.acquire().has_value()) {
         if (Steady::now() > deadline) {
             break;
         }
@@ -1038,38 +1038,68 @@ struct Occupant {
 
 } // namespace
 
-TEST_CASE("U3: the limiter at 10,000 records per second with a batch of 100 gives 100 batches in a second") {
+TEST_CASE("U3: the schedule at 10,000 records per second with a batch of 100 grants about 100 batches in a second") {
     StopControl stop;
     RateLimiter limiter(10'000, 100, stop);
     const auto deadline = Steady::now() + std::chrono::seconds(1);
-    const auto taken = takeBatchesUntil(limiter, 100, deadline);
+    const auto taken = takeBatchesUntil(limiter, deadline);
 
+    // Batches 0..100 are due within the second (T(0) = t0 at once, T(100) = t0 + 1 s).
     INFO("batches taken: " << taken);
-    CHECK(taken >= 98);
+    // The schedule catches up after a late wake-up, so only the end of the window can cost a few batches.
+    CHECK(taken >= 95);
     CHECK(taken <= 102);
 }
 
-TEST_CASE("U3: after an idle second the bucket holds one second of tokens and no more") {
+TEST_CASE("U3: the batch k of the schedule is due at t0 + k * batch / rate") {
     StopControl stop;
-    RateLimiter limiter(1000, 10, stop);
+    RateLimiter limiter(10'000, 100, stop);
+    const RateLimiter::Clock::time_point start{};
 
-    CHECK(limiter.capacity() == doctest::Approx(1000.0));
-    CHECK_FALSE(limiter.tryAcquire(10)); // the bucket starts empty
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1300));
-
-    int taken = 0;
-
-    while (limiter.tryAcquire(10)) {
-        ++taken;
-    }
-
-    INFO("batches taken after the idle second: " << taken);
-    CHECK(taken >= 99);
-    CHECK(taken <= 101);
+    CHECK(limiter.due(start, 0) == start);
+    CHECK(limiter.due(start, 1) == start + std::chrono::milliseconds(10));
+    CHECK(limiter.due(start, 250) == start + std::chrono::milliseconds(2500));
 }
 
-TEST_CASE("U3: two generators share the rate of one limiter") {
+TEST_CASE("U3: the schedule starts at the first grant, so an idle start gives no burst") {
+    StopControl stop;
+    RateLimiter limiter(1000, 10, stop); // a batch every 10 ms
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    const auto deadline = Steady::now() + std::chrono::milliseconds(500);
+    const auto taken = takeBatchesUntil(limiter, deadline);
+
+    INFO("batches taken in 0.5 s after an idle start: " << taken);
+    CHECK(taken >= 45);
+    CHECK(taken <= 52);
+}
+
+TEST_CASE("U3: a generator behind the schedule gets the due batches at once and keeps their due times") {
+    StopControl stop;
+    RateLimiter limiter(1000, 10, stop); // a batch every 10 ms
+    const auto first = limiter.acquire();
+
+    REQUIRE(first.has_value());
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    // About 30 batches are overdue: they come without a wait, each with its own due time, and none is dropped.
+    const auto start = Steady::now();
+
+    for (std::int64_t k = 1; k <= 20; ++k) {
+        const auto due = limiter.acquire();
+
+        REQUIRE(due.has_value());
+        CHECK(*due == limiter.due(*first, k));
+    }
+
+    const auto seconds = secondsSince(start);
+
+    INFO("20 overdue batches took " << seconds << " s");
+    CHECK(seconds < 0.25);
+}
+
+TEST_CASE("U3: two generators share the schedule of one limiter") {
     StopControl stop;
     RateLimiter limiter(10'000, 100, stop);
     const auto deadline = Steady::now() + std::chrono::seconds(1);
@@ -1077,38 +1107,36 @@ TEST_CASE("U3: two generators share the rate of one limiter") {
     std::atomic<int> second{0};
 
     std::thread firstThread([&] {
-        first = takeBatchesUntil(limiter, 100, deadline);
+        first = takeBatchesUntil(limiter, deadline);
     });
     std::thread secondThread([&] {
-        second = takeBatchesUntil(limiter, 100, deadline);
+        second = takeBatchesUntil(limiter, deadline);
     });
 
     firstThread.join();
     secondThread.join();
 
-    // The limiter is one budget for all generators and promises nothing about the split: on a loaded machine one
+    // The limiter is one schedule for all generators and promises nothing about the split: on a loaded machine one
     // thread may not be scheduled within the second at all, so only the total is checked.
     INFO("batches taken: " << first.load() << " and " << second.load());
-    CHECK(first + second >= 98);
-    CHECK(first + second <= 102);
+    CHECK(first + second >= 95);
+    CHECK(first + second <= 103);
 }
 
-TEST_CASE("U3: a rate below the batch size releases a batch every batch/rate seconds") {
+TEST_CASE("U3: a rate below the batch size grants a batch every batch/rate seconds") {
     StopControl stop;
-    RateLimiter limiter(50, 100, stop);
-
-    CHECK(limiter.capacity() == doctest::Approx(100.0)); // one batch, not one second of 50 tokens
-
+    RateLimiter limiter(50, 100, stop); // a batch every 2 s
     const auto start = Steady::now();
 
-    REQUIRE(limiter.acquire(100));
+    REQUIRE(limiter.acquire().has_value()); // t0: at once
+    CHECK(secondsSince(start) < 0.5);
+    REQUIRE(limiter.acquire().has_value());
 
     const auto seconds = secondsSince(start);
 
-    INFO("the first batch after " << seconds << " s");
-    CHECK(seconds >= 1.8);
+    INFO("the second batch after " << seconds << " s");
+    CHECK(seconds >= 1.9);
     CHECK(seconds <= 4.0);
-    CHECK_FALSE(limiter.tryAcquire(100)); // no debt: the next batch needs another two seconds
 }
 
 TEST_CASE("U3: the stop during a limiter wait returns within one batch interval") {
@@ -1116,10 +1144,13 @@ TEST_CASE("U3: the stop during a limiter wait returns within one batch interval"
     RateLimiter limiter(50, 100, stop); // a batch every 2 s
     std::atomic<bool> acquired{true};
     std::atomic<double> returnedAfter{0};
+
+    REQUIRE(limiter.acquire().has_value()); // t0
+
     const auto start = Steady::now();
 
     std::thread waiting([&] {
-        acquired = limiter.acquire(100);
+        acquired = limiter.acquire().has_value();
         returnedAfter = secondsSince(start);
     });
 
@@ -1129,7 +1160,7 @@ TEST_CASE("U3: the stop during a limiter wait returns within one batch interval"
 
     CHECK_FALSE(acquired);
     CHECK(returnedAfter < 1.5);
-    CHECK_FALSE(limiter.acquire(100)); // a stopped limiter takes nothing
+    CHECK_FALSE(limiter.acquire().has_value()); // a stopped limiter grants nothing
 }
 
 TEST_CASE("U3: a run of 2 seconds at 5k records per second counts about 10,000 records and exits with 0") {
@@ -1152,6 +1183,70 @@ TEST_CASE("U3: a run of 2 seconds at 5k records per second counts about 10,000 r
     }
 
     CHECK(outcome.output.find("    NetTest.1 data ") != std::string::npos);
+
+    // The report of the summary: intervals that cover the run and add up to its records, the publishing calls, the
+    // schedule slip of -r and the connector of the address.
+    const auto &report = outcome.result.report;
+    std::int64_t intervalRecords = 0;
+
+    REQUIRE_FALSE(report.intervals.empty());
+
+    for (const auto &interval : report.intervals) {
+        intervalRecords += interval.records;
+        CHECK_FALSE(interval.warmup);
+        CHECK(interval.slipMaxNs.has_value());
+        CHECK_FALSE(interval.lagP50Ns.has_value());
+    }
+
+    CHECK(intervalRecords == report.records);
+    CHECK(report.records >= 9000);
+    CHECK(report.endEpochNs - report.startEpochNs >= 1'900'000'000);
+    REQUIRE(report.publish.has_value());
+    CHECK(report.publish->calls * 100 >= report.publish->events);
+    CHECK(report.publish->events == outcome.result.records);
+    CHECK(report.publish->nanos > 0);
+    REQUIRE(report.slip.has_value());
+    CHECK(report.slip->maxNs >= 0);
+    CHECK_FALSE(report.e2eLag.has_value());
+    CHECK_FALSE(report.symbolsSeen.has_value());
+    REQUIRE(report.connectors.size() == 1);
+    CHECK(report.connectors[0].address.find(port) != std::string::npos);
+}
+
+TEST_CASE("U3: without -r the run has no schedule, and --warmup puts the first intervals into the warm-up") {
+    const auto port = freePort();
+    const auto parsed = parse({"p", ":" + port, "-S", "100", "-s", "500ms", "--duration", "2500ms", "--warmup", "1s"});
+
+    REQUIRE_MESSAGE(parsed.ok, parsed.error);
+
+    const auto symbols = buildSymbolPool(isolateThread(), parsed.options);
+    StopControl stop;
+    std::ostringstream output;
+    LiveCounters live(parsed.options.instances);
+    const auto result = runNetTest(isolateThread(), parsed.options, symbols.symbols, stop, output, {}, &live);
+
+    INFO("the error: " << result.error);
+    REQUIRE(result.exitCode == 0);
+    CHECK_FALSE(result.report.slip.has_value());
+    CHECK(live.publish.slipLastNanos.load() == 0);
+    CHECK(live.instances[0].records.load() == result.records);
+    CHECK(live.publish.calls.load() > 0);
+    CHECK(live.publish.firstBatchEpochNanos.load() >= result.report.startEpochNs);
+
+    const auto &intervals = result.report.intervals;
+
+    REQUIRE(intervals.size() >= 3);
+    CHECK(intervals.front().warmup);
+    CHECK_FALSE(intervals.back().warmup);
+
+    // Once an interval is measured, the later ones are too.
+    bool measured = false;
+
+    for (const auto &interval : intervals) {
+        CHECK_FALSE((measured && interval.warmup));
+        measured = measured || !interval.warmup;
+        CHECK_FALSE(interval.slipMaxNs.has_value());
+    }
 }
 
 TEST_CASE("U3: the legacy publishing call, the reuse and TimeAndSale count the same order of records") {
@@ -2362,6 +2457,92 @@ TEST_CASE("Consumer: the e2e lag of the tool on c shows the delay injected betwe
     }
 
     CHECK(withRecords >= 2);
+
+    // The report of the summary: every symbol came, the histogram sees the delay, the intervals add up to the records.
+    const auto &report = consumer.result.report;
+    const auto delayNanos = DELAY_MICROS * 1000;
+    std::int64_t intervalRecords = 0;
+
+    for (const auto &interval : report.intervals) {
+        intervalRecords += interval.records;
+        CHECK_FALSE(interval.publishNsPerEvent.has_value());
+
+        if (interval.records > 0) {
+            REQUIRE(interval.lagP50Ns.has_value());
+            CHECK(*interval.lagP50Ns >= delayNanos);
+            CHECK(*interval.lagMaxNs >= *interval.lagP50Ns - delayNanos / 100);
+        }
+    }
+
+    CHECK(intervalRecords == report.records);
+    REQUIRE(report.symbolsSeen.has_value());
+    CHECK(*report.symbolsSeen == 100);
+    REQUIRE(report.e2eLag.has_value());
+    CHECK(report.e2eLag->count >= 1000);
+    CHECK(report.e2eLag->negative == 0);
+    REQUIRE(report.e2eLag->p50Ns.has_value());
+    CHECK(*report.e2eLag->p50Ns >= delayNanos);
+    CHECK(*report.e2eLag->p50Ns <= *report.e2eLag->p99Ns);
+    CHECK(*report.e2eLag->p99Ns <= *report.e2eLag->p9999Ns);
+    CHECK(*report.e2eLag->meanNs >= delayNanos);
+    CHECK(*report.e2eLag->maxNs < delayNanos + 1'000'000'000);
+    CHECK_FALSE(report.publish.has_value());
+    CHECK(report.connectors.size() == 2);
+
+    for (const auto &connector : report.connectors) {
+        CHECK(connector.readBytes > 0);
+        CHECK(connector.activeConnections == 1);
+    }
+
+    CHECK(producer.result.report.connectors.size() == 1);
+    CHECK(producer.result.report.connectors[0].writtenBytes > 0);
+}
+
+TEST_CASE("Consumer: --warmup starts at the first record and keeps the warm-up records out of the e2e lag totals") {
+    const auto port = freePort();
+    // The records start about 1.5 s after the connection, 2,000 per second.
+    TestPublisher publisher(isolateThread(), port, TestPublisher::UNTIL_FINISH, false);
+
+    REQUIRE(publisher.ready);
+
+    // The publisher of the test sends no nanosecond part, so the check of it is off.
+    StopControl stop;
+    const auto consumer = runMode(isolateThread(), "c",
+                                  {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "6s", "--warmup", "1s",
+                                   "-Ddxscheme.nanoTime=false"},
+                                  stop);
+
+    CHECK(publisher.finish() == 0);
+    INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+    REQUIRE(consumer.result.exitCode == 0);
+
+    const auto &report = consumer.result.report;
+    const auto &intervals = report.intervals;
+
+    REQUIRE(intervals.size() >= 4);
+    // No record yet: the warm-up has not started, so the first interval belongs to it.
+    CHECK(intervals.front().warmup);
+    CHECK(intervals.front().records == 0);
+
+    std::int64_t warmupRecords = 0;
+    std::int64_t measuredRecords = 0;
+    bool measured = false;
+
+    for (const auto &interval : intervals) {
+        // The warm-up is a prefix of the intervals.
+        CHECK_FALSE((measured && interval.warmup));
+        measured = measured || !interval.warmup;
+        (interval.warmup ? warmupRecords : measuredRecords) += interval.records;
+    }
+
+    // The interval of the first record and the second after it are warm-up, the later ones are measured.
+    CHECK(warmupRecords > 0);
+    CHECK(measuredRecords > 0);
+    REQUIRE(report.e2eLag.has_value());
+    CHECK(report.e2eLag->count > 0);
+    CHECK(report.e2eLag->count < report.records);
+    CHECK(report.e2eLag->count <= measuredRecords + 1000);
+    CHECK(report.e2eLag->p50Ns.has_value());
 }
 
 TEST_CASE("Consumer: the watchdog stops the consumer when the records stop and the connection stays open") {

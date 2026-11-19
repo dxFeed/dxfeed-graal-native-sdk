@@ -70,6 +70,17 @@ struct Options {
     bool legacy = false;
     // The length of the run in milliseconds (--duration), unset when it ends on a signal only.
     std::optional<std::int64_t> durationMillis{};
+    // The warm-up in milliseconds (--warmup), unset without one: on `c` it starts at the first received record, on `p`
+    // at the first batch.
+    std::optional<std::int64_t> warmupMillis{};
+    // The summary file (--summary), empty without one.
+    std::string summaryFile{};
+    // The host and the port of /metrics (--metrics-port [<host>:]<port>); the port is unset without the option, and 0
+    // takes a free port.
+    std::string metricsHost = "127.0.0.1";
+    std::optional<std::int32_t> metricsPort{};
+    // The arguments after the program name as they were given, for the summary file.
+    std::vector<std::string> arguments{};
     // The system properties (-D<key>=<value>) in the command line order.
     std::vector<std::pair<std::string, std::string>> properties{};
     // The arguments of the isolate (-Xmx, -Xms, -Xmn, -XX:<option>) as they are, in the command line order.
@@ -93,6 +104,9 @@ std::optional<std::int64_t> parseDuration(const std::string &text);
 // Parses a rate with the optional suffix `k`, `M` or `G` (for example `500k`, `1M`, `2.5M`) into records per second.
 // Returns nullopt for a value below 1 record per second or an overflowing value.
 std::optional<std::int64_t> parseRate(const std::string &text);
+
+// Whether a file can be created in the directory of the path (the current directory for a bare file name).
+bool isWritableDirectoryOf(const std::string &file);
 
 // Returns true when the address makes an endpoint listen (it starts with `:`).
 bool isServerAddress(const std::string &address);

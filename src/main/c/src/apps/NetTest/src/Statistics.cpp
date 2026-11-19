@@ -183,11 +183,22 @@ ReporterClock systemReporterClock(StopControl &stop) {
 }
 
 void runReporter(const std::string &name, std::int64_t periodMillis, const ReporterClock &clock,
-                 const StatisticsSource &source, const StatisticsSink &sink, Side side) {
+                 const StatisticsSource &source, const StatisticsSink &sink, Side side,
+                 const IntervalSink &intervals) {
     const std::int64_t periodNanos = std::max<std::int64_t>(periodMillis, 1) * NANOS_PER_MILLI;
     auto previous = source();
     auto previousTime = clock.nowNanos();
     bool primed = false;
+    // The intervals of the sink start at 0 counters, the printed blocks at the first sample.
+    StatisticsSample intervalStart{};
+
+    const auto interval = [&](const StatisticsSample &current, std::int64_t currentTime) {
+        if (intervals) {
+            intervals(intervalStart, current, previousTime, currentTime);
+        }
+
+        intervalStart = current;
+    };
 
     // The block and, after it, the runtime line, in one text, so that nothing printed elsewhere comes between them.
     const auto print = [&](const StatisticsSample &current, std::int64_t length) {
@@ -210,6 +221,7 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
             print(current, currentTime - previousTime);
         }
 
+        interval(current, currentTime);
         primed = true;
         previous = current;
         previousTime = currentTime;
@@ -222,6 +234,8 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
     if (currentTime - previousTime >= MIN_LAST_BLOCK_NANOS) {
         print(current, currentTime - previousTime);
     }
+
+    interval(current, currentTime);
 }
 
 } // namespace nettest

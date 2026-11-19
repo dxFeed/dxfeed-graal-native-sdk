@@ -2,14 +2,18 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <NetTest/Run.hpp>
+#include <NetTest/Histogram.hpp>
 #include <NetTest/RateLimiter.hpp>
 #include <NetTest/Sdk.hpp>
 
 #include <algorithm>
+#include <array>
 #include <csignal>
 #include <cstdlib>
 #include <mutex>
 #include <optional>
+#include <string_view>
+#include <unordered_map>
 
 namespace dxfg {
 namespace nettest {
@@ -66,9 +70,10 @@ class Endpoint {
     dxfg_v4_endpoint_t *endpoint_ = nullptr;
 
   public:
-    InstanceCounters counters{};
+    // The counters of the instance in the live counters of the run.
+    InstanceCounters &counters;
 
-    explicit Endpoint(graal_isolatethread_t *thread) : thread_(thread) {
+    Endpoint(graal_isolatethread_t *thread, InstanceCounters &counters) : thread_(thread), counters(counters) {
     }
 
     Endpoint(const Endpoint &) = delete;
@@ -179,6 +184,51 @@ class Endpoint {
 
         return total;
     }
+
+    // The statistics v1 of the connectors of the endpoint, with their addresses when asked; a connector whose
+    // statistics cannot be read is left out.
+    std::vector<ConnectorSummary> connectorStatistics(graal_isolatethread_t *readingThread, bool withAddress) const {
+        std::vector<ConnectorSummary> summaries;
+        const ConnectorList connectors(readingThread, endpoint_);
+
+        for (std::int32_t index = 0; index < connectors.size(); ++index) {
+            dxfg_v4_message_connector_stats_t stats{};
+
+            if (dxfg_v4_MessageConnector_getStatistics(readingThread, connectors[index], &stats) !=
+                DXFG_EXECUTE_SUCCESSFULLY) {
+                takeThreadException(readingThread);
+
+                continue;
+            }
+
+            ConnectorSummary summary;
+
+            summary.readBytes = stats.read_bytes;
+            summary.writtenBytes = stats.written_bytes;
+            summary.readDataRecords = stats.read_data_records;
+            summary.writtenDataRecords = stats.written_data_records;
+            summary.activeConnections = stats.active_connection_count;
+            summary.closedConnections = stats.closed_connection_count;
+
+            if (withAddress) {
+                const char *address = nullptr;
+
+                if (dxfg_v4_MessageConnector_getAddress(readingThread, connectors[index], &address) ==
+                    DXFG_EXECUTE_SUCCESSFULLY) {
+                    if (address != nullptr) {
+                        summary.address = address;
+                        dxfg_v4_String_release(readingThread, address);
+                    }
+                } else {
+                    takeThreadException(readingThread);
+                }
+            }
+
+            summaries.push_back(std::move(summary));
+        }
+
+        return summaries;
+    }
 };
 
 // One publisher endpoint with its event pool.
@@ -188,8 +238,9 @@ class Instance final : public Endpoint {
   public:
     EventPool pool;
 
-    Instance(graal_isolatethread_t *thread, EventKind kind, const Symbols &symbols, std::uint64_t seed)
-        : Endpoint(thread), pool(kind, symbols, seed) {
+    Instance(graal_isolatethread_t *thread, InstanceCounters &counters, EventKind kind, const Symbols &symbols,
+             std::uint64_t seed)
+        : Endpoint(thread, counters), pool(kind, symbols, seed) {
     }
 
     ~Instance() override {
@@ -220,9 +271,62 @@ class Instance final : public Endpoint {
     }
 };
 
-// What the consumer instances share: the check of the nanosecond part over the first events of all instances and the
-// time of the last record for the watchdog. The listeners write it on the threads of the SDK.
+// The e2e lags of one interval of all consumers, with the signs; the maximum is valid when the count is not 0.
+struct IntervalLags {
+    std::int64_t count = 0;
+    std::int64_t negative = 0;
+    std::int64_t sum = 0;
+    std::int64_t max = 0;
+};
+
+// The e2e lags of the current interval: the listeners record them, the reporter takes them at the end of the interval.
+class LagRecorder {
+    std::mutex mutex_{};
+    std::unique_ptr<Histogram> current_ = std::make_unique<Histogram>();
+    IntervalLags lags_{};
+    // The histogram of the interval taken last; only the reporter touches it.
+    std::unique_ptr<Histogram> taken_ = std::make_unique<Histogram>();
+
+  public:
+    void record(const std::vector<std::int64_t> &lags) {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        for (const auto lag : lags) {
+            // The histogram takes a negative lag as 0.
+            current_->record(lag);
+            lags_.max = lags_.count == 0 ? lag : std::max(lags_.max, lag);
+            lags_.sum += lag;
+            lags_.negative += lag < 0 ? 1 : 0;
+            ++lags_.count;
+        }
+    }
+
+    // Takes the lags of the interval and starts the next one; the histogram stays valid until the next call.
+    std::pair<IntervalLags, const Histogram *> take() {
+        taken_->reset();
+
+        std::lock_guard<std::mutex> lock(mutex_);
+        const auto lags = lags_;
+
+        std::swap(current_, taken_);
+        lags_ = {};
+
+        return {lags, taken_.get()};
+    }
+};
+
+// What the consumer instances share: the check of the nanosecond part over the first events of all instances, the time
+// of the last record for the watchdog, the lags and the symbols seen. The listeners write it on the threads of the SDK.
 class ConsumerState {
+  public:
+    LiveCounters &live;
+    LagRecorder lags{};
+    // The wall-clock time of the first listener call with records, 0 before it: the start of the warm-up on `c`.
+    std::atomic<std::int64_t> firstRecordEpochNanos{0};
+    // The distinct symbols received by all instances.
+    std::atomic<std::int64_t> symbolsSeen{0};
+
+  private:
     StopControl &stop_;
     const bool nanoCheck_;
     std::mutex nanoMutex_{};
@@ -234,7 +338,8 @@ class ConsumerState {
     std::atomic<std::int64_t> lastRecordNanos_{0};
 
   public:
-    ConsumerState(StopControl &stop, bool nanoCheck) : stop_(stop), nanoCheck_(nanoCheck), nanoPending_(nanoCheck) {
+    ConsumerState(LiveCounters &live, StopControl &stop, bool nanoCheck)
+        : live(live), stop_(stop), nanoCheck_(nanoCheck), nanoPending_(nanoCheck) {
     }
 
     bool nanoPending() const {
@@ -281,17 +386,45 @@ class ConsumerState {
     }
 };
 
-// One feed endpoint with its subscription to a slice of the symbols. The listener counts the records and sums their
-// e2e lags; it runs on the threads of the SDK.
+// One feed endpoint with its subscription to a slice of the symbols. The listener counts the records, sums their e2e
+// lags, records them and marks their symbols; it runs on the threads of the SDK.
 class Consumer final : public Endpoint {
     EventKind kind_;
     ConsumerState &state_;
     dxfg_v4_feed_t *feed_ = nullptr;
     dxfg_v4_subscription_t *subscription_ = nullptr;
     dxfg_v4_feed_event_listener_t *listener_ = nullptr;
+    // The slice of the symbols and which of them came.
+    std::vector<std::string> symbols_{};
+    std::unordered_map<std::string_view, std::size_t> symbolIndex_{};
+    std::mutex seenMutex_{};
+    std::vector<bool> seen_{};
+    std::size_t seenCount_ = 0;
+    std::atomic<bool> allSeen_{false};
 
     static void onEvents(graal_isolatethread_t *, dxfg_event_type_list *events, void *userData) {
         static_cast<Consumer *>(userData)->receive(events);
+    }
+
+    // Marks a received symbol; the caller holds seenMutex_.
+    void markSeen(const char *symbol) {
+        if (symbol == nullptr) {
+            return;
+        }
+
+        const auto found = symbolIndex_.find(std::string_view(symbol));
+
+        if (found == symbolIndex_.end() || seen_[found->second]) {
+            return;
+        }
+
+        seen_[found->second] = true;
+        ++seenCount_;
+        state_.symbolsSeen.fetch_add(1, std::memory_order_relaxed);
+
+        if (seenCount_ == seen_.size()) {
+            allSeen_.store(true, std::memory_order_relaxed);
+        }
     }
 
     void receive(const dxfg_event_type_list *events) {
@@ -301,8 +434,21 @@ class Consumer final : public Endpoint {
         const auto expectedClass = isTrade ? DXFG_EVENT_TRADE : DXFG_EVENT_TIME_AND_SALE;
         const bool nanoPending = state_.nanoPending();
         std::vector<std::int32_t> nanoParts{};
+        std::vector<std::int64_t> lags{};
+        std::array<std::int64_t, LAG_BUCKET_BOUNDS_NANOS.size() + 1> buckets{};
         std::int64_t records = 0;
         std::int64_t lagSum = 0;
+        std::int64_t positiveSum = 0;
+        std::int64_t negative = 0;
+        // Once every symbol of the slice came, the symbols are not looked up anymore.
+        std::unique_lock<std::mutex> seenLock(seenMutex_, std::defer_lock);
+        const bool trackSymbols = !allSeen_.load(std::memory_order_relaxed);
+
+        if (trackSymbols) {
+            seenLock.lock();
+        }
+
+        lags.reserve(static_cast<std::size_t>(std::max(events->size, 0)));
 
         for (std::int32_t index = 0; index < events->size; ++index) {
             const dxfg_event_type_t *event = events->elements[index];
@@ -313,34 +459,61 @@ class Consumer final : public Endpoint {
 
             std::int64_t packed = 0;
             std::int32_t nanoPart = 0;
+            const char *symbol = nullptr;
 
             if (isTrade) {
                 const auto *trade = reinterpret_cast<const dxfg_trade_t *>(event);
 
                 packed = trade->trade_base.time_sequence;
                 nanoPart = trade->trade_base.time_nano_part;
+                symbol = trade->trade_base.market_event.event_symbol;
             } else {
                 const auto *sale = reinterpret_cast<const dxfg_time_and_sale_t *>(event);
 
                 packed = sale->index;
                 nanoPart = sale->time_nano_part;
+                symbol = sale->market_event.event_symbol;
             }
 
-            // A negative lag (a clock step or skew between the hosts) enters the sum with its sign.
+            // A negative lag (a clock step or skew between the hosts) enters the sum with its sign, the buckets and the
+            // histogram as 0.
+            const auto lag = eventLagNanos(now, packed, nanoPart);
+
             ++records;
-            lagSum += eventLagNanos(now, packed, nanoPart);
+            lagSum += lag;
+            lags.push_back(lag);
+            ++buckets[lagBucketIndex(lag)];
+
+            if (lag < 0) {
+                ++negative;
+            } else {
+                positiveSum += lag;
+            }
+
+            if (trackSymbols) {
+                markSeen(symbol);
+            }
 
             if (nanoPending) {
                 nanoParts.push_back(nanoPart);
             }
         }
 
+        if (trackSymbols) {
+            seenLock.unlock();
+        }
+
         if (records == 0) {
             return;
         }
 
+        std::int64_t unset = 0;
+
+        state_.firstRecordEpochNanos.compare_exchange_strong(unset, now, std::memory_order_relaxed);
         counters.records.fetch_add(records, std::memory_order_relaxed);
         counters.weightedNanos.fetch_add(lagSum, std::memory_order_relaxed);
+        state_.live.addLags(buckets, records, positiveSum, negative);
+        state_.lags.record(lags);
         state_.recordsArrived();
 
         if (nanoPending) {
@@ -349,8 +522,8 @@ class Consumer final : public Endpoint {
     }
 
   public:
-    Consumer(graal_isolatethread_t *thread, EventKind kind, ConsumerState &state)
-        : Endpoint(thread), kind_(kind), state_(state) {
+    Consumer(graal_isolatethread_t *thread, InstanceCounters &counters, EventKind kind, ConsumerState &state)
+        : Endpoint(thread, counters), kind_(kind), state_(state) {
     }
 
     ~Consumer() override {
@@ -377,6 +550,15 @@ class Consumer final : public Endpoint {
     // false and fills the error on a failure. The endpoint connects later (Endpoint::connect()).
     bool create(dxfg_v4_endpoint_role_t role, const std::string &name, const std::string &nanoTime,
                 const std::vector<std::string> &symbols, std::string &error) {
+        // The index of the slice before the listener, whose calls read it.
+        symbols_ = symbols;
+        seen_.assign(symbols_.size(), false);
+        allSeen_.store(symbols_.empty());
+
+        for (std::size_t index = 0; index < symbols_.size(); ++index) {
+            symbolIndex_.emplace(std::string_view(symbols_[index]), index);
+        }
+
         if (!build(role, name, nanoTime, error)) {
             return false;
         }
@@ -562,13 +744,22 @@ std::int64_t eventLagNanos(std::int64_t nowNanos, std::int64_t packedTime, std::
 }
 
 RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, const Symbols &symbols, StopControl &stop,
-                     std::ostream &out, const RunHooks &hooks) {
+                     std::ostream &out, const RunHooks &hooks, LiveCounters *live) {
     RunResult result;
+    result.report.startEpochNs = systemNanos();
     graal_isolate_t *isolate = graal_get_isolate(thread);
     const bool producer = options.mode == Mode::PRODUCER;
     const auto role = endpointRole(options);
     const auto nanoTime = endpointNanoTime(options);
-    ConsumerState consumerState(stop, isNanoTimeOn(options));
+    std::unique_ptr<LiveCounters> ownCounters;
+
+    if (live == nullptr || live->instanceCount < options.instances) {
+        ownCounters = std::make_unique<LiveCounters>(options.instances);
+        live = ownCounters.get();
+    }
+
+    LiveCounters &counters = *live;
+    ConsumerState consumerState(counters, stop, isNanoTimeOn(options));
     std::vector<std::unique_ptr<Instance>> instances;
     std::vector<std::unique_ptr<Consumer>> consumers;
     std::vector<Endpoint *> endpoints;
@@ -578,6 +769,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
         result.exitCode = EXIT_FAILURE;
         result.status = RunStatus::FAILED;
         result.error = message;
+        result.report.endEpochNs = systemNanos();
 
         return result;
     };
@@ -585,9 +777,10 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
     // An instance that failed to start is destroyed when this function returns, with the endpoints created before it.
     for (std::int32_t index = 1; index <= options.instances; ++index) {
         const auto name = options.name + "." + std::to_string(index);
+        auto &instanceCounters = counters.instances[static_cast<std::size_t>(index - 1)];
 
         if (producer) {
-            auto instance = std::make_unique<Instance>(thread, options.event, symbols,
+            auto instance = std::make_unique<Instance>(thread, instanceCounters, options.event, symbols,
                                                        0x9E3779B97F4A7C15ULL * static_cast<std::uint64_t>(index));
             const bool started =
                 instance->create(role, name, nanoTime, error) && instance->connect(name, options.address, error);
@@ -600,7 +793,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
             }
         } else {
             // The listener comes before the symbols, and the endpoint connects last.
-            auto consumer = std::make_unique<Consumer>(thread, options.event, consumerState);
+            auto consumer = std::make_unique<Consumer>(thread, instanceCounters, options.event, consumerState);
             const bool started =
                 consumer->create(role, name, nanoTime, consumerSlice(*symbols, index, options.instances), error) &&
                 consumer->connect(name, options.address, error);
@@ -637,8 +830,35 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
         stop.request();
     };
 
-    // The reporter reads the counters and the connections of the instances and the runtime values of the isolate; it
-    // stops after the generators.
+    // What the reporter collects for the summary; read after it is joined.
+    const Side side = producer ? Side::PRODUCER : Side::CONSUMER;
+    const bool scheduled = limiter != nullptr;
+    const auto warmupNanos = options.warmupMillis.value_or(0) * 1'000'000;
+    std::vector<IntervalRecord> intervals;
+    // The lags of the measured intervals.
+    const auto lagTotal = std::make_unique<Histogram>();
+    IntervalLags lagTotals{};
+    std::optional<RuntimeSample> firstRuntime;
+    std::optional<RuntimeSample> lastRuntime;
+    std::int64_t firstRuntimeNanos = 0;
+    std::int64_t lastRuntimeNanos = 0;
+    std::int64_t lastPublishNanos = 0;
+
+    // The warm-up starts at the first batch (`p`) or the first record (`c`).
+    const auto isWarmup = [&](std::int64_t startNanos) {
+        if (!options.warmupMillis.has_value()) {
+            return false;
+        }
+
+        const auto warmupStart = producer ? counters.publish.firstBatchEpochNanos.load(std::memory_order_relaxed)
+                                          : consumerState.firstRecordEpochNanos.load(std::memory_order_relaxed);
+
+        return isWarmupInterval(warmupNanos, warmupStart, startNanos);
+    };
+
+    // The reporter reads the counters and the connections of the instances, the statistics of their connectors and the
+    // runtime values of the isolate, keeps them in the live counters and collects the intervals; it stops after the
+    // generators.
     StopControl reporterStop;
     std::thread reporter = attachedThread(isolate, [&](graal_isolatethread_t *reporterThread) {
         if (reporterThread == nullptr) {
@@ -651,21 +871,96 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
             options.name, options.periodMillis, systemReporterClock(reporterStop),
             [&] {
                 StatisticsSample sample;
+                ConnectorTotals totals;
 
-                for (const auto *endpoint : endpoints) {
+                for (std::size_t index = 0; index < endpoints.size(); ++index) {
+                    const auto *endpoint = endpoints[index];
+                    const auto connections = endpoint->connections(reporterThread);
+
                     sample.instances.push_back({endpoint->counters.records.load(std::memory_order_relaxed),
                                                 endpoint->counters.weightedNanos.load(std::memory_order_relaxed)});
-                    sample.connections += endpoint->connections(reporterThread);
+                    sample.connections += connections;
+                    counters.connections[index].store(connections, std::memory_order_relaxed);
+
+                    for (const auto &connector : endpoint->connectorStatistics(reporterThread, false)) {
+                        totals.readBytes += connector.readBytes;
+                        totals.writtenBytes += connector.writtenBytes;
+                        totals.readRecords += connector.readDataRecords;
+                        totals.writtenRecords += connector.writtenDataRecords;
+                    }
                 }
 
-                sample.runtime = readRuntime(reporterThread);
+                const auto runtime = readRuntime(reporterThread);
+                const auto now = systemNanos();
+
+                counters.setConnectors(totals);
+                counters.setRuntime(runtime);
+                sample.runtime = runtime;
+
+                if (!firstRuntime.has_value()) {
+                    firstRuntime = runtime;
+                    firstRuntimeNanos = now;
+                }
+
+                lastRuntime = runtime;
+                lastRuntimeNanos = now;
 
                 return sample;
             },
             [&](const std::string &text) {
                 out << text << std::flush;
             },
-            producer ? Side::PRODUCER : Side::CONSUMER);
+            side,
+            [&](const StatisticsSample &previous, const StatisticsSample &current, std::int64_t startNanos,
+                std::int64_t endNanos) {
+                IntervalRecord interval;
+
+                interval.startEpochMs = startNanos / 1'000'000;
+                interval.endEpochMs = endNanos / 1'000'000;
+                interval.warmup = isWarmup(startNanos);
+                interval.connections = current.connections;
+
+                for (const auto &delta : makeSnapshot(options.name, previous, current, endNanos - startNanos, side).deltas) {
+                    interval.records += delta.records;
+                }
+
+                interval.rate = recordsPerSecond(interval.records, endNanos - startNanos);
+
+                if (producer) {
+                    const auto publishNanos = counters.publish.nanos.load(std::memory_order_relaxed);
+
+                    if (interval.records > 0) {
+                        interval.publishNsPerEvent = (publishNanos - lastPublishNanos) / interval.records;
+                    }
+
+                    lastPublishNanos = publishNanos;
+
+                    if (scheduled) {
+                        interval.slipMaxNs = counters.publish.slipIntervalMaxNanos.exchange(0, std::memory_order_relaxed);
+                        interval.slipEndNs = counters.publish.slipLastNanos.load(std::memory_order_relaxed);
+                    }
+                } else {
+                    const auto [lags, histogram] = consumerState.lags.take();
+
+                    if (lags.count > 0) {
+                        // C++ divides toward zero, as the specification wants for a negative sum.
+                        interval.lagMeanNs = lags.sum / lags.count;
+                        interval.lagP50Ns = histogram->valueAtPercentile(50.0);
+                        interval.lagP99Ns = histogram->valueAtPercentile(99.0);
+                        interval.lagMaxNs = lags.max;
+
+                        if (!interval.warmup) {
+                            lagTotal->add(*histogram);
+                            lagTotals.max = lagTotals.count == 0 ? lags.max : std::max(lagTotals.max, lags.max);
+                            lagTotals.count += lags.count;
+                            lagTotals.sum += lags.sum;
+                            lagTotals.negative += lags.negative;
+                        }
+                    }
+                }
+
+                intervals.push_back(interval);
+            });
     });
 
     std::vector<std::thread> generators;
@@ -679,7 +974,7 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
             }
 
             const auto generated = runGenerator(generatorThread, current->publisher(), current->pool, settings,
-                                                limiter.get(), stop, current->counters);
+                                                limiter.get(), stop, current->counters, counters.publish);
 
             if (!generated.ok) {
                 fail("publishing failed: " + generated.error);
@@ -748,6 +1043,52 @@ RunResult runNetTest(graal_isolatethread_t *thread, const Options &options, cons
         result.records += records;
     }
 
+    // The report of the summary, before the endpoints close.
+    auto &report = result.report;
+
+    report.endEpochNs = systemNanos();
+    report.intervals = std::move(intervals);
+
+    for (const auto &interval : report.intervals) {
+        report.records += interval.records;
+    }
+
+    for (const auto *endpoint : endpoints) {
+        for (auto &connector : endpoint->connectorStatistics(thread, true)) {
+            report.connectors.push_back(std::move(connector));
+        }
+    }
+
+    if (producer) {
+        report.publish = PublishSummary{counters.publish.calls.load(), result.records, counters.publish.nanos.load()};
+
+        if (scheduled) {
+            report.slip = slipSummary(report.intervals, counters.publish.slipLastNanos.load());
+        }
+    } else {
+        LagSummary lag;
+
+        lag.count = lagTotals.count;
+        lag.negative = lagTotals.negative;
+
+        if (lag.count > 0) {
+            lag.p50Ns = lagTotal->valueAtPercentile(50.0);
+            lag.p90Ns = lagTotal->valueAtPercentile(90.0);
+            lag.p99Ns = lagTotal->valueAtPercentile(99.0);
+            lag.p999Ns = lagTotal->valueAtPercentile(99.9);
+            lag.p9999Ns = lagTotal->valueAtPercentile(99.99);
+            lag.maxNs = lagTotals.max;
+            lag.meanNs = lagTotals.sum / lagTotals.count;
+        }
+
+        report.e2eLag = lag;
+        report.symbolsSeen = consumerState.symbolsSeen.load();
+    }
+
+    if (firstRuntime.has_value() && lastRuntime.has_value()) {
+        report.runtime = runtimeSummary(*firstRuntime, firstRuntimeNanos, *lastRuntime, lastRuntimeNanos);
+    }
+
     if (consumerState.nanoMissing() && failure.empty()) {
         failure = "the first " + std::to_string(NANO_CHECK_EVENTS) +
                   " events have the nanosecond part 0: a hop of the path lacks dxscheme.nanoTime=true "
@@ -804,6 +1145,10 @@ SignalWatcher::SignalWatcher(StopControl &stop) : stop_(stop) {
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     });
+}
+
+bool SignalWatcher::received() const {
+    return signalReceived.load();
 }
 
 SignalWatcher::~SignalWatcher() {

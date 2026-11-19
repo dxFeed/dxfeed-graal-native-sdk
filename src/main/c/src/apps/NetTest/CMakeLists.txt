@@ -93,6 +93,11 @@ target_link_libraries(${core}
         DxFeedGraalNativeSdk
         )
 
+# The /metrics responder uses the sockets of Winsock on Windows.
+if (WIN32)
+    target_link_libraries(${core} PUBLIC ws2_32)
+endif ()
+
 target_compile_definitions(${core}
         PRIVATE
         ${DEFAULT_COMPILE_DEFINITIONS}

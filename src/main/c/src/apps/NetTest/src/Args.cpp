@@ -6,6 +6,8 @@
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
+#include <filesystem>
+#include <fstream>
 #include <limits>
 
 namespace dxfg {
@@ -62,6 +64,9 @@ enum class Option {
     REUSE,
     ROLE,
     DURATION,
+    WARMUP,
+    SUMMARY,
+    METRICS_PORT,
     LEGACY,
     HELP,
     WILDCARD,
@@ -85,6 +90,8 @@ constexpr OptionSpec OPTIONS[] = {
     {"--event", Option::EVENT, true, false},      {"--batch", Option::BATCH, true, true},
     {"--reuse", Option::REUSE, false, true},      {"--role", Option::ROLE, true, false},
     {"--duration", Option::DURATION, true, false}, {"--legacy", Option::LEGACY, false, true},
+    {"--warmup", Option::WARMUP, true, false},     {"--summary", Option::SUMMARY, true, false},
+    {"--metrics-port", Option::METRICS_PORT, true, false},
     {"--help", Option::HELP, false, false},       {"-w", Option::WILDCARD, false, false},
     {"--wildcard", Option::WILDCARD, false, false},
 };
@@ -194,6 +201,22 @@ struct Parser {
         }
 
         out = *parsed;
+
+        return true;
+    }
+
+    // [<host>:]<port>, the port from 0 to 65535; the host is the text before the last : and must not be empty.
+    bool parseMetricsPort(const std::string &flag, const std::string &value) {
+        const auto colon = value.rfind(':');
+        const auto host = colon == std::string::npos ? std::string("127.0.0.1") : value.substr(0, colon);
+        const auto port = colon == std::string::npos ? value : value.substr(colon + 1);
+
+        if (host.empty() || !isDigits(port) || port.size() > 5 || std::strtol(port.c_str(), nullptr, 10) > 65535) {
+            return fail(flag + " needs [<host>:]<port>, where <port> is a number from 0 to 65535: '" + value + "'");
+        }
+
+        options.metricsHost = host;
+        options.metricsPort = static_cast<std::int32_t>(std::strtol(port.c_str(), nullptr, 10));
 
         return true;
     }
@@ -325,6 +348,27 @@ struct Parser {
 
             return true;
         }
+        case Option::WARMUP: {
+            std::int64_t warmup = 0;
+
+            if (!parseDurationOption(flag, value, warmup)) {
+                return false;
+            }
+
+            options.warmupMillis = warmup;
+
+            return true;
+        }
+        case Option::SUMMARY:
+            if (value.empty() || !isWritableDirectoryOf(value)) {
+                return fail(flag + " cannot write to the directory of '" + value + "'");
+            }
+
+            options.summaryFile = value;
+
+            return true;
+        case Option::METRICS_PORT:
+            return parseMetricsPort(flag, value);
         case Option::LEGACY:
             options.legacy = true;
 
@@ -399,6 +443,8 @@ struct Parser {
         } else {
             return fail("unknown mode '" + args[1] + "'; the mode is p or c");
         }
+
+        options.arguments.assign(args.begin() + 1, args.end());
 
         for (std::size_t index = 2; index < args.size(); ++index) {
             const auto &argument = args[index];
@@ -566,6 +612,35 @@ std::optional<std::int64_t> parseRate(const std::string &text) {
     return static_cast<std::int64_t>(std::llround(rate));
 }
 
+bool isWritableDirectoryOf(const std::string &file) {
+    namespace fs = std::filesystem;
+
+    std::error_code error;
+    const fs::path path = fs::u8path(file);
+    const auto directory = path.has_parent_path() ? path.parent_path() : fs::path(".");
+
+    if (!fs::is_directory(directory, error) || fs::is_directory(path, error)) {
+        return false;
+    }
+
+    // A probe file next to the summary: the only check of the permissions that works alike everywhere.
+    const auto probe = fs::path(path).concat(".probe");
+    const bool existed = fs::exists(probe, error);
+    bool writable = false;
+
+    {
+        std::ofstream stream(probe, std::ios::binary | std::ios::app);
+
+        writable = stream.good();
+    }
+
+    if (writable && !existed) {
+        fs::remove(probe, error);
+    }
+
+    return writable;
+}
+
 bool isServerAddress(const std::string &address) {
     return !address.empty() && address.front() == ':';
 }
@@ -652,6 +727,12 @@ std::string usageText() {
                        "  --reuse              p: republish the pre-built events in place instead of copying them\n"
                        "  --legacy             p: publish through the deprecated dxfg_DXPublisher_publishEvents\n"
                        "  --duration <time>    end the run after the time (ms, s or m); Ctrl+C ends it at once\n"
+                       "  --warmup <time>      leave the first <time> out of the e2e lag of the summary; on c it starts\n"
+                       "                       at the first record, on p at the first batch\n"
+                       "  --summary <file>     write the JSON summary of the run (nettest-summary/1) at the end\n"
+                       "  --metrics-port [<host>:]<port>\n"
+                       "                       serve /metrics in the Prometheus text format; the host defaults to\n"
+                       "                       127.0.0.1, port 0 takes a free port\n"
                        "  -D<key>=<value>      set a system property before the first endpoint is created\n"
                        "                       (dxscheme.nanoTime also goes to the builder of every endpoint, default "
                        "true)\n"
