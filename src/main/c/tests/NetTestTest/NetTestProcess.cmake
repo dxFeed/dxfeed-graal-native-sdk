@@ -206,6 +206,13 @@ if (NOT output MATCHES "NetTestRuntime-NetTest[*][}] heap [0-9,]+ MB of [0-9,]+ 
     message(FATAL_ERROR "The runtime line shows no heap values")
 endif ()
 
+# The G1 GC (the oracle-g1 variant) gives no collection counts: no runtime line shows them.
+if (output MATCHES "NetTestRuntime-NetTest[*][}] [^\n]*, gc [0-9]")
+    set(g1 OFF)
+else ()
+    set(g1 ON)
+endif ()
+
 # 2. The unknown flag.
 execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 --no-such-flag
         RESULT_VARIABLE code
@@ -222,9 +229,15 @@ if (NOT errors MATCHES "--no-such-flag")
     message(FATAL_ERROR "stderr does not name the flag --no-such-flag")
 endif ()
 
-# 3. The GC options. A young generation of 2 MB fills several times in 3 seconds of copied batches.
-execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 -r */5k -s 1s --duration 3s
-        -Xmx64m -Xmn2m -XX:+PrintGC -XX:+PrintGCSummary
+# 3. The GC options. A young generation of 2 MB fills several times in 3 seconds of copied batches. -XX:+PrintGCSummary
+# is an option of the Serial GC: G1 rejects it, and its -XX:+PrintGC names the GC on stdout.
+if (g1)
+    set(gc_options -XX:+PrintGC)
+else ()
+    set(gc_options -XX:+PrintGC -XX:+PrintGCSummary)
+endif ()
+
+execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 -r */5k -s 1s --duration 3s -Xmx64m -Xmn2m ${gc_options}
         RESULT_VARIABLE code
         OUTPUT_VARIABLE output
         ERROR_VARIABLE errors
@@ -232,15 +245,21 @@ execute_process(COMMAND "${NETTEST}" p 127.0.0.1:1 -S 100 -r */5k -s 1s --durati
 message("exit code: ${code}\nstdout:\n${output}\nstderr:\n${errors}")
 
 if (NOT "${code}" STREQUAL "0")
-    message(FATAL_ERROR "NetTest with the GC options exited with ${code}, expected 0")
+    message(FATAL_ERROR "NetTest with the GC options ${gc_options} exited with ${code}, expected 0")
 endif ()
 
-if (NOT errors MATCHES "GC\\([0-9]+\\) Pause")
-    message(FATAL_ERROR "stderr has no GC line of -XX:+PrintGC")
-endif ()
+if (g1)
+    if (NOT output MATCHES "Using G1")
+        message(FATAL_ERROR "stdout has no GC line of -XX:+PrintGC")
+    endif ()
+else ()
+    if (NOT errors MATCHES "GC\\([0-9]+\\) Pause")
+        message(FATAL_ERROR "stderr has no GC line of -XX:+PrintGC")
+    endif ()
 
-if (NOT errors MATCHES "GC summary")
-    message(FATAL_ERROR "stderr has no GC summary of -XX:+PrintGCSummary: the isolate was not torn down")
+    if (NOT errors MATCHES "GC summary")
+        message(FATAL_ERROR "stderr has no GC summary of -XX:+PrintGCSummary: the isolate was not torn down")
+    endif ()
 endif ()
 
 # 4. The rejected option. The tool's own line names the isolate options on every platform; the reason that GraalVM

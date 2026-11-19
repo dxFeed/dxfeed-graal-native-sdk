@@ -67,8 +67,9 @@ public class MessageConnectorsTest extends ConnectorTestSupport {
 
     @Test
     public void connectedClientReportsAddressAndCountsDataRecords() throws Exception {
-        final int port = findFreeLoopbackPort();
-        final DXEndpoint publisher = startPublisher(port);
+        final Publisher started = startPublisher();
+        final DXEndpoint publisher = started.endpoint();
+        final int port = started.port();
         final DXEndpoint feed = create(DXEndpoint.Role.FEED).connect("127.0.0.1:" + port);
         final MessageConnector client = MessageConnectors.getConnectors(feed).getFirst();
 
@@ -136,8 +137,7 @@ public class MessageConnectorsTest extends ConnectorTestSupport {
 
     @Test
     public void connectToAnotherAddressReplacesConnectors() throws Exception {
-        final int port = findFreeLoopbackPort();
-        startPublisher(port);
+        final int port = startPublisher().port();
 
         final DXEndpoint feed = create(DXEndpoint.Role.FEED).connect("127.0.0.1:1");
         final MessageConnector first = MessageConnectors.getConnectors(feed).getFirst();
@@ -201,10 +201,10 @@ public class MessageConnectorsTest extends ConnectorTestSupport {
     public void ioStatisticsCountBothDirectionsAndTheRoundTripTime() throws Exception {
         assertThrows(NullPointerException.class, () -> MessageConnectors.getIoStatistics(null));
 
-        final int port = findFreeLoopbackPort();
-        final DXEndpoint publisher = startPublisher(port);
+        final Publisher started = startPublisher();
+        final DXEndpoint publisher = started.endpoint();
         final MessageConnector server = MessageConnectors.getConnectors(publisher).getFirst();
-        final DXEndpoint feed = create(DXEndpoint.Role.FEED).connect("127.0.0.1:" + port);
+        final DXEndpoint feed = create(DXEndpoint.Role.FEED).connect("127.0.0.1:" + started.port());
         final MessageConnector client = MessageConnectors.getConnectors(feed).getFirst();
 
         await("the connection", () -> client.getState() == MessageConnectorState.CONNECTED);

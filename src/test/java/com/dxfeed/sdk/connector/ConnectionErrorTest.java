@@ -185,8 +185,7 @@ public class ConnectionErrorTest extends ConnectorTestSupport {
 
     @Test
     public void localReconnectDisconnectAndCloseAreNoErrors() throws Exception {
-        final int port = findFreeLoopbackPort();
-        startPublisher(port);
+        final int port = startPublisher().port();
         final DXEndpoint endpoint = watched().connect("127.0.0.1:" + port);
         final MessageConnector connector = MessageConnectors.getConnectors(endpoint).getFirst();
 
@@ -208,8 +207,7 @@ public class ConnectionErrorTest extends ConnectorTestSupport {
         final MessageConnector failed = MessageConnectors.getConnectors(endpoint).getFirst();
         final ConnectionError error = awaitError(endpoint);
 
-        final int healthyPort = findFreeLoopbackPort();
-        startPublisher(healthyPort);
+        final int healthyPort = startPublisher().port();
         endpoint.connect("127.0.0.1:" + healthyPort);
         final MessageConnector healthy = MessageConnectors.getConnectors(endpoint).getFirst();
         await("connected", () -> healthy.getState() == MessageConnectorState.CONNECTED);

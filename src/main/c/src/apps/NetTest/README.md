@@ -291,6 +291,10 @@ GC summary
 
 At the end of the run the tool closes all endpoints and tears the isolate down, which prints the summary.
 
+The table is for the Serial GC. The G1 GC of the `oracle-g1` variant of the SDK has no `-XX:+PrintGCSummary`: the
+isolate rejects it (see [A rejected option](#a-rejected-option)). Its `-XX:+PrintGC` prints the lines of G1 to stdout,
+starting with `[0.000s][info][gc] Using G1`.
+
 The `gc` value of the runtime line in [Statistics](#statistics) needs no option: it counts the same collections as
 `-XX:+PrintGC` (`Incremental GC` as young, `Complete GC` as full) per statistics period, with their collection time
 in milliseconds as the GC beans of the isolate report it.

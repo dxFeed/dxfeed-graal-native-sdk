@@ -133,8 +133,13 @@ target_link_options(${target}
 # system property dxscheme.nanoTime must be set before the first endpoint of the process, and the cases of the builder
 # property ("StreamFeed: ...") in a process that never sets the system property, and the consumer cases ("Consumer: ...")
 # in a process of their own for their length. Each entry has its own timeout.
-add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "--test-case-exclude=E2E*,StreamFeed*,Consumer*")
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>
+        "--test-case-exclude=E2E*,StreamFeed*,Consumer*,*isolate takes*")
 set_tests_properties(${target} PROPERTIES TIMEOUT 60)
+
+# The case that creates and tears down an isolate of its own: not run with the G1 GC (one isolate per process).
+add_test(NAME ${target}.Isolate COMMAND $<TARGET_FILE:${target}> "--test-case=*isolate takes*")
+set_tests_properties(${target}.Isolate PROPERTIES TIMEOUT 60 LABELS multi-isolate)
 
 add_test(NAME ${target}.EndToEnd COMMAND $<TARGET_FILE:${target}> "--test-case=E2E*")
 set_tests_properties(${target}.EndToEnd PROPERTIES TIMEOUT 60)

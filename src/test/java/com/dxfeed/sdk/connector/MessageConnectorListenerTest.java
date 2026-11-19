@@ -65,13 +65,12 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
     @Test
     public void listenerIsCalledOnTheDispatcherThreadAndFollowsNewConnectors() throws Exception {
-        final int port = findFreeLoopbackPort();
-        final DXEndpoint publisher = startPublisher(port);
+        final Publisher publisher = startPublisher();
         final DXEndpoint feed = create(DXEndpoint.Role.FEED);
         final RecordingListener listener = new RecordingListener();
 
         ConnectorMonitor.addListener(feed, listener);
-        feed.connect("127.0.0.1:" + port);
+        feed.connect("127.0.0.1:" + publisher.port());
 
         final MessageConnector first = MessageConnectors.getConnectors(feed).getFirst();
 
@@ -82,13 +81,12 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
         }
 
         // The publisher goes away: the client reports that it is not connected.
-        publisher.closeAndAwaitTermination();
+        publisher.endpoint().closeAndAwaitTermination();
         await("a state other than CONNECTED", () -> listener.saw(first, MessageConnectorState.CONNECTING) ||
                 listener.saw(first, MessageConnectorState.DISCONNECTED));
 
         // The connector of a new address is reported without adding the listener again.
-        final int otherPort = findFreeLoopbackPort();
-        startPublisher(otherPort);
+        final int otherPort = startPublisher().port();
         feed.connect("127.0.0.1:" + otherPort);
 
         final MessageConnector second = MessageConnectors.getConnectors(feed).getFirst();
@@ -99,8 +97,7 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
     @Test
     public void listenerMayConnectAndReadStatisticsFromItsCall() throws Exception {
-        final int port = findFreeLoopbackPort();
-        startPublisher(port);
+        final int port = startPublisher().port();
 
         final DXEndpoint feed = create(DXEndpoint.Role.FEED);
         final RecordingListener listener = new RecordingListener();
@@ -126,8 +123,7 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
     @Test
     public void eachListenerGetsTheConnectorsOfItsOwnEndpoint() throws Exception {
-        final int port = findFreeLoopbackPort();
-        startPublisher(port);
+        final int port = startPublisher().port();
 
         final DXEndpoint feed1 = create(DXEndpoint.Role.FEED);
         final DXEndpoint feed2 = create(DXEndpoint.Role.FEED);
@@ -158,8 +154,7 @@ public class MessageConnectorListenerTest extends ConnectorTestSupport {
 
     @Test
     public void listenerAddedToConnectedEndpointGetsOnlyLaterChanges() throws Exception {
-        final int port = findFreeLoopbackPort();
-        startPublisher(port);
+        final int port = startPublisher().port();
 
         final DXEndpoint feed = create(DXEndpoint.Role.FEED).connect("127.0.0.1:" + port);
         final MessageConnector connector = MessageConnectors.getConnectors(feed).getFirst();

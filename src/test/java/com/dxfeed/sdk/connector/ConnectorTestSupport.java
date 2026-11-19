@@ -21,6 +21,10 @@ abstract class ConnectorTestSupport {
 
     static final long TIMEOUT_MILLIS = 20_000;
 
+    // A server binds a free port at once; four attempts take as long as one wait of TIMEOUT_MILLIS at most.
+    private static final long LISTEN_MILLIS = 5_000;
+    private static final int LISTEN_ATTEMPTS = 4;
+
     private final List<DXEndpoint> endpoints = new ArrayList<>();
 
     @After
@@ -43,23 +47,51 @@ abstract class ConnectorTestSupport {
     }
 
     static void await(final String what, final BooleanSupplier condition) throws InterruptedException {
-        final long deadline = System.currentTimeMillis() + TIMEOUT_MILLIS;
+        if (!awaitFor(TIMEOUT_MILLIS, condition)) {
+            throw new AssertionError("Timed out waiting for " + what);
+        }
+    }
+
+    /**
+     * A publisher endpoint whose server connector listens on a free port.
+     */
+    record Publisher(DXEndpoint endpoint, int port) {}
+
+    /**
+     * Starts a publisher on a free port. The probed port is free only until it is closed: an outgoing connection may
+     * take it from the ephemeral range before the server binds it, and QD retries the bind later than a test waits. So
+     * a server that does not listen soon is closed and the next attempt takes a new port.
+     */
+    Publisher startPublisher() throws IOException, InterruptedException {
+        for (int attempt = 1; ; attempt++) {
+            final int port = findFreeLoopbackPort();
+            final DXEndpoint publisher = create(DXEndpoint.Role.PUBLISHER).connect(":" + port);
+            final MessageConnector server = MessageConnectors.getConnectors(publisher).getFirst();
+
+            if (awaitFor(LISTEN_MILLIS, () -> server.getState() == MessageConnectorState.CONNECTED)) {
+                return new Publisher(publisher, port);
+            }
+
+            if (attempt == LISTEN_ATTEMPTS) {
+                throw new AssertionError("Timed out waiting for the server socket on " + LISTEN_ATTEMPTS + " ports");
+            }
+
+            publisher.closeAndAwaitTermination();
+            endpoints.remove(publisher);
+        }
+    }
+
+    private static boolean awaitFor(final long millis, final BooleanSupplier condition) throws InterruptedException {
+        final long deadline = System.currentTimeMillis() + millis;
 
         while (!condition.getAsBoolean()) {
             if (System.currentTimeMillis() > deadline) {
-                throw new AssertionError("Timed out waiting for " + what);
+                return false;
             }
 
             Thread.sleep(20);
         }
-    }
 
-    DXEndpoint startPublisher(final int port) throws InterruptedException {
-        final DXEndpoint publisher = create(DXEndpoint.Role.PUBLISHER).connect(":" + port);
-        final MessageConnector server = MessageConnectors.getConnectors(publisher).getFirst();
-
-        await("the server socket", () -> server.getState() == MessageConnectorState.CONNECTED);
-
-        return publisher;
+        return true;
     }
 }
