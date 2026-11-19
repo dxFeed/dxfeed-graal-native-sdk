@@ -1096,6 +1096,10 @@
                 <buildArg>
                   --add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED
                 </buildArg>
+                <!-- The svm-core exports (JDK without svm-shared.jar, see the svm-core profile); buildArg1 is a feature, not an export. -->
+                <buildArg>${svm-core.buildArg2}</buildArg>
+                <buildArg>${svm-core.buildArg3}</buildArg>
+                <buildArg>${svm-core.buildArg4}</buildArg>
                 <buildArg>
                   --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
