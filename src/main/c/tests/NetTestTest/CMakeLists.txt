@@ -131,8 +131,9 @@ target_link_options(${target}
 
 # The cases of one process: the unit cases, the end to end cases ("E2E: ...") in a process of their own, because the
 # system property dxscheme.nanoTime must be set before the first endpoint of the process, and the cases of the builder
-# property ("StreamFeed: ...") in a process that never sets the system property. Each entry has its own timeout.
-add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "--test-case-exclude=E2E*,StreamFeed*")
+# property ("StreamFeed: ...") in a process that never sets the system property, and the consumer cases ("Consumer: ...")
+# in a process of their own for their length. Each entry has its own timeout.
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> "--test-case-exclude=E2E*,StreamFeed*,Consumer*")
 set_tests_properties(${target} PROPERTIES TIMEOUT 60)
 
 add_test(NAME ${target}.EndToEnd COMMAND $<TARGET_FILE:${target}> "--test-case=E2E*")
@@ -141,14 +142,18 @@ set_tests_properties(${target}.EndToEnd PROPERTIES TIMEOUT 60)
 add_test(NAME ${target}.StreamFeed COMMAND $<TARGET_FILE:${target}> "--test-case=StreamFeed*")
 set_tests_properties(${target}.StreamFeed PROPERTIES TIMEOUT 60)
 
-# The built tool in a process: the exit code and the statistics line (the expression is read from Statistics.hpp).
+add_test(NAME ${target}.Consumer COMMAND $<TARGET_FILE:${target}> "--test-case=Consumer*")
+set_tests_properties(${target}.Consumer PROPERTIES TIMEOUT 120)
+
+# The built tool in a process, and `c` against `p` in two processes: the exit codes and the statistics lines (the
+# expressions are read from Statistics.hpp).
 # The SDK library lies next to the tool (a post-build copy of its target), the rpath is $ORIGIN or @loader_path.
 add_test(NAME NetTestProcess
         COMMAND ${CMAKE_COMMAND}
         "-DNETTEST=$<TARGET_FILE:NetTest>"
         "-DSTATISTICS_HEADER=${CMAKE_CURRENT_SOURCE_DIR}/../../src/apps/NetTest/include/NetTest/Statistics.hpp"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/NetTestProcess.cmake")
-set_tests_properties(NetTestProcess PROPERTIES TIMEOUT 60)
+set_tests_properties(NetTestProcess PROPERTIES TIMEOUT 150)
 
 # NetTest built against the SDK archive in target/ as a user builds it outside the repository (src/apps/NetTest as the
 # top-level project), with the generator and the compilers of this build, then run once.

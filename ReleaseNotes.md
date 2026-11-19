@@ -1,3 +1,11 @@
+* **\[MDAPI-575]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) gets the consumer mode of the
+  [NetTest specification](docs/wrapper-guide/nettest.md): `NetTest c <address>` subscribes to the events of a producer
+  through `dxfg_v4_DXFeed_createSubscription()` and prints `{*NetTestConsumerSide-<name>*}` blocks with the mean
+  end-to-end lag in microseconds, from the time and the nanosecond part of each event against the clock of the
+  consumer. It stops with exit code 1 when the first 1000 events lack the nanosecond part (`nano_missing`) or when the
+  records stop on an open connection (`no_data`). Both modes take `-c stream|ticker` and `--role` with the roles of
+  the specification, the long names of the options, `--option=value` and `--help`; the default roles stay PUBLISHER
+  on `p` and become STREAM_FEED on `c`.
 * **\[MDAPI-579]\[GRAAL]** Benchmark builds of the library: `-Dmarch=<level>` builds it for another CPU level than
   `-march=compatibility` of the releases (the default), and the build fails when native-image resolved another level
   than the one requested (`native-image.march` of the build-info file); the README describes how to build with another

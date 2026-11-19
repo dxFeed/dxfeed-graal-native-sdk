@@ -3,6 +3,7 @@
 
 #include <NetTest/Args.hpp>
 
+#include <cctype>
 #include <cmath>
 #include <cstdlib>
 #include <limits>
@@ -12,7 +13,7 @@ namespace nettest {
 
 namespace {
 
-// The largest symbol pool, batch and number of instances that the tool accepts. A batch shares one time, so it holds at
+// The largest symbol set, batch and number of instances that the tool accepts. A batch shares one time, so it holds at
 // most 2^22 events: the 22-bit sequence (EventPool::SEQUENCE_MASK) must not wrap inside one batch.
 constexpr std::int64_t MAX_SYMBOLS = 100'000'000;
 constexpr std::int64_t MAX_BATCH = 1 << 22;
@@ -47,6 +48,57 @@ std::optional<std::int64_t> parsePositive(const std::string &text, std::int64_t 
     return value;
 }
 
+// The options of the specification by their names. The long names of the short options are aliases; a name that
+// starts with `--` also takes its value as `--name=value`.
+enum class Option {
+    SYMBOLS,
+    INSTANCES,
+    RATE,
+    STAT,
+    NAME,
+    COLLECTOR,
+    EVENT,
+    BATCH,
+    REUSE,
+    ROLE,
+    DURATION,
+    LEGACY,
+    HELP,
+    WILDCARD,
+};
+
+struct OptionSpec {
+    const char *name;
+    Option option;
+    // Takes a value (the next argument, or the text after `=`).
+    bool hasValue;
+    // An option of the mode p only: rejected on `c`.
+    bool producerOnly;
+};
+
+constexpr OptionSpec OPTIONS[] = {
+    {"-S", Option::SYMBOLS, true, false},         {"-C", Option::INSTANCES, true, false},
+    {"-r", Option::RATE, true, true},             {"--rate-limit", Option::RATE, true, true},
+    {"-s", Option::STAT, true, false},            {"--stat", Option::STAT, true, false},
+    {"-n", Option::NAME, true, false},            {"--name", Option::NAME, true, false},
+    {"-c", Option::COLLECTOR, true, false},       {"--collector", Option::COLLECTOR, true, false},
+    {"--event", Option::EVENT, true, false},      {"--batch", Option::BATCH, true, true},
+    {"--reuse", Option::REUSE, false, true},      {"--role", Option::ROLE, true, false},
+    {"--duration", Option::DURATION, true, false}, {"--legacy", Option::LEGACY, false, true},
+    {"--help", Option::HELP, false, false},       {"-w", Option::WILDCARD, false, false},
+    {"--wildcard", Option::WILDCARD, false, false},
+};
+
+const OptionSpec *findOption(const std::string &name) {
+    for (const auto &spec : OPTIONS) {
+        if (name == spec.name) {
+            return &spec;
+        }
+    }
+
+    return nullptr;
+}
+
 // The state of one parsing: the error is set by the first failure.
 struct Parser {
     Options options{};
@@ -62,22 +114,26 @@ struct Parser {
         return false;
     }
 
-    bool parseSymbols(const std::string &value) {
+    bool producer() const {
+        return options.mode == Mode::PRODUCER;
+    }
+
+    bool parseSymbols(const std::string &flag, const std::string &value) {
         const auto at = value.find('@');
         const auto head = value.substr(0, at);
 
         if (head.find('{') != std::string::npos) {
-            return fail("unsupported QD flag: the symbol length '{len,max}' in '-S " + value + "'");
+            return fail("unsupported QD flag: the symbol length '{len,max}' in '" + flag + " " + value + "'");
         }
 
         if (head.find('/') != std::string::npos) {
-            return fail("unsupported QD flag: the symbol split '/r' or '/s' in '-S " + value + "'");
+            return fail("unsupported QD flag: the symbol split '/r' or '/s' in '" + flag + " " + value + "'");
         }
 
         const auto total = parsePositive(head, MAX_SYMBOLS);
 
         if (!total) {
-            return fail("-S needs <total> or <total>@<file>, where <total> is a number from 1 to " +
+            return fail(flag + " needs <total> or <total>@<file>, where <total> is a number from 1 to " +
                         std::to_string(MAX_SYMBOLS) + ": '" + value + "'");
         }
 
@@ -88,7 +144,7 @@ struct Parser {
             options.symbolsFile = value.substr(at + 1);
 
             if (options.symbolsFile.empty()) {
-                return fail("-S has no file name after '@': '" + value + "'");
+                return fail(flag + " has no file name after '@': '" + value + "'");
             }
         }
 
@@ -97,19 +153,19 @@ struct Parser {
         return true;
     }
 
-    bool parseRateOption(const std::string &value) {
+    bool parseRateOption(const std::string &flag, const std::string &value) {
         if (value.find(';') != std::string::npos) {
-            return fail("unsupported QD flag: the rate limiter bucket ';<time>' in '-r " + value + "'");
+            return fail("unsupported QD flag: the rate limiter bucket ';<time>' in '" + flag + " " + value + "'");
         }
 
         if (value.size() < 3 || value.compare(0, 2, "*/") != 0) {
-            return fail("-r needs */<rate> (for example */500k): '" + value + "'");
+            return fail(flag + " needs */<rate> (for example */500k): '" + value + "'");
         }
 
         const auto rate = parseRate(value.substr(2));
 
         if (!rate) {
-            return fail("-r has a bad rate (a positive number with an optional k, M or G): '" + value + "'");
+            return fail(flag + " has a bad rate (a positive number with an optional k, M or G): '" + value + "'");
         }
 
         options.recordsPerSecond = *rate;
@@ -117,12 +173,12 @@ struct Parser {
         return true;
     }
 
-    bool parseIntegerOption(const char *flag, const std::string &value, std::int64_t limit, std::int64_t &out) {
+    bool parseIntegerOption(const std::string &flag, const std::string &value, std::int64_t limit,
+                            std::int64_t &out) {
         const auto parsed = parsePositive(value, limit);
 
         if (!parsed) {
-            return fail(std::string(flag) + " needs a number from 1 to " + std::to_string(limit) + ": '" + value +
-                        "'");
+            return fail(flag + " needs a number from 1 to " + std::to_string(limit) + ": '" + value + "'");
         }
 
         out = *parsed;
@@ -130,15 +186,43 @@ struct Parser {
         return true;
     }
 
-    bool parseDurationOption(const char *flag, const std::string &value, std::int64_t &out) {
+    bool parseDurationOption(const std::string &flag, const std::string &value, std::int64_t &out) {
         const auto parsed = parseDuration(value);
 
         if (!parsed) {
-            return fail(std::string(flag) + " needs a positive time with ms, s or m (for example 10s): '" + value +
-                        "'");
+            return fail(flag + " needs a positive time with ms, s or m (for example 10s): '" + value + "'");
         }
 
         out = *parsed;
+
+        return true;
+    }
+
+    bool parseCollector(const std::string &flag, const std::string &value) {
+        if (value == "stream") {
+            options.collector = Collector::STREAM;
+        } else if (value == "ticker") {
+            options.collector = Collector::TICKER;
+        } else if (value == "history") {
+            return fail(flag + " history is reserved");
+        } else {
+            return fail(flag + " is stream or ticker: '" + value + "'");
+        }
+
+        return true;
+    }
+
+    bool parseRole(const std::string &flag, const std::string &value) {
+        const auto first = producer() ? DXFG_ENDPOINT_ROLE_PUBLISHER : DXFG_ENDPOINT_ROLE_FEED;
+        const auto second = producer() ? DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER : DXFG_ENDPOINT_ROLE_STREAM_FEED;
+
+        if (value == roleName(first)) {
+            options.role = first;
+        } else if (value == roleName(second)) {
+            options.role = second;
+        } else {
+            return fail(flag + " is " + roleName(first) + " or " + roleName(second) + ": '" + value + "'");
+        }
 
         return true;
     }
@@ -173,128 +257,91 @@ struct Parser {
         return true;
     }
 
-    bool run(const std::vector<std::string> &args) {
-        if (args.size() < 2) {
-            return fail("no mode");
-        }
+    // Applies one option with its value (empty for a switch).
+    bool apply(const OptionSpec &spec, const std::string &flag, const std::string &value) {
+        switch (spec.option) {
+        case Option::SYMBOLS:
+            return parseSymbols(flag, value);
+        case Option::INSTANCES: {
+            std::int64_t instances = 0;
 
-        if (args[1] == "c") {
-            return fail("unsupported mode 'c' (the consumer mode of QD NetTest); only the mode 'p' exists");
-        }
-
-        if (args[1] != "p") {
-            return fail("unknown mode '" + args[1] + "'; only the mode 'p' exists");
-        }
-
-        for (std::size_t index = 2; index < args.size(); ++index) {
-            const auto &argument = args[index];
-
-            // The flags with a value take the next argument as it is.
-            const auto value = [&](const char *flag) -> const std::string * {
-                if (index + 1 >= args.size()) {
-                    fail(std::string("missing value of ") + flag);
-
-                    return nullptr;
-                }
-
-                return &args[++index];
-            };
-
-            if (argument == "-S") {
-                const auto *text = value("-S");
-
-                if (text == nullptr || !parseSymbols(*text)) {
-                    return false;
-                }
-            } else if (argument == "-C") {
-                const auto *text = value("-C");
-                std::int64_t instances = 0;
-
-                if (text == nullptr || !parseIntegerOption("-C", *text, MAX_INSTANCES, instances)) {
-                    return false;
-                }
-
-                options.instances = static_cast<std::int32_t>(instances);
-            } else if (argument == "-r") {
-                const auto *text = value("-r");
-
-                if (text == nullptr || !parseRateOption(*text)) {
-                    return false;
-                }
-            } else if (argument == "-s") {
-                const auto *text = value("-s");
-
-                if (text == nullptr || !parseDurationOption("-s", *text, options.periodMillis)) {
-                    return false;
-                }
-            } else if (argument == "-n") {
-                const auto *text = value("-n");
-
-                if (text == nullptr) {
-                    return false;
-                }
-
-                if (text->empty()) {
-                    return fail("-n needs a non-empty name");
-                }
-
-                options.name = *text;
-            } else if (argument == "--batch") {
-                const auto *text = value("--batch");
-                std::int64_t batch = 0;
-
-                if (text == nullptr || !parseIntegerOption("--batch", *text, MAX_BATCH, batch)) {
-                    return false;
-                }
-
-                options.batch = static_cast<std::int32_t>(batch);
-            } else if (argument == "--event") {
-                const auto *text = value("--event");
-
-                if (text == nullptr) {
-                    return false;
-                }
-
-                if (*text == "Trade") {
-                    options.event = EventKind::TRADE;
-                } else if (*text == "TimeAndSale") {
-                    options.event = EventKind::TIME_AND_SALE;
-                } else {
-                    return fail("--event is Trade or TimeAndSale: '" + *text + "'");
-                }
-            } else if (argument == "--duration") {
-                const auto *text = value("--duration");
-                std::int64_t duration = 0;
-
-                if (text == nullptr || !parseDurationOption("--duration", *text, duration)) {
-                    return false;
-                }
-
-                options.durationMillis = duration;
-            } else if (argument == "--reuse") {
-                options.reuse = true;
-            } else if (argument == "--legacy") {
-                options.legacy = true;
-            } else if (argument == "-c") {
-                return fail("unsupported QD flag: -c (the collector)");
-            } else if (argument.compare(0, 2, "-D") == 0) {
-                if (!parseProperty(argument)) {
-                    return false;
-                }
-            } else if (argument.compare(0, 2, "-X") == 0) {
-                if (!parseIsolateArgument(argument)) {
-                    return false;
-                }
-            } else if (!argument.empty() && argument[0] == '-' && argument.size() > 1) {
-                return fail("unknown flag " + argument);
-            } else if (!addressSeen) {
-                options.address = argument;
-                addressSeen = true;
-            } else {
-                return fail("unexpected argument '" + argument + "' after the address '" + options.address + "'");
+            if (!parseIntegerOption(flag, value, MAX_INSTANCES, instances)) {
+                return false;
             }
+
+            options.instances = static_cast<std::int32_t>(instances);
+
+            return true;
+        }
+        case Option::RATE:
+            return parseRateOption(flag, value);
+        case Option::STAT:
+            return parseDurationOption(flag, value, options.periodMillis);
+        case Option::NAME:
+            if (value.empty()) {
+                return fail(flag + " needs a non-empty name");
+            }
+
+            options.name = value;
+
+            return true;
+        case Option::COLLECTOR:
+            return parseCollector(flag, value);
+        case Option::EVENT:
+            if (value == "Trade") {
+                options.event = EventKind::TRADE;
+            } else if (value == "TimeAndSale") {
+                options.event = EventKind::TIME_AND_SALE;
+            } else {
+                return fail(flag + " is Trade or TimeAndSale: '" + value + "'");
+            }
+
+            return true;
+        case Option::BATCH: {
+            std::int64_t batch = 0;
+
+            if (!parseIntegerOption(flag, value, MAX_BATCH, batch)) {
+                return false;
+            }
+
+            options.batch = static_cast<std::int32_t>(batch);
+
+            return true;
+        }
+        case Option::REUSE:
+            options.reuse = true;
+
+            return true;
+        case Option::ROLE:
+            return parseRole(flag, value);
+        case Option::DURATION: {
+            std::int64_t duration = 0;
+
+            if (!parseDurationOption(flag, value, duration)) {
+                return false;
+            }
+
+            options.durationMillis = duration;
+
+            return true;
+        }
+        case Option::LEGACY:
+            options.legacy = true;
+
+            return true;
+        case Option::HELP:
+            options.help = true;
+
+            return true;
+        case Option::WILDCARD:
+            return fail("unsupported QD flag: " + flag + " (the wildcard subscription)");
         }
 
+        return fail("unknown flag " + flag);
+    }
+
+    // The rules between the options, after all of them are read (a repeated option takes its last value).
+    bool validate() {
         if (!addressSeen || options.address.empty()) {
             return fail("the address is missing");
         }
@@ -308,7 +355,127 @@ struct Parser {
                         options.address + "': every instance would bind the same port");
         }
 
+        const auto event = eventName(options.event);
+
+        if (options.collector == Collector::TICKER && options.event != EventKind::TRADE) {
+            return fail("-c ticker needs --event Trade: " + event + " has no ticker contract");
+        }
+
+        // Without --role, -c selects a role that receives its contract; without -c, either role of the mode is valid.
+        if (!options.collector.has_value() || !options.role.has_value()) {
+            return true;
+        }
+
+        const auto role = *options.role;
+
+        if (options.collector == Collector::TICKER) {
+            // The ticker contract needs the roles that write and read it.
+            if (role == DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER || role == DXFG_ENDPOINT_ROLE_STREAM_FEED) {
+                return fail("--role " + roleName(role) + " conflicts with -c ticker for " + event);
+            }
+        } else if (role == DXFG_ENDPOINT_ROLE_FEED && options.event == EventKind::TRADE) {
+            // FEED receives Trade through the ticker contract, not the stream contract of -c stream.
+            return fail("--role " + roleName(role) + " conflicts with -c stream for " + event);
+        }
+
         return true;
+    }
+
+    bool run(const std::vector<std::string> &args) {
+        if (args.size() < 2) {
+            return fail("no mode");
+        }
+
+        if (args[1] == "--help") {
+            options.help = true;
+
+            return true;
+        }
+
+        if (args[1] == "p") {
+            options.mode = Mode::PRODUCER;
+        } else if (args[1] == "c") {
+            options.mode = Mode::CONSUMER;
+        } else {
+            return fail("unknown mode '" + args[1] + "'; the mode is p or c");
+        }
+
+        for (std::size_t index = 2; index < args.size(); ++index) {
+            const auto &argument = args[index];
+
+            if (argument.compare(0, 2, "-D") == 0) {
+                if (!parseProperty(argument)) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            if (argument.compare(0, 2, "-X") == 0) {
+                if (!parseIsolateArgument(argument)) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            if (argument.size() < 2 || argument[0] != '-') {
+                if (addressSeen) {
+                    return fail("unexpected argument '" + argument + "' after the address '" + options.address + "'");
+                }
+
+                options.address = argument;
+                addressSeen = true;
+
+                continue;
+            }
+
+            // A long option may carry its value after `=`.
+            auto flag = argument;
+            std::optional<std::string> inlineValue{};
+
+            if (argument.compare(0, 2, "--") == 0) {
+                if (const auto equals = argument.find('='); equals != std::string::npos) {
+                    flag = argument.substr(0, equals);
+                    inlineValue = argument.substr(equals + 1);
+                }
+            }
+
+            const auto *spec = findOption(flag);
+
+            if (spec == nullptr) {
+                return fail("unknown flag " + flag);
+            }
+
+            if (spec->producerOnly && !producer()) {
+                return fail(flag + " is an option of the mode p");
+            }
+
+            std::string value{};
+
+            if (spec->hasValue) {
+                if (inlineValue.has_value()) {
+                    value = *inlineValue;
+                } else if (index + 1 < args.size()) {
+                    value = args[++index];
+                } else {
+                    return fail("missing value of " + flag);
+                }
+            } else if (inlineValue.has_value()) {
+                return fail(flag + " takes no value: '" + argument + "'");
+            }
+
+            if (!apply(*spec, flag, value)) {
+                return false;
+            }
+
+            // --help ends the parsing: the usage is printed whatever follows.
+            if (options.help) {
+                return true;
+            }
+        }
+
+        return validate();
     }
 };
 
@@ -403,6 +570,51 @@ bool isServerAddress(const std::string &address) {
     return !address.empty() && address.front() == ':';
 }
 
+dxfg_v4_endpoint_role_t endpointRole(const Options &options) {
+    if (options.role.has_value()) {
+        return *options.role;
+    }
+
+    if (options.mode == Mode::PRODUCER) {
+        return options.collector == Collector::STREAM ? DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER
+                                                      : DXFG_ENDPOINT_ROLE_PUBLISHER;
+    }
+
+    return options.collector == Collector::TICKER ? DXFG_ENDPOINT_ROLE_FEED : DXFG_ENDPOINT_ROLE_STREAM_FEED;
+}
+
+std::string roleName(dxfg_v4_endpoint_role_t role) {
+    switch (role) {
+    case DXFG_ENDPOINT_ROLE_FEED:
+        return "FEED";
+    case DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED:
+        return "ON_DEMAND_FEED";
+    case DXFG_ENDPOINT_ROLE_STREAM_FEED:
+        return "STREAM_FEED";
+    case DXFG_ENDPOINT_ROLE_PUBLISHER:
+        return "PUBLISHER";
+    case DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER:
+        return "STREAM_PUBLISHER";
+    case DXFG_ENDPOINT_ROLE_LOCAL_HUB:
+        return "LOCAL_HUB";
+    }
+
+    return "UNKNOWN";
+}
+
+std::string collectorName(Collector collector) {
+    return collector == Collector::STREAM ? "stream" : "ticker";
+}
+
+std::string eventName(EventKind event) {
+    return event == EventKind::TRADE ? "Trade" : "TimeAndSale";
+}
+
+bool isConflated(const Options &options) {
+    return options.mode == Mode::CONSUMER && endpointRole(options) == DXFG_ENDPOINT_ROLE_FEED &&
+           options.event == EventKind::TRADE;
+}
+
 ParseResult parseArguments(const std::vector<std::string> &args) {
     Parser parser;
     ParseResult result;
@@ -418,29 +630,42 @@ ParseResult parseArguments(const std::vector<std::string> &args) {
 }
 
 std::string usageText() {
-    return "Usage: NetTest p <address> -S <symbols> [options]\n"
-           "\n"
-           "  <address>            host:port to connect to, :port to listen on\n"
-           "  -S <total>           the symbol pool: <total> random symbols of 1-6 capital letters\n"
-           "  -S <total>@<file>    the first <total> symbols of the IPF file, in file order\n"
-           "  -C <n>               the number of instances, default 1 (not above 1 with a :port address)\n"
-           "  -r */<rate>          the total rate in records per second, with k, M or G (for example */1M)\n"
-           "  -s <period>          the statistics period, default 10s (ms, s or m)\n"
-           "  -n <name>            the name in the statistics line, default NetTest\n"
-           "  --batch <n>          the events per publishing call, default 100\n"
-           "  --event <type>       Trade (default) or TimeAndSale\n"
-           "  --reuse              republish the pre-built events in place instead of copying them\n"
-           "  --legacy             publish through the deprecated dxfg_DXPublisher_publishEvents\n"
-           "  --duration <time>    end the run after the time (ms, s or m); Ctrl+C ends it at once\n"
-           "  -D<key>=<value>      set a system property before the first endpoint is created\n"
-           "                       (dxscheme.nanoTime also goes to the builder of every endpoint, default true)\n"
-           "  -Xmx<size>, -Xms<size>, -Xmn<size>\n"
-           "                       the maximum, initial and young generation heap sizes of the isolate (512m, 1g)\n"
-           "  -Xss<size>           the stack size of the threads that the isolate starts (1m)\n"
-           "  -XX:<option>         an option of the isolate (for example -XX:+PrintGC -XX:+PrintGCSummary)\n"
-           "\n"
-           "The consumer mode 'c' and the QD flags -c, /r and /s symbol splits, {len,max} symbol lengths and the\n"
-           "rate limiter bucket ;<time> are not supported.\n";
+    return std::string("Usage: NetTest p|c <address> -S <symbols> [options]\n"
+                       "\n"
+                       "  p                    publish generated events\n"
+                       "  c                    receive them and report the end-to-end lag\n"
+                       "  <address>            host:port to connect to, :port to listen on\n"
+                       "  -S <total>           the symbols: <total> generated symbols of 1-6 capital letters\n"
+                       "  -S <total>@<file>    the first <total> symbols of the IPF file, in file order\n"
+                       "  -C <n>               the number of instances, default 1 (not above 1 with a :port address);\n"
+                       "                       on c the instances share the symbols\n"
+                       "  -r, --rate-limit */<rate>\n"
+                       "                       p: the total rate in records per second, with k, M or G (*/1M)\n"
+                       "  -s, --stat <period>  the statistics period, default 10s (ms, s or m)\n"
+                       "  -n, --name <name>    the name in the statistics lines, default NetTest\n"
+                       "  -c, --collector <contract>\n"
+                       "                       stream or ticker: the contract that the consumer receives and the\n"
+                       "                       default roles (none: PUBLISHER and STREAM_FEED)\n"
+                       "  --event <type>       Trade (default) or TimeAndSale\n"
+                       "  --role <role>        PUBLISHER or STREAM_PUBLISHER on p, FEED or STREAM_FEED on c\n"
+                       "  --batch <n>          p: the events per publishing call, default 100\n"
+                       "  --reuse              p: republish the pre-built events in place instead of copying them\n"
+                       "  --legacy             p: publish through the deprecated dxfg_DXPublisher_publishEvents\n"
+                       "  --duration <time>    end the run after the time (ms, s or m); Ctrl+C ends it at once\n"
+                       "  -D<key>=<value>      set a system property before the first endpoint is created\n"
+                       "                       (dxscheme.nanoTime also goes to the builder of every endpoint, default "
+                       "true)\n"
+                       "  -Xmx<size>, -Xms<size>, -Xmn<size>\n"
+                       "                       the maximum, initial and young generation heap sizes of the isolate "
+                       "(512m, 1g)\n"
+                       "  -Xss<size>           the stack size of the threads that the isolate starts (1m)\n"
+                       "  -XX:<option>         an option of the isolate (for example -XX:+PrintGC -XX:+PrintGCSummary)\n"
+                       "  --help               print this text and exit\n"
+                       "\n"
+                       "A long option also takes its value as --option=value.\n"
+                       "\n"
+                       "spec_version ") +
+           SPEC_VERSION + "\n";
 }
 
 bool applySystemProperties(graal_isolatethread_t *thread, const Options &options, std::string &error) {
@@ -465,6 +690,22 @@ std::string endpointNanoTime(const Options &options) {
     }
 
     return value;
+}
+
+bool isNanoTimeOn(const Options &options) {
+    const auto value = endpointNanoTime(options);
+
+    if (value.size() != 4) {
+        return false;
+    }
+
+    for (std::size_t index = 0; index < 4; ++index) {
+        if (std::tolower(static_cast<unsigned char>(value[index])) != "true"[index]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace nettest

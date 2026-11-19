@@ -21,11 +21,11 @@
 
 file(READ "${STATISTICS_HEADER}" header)
 
-if (NOT header MATCHES "SUMMARY_LINE_REGEX =[ \r\n]*\"([^\"]+)\"")
+if (NOT header MATCHES "SUMMARY_LINE_REGEX =[ \r\n]*\"([^\"]+)\"[ \r\n]*\"([^\"]+)\"")
     message(FATAL_ERROR "SUMMARY_LINE_REGEX is not found in ${STATISTICS_HEADER}")
 endif ()
 
-set(summary_regex "${CMAKE_MATCH_1}")
+set(summary_regex "${CMAKE_MATCH_1}${CMAKE_MATCH_2}")
 
 # The archive. mvn clean package leaves one; a local target/ may keep the archives of earlier variant builds. The
 # static library archive of the Windows static runtime (-static-lib.zip) has no shared library to build against.

@@ -3,11 +3,13 @@
 
 // The C tool against the kit of the NetTest specification (docs/wrapper-guide/nettest.md): the expressions of
 // Statistics.hpp and of regexes.json agree on the lines, the formatter prints the byte samples of lines.json, and the
-// event pool and the symbol generator give the values of pool-vectors.json and symbols-generated-10.txt.
+// event pool and the symbol generator give the values of pool-vectors.json and symbols-generated-10.txt, and the parser
+// gives the settings and the errors of cli-vectors.json.
 
 #include <doctest.h>
 #include <dxfg_api.h>
 
+#include <NetTest/Args.hpp>
 #include <NetTest/EventPool.hpp>
 #include <NetTest/Sdk.hpp>
 #include <NetTest/Statistics.hpp>
@@ -15,6 +17,7 @@
 
 #include "KitJson.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <regex>
@@ -93,31 +96,32 @@ TEST_CASE("Kit: the digit grouping of lines.json") {
     }
 }
 
-TEST_CASE("Kit: the formatter prints the producer blocks of lines.json byte for byte") {
+TEST_CASE("Kit: the formatter prints the blocks of both sides of lines.json byte for byte") {
     std::size_t producers = 0;
+    std::size_t consumers = 0;
 
     const auto lines = kitFile("lines.json");
 
     for (const auto &entry : nonEmpty(lines["statistics"])) {
-        if (entry["side"].asString() != "producer") {
-            continue;
-        }
-
+        const bool producer = entry["side"].asString() == "producer";
         StatisticsSnapshot snapshot;
 
+        snapshot.side = producer ? Side::PRODUCER : Side::CONSUMER;
         snapshot.name = entry["name"].asString();
         snapshot.periodNanos = entry["interval_ns"].asInteger();
         snapshot.connections = entry["connections"].asInteger();
 
         for (const auto &instance : nonEmpty(entry["instances"])) {
-            snapshot.deltas.push_back({instance["records"].asInteger(), instance["weighted_ns"].asInteger()});
+            snapshot.deltas.push_back(
+                {instance["records"].asInteger(), instance[producer ? "weighted_ns" : "lag_sum_ns"].asInteger()});
         }
 
         CHECK(formatStatistics(snapshot) == entry["text"].asString());
-        ++producers;
+        ++(producer ? producers : consumers);
     }
 
     CHECK(producers >= 3);
+    CHECK(consumers >= 2);
 }
 
 TEST_CASE("Kit: the formatter prints the runtime lines of lines.json byte for byte") {
@@ -141,12 +145,10 @@ TEST_CASE("Kit: the expressions of Statistics.hpp and of regexes.json agree on t
 
     for (const auto &entry : nonEmpty(lines["statistics"])) {
         const auto blockLines = splitLines(entry["text"].asString());
-        const bool producer = entry["side"].asString() == "producer";
 
         REQUIRE(blockLines.size() == entry["instances"].array.size() + 1);
         CHECK(std::regex_search(blockLines[0], summary));
-        // The C expression is the producer's: it does not take the consumer's label and negative lags.
-        CHECK(std::regex_search(blockLines[0], cSummary) == producer);
+        CHECK(std::regex_search(blockLines[0], cSummary));
 
         for (std::size_t index = 1; index < blockLines.size(); ++index) {
             CHECK(std::regex_search(blockLines[index], instance));
@@ -176,6 +178,198 @@ TEST_CASE("Kit: the expressions of Statistics.hpp and of regexes.json agree on t
     }
 
     CHECK(summaries >= 2);
+}
+
+namespace {
+
+// A setting of the summary config as the parser gives it, in the text of a JSON value (null when absent).
+std::string settingOf(const Options &options, const std::string &key) {
+    const auto quoted = [](const std::string &text) {
+        return "\"" + text + "\"";
+    };
+    const auto number = [](const std::optional<std::int64_t> &value) {
+        return value.has_value() ? std::to_string(*value) : std::string("null");
+    };
+    const bool producer = options.mode == Mode::PRODUCER;
+
+    if (key == "side") {
+        return quoted(producer ? "producer" : "consumer");
+    }
+
+    if (key == "address") {
+        return quoted(options.address);
+    }
+
+    if (key == "symbols") {
+        return std::to_string(options.totalSymbols);
+    }
+
+    if (key == "symbols_source") {
+        return quoted(options.symbolsFile.empty() ? "generated" : "file");
+    }
+
+    if (key == "instances") {
+        return std::to_string(options.instances);
+    }
+
+    if (key == "rate_limit") {
+        return producer ? number(options.recordsPerSecond) : "null";
+    }
+
+    if (key == "batch") {
+        return producer ? std::to_string(options.batch) : "null";
+    }
+
+    if (key == "event") {
+        return quoted(eventName(options.event));
+    }
+
+    if (key == "collector") {
+        return options.collector.has_value() ? quoted(collectorName(*options.collector)) : "null";
+    }
+
+    if (key == "role") {
+        return quoted(roleName(endpointRole(options)));
+    }
+
+    if (key == "reuse") {
+        return producer ? (options.reuse ? "true" : "false") : "null";
+    }
+
+    if (key == "period_ms") {
+        return std::to_string(options.periodMillis);
+    }
+
+    // The warm-up is not an option of this tool yet.
+    if (key == "warmup_ms") {
+        return "null";
+    }
+
+    if (key == "duration_ms") {
+        return number(options.durationMillis);
+    }
+
+    if (key == "name") {
+        return quoted(options.name);
+    }
+
+    if (key == "conflated") {
+        return isConflated(options) ? "true" : "false";
+    }
+
+    if (key == "isolate_arguments") {
+        std::string text = "[";
+
+        for (const auto &argument : options.isolateArguments) {
+            text += (text.size() > 1 ? "," : "") + quoted(argument);
+        }
+
+        return text + "]";
+    }
+
+    return "unknown setting " + key;
+}
+
+// The kit value as settingOf() prints it.
+std::string kitValueText(const kit::Json &value) {
+    switch (value.kind) {
+    case kit::Json::Kind::NUL:
+        return "null";
+    case kit::Json::Kind::BOOLEAN:
+        return value.boolean ? "true" : "false";
+    case kit::Json::Kind::INTEGER:
+        return std::to_string(value.integer);
+    case kit::Json::Kind::STRING:
+        return "\"" + value.string + "\"";
+    case kit::Json::Kind::ARRAY: {
+        std::string text = "[";
+
+        for (const auto &element : value.array) {
+            text += (text.size() > 1 ? "," : "") + kitValueText(element);
+        }
+
+        return text + "]";
+    }
+    default:
+        return "unsupported kit value";
+    }
+}
+
+// The sections of cli-vectors.json that name the options of later tickets (--warmup, --summary, --metrics-port).
+bool isLaterSection(const std::string &section) {
+    return section == "consumer" || section == "summary" || section == "metrics";
+}
+
+// The tool has the isolate arguments and the legacy publishing call, so an entry that needs their absence is skipped.
+bool needsAbsentFeature(const kit::Json &entry) {
+    if (!entry.has("requires")) {
+        return false;
+    }
+
+    const auto &features = entry["requires"].array;
+
+    return std::any_of(features.begin(), features.end(), [](const kit::Json &feature) {
+        return !feature.asString().empty() && feature.asString()[0] == '!';
+    });
+}
+
+} // namespace
+
+TEST_CASE("Kit: the parser gives the settings and the errors of cli-vectors.json") {
+    std::size_t checked = 0;
+    std::size_t skipped = 0;
+    const auto vectors = kitFile("cli-vectors.json");
+
+    for (const auto &entry : nonEmpty(vectors["vectors"])) {
+        if (isLaterSection(entry["section"].asString()) || needsAbsentFeature(entry)) {
+            ++skipped;
+
+            continue;
+        }
+
+        std::vector<std::string> args{"NetTest"};
+        std::string commandLine;
+
+        for (const auto &argument : entry["args"].array) {
+            args.push_back(argument.asString());
+            commandLine += " " + argument.asString();
+        }
+
+        const auto result = parseArguments(args);
+
+        INFO("NetTest" << commandLine << " -> " << (result.ok ? "ok" : result.error));
+
+        if (entry["exit"].asInteger() == 0) {
+            REQUIRE(result.ok);
+
+            if (entry.has("stdout_contains")) {
+                CHECK(result.options.help);
+                CHECK(usageText().find(entry["stdout_contains"].asString()) != std::string::npos);
+            } else {
+                CHECK_FALSE(result.options.help);
+            }
+
+            if (entry.has("settings")) {
+                for (const auto &[key, value] : entry["settings"].object) {
+                    INFO("the setting " << key);
+                    CHECK(settingOf(result.options, key) == kitValueText(value));
+                }
+            }
+        } else {
+            CHECK_FALSE(result.ok);
+
+            if (entry.has("error")) {
+                CHECK(result.error == entry["error"].asString());
+            } else if (entry.has("error_prefix")) {
+                CHECK(result.error.rfind(entry["error_prefix"].asString(), 0) == 0);
+            }
+        }
+
+        ++checked;
+    }
+
+    MESSAGE("cli-vectors.json: " << checked << " checked, " << skipped << " skipped (later tickets or !features)");
+    CHECK(checked >= 60);
 }
 
 TEST_CASE("Kit: the isolate rejection line matches its expression") {

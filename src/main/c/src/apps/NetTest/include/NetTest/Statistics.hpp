@@ -1,8 +1,8 @@
 // Copyright (c) 2026 Devexperts LLC.
 // SPDX-License-Identifier: MPL-2.0
 
-// The statistics of NetTest: the formatter of the QD NetTest producer-side lines and the reporter that prints them on
-// the ticks aligned to the wall clock.
+// The statistics of NetTest: the formatter of the statistics blocks of both sides (the lines of QD NetTest) and the
+// reporter that prints them on the ticks aligned to the wall clock.
 
 #ifndef DXFG_NETTEST_STATISTICS_HPP
 #define DXFG_NETTEST_STATISTICS_HPP
@@ -18,10 +18,12 @@
 namespace dxfg {
 namespace nettest {
 
-// The summary line of a statistics block as a regular expression that ECMAScript and CMake both read (no escapes, only
-// bracket expressions): `{*NetTestProducerSide-<name>*} data N rps, lag N us, instances K, connections C`.
-constexpr const char *SUMMARY_LINE_REGEX =
-    "[{][*]NetTestProducerSide-[^*]+[*][}] data [0-9,]+ rps, lag [0-9,]+ us, instances [0-9]+, connections [0-9]+";
+// The summary line of a statistics block of either side as a regular expression that ECMAScript and CMake both read
+// (no escapes, only bracket expressions): `{*NetTestProducerSide-<name>*} data N rps, lag N us, instances K,
+// connections C`, with `NetTestConsumerSide` on `c`, whose lag may be negative. Two adjacent string literals: the
+// process tests read them from this file and join them.
+constexpr const char *SUMMARY_LINE_REGEX = "[{][*]NetTest(Producer|Consumer)Side-[^*]+[*][}] data [0-9,]+ rps, "
+                                           "lag -?[0-9,]+ us, instances [0-9]+, connections [0-9]+";
 
 // The runtime line printed after each statistics block, in the same form:
 // `{*NetTestRuntime-<name>*} heap U MB of C MB, gc N (T ms), cpu P%`, where each value may be `n/a`.
@@ -32,10 +34,19 @@ constexpr const char *RUNTIME_LINE_REGEX =
 // A runtime value that the SDK does not give, as in dxfg_v4_runtime_stats_t.
 constexpr std::int64_t RUNTIME_VALUE_ABSENT = -1;
 
+// The side of the statistics: the label of the summary line and the meaning of its lag.
+enum class Side {
+    // `p`: NetTestProducerSide, the lag is the time to build and publish a batch, weighted by its records.
+    PRODUCER,
+    // `c`: NetTestConsumerSide, the lag is the mean e2e lag of the records, which may be negative.
+    CONSUMER,
+};
+
 // The cumulative counters of one instance.
 struct InstanceTotals {
     std::int64_t records = 0;
-    // The sum of records * (the time to build and publish the batch of those records) in nanoseconds.
+    // On `p`, the sum of records * (the time to build and publish the batch of those records) in nanoseconds; on `c`,
+    // the sum of the e2e lags of the records in nanoseconds, with their signs.
     std::int64_t weightedNanos = 0;
 };
 
@@ -61,6 +72,7 @@ struct StatisticsSample {
 
 // What a statistics block prints: the deltas of the instances over a period of the real length and the connections.
 struct StatisticsSnapshot {
+    Side side = Side::PRODUCER;
     std::string name = "NetTest";
     std::vector<InstanceTotals> deltas{};
     std::int64_t periodNanos = 0;
@@ -76,12 +88,16 @@ std::int64_t recordsPerSecond(std::int64_t records, std::int64_t periodNanos);
 // The record-weighted mean time to build and publish a batch in microseconds, integer division; 0 without records.
 std::int64_t lagMicros(std::int64_t records, std::int64_t weightedNanos);
 
+// The mean e2e lag in microseconds, `lagSumNanos / records / 1000` divided toward zero, so it may be negative; 0 without
+// records.
+std::int64_t meanLagMicros(std::int64_t records, std::int64_t lagSumNanos);
+
 // The text of a statistics block without the line break at the end: the summary line, then one line per instance.
 std::string formatStatistics(const StatisticsSnapshot &snapshot);
 
 // The snapshot of the period between two samples of the same instances.
 StatisticsSnapshot makeSnapshot(const std::string &name, const StatisticsSample &previous,
-                                const StatisticsSample &current, std::int64_t periodNanos);
+                                const StatisticsSample &current, std::int64_t periodNanos, Side side = Side::PRODUCER);
 
 // The runtime line of the period between two samples, without the line break: the heap of the current sample in MB
 // (MiB, rounded down), the young plus full collections of the period with their time, and the process CPU time of the
@@ -110,9 +126,9 @@ using StatisticsSink = std::function<void(const std::string &)>;
 // the deltas against the previous tick; the first tick after the start only primes the counters and prints nothing. At
 // the stop it prints the partial period since the last tick (or since the start when no tick came) at its real length,
 // unless that period is shorter than one second. When both samples have runtime values, the runtime line follows the
-// block in the same text.
+// block in the same text. The side selects the label and the lag of the blocks.
 void runReporter(const std::string &name, std::int64_t periodMillis, const ReporterClock &clock,
-                 const StatisticsSource &source, const StatisticsSink &sink);
+                 const StatisticsSource &source, const StatisticsSink &sink, Side side = Side::PRODUCER);
 
 } // namespace nettest
 } // namespace dxfg

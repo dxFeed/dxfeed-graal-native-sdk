@@ -9,6 +9,7 @@
 
 #include <dxfg_api.h>
 
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,6 +17,33 @@
 namespace {
 
 constexpr int EXIT_BAD_ARGUMENTS = 2;
+
+// The timeouts of the starvation watchdog as <after the last record ms>,<after the connection ms>, for the process
+// tests only; the tool documents no such variable.
+constexpr const char *WATCHDOG_VARIABLE = "DXFG_NETTEST_WATCHDOG";
+
+dxfg::nettest::RunHooks runHooks() {
+    dxfg::nettest::RunHooks hooks;
+    const char *value = std::getenv(WATCHDOG_VARIABLE);
+
+    if (value == nullptr) {
+        return hooks;
+    }
+
+    const std::string text(value);
+    const auto comma = text.find(',');
+
+    try {
+        if (comma != std::string::npos) {
+            hooks.noDataAfterRecord = std::chrono::milliseconds(std::stoll(text.substr(0, comma)));
+            hooks.noDataAfterConnect = std::chrono::milliseconds(std::stoll(text.substr(comma + 1)));
+        }
+    } catch (const std::exception &) {
+        return dxfg::nettest::RunHooks{};
+    }
+
+    return hooks;
+}
 
 // Everything between the creation and the tear-down of the isolate. Returns the exit code.
 int runInIsolate(graal_isolatethread_t *thread, const dxfg::nettest::Options &options) {
@@ -45,7 +73,7 @@ int runInIsolate(graal_isolatethread_t *thread, const dxfg::nettest::Options &op
     // Ctrl+C and SIGTERM end the run like --duration does: the last statistics are printed and the endpoints close.
     StopControl stop;
     const SignalWatcher signalWatcher(stop);
-    const auto result = runNetTest(thread, options, pool.symbols, stop, std::cout);
+    const auto result = runNetTest(thread, options, pool.symbols, stop, std::cout, runHooks());
 
     if (result.exitCode != EXIT_SUCCESS) {
         std::cerr << "NetTest: " << result.error << "\n";
@@ -76,6 +104,13 @@ int main(int argc, char *argv[]) {
     }
 
     const auto &options = parsed.options;
+
+    if (options.help) {
+        std::cout << usageText();
+
+        return EXIT_SUCCESS;
+    }
+
     graal_isolate_t *isolate = nullptr;
     graal_isolatethread_t *thread = nullptr;
 

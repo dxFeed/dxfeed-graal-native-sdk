@@ -13,6 +13,7 @@
 #include <dxfg_api.h>
 
 #include <atomic>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -35,6 +36,8 @@ struct GeneratorSettings {
     bool reuse = false;
     // Publish through the deprecated dxfg_DXPublisher_publishEvents().
     bool legacy = false;
+    // A wait between the fill of a batch and its publishing call, for the tests (RunHooks::publishDelay).
+    std::chrono::nanoseconds publishDelay{0};
 };
 
 struct GeneratorResult {

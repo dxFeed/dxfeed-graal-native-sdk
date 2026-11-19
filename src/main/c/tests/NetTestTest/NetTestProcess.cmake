@@ -11,16 +11,36 @@
 # 3. A run with the GC options of the isolate: the exit code is 0, and stderr has a GC line and, after the tear-down of
 #    the isolate, the GC summary.
 # 4. A run with an option that the isolate rejects: the exit code is 2 and stderr names the option.
+# 5. --help: the exit code is 0 and stdout has the version of the specification.
+# 6. `c` against `p` in two processes over loopback: both exit with 0, the consumer prints its statistics with records
+#    and its two connections.
+# 7. `c` for TimeAndSale against `p` of Trade, with the watchdog shortened through DXFG_NETTEST_WATCHDOG: the connection
+#    is open, no record comes, the consumer exits with 1 and the status no_data.
+# 8. `c` against `p` with -Ddxscheme.nanoTime=false: the events lack the nanosecond part, the consumer exits with 1 and
+#    the status nano_missing; with -Ddxscheme.nanoTime=false on `c` as well it runs to the end and exits with 0.
 
-# The expression of the summary line: the string literal of SUMMARY_LINE_REGEX, bracket expressions only, so ECMAScript
-# of the header and the regular expressions of CMake read it the same way.
+# The producer of a pair (see run_pair), when the script runs itself with PRODUCER_ARGS: runs `p` with its stdout
+# discarded, so that `p` never writes into the pipe to `c`, which may exit first (SIGPIPE would end `p` on Linux and
+# macOS). It exits with 0 when `p` does.
+if (DEFINED PRODUCER_ARGS)
+    execute_process(COMMAND "${NETTEST}" p ${PRODUCER_ARGS} RESULT_VARIABLE producer_result OUTPUT_QUIET TIMEOUT 40)
+
+    if (NOT "${producer_result}" STREQUAL "0")
+        message(FATAL_ERROR "p exited with ${producer_result}")
+    endif ()
+
+    return()
+endif ()
+
+# The expression of the summary line: two adjacent string literals of SUMMARY_LINE_REGEX, joined here as C++ joins them,
+# bracket expressions only, so ECMAScript of the header and the regular expressions of CMake read it the same way.
 file(READ "${STATISTICS_HEADER}" header)
 
-if (NOT header MATCHES "SUMMARY_LINE_REGEX =[ \r\n]*\"([^\"]+)\"")
+if (NOT header MATCHES "SUMMARY_LINE_REGEX =[ \r\n]*\"([^\"]+)\"[ \r\n]*\"([^\"]+)\"")
     message(FATAL_ERROR "SUMMARY_LINE_REGEX is not found in ${STATISTICS_HEADER}")
 endif ()
 
-set(summary_regex "${CMAKE_MATCH_1}")
+set(summary_regex "${CMAKE_MATCH_1}${CMAKE_MATCH_2}")
 
 message(STATUS "The summary line expression: ${summary_regex}")
 
@@ -134,4 +154,114 @@ endif ()
 
 if (NOT errors MATCHES "Error: [^\n]*NetTestNoSuchOption")
     message(FATAL_ERROR "stderr has no reason of the isolate naming NetTestNoSuchOption")
+endif ()
+
+# 5. --help.
+execute_process(COMMAND "${NETTEST}" --help
+        RESULT_VARIABLE code
+        OUTPUT_VARIABLE output
+        ERROR_VARIABLE errors
+        TIMEOUT 40)
+message("exit code: ${code}\nstdout:\n${output}\nstderr:\n${errors}")
+
+if (NOT "${code}" STREQUAL "0")
+    message(FATAL_ERROR "NetTest --help exited with ${code}, expected 0")
+endif ()
+
+if (NOT output MATCHES "(^|\n)spec_version nettest/1\r?\n")
+    message(FATAL_ERROR "NetTest --help does not print the line spec_version nettest/1")
+endif ()
+
+# The pairs of processes: execute_process() starts the commands of one call together as a pipeline, and the output is
+# the stdout of `c`. `p` runs under a nested `cmake -P` of this script that discards its stdout, so the pipe to the
+# stdin of `c` stays empty and `c` may exit first. A random port above the ephemeral ranges of Linux and Windows; the consumer reconnects
+# every 200 ms (a connector property in the address) until `p` listens.
+string(RANDOM LENGTH 4 ALPHABET "0123456789" random)
+math(EXPR port "20000 + ${random}")
+set(consumer_address "127.0.0.1:${port}[reconnectDelay=200]")
+
+# Runs `p` with the producer arguments and `c` with the consumer arguments (the latter after `cmake -E env` when the
+# environment is given) and sets producer_code, consumer_code, output and errors in the caller.
+function(run_pair producer_args consumer_args environment)
+    set(consumer_command "${NETTEST}" c ${consumer_args})
+
+    if (NOT "${environment}" STREQUAL "")
+        set(consumer_command "${CMAKE_COMMAND}" -E env "${environment}" ${consumer_command})
+    endif ()
+
+    execute_process(COMMAND "${CMAKE_COMMAND}" "-DNETTEST=${NETTEST}" "-DPRODUCER_ARGS=${producer_args}"
+            -P "${CMAKE_CURRENT_LIST_FILE}"
+            COMMAND ${consumer_command}
+            RESULTS_VARIABLE codes
+            OUTPUT_VARIABLE pair_output
+            ERROR_VARIABLE pair_errors
+            TIMEOUT 40)
+    message("exit codes: ${codes}\nstdout of c:\n${pair_output}\nstderr of both:\n${pair_errors}")
+    list(GET codes 0 producer)
+    list(GET codes 1 consumer)
+    set(producer_code "${producer}" PARENT_SCOPE)
+    set(consumer_code "${consumer}" PARENT_SCOPE)
+    set(output "${pair_output}" PARENT_SCOPE)
+    set(errors "${pair_errors}" PARENT_SCOPE)
+endfunction()
+
+# 6. `c` against `p`.
+run_pair(":${port};-S;100;-r;*/2k;-s;1s;--duration;7s"
+        "${consumer_address};-S;100;-C;2;-s;1s;--duration;5s" "")
+
+if (NOT "${producer_code}" STREQUAL "0" OR NOT "${consumer_code}" STREQUAL "0")
+    message(FATAL_ERROR "p exited with ${producer_code}, c with ${consumer_code}, expected 0 and 0")
+endif ()
+
+if (NOT output MATCHES "${summary_regex}")
+    message(FATAL_ERROR "The output of c has no line that matches: ${summary_regex}")
+endif ()
+
+if (NOT output MATCHES "NetTestConsumerSide-NetTest[*][}] data [1-9][0-9,]* rps, lag -?[0-9,]+ us, instances 2, connections 2")
+    message(FATAL_ERROR "The statistics of c show no block with received records over two connections")
+endif ()
+
+if (NOT output MATCHES "${runtime_regex}")
+    message(FATAL_ERROR "The output of c has no line that matches: ${runtime_regex}")
+endif ()
+
+# 7. The watchdog: the connection is open and no record comes.
+math(EXPR port "${port} + 1")
+set(consumer_address "127.0.0.1:${port}[reconnectDelay=200]")
+run_pair(":${port};-S;100;-r;*/2k;-s;1s;--duration;6s"
+        "${consumer_address};-S;100;--event;TimeAndSale;-s;1s;--duration;30s" "DXFG_NETTEST_WATCHDOG=2000,2000")
+
+if (NOT "${producer_code}" STREQUAL "0" OR NOT "${consumer_code}" STREQUAL "1")
+    message(FATAL_ERROR "p exited with ${producer_code}, c with ${consumer_code}, expected 0 and 1")
+endif ()
+
+if (NOT errors MATCHES "NetTest: no_data: no records for 2000 ms after the connection")
+    message(FATAL_ERROR "stderr has no no_data line of the watchdog")
+endif ()
+
+# 8. The nanosecond check.
+math(EXPR port "${port} + 1")
+set(consumer_address "127.0.0.1:${port}[reconnectDelay=200]")
+run_pair(":${port};-S;100;-r;*/2k;-s;1s;--duration;6s;-Ddxscheme.nanoTime=false"
+        "${consumer_address};-S;100;-s;1s;--duration;30s" "")
+
+if (NOT "${producer_code}" STREQUAL "0" OR NOT "${consumer_code}" STREQUAL "1")
+    message(FATAL_ERROR "p exited with ${producer_code}, c with ${consumer_code}, expected 0 and 1")
+endif ()
+
+if (NOT errors MATCHES "NetTest: nano_missing: the first 1000 events have the nanosecond part 0")
+    message(FATAL_ERROR "stderr has no nano_missing line of the nanosecond check")
+endif ()
+
+math(EXPR port "${port} + 1")
+set(consumer_address "127.0.0.1:${port}[reconnectDelay=200]")
+run_pair(":${port};-S;100;-r;*/2k;-s;1s;--duration;6s;-Ddxscheme.nanoTime=false"
+        "${consumer_address};-S;100;-s;1s;--duration;4s;-Ddxscheme.nanoTime=false" "")
+
+if (NOT "${producer_code}" STREQUAL "0" OR NOT "${consumer_code}" STREQUAL "0")
+    message(FATAL_ERROR "p exited with ${producer_code}, c with ${consumer_code}, expected 0 and 0")
+endif ()
+
+if (NOT output MATCHES "NetTestConsumerSide-NetTest[*][}] data [1-9][0-9,]* rps")
+    message(FATAL_ERROR "The statistics of c with -Ddxscheme.nanoTime=false show no received records")
 endif ()

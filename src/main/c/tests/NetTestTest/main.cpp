@@ -229,14 +229,123 @@ TEST_CASE("U1: -S keeps the total and the file") {
 }
 
 TEST_CASE("U1: the QD flags that are not implemented are rejected by name") {
-    requireRejected({"c", "127.0.0.1:7000", "-S", "10"}, "mode 'c'");
-    requireRejected({"p", ":7000", "-S", "10", "-c", "stream"}, "-c");
     requireRejected({"p", ":7000", "-S", "10/r5"}, "/r");
     requireRejected({"p", ":7000", "-S", "10/s5"}, "/s");
     requireRejected({"p", ":7000", "-S", "10{3}"}, "{len,max}");
     requireRejected({"p", ":7000", "-S", "10{3,5}"}, "{len,max}");
     requireRejected({"p", ":7000", "-S", "10", "-r", "*/1M;5s"}, ";<time>");
     requireRejected({"x", ":7000", "-S", "10"}, "unknown mode");
+}
+
+TEST_CASE("U1: the mode c, its defaults and the options of the mode p that it rejects") {
+    const auto result = parse({"c", "127.0.0.1:7000", "-S", "10", "-C", "3"});
+
+    REQUIRE(result.ok);
+    CHECK(result.options.mode == Mode::CONSUMER);
+    CHECK(result.options.instances == 3);
+    CHECK_FALSE(result.options.collector.has_value());
+    CHECK(endpointRole(result.options) == DXFG_ENDPOINT_ROLE_STREAM_FEED);
+    CHECK_FALSE(isConflated(result.options));
+
+    CHECK(parse({"p", ":7000", "-S", "10"}).options.mode == Mode::PRODUCER);
+
+    for (const std::vector<std::string> &flag :
+         {std::vector<std::string>{"-r", "*/1k"}, {"--rate-limit", "*/1k"}, {"--batch", "10"}, {"--reuse"}, {"--legacy"}}) {
+        std::vector<std::string> args{"c", "127.0.0.1:7000", "-S", "10"};
+
+        args.insert(args.end(), flag.begin(), flag.end());
+        requireRejected(args, flag[0] + " is an option of the mode p");
+    }
+}
+
+TEST_CASE("U1: -c and --role give the roles of the specification") {
+    struct Case {
+        std::vector<std::string> args;
+        dxfg_v4_endpoint_role_t role;
+        bool conflated;
+    };
+
+    const std::vector<Case> cases{
+        {{"p", ":7000", "-S", "1"}, DXFG_ENDPOINT_ROLE_PUBLISHER, false},
+        {{"p", ":7000", "-S", "1", "-c", "stream"}, DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER, false},
+        {{"p", ":7000", "-S", "1", "-c", "ticker"}, DXFG_ENDPOINT_ROLE_PUBLISHER, false},
+        {{"c", "h:1", "-S", "1"}, DXFG_ENDPOINT_ROLE_STREAM_FEED, false},
+        {{"c", "h:1", "-S", "1", "--collector", "stream"}, DXFG_ENDPOINT_ROLE_STREAM_FEED, false},
+        {{"c", "h:1", "-S", "1", "--collector=ticker"}, DXFG_ENDPOINT_ROLE_FEED, true},
+        {{"c", "h:1", "-S", "1", "--role", "FEED"}, DXFG_ENDPOINT_ROLE_FEED, true},
+        {{"c", "h:1", "-S", "1", "--role", "FEED", "--event", "TimeAndSale"}, DXFG_ENDPOINT_ROLE_FEED, false},
+        {{"p", ":7000", "-S", "1", "--role=STREAM_PUBLISHER"}, DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER, false},
+    };
+
+    for (const auto &item : cases) {
+        const auto result = parse(item.args);
+
+        INFO("the error: " << result.error);
+        REQUIRE(result.ok);
+        CHECK(endpointRole(result.options) == item.role);
+        CHECK(isConflated(result.options) == item.conflated);
+    }
+
+    requireRejected({"c", "h:1", "-S", "1", "-c", "history"}, "-c history is reserved");
+    requireRejected({"c", "h:1", "-S", "1", "-c", "other"}, "-c is stream or ticker: 'other'");
+    requireRejected({"c", "h:1", "-S", "1", "--role", "PUBLISHER"}, "--role is FEED or STREAM_FEED: 'PUBLISHER'");
+    requireRejected({"p", ":7000", "-S", "1", "--role", "FEED"}, "--role is PUBLISHER or STREAM_PUBLISHER: 'FEED'");
+    requireRejected({"c", "h:1", "-S", "1", "-c", "ticker", "--event", "TimeAndSale"}, "-c ticker needs --event Trade");
+    requireRejected({"c", "h:1", "-S", "1", "-c", "ticker", "--role", "STREAM_FEED"},
+                    "--role STREAM_FEED conflicts with -c ticker for Trade");
+    requireRejected({"c", "h:1", "-S", "1", "-c", "stream", "--role", "FEED"},
+                    "--role FEED conflicts with -c stream for Trade");
+}
+
+TEST_CASE("U1: --help and the long options") {
+    const auto help = parse({"--help"});
+
+    REQUIRE(help.ok);
+    CHECK(help.options.help);
+
+    // --help ends the parsing: what follows it is not checked.
+    const auto late = parse({"c", "--help", "--no-such-flag"});
+
+    REQUIRE(late.ok);
+    CHECK(late.options.help);
+
+    const auto longForms = parse({"c", "h:1", "--stat=1s", "--name=run", "-S", "3", "--duration=2s"});
+
+    REQUIRE(longForms.ok);
+    CHECK(longForms.options.periodMillis == 1000);
+    CHECK(longForms.options.name == "run");
+    CHECK(longForms.options.durationMillis == 2000);
+
+    requireRejected({"c", "h:1", "-S", "1", "--help=yes"}, "--help takes no value");
+    requireRejected({"x", "h:1", "-S", "1"}, "unknown mode 'x'; the mode is p or c");
+    requireRejected({"c", "h:1", "-S", "1", "-w"}, "unsupported QD flag: -w");
+}
+
+TEST_CASE("U1: the consumer slices and the e2e lag") {
+    const std::vector<std::string> symbols{"A", "B", "C", "D", "E"};
+
+    CHECK(consumerSlice(symbols, 1, 1) == symbols);
+    CHECK(consumerSlice(symbols, 1, 2) == std::vector<std::string>{"A", "C", "E"});
+    CHECK(consumerSlice(symbols, 2, 2) == std::vector<std::string>{"B", "D"});
+    CHECK(consumerSlice(symbols, 3, 3) == std::vector<std::string>{"C"});
+    CHECK(consumerSlice(symbols, 6, 6).empty());
+    CHECK(consumerSlice(symbols, 0, 2).empty());
+
+    // 2026-01-01T00:00:01.234567891Z, packed as the producer packs it.
+    const std::int64_t nanos = 1'767'225'601LL * 1'000'000'000LL + 234'567'891LL;
+    const auto packed = packTimeSequence(nanos, 7);
+
+    CHECK(eventLagNanos(nanos, packed, 567'891) == 0);
+    CHECK(eventLagNanos(nanos + 5'000, packed, 567'891) == 5'000);
+    // A clock behind the producer gives a negative lag.
+    CHECK(eventLagNanos(nanos - 1'000'000, packed, 567'891) == -1'000'000);
+    // Without the nanosecond part the event counts from its millisecond.
+    CHECK(eventLagNanos(nanos, packed, 0) == 567'891);
+
+    CHECK(runStatusName(RunStatus::OK) == "ok");
+    CHECK(runStatusName(RunStatus::FAILED) == "error");
+    CHECK(runStatusName(RunStatus::STARVED) == "no_data");
+    CHECK(runStatusName(RunStatus::NANO_MISSING) == "nano_missing");
 }
 
 TEST_CASE("U1: -C above 1 needs a connecting address") {
@@ -1346,6 +1455,28 @@ TEST_CASE("U4: the summary line expression matches the summary line and nothing 
     CHECK_FALSE(std::regex_match(lines[1], summary));
     CHECK_FALSE(std::regex_match("{*NetTestProducerSide-NetTest*} data 1 rps, lag 1 us, instances 1", summary));
     CHECK_FALSE(std::regex_match("data 1 rps, lag 1 us, instances 1, connections 0", summary));
+
+    auto consumer = snapshotOf(10 * SECOND, 1, {{1000, -12'345'678}, {3, -2999}});
+
+    consumer.side = Side::CONSUMER;
+
+    const auto consumerLines = linesOf(formatStatistics(consumer));
+
+    REQUIRE(consumerLines.size() == 3);
+    CHECK(consumerLines[0] ==
+          "{*NetTestConsumerSide-NetTest*} data 100 rps, lag -12 us, instances 2, connections 1");
+    CHECK(std::regex_match(consumerLines[0], summary));
+    // The mean e2e lag divides toward zero: -2999 ns over 3 records is 0 us.
+    CHECK(consumerLines[2] == "    NetTest.2 data 0 rps, lag 0 us");
+}
+
+TEST_CASE("U4: the consumer lag is the mean of the signed e2e lags") {
+    CHECK(meanLagMicros(0, 5'000) == 0);
+    CHECK(meanLagMicros(2, 5'000) == 2);
+    CHECK(meanLagMicros(2, -5'000) == -2);
+    CHECK(meanLagMicros(1000, -12'345'678) == -12);
+    // The producer lag stays non-negative.
+    CHECK(lagMicros(2, -5'000) == 0);
 }
 
 namespace {
@@ -2013,6 +2144,324 @@ TEST_CASE("E2E: a feed endpoint receives the events of the legacy publishing cal
     CHECK(run.collected.staleTime == 0);
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// U6: the consumer (the ctest entry NetTestTest.Consumer): the tool on `c` against the tool on `p` in the same isolate,
+// and against a publisher endpoint of the test for the starvation watchdog and the check of the nanosecond part
+// ---------------------------------------------------------------------------------------------------------------------
+
+namespace {
+
+// Runs the tool of the mode on a thread of the isolate, which may be another thread than the one of the test case, so
+// it asserts nothing: a command line or a symbol pool that fails comes as the error of the result with the exit code 2.
+Outcome runMode(graal_isolatethread_t *thread, const std::string &mode, std::vector<std::string> args,
+                StopControl &stop, const RunHooks &hooks = {}) {
+    Outcome outcome;
+
+    args.insert(args.begin(), mode);
+
+    const auto parsed = parse(args);
+
+    if (!parsed.ok) {
+        outcome.result.exitCode = 2;
+        outcome.result.error = parsed.error;
+
+        return outcome;
+    }
+
+    const auto symbols = buildSymbolPool(thread, parsed.options);
+
+    if (!symbols.ok) {
+        outcome.result.exitCode = 2;
+        outcome.result.error = symbols.error;
+
+        return outcome;
+    }
+
+    std::ostringstream output;
+    const auto start = Steady::now();
+
+    outcome.result = runNetTest(thread, parsed.options, symbols.symbols, stop, output, hooks);
+    outcome.seconds = secondsSince(start);
+    outcome.output = output.str();
+
+    return outcome;
+}
+
+// The rate and the lag of a summary line.
+struct BlockValues {
+    std::int64_t rate = 0;
+    std::int64_t lag = 0;
+};
+
+std::int64_t numberOf(std::string text) {
+    text.erase(std::remove(text.begin(), text.end(), ','), text.end());
+
+    return std::stoll(text);
+}
+
+std::vector<BlockValues> blocksOf(const std::string &output) {
+    std::vector<BlockValues> blocks;
+    const std::regex values("data ([0-9,]+) rps, lag (-?[0-9,]+) us");
+
+    for (const auto &line : summaryLines(output)) {
+        std::smatch match;
+
+        if (std::regex_search(line, match, values)) {
+            blocks.push_back({numberOf(match[1]), numberOf(match[2])});
+        }
+    }
+
+    return blocks;
+}
+
+// A PUBLISHER endpoint of the test that listens on the port and publishes Trade batches of the generated symbols from a
+// thread of its own: `batches` batches of 100 every 50 ms after a delay of 1.5 s, then it keeps the connection open;
+// with UNTIL_FINISH it publishes until finish().
+class TestPublisher {
+    graal_isolatethread_t *thread_;
+    dxfg_v4_endpoint_t *endpoint_ = nullptr;
+    dxfg_v4_publisher_t *publisher_ = nullptr;
+    std::atomic<bool> finishing_{false};
+    std::unique_ptr<test::Attached> publishing_{};
+
+  public:
+    static constexpr int UNTIL_FINISH = -1;
+
+    bool ready = false;
+
+    TestPublisher(graal_isolatethread_t *thread, const std::string &port, int batches, bool zeroNanoPart)
+        : thread_(thread) {
+        ready = dxfg_v4_DXEndpoint_createWithRole(thread, DXFG_ENDPOINT_ROLE_PUBLISHER, &endpoint_) == 0 &&
+                dxfg_v4_DXEndpoint_connect(thread, endpoint_, (":" + port).c_str()) == 0 &&
+                dxfg_v4_DXEndpoint_getPublisher(thread, endpoint_, &publisher_) == 0;
+
+        if (!ready) {
+            return;
+        }
+
+        publishing_ = std::make_unique<test::Attached>(
+            graal_get_isolate(thread), [this, batches, zeroNanoPart](graal_isolatethread_t *publishingThread) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+
+                EventPool pool(EventKind::TRADE, poolSymbols(100), 11);
+                EventBatch batch;
+
+                for (int index = 0; batches == UNTIL_FINISH ? !finishing_.load() : index < batches; ++index) {
+                    if (zeroNanoPart) {
+                        // A time of whole milliseconds has the nanosecond part 0.
+                        pool.fillAt(batch, 100, false, nowMillis() * 1'000'000);
+                    } else {
+                        pool.fill(batch, 100, false);
+                    }
+
+                    if (dxfg_v4_DXPublisher_publishEvents(publishingThread, publisher_, batch.list()) != 0) {
+                        return std::int32_t{1};
+                    }
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
+
+                return std::int32_t{0};
+            });
+    }
+
+    TestPublisher(const TestPublisher &) = delete;
+    TestPublisher &operator=(const TestPublisher &) = delete;
+
+    ~TestPublisher() {
+        finish();
+
+        if (publisher_ != nullptr) {
+            dxfg_v4_JavaObjectHandler_release(thread_, &publisher_->handler);
+        }
+
+        if (endpoint_ != nullptr) {
+            dxfg_v4_DXEndpoint_closeAndAwaitTermination(thread_, endpoint_);
+            dxfg_v4_JavaObjectHandler_release(thread_, &endpoint_->handler);
+        }
+    }
+
+    // Ends the publishing of UNTIL_FINISH and waits for the publishing thread; 0 when every publishing call succeeded.
+    std::int32_t finish() {
+        finishing_ = true;
+
+        if (publishing_ == nullptr) {
+            return -1;
+        }
+
+        const auto code = publishing_->join();
+
+        publishing_.reset();
+
+        return code;
+    }
+};
+
+} // namespace
+
+TEST_CASE("Consumer: the e2e lag of the tool on c shows the delay injected between the clock read and the publish") {
+    constexpr std::int64_t DELAY_MICROS = 50'000;
+    const auto port = freePort();
+    RunHooks hooks;
+    StopControl producerStop;
+    Outcome producer;
+
+    hooks.publishDelay = std::chrono::microseconds(DELAY_MICROS);
+
+    // The producer listens first, so that the first connect of the consumer finds the port open; it publishes longer
+    // than the consumer runs.
+    test::Attached producerThread(graal_get_isolate(isolateThread()), [&](graal_isolatethread_t *thread) {
+        producer = runMode(thread, "p", {":" + port, "-S", "100", "-r", "*/1k", "-s", "1s", "--duration", "7s"},
+                           producerStop, hooks);
+
+        return std::int32_t{0};
+    });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(700));
+
+    StopControl consumerStop;
+    const auto consumer = runMode(isolateThread(), "c",
+                                  {"127.0.0.1:" + port, "-S", "100", "-C", "2", "-s", "1s", "--duration", "5s"},
+                                  consumerStop);
+
+    CHECK(producerThread.join() == 0);
+    INFO("the producer: " << producer.result.error << "\n" << producer.output);
+    INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+    REQUIRE(producer.result.exitCode == 0);
+    REQUIRE(consumer.result.exitCode == 0);
+    CHECK(consumer.result.status == RunStatus::OK);
+    CHECK(consumer.result.records >= 1000);
+    CHECK(consumer.result.records <= producer.result.records);
+
+    // The two instances share the symbols, so both receive.
+    REQUIRE(consumer.result.instanceRecords.size() == 2);
+    CHECK(consumer.result.instanceRecords[0] > 0);
+    CHECK(consumer.result.instanceRecords[1] > 0);
+
+    CHECK(consumer.output.find("{*NetTestConsumerSide-NetTest*} data ") != std::string::npos);
+    CHECK(consumer.output.find("NetTestProducerSide") == std::string::npos);
+    CHECK(consumer.output.find(", instances 2, connections 2") != std::string::npos);
+    CHECK(consumer.output.find("    NetTest.2 data ") != std::string::npos);
+
+    std::size_t withRecords = 0;
+
+    for (const auto &block : blocksOf(consumer.output)) {
+        if (block.rate == 0) {
+            continue;
+        }
+
+        ++withRecords;
+        // Each record waited for the delay; the loopback adds far less than a second.
+        CHECK(block.lag >= DELAY_MICROS);
+        CHECK(block.lag < DELAY_MICROS + 1'000'000);
+    }
+
+    CHECK(withRecords >= 2);
+}
+
+TEST_CASE("Consumer: the watchdog stops the consumer when the records stop and the connection stays open") {
+    const auto port = freePort();
+    TestPublisher publisher(isolateThread(), port, 5, false);
+
+    REQUIRE(publisher.ready);
+
+    RunHooks hooks;
+    StopControl stop;
+
+    hooks.noDataAfterRecord = std::chrono::milliseconds(2000);
+
+    const auto consumer =
+        runMode(isolateThread(), "c", {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "30s"}, stop, hooks);
+
+    CHECK(publisher.finish() == 0);
+    INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+    CHECK(consumer.result.exitCode == 1);
+    CHECK(consumer.result.status == RunStatus::STARVED);
+    CHECK(consumer.result.error.find("no_data: no records for 2000 ms after the last record") == 0);
+    CHECK(consumer.result.records > 0);
+    CHECK(consumer.result.records <= 500);
+    CHECK(consumer.seconds < 15);
+}
+
+TEST_CASE("Consumer: the watchdog stops the consumer when no record comes after the connection") {
+    const auto port = freePort();
+    TestPublisher publisher(isolateThread(), port, 0, false);
+
+    REQUIRE(publisher.ready);
+
+    RunHooks hooks;
+    StopControl stop;
+
+    hooks.noDataAfterConnect = std::chrono::milliseconds(2000);
+
+    const auto consumer =
+        runMode(isolateThread(), "c", {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "30s"}, stop, hooks);
+
+    INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+    CHECK(consumer.result.exitCode == 1);
+    CHECK(consumer.result.status == RunStatus::STARVED);
+    CHECK(consumer.result.error.find("no_data: no records for 2000 ms after the connection") == 0);
+    CHECK(consumer.result.records == 0);
+    CHECK(consumer.seconds < 15);
+}
+
+TEST_CASE("Consumer: the watchdog waits while there is no connection") {
+    RunHooks hooks;
+    StopControl stop;
+
+    hooks.noDataAfterRecord = std::chrono::milliseconds(500);
+    hooks.noDataAfterConnect = std::chrono::milliseconds(500);
+
+    // Nobody listens on the port: the connector stays connecting for the whole run.
+    const auto consumer = runMode(isolateThread(), "c",
+                                  {"127.0.0.1:" + freePort(), "-S", "10", "-s", "1s", "--duration", "3s"}, stop, hooks);
+
+    INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+    CHECK(consumer.result.exitCode == 0);
+    CHECK(consumer.result.status == RunStatus::OK);
+}
+
+TEST_CASE("Consumer: events without the nanosecond part stop the consumer unless dxscheme.nanoTime is false") {
+    SUBCASE("nano_missing") {
+        const auto port = freePort();
+        // Until the consumer stops: a late subscription still gets the 1000 events of the check.
+        TestPublisher publisher(isolateThread(), port, TestPublisher::UNTIL_FINISH, true);
+
+        REQUIRE(publisher.ready);
+
+        StopControl stop;
+        const auto consumer =
+            runMode(isolateThread(), "c", {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "30s"}, stop);
+
+        CHECK(publisher.finish() == 0);
+        INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+        CHECK(consumer.result.exitCode == 1);
+        CHECK(consumer.result.status == RunStatus::NANO_MISSING);
+        CHECK(consumer.result.error.find("nano_missing: the first 1000 events have the nanosecond part 0") == 0);
+        CHECK(consumer.result.records >= NANO_CHECK_EVENTS);
+        CHECK(consumer.seconds < 15);
+    }
+
+    SUBCASE("the check is off with -Ddxscheme.nanoTime=false") {
+        const auto port = freePort();
+        TestPublisher publisher(isolateThread(), port, 30, true);
+
+        REQUIRE(publisher.ready);
+
+        StopControl stop;
+        const auto consumer =
+            runMode(isolateThread(), "c",
+                    {"127.0.0.1:" + port, "-S", "100", "-s", "1s", "--duration", "5s", "-Ddxscheme.nanoTime=false"},
+                    stop);
+
+        CHECK(publisher.finish() == 0);
+        INFO("the consumer: " << consumer.result.error << "\n" << consumer.output);
+        CHECK(consumer.result.exitCode == 0);
+        CHECK(consumer.result.status == RunStatus::OK);
+        CHECK(consumer.result.records >= NANO_CHECK_EVENTS);
+        CHECK(consumer.result.records <= 3000);
+    }
+}
 
 } // namespace nettest
 } // namespace dxfg

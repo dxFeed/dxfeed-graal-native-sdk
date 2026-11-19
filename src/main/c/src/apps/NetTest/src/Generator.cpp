@@ -5,6 +5,7 @@
 #include <NetTest/Sdk.hpp>
 
 #include <chrono>
+#include <thread>
 
 namespace dxfg {
 namespace nettest {
@@ -26,6 +27,10 @@ GeneratorResult runGenerator(graal_isolatethread_t *thread, dxfg_v4_publisher_t 
         const auto start = Clock::now();
 
         pool.fill(batch, settings.batch, settings.reuse);
+
+        if (settings.publishDelay.count() > 0) {
+            std::this_thread::sleep_for(settings.publishDelay);
+        }
 
         dxfg_v4_event_type_list *list = batch.list();
         const auto code = settings.legacy ? dxfg_DXPublisher_publishEvents(thread, publisher, list)

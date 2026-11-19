@@ -81,7 +81,20 @@ std::int64_t lagMicros(std::int64_t records, std::int64_t weightedNanos) {
     return weightedNanos / records / NANOS_PER_MICRO;
 }
 
+std::int64_t meanLagMicros(std::int64_t records, std::int64_t lagSumNanos) {
+    if (records <= 0) {
+        return 0;
+    }
+
+    // C++ divides toward zero, as the specification wants for a negative sum.
+    return lagSumNanos / records / NANOS_PER_MICRO;
+}
+
 std::string formatStatistics(const StatisticsSnapshot &snapshot) {
+    const bool producer = snapshot.side == Side::PRODUCER;
+    const auto lag = [producer](std::int64_t records, std::int64_t nanos) {
+        return producer ? lagMicros(records, nanos) : meanLagMicros(records, nanos);
+    };
     std::int64_t records = 0;
     std::int64_t weightedNanos = 0;
 
@@ -90,9 +103,9 @@ std::string formatStatistics(const StatisticsSnapshot &snapshot) {
         weightedNanos += delta.weightedNanos;
     }
 
-    std::string text = "{*NetTestProducerSide-" + snapshot.name + "*} data " +
-                       groupDigits(recordsPerSecond(records, snapshot.periodNanos)) + " rps, lag " +
-                       groupDigits(lagMicros(records, weightedNanos)) + " us, instances " +
+    std::string text = std::string(producer ? "{*NetTestProducerSide-" : "{*NetTestConsumerSide-") + snapshot.name +
+                       "*} data " + groupDigits(recordsPerSecond(records, snapshot.periodNanos)) + " rps, lag " +
+                       groupDigits(lag(records, weightedNanos)) + " us, instances " +
                        std::to_string(snapshot.deltas.size()) + ", connections " +
                        std::to_string(snapshot.connections);
 
@@ -101,16 +114,17 @@ std::string formatStatistics(const StatisticsSnapshot &snapshot) {
 
         text += "\n    " + snapshot.name + "." + std::to_string(index + 1) + " data " +
                 groupDigits(recordsPerSecond(delta.records, snapshot.periodNanos)) + " rps, lag " +
-                groupDigits(lagMicros(delta.records, delta.weightedNanos)) + " us";
+                groupDigits(lag(delta.records, delta.weightedNanos)) + " us";
     }
 
     return text;
 }
 
 StatisticsSnapshot makeSnapshot(const std::string &name, const StatisticsSample &previous,
-                                const StatisticsSample &current, std::int64_t periodNanos) {
+                                const StatisticsSample &current, std::int64_t periodNanos, Side side) {
     StatisticsSnapshot snapshot;
 
+    snapshot.side = side;
     snapshot.name = name;
     snapshot.periodNanos = periodNanos;
     snapshot.connections = current.connections;
@@ -169,7 +183,7 @@ ReporterClock systemReporterClock(StopControl &stop) {
 }
 
 void runReporter(const std::string &name, std::int64_t periodMillis, const ReporterClock &clock,
-                 const StatisticsSource &source, const StatisticsSink &sink) {
+                 const StatisticsSource &source, const StatisticsSink &sink, Side side) {
     const std::int64_t periodNanos = std::max<std::int64_t>(periodMillis, 1) * NANOS_PER_MILLI;
     auto previous = source();
     auto previousTime = clock.nowNanos();
@@ -177,7 +191,7 @@ void runReporter(const std::string &name, std::int64_t periodMillis, const Repor
 
     // The block and, after it, the runtime line, in one text, so that nothing printed elsewhere comes between them.
     const auto print = [&](const StatisticsSample &current, std::int64_t length) {
-        std::string text = formatStatistics(makeSnapshot(name, previous, current, length));
+        std::string text = formatStatistics(makeSnapshot(name, previous, current, length, side));
 
         if (previous.runtime.has_value() && current.runtime.has_value()) {
             text += "\n" + formatRuntime(name, *previous.runtime, *current.runtime, length);
