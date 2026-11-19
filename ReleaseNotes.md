@@ -1,4 +1,4 @@
-## v3.18.0-rc1
+## v3.18.0-rc2
 
 * **\[MDAPI-577]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) writes the JSON summary of the
   [NetTest specification](docs/wrapper-guide/nettest.md) (`--summary <file>`, schema `nettest-summary/1`) with the
