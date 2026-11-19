@@ -3,8 +3,8 @@
 
 // The C tool against the kit of the NetTest specification (docs/wrapper-guide/nettest.md): the expressions of
 // Statistics.hpp and of regexes.json agree on the lines, the formatter prints the byte samples of lines.json, and the
-// event pool and the symbol generator give the values of pool-vectors.json and symbols-generated-10.txt, and the parser
-// gives the settings and the errors of cli-vectors.json.
+// event pool and the symbol generator give the values of pool-vectors.json, symbols-generated-10.txt and
+// symbols-generated-vectors.json, and the parser gives the settings and the errors of cli-vectors.json.
 
 #include <doctest.h>
 #include <dxfg_api.h>
@@ -455,6 +455,36 @@ TEST_CASE("Kit: the first generated symbols are those of symbols-generated-10.tx
 
     REQUIRE(expected.size() == 10);
     CHECK(generateSymbols(10) == expected);
+}
+
+TEST_CASE("Kit: the generated symbols give the samples and the hashes of symbols-generated-vectors.json") {
+    const auto vectors = kitFile("symbols-generated-vectors.json");
+
+    for (const auto &entry : nonEmpty(vectors["cases"])) {
+        const auto total = entry["total"].asInteger();
+        const auto symbols = generateSymbols(total);
+
+        CAPTURE(total);
+        REQUIRE(static_cast<std::int64_t>(symbols.size()) == total);
+
+        for (const auto &sample : nonEmpty(entry["samples"])) {
+            const auto index = sample["index"].asInteger();
+
+            REQUIRE(index >= 0);
+            REQUIRE(index < total);
+            CHECK(symbols[static_cast<std::size_t>(index)] == sample["symbol"].asString());
+        }
+
+        std::uint64_t hash = 0xCBF29CE484222325ULL;
+
+        for (const auto &symbol : symbols) {
+            for (const auto byte : symbol + '\n') {
+                hash = (hash ^ static_cast<unsigned char>(byte)) * 0x100000001B3ULL;
+            }
+        }
+
+        CHECK(hash == hexValue(entry["fnv1a64"]));
+    }
 }
 
 } // namespace nettest

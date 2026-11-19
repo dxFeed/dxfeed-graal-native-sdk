@@ -29,8 +29,9 @@ struct SymbolPoolResult {
     std::string warning{};
 };
 
-// Generates `total` distinct symbols of 1-6 capital letters from a fixed seed: the same call gives the same symbols on
-// every run and platform. Returns an empty vector when `total` is below 1 or above the number of the possible symbols.
+// Generates the `total` distinct symbols of QD NetTest (1-6 capital letters, now and then a digit) in the order of first
+// appearance: the same call gives the same symbols on every run and platform. Returns an empty vector when `total` is
+// below 1 or above 100000000, the largest -S.
 std::vector<std::string> generateSymbols(std::int64_t total);
 
 // Reads the symbols of the profiles of the IPF file in file order, at most `total`, through the SDK reader. A file

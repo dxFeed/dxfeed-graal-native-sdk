@@ -176,10 +176,16 @@ The C API `NetTest`'s algorithm is normative for every tool, so that all tools p
 - The nanosecond part reaches the consumer only when every hop has the property: the publisher, a multiplexor
   (`-Ddxscheme.nanoTime=true` on its command line) and the consumer. A hop without it still passes the events, with
   the nanosecond part 0.
-- Generated symbols: SplitMix64 with the seed `0x5EED0FD4F3ED5EED`; each draw
-  `state += 0x9E3779B97F4A7C15; z = (state ^ (state >> 30)) * 0xBF58476D1CE4E5B9; z = (z ^ (z >> 27)) * 0x94D049BB133111EB; return z ^ (z >> 31)`.
-  Each symbol takes the length `next % 6 + 1`, then each letter `'A' + next % 26`; a symbol already generated is
-  skipped. The order is the order of first appearance; `symbols-generated-10.txt` of the kit lists the first ten.
+- Generated symbols: those of QD NetTest (its `SymbolGenerator`), from `java.util.Random` as its Javadoc specifies it,
+  seeded with `1416948710541751`. The seed is scrambled to `(seed ^ 0x5DEECE66D) & (2^48 - 1)`; `next(bits)` sets
+  `seed = (seed * 0x5DEECE66D + 0xB) & (2^48 - 1)` and returns the top `bits` of the 48; `nextInt(bound)` draws
+  `r = next(31)` and returns `(bound * r) >> 31` when `bound` is a power of two, otherwise `r % bound`, drawing `r`
+  again while `r - r % bound + bound - 1` overflows a signed 32-bit integer. Each symbol takes the length
+  `nextInt(3) + nextInt(4) + 1` (the two draws in that order), then each character: `nextInt(50) == 0` gives
+  `'0' + nextInt(10)`, otherwise `'A' + nextInt(26)`; a symbol already generated is skipped. The set is QD's; the
+  order is the order of first appearance, not QD's `HashSet` order, so that the slicing below is defined.
+  `symbols-generated-10.txt` of the kit lists the first ten, `symbols-generated-vectors.json` has samples and a hash
+  of the first 10, 1000 and 100000.
 - An IPF file gives its first `n` symbols in file order. A file with fewer symbols gives a warning on stderr and the
   smaller set; a file without symbols is a failure (exit code 1).
 - The consumer instances slice the set: instance `i` (from 1) of `C` subscribes to the symbols with the index `j`
@@ -395,8 +401,8 @@ both sides end with the status `ok`. The thresholds are parameters of the analyz
 
 1. The parser: every entry of `cli-vectors.json`, its exit code and its first error line.
 2. The formatter: every entry of `lines.json`, byte for byte.
-3. The pools: every entry of `pool-vectors.json` (the draws, the table rows, the symbol and row choices) and
-   `symbols-generated-10.txt`.
+3. The pools: every entry of `pool-vectors.json` (the draws, the table rows, the symbol and row choices),
+   `symbols-generated-10.txt` and `symbols-generated-vectors.json`.
 4. The summary: the summary of a short run validates against `nettest-summary.schema.json`, and its interval records
    add up to `records`.
 5. The metrics: a scrape has every metric of its side with its `TYPE` line, and the content type is exact.
@@ -425,6 +431,7 @@ from there:
 | `histogram-vectors.json` | recorded values with their count and percentiles |
 | `pool-vectors.json` | the first draws of instances 1 and 2, table rows, the symbol and row choices, packed times |
 | `symbols-generated-10.txt` | the first ten generated symbols, one per line |
+| `symbols-generated-vectors.json` | for 10, 1000 and 100000 generated symbols: the draws, samples and the FNV-1a hash of the list |
 | `metrics-sample-producer.txt`, `metrics-sample-consumer.txt` | a scrape of each side |
 
 An entry of `cli-vectors.json` may list `requires`: the optional features it needs (`isolate` for `-X`, `legacy`), or
@@ -437,8 +444,8 @@ section, so that a tool which does not implement a section yet can skip it by na
   `ts`, `filtered=`) are not taken. `-w` is rejected. One address only.
 - The default event is Trade; QD's default record is TimeAndSale (`-Dcom.devexperts.qd.tools.NetTest.record`).
 - `-S` is required (QD: 100000 by default). QD's symbol splits (`/r`, `/s`), symbol lengths (`{len,max}`) and limiter
-  bucket (`;<time>`) are rejected. Generated symbols differ from QD's: a run that mixes a NetTest with QD NetTest uses
-  `-S <n>@<file>`.
+  bucket (`;<time>`) are rejected. Generated symbols are QD's set in the order of first appearance (QD: `HashSet`
+  order), which matters only for the slicing of `c` instances.
 - Without `-c`, `p` uses PUBLISHER and `c` uses STREAM_FEED; QD uses `ticker` for both.
 - The publisher's `lag` is the fill and the publishing call without the limiter's wait; QD's includes the wait. The
   consumer's `lag` is in real microseconds from the nanosecond time; QD's is milliseconds times 1000.
@@ -456,7 +463,7 @@ README of each tool lists how it differs from this page until then.
 | @ref wrapper_nettest_roles | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_rate | not yet: a token bucket | not yet: a token bucket |
 | @ref wrapper_nettest_events | 3.16.0 | not yet: another generator |
-| @ref wrapper_nettest_time | 3.18.0 (generated symbols since 3.16.0) | not yet: the time and `dxscheme.nanoTime` since 3.18.0, QD's generated symbols |
+| @ref wrapper_nettest_time | 3.18.0 | not yet: the time and `dxscheme.nanoTime` since 3.18.0; generated symbols in QD's order |
 | @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c`; no `NetTestMetrics` line | not yet: the lines go to QD's log (stderr when redirected), the intervals are not aligned to the wall clock |
 | @ref wrapper_nettest_consumer | 3.18.0 without `--warmup`, the histogram and `symbols_seen` | 3.18.0 without the histogram, `negative` and `symbols_seen` of the summary |
 | @ref wrapper_nettest_summary | not yet | not yet |

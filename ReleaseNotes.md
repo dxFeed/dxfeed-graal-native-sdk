@@ -1,3 +1,8 @@
+* **\[MDAPI-582]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) generates the symbols of QD NetTest
+  (`java.util.Random` with the seed of QD's `SymbolGenerator`) in the order of first appearance, so a run that mixes it
+  with QD NetTest or `NetTestApi` and `-S <n>` gets the whole stream; before, the two sets barely overlapped and only
+  `-S <n>@<file>` avoided it. The [NetTest specification](docs/wrapper-guide/nettest.md) and its kit follow, with
+  vectors for 10, 1000 and 100000 symbols.
 * **\[MDAPI-574]\[GRAAL]** [NetTestApi](tools/nettest) has the consumer mode of the
   [NetTest specification](docs/wrapper-guide/nettest.md): `NetTestApi c <address>` subscribes each instance to its
   slice of the symbols and reports the mean end-to-end lag in microseconds from the nanosecond time of the events. It

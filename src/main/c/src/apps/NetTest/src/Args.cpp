@@ -635,7 +635,7 @@ std::string usageText() {
                        "  p                    publish generated events\n"
                        "  c                    receive them and report the end-to-end lag\n"
                        "  <address>            host:port to connect to, :port to listen on\n"
-                       "  -S <total>           the symbols: <total> generated symbols of 1-6 capital letters\n"
+                       "  -S <total>           the symbols: the <total> generated symbols of QD NetTest\n"
                        "  -S <total>@<file>    the first <total> symbols of the IPF file, in file order\n"
                        "  -C <n>               the number of instances, default 1 (not above 1 with a :port address);\n"
                        "                       on c the instances share the symbols\n"

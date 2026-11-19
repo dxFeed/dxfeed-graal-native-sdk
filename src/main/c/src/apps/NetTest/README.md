@@ -60,7 +60,7 @@ NetTest --help
 | `p`, `c`                 | the mode: publish (the producer) or receive (the consumer)                                    |
 | `<address>`              | `:port` listens (the peer connects to it), `host:port` connects to a listening peer          |
 | `-S <total>@<file>`      | the first `<total>` symbols of an IPF file, in file order; fewer give a warning, none an error |
-| `-S <total>`             | `<total>` distinct symbols of 1-6 capital letters from a fixed seed                          |
+| `-S <total>`             | the `<total>` distinct symbols of QD NetTest, in the order of first appearance                |
 | `-C <n>`                 | instances: endpoints `NetTest.1` ... `NetTest.<n>`; on `p` one generator thread each with the whole pool each, on `c` instance `i` subscribes the symbols `j` with `j % n == i - 1`; not above 1 with `:port` |
 | `-r`, `--rate-limit */<rate>` | `p`: the total rate of all instances in records per second, with `k`, `M` or `G`; without it the generators run flat out |
 | `-s`, `--stat <period>`  | the statistics period, default `10s` (`ms`, `s`, `m`)                                         |
@@ -279,7 +279,8 @@ What the tool does not do yet of the [NetTest specification](../../../../../../d
   built and never goes into debt.
 - `lag` on `p` excludes the limiter wait; QD NetTest's includes it. `lag` on `c` is the e2e lag with the nanosecond
   part.
-- Generated symbols differ from QD NetTest's: runs that mix the two tools must use `-S <total>@<file>`.
+- Generated symbols are the set of QD NetTest in the order of first appearance; QD NetTest's order is that of a
+  `HashSet`, so `c` instances of the two tools slice the set differently.
 - The statistics line has no QD log prefix (`I yymmdd hhmmss.mmm `); parsers match from `{*`.
 - A last, partial block of one second or more is printed at stop.
 - Each block ends with the runtime line of the isolate (`{*NetTestRuntime-<name>*}`), which QD NetTest does not print.

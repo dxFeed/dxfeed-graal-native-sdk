@@ -542,7 +542,7 @@ TEST_CASE("U2: an IPF file without symbols and a missing file fail with a messag
     CHECK(exception == nullptr);
 }
 
-TEST_CASE("U2: generated symbols are distinct capital letters and the same on every run") {
+TEST_CASE("U2: generated symbols are distinct capital letters and digits, the same on every run") {
     const auto first = generateSymbols(1000);
     const auto second = generateSymbols(1000);
 
@@ -551,18 +551,23 @@ TEST_CASE("U2: generated symbols are distinct capital letters and the same on ev
     CHECK(asSet(first).size() == 1000);
 
     std::set<std::size_t> lengths;
+    bool digits = false;
 
     for (const auto &symbol : first) {
         lengths.insert(symbol.size());
         CHECK(symbol.size() >= 1);
         CHECK(symbol.size() <= 6);
         CHECK(std::all_of(symbol.begin(), symbol.end(), [](char letter) {
-            return letter >= 'A' && letter <= 'Z';
+            return (letter >= 'A' && letter <= 'Z') || (letter >= '0' && letter <= '9');
         }));
+        digits = digits || std::any_of(symbol.begin(), symbol.end(), [](char letter) {
+                     return letter >= '0' && letter <= '9';
+                 });
     }
 
-    // All the lengths show up in a pool of that size.
+    // All the lengths and, one character in 50, the digits show up in a pool of that size.
     CHECK(lengths.size() == 6);
+    CHECK(digits);
 
     // A smaller pool is the start of a bigger one: the generator is a sequence.
     const auto fewer = generateSymbols(10);
@@ -573,7 +578,7 @@ TEST_CASE("U2: generated symbols are distinct capital letters and the same on ev
 TEST_CASE("U2: the generator refuses an impossible total") {
     CHECK(generateSymbols(0).empty());
     CHECK(generateSymbols(-1).empty());
-    CHECK(generateSymbols(1'000'000'000).empty());
+    CHECK(generateSymbols(100'000'001).empty());
 }
 
 TEST_CASE("U2: the time sequence packing") {
