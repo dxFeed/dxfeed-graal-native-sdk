@@ -103,10 +103,12 @@ public class NetTestApiProcessTest {
             assertEquals(json.toString(), "measure", last.get("phase").asText());
             assertTrue(json.toString(), json.get("e2e_lag").get("count").asLong() > 0);
             assertTrue(json.toString(), json.get("publish_call").isNull());
-            // The connector statistics v2: each instance writes the subscription of the symbols.
+            // The connector statistics v2: each instance writes the subscription of its slice, 50 of the 100 symbols.
+            // The removals that the close of the subscriptions writes race with the reading of the statistics, so
+            // they add 0 to 50 more and are not counted on.
             assertEquals(json.toString(), 2, json.get("connectors").size());
             for (JsonNode connector : json.get("connectors")) {
-                assertTrue(json.toString(), connector.get("v2").get("written_sub_records").asLong() >= 100);
+                assertTrue(json.toString(), connector.get("v2").get("written_sub_records").asLong() >= 50);
             }
             assertTrue(scrape, scrape.contains("\nnettest_connector_lag_seconds_total{tool=\"java-api\""));
         } finally {
