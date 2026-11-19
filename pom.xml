@@ -48,6 +48,15 @@
     -->
     <sdk.optimize />
     <optimize.buildArg>-DDXFG1=0</optimize.buildArg>
+    <!--
+      The target machine of native-image, -Dmarch=<level>: compatibility (the baseline CPU of the architecture) for every
+      release archive; a newer level (x86-64-v3, armv8.1-a, native; native-image -march=list prints them) for the
+      benchmark archives (README.md, "Build variants"). The archive keeps its name: its build-info file records the level
+      (native-image.march), and create-build-info-file fails when native-image resolved another one. Not for the iOS
+      builds (their buildArgs lists have no -march).
+    -->
+    <march>compatibility</march>
+    <march.buildArg>-march=${march}</march.buildArg>
     <!-- The build report of native-image (-H:BuildOutputJSONFile), the source of the build-info file. -->
     <native.image.build.report>${project.build.directory}/native-image-build-report.json</native.image.build.report>
     <!--
@@ -812,7 +821,7 @@
                 <buildArg>
                   --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
-                <buildArg>-march=compatibility</buildArg>
+                <buildArg>${march.buildArg}</buildArg>
                 <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
                 <buildArg>-H:NativeLinkerOption=${project.build.directory}\version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
@@ -1228,8 +1237,9 @@
           </execution>
           <execution>
             <!--
-              -Dsdk.variant and -Dsdk.optimize take only the known values; a variant profile is active only through
-              -Dsdk.variant; -Dsdk.optimize is not taken by the iOS builds (their buildArgs lists have no placeholder);
+              -Dsdk.variant and -Dsdk.optimize take only the known values, -Dmarch only the name of a level (native-image
+              checks the level); a variant profile is active only through -Dsdk.variant; -Dsdk.optimize and -Dmarch are
+              not taken by the iOS builds (their buildArgs lists have no placeholder);
               a variant is built only on its platforms, with Oracle GraalVM ${graalvm.version} (the release file of
               java.home: a plain Oracle JDK has the same IMPLEMENTOR), without buildDebug and windowsStaticRuntime.
             -->
@@ -1254,6 +1264,14 @@
                 <evaluateBeanshell>
                   <condition>"${sdk.optimize}".isEmpty() || !"${arch.name}".contains("ios")</condition>
                   <message>-Dsdk.optimize is not applied to the iOS builds.</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${march}".matches("[A-Za-z0-9][A-Za-z0-9.+_-]*")</condition>
+                  <message>Unknown target machine "${march}": -Dmarch takes a level of native-image -march=list (compatibility, x86-64-v3, armv8.1-a, armv8.1-a+lse, native).</message>
+                </evaluateBeanshell>
+                <evaluateBeanshell>
+                  <condition>"${march}".equals("compatibility") || !"${arch.name}".contains("ios")</condition>
+                  <message>-Dmarch is not applied to the iOS builds.</message>
                 </evaluateBeanshell>
                 <evaluateBeanshell>
                   <condition>"${variant.suffix}".isEmpty() || " ${variant.platforms} ".contains(" ${arch.name} ")</condition>
@@ -1381,7 +1399,7 @@
             <buildArg>
               --initialize-at-build-time=${initialize-at-build-time}
             </buildArg>
-            <buildArg>-march=compatibility</buildArg>
+            <buildArg>${march.buildArg}</buildArg>
             <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
             <buildArg>${debug.buildArg1}</buildArg>
             <buildArg>${debug.buildArg2}</buildArg>
@@ -1815,6 +1833,20 @@
                       </not>
                       <not>
                         <equals arg1="${build.info.optimization.level}" arg2="${build.info.expected.optimization.level}" />
+                      </not>
+                    </and>
+                  </condition>
+                </fail>
+                <!--
+                  -Dmarch: native-image resolved the target machine the build asked for (march.buildArg missing from one
+                  of the buildArgs lists, or a -march after it, would build for another CPU level unnoticed).
+                -->
+                <fail message="native-image resolved -march=${build.info.march}, the build expects -march=${march}: ${project.build.directory}/docs/${project.name}-build-info.properties">
+                  <condition>
+                    <and>
+                      <istrue value="${build.info.values.check}" />
+                      <not>
+                        <equals arg1="${build.info.march}" arg2="${march}" />
                       </not>
                     </and>
                   </condition>

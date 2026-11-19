@@ -1,3 +1,9 @@
+* **\[MDAPI-579]\[GRAAL]** Benchmark builds of the library: `-Dmarch=<level>` builds it for another CPU level than
+  `-march=compatibility` of the releases (the default), and the build fails when native-image resolved another level
+  than the one requested (`native-image.march` of the build-info file); the README describes how to build with another
+  GraalVM (`-Dgraalvm.version`) and its limits ([Build variants](README.md#build-variants)). The TeamCity build
+  `Benchmark archive` builds the Linux x64 archive of a variant, a `-march` and a GraalVM, named by them, and deploys it
+  nowhere; the releases are built as before.
 * **\[MDAPI-543]\[GRAAL]** The SDK deserializes only the classes of an allow-list
   (`META-INF/SerialClassWhitelist.txt`: the dxFeed and QD classes, the JDK collections, boxed values and exceptions)
   in the attachments of `Message` and `Configuration`, the object fields of QD records and the results of the ORCS

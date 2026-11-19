@@ -54,6 +54,8 @@ object Images {
     // The images of the build variants: the same Dockerfiles with Oracle GraalVM (see OracleGraalVM).
     const val GRAALVM_ORACLE_LINUX_X64 = "$REGISTRY/graalvm:linux-x64-${OracleGraalVM.VERSION}"
     const val GRAALVM_ORACLE_LINUX_AARCH64 = "$REGISTRY/graalvm:linux-aarch64-${OracleGraalVM.VERSION}"
+    // The image of Benchmark archive: the GraalVM of its Run dialog.
+    const val GRAALVM_BENCHMARK_LINUX_X64 = "$REGISTRY/graalvm:linux-x64-%env.BENCHMARK_GRAALVM%"
     const val CPP_TEST_LINUX_X64 = "$REGISTRY/cpp-test:linux-x64-ol9"
     const val DOCS_CHECK_LINUX_X64 = "$REGISTRY/docs-check:linux-x64-doxygen-${Doxygen.VERSION}"
     const val NUGET = "$REGISTRY/nuget:6.9.1"

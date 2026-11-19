@@ -82,8 +82,9 @@ project {
     subProject(ImagesAndLibraries)
     subProject(Checks)
     subProject(Tests)
+    subProject(Benchmarks)
     subProject(Etc)
-    subProjectsOrder = arrayListOf(ReleaseChain, ImagesAndLibraries, Checks, Tests, Etc)
+    subProjectsOrder = arrayListOf(ReleaseChain, ImagesAndLibraries, Checks, Tests, Benchmarks, Etc)
 }
 
 object ReleaseChain : Project({
@@ -216,6 +217,13 @@ object Tests : Project({
     buildType(TestOracleG1ForMacOS)
     buildType(TestOracleO0ForLinux)
     buildType(TestOracleO0ForMacOS)
+})
+
+object Benchmarks : Project({
+    name = "Benchmarks"
+    description = "The archives of the benchmark builds: never deployed, kept as artifacts of the build only"
+
+    buildType(BenchmarkArchive)
 })
 
 object Etc : Project({
@@ -1400,6 +1408,103 @@ object BuildForLinux : BuildType({
 
     features {
         nexusDockerLogin()
+    }
+
+    requirements {
+        linuxAgent()
+    }
+})
+
+/**
+ * Benchmark archive: the Linux x64 archive of a build variant (or the regular build) with a GraalVM and a -march of the
+ * Run dialog, for the benchmark stand (README.md, "Build variants"). Started by hand for the branch or revision of the
+ * Run dialog; no deploy (Nexus, NuGet, GitHub): the archive and its build-info file are the artifacts of this build only,
+ * named by how they were built. The release chain does not use it.
+ */
+object BenchmarkArchive : BuildType({
+    name = "Benchmark archive"
+    description = "mvn clean package for Linux x64 with the variant, -march and GraalVM of the Run dialog; the archive " +
+        "is an artifact of the build only, never deployed"
+    artifactRules = "staged/*"
+
+    // The values reach the script as environment variables, never as its text.
+    params {
+        select(
+            "env.BENCHMARK_VARIANT", "regular",
+            label = "Variant",
+            description = "regular: the options of the regular build (-O2, Serial GC); oracle, oracle-g1: -Dsdk.variant " +
+                "(-O3 with the Serial or the G1 GC), which needs an Oracle GraalVM",
+            options = listOf("regular" to "regular") + Variant.values().map { it.token to it.token },
+        )
+        text(
+            "env.BENCHMARK_MARCH", "compatibility",
+            label = "-march",
+            description = "-Dmarch: the target machine of native-image. compatibility is the level of the releases; " +
+                "x86-64-v2, x86-64-v3, x86-64-v4 need that CPU level on the benchmark host; native is the CPU of the " +
+                "build agent, not of the benchmark host",
+            allowEmpty = false,
+        )
+        text(
+            "env.BENCHMARK_GRAALVM", "%env.GRAALVM_VERSION%",
+            label = "GraalVM version",
+            description = "The tag of the GraalVM image graalvm:linux-x64-<version> (built by Build & Push a Docker " +
+                "Image [Linux, x64] with this env.GRAALVM_VERSION); the build compiles against its GRAALVM_VERSION " +
+                "(-Dgraalvm.version). Examples: graal-25.5.5.0.3, oracle-graal-25.5.5.0.3, jdk-25.0.1",
+            allowEmpty = false,
+        )
+    }
+
+    mainRepository()
+
+    steps {
+        script {
+            name = "Build"
+            scriptContent = """
+                set -eu
+                for value in "${'$'}{BENCHMARK_VARIANT}" "${'$'}{BENCHMARK_MARCH}" "${'$'}{BENCHMARK_GRAALVM}"; do
+                    case "${'$'}{value}" in
+                        "" | -* | *[!A-Za-z0-9._-]*) echo "Not a variant, -march or GraalVM version: '${'$'}{value}'"; exit 1 ;;
+                    esac
+                done
+                case "${'$'}{BENCHMARK_VARIANT}" in
+                    regular) variant_option=""; variant_suffix="" ;;
+                    ${Variant.values().joinToString("|") { it.token }}) variant_option="-Dsdk.variant=${'$'}{BENCHMARK_VARIANT}"; variant_suffix="-${'$'}{BENCHMARK_VARIANT}" ;;
+                    *) echo "Unknown variant ${'$'}{BENCHMARK_VARIANT}"; exit 1 ;;
+                esac
+                # graal-sdk (graalvm.version) and, before GraalVM 25.4, svm (svm-core.version) of the GraalVM of the image;
+                # pom.xml also requires this graalvm.version of the Oracle GraalVM of a variant.
+                graalvm_version=${'$'}(sed -n 's/^GRAALVM_VERSION="\(.*\)"${'$'}/\1/p' "${'$'}{JAVA_HOME}/release")
+                if [ -z "${'$'}{graalvm_version}" ]; then
+                    echo "No GRAALVM_VERSION in ${'$'}{JAVA_HOME}/release"
+                    exit 1
+                fi
+                rm -rf staged
+                mvn ${Mvn.SETTINGS} ${Mvn.NEXUS} clean package ${'$'}{variant_option} "-Dmarch=${'$'}{BENCHMARK_MARCH}" "-Dgraalvm.version=${'$'}{graalvm_version}" "-Dsvm-core.version=${'$'}{graalvm_version}"
+                build_info=target/docs/graal-native-sdk-build-info.properties
+                sdk_version=${'$'}(sed -n 's/^sdk.version=//p' "${'$'}{build_info}")
+                if [ -z "${'$'}{sdk_version}" ]; then
+                    echo "No sdk.version in ${'$'}{build_info}"
+                    exit 1
+                fi
+                name="graal-native-sdk-${'$'}{sdk_version}-amd64-linux-bench-${'$'}{BENCHMARK_VARIANT}-${'$'}{BENCHMARK_GRAALVM}-${'$'}{BENCHMARK_MARCH}"
+                mkdir staged
+                cp "target/graal-native-sdk-amd64-linux${'$'}{variant_suffix}.zip" "staged/${'$'}{name}.zip"
+                cp "${'$'}{build_info}" "staged/${'$'}{name}.build-info.properties"
+                cat "${'$'}{build_info}"
+                echo "##teamcity[buildStatus text='${'$'}{name}.zip']"
+            """.trimIndent()
+            formatStderrAsError = true
+            inDocker(Images.GRAALVM_BENCHMARK_LINUX_X64, "--rm -m 8g")
+        }
+    }
+
+    features {
+        nexusDockerLogin()
+    }
+
+    failureConditions {
+        // Oracle -O3 builds take longer.
+        executionTimeoutMin = 60
     }
 
     requirements {

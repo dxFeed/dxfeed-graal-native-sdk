@@ -14,6 +14,7 @@
 - [Creating and Publishing NuGet Package](#creating-and-publishing-nuget-package)
 - [Deploying Artifacts](#deploying-artifacts)
 - [Build Variants (Oracle GraalVM)](#build-variants-oracle-graalvm)
+- [Benchmark Archives](#benchmark-archives)
 - [Syncing the C++ API with Jira](#syncing-the-c-api-with-jira)
 - [Releasing the SDK in Jira](#releasing-the-sdk-in-jira)
 - [Publishing the C API Reference to GitHub Pages](#publishing-the-c-api-reference-to-github-pages)
@@ -404,6 +405,29 @@ The variants are redistributed under the
 [GraalVM Free Terms and Conditions](https://www.oracle.com/downloads/licenses/graal-free-license.html). At every bump of
 `graalvm.version`, check the licence of the new Oracle GraalVM release: if it is no longer under these terms, turn the
 switches off before the release.
+
+# Benchmark Archives
+
+`Benchmark archive` (project Benchmarks, `BenchmarkArchive` of `settings.kts`) builds the Linux x64 archive of the
+branch or revision of its Run dialog for a benchmark (see "Build variants" in the [README](../README.md)). It is started
+by hand, has no trigger, and deploys nothing: no Nexus, NuGet or GitHub, and no build of the release chain depends on
+it. Its parameters (Run with the "..." button):
+
+- Variant (`env.BENCHMARK_VARIANT`): `regular` (the default, no `-Dsdk.variant`), `oracle` or `oracle-g1`
+  (`-Dsdk.variant`).
+- -march (`env.BENCHMARK_MARCH`): `-Dmarch`, `compatibility` by default, such as `x86-64-v3`.
+- GraalVM version (`env.BENCHMARK_GRAALVM`): the tag of the image `graalvm:linux-x64-<version>`, `%env.GRAALVM_VERSION%`
+  by default, such as `oracle-graal-25.5.5.0.3` or `jdk-25.0.1`. `-Dgraalvm.version` and `-Dsvm-core.version` are the
+  `GRAALVM_VERSION` of the `release` file of that GraalVM.
+
+The image of the GraalVM version must exist: run "Build & Push a Docker Image [Linux, x64]" with `env.GRAALVM_VERSION`
+set to it first (see [GraalVM versions](#graalvm-versions)). The variants need an Oracle GraalVM image
+(`oracle-graal-<version>`). `-march=native` is the CPU of the build agent, not of the benchmark host.
+
+The artifacts are `graal-native-sdk-<version>-amd64-linux-bench-<variant>-<GraalVM version>-<march>.zip` and its
+`.build-info.properties` (the `docs/graal-native-sdk-build-info.properties` of the archive), which names the GraalVM,
+the variant, the resolved `-march`, optimization level and GC; the status of the build is the name of the archive. A
+benchmark stand downloads them from the artifacts of the build (with a TeamCity login), or they are copied to it.
 
 # Syncing the C++ API with Jira
 

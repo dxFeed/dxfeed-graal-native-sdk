@@ -236,6 +236,35 @@ aborts the process. Create one isolate and keep it for the lifetime of the proce
 under the [GraalVM Free Terms and Conditions](https://www.oracle.com/downloads/licenses/graal-free-license.html); the
 code of the SDK stays under MPL-2.0.
 
+**Benchmark archives.** To compare builds, the library can also be built with another GraalVM and for a newer CPU level
+than the releases. Such archives are never released: the TeamCity build `Benchmark archive` builds them for Linux x64
+and keeps them as its artifacts only, named
+`graal-native-sdk-<version>-amd64-linux-bench-<variant>-<GraalVM>-<march>.zip`, next to their build-info files (see
+[.teamcity/README.MD](.teamcity/README.MD#benchmark-archives)). The `graalvm.*` and `native-image.*` values of the
+build-info file name the build. Two Maven options make them:
+
+- `-Dmarch=<level>`: the target machine of native-image (`-march`). Every release archive is built with the default,
+  `compatibility`, the baseline CPU of its architecture. A newer level, such as `x86-64-v3` (AVX2) or `armv8.1-a`, runs
+  only on a CPU that has it, and `native` is the CPU of the build machine; `native-image -march=list` prints the levels.
+  The archive keeps its name, `native-image.march` of its build-info file names the level, and the build fails when
+  native-image resolved another one. Not for the iOS builds.
+- `-Dgraalvm.version=<version>` with `JAVA_HOME` at that GraalVM: the `GRAALVM_VERSION` of its `release` file, such as
+  `25.5.5.0.3` or `25.0.1`. The limits:
+  - the code is compiled against `org.graalvm.sdk:graal-sdk` of that version, which must be in the Maven repositories;
+  - the svm dependencies: GraalVM 25.4 and later (with `lib/svm/builder/svm-shared.jar`) give the build their own svm
+    jars; an older GraalVM selects the `svm-core` profile, which takes `org.graalvm.nativeimage:svm` of
+    `svm-core.version` (`25.0.1`) from Maven, so set `-Dsvm-core.version` to the same version; the sources of
+    `src/main/java-svm-shared` or `src/main/java-svm-core` use internal classes of svm and may need changes for
+    another version;
+  - the plugin version: native-maven-plugin `graalvm-native-maven-plugin.version` is 1.1.14 for GraalVM 25.4 and later
+    and 0.10.6 in the `svm-core` profile; another GraalVM may need another `-Dgraalvm-native-maven-plugin.version`;
+  - the build fails when `graal_isolate.h` of that GraalVM declares something else than the headers of the SDK;
+  - the `oracle` and `oracle-g1` variants need Oracle GraalVM of exactly that version;
+  - the Docker image tag: on TeamCity, a Linux build runs in the image `graalvm:linux-x64-<GraalVM version>`
+    (`graal-<version>`, `oracle-graal-<version>`, `jdk-<version>`, see
+    [GraalVM versions](.teamcity/README.MD#graalvm-versions)), which `Build & Push a Docker Image [Linux, x64]` has to
+    build first with that `env.GRAALVM_VERSION`.
+
 ### Security updates of GraalVM and the JDK
 
 A library contains the JDK classes and the compiled code of the GraalVM that built it, so a security fix of the JDK or
@@ -1073,6 +1102,8 @@ builds the library of the current platform in `target/native-image` and its arch
   `ctest -LE multi-isolate`. The build fails on another GraalVM or platform, with `-P buildDebug` or
   `-DwindowsStaticRuntime=true`, and when native-image did not resolve the level or the GC of the variant (the
   `docs/graal-native-sdk-build-info.properties` of the archive).
+- `-Dmarch=<level>` (`compatibility` by default) and `-Dgraalvm.version=<version>`: the CPU level and the GraalVM of a
+  benchmark archive, see [Build variants](#build-variants);
 - `-Dsdk.optimize=O0`: the library is built at `-O0` (after the level of a variant), to tell a miscompilation from a
   test failure; the archive keeps its name. Not for the iOS builds.
 
