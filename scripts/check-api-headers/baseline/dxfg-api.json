@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.17.0",
+  "sdk_version": "3.18.0",
   "advanced_revision": 1,
   "features": [
     "connection_errors",
     "event_queue",
     "event_queue_ready_signal",
     "feed_filter",
+    "message_connector_io_statistics",
     "message_connectors",
     "runtime_statistics",
     "shared_event_queue",
@@ -32098,6 +32099,34 @@
       "threads": "unknown"
     },
     {
+      "name": "dxfg_v4_MessageConnector_getIoStatistics",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.18.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "connector",
+          "type": "dxfg_v4_message_connector_t *",
+          "out": false
+        },
+        {
+          "name": "stats",
+          "type": "dxfg_v4_message_connector_io_stats_t *",
+          "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
       "name": "dxfg_v4_MessageConnector_getKind",
       "header": "dxfg_v4_message_connector.h",
       "tier": "stable",
@@ -44308,6 +44337,63 @@
       "type": "dxfg_market_maker_t"
     },
     {
+      "name": "dxfg_v4_message_connector_io_stats_t",
+      "header": "dxfg_v4_message_connector.h",
+      "tier": "stable",
+      "since": "3.18.0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "read_data_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_data_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "read_sub_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_sub_records",
+          "type": "int64_t"
+        },
+        {
+          "name": "read_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_bytes",
+          "type": "int64_t"
+        },
+        {
+          "name": "read_data_lag_sum_us",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_data_lag_sum_us",
+          "type": "int64_t"
+        },
+        {
+          "name": "read_rtt_sum_us",
+          "type": "int64_t"
+        },
+        {
+          "name": "written_rtt_sum_us",
+          "type": "int64_t"
+        },
+        {
+          "name": "active_connection_count",
+          "type": "int64_t"
+        },
+        {
+          "name": "closed_connection_count",
+          "type": "int64_t"
+        }
+      ]
+    },
+    {
       "name": "dxfg_v4_message_connector_list",
       "header": "dxfg_v4_message_connector.h",
       "tier": "stable",
@@ -45379,6 +45465,13 @@
       "tier": "stable",
       "since": "3.14.0",
       "value": "\"message_connectors\""
+    },
+    {
+      "name": "DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.18.0",
+      "value": "\"message_connector_io_statistics\""
     },
     {
       "name": "DXFG_V4_FEATURE_RUNTIME_STATISTICS",
