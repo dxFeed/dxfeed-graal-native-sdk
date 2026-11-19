@@ -1,3 +1,11 @@
+* **\[MDAPI-543]\[GRAAL]** The SDK deserializes only the classes of an allow-list
+  (`META-INF/SerialClassWhitelist.txt`: the dxFeed and QD classes, the JDK collections, boxed values and exceptions)
+  in the attachments of `Message` and `Configuration`, the object fields of QD records and the results of the ORCS
+  `PriceLevelService`; QD 3.357 accepted every class registered in the library, including the JMX and RMI ones. An
+  attachment of another class is NULL in C, an ORCS result of another class fails the call. The README describes the
+  risk of the JMX RMI connector (the endpoint property `jmx.rmi.port`): no authentication, all network interfaces, and
+  how to filter what it deserializes with `-Djdk.serialFilter` in the isolate arguments
+  ([Deserialization](README.md#deserialization)).
 * **\[MDAPI-544]\[GRAAL]** A security policy ([SECURITY.md](SECURITY.md)): the latest minor version of 3.x gets the
   security fixes, a vulnerability is reported privately on GitHub and acknowledged within 5 business days. Every
   archive with a library except the XCFramework (the SBOMs of the macOS and iOS archives describe it) has its CycloneDX

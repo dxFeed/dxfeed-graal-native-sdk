@@ -42,6 +42,7 @@ into your projects.
   * [Message connectors](#message-connectors)
   * [Shutdown](#shutdown)
   * [Network activity](#network-activity)
+  * [Deserialization](#deserialization)
 - [Documentation](#documentation)
 - [Current State](#current-state)
 - [Contribution](#contribution)
@@ -771,6 +772,28 @@ The QD monitoring started with the first endpoint includes the MARS plugin `Time
 packets (`239.192.51.45:5145` by default) from every process to compare the clocks of the hosts. The SDK disables it
 by default. To enable it, set the system property `com.dxfeed.sdk.TimeSyncTracker.enable` to `true` with
 `dxfg_system_set_property` before creating the first endpoint.
+
+### Deserialization
+
+The SDK deserializes Java objects that come from a remote peer: the attachments of `Message` and `Configuration`, the
+object fields of QD records and the results of the ORCS `PriceLevelService`. It accepts only the classes of the
+allow-list `META-INF/SerialClassWhitelist.txt` in the library: the dxFeed and QD classes, the JDK collections, boxed
+values and exceptions. An attachment of another class is NULL in C, an ORCS result of another class fails the call. The
+SDK installs the list before the first endpoint is created (QD 3.357 does not find the list by itself and accepts every
+class registered in the library).
+
+The endpoint property `jmx.rmi.port` (set with `dxfg_DXEndpoint_Builder_withProperty`, `withProperties` or the
+properties file of the endpoint) starts a JMX RMI connector and an RMI registry on that port. They listen on all
+network interfaces, with no authentication and no TLS: whoever reaches the port can call the operations of the QD
+MBeans and sends serialized Java objects that the allow-list does not cover. The property is not set by default. Do not
+set it in production; if you need it, open the port only on a trusted network behind a firewall.
+
+QD gives the connector no filter of its own. The process-wide filter of the JDK applies to every deserialization in the
+isolate, the connector too: pass `-Djdk.serialFilter=<pattern>` in `graal_create_isolate_params_t.argv` (see
+[Isolates](#isolates)) with the classes your JMX clients send, the classes of the allow-list and limits such as
+`maxdepth`, then `!*`. The pattern syntax is described in
+[ObjectInputFilter.Config](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectInputFilter.Config.html#createFilter(java.lang.String)).
+A class rejected by the filter is rejected even if the allow-list accepts it.
 
 ## Documentation
 

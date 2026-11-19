@@ -17,6 +17,14 @@ the platforms that get no fixes of the JDK after a certain version. The software
 release names the GraalVM, the JDK and the Java libraries inside each library (see
 [SBOM and checksums](README.md#sbom-and-checksums)).
 
+## Deserialization and JMX
+
+The SDK deserializes Java objects from a remote peer (event attachments, object fields of QD records, ORCS results)
+only for the classes of an allow-list. The JMX RMI connector that the endpoint property `jmx.rmi.port` starts has no
+authentication and listens on all network interfaces: do not use it outside a trusted network; a process-wide
+`jdk.serialFilter` in the isolate arguments also filters what it deserializes. See
+[Deserialization](README.md#deserialization).
+
 ## Reporting a vulnerability
 
 Do not report a vulnerability in a public issue, discussion or pull request.

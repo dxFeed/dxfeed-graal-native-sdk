@@ -5,6 +5,9 @@ package com.dxfeed.sdk.orcs;
 
 import static org.junit.Assert.assertTrue;
 
+import com.devexperts.io.SerialClassContext;
+import com.dxfeed.sdk.system.SerialClassAllowList;
+import com.dxfeed.sdk.system.SerialClassAllowListTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -80,6 +83,20 @@ public class OrcsSerializationMetadataTest {
         }
 
         assertTrue("Not registered for serialization: " + missing, missing.isEmpty());
+    }
+
+    @Test
+    public void theClassesFromTheServerAreInTheSerialClassAllowList() throws IOException {
+        final SerialClassContext whitelist = SerialClassAllowListTest.allowList();
+        final List<String> rejected = new ArrayList<>();
+
+        for (final String className : CLASSES_FROM_THE_SERVER) {
+            if (!whitelist.accept(className)) {
+                rejected.add(className);
+            }
+        }
+
+        assertTrue("Not in " + SerialClassAllowList.RESOURCE + ": " + rejected, rejected.isEmpty());
     }
 
     @Test

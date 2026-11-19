@@ -271,6 +271,14 @@
       "type": "com.devexperts.io.ChunkPool"
     },
     {
+      "type": "com.devexperts.io.SerialClassContext",
+      "fields": [
+        {
+          "name": "defaultSerialContextMap"
+        }
+      ]
+    },
+    {
       "type": "com.devexperts.io.StreamCompression",
       "methods": [
         {
@@ -3931,6 +3939,9 @@
     },
     {
       "glob": "/META-INF/SerialClassWhitelist.txt"
+    },
+    {
+      "glob": "META-INF/SerialClassWhitelist.txt"
     },
     {
       "glob": "META-INF/logformatter.properties"

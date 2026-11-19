@@ -41,6 +41,39 @@ constexpr const char *JAVA_TAPE =
     "rO0ABXNyABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAAq\"\n"
     "==\n";
 
+// Written by the Java API: attachments of the classes that the SDK can deserialize (it registers them) with and
+// without a place in the allow-list (META-INF/SerialClassWhitelist.txt). Allowed: an IllegalStateException("boom")
+// without a stack trace, CandleSymbol.valueOf("AAPL{=d}"). Not allowed: javax.management.Attribute("a", 1) and
+// java.rmi.dgc.VMID (the JMX and RMI classes).
+constexpr const char *JAVA_FILTERED_TAPE =
+    "==DXP3\ttype=tape\tversion=QDS-3.357\topt=hs\ttime=field\t+RAW_DATA\n"
+    "==RAW_DATA\n"
+    "=Message\tEventSymbol\tEventTime\tMessage\n"
+    "Message\tMSG-EXCEPTION\t20261119-120000.000+0000\t\"java.lang.IllegalStateException: boom "
+    "rO0ABXNyAB9qYXZhLmxhbmcuSWxsZWdhbFN0YXRlRXhjZXB0aW9u5ldV5ppG8kgCAAB4cgAaamF2YS5sYW5nLlJ1bnRpbWVFeGNlcHRpb26eXwZH"
+    "CjSD5QIAAHhyABNqYXZhLmxhbmcuRXhjZXB0aW9u0P0fPho7HMQCAAB4cgATamF2YS5sYW5nLlRocm93YWJsZdXGNSc5d7jLAwAETAAFY2F1c2V0"
+    "ABVMamF2YS9sYW5nL1Rocm93YWJsZTtMAA1kZXRhaWxNZXNzYWdldAASTGphdmEvbGFuZy9TdHJpbmc7WwAKc3RhY2tUcmFjZXQAHltMamF2YS9s"
+    "YW5nL1N0YWNrVHJhY2VFbGVtZW50O0wAFHN1cHByZXNzZWRFeGNlcHRpb25zdAAQTGphdmEvdXRpbC9MaXN0O3hwcQB+AAh0AARib29tdXIAHltM"
+    "amF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50OwJGKjw8/SI5AgAAeHAAAAAAc3IAH2phdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eUxpc3R6uBe0"
+    "PKee3gIAAHhweA\"\n"
+    "Message\tMSG-CANDLE\t20261119-120000.000+0000\t\"AAPL{=d} "
+    "rO0ABXNyACRjb20uZHhmZWVkLmV2ZW50LmNhbmRsZS5DYW5kbGVTeW1ib2wAAAAAAAAAAAIAAUwABnN5bWJvbHQAEkxqYXZhL2xhbmcvU3RyaW5n"
+    "O3hwdAAIQUFQTHs9ZH0\"\n"
+    "Message\tMSG-ATTRIBUTE\t20261119-120000.000+0000\t\"a = 1 "
+    "rO0ABXNyABpqYXZheC5tYW5hZ2VtZW50LkF0dHJpYnV0ZSJ5uQdTizsOAgACTAAEbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wABXZhbHVldAAS"
+    "TGphdmEvbGFuZy9PYmplY3Q7eHB0AAFhc3IAEWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxhbmcuTnVtYmVy"
+    "hqyVHQuU4IsCAAB4cAAAAAE\"\n"
+    "Message\tMSG-VMID\t20261119-120000.000+0000\t\"9ad35efac91a80e3:-76dbd594:1a1f24b4eb4:-8000 "
+    "rO0ABXNyABFqYXZhLnJtaS5kZ2MuVk1JRPiGW6+kpW22AgACWwAEYWRkcnQAAltCTAADdWlkdAAVTGphdmEvcm1pL3NlcnZlci9VSUQ7eHB1cgAC"
+    "W0Ks8xf4BghU4AIAAHhwAAAACJrTXvrJGoDjc3IAE2phdmEucm1pLnNlcnZlci5VSUQPEnANvzZPEgIAA1MABWNvdW50SgAEdGltZUkABnVuaXF1"
+    "ZXhwgAAAAAGh8ktOtIkkKmw\"\n"
+    "=Configuration\tEventSymbol\tEventTime\tVersion\tConfiguration\n"
+    "Configuration\tCFG-ATTRIBUTE\t20261119-120000.000+0000\t1\t\"a = 1 "
+    "rO0ABXNyABpqYXZheC5tYW5hZ2VtZW50LkF0dHJpYnV0ZSJ5uQdTizsOAgACTAAEbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wABXZhbHVldAAS"
+    "TGphdmEvbGFuZy9PYmplY3Q7eHB0AAFhc3IAEWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxhbmcuTnVtYmVy"
+    "hqyVHQuU4IsCAAB4cAAAAAE\"\n"
+    "==\n";
+
 // How Java writes the String "attachment" and the event without an attachment (e.g. new Message("MSG-NULL")).
 constexpr const char *JAVA_STRING_ATTACHMENT = "\"attachment rO0ABXQACmF0dGFjaG1lbnQ\"";
 constexpr const char *JAVA_NO_ATTACHMENT = "\\NULL";
@@ -274,6 +307,29 @@ TEST_CASE("The attachments written by Java are read in C as strings") {
     CHECK(events.at("Configuration:CFG-STRING").version == 1);
     CHECK(events.at("Configuration:CFG-NULL").version == 2);
     CHECK(events.at("Configuration:CFG-INTEGER").version == 3);
+}
+
+TEST_CASE("The attachments of the classes outside the allow-list are NULL in C, the events are delivered") {
+    REQUIRE(isolateThread() != nullptr);
+
+    const auto path = tempPath("filtered");
+
+    writeFile(path, JAVA_FILTERED_TAPE);
+
+    const auto events = readTape(path);
+
+    std::remove(path.c_str());
+    REQUIRE(events.size() == 5);
+
+    // The JDK exceptions (e.g. from the ORCS server) and the dxFeed classes pass.
+    CHECK(events.at("Message:MSG-EXCEPTION").attachment == "java.lang.IllegalStateException: boom");
+    CHECK(events.at("Message:MSG-CANDLE").attachment == "AAPL{=d}");
+
+    // The JMX and RMI classes are rejected.
+    CHECK(events.at("Message:MSG-ATTRIBUTE").attachment == std::nullopt);
+    CHECK(events.at("Message:MSG-VMID").attachment == std::nullopt);
+    CHECK(events.at("Configuration:CFG-ATTRIBUTE").attachment == std::nullopt);
+    CHECK(events.at("Configuration:CFG-ATTRIBUTE").version == 1);
 }
 
 TEST_CASE("The attachments published from C are written as Java writes them") {

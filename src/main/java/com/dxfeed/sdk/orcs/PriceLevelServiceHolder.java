@@ -10,6 +10,7 @@ import com.dxfeed.event.market.OrderSource;
 import com.dxfeed.event.market.Quote;
 import com.dxfeed.orcs.api.AuthOrderSource;
 import com.dxfeed.orcs.api.PriceLevelService;
+import com.dxfeed.sdk.system.SerialClassAllowList;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,8 @@ public class PriceLevelServiceHolder implements Closeable {
     PriceLevelService service;
 
     public PriceLevelServiceHolder(String address) {
+        // The RMI endpoint captures the serial class context of QD when it is created.
+        SerialClassAllowList.install();
         endpoint = RMIEndpoint.createEndpoint(RMIEndpoint.Side.CLIENT);
         endpoint.connect(address);
         service = endpoint.getClient().getProxy(PriceLevelService.class);
