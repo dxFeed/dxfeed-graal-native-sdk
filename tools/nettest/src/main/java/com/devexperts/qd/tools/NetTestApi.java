@@ -3,9 +3,10 @@
 
 package com.devexperts.qd.tools;
 
-import com.devexperts.qd.util.RateLimiter;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -13,22 +14,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import sun.misc.Signal;
 
 /**
- * Publishes generated Trade or TimeAndSale events through {@link com.dxfeed.api.DXPublisher} of a {@code PUBLISHER} or
- * {@code STREAM_PUBLISHER} endpoint and prints the statistics of QD NetTest, so that the dxFeed event layer can be
- * measured with the same command line as the C-API NetTest and against the same consumer as QD NetTest.
+ * The NetTest of the dxFeed Java API: publishes generated Trade or TimeAndSale events through
+ * {@link com.dxfeed.api.DXPublisher} (mode {@code p}) or receives them through a {@link com.dxfeed.api.DXFeed}
+ * subscription (mode {@code c}) and prints the statistics lines of the NetTest specification.
  *
  * <p>The tool lives in QD's package to reuse the package-private parts of QD NetTest: the symbol generation of
- * {@link NetTestSide}, the statistics collector and the working thread. It must run from one classpath with qds-tools
- * (the all-in-one jar), never as a separate jar next to {@code java -jar qds-tools.jar}.
+ * {@link NetTestSide} and the working thread. It must run from one classpath with qds-tools (the all-in-one jar),
+ * never as a separate jar next to {@code java -jar qds-tools.jar}.
  *
- * <p>Exit codes: 0 after {@code --duration} or Ctrl+C, 2 for invalid arguments, 1 for a failed start or publishing.
- * The tool calls {@link System#exit} itself for 1 and 2: QD's {@link Tools#main} would log a stack trace first.
+ * <p>Exit codes: 0 after {@code --duration}, Ctrl+C or {@code --help}, 2 for invalid arguments, 1 for a failure at
+ * run time (a failed start or publishing, no data, no nanosecond part). The tool calls {@link System#exit} itself
+ * for 1 and 2: QD's {@link Tools#main} would log a stack trace first.
  */
 @ToolSummary(
-    info = "Publishes Trade or TimeAndSale events through the dxFeed API (DXPublisher) and prints NetTest statistics.",
-    argString = "p <address>",
+    info = "Publishes or receives Trade or TimeAndSale events through the dxFeed API and prints NetTest statistics.",
+    argString = "p|c <address>",
     arguments = {
-        "p -- the producer mode, the only one",
+        "p -- the producer mode: publishes through DXPublisher",
+        "c -- the consumer mode: receives through a DXFeed subscription and measures the end-to-end lag",
         "<address> -- :port to listen on, host:port to connect to"
     }
 )
@@ -36,90 +39,94 @@ public class NetTestApi extends AbstractTool {
     static final int EXIT_FAILURE = 1;
     static final int EXIT_USAGE = 2;
 
-    // The ranges of the C-API NetTest (src/main/c/src/apps/NetTest/src/Args.cpp). A batch shares one time, so it holds
-    // at most 2^22 events: the 22-bit sequence must not wrap inside one batch.
-    static final int MAX_SYMBOLS = 100_000_000;
-    static final int MAX_BATCH = 1 << 22;
-    static final int MAX_INSTANCES = 1_000;
-    static final double MAX_RATE = 1e12;
+    /** The version of the NetTest specification that the tool follows. */
+    static final String SPEC_VERSION = "nettest/1";
 
-    static final int DEFAULT_BATCH = 100;
-    static final TimePeriod DEFAULT_STAT_PERIOD = TimePeriod.valueOf("10s");
-
-    /** The kind of the published events. */
-    enum EventKind {
-        TRADE, TIME_AND_SALE
+    /** The side of a run. */
+    enum Mode {
+        PRODUCER, CONSUMER
     }
 
-    // QD's symbol option without the parts the C tool lacks: the split "/<n>" and the length "{<len>}".
-    private final NetTest.OptionSymbols symbols = new NetTest.OptionSymbols() {
-        @Override
-        public String getDescription() {
-            return "The symbols: <total> generated ones as in QD NetTest, or the first <total> of an IPF file with " +
-                "<total>@<file> (at most " + MAX_SYMBOLS + "). Every instance publishes all of them.";
-        }
+    /** The kind of the events. */
+    enum EventKind {
+        TRADE("Trade"), TIME_AND_SALE("TimeAndSale");
 
-        @Override
-        public String toString() {
-            return "-S|--symbols <total>[@<file>]";
-        }
+        final String text;
 
-        @Override
-        public int parse(int i, String[] args) throws OptionParseException {
-            if (i + 1 < args.length) {
-                checkSymbols(args[i + 1]);
-            }
-            try {
-                return super.parse(i, args);
-            } catch (OptionParseException e) {
-                throw new OptionParseException("-S: " + e.getMessage(), e);
-            }
+        EventKind(String text) {
+            this.text = text;
         }
-    };
-    private final OptionInteger connections = new OptionInteger('C', "connections", "<n>",
-        "Number of instances: endpoints <name>.1 ... <name>.<n>, one generator thread each (default 1, at most " +
-            MAX_INSTANCES + "; not above 1 with a :port address).");
-    private final OptionMultiString rateLimit = new OptionMultiString('r', "rate-limit", "*/<rate>",
-        "The total rate of all instances in records per second, with k, M or G (for example */500k). Without it " +
-            "the generators run flat out.");
-    private final OptionString stat = new OptionString('s', "stat", "<period>",
+    }
+
+    // The options for the usage only: NetTestApiCommandLine parses the arguments.
+    private final Option symbols = new OptionString('S', "symbols", "<total>[@<file>]",
+        "The symbols: <total> generated ones as in QD NetTest, or the first <total> of an IPF file (at most " +
+            NetTestApiCommandLine.MAX_SYMBOLS + "). Every producer instance publishes all of them; the consumer " +
+            "instances share them.");
+    private final Option connections = new OptionString('C', "connections", "<n>",
+        "Number of instances: endpoints <name>.1 ... <name>.<n> (default 1, at most " +
+            NetTestApiCommandLine.MAX_INSTANCES + "; not above 1 with a :port address).");
+    private final Option rateLimit = new OptionString('r', "rate-limit", "*/<rate>",
+        "p only: the total rate of all instances in records per second, with k, M or G (for example */500k). " +
+            "Without it the generators run flat out.");
+    private final Option stat = new OptionString('s', "stat", "<period>",
         "The statistics period with ms, s or m (default 10s).");
-    private final OptionName name = new OptionName("NetTest");
-    private final OptionInteger batch = new OptionInteger(Option.EMPTY_SHORT_NAME, "batch", "<n>",
-        "Events per publishing call (default " + DEFAULT_BATCH + ", at most " + MAX_BATCH + ").");
-    private final OptionString event = new OptionString(Option.EMPTY_SHORT_NAME, "event", "Trade|TimeAndSale",
-        "The published events: Trade (default) or TimeAndSale.");
+    private final Option name = new OptionString('n', "name", "<name>",
+        "The name in the statistics lines (default NetTest).");
+    private final Option collector = new OptionString('c', "collector", "stream|ticker",
+        "The contract that the consumer receives; it selects the roles (p: STREAM_PUBLISHER for stream, PUBLISHER " +
+            "for ticker; c: STREAM_FEED for stream, FEED for ticker). Without it p uses PUBLISHER, c STREAM_FEED.");
+    private final Option event = new OptionString(Option.EMPTY_SHORT_NAME, "event", "Trade|TimeAndSale",
+        "The events: Trade (default) or TimeAndSale.");
+    private final Option batch = new OptionString(Option.EMPTY_SHORT_NAME, "batch", "<n>",
+        "p only: events per publishing call (default " + NetTestApiCommandLine.DEFAULT_BATCH + ", at most " +
+            NetTestApiCommandLine.MAX_BATCH + ").");
     private final Option reuse = new Option(Option.EMPTY_SHORT_NAME, "reuse",
-        "Republish the pre-built events in place; without it every batch publishes new event objects.");
-    private final OptionString role = new OptionString(Option.EMPTY_SHORT_NAME, "role",
-        "PUBLISHER|STREAM_PUBLISHER",
-        "The role of the endpoints: PUBLISHER (default; Trade feeds ticker and stream, TimeAndSale stream and " +
-            "history) or STREAM_PUBLISHER (stream only).");
-    private final OptionString duration = new OptionString(Option.EMPTY_SHORT_NAME, "duration", "<time>",
+        "p only: republish the pre-built events in place; without it every batch publishes new event objects.");
+    private final Option role = new OptionString(Option.EMPTY_SHORT_NAME, "role",
+        "PUBLISHER|STREAM_PUBLISHER|FEED|STREAM_FEED",
+        "The role of the endpoints instead of the one of -c: PUBLISHER or STREAM_PUBLISHER on p, FEED or " +
+            "STREAM_FEED on c, as long as the consumer still receives the contract of -c.");
+    private final Option duration = new OptionString(Option.EMPTY_SHORT_NAME, "duration", "<time>",
         "End the run after the time with ms, s or m (for example 30s or 7m); Ctrl+C ends it at once.");
 
     private Settings settings;
 
     @Override
     protected Option[] getOptions() {
-        return new Option[] {symbols, connections, rateLimit, stat, name, batch, event, reuse, role, duration};
+        return new Option[] {symbols, connections, rateLimit, stat, name, collector, event, batch, reuse, role,
+            duration};
+    }
+
+    /** The usage with the line of the specification version. */
+    String usage() {
+        return generateHelpSummary(Help.DEFAULT_WIDTH) + System.lineSeparator() +
+            "-D<key>=<value> sets a system property before the first endpoint; -Ddxscheme.nanoTime=false turns off " +
+            "the nanosecond part of the event time." + System.lineSeparator() +
+            "spec_version " + SPEC_VERSION;
     }
 
     /**
      * Parses and validates the arguments. Invalid arguments end the process with {@link #EXIT_USAGE}, since QD's
-     * {@link Tools#main} would exit with 1 for every failure.
+     * {@link Tools#main} would exit with 1 for every failure; {@code --help} prints the usage and exits with 0.
      */
     @Override
     public void parse(String[] args) {
         if (args.length == 0) {
-            System.err.println(getToolName() + ": " + generateHelpSummary(Help.DEFAULT_WIDTH));
+            System.err.println(getToolName() + ": no mode: the first argument is p or c");
+            System.err.println(usage());
             System.exit(EXIT_USAGE);
+        }
+        if (NetTestApiCommandLine.isHelp(args)) {
+            System.out.println(usage());
+            System.out.flush();
+            System.exit(0);
         }
         try {
             settings = parseArguments(args);
         } catch (BadToolParametersException e) {
             System.err.println(getToolName() + ": " + e.getMessage());
-            System.err.println("Use \"Help " + getToolName() + "\" for usage info.");
+            System.err.println("Use \"" + getToolName() + " --help\" for usage info.");
             System.exit(EXIT_USAGE);
         }
     }
@@ -128,7 +135,8 @@ public class NetTestApi extends AbstractTool {
     protected void executeImpl(String[] ignored) {
         Stop stop = new Stop();
         installSignalHandlers(stop);
-        NetTestApiProducerSide side = new NetTestApiProducerSide(settings, stop);
+        NetTestApiSide side = settings.mode == Mode.PRODUCER ?
+            new NetTestApiProducerSide(settings, stop) : new NetTestApiConsumerSide(settings, stop);
         Thread closer = new Thread(side::close, "NetTestApi-close");
         Runtime.getRuntime().addShutdownHook(closer);
         String failure = side.run();
@@ -147,210 +155,10 @@ public class NetTestApi extends AbstractTool {
     /**
      * Parses the arguments of the tool into its settings. The {@code -D} properties are set as a side effect.
      *
-     * @throws BadToolParametersException for invalid arguments; the message names the argument.
+     * @throws BadToolParametersException for invalid arguments, with the text of the NetTest specification.
      */
     static Settings parseArguments(String... args) {
-        return new NetTestApi().parseSettings(args);
-    }
-
-    private Settings parseSettings(String[] args) {
-        rejectForeignOptions(args);
-        String[] rest = new Options(getOptions()).parse(args);
-        if (rest.length == 0) {
-            throw new BadToolParametersException("no mode: the first argument must be 'p'");
-        }
-        if (rest[0].equals("c")) {
-            throw new BadToolParametersException(
-                "unsupported mode 'c' (the consumer mode of QD NetTest); only the mode 'p' exists");
-        }
-        if (!rest[0].equals("p")) {
-            throw new BadToolParametersException("unknown mode '" + rest[0] + "'; only the mode 'p' exists");
-        }
-        if (rest.length < 2 || rest[1].isEmpty()) {
-            throw new BadToolParametersException("the address is missing");
-        }
-        if (rest.length > 2) {
-            throw new BadToolParametersException(
-                "unexpected argument '" + rest[2] + "' after the address '" + rest[1] + "'");
-        }
-        String address = rest[1];
-        if (!symbols.isSet()) {
-            throw new BadToolParametersException("-S is missing");
-        }
-
-        NetTestConfig config = new NetTestConfig();
-        config.name = name.isSet() ? name.getValue() : "NetTest";
-        if (config.name.isEmpty()) {
-            throw new BadToolParametersException("-n needs a non-empty name");
-        }
-        config.instanceCount = connections.isSet() ? checkRange("-C", connections.getValue(), MAX_INSTANCES) : 1;
-        if (config.instanceCount > 1 && address.startsWith(":")) {
-            throw new BadToolParametersException("-C " + config.instanceCount + " cannot be used with the server " +
-                "address '" + address + "': every instance would bind the same port");
-        }
-        config.addresses = new String[config.instanceCount];
-        java.util.Arrays.fill(config.addresses, address);
-        config.totalSymbols = symbols.getTotal();
-        config.symbolsPerEntity = symbols.getTotal();
-        config.ipfPath = symbols.getIpfPath();
-        if (rateLimit.isSet()) {
-            String last = rateLimit.getValues().get(rateLimit.getValues().size() - 1);
-            config.rateLimiters = Map.of("*", RateLimiter.of(parseRateOption(last)));
-        }
-
-        TimePeriod statPeriod = stat.isSet() ? TimePeriod.valueOf(parseTime("-s", stat.getValue())) :
-            DEFAULT_STAT_PERIOD;
-        long durationMillis = duration.isSet() ? parseTime("--duration", duration.getValue()) : 0;
-        int batchSize = batch.isSet() ? checkRange("--batch", batch.getValue(), MAX_BATCH) : DEFAULT_BATCH;
-
-        EventKind eventKind = EventKind.TRADE;
-        if (event.isSet()) {
-            switch (event.getValue()) {
-                case "Trade":
-                    break;
-                case "TimeAndSale":
-                    eventKind = EventKind.TIME_AND_SALE;
-                    break;
-                default:
-                    throw new BadToolParametersException("--event is Trade or TimeAndSale: '" + event.getValue() + "'");
-            }
-        }
-        DXEndpoint.Role endpointRole = DXEndpoint.Role.PUBLISHER;
-        if (role.isSet()) {
-            switch (role.getValue()) {
-                case "PUBLISHER":
-                    break;
-                case "STREAM_PUBLISHER":
-                    endpointRole = DXEndpoint.Role.STREAM_PUBLISHER;
-                    break;
-                default:
-                    throw new BadToolParametersException(
-                        "--role is PUBLISHER or STREAM_PUBLISHER: '" + role.getValue() + "'");
-            }
-        }
-        return new Settings(config, address, eventKind, endpointRole, batchSize, reuse.isSet(), durationMillis,
-            statPeriod);
-    }
-
-    // The options of QD NetTest, of the C tool and of the JVM that this tool does not take, with a precise message
-    // instead of QD's "Unrecognized option".
-    private static void rejectForeignOptions(String[] args) {
-        for (String arg : args) {
-            if (arg.equals("-c") || arg.equals("--collector")) {
-                throw new BadToolParametersException("unsupported QD flag: " + arg + " (the collector of QD NetTest)");
-            }
-            if (arg.equals("-w") || arg.equals("--wildcard")) {
-                throw new BadToolParametersException("unsupported QD flag: " + arg + " (the wildcard subscription)");
-            }
-            if (arg.equals("--legacy")) {
-                throw new BadToolParametersException("--legacy is an option of the C tool only (the deprecated C " +
-                    "publishing function)");
-            }
-            if (arg.startsWith("-X")) {
-                throw new BadToolParametersException(arg + " is a JVM option: put it on the java command line " +
-                    "before -jar");
-            }
-        }
-    }
-
-    private static void checkSymbols(String value) throws OptionParseException {
-        int at = value.indexOf('@');
-        String head = at < 0 ? value : value.substring(0, at);
-        if (head.indexOf('{') >= 0) {
-            throw new OptionParseException("unsupported QD flag: the symbol length '{len,max}' in '-S " + value + "'");
-        }
-        if (head.indexOf('/') >= 0) {
-            throw new OptionParseException("unsupported QD flag: the symbol split '/r' or '/s' in '-S " + value + "'");
-        }
-        if (!isDigits(head) || head.length() > 9 || Integer.parseInt(head) < 1 || Integer.parseInt(head) > MAX_SYMBOLS) {
-            throw new OptionParseException("-S needs <total> or <total>@<file>, where <total> is a number from 1 to " +
-                MAX_SYMBOLS + ": '" + value + "'");
-        }
-        if (at >= 0 && at == value.length() - 1) {
-            throw new OptionParseException("-S has no file name after '@': '" + value + "'");
-        }
-    }
-
-    // Parses "*/<rate>" as the C tool does: a positive number with an optional k, M or G, at most 1e12.
-    static double parseRateOption(String value) {
-        if (value.indexOf(';') >= 0) {
-            throw new BadToolParametersException(
-                "unsupported QD flag: the rate limiter bucket ';<time>' in '-r " + value + "'");
-        }
-        if (value.length() < 3 || !value.startsWith("*/")) {
-            throw new BadToolParametersException("-r needs */<rate> (for example */500k): '" + value + "'");
-        }
-        String number = value.substring(2);
-        double multiplier = 1;
-        switch (number.charAt(number.length() - 1)) {
-            case 'k':
-                multiplier = 1e3;
-                break;
-            case 'M':
-                multiplier = 1e6;
-                break;
-            case 'G':
-                multiplier = 1e9;
-                break;
-            default:
-                break;
-        }
-        if (multiplier != 1) {
-            number = number.substring(0, number.length() - 1);
-        }
-        double rate = isDecimal(number) ? Double.parseDouble(number) * multiplier : Double.NaN;
-        if (!(rate >= 1) || rate > MAX_RATE) {
-            throw new BadToolParametersException(
-                "-r has a bad rate (a number from 1 to 1e12 with an optional k, M or G): '" + value + "'");
-        }
-        return rate;
-    }
-
-    private static int checkRange(String flag, int value, int max) {
-        if (value < 1 || value > max) {
-            throw new BadToolParametersException(flag + " needs a number from 1 to " + max + ": " + value);
-        }
-        return value;
-    }
-
-    // Parses a time as the C tool does: positive digits with the unit ms, s or m. Returns milliseconds.
-    static long parseTime(String flag, String value) {
-        long multiplier;
-        int suffixLength;
-        if (value.length() > 2 && value.endsWith("ms")) {
-            multiplier = 1;
-            suffixLength = 2;
-        } else if (value.length() > 1 && value.endsWith("s")) {
-            multiplier = 1_000;
-            suffixLength = 1;
-        } else if (value.length() > 1 && value.endsWith("m")) {
-            multiplier = 60_000;
-            suffixLength = 1;
-        } else {
-            multiplier = 0;
-            suffixLength = 0;
-        }
-        String number = value.substring(0, value.length() - suffixLength);
-        long time = multiplier > 0 && isDigits(number) && number.length() <= 15 ? Long.parseLong(number) : 0;
-        if (time < 1 || time > Long.MAX_VALUE / multiplier) {
-            throw new BadToolParametersException(flag + " needs a positive time with ms, s or m (for example 10s): '" +
-                value + "'");
-        }
-        return time * multiplier;
-    }
-
-    private static boolean isDigits(String text) {
-        return !text.isEmpty() && text.chars().allMatch(c -> c >= '0' && c <= '9');
-    }
-
-    // Digits with at most one inner dot: no sign, no exponent, no spaces.
-    private static boolean isDecimal(String text) {
-        int dot = text.indexOf('.');
-        if (dot < 0) {
-            return isDigits(text);
-        }
-        return dot > 0 && dot < text.length() - 1 && text.indexOf('.', dot + 1) < 0 &&
-            isDigits(text.substring(0, dot)) && isDigits(text.substring(dot + 1));
+        return NetTestApiCommandLine.parse(args);
     }
 
     // Ctrl+C (SIGINT) and SIGTERM only request the stop: the main thread closes the endpoints and the tool exits with 0.
@@ -377,30 +185,74 @@ public class NetTestApi extends AbstractTool {
 
     /** The validated arguments of a run. */
     static final class Settings {
+        final Mode mode;
         final NetTestConfig config;
         final String address;
         final EventKind event;
+        final String collector; // stream, ticker or null
         final DXEndpoint.Role role;
-        final int batch;
-        final boolean reuse;
+        final int batch; // p only
+        final boolean reuse; // p only
+        final Double rate; // p only: the total events per second, null without -r
         final long durationMillis; // 0: until Ctrl+C
         final TimePeriod statPeriod;
 
-        Settings(NetTestConfig config, String address, EventKind event, DXEndpoint.Role role, int batch,
-            boolean reuse, long durationMillis, TimePeriod statPeriod)
+        Settings(Mode mode, NetTestConfig config, String address, EventKind event, String collector,
+            DXEndpoint.Role role, int batch, boolean reuse, Double rate, long durationMillis, TimePeriod statPeriod)
         {
+            this.mode = mode;
             this.config = config;
             this.address = address;
             this.event = event;
+            this.collector = collector;
             this.role = role;
             this.batch = batch;
             this.reuse = reuse;
+            this.rate = rate;
             this.durationMillis = durationMillis;
             this.statPeriod = statPeriod;
         }
+
+        boolean isProducer() {
+            return mode == Mode.PRODUCER;
+        }
+
+        /** Whether the consumer receives conflated events: FEED takes Trade through the ticker contract. */
+        boolean isConflated() {
+            return mode == Mode.CONSUMER && role == DXEndpoint.Role.FEED && event == EventKind.TRADE;
+        }
+
+        /**
+         * The settings under the names of the summary file of the specification ({@code side}, {@code name} and the
+         * keys of its {@code config}), as {@code cli-vectors.json} names them; an absent value is {@code null}.
+         */
+        Map<String, Object> describe() {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("side", isProducer() ? "producer" : "consumer");
+            map.put("name", config.name);
+            map.put("address", address);
+            map.put("symbols", config.totalSymbols);
+            map.put("symbols_source", config.ipfPath == null ? "generated" : "file");
+            map.put("instances", config.instanceCount);
+            map.put("rate_limit", rate == null ? null : Math.round(rate));
+            map.put("batch", isProducer() ? batch : null);
+            map.put("event", event.text);
+            map.put("collector", collector);
+            map.put("role", role.name());
+            map.put("reuse", isProducer() ? reuse : null);
+            // The publisher converts each event to a record: the events of the pool are republished in place.
+            map.put("reuse_effective", isProducer() ? reuse : null);
+            map.put("conflated", isConflated());
+            map.put("period_ms", statPeriod.getTime());
+            map.put("warmup_ms", null);
+            map.put("duration_ms", durationMillis == 0 ? null : durationMillis);
+            map.put("nano_time", NetTestApiSide.isNanoTime());
+            map.put("isolate_arguments", Collections.emptyList());
+            return map;
+        }
     }
 
-    /** The request to end the run: set once by the duration, a signal or a failed generator. */
+    /** The request to end the run: set once by the duration, a signal or a failure. */
     static final class Stop {
         private final CountDownLatch requested = new CountDownLatch(1);
 

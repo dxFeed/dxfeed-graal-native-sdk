@@ -36,7 +36,7 @@ public class ShadedJarIT {
         Result result = run("NetTestApi");
 
         assertEquals(result.output, 2, result.exitCode);
-        assertTrue(result.output, result.output.contains("p <address>"));
+        assertTrue(result.output, result.output.contains("p|c <address>"));
     }
 
     @Test

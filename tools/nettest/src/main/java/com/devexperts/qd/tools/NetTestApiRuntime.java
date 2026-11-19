@@ -7,9 +7,8 @@ import com.devexperts.logging.Logging;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
-import java.text.NumberFormat;
 import java.time.Duration;
-import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -106,38 +105,69 @@ final class NetTestApiRuntime {
         return text.toString();
     }
 
+    /** The statistics blocks of the intervals, see {@link NetTestApiStatistics#tick}. */
+    interface Blocks {
+        /** Ends an interval and returns its block, or {@code null} when nothing is printed for it. */
+        String tick(long minNanos);
+    }
+
     /**
-     * Runs QD's statistics collector and then logs the runtime line, so that the line follows each block. The first
-     * run only starts the count, as it does for the collector.
+     * Logs the statistics block of each interval and the runtime line after it in one write, so that no other output
+     * comes between them. The first run only starts the count. {@link #finish} logs the last block of the time since
+     * the last run when it is at least one second long; after it nothing is logged.
      */
     static final class Reporter implements Runnable {
+        static final long LAST_BLOCK_MIN_NANOS = 1_000_000_000L;
+
         private static final Logging log = Logging.getLogging(NetTestApiRuntime.class);
 
-        private final Runnable statisticsCollector;
+        private final Blocks blocks;
         private final String name;
         private final Supplier<Sample> source;
+        private final Consumer<String> output;
         private Sample previous; // guarded by this
         private long previousNanos; // guarded by this
+        private boolean finished; // guarded by this
 
-        Reporter(Runnable statisticsCollector, String name) {
-            this(statisticsCollector, name, NetTestApiRuntime::read);
+        Reporter(Blocks blocks, String name) {
+            // "\b" drops the thread and the category of QD's log line, as QD NetTest's statistics line does.
+            this(blocks, name, NetTestApiRuntime::read, text -> log.info("\b" + text));
         }
 
-        Reporter(Runnable statisticsCollector, String name, Supplier<Sample> source) {
-            this.statisticsCollector = statisticsCollector;
+        Reporter(Blocks blocks, String name, Supplier<Sample> source, Consumer<String> output) {
+            this.blocks = blocks;
             this.name = name;
             this.source = source;
+            this.output = output;
         }
 
         @Override
         public synchronized void run() {
-            statisticsCollector.run();
+            report(0);
+        }
+
+        /** Logs the last block once and stops the reporting. */
+        synchronized void finish() {
+            report(LAST_BLOCK_MIN_NANOS);
+            finished = true;
+        }
+
+        private void report(long minNanos) {
+            if (finished) {
+                return;
+            }
+            String block = blocks.tick(minNanos);
+            if (block == null) {
+                if (previous == null) {
+                    previous = source.get();
+                    previousNanos = System.nanoTime();
+                }
+                return;
+            }
             Sample current = source.get();
             long currentNanos = System.nanoTime();
-            if (previous != null) {
-                // "\b" drops the thread and the category of QD's log line, as the collector's line does.
-                log.info("\b" + format(name, previous, current, currentNanos - previousNanos));
-            }
+            Sample start = previous != null ? previous : current;
+            output.accept(block + "\n" + format(name, start, current, currentNanos - previousNanos));
             previous = current;
             previousNanos = currentNanos;
         }
@@ -156,6 +186,6 @@ final class NetTestApiRuntime {
     }
 
     private static String groupDigits(long value) {
-        return NumberFormat.getIntegerInstance(Locale.US).format(value);
+        return NetTestApiStatistics.groupDigits(value);
     }
 }

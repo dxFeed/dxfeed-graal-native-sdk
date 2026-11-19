@@ -452,13 +452,13 @@ README of each tool lists how it differs from this page until then.
 
 | Section | C API `NetTest` | Java `NetTestApi` |
 |---|---|---|
-| @ref wrapper_nettest_cli | 3.18.0 without the options of the consumer, summary and metrics sections | not yet: mode `p` only, other error texts |
-| @ref wrapper_nettest_roles | 3.18.0 | not yet: `--role` without `-c` |
+| @ref wrapper_nettest_cli | 3.18.0 without the options of the consumer, summary and metrics sections | 3.18.0 |
+| @ref wrapper_nettest_roles | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_rate | not yet: a token bucket | not yet: a token bucket |
 | @ref wrapper_nettest_events | 3.16.0 | not yet: another generator |
 | @ref wrapper_nettest_time | 3.18.0 (generated symbols since 3.16.0) | not yet: the time and `dxscheme.nanoTime` since 3.18.0, QD's generated symbols |
-| @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c`; no `NetTestMetrics` line | not yet: the label `NetTestApiProducerSide` |
-| @ref wrapper_nettest_consumer | 3.18.0 without `--warmup`, the histogram and `symbols_seen` | not yet |
+| @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c`; no `NetTestMetrics` line | not yet: the lines go to QD's log (stderr when redirected), the intervals are not aligned to the wall clock |
+| @ref wrapper_nettest_consumer | 3.18.0 without `--warmup`, the histogram and `symbols_seen` | 3.18.0 without the histogram, `negative` and `symbols_seen` of the summary |
 | @ref wrapper_nettest_summary | not yet | not yet |
 | @ref wrapper_nettest_metrics | not yet | not yet |
 | @ref wrapper_nettest_exit | 3.17.0 without the summary file | 3.17.0 without the summary file |

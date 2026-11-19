@@ -1,3 +1,12 @@
+* **\[MDAPI-574]\[GRAAL]** [NetTestApi](tools/nettest) has the consumer mode of the
+  [NetTest specification](docs/wrapper-guide/nettest.md): `NetTestApi c <address>` subscribes each instance to its
+  slice of the symbols and reports the mean end-to-end lag in microseconds from the nanosecond time of the events. It
+  stops with exit code 1 when no records come for 30 s after a record or for 60 s after the connection (`no_data`), or
+  when the first 1000 events have no nanosecond part (`nano_missing`). `-c stream|ticker` sets the contract and the
+  roles of both modes as the specification does. The command line, its error texts and the statistics lines follow the
+  specification: the long options take `--option=value`, a repeated option takes its last value, and the label of the
+  publisher's statistics is `NetTestProducerSide` instead of `NetTestApiProducerSide`, with a line per instance also
+  for one instance.
 * **\[MDAPI-575]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) gets the consumer mode of the
   [NetTest specification](docs/wrapper-guide/nettest.md): `NetTest c <address>` subscribes to the events of a producer
   through `dxfg_v4_DXFeed_createSubscription()` and prints `{*NetTestConsumerSide-<name>*}` blocks with the mean

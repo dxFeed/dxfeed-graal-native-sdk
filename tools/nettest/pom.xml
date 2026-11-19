@@ -62,6 +62,13 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <!-- Reads the conformance kit of the NetTest specification (docs/wrapper-guide/nettest). -->
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.17.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -104,6 +111,8 @@
             <!-- The all-in-one jar for the *IT tests. -->
             <nettest.shadedJar>${project.build.directory}/${project.build.finalName}-all.jar</nettest.shadedJar>
             <nettest.qdVersion>${qd.version}</nettest.qdVersion>
+            <!-- The conformance kit of the NetTest specification. -->
+            <nettest.kit>${project.basedir}/../../docs/wrapper-guide/nettest</nettest.kit>
           </systemPropertyVariables>
           <excludes>
             <exclude>**/*IT.java</exclude>

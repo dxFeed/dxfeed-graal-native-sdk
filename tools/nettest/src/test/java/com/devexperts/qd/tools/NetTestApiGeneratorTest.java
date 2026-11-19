@@ -109,25 +109,26 @@ public class NetTestApiGeneratorTest {
 
     @Test
     public void statisticsAreRecordWeightedAndKeepSubMillisecondBatches() {
-        NetTestApiGeneratorThread generator = generator("p", ":1", "-S", "1");
-        NetTestWorkingThread.Stats stats = new NetTestWorkingThread.Stats();
+        NetTestApiProducerSide side = side("p", ":1", "-S", "1");
+        NetTestApiGeneratorThread generator = new NetTestApiGeneratorThread(1, side, null, null);
+        long[] value = new long[2];
 
         generator.record(10, 300_000); // 0.3 ms
-        generator.getStats(stats);
-        assertEquals(10, stats.processedRecords);
-        assertEquals(3, stats.sumLatency); // 10 * 0.3 ms
+        side.counters[0].read(value);
+        assertEquals(10, value[0]);
+        assertEquals(3_000_000, value[1]); // 10 * 0.3 ms
 
         generator.record(10, 700_000); // 0.7 ms
-        generator.getStats(stats);
-        assertEquals(20, stats.processedRecords);
-        assertEquals(10, stats.sumLatency); // the collector shows 10 * 1000 / 20 = 500 us
+        side.counters[0].read(value);
+        assertEquals(20, value[0]);
+        assertEquals(10_000_000, value[1]); // the line shows 10 ms / 20 = 500 us
 
         for (int i = 0; i < 1000; i++) {
             generator.record(1, 50_000); // 0.05 ms, each far below 1 ms
         }
-        generator.getStats(stats);
-        assertEquals(1020, stats.processedRecords);
-        assertEquals(60, stats.sumLatency); // 10 + 1000 * 0.05
+        side.counters[0].read(value);
+        assertEquals(1020, value[0]);
+        assertEquals(60_000_000, value[1]); // 10 ms + 1000 * 0.05 ms
     }
 
     private static NetTestApiGeneratorThread generator(String... args) {

@@ -16,7 +16,7 @@ import java.util.SplittableRandom;
 
 /**
  * The generator of one {@link NetTestApi} instance: publishes batches of Trade or TimeAndSale events and counts them
- * for QD's statistics collector.
+ * in the statistics counter of its instance.
  *
  * <p>All events of a batch carry the time of the batch and consecutive sequences, so that a QD NetTest consumer
  * computes the business lag. The lag of this side is the time from building a batch to the return of
@@ -41,10 +41,9 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
     private final long[] sizes = new long[VALUE_TABLE_SIZE];
     private final SplittableRandom random;
     private final List<MarketEvent> events;
+    private final NetTestApiStatistics.Counter counter;
     private int sequence;
     private int valueIndex;
-
-    private long weightedNanos; // the sum of batch time * batch events, guarded by this
 
     NetTestApiGeneratorThread(int index, NetTestApiProducerSide side, QDEndpoint endpoint, DXPublisher publisher) {
         super("NetTestApi", index, side, endpoint);
@@ -66,6 +65,7 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
             sizes[i] = 1 + random.nextInt(1_000);
         }
         this.events = new ArrayList<>(batch);
+        this.counter = side.counters[index - 1];
     }
 
     @Override
@@ -131,26 +131,17 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
         this.sequence = sequence & MAX_SEQUENCE;
     }
 
-    /** Counts a published batch of {@code count} events that took {@code nanos}. */
-    synchronized void record(int count, long nanos) {
-        weightedNanos += nanos * count;
-        processedRecords += count;
-    }
-
-    // The collector computes the lag in microseconds as (delta of sumLatency) * 1000 / (delta of records), so
-    // sumLatency is the record-weighted time in milliseconds. It is truncated from the cumulative nanoseconds, so that
-    // batches faster than 1 ms still add up.
-    @Override
-    synchronized void getStats(Stats target) {
-        target.sumLatency = weightedNanos / 1_000_000;
-        target.processedRecords = processedRecords;
+    /** Counts a published batch of {@code count} events that took {@code nanos}, weighted by its events. */
+    void record(int count, long nanos) {
+        counter.add(count, nanos * count);
     }
 
     private MarketEvent newEvent(String symbol) {
         return timeAndSale ? new TimeAndSale(symbol) : new Trade(symbol);
     }
 
-    private static long epochNanos() {
+    /** The time of the next batch in nanoseconds since the epoch; a test may shift it. */
+    long epochNanos() {
         Instant now = Instant.now();
         return now.getEpochSecond() * NANOS_PER_SECOND + now.getNano();
     }

@@ -90,17 +90,38 @@ public class NetTestApiRuntimeTest {
     }
 
     @Test
-    public void theReporterRunsTheCollectorFirstAndSamplesEachRun() {
+    public void theReporterWritesTheBlockAndTheRuntimeLineAtOnce() {
         List<String> calls = new ArrayList<>();
-        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(() -> calls.add("collector"), "NetTest",
-            () -> {
-                calls.add("sample");
-                return sample(MB, MB, 0, 0, 0);
-            });
+        List<String> written = new ArrayList<>();
+        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(minNanos -> {
+            calls.add("block " + minNanos);
+            return calls.size() == 1 ? null : "{*NetTestProducerSide-NetTest*} block";
+        }, "NetTest", () -> {
+            calls.add("sample");
+            return sample(MB, MB, 0, 0, 0);
+        }, written::add);
+
+        reporter.run(); // starts the count
+        reporter.run();
+        reporter.finish();
+        reporter.run(); // nothing after the finish
+
+        assertEquals(List.of("block 0", "sample", "block 0", "sample", "block 1000000000", "sample"), calls);
+        assertEquals(2, written.size());
+        String[] lines = written.get(0).split("\n");
+        assertEquals("{*NetTestProducerSide-NetTest*} block", lines[0]);
+        assertTrue(lines[1], lines[1].startsWith("{*NetTestRuntime-NetTest*} heap 1 MB of 1 MB, gc 0 (0 ms), cpu "));
+    }
+
+    @Test
+    public void aShortLastIntervalPrintsNothing() {
+        List<String> written = new ArrayList<>();
+        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(minNanos -> null, "NetTest",
+            () -> sample(MB, MB, 0, 0, 0), written::add);
 
         reporter.run();
-        reporter.run();
+        reporter.finish();
 
-        assertEquals(List.of("collector", "sample", "collector", "sample"), calls);
+        assertTrue(written.isEmpty());
     }
 }

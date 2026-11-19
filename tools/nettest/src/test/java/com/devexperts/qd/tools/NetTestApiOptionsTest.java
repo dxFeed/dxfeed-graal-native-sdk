@@ -66,12 +66,62 @@ public class NetTestApiOptionsTest {
 
     @Test
     public void rateAcceptsTheFormsOfTheCTool() {
-        assertEquals(1, NetTestApi.parseRateOption("*/1"), 0);
-        assertEquals(1500, NetTestApi.parseRateOption("*/1.5k"), 0);
-        assertEquals(2e6, NetTestApi.parseRateOption("*/2M"), 0);
-        assertEquals(3e9, NetTestApi.parseRateOption("*/3G"), 0);
-        assertEquals(1e12, NetTestApi.parseRateOption("*/1000000000000"), 0);
-        assertEquals(1e12, NetTestApi.parseRateOption("*/1000G"), 0);
+        assertEquals(1, rate("*/1"), 0);
+        assertEquals(1500, rate("*/1.5k"), 0);
+        assertEquals(2e6, rate("*/2M"), 0);
+        assertEquals(3e9, rate("*/3G"), 0);
+        assertEquals(1e12, rate("*/1000000000000"), 0);
+        assertEquals(1e12, rate("*/1000G"), 0);
+    }
+
+    private static double rate(String value) {
+        return NetTestApi.parseArguments("p", ":1", "-S", "1", "-r", value).rate;
+    }
+
+    @Test
+    public void theConsumerTakesTheCommonOptions() {
+        NetTestApi.Settings settings = NetTestApi.parseArguments("c", "127.0.0.1:7000", "-S", "250@symbols.ipf",
+            "-C", "3", "-s", "2s", "-n", "Bench", "--event", "TimeAndSale", "--role", "FEED", "--duration", "7m");
+
+        assertEquals(NetTestApi.Mode.CONSUMER, settings.mode);
+        assertEquals(3, settings.config.instanceCount);
+        assertEquals(NetTestApi.EventKind.TIME_AND_SALE, settings.event);
+        assertEquals(DXEndpoint.Role.FEED, settings.role);
+        assertFalse(settings.isConflated());
+        assertNull(settings.rate);
+        assertNull(settings.config.rateLimiters);
+        assertNull(settings.describe().get("batch"));
+        assertNull(settings.describe().get("reuse"));
+    }
+
+    @Test
+    public void longOptionsTakeTheirValueAfterAnEqualsSign() {
+        NetTestApi.Settings settings = NetTestApi.parseArguments("c", "h:1", "--symbols=10", "--collector=ticker",
+            "--event=Trade", "--duration=1s");
+
+        assertEquals(10, settings.config.totalSymbols);
+        assertEquals("ticker", settings.collector);
+        assertEquals(DXEndpoint.Role.FEED, settings.role);
+        assertTrue(settings.isConflated());
+        assertEquals(1_000, settings.durationMillis);
+    }
+
+    @Test
+    public void theLastValueOfARepeatedOptionCounts() {
+        NetTestApi.Settings settings = NetTestApi.parseArguments("p", ":1", "-S", "1", "-r", "*/1k", "-r", "*/2k",
+            "-c", "ticker", "--collector", "stream");
+
+        assertEquals(2_000, settings.rate, 0);
+        assertEquals("stream", settings.collector);
+        assertEquals(DXEndpoint.Role.STREAM_PUBLISHER, settings.role);
+    }
+
+    @Test
+    public void helpIsFoundOutsideTheValuesOfOptions() {
+        assertTrue(NetTestApiCommandLine.isHelp("--help"));
+        assertTrue(NetTestApiCommandLine.isHelp("c", "h:1", "-S", "1", "--help"));
+        assertFalse(NetTestApiCommandLine.isHelp("p", ":1", "-S", "1", "-n", "--help"));
+        assertTrue(new NetTestApi().usage().endsWith("spec_version nettest/1"));
     }
 
     @Test
@@ -108,8 +158,8 @@ public class NetTestApiOptionsTest {
     @Test
     public void modeAndAddressAreChecked() {
         assertRejected("no mode", "-S", "1");
-        assertRejected("mode 'c'", "c", "127.0.0.1:7000", "-S", "1");
-        assertRejected("unknown mode 'x'", "x", ":7000", "-S", "1");
+        assertRejected("unknown mode 'x'; the mode is p or c", "x", ":7000", "-S", "1");
+        assertRejected("--rate-limit is an option of the mode p", "c", "h:1", "-S", "1", "--rate-limit=*/1k");
         assertRejected("address is missing", "p", "-S", "1");
         assertRejected("unexpected argument 'extra'", "p", ":7000", "extra", "-S", "1");
         assertRejected("-S is missing", "p", ":7000");
@@ -129,13 +179,13 @@ public class NetTestApiOptionsTest {
 
     @Test
     public void foreignOptionsAreRejected() {
-        assertRejected("-c", "p", ":7000", "-S", "1", "-c", "ticker");
-        assertRejected("--collector", "p", ":7000", "-S", "1", "--collector", "ticker");
-        assertRejected("-w", "p", ":7000", "-S", "1", "-w");
-        assertRejected("--legacy", "p", ":7000", "-S", "1", "--legacy");
-        assertRejected("-Xmx1g", "-Xmx1g", "p", ":7000", "-S", "1");
-        assertRejected("-XX:+UseG1GC", "p", ":7000", "-S", "1", "-XX:+UseG1GC");
-        assertRejected("Unrecognized option", "p", ":7000", "-S", "1", "--no-such-option");
+        assertRejected("unsupported QD flag: -w", "p", ":7000", "-S", "1", "-w");
+        assertRejected("unsupported option: --legacy", "p", ":7000", "-S", "1", "--legacy");
+        assertRejected("unsupported option: -Xmx1g", "-Xmx1g", "p", ":7000", "-S", "1");
+        assertRejected("unsupported option: -XX:+UseG1GC", "p", ":7000", "-S", "1", "-XX:+UseG1GC");
+        assertRejected("unknown flag --no-such-option", "p", ":7000", "-S", "1", "--no-such-option=1");
+        assertRejected("--reuse takes no value", "p", ":7000", "-S", "1", "--reuse=yes");
+        assertRejected("-n cannot contain '*'", "p", ":7000", "-S", "1", "-n", "a*b");
     }
 
     @Test

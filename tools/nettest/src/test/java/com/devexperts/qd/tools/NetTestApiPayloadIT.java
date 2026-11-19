@@ -62,12 +62,8 @@ public class NetTestApiPayloadIT {
         NetTestApiProducerSide side = new NetTestApiProducerSide(NetTestApi.parseArguments(args),
             new NetTestApi.Stop()) {
             @Override
-            DXEndpoint createEndpoint(int index) {
-                DXEndpoint.Builder builder = DXEndpoint.newBuilder().withRole(settings.role);
-                if (nanoTime) {
-                    builder.withProperty("dxscheme.nanoTime", "true");
-                }
-                return builder.build();
+            DXEndpoint.Builder endpointBuilder(int index) {
+                return super.endpointBuilder(index).withProperty(NANO_TIME_PROPERTY, String.valueOf(nanoTime));
             }
         };
         side.start();
