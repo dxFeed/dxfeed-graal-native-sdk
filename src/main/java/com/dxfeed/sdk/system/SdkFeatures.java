@@ -61,8 +61,16 @@ public final class SdkFeatures {
      */
     public static final String RUNTIME_STATISTICS = "runtime_statistics";
 
+    /**
+     * {@code DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS}: the I/O statistics of a message connector (MDAPI-578).
+     *
+     * @since 3.18.0
+     */
+    public static final String MESSAGE_CONNECTOR_IO_STATISTICS = "message_connector_io_statistics";
+
     private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
-            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS, RUNTIME_STATISTICS);
+            FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS, RUNTIME_STATISTICS,
+            MESSAGE_CONNECTOR_IO_STATISTICS);
 
     private SdkFeatures() {
     }

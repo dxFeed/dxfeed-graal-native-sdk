@@ -56,6 +56,22 @@
   [NetTest](src/main/c/src/apps/NetTest) names the options it passed to the isolate when the isolate rejects one, on
   every platform (`NetTest: the isolate rejected one of the options: -Xmx64m -XX:+NetTestNoSuchOption`), instead of
   pointing at a reason above, and accepts `-Xss<size>`, the stack size of the threads that the isolate starts.
+* **\[MDAPI-578]\[GRAAL]** A new function, `dxfg_v4_MessageConnector_getIoStatistics()`, reads the I/O statistics of a
+  message connector into a `dxfg_v4_message_connector_io_stats_t`: all ten cumulative I/O counters of QD's statistics
+  (the data and subscription records, the bytes, the lag sums and the round-trip time sums, read and written) and the
+  open and closed connections. The lags and round-trip times are in microseconds, summed over the records; the round-trip
+  time is 0 until the first heartbeats, and the counters stay 0 on iOS and the iOS Simulator. The feature
+  `DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS` tells whether the library has the function. The function, the
+  struct and the feature are stable. `dxfg_v4_MessageConnector_getStatistics()` and its struct are unchanged; the
+  header now says that a stopped connector (replaced, disconnected or closed) reads 0 for the data records of its
+  statistics, as for the new I/O counters, since QD closes them: only the bytes and the connection counts stay.
+
+### For integrators
+
+* A wrapper of the message connectors (C++, Rust, .NET, Go) can wrap `dxfg_v4_MessageConnector_getIoStatistics()` for
+  the lag and the round-trip time of a connector: check `DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS` with
+  `dxfg_v4_system_is_feature_supported()` before binding it, since a library before 3.18.0 does not have it. Keep the
+  v1 `dxfg_v4_MessageConnector_getStatistics()` binding as it is; its struct does not change.
 
 ## v3.17.0
 

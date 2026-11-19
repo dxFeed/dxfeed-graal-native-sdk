@@ -224,6 +224,35 @@ public final class MessageConnectorV4Native {
     }
 
     @CEntryPoint(
+            name = "dxfg_v4_MessageConnector_getIoStatistics",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_MessageConnector_getIoStatistics(
+            final IsolateThread ignoredThread,
+            final DxfgMessageConnectorHandle connector,
+            @DxfgOut final DxfgMessageConnectorIoStats stats
+    ) {
+        checkPointer(stats, "stats");
+
+        final MessageConnectorIoStatistics statistics = MessageConnectors.getIoStatistics(toJava(connector));
+
+        stats.setReadDataRecords(statistics.getReadDataRecords());
+        stats.setWrittenDataRecords(statistics.getWrittenDataRecords());
+        stats.setReadSubRecords(statistics.getReadSubRecords());
+        stats.setWrittenSubRecords(statistics.getWrittenSubRecords());
+        stats.setReadBytes(statistics.getReadBytes());
+        stats.setWrittenBytes(statistics.getWrittenBytes());
+        stats.setReadDataLagSumMicros(statistics.getReadDataLagSumMicros());
+        stats.setWrittenDataLagSumMicros(statistics.getWrittenDataLagSumMicros());
+        stats.setReadRttSumMicros(statistics.getReadRttSumMicros());
+        stats.setWrittenRttSumMicros(statistics.getWrittenRttSumMicros());
+        stats.setActiveConnectionCount(statistics.getActiveConnectionCount());
+        stats.setClosedConnectionCount(statistics.getClosedConnectionCount());
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_v4_MessageConnectorListener_new",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )

@@ -90,6 +90,7 @@ TEST_CASE("The library supports every feature of the description") {
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_MESSAGE_CONNECTORS) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_CONNECTION_ERRORS) != names.end());
     CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_RUNTIME_STATISTICS) != names.end());
+    CHECK(std::find(names.begin(), names.end(), DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS) != names.end());
 
     for (const auto &name : names) {
         INFO(name);
@@ -213,6 +214,26 @@ TEST_CASE("The runtime statistics function, struct and feature are stable") {
          {"dxfg_v4_system_get_runtime_statistics", "dxfg_v4_runtime_stats_t", "DXFG_V4_FEATURE_RUNTIME_STATISTICS"}) {
         INFO(name);
         CHECK(entryOf(name).find("\"tier\": \"stable\"") != std::string::npos);
+    }
+}
+
+TEST_CASE("The connector I/O statistics function, struct and feature are stable since 3.18.0") {
+    const auto description = readDescription();
+
+    // The entry of a name: the text from the name to the next entry (the tier and the version are among its first
+    // fields).
+    const auto entryOf = [&description](const std::string &name) {
+        const auto start = description.find("\"name\": \"" + name + "\"");
+        REQUIRE(start != std::string::npos);
+
+        return description.substr(start, 300);
+    };
+
+    for (const char *name : {"dxfg_v4_MessageConnector_getIoStatistics", "dxfg_v4_message_connector_io_stats_t",
+                             "DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS"}) {
+        INFO(name);
+        CHECK(entryOf(name).find("\"tier\": \"stable\"") != std::string::npos);
+        CHECK(entryOf(name).find("\"since\": \"3.18.0\"") != std::string::npos);
     }
 }
 

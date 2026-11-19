@@ -30,7 +30,9 @@
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <functional>
 #include <mutex>
 #include <stdexcept>
@@ -226,6 +228,32 @@ dxfg_v4_message_connector_stats_t statisticsOf(graal_isolatethread_t *thread, dx
     dxfg_v4_message_connector_stats_t stats{-1, -1, -1, -1, -1, -1};
 
     REQUIRE(dxfg_v4_MessageConnector_getStatistics(thread, connector, &stats) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return stats;
+}
+
+// The layout of the I/O statistics is frozen: 12 fields of int64_t, the last one closed_connection_count.
+static_assert(sizeof(dxfg_v4_message_connector_io_stats_t) == 12 * sizeof(int64_t),
+              "The layout of dxfg_v4_message_connector_io_stats_t changed");
+static_assert(offsetof(dxfg_v4_message_connector_io_stats_t, read_data_records) == 0,
+              "The layout of dxfg_v4_message_connector_io_stats_t changed");
+static_assert(offsetof(dxfg_v4_message_connector_io_stats_t, read_data_lag_sum_us) == 6 * sizeof(int64_t),
+              "The layout of dxfg_v4_message_connector_io_stats_t changed");
+static_assert(offsetof(dxfg_v4_message_connector_io_stats_t, closed_connection_count) == 11 * sizeof(int64_t),
+              "The layout of dxfg_v4_message_connector_io_stats_t changed");
+
+// The v1 statistics keep their layout: 6 fields of int64_t.
+static_assert(sizeof(dxfg_v4_message_connector_stats_t) == 6 * sizeof(int64_t),
+              "The layout of dxfg_v4_message_connector_stats_t changed");
+
+// Reads the I/O statistics into a struct filled with a value that no field may have (all bytes 0xFE, negative), so a
+// field the SDK does not write fails the checks.
+dxfg_v4_message_connector_io_stats_t ioStatisticsOf(graal_isolatethread_t *thread,
+                                                    dxfg_v4_message_connector_t *connector) {
+    dxfg_v4_message_connector_io_stats_t stats;
+    std::memset(&stats, 0xFE, sizeof(stats));
+
+    REQUIRE(dxfg_v4_MessageConnector_getIoStatistics(thread, connector, &stats) == DXFG_EXECUTE_SUCCESSFULLY);
 
     return stats;
 }
@@ -590,6 +618,157 @@ TEST_CASE("A feed endpoint connected to a publisher reports its client connector
     CHECK(takeExceptionClassName(thread).empty());
 }
 
+TEST_CASE("The I/O statistics grow, the round-trip time comes after a heartbeat, the publisher reads no lag") {
+    const auto thread = isolate().thread;
+    REQUIRE(thread != nullptr);
+
+    const auto port = std::to_string(findFreeLoopbackPort());
+    Endpoint publisher(thread, DXFG_ENDPOINT_ROLE_PUBLISHER);
+    REQUIRE(publisher.ready);
+    REQUIRE(publisher.connect(":" + port));
+
+    Connectors servers(thread, publisher.endpoint);
+    REQUIRE(servers.size() == 1);
+    const auto server = servers[0];
+    REQUIRE(waitFor([&] { return stateOf(thread, server) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
+
+    // A connector that has not connected yet has counted nothing.
+    const auto idle = ioStatisticsOf(thread, server);
+    CHECK(idle.read_data_records == 0);
+    CHECK(idle.written_data_records == 0);
+    CHECK(idle.read_sub_records == 0);
+    CHECK(idle.written_sub_records == 0);
+    CHECK(idle.read_data_lag_sum_us == 0);
+    CHECK(idle.written_data_lag_sum_us == 0);
+    CHECK(idle.read_rtt_sum_us == 0);
+    CHECK(idle.written_rtt_sum_us == 0);
+    CHECK(idle.active_connection_count == 0);
+    CHECK(idle.closed_connection_count == 0);
+
+    Endpoint feed(thread, DXFG_ENDPOINT_ROLE_FEED);
+    REQUIRE(feed.ready);
+    REQUIRE(feed.connect("127.0.0.1:" + port));
+
+    Connectors clients(thread, feed.endpoint);
+    REQUIRE(clients.size() == 1);
+    const auto client = clients[0];
+    REQUIRE(waitFor([&] { return stateOf(thread, client) == DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTED; }));
+
+    dxfg_v4_feed_t *javaFeed = nullptr;
+    dxfg_v4_subscription_t *subscription = nullptr;
+    dxfg_v4_string_symbol_t symbol{{STRING}, "CONNECTOR-IO-TEST"};
+    REQUIRE(dxfg_v4_DXEndpoint_getFeed(thread, feed.endpoint, &javaFeed) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_DXFeed_createSubscription(thread, javaFeed, DXFG_EVENT_QUOTE, &subscription) ==
+            DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(dxfg_v4_DXFeedSubscription_addSymbol(thread, subscription, &symbol.supper) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    REQUIRE(publishUntilRead(thread, publisher.endpoint, client, symbol.symbol));
+
+    // The records and the bytes of both sides: the feed sends the subscription and reads the data, the publisher
+    // reads the subscription and sends the data.
+    const auto v1 = statisticsOf(thread, client);
+    const auto first = ioStatisticsOf(thread, client);
+    CHECK(first.read_data_records >= v1.read_data_records);
+    CHECK(first.read_data_records > 0);
+    CHECK(first.written_data_records == 0);
+    CHECK(first.written_sub_records > 0);
+    CHECK(first.read_sub_records == 0);
+    CHECK(first.read_bytes > 0);
+    CHECK(first.written_bytes > 0);
+    CHECK(first.active_connection_count == 1);
+    CHECK(first.closed_connection_count == 0);
+
+    CHECK(waitFor([&] { return ioStatisticsOf(thread, server).read_sub_records > 0; }));
+    CHECK(waitFor([&] { return ioStatisticsOf(thread, server).written_data_records > 0; }));
+    CHECK(waitFor([&] { return ioStatisticsOf(thread, server).active_connection_count == 1; }));
+
+    // QD knows the round-trip time once the heartbeats have gone both ways (the first one after 0.5 s); then every
+    // record adds it to the sums, and the lag of the data read includes it.
+    dxfg_v4_publisher_t *javaPublisher = nullptr;
+    REQUIRE(dxfg_v4_DXEndpoint_getPublisher(thread, publisher.endpoint, &javaPublisher) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    dxfg_v4_quote_t quote{};
+    quote.market_event.event_type.clazz = DXFG_EVENT_QUOTE;
+    quote.market_event.event_symbol = symbol.symbol;
+    dxfg_v4_event_type_t *events[] = {&quote.market_event.event_type};
+    dxfg_v4_event_type_list list{1, events};
+
+    const auto publishUntil = [&](const std::function<bool()> &condition) {
+        return waitFor([&] {
+            quote.bid_price += 1.0;
+            dxfg_v4_DXPublisher_publishEvents(thread, javaPublisher, &list);
+
+            return condition();
+        });
+    };
+
+    CHECK(publishUntil([&] { return ioStatisticsOf(thread, client).read_rtt_sum_us > 0; }));
+    CHECK(publishUntil([&] { return ioStatisticsOf(thread, client).read_data_lag_sum_us > 0; }));
+    CHECK(publishUntil([&] { return ioStatisticsOf(thread, server).written_rtt_sum_us > 0; }));
+
+    dxfg_v4_JavaObjectHandler_release(thread, &javaPublisher->handler);
+
+    const auto later = ioStatisticsOf(thread, client);
+    CHECK(later.read_data_records > first.read_data_records);
+    CHECK(later.read_bytes > first.read_bytes);
+
+    // Reading resets nothing.
+    CHECK(ioStatisticsOf(thread, client).read_data_records >= later.read_data_records);
+    CHECK(ioStatisticsOf(thread, client).read_rtt_sum_us >= later.read_rtt_sum_us);
+
+    // The publisher reads no data, so its read lag stays 0; the feed writes no data, so its written lag stays 0.
+    const auto publisherSide = ioStatisticsOf(thread, server);
+    MESSAGE("the written lag of the publisher, its composing time only: " << publisherSide.written_data_lag_sum_us
+                                                                           << " us over "
+                                                                           << publisherSide.written_data_records
+                                                                           << " records");
+    CHECK(publisherSide.read_data_records == 0);
+    CHECK(publisherSide.read_sub_records > 0);
+    CHECK(publisherSide.written_sub_records == 0);
+    CHECK(publisherSide.read_bytes > 0);
+    CHECK(publisherSide.written_bytes > 0);
+    CHECK(publisherSide.read_data_lag_sum_us == 0);
+    CHECK(publisherSide.written_data_lag_sum_us >= 0);
+    CHECK(later.written_data_lag_sum_us == 0);
+
+    dxfg_v4_DXFeedSubscription_close(thread, subscription);
+    dxfg_v4_JavaObjectHandler_release(thread, &subscription->handler);
+    dxfg_v4_JavaObjectHandler_release(thread, &javaFeed->handler);
+
+    // A reconnect keeps the connector: the counters of the closed connection stay in it.
+    REQUIRE(dxfg_v4_DXEndpoint_reconnect(thread, feed.endpoint) == DXFG_EXECUTE_SUCCESSFULLY);
+    CHECK(waitFor([&] { return ioStatisticsOf(thread, client).closed_connection_count == 1; }));
+
+    const auto reconnected = ioStatisticsOf(thread, client);
+    CHECK(reconnected.read_data_records >= later.read_data_records);
+    CHECK(reconnected.read_rtt_sum_us >= later.read_rtt_sum_us);
+    CHECK(reconnected.read_bytes >= later.read_bytes);
+
+    // A stopped connector counts its closed connections, but QD closes its statistics (they move to those of the
+    // endpoint): the ten I/O counters read 0, as do the data record counts of the v1 statistics, whose bytes stay.
+    // (QD connects again after a delay of its own; the disconnect does not wait for it.)
+    REQUIRE(dxfg_v4_DXEndpoint_disconnect(thread, feed.endpoint) == DXFG_EXECUTE_SUCCESSFULLY);
+    REQUIRE(waitFor([&] { return stateOf(thread, client) == DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED; }));
+    REQUIRE(waitFor([&] { return intValue(thread, client, &dxfg_v4_MessageConnector_getConnectionCount) == 0; }));
+    // QD closes the statistics after the stop: wait for that too.
+    CHECK(waitFor([&] { return ioStatisticsOf(thread, client).read_data_records == 0; }));
+
+    const auto stopped = ioStatisticsOf(thread, client);
+    CHECK(stopped.active_connection_count == 0);
+    CHECK(stopped.read_data_records == 0);
+    CHECK(stopped.written_sub_records == 0);
+    CHECK(stopped.read_bytes == 0);
+    CHECK(stopped.read_data_lag_sum_us == 0);
+    CHECK(stopped.read_rtt_sum_us == 0);
+
+    const auto stoppedV1 = statisticsOf(thread, client);
+    CHECK(stoppedV1.read_data_records == 0);
+    CHECK(stoppedV1.read_bytes >= v1.read_bytes);
+    CHECK(stoppedV1.closed_connection_count >= 1);
+    CHECK(stopped.closed_connection_count >= 1);
+    CHECK(takeExceptionClassName(thread).empty());
+}
+
 TEST_CASE("A client to a closed port is connecting and has no current address") {
     const auto thread = isolate().thread;
     REQUIRE(thread != nullptr);
@@ -673,6 +852,12 @@ TEST_CASE("The functions refuse NULL handles and NULL out pointers") {
     CHECK(fails(dxfg_v4_MessageConnector_getClosedConnectionCount(thread, connector, nullptr)));
     CHECK(fails(dxfg_v4_MessageConnector_getStatistics(thread, nullptr, &stats)));
     CHECK(fails(dxfg_v4_MessageConnector_getStatistics(thread, connector, nullptr)));
+
+    dxfg_v4_message_connector_io_stats_t ioStats;
+    std::memset(&ioStats, 0xFE, sizeof(ioStats));
+    CHECK(fails(dxfg_v4_MessageConnector_getIoStatistics(thread, nullptr, &ioStats)));
+    CHECK(fails(dxfg_v4_MessageConnector_getIoStatistics(thread, connector, nullptr)));
+    CHECK(ioStats.read_data_records < 0); // not written on failure
     CHECK(string == nullptr);
     CHECK(strings == nullptr);
     CHECK(value == -1);

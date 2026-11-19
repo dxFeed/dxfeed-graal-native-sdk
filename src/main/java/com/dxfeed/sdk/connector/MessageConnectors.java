@@ -126,4 +126,38 @@ public final class MessageConnectors {
                 readDataRecords, writtenDataRecords, endpointStats.getActiveConnectionCount(),
                 endpointStats.getClosedConnectionCount());
     }
+
+    /**
+     * Reads the I/O statistics of a connector: the ten cumulative {@code QDStats.SValue.IO_*} counters of
+     * {@link MessageConnector#getStats()} and the open and closed connections of
+     * {@link MessageConnector#retrieveCompleteEndpointStats()}. Resets nothing: other readers of the QD statistics see
+     * the same values. Without {@code qds-monitoring} (the iOS builds) QD keeps no statistics, and the ten counters
+     * are 0. They are 0 for a stopped connector too: QD closes its statistics and adds them to those of the endpoint.
+     *
+     * @since 3.18.0
+     */
+    public static MessageConnectorIoStatistics getIoStatistics(final MessageConnector connector) {
+        Objects.requireNonNull(connector, "connector");
+
+        final EndpointStats endpointStats = connector.retrieveCompleteEndpointStats();
+        final QDStats stats = connector.getStats();
+
+        return new MessageConnectorIoStatistics(
+                valueOf(stats, QDStats.SValue.IO_DATA_READ_RECORDS),
+                valueOf(stats, QDStats.SValue.IO_DATA_WRITE_RECORDS),
+                valueOf(stats, QDStats.SValue.IO_SUB_READ_RECORDS),
+                valueOf(stats, QDStats.SValue.IO_SUB_WRITE_RECORDS),
+                valueOf(stats, QDStats.SValue.IO_READ_BYTES),
+                valueOf(stats, QDStats.SValue.IO_WRITE_BYTES),
+                valueOf(stats, QDStats.SValue.IO_DATA_READ_LAGS),
+                valueOf(stats, QDStats.SValue.IO_DATA_WRITE_LAGS),
+                valueOf(stats, QDStats.SValue.IO_READ_RTTS),
+                valueOf(stats, QDStats.SValue.IO_WRITE_RTTS),
+                endpointStats.getActiveConnectionCount(),
+                endpointStats.getClosedConnectionCount());
+    }
+
+    private static long valueOf(final QDStats stats, final QDStats.SValue value) {
+        return stats == null ? 0 : stats.getValue(value);
+    }
 }

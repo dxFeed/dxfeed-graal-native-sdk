@@ -171,6 +171,7 @@ TEST_CASE("The features of the headers are supported, unknown ones are not") {
     CHECK(isSupported(DXFG_V4_FEATURE_MESSAGE_CONNECTORS));
     CHECK(isSupported(DXFG_V4_FEATURE_CONNECTION_ERRORS));
     CHECK(isSupported(DXFG_V4_FEATURE_RUNTIME_STATISTICS));
+    CHECK(isSupported(DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS));
     CHECK_FALSE(isSupported("no_such_feature"));
     CHECK_FALSE(isSupported(""));
     CHECK(takeExceptionClassName(isolate.thread).empty());

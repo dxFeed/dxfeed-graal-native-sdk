@@ -773,6 +773,21 @@ void watchConnectors(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint
   included.
 - Data flow. Data arrives when `read_data_records` grows between two reads of the statistics; `read_bytes` grows on
   heartbeats too. The counters are never reset: compute the rates from the differences.
+- I/O statistics. `dxfg_v4_MessageConnector_getIoStatistics()` (since 3.18.0; check
+  `DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS` first) reads all ten cumulative I/O counters of QD's statistics
+  into a `dxfg_v4_message_connector_io_stats_t`: the data and subscription records, the bytes, the lags and the
+  round-trip times read and written, with the open and closed connections. The counters are cumulative since the
+  connector was created, closed connections included. Units: records, bytes, and microseconds. The lags and the
+  round-trip times are sums over the records: divide the difference of `read_data_lag_sum_us` by that of
+  `read_data_records` for the average lag of the data received in an interval (the lag the peer reports plus the
+  round-trip time), and the round-trip sums by the records of their direction (data plus subscription) for the
+  round-trip time; an interval without records has no average. The round-trip time is 0 until the first heartbeats have gone both ways, about a second after the
+  connect. QD's time marks are microseconds of a 30-bit clock that wraps every 17.9 minutes, so a single lag or
+  round-trip time beyond about 537 s comes out wrong. The lag is meaningful on the side that receives data: a
+  publisher reads no data, and its written lag counts the composing time only. On iOS and the iOS Simulator the ten
+  counters stay 0 (no QD monitoring there). A connector stopped by a connect to another address, a disconnect or the
+  close of its endpoint reads 0 for them (QD closes its statistics), so read the final values before the stop.
+  `dxfg_v4_MessageConnector_getStatistics()` and its struct are unchanged.
 - Shutdown. `dxfg_v4_system_shutdown` stops the listener thread; release the handles after it.
 
 The case `DxfgClient mc` ([MessageConnectorsCase](src/main/c/src/apps/DxfgClient/MessageConnectorsCase.hpp)) prints the
