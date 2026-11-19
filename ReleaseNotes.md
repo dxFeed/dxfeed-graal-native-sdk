@@ -1,3 +1,9 @@
+* **\[MDAPI-544]\[GRAAL]** A security policy ([SECURITY.md](SECURITY.md)): the latest minor version of 3.x gets the
+  security fixes, a vulnerability is reported privately on GitHub and acknowledged within 5 business days. Every
+  archive with a library except the XCFramework (the SBOMs of the macOS and iOS archives describe it) has its CycloneDX
+  SBOM, `docs/graal-native-sdk-sbom.cdx.json`: the Java libraries in the library, the GraalVM that built it and its
+  JDK. The GitHub release has the SBOM of each archive and `SHA256SUMS`, the
+  SHA-256 checksums of its files ([SBOM and checksums](README.md#sbom-and-checksums)).
 * **\[MDAPI-542]\[GRAAL]** The README describes how the SDK follows the security fixes of GraalVM and the JDK
   ([Security updates of GraalVM and the JDK](README.md#security-updates-of-graalvm-and-the-jdk)): a library contains
   the JDK of the GraalVM that built it, and a version built with the fixed GraalVM is released within 30 days of a

@@ -787,11 +787,13 @@ object DeployNuget : BuildType({
 
 object SyncGitHubWithMainAndPublishRelease : BuildType({
     name = "Publish GitHub Release"
-    description = "Pushes main and the release tag to GitHub, publishes the GitHub release with the archives and the " +
-        "NuGet packages, and publishes the packages to nuget.org with the workflow nuget-publish.yml"
+    description = "Pushes main and the release tag to GitHub, publishes the GitHub release with the archives, the " +
+        "NuGet packages, the SBOMs of the archives and SHA256SUMS, and publishes the packages to nuget.org with the workflow nuget-publish.yml"
 
     artifactRules = """
         release-artifacts/*.zip
+        release-artifacts/*.cdx.json
+        release-artifacts/SHA256SUMS
         release-notes.md
     """.trimIndent()
 
@@ -926,6 +928,26 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                         echo "No ${'$'}{id} package of version ${'$'}{VERSION}"
                     fi
                 done
+
+                #
+                # The SBOM of each archive with a library (its docs/graal-native-sdk-sbom.cdx.json) as a file of the
+                # release next to the archive, then the SHA-256 checksums of all the files of the release. The C API
+                # documentation has no library; the XCFramework is made from the macOS and iOS archives, whose SBOMs
+                # describe it.
+                #
+                for archive in release-artifacts/*.zip; do
+                    name=${'$'}(basename "${'$'}archive" .zip)
+                    case "${'$'}name" in
+                        *-c-api-docs-html|*-xcframework) continue ;;
+                    esac
+                    if ! unzip -p "${'$'}archive" docs/graal-native-sdk-sbom.cdx.json > "release-artifacts/${'$'}name.cdx.json"; then
+                        echo "No docs/graal-native-sdk-sbom.cdx.json in ${'$'}archive"
+                        exit 1
+                    fi
+                done
+                (cd release-artifacts && sha256sum -- *.zip *.nupkg *.cdx.json > SHA256SUMS)
+                echo "SHA256SUMS:"
+                cat release-artifacts/SHA256SUMS
 
                 #
                 # Extract the section:
@@ -1068,6 +1090,8 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                     gh release upload "${'$'}TAG" \
                         release-artifacts/*.zip \
                         release-artifacts/*.nupkg \
+                        release-artifacts/*.cdx.json \
+                        release-artifacts/SHA256SUMS \
                         --clobber
                 else
                     echo "Creating release ${'$'}TAG"
@@ -1075,6 +1099,8 @@ object SyncGitHubWithMainAndPublishRelease : BuildType({
                     gh release create "${'$'}TAG" \
                         release-artifacts/*.zip \
                         release-artifacts/*.nupkg \
+                        release-artifacts/*.cdx.json \
+                        release-artifacts/SHA256SUMS \
                         --verify-tag \
                         --title "${'$'}TAG" \
                         --prerelease="${'$'}PRE_RELEASE" \

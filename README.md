@@ -22,6 +22,7 @@ into your projects.
   * [Benefits](#benefits)
   * [Future development](#future-development)
 - [Installation](#installation)
+  * [SBOM and checksums](#sbom-and-checksums)
   * [Windows archives](#windows-archives)
   * [iOS and macOS](#ios-and-macos)
   * [Debug builds](#debug-builds)
@@ -111,6 +112,25 @@ Every archive has `docs/graal-native-sdk-build-info.properties`, which records h
 GraalVM that built the library (its `release` file), what native-image resolved (the optimization level, the target
 machine of `-march`, the garbage collector, PGO, the C compiler) and the options the build passed to native-image.
 The iOS archives have no resolved values: their build stops before native-image reports them.
+
+### SBOM and checksums
+
+Every archive with a library, except the XCFramework, has `docs/graal-native-sdk-sbom.cdx.json`, its software bill of
+materials ([CycloneDX](https://cyclonedx.org/) 1.6 JSON): the Java libraries compiled into the library (QDS, Netty and
+the others, with their versions and licenses), the GraalVM that built it and the JDK of that GraalVM, so a vulnerability
+scanner can tell whether an advisory concerns a version. The iOS Simulator archive names two GraalVM versions, one per
+slice (see [Security updates of GraalVM and the JDK](#security-updates-of-graalvm-and-the-jdk)). The XCFramework is
+made of the libraries of the macOS, iOS and iOS Simulator archives, and their SBOMs describe it. A build with Maven
+offline (`-o`) makes no SBOM: cyclonedx-maven-plugin needs the repositories. The GitHub release also has the SBOM of
+each archive as a file of its own (`graal-native-sdk-<version>-<platform>.cdx.json`) and `SHA256SUMS`, the SHA-256
+checksums of all its files. To check the downloaded files:
+
+```shell
+sha256sum --check --ignore-missing SHA256SUMS
+```
+
+On Windows, compare the output of `Get-FileHash <file> -Algorithm SHA256` (PowerShell) with the line of the file in
+`SHA256SUMS`.
 
 The libraries for .NET are published to nuget.org as the package
 [DxFeed.Graal.Native](https://www.nuget.org/packages/DxFeed.Graal.Native). Inside Devexperts, the archives are also in
@@ -1139,9 +1159,10 @@ the one before it succeeds:
    version and deploys the Linux x64 archives and the C API documentation.
 2. "Build & Deploy [All]" builds and deploys the archives of the other platforms and the XCFramework from the tag.
 3. "Pack NuGet" packs the `DxFeed.Graal.Native` package.
-4. "Publish GitHub Release" pushes `main` and the tag to GitHub, publishes the release with the archives, the package
-   and the notes of the version from `ReleaseNotes.md`, and publishes the package to nuget.org with a GitHub Actions
-   workflow (see [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
+4. "Publish GitHub Release" pushes `main` and the tag to GitHub, publishes the release with the archives, the package,
+   the SBOM of each archive with a library except the XCFramework (from its `docs/`; an archive without one fails the
+   build), `SHA256SUMS` of these files and the notes of the version from `ReleaseNotes.md`, and publishes the package to
+   nuget.org with a GitHub Actions workflow (see [Creating and Publishing NuGet Package](.teamcity/README.MD#creating-and-publishing-nuget-package)).
 5. After it, "Release in Jira" releases the Jira version of the SDK and resolves its tickets (see
    [Releasing the SDK in Jira](.teamcity/README.MD#releasing-the-sdk-in-jira); a pre-release changes nothing there),
    and "Publish C API Docs to GitHub Pages" puts the C API reference of the release on

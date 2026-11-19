@@ -107,6 +107,15 @@
     <graal.isolate.headers.check.skip>false</graal.isolate.headers.check.skip>
     <api.headers.check.skip>false</api.headers.check.skip>
     <doc.names.check.skip>false</doc.names.check.skip>
+    <!--
+      docs/graal-native-sdk-sbom.cdx.json of every archive (create-sbom-file): the CycloneDX SBOM of the library.
+      cyclonedx-maven-plugin needs the network for the POMs of the dependencies, so an offline build (-o) makes
+      archives without an SBOM. sbom.graalvm.source says where the GraalVM of the library is read from (see
+      src/build/FinishSbom.java): the release file of the GraalVM of the build, or jre-ios/build-info.txt in the iOS
+      profiles.
+    -->
+    <sbom.skip>${settings.offline}</sbom.skip>
+    <sbom.graalvm.source>release</sbom.graalvm.source>
     <!-- The CMake file of the archive (the iOS archives have no dylib to import, see the iOS profiles). -->
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
@@ -1017,6 +1026,8 @@
         <macos.manifest.skip>true</macos.manifest.skip>
         <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>ios-simulator</arch.name>
+        <!-- Both slices of the simulator libraries, each from its GraalVM. -->
+        <sbom.graalvm.source>jre-ios:${project.basedir}/jre-ios/build-info.txt:simulator-</sbom.graalvm.source>
         <!-- The native image of this build is the x86_64 one (jdk-25.0.1), see the mac-x86_64 profile. -->
         <graal.isolate.headers.check.skip>true</graal.isolate.headers.check.skip>
         <notIosSimulator>false</notIosSimulator>
@@ -1106,6 +1117,7 @@
         <macos.manifest.skip>true</macos.manifest.skip>
         <assembly.cmake.component>src/assembly/no-cmake.xml</assembly.cmake.component>
         <arch.name>aarch64-ios</arch.name>
+        <sbom.graalvm.source>jre-ios:${project.basedir}/jre-ios/build-info.txt:ios-</sbom.graalvm.source>
         <notMacIos>false</notMacIos>
         <qdMonitoring>false</qdMonitoring>
         <build.info.values.check>false</build.info.values.check>
@@ -1306,6 +1318,7 @@
           <!-- Only the tests: the other classes in src/test are programs with main(), not tests. -->
           <includes>
             <include>com/devexperts/logging/**/*Test.java</include>
+            <include>com/dxfeed/sdk/build/**/*Test.java</include>
             <include>com/dxfeed/sdk/model/**/*Test.java</include>
             <include>com/dxfeed/sdk/connector/**/*Test.java</include>
             <include>com/dxfeed/sdk/feedfilter/**/*Test.java</include>
@@ -1478,6 +1491,31 @@
         </executions>
       </plugin>
       <plugin>
+        <!-- The SBOM of the Maven dependencies, which create-sbom-file makes the SBOM of the archive from. -->
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>make-maven-sbom</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>makeBom</goal>
+            </goals>
+            <configuration>
+              <skip>${sbom.skip}</skip>
+              <!-- Not deployed: the archives carry the SBOM. -->
+              <skipAttach>true</skipAttach>
+              <outputFormat>json</outputFormat>
+              <outputName>${project.name}-maven-sbom</outputName>
+              <schemaVersion>1.6</schemaVersion>
+              <includeTestScope>false</includeTestScope>
+              <includeLicenseText>false</includeLicenseText>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
@@ -1641,12 +1679,14 @@
           </execution>
           <execution>
             <!--
-              Create version file. Also removes the build report and the argument files of a previous build in the same
-              target (a build without clean), so that the build-info file can only describe this build.
+              Create version file. Also removes the build report, the argument files and the SBOM of a previous build in
+              the same target (a build without clean), so that the build-info file and the SBOM can only describe this
+              build.
             -->
             <configuration>
               <target>
                 <delete file="${native.image.build.report}" quiet="true" />
+                <delete file="${project.build.directory}/docs/${project.name}-sbom.cdx.json" quiet="true" />
                 <delete quiet="true">
                   <fileset dir="${project.build.directory}/tmp" includes="native-image-*.args" erroronmissingdir="false" />
                 </delete>
@@ -1796,6 +1836,34 @@
                     </and>
                   </condition>
                 </fail>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              docs/graal-native-sdk-sbom.cdx.json of every archive: the SBOM of the Maven dependencies with the GraalVM
+              and the JDK of the library instead of the GraalVM jars, and without the references to the hosts the
+              dependencies were built on (src/build/FinishSbom.java, run with the test classpath for Jackson). After
+              create-build-info-file, whose graalvm.* values it reads.
+            -->
+            <id>create-sbom-file</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skip>${sbom.skip}</skip>
+              <target>
+                <property name="sbom.classpath" refid="maven.test.classpath" />
+                <exec executable="${java.home}/bin/java" failonerror="true">
+                  <arg value="-cp" />
+                  <arg value="${sbom.classpath}" />
+                  <arg file="${project.basedir}/src/build/FinishSbom.java" />
+                  <arg file="${project.build.directory}/${project.name}-maven-sbom.json" />
+                  <arg file="${project.build.directory}/docs/${project.name}-build-info.properties" />
+                  <arg value="${sbom.graalvm.source}" />
+                  <arg file="${project.build.directory}/docs/${project.name}-sbom.cdx.json" />
+                </exec>
               </target>
             </configuration>
           </execution>

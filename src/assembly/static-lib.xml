@@ -68,6 +68,7 @@
       <includes>
         <include>${project.name}-version.inc</include>
         <include>${project.name}-build-info.properties</include>
+        <include>${project.name}-sbom.cdx.json</include>
       </includes>
       <outputDirectory>docs</outputDirectory>
     </fileSet>
