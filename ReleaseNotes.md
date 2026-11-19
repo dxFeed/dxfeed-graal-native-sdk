@@ -1,3 +1,5 @@
+## v3.18.0-rc1
+
 * **\[MDAPI-577]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) writes the JSON summary of the
   [NetTest specification](docs/wrapper-guide/nettest.md) (`--summary <file>`, schema `nettest-summary/1`) with the
   intervals, the e2e lag percentiles of an HdrHistogram, the publishing time, the schedule slip, the runtime and the
