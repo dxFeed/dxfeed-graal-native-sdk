@@ -11,6 +11,7 @@ import com.devexperts.qd.qtp.socket.ServerSocketTestHelper;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.event.market.Trade;
 import com.dxfeed.promise.Promise;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,42 +30,100 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * NetTestApi as a process started through QD's {@code Tools}: the lines of the specification for both sides, the exit
- * codes and the stop. The output is checked for structure, never for rates. A consumer process runs against a
- * publisher in the test JVM, which listens on a port that the system picks.
+ * codes, the stop, the summary file and the metrics. The output is checked for structure, never for rates. A
+ * consumer process runs against a publisher in the test JVM, which listens on a port that the system picks.
  */
 public class NetTestApiProcessTest {
     private static final Map<String, Pattern> REGEXES = NetTestKit.regexes();
     private static final Pattern PRODUCER_LINE = Pattern.compile("[{][*]NetTestProducerSide-NetTest[*][}]");
+    private static final Pattern CONSUMER_LINE = Pattern.compile("[{][*]NetTestConsumerSide-NetTest[*][}]");
     private static final long DEADLINE_SECONDS = 30;
 
+    @Rule
+    public final TemporaryFolder folder = new TemporaryFolder();
+
     @Test
-    public void durationEndsTheRunWithZeroAfterPrintingStatistics() throws Exception {
+    public void durationEndsTheRunWithZeroAfterPrintingStatisticsAndTheSummary() throws Exception {
+        Path summary = folder.getRoot().toPath().resolve("producer.json");
         // The first tick only starts the count and the last block needs a second: 5 s leave a tick to spare.
         ToolProcess process = ToolProcess.start("p", ":0", "-S", "100", "-r", "*/100k", "--duration", "5s",
-            "-s", "1s");
+            "-s", "1s", "--summary", summary.toString(), "--metrics-port", "0");
+        String url = process.awaitMetricsUrl();
+        process.awaitOutput(PRODUCER_LINE);
+        NetTestApiChecks.checkScrape(NetTestApiChecks.scrape(url), "producer", "NetTest");
 
         assertEquals(process.describe(), 0, process.waitForExit());
         assertBlocks(process, "Producer");
+        assertTrue("the lines go to stdout\n" + process.describe(), PRODUCER_LINE.matcher(process.stdout()).find());
         assertTrue(process.describe(), process.output().contains("Closed 1 endpoint(s)"));
+        JsonNode json = NetTestApiChecks.readSummary(summary);
+        assertEquals("ok", json.get("status").asText());
+        assertEquals(0, json.get("exit_code").asInt());
+        assertEquals("producer", json.get("side").asText());
+        assertTrue(json.toString(), json.get("records").asLong() > 0);
+        assertTrue(json.toString(), json.get("schedule_slip").isObject());
+        assertTrue(json.toString(), json.get("e2e_lag").isNull());
+        assertTrue("the temporary file is renamed", !Files.exists(Paths.get(summary + ".tmp")));
     }
 
     @Test
-    public void theConsumerPrintsItsLinesAndEndsWithZero() throws Exception {
+    public void theConsumerPrintsItsLinesAndEndsWithZeroAfterTheSummary() throws Exception {
+        Path summary = folder.getRoot().toPath().resolve("consumer.json");
         StartedProducer producer = startProducer("-c", "stream");
         try {
             ToolProcess process = ToolProcess.start("c", producer.address, "-S", "100", "-c", "stream", "-C", "2",
-                "-s", "1s", "--duration", "5s");
+                "-s", "1s", "--duration", "5s", "--warmup", "1s", "--summary", summary.toString(),
+                "--metrics-port", "0");
+            String url = process.awaitMetricsUrl();
+            process.awaitOutput(CONSUMER_LINE);
+            String scrape = NetTestApiChecks.scrape(url);
+            NetTestApiChecks.checkScrape(scrape, "consumer", "NetTest");
+            assertTrue(scrape, scrape.contains(
+                "nettest_records_total{tool=\"java-api\",side=\"consumer\",name=\"NetTest\",connection=\"2\"}"));
 
             assertEquals(process.describe(), 0, process.waitForExit());
             assertBlocks(process, "Consumer");
             assertTrue(process.describe(), process.output().contains("Closed 2 endpoint(s)"));
+            JsonNode json = NetTestApiChecks.readSummary(summary);
+            assertEquals("ok", json.get("status").asText());
+            assertEquals(100, json.get("symbols_seen").asInt());
+            assertEquals(1_000, json.get("config").get("warmup_ms").asInt());
+            assertEquals("warmup", json.get("intervals").get(0).get("phase").asText());
+            JsonNode last = json.get("intervals").get(json.get("intervals").size() - 1);
+            assertEquals(json.toString(), "measure", last.get("phase").asText());
+            assertTrue(json.toString(), json.get("e2e_lag").get("count").asLong() > 0);
+            assertTrue(json.toString(), json.get("publish_call").isNull());
         } finally {
             producer.side.finish();
         }
+    }
+
+    @Test
+    public void aBusyMetricsPortExitsWithOneBeforeTheFirstEndpoint() throws Exception {
+        try (ServerSocket occupant = new ServerSocket(0, 50, java.net.InetAddress.getLoopbackAddress())) {
+            ToolProcess process = ToolProcess.start("p", ":0", "-S", "1", "--metrics-port",
+                "127.0.0.1:" + occupant.getLocalPort());
+
+            assertEquals(process.describe(), 1, process.waitForExit());
+            assertTrue(process.describe(), process.stderr().contains("NetTestApi: --metrics-port cannot bind"));
+            assertTrue(process.describe(), process.output().contains("Closed 0 endpoint(s)"));
+        }
+    }
+
+    @Test
+    public void anUnwritableSummaryPathExitsWithTwo() throws Exception {
+        String path = folder.getRoot().toPath().resolve("absent").resolve("summary.json").toString();
+        ToolProcess process = ToolProcess.start("p", ":0", "-S", "1", "--summary", path);
+
+        assertEquals(process.describe(), 2, process.waitForExit());
+        assertTrue(process.describe(), process.stderr().contains("NetTestApi: --summary cannot write to the " +
+            "directory of '" + path + "'"));
     }
 
     @Test
@@ -74,12 +135,18 @@ public class NetTestApiProcessTest {
         DXEndpoint publisher = DXEndpoint.create(DXEndpoint.Role.PUBLISHER);
         try {
             publisher.connect(":0[name=" + connectorName + "]");
+            Path summary = folder.getRoot().toPath().resolve("no-data.json");
             ToolProcess process = ToolProcess.start("-D" + NetTestApiConsumerSide.NO_DATA_BEFORE_RECORD_PROPERTY +
-                "=2000", "c", "127.0.0.1:" + port.await(DEADLINE_SECONDS, TimeUnit.SECONDS), "-S", "100");
+                "=2000", "c", "127.0.0.1:" + port.await(DEADLINE_SECONDS, TimeUnit.SECONDS), "-S", "100",
+                "--summary", summary.toString());
 
             assertEquals(process.describe(), 1, process.waitForExit());
             assertTrue(process.describe(), process.stderr().contains("NetTestApi: no_data: no records for 2000 ms " +
                 "after the connection"));
+            JsonNode json = NetTestApiChecks.readSummary(summary);
+            assertEquals("no_data", json.get("status").asText());
+            assertEquals(1, json.get("exit_code").asInt());
+            assertTrue(json.toString(), json.get("error").asText().startsWith("no_data: "));
         } finally {
             publisher.close();
         }
@@ -172,10 +239,12 @@ public class NetTestApiProcessTest {
     }
 
     @Test
-    public void interruptAfterTheFirstStatisticsExitsWithZero() throws Exception {
+    public void interruptAfterTheFirstStatisticsExitsWithZeroAndTheSummaryOfTheSignal() throws Exception {
         assumeFalse("SIGINT cannot be sent to a process on Windows; checked by hand with Ctrl+C",
             System.getProperty("os.name").startsWith("Windows"));
-        ToolProcess process = ToolProcess.start("p", ":0", "-S", "100", "-r", "*/100k", "-s", "1s");
+        Path summary = folder.getRoot().toPath().resolve("signal.json");
+        ToolProcess process = ToolProcess.start("p", ":0", "-S", "100", "-r", "*/100k", "-s", "1s", "--summary",
+            summary.toString());
         process.awaitOutput(PRODUCER_LINE);
 
         // The kill of the shell: a slim image may have no /usr/bin/kill.
@@ -184,6 +253,9 @@ public class NetTestApiProcessTest {
 
         assertEquals(process.describe(), 0, process.waitForExit());
         assertTrue(process.describe(), process.output().contains("Closed 1 endpoint(s)"));
+        JsonNode json = NetTestApiChecks.readSummary(summary);
+        assertEquals("stopped_by_signal", json.get("status").asText());
+        assertEquals(0, json.get("exit_code").asInt());
     }
 
     /**
@@ -278,6 +350,25 @@ public class NetTestApiProcessTest {
                 drain.join(5_000);
             }
             return process.exitValue();
+        }
+
+        /** Waits for the metrics line and returns its URL. */
+        String awaitMetricsUrl() throws InterruptedException {
+            Pattern metrics = REGEXES.get("metrics");
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(DEADLINE_SECONDS);
+            while (System.nanoTime() - deadline < 0 && process.isAlive()) {
+                for (String line : stdout().split("\n")) {
+                    Matcher matcher = metrics.matcher(line);
+                    if (matcher.find()) {
+                        assertEquals("NetTest", matcher.group(1));
+                        assertTrue(line, Integer.parseInt(matcher.group(3)) > 0);
+                        return "http://" + matcher.group(2) + ":" + matcher.group(3) + "/metrics";
+                    }
+                }
+                Thread.sleep(50);
+            }
+            process.destroyForcibly();
+            throw new AssertionError("no metrics line on stdout\n" + describe());
         }
 
         void awaitOutput(Pattern pattern) throws InterruptedException {

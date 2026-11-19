@@ -10,9 +10,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.dxfeed.api.DXEndpoint;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Test;
 
-/** The command line of NetTestApi: R1 to R3 of the plan, with the C-API NetTest as the reference for the ranges. */
+/** The command line of NetTestApi, with the C-API NetTest as the reference for the ranges. */
 public class NetTestApiOptionsTest {
     @Test
     public void defaultsAreThoseOfTheCTool() {
@@ -29,7 +33,10 @@ public class NetTestApiOptionsTest {
         assertEquals(1, settings.config.instanceCount);
         assertEquals(100, settings.config.totalSymbols);
         assertNull(settings.config.ipfPath);
-        assertNull(settings.config.rateLimiters);
+        assertNull(settings.rate);
+        assertEquals(0, settings.warmupMillis);
+        assertNull(settings.summaryPath);
+        assertEquals(-1, settings.metricsPort);
     }
 
     @Test
@@ -43,7 +50,7 @@ public class NetTestApiOptionsTest {
         assertEquals(3, settings.config.instanceCount);
         assertEquals(3, settings.config.addresses.length);
         assertEquals("127.0.0.1:7000", settings.config.addresses[2]);
-        assertTrue(settings.config.rateLimiters.containsKey("*"));
+        assertEquals(500_000, settings.rate, 0);
         assertEquals(2_000, settings.statPeriod.getTime());
         assertEquals("Bench", settings.config.name);
         assertEquals(1000, settings.batch);
@@ -89,7 +96,6 @@ public class NetTestApiOptionsTest {
         assertEquals(DXEndpoint.Role.FEED, settings.role);
         assertFalse(settings.isConflated());
         assertNull(settings.rate);
-        assertNull(settings.config.rateLimiters);
         assertNull(settings.describe().get("batch"));
         assertNull(settings.describe().get("reuse"));
     }
@@ -129,6 +135,45 @@ public class NetTestApiOptionsTest {
         assertEquals(1500, NetTestApi.parseArguments("p", ":1", "-S", "1", "--duration", "1500ms").durationMillis);
         assertEquals(30_000, NetTestApi.parseArguments("p", ":1", "-S", "1", "--duration", "30s").durationMillis);
         assertEquals(60_000, NetTestApi.parseArguments("p", ":1", "-S", "1", "-s", "1m").statPeriod.getTime());
+    }
+
+    @Test
+    public void theWarmupTheSummaryAndTheMetricsAreParsed() throws Exception {
+        Path directory = Files.createTempDirectory("nettest-options");
+        try {
+            String file = directory.resolve("summary.json").toString();
+            NetTestApi.Settings settings = NetTestApi.parseArguments("c", "h:1", "-S", "1", "--warmup", "30s",
+                "--summary", file, "--metrics-port", "0");
+
+            assertEquals(30_000, settings.warmupMillis);
+            assertEquals(30_000L, settings.describe().get("warmup_ms"));
+            assertEquals(Paths.get(file).toAbsolutePath(), settings.summaryPath);
+            assertEquals("127.0.0.1", settings.metricsHost);
+            assertEquals(0, settings.metricsPort);
+            assertEquals(List.of("c", "h:1", "-S", "1", "--warmup", "30s", "--summary", file, "--metrics-port", "0"),
+                settings.args);
+        } finally {
+            Files.delete(directory);
+        }
+        NetTestApi.Settings settings = NetTestApi.parseArguments("p", ":1", "-S", "1", "--metrics-port=0.0.0.0:9100");
+        assertEquals("0.0.0.0", settings.metricsHost);
+        assertEquals(9100, settings.metricsPort);
+        settings = NetTestApi.parseArguments("p", ":1", "-S", "1", "--metrics-port", "[::1]:9100");
+        assertEquals("::1", settings.metricsHost);
+        assertEquals(65_535, NetTestApi.parseArguments("p", ":1", "-S", "1", "--metrics-port", ":65535").metricsPort);
+    }
+
+    @Test
+    public void aSummaryPathThatIsADirectoryIsRejected() throws Exception {
+        Path directory = Files.createTempDirectory("nettest-options");
+        try {
+            assertRejected("--summary cannot write to the directory of", "p", ":1", "-S", "1", "--summary",
+                directory.toString());
+        } finally {
+            Files.delete(directory);
+        }
+        assertRejected("--metrics-port needs [<host>:]<port>", "p", ":1", "-S", "1", "--metrics-port", "h:");
+        assertRejected("--metrics-port needs [<host>:]<port>", "p", ":1", "-S", "1", "--metrics-port", "-1");
     }
 
     @Test

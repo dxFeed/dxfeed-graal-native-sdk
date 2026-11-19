@@ -5,8 +5,10 @@ package com.devexperts.qd.tools;
 
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -16,14 +18,16 @@ import sun.misc.Signal;
 /**
  * The NetTest of the dxFeed Java API: publishes generated Trade or TimeAndSale events through
  * {@link com.dxfeed.api.DXPublisher} (mode {@code p}) or receives them through a {@link com.dxfeed.api.DXFeed}
- * subscription (mode {@code c}) and prints the statistics lines of the NetTest specification.
+ * subscription (mode {@code c}), prints the statistics lines of the NetTest specification to stdout and, on request,
+ * writes the summary file and serves the Prometheus metrics.
  *
- * <p>The tool lives in QD's package to reuse the package-private parts of QD NetTest: the symbol generation of
- * {@link NetTestSide} and the working thread. It must run from one classpath with qds-tools (the all-in-one jar),
- * never as a separate jar next to {@code java -jar qds-tools.jar}.
+ * <p>The tool lives in QD's package to reuse the package-private parts of QD NetTest: its configuration and the
+ * symbol generator. It must run from one classpath with qds-tools (the all-in-one jar), never as a separate jar next
+ * to {@code java -jar qds-tools.jar}.
  *
- * <p>Exit codes: 0 after {@code --duration}, Ctrl+C or {@code --help}, 2 for invalid arguments, 1 for a failure at
- * run time (a failed start or publishing, no data, no nanosecond part). The tool calls {@link System#exit} itself
+ * <p>Exit codes: 0 after {@code --duration}, Ctrl+C or {@code --help}, 2 for invalid arguments and an unwritable
+ * summary path, 1 for a failure at run time (a failed start or publishing, a metrics port in use, no data, no
+ * nanosecond part, the summary file). The tool calls {@link System#exit} itself
  * for 1 and 2: QD's {@link Tools#main} would log a stack trace first.
  */
 @ToolSummary(
@@ -89,13 +93,21 @@ public class NetTestApi extends AbstractTool {
             "STREAM_FEED on c, as long as the consumer still receives the contract of -c.");
     private final Option duration = new OptionString(Option.EMPTY_SHORT_NAME, "duration", "<time>",
         "End the run after the time with ms, s or m (for example 30s or 7m); Ctrl+C ends it at once.");
+    private final Option warmup = new OptionString(Option.EMPTY_SHORT_NAME, "warmup", "<time>",
+        "The warm-up with ms, s or m: its intervals are left out of the totals of the summary. It starts at the " +
+            "first publishing on p and at the first received record on c.");
+    private final Option summary = new OptionString(Option.EMPTY_SHORT_NAME, "summary", "<file>",
+        "Write the JSON summary of the run (schema " + NetTestApiSummary.SCHEMA + ") to the file after the stop.");
+    private final Option metricsPort = new OptionString(Option.EMPTY_SHORT_NAME, "metrics-port", "[<host>:]<port>",
+        "Serve the Prometheus metrics at http://<host>:<port>/metrics; the host defaults to " +
+            NetTestApiCommandLine.DEFAULT_METRICS_HOST + ", port 0 takes a free port.");
 
     private Settings settings;
 
     @Override
     protected Option[] getOptions() {
         return new Option[] {symbols, connections, rateLimit, stat, name, collector, event, batch, reuse, role,
-            duration};
+            duration, warmup, summary, metricsPort};
     }
 
     /** The usage with the line of the specification version. */
@@ -171,7 +183,7 @@ public class NetTestApi extends AbstractTool {
                     if (received.getAndSet(true)) {
                         Runtime.getRuntime().halt(128 + s.getNumber());
                     }
-                    stop.request();
+                    stop.requestBySignal();
                 });
             } catch (IllegalArgumentException e) {
                 // The signal does not exist on this platform or is used by the JVM (-Xrs): the default stays.
@@ -196,9 +208,15 @@ public class NetTestApi extends AbstractTool {
         final Double rate; // p only: the total events per second, null without -r
         final long durationMillis; // 0: until Ctrl+C
         final TimePeriod statPeriod;
+        final long warmupMillis; // 0 without --warmup
+        final Path summaryPath; // null without --summary
+        final String metricsHost;
+        final int metricsPort; // -1 without --metrics-port
+        final List<String> args; // the arguments after the tool name
 
         Settings(Mode mode, NetTestConfig config, String address, EventKind event, String collector,
-            DXEndpoint.Role role, int batch, boolean reuse, Double rate, long durationMillis, TimePeriod statPeriod)
+            DXEndpoint.Role role, int batch, boolean reuse, Double rate, long durationMillis, TimePeriod statPeriod,
+            long warmupMillis, Path summaryPath, String metricsHost, int metricsPort, List<String> args)
         {
             this.mode = mode;
             this.config = config;
@@ -211,6 +229,11 @@ public class NetTestApi extends AbstractTool {
             this.rate = rate;
             this.durationMillis = durationMillis;
             this.statPeriod = statPeriod;
+            this.warmupMillis = warmupMillis;
+            this.summaryPath = summaryPath;
+            this.metricsHost = metricsHost;
+            this.metricsPort = metricsPort;
+            this.args = args;
         }
 
         boolean isProducer() {
@@ -244,7 +267,7 @@ public class NetTestApi extends AbstractTool {
             map.put("reuse_effective", isProducer() ? reuse : null);
             map.put("conflated", isConflated());
             map.put("period_ms", statPeriod.getTime());
-            map.put("warmup_ms", null);
+            map.put("warmup_ms", warmupMillis == 0 ? null : warmupMillis);
             map.put("duration_ms", durationMillis == 0 ? null : durationMillis);
             map.put("nano_time", NetTestApiSide.isNanoTime());
             map.put("isolate_arguments", Collections.emptyList());
@@ -255,9 +278,23 @@ public class NetTestApi extends AbstractTool {
     /** The request to end the run: set once by the duration, a signal or a failure. */
     static final class Stop {
         private final CountDownLatch requested = new CountDownLatch(1);
+        private volatile boolean bySignal;
 
         void request() {
             requested.countDown();
+        }
+
+        /** Requests the stop for SIGINT or SIGTERM; a stop requested before keeps its cause. */
+        void requestBySignal() {
+            if (!isRequested()) {
+                bySignal = true;
+            }
+            requested.countDown();
+        }
+
+        /** Whether a signal requested the stop. */
+        boolean isBySignal() {
+            return bySignal;
         }
 
         boolean isRequested() {

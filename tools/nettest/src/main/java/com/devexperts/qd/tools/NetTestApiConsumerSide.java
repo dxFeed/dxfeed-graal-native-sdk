@@ -11,7 +11,11 @@ import com.dxfeed.event.market.TimeAndSale;
 import com.dxfeed.event.market.Trade;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLongArray;
+import org.HdrHistogram.Recorder;
 
 /**
  * The consumer side of {@link NetTestApi}: one {@link DXEndpoint} per instance with a subscription to its slice of
@@ -44,6 +48,10 @@ class NetTestApiConsumerSide extends NetTestApiSide {
         TimeUnit.MILLISECONDS.toNanos(Long.getLong(NO_DATA_BEFORE_RECORD_PROPERTY, NO_DATA_BEFORE_RECORD_MILLIS)));
     private final boolean nanoCheck = isNanoTime();
     private final List<DXFeedSubscription<MarketEvent>> subscriptions = new ArrayList<>();
+    private final List<NetTestApiListener> listeners = new CopyOnWriteArrayList<>();
+    private final Recorder lags = NetTestApiStatistics.newLagRecorder();
+    private final AtomicLongArray lagBuckets = new AtomicLongArray(NetTestApiMetrics.LAG_BUCKET_NANOS.length + 1);
+    private final AtomicLong firstRecordEpochNanos = new AtomicLong(); // 0 before the first record
     private volatile boolean nanoChecked; // the check is over: a nanosecond part came or the check failed
     private long checkedEvents; // guarded by this
 
@@ -54,6 +62,35 @@ class NetTestApiConsumerSide extends NetTestApiSide {
     @Override
     String statisticsLabel() {
         return NetTestApiStatistics.CONSUMER_LABEL;
+    }
+
+    @Override
+    Recorder lagRecorder() {
+        return lags;
+    }
+
+    /** The warm-up of the consumer starts at the first received record, since it starts before the publisher. */
+    @Override
+    long warmupStartEpochNanos() {
+        return firstRecordEpochNanos.get();
+    }
+
+    @Override
+    long[] lagBuckets() {
+        long[] result = new long[lagBuckets.length()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = lagBuckets.get(i);
+        }
+        return result;
+    }
+
+    @Override
+    Long symbolsSeen() {
+        long seen = 0;
+        for (NetTestApiListener listener : listeners) {
+            seen += listener.symbolsSeen();
+        }
+        return seen;
     }
 
     /**
@@ -82,8 +119,11 @@ class NetTestApiConsumerSide extends NetTestApiSide {
         for (int i = 1; i <= config.instanceCount; i++) {
             DXEndpoint endpoint = createEndpoint(i);
             DXFeedSubscription<MarketEvent> subscription = endpoint.getFeed().createSubscription(type);
-            subscription.addEventListener(new NetTestApiListener(this, counters[i - 1]));
-            subscription.addSymbols(slice(getSymbols(), i, config.instanceCount));
+            List<String> slice = slice(getSymbols(), i, config.instanceCount);
+            NetTestApiListener listener = new NetTestApiListener(this, counters[i - 1], slice.size());
+            listeners.add(listener);
+            subscription.addEventListener(listener);
+            subscription.addSymbols(slice);
             subscriptions.add(subscription);
             connect(i, endpoint);
         }
@@ -119,9 +159,29 @@ class NetTestApiConsumerSide extends NetTestApiSide {
         }
     }
 
-    /** Takes the records of one listener call at {@code nowNanos} of {@link System#nanoTime}. */
-    void received(long nowNanos) {
+    /**
+     * Takes the records of one listener call at {@code nowNanos} of {@link System#nanoTime} and {@code epochNanos} of
+     * the wall clock: the first one starts the warm-up.
+     */
+    void received(long nowNanos, long epochNanos) {
         watchdog.received(nowNanos);
+        if (firstRecordEpochNanos.get() == 0) {
+            firstRecordEpochNanos.compareAndSet(0, epochNanos);
+        }
+    }
+
+    /** Records the e2e lag of an event into the histogram of the intervals. */
+    void recordLag(long lagNanos) {
+        lags.recordValue(NetTestApiStatistics.histogramValue(lagNanos));
+    }
+
+    /** Adds the events of a listener call per bucket of the metrics. */
+    void addLagBuckets(long[] counts) {
+        for (int i = 0; i < counts.length; i++) {
+            if (counts[i] != 0) {
+                lagBuckets.addAndGet(i, counts[i]);
+            }
+        }
     }
 
     /** Whether the nanosecond parts of the events still need a check. */

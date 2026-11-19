@@ -23,7 +23,7 @@ import org.junit.Test;
  */
 public class NetTestApiKitTest {
     /** The sections of {@code cli-vectors.json} that the tool implements. */
-    private static final Set<String> SECTIONS = Set.of("cli", "roles");
+    private static final Set<String> SECTIONS = Set.of("cli", "roles", "consumer", "summary", "metrics");
     /** The optional features of the specification that the tool has: none, so no -X and no --legacy. */
     private static final Set<String> FEATURES = Set.of();
 
@@ -43,16 +43,6 @@ public class NetTestApiKitTest {
         }
         assertTrue(String.join("\n", failures), failures.isEmpty());
         assertTrue("vectors checked: " + checked, checked >= 65);
-    }
-
-    @Test
-    public void theSectionsLeftForLaterAreTheOnesOfTheNextChange() {
-        // The consumer section (--warmup), the summary and the metrics are not implemented yet.
-        for (JsonNode vector : NetTestKit.read("cli-vectors.json").get("vectors")) {
-            String section = vector.get("section").asText();
-            assertTrue(section, SECTIONS.contains(section) || Set.of("consumer", "summary", "metrics")
-                .contains(section));
-        }
     }
 
     private static boolean hasFeatures(JsonNode vector) {

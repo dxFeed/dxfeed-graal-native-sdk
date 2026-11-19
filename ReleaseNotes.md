@@ -12,6 +12,15 @@
   specification: the long options take `--option=value`, a repeated option takes its last value, and the label of the
   publisher's statistics is `NetTestProducerSide` instead of `NetTestApiProducerSide`, with a line per instance also
   for one instance.
+* **\[MDAPI-576]\[GRAAL]** [NetTestApi](tools/nettest) follows the whole
+  [NetTest specification](docs/wrapper-guide/nettest.md) except the `v2` connector statistics: `--summary <file>`
+  writes the JSON summary `nettest-summary/1` with the intervals, the end-to-end lag percentiles (HdrHistogram), the
+  publishing calls, the schedule slip and the runtime, also after `no_data`, `nano_missing` or Ctrl+C;
+  `--metrics-port [<host>:]<port>` serves `/metrics` in the Prometheus text format and prints the `NetTestMetrics`
+  line; `--warmup <time>` leaves the first intervals out of the totals. With `-r` the publisher keeps one schedule of
+  whole batches and reports its slip instead of taking from QD's rate limiter. The events come from the xorshift64*
+  pools of the specification, the generated symbols keep the order of their first appearance, and the statistics
+  lines go to stdout at the multiples of the period on the wall clock, without the prefix of QD's log.
 * **\[MDAPI-575]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) gets the consumer mode of the
   [NetTest specification](docs/wrapper-guide/nettest.md): `NetTest c <address>` subscribes to the events of a producer
   through `dxfg_v4_DXFeed_createSubscription()` and prints `{*NetTestConsumerSide-<name>*}` blocks with the mean

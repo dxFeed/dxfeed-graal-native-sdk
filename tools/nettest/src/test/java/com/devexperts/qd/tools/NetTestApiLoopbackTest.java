@@ -63,7 +63,7 @@ public class NetTestApiLoopbackTest {
             @Override
             NetTestApiGeneratorThread createGenerator(int index, DXEndpoint endpoint) {
                 DXPublisher publisher = index == 2 ? new FailingPublisher() : endpoint.getPublisher();
-                return new NetTestApiGeneratorThread(index, this, qdEndpoint(endpoint), publisher);
+                return new NetTestApiGeneratorThread(index, this, publisher);
             }
         };
 

@@ -3,7 +3,6 @@
 
 package com.devexperts.qd.tools;
 
-import com.devexperts.logging.Logging;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -105,6 +104,18 @@ final class NetTestApiRuntime {
         return text.toString();
     }
 
+    /**
+     * Prints lines to stdout in one write: the lines of {@code text} are separated by {@code \n}, which becomes the
+     * platform's line break.
+     */
+    static void print(String text) {
+        String lines = text.replace("\n", System.lineSeparator()) + System.lineSeparator();
+        synchronized (System.out) {
+            System.out.print(lines);
+            System.out.flush();
+        }
+    }
+
     /** The statistics blocks of the intervals, see {@link NetTestApiStatistics#tick}. */
     interface Blocks {
         /** Ends an interval and returns its block, or {@code null} when nothing is printed for it. */
@@ -119,8 +130,6 @@ final class NetTestApiRuntime {
     static final class Reporter implements Runnable {
         static final long LAST_BLOCK_MIN_NANOS = 1_000_000_000L;
 
-        private static final Logging log = Logging.getLogging(NetTestApiRuntime.class);
-
         private final Blocks blocks;
         private final String name;
         private final Supplier<Sample> source;
@@ -130,8 +139,7 @@ final class NetTestApiRuntime {
         private boolean finished; // guarded by this
 
         Reporter(Blocks blocks, String name) {
-            // "\b" drops the thread and the category of QD's log line, as QD NetTest's statistics line does.
-            this(blocks, name, NetTestApiRuntime::read, text -> log.info("\b" + text));
+            this(blocks, name, NetTestApiRuntime::read, NetTestApiRuntime::print);
         }
 
         Reporter(Blocks blocks, String name, Supplier<Sample> source, Consumer<String> output) {

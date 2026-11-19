@@ -8,18 +8,25 @@ import com.devexperts.qd.qtp.MessageConnector;
 import com.devexperts.qd.qtp.MessageConnectorState;
 import com.devexperts.qd.qtp.QDEndpoint;
 import com.devexperts.qd.qtp.socket.ServerSocketConnector;
+import com.devexperts.qd.stats.QDStats;
+import com.devexperts.transport.stats.EndpointStats;
 import com.dxfeed.api.DXEndpoint;
 import com.dxfeed.api.impl.DXEndpointImpl;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+import org.HdrHistogram.Recorder;
 
 /**
- * What both sides of {@link NetTestApi} share: the symbols of QD NetTest ({@link NetTestSide}), one {@link DXEndpoint}
- * per instance with {@link #NANO_TIME_PROPERTY} on its builder, the statistics of the specification, the first
- * failure and the stop.
+ * What both sides of {@link NetTestApi} share: the symbols, one {@link DXEndpoint} per instance with
+ * {@link #NANO_TIME_PROPERTY} on its builder, the statistics intervals on the wall clock, the summary file, the
+ * metrics, the first failure and the stop.
  */
-abstract class NetTestApiSide extends NetTestSide {
+abstract class NetTestApiSide {
     private static final Logging log = Logging.getLogging(NetTestApiSide.class);
 
     /** The time a listening connector has to bind its port, as in the C-API NetTest. */
@@ -28,45 +35,89 @@ abstract class NetTestApiSide extends NetTestSide {
     /** The property of the nanosecond part of the event time, which the tool sets on the builder of every endpoint. */
     static final String NANO_TIME_PROPERTY = "dxscheme.nanoTime";
 
+    static final String STATUS_OK = "ok";
+    static final String STATUS_STOPPED_BY_SIGNAL = "stopped_by_signal";
     /** The status of a failure at run time other than the checks of the consumer. */
     static final String STATUS_ERROR = "error";
 
     final NetTestApi.Settings settings;
+    final NetTestConfig config;
     final NetTestApi.Stop stop;
     final NetTestApiStatistics.Counter[] counters;
-    private final String[] symbolStrings;
+    final List<MessageConnector> connectors = new CopyOnWriteArrayList<>();
+    private final List<List<MessageConnector>> instanceConnectors = new ArrayList<>();
+    private final String[] symbols;
+    private final String symbolsFailure; // why the symbols could not be read, or null
     private final List<DXEndpoint> endpoints = new ArrayList<>();
+    private final NetTestApiSummary summary;
+    private volatile List<ConnectorStatistics> connectorStatistics = Collections.emptyList();
+    private NetTestApiMetrics metrics; // with --metrics-port, once bound
     private NetTestApiRuntime.Reporter reporter; // set once the endpoints are up
+    private Thread ticker;
     private String failureStatus; // the status of the first failure, guarded by this
     private String failure; // the text of the first failure, guarded by this
     private boolean closed; // guarded by this
+    private boolean finished; // guarded by this
 
     NetTestApiSide(NetTestApi.Settings settings, NetTestApi.Stop stop) {
-        super(settings.config);
         this.settings = settings;
+        this.config = settings.config;
         this.stop = stop;
-        // Short symbols are cipher-coded: SymbolList keeps only the cipher of them.
-        symbolStrings = new String[symbols.size()];
-        for (int i = 0; i < symbolStrings.length; i++) {
-            String symbol = symbols.getSymbol(i);
-            symbolStrings[i] = symbol != null ? symbol : SCHEME.getCodec().decode(symbols.getCipher(i));
+        String[] loaded;
+        String loadFailure = null;
+        try {
+            loaded = config.ipfPath == null ? NetTestApiSymbols.generated(config.totalSymbols) :
+                NetTestApiSymbols.fromFile(config.ipfPath, config.totalSymbols);
+        } catch (IOException | RuntimeException e) {
+            loaded = new String[0];
+            loadFailure = "cannot read the symbols of '" + config.ipfPath + "': " + e.getMessage();
         }
-        if (symbolStrings.length == 0) {
-            throw new IllegalArgumentException("no symbols");
-        }
+        this.symbols = loaded;
+        this.symbolsFailure = loadFailure;
         counters = new NetTestApiStatistics.Counter[config.instanceCount];
         for (int i = 0; i < counters.length; i++) {
             counters[i] = new NetTestApiStatistics.Counter();
+            instanceConnectors.add(new CopyOnWriteArrayList<>());
         }
+        summary = new NetTestApiSummary(settings, this);
     }
 
-    /** The decoded symbols of all instances. */
+    /** The summary of the run. */
+    NetTestApiSummary summary() {
+        return summary;
+    }
+
+    /** The symbols of all instances, in the order of the specification. */
     String[] getSymbols() {
-        return symbolStrings;
+        return symbols;
     }
 
     /** The label of the statistics line of the side. */
     abstract String statisticsLabel();
+
+    /** Creates, connects and checks the endpoints and starts the work. Throws when an endpoint fails. */
+    abstract void start();
+
+    /** The epoch nanoseconds where the warm-up starts, 0 before it starts. */
+    abstract long warmupStartEpochNanos();
+
+    /** The recorder of the e2e lags on the consumer, null on the producer. */
+    Recorder lagRecorder() {
+        return null;
+    }
+
+    /** The schedule of the producer, null on the consumer. */
+    NetTestApiSchedule schedule() {
+        return null;
+    }
+
+    /**
+     * The e2e lags of the consumer per bucket of {@link NetTestApiMetrics#LAG_BUCKET_NANOS}, the last one for
+     * {@code +Inf}; null on the producer.
+     */
+    long[] lagBuckets() {
+        return null;
+    }
 
     /**
      * Runs the test until {@code --duration} ends, a stop is requested or a failure.
@@ -74,12 +125,17 @@ abstract class NetTestApiSide extends NetTestSide {
      * @return {@code null} on success, or the reason of the failure.
      */
     String run() {
+        summary.started();
         try {
+            if (symbolsFailure != null) {
+                throw new IllegalStateException(symbolsFailure);
+            }
+            bindMetrics();
             start();
         } catch (RuntimeException e) {
-            log.error("Failed to start", e);
-            close();
-            return e.getMessage() != null ? e.getMessage() : e.toString();
+            String text = e.getMessage() != null ? e.getMessage() : e.toString();
+            fail(STATUS_ERROR, text, e instanceof IllegalStateException ? null : e);
+            return finish();
         }
         try {
             awaitEnd();
@@ -89,27 +145,78 @@ abstract class NetTestApiSide extends NetTestSide {
         return finish();
     }
 
+    /** Binds the port of {@code --metrics-port} and prints the metrics line; a port in use fails the start. */
+    void bindMetrics() {
+        if (settings.metricsPort < 0) {
+            return;
+        }
+        NetTestApiMetrics bound;
+        try {
+            bound = NetTestApiMetrics.start(settings.metricsHost, settings.metricsPort, this);
+        } catch (IOException e) {
+            throw new IllegalStateException("--metrics-port cannot bind " + settings.metricsHost + ":" +
+                settings.metricsPort + ": " + e.getMessage(), e);
+        }
+        synchronized (this) {
+            metrics = bound;
+        }
+        NetTestApiRuntime.print("{*NetTestMetrics-" + config.name + "*} " + bound.url());
+    }
+
     /** Waits for the end of the run: {@code --duration} or a stop. */
     void awaitEnd() throws InterruptedException {
         stop.await(settings.durationMillis);
     }
 
     /**
-     * Stops the work of the side, logs the last statistics block and closes the endpoints.
+     * Stops the work of the side, prints the last statistics block, closes the endpoints and writes the summary file;
+     * the first call does it, the next ones return the failure.
      *
      * @return {@code null} without a failure, or the reason of the first failure.
      */
     String finish() {
         stop.request();
+        synchronized (this) {
+            if (finished) {
+                return failure;
+            }
+            finished = true;
+        }
         stopWork();
+        Thread tickerThread;
         NetTestApiRuntime.Reporter lastReporter;
         synchronized (this) {
+            tickerThread = ticker;
             lastReporter = reporter;
+        }
+        if (tickerThread != null) {
+            tickerThread.interrupt();
+            try {
+                tickerThread.join(TimeUnit.SECONDS.toMillis(5));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
         if (lastReporter != null) {
             lastReporter.finish();
         }
+        readConnectorStatistics();
         close();
+        summary.ended();
+        if (settings.summaryPath != null) {
+            try {
+                summary.write(settings.summaryPath);
+            } catch (IOException | RuntimeException e) {
+                fail(STATUS_ERROR, "cannot write the summary file '" + settings.summaryPath + "': " + e, null);
+            }
+        }
+        NetTestApiMetrics server;
+        synchronized (this) {
+            server = metrics;
+        }
+        if (server != null) {
+            server.stop();
+        }
         return getFailure();
     }
 
@@ -124,6 +231,14 @@ abstract class NetTestApiSide extends NetTestSide {
     /** The status of the first failure ({@code error}, {@code no_data}, {@code nano_missing}), or {@code null}. */
     synchronized String getFailureStatus() {
         return failureStatus;
+    }
+
+    /** The status of the run for the summary: the failure, the signal or {@code ok}. */
+    synchronized String status() {
+        if (failureStatus != null) {
+            return failureStatus;
+        }
+        return stop.isBySignal() ? STATUS_STOPPED_BY_SIGNAL : STATUS_OK;
     }
 
     /** Records the first failure and requests the stop. */
@@ -148,10 +263,7 @@ abstract class NetTestApiSide extends NetTestSide {
         return new ArrayList<>(endpoints);
     }
 
-    /**
-     * Creates the endpoint of the instance with {@link #NANO_TIME_PROPERTY} on its builder and keeps it for the
-     * close; the statistics period goes to the first one.
-     */
+    /** Creates the endpoint of the instance with {@link #NANO_TIME_PROPERTY} on its builder and keeps it for the close. */
     final DXEndpoint createEndpoint(int index) {
         DXEndpoint endpoint = endpointBuilder(index).build();
         synchronized (this) {
@@ -166,14 +278,10 @@ abstract class NetTestApiSide extends NetTestSide {
 
     /** The builder of the endpoint of the instance; a test may change its properties. */
     DXEndpoint.Builder endpointBuilder(int index) {
-        DXEndpoint.Builder builder = DXEndpoint.newBuilder()
+        return DXEndpoint.newBuilder()
             .withRole(settings.role)
             .withName(config.name + "." + index)
             .withProperty(NANO_TIME_PROPERTY, endpointNanoTime(System.getProperty(NANO_TIME_PROPERTY)));
-        if (index == 1) {
-            builder.withProperty("monitoring.stat", settings.statPeriod.toString());
-        }
-        return builder;
     }
 
     /** Connects the endpoint of the instance to the address and waits until a listening connector has its port. */
@@ -182,17 +290,53 @@ abstract class NetTestApiSide extends NetTestSide {
         QDEndpoint qdEndpoint = qdEndpoint(endpoint);
         awaitServerSockets(config.name + "." + index, qdEndpoint);
         connectors.addAll(qdEndpoint.getConnectors());
+        instanceConnectors.get(index - 1).addAll(qdEndpoint.getConnectors());
     }
 
-    /** Starts the statistics of the specification as a monitoring task of the first endpoint. */
+    /**
+     * Starts the statistics: a thread that ends an interval at each multiple of the period on the wall clock. The
+     * first tick only starts the count.
+     */
     void startStatistics() {
         NetTestApiStatistics statistics = new NetTestApiStatistics(statisticsLabel(), config.name, counters,
-            this::connectionCount);
-        NetTestApiRuntime.Reporter created = new NetTestApiRuntime.Reporter(statistics::tick, config.name);
+            this::connectionCount, lagRecorder(), schedule(), TimeUnit.MILLISECONDS.toNanos(settings.warmupMillis),
+            this::warmupStartEpochNanos);
+        NetTestApiRuntime.Reporter created = new NetTestApiRuntime.Reporter(minNanos -> {
+            NetTestApiStatistics.Interval interval = statistics.tick(minNanos);
+            readConnectorStatistics();
+            if (interval == null) {
+                return null;
+            }
+            summary.add(interval);
+            return interval.text;
+        }, config.name);
+        long period = settings.statPeriod.getTime();
+        Thread thread = new Thread(() -> tick(created, period), "NetTestApi-statistics-" + config.name);
+        thread.setDaemon(true);
         synchronized (this) {
             reporter = created;
+            ticker = thread;
         }
-        qdEndpoint(getEndpoints().get(0)).registerMonitoringTask(created);
+        thread.start();
+    }
+
+    // Runs the reporter at each multiple of the period on the wall clock until the stop.
+    private void tick(NetTestApiRuntime.Reporter target, long periodMillis) {
+        while (!stop.isRequested() && !Thread.currentThread().isInterrupted()) {
+            long now = System.currentTimeMillis();
+            long next = (now / periodMillis + 1) * periodMillis;
+            for (long left = next - System.currentTimeMillis(); left > 0; left = next - System.currentTimeMillis()) {
+                LockSupport.parkNanos(this, TimeUnit.MILLISECONDS.toNanos(left));
+                if (stop.isRequested() || Thread.currentThread().isInterrupted()) {
+                    return;
+                }
+            }
+            try {
+                target.run();
+            } catch (RuntimeException e) {
+                log.error("Failed to report the statistics", e);
+            }
+        }
     }
 
     /** The open connections of the connectors of all instances. */
@@ -202,6 +346,34 @@ abstract class NetTestApiSide extends NetTestSide {
             count += connector.getConnectionCount();
         }
         return count;
+    }
+
+    /** The open connections of the connectors of the instance {@code index} (from 1). */
+    int connectionCount(int index) {
+        int count = 0;
+        for (MessageConnector connector : instanceConnectors.get(index - 1)) {
+            count += connector.getConnectionCount();
+        }
+        return count;
+    }
+
+    /** The statistics v1 of the connectors, read at the last tick or at the end of the run. */
+    List<ConnectorStatistics> connectorStatistics() {
+        return connectorStatistics;
+    }
+
+    // Reads the connector statistics at most once per interval and at the end.
+    private void readConnectorStatistics() {
+        List<ConnectorStatistics> read = new ArrayList<>();
+        for (MessageConnector connector : connectors) {
+            read.add(ConnectorStatistics.of(connector));
+        }
+        connectorStatistics = read;
+    }
+
+    /** The symbols received so far, or {@code null} on the producer. */
+    Long symbolsSeen() {
+        return null;
     }
 
     /**
@@ -268,15 +440,39 @@ abstract class NetTestApiSide extends NetTestSide {
         log.info("Closed " + toClose.size() + " endpoint(s)");
     }
 
-    // NetTestSide.start() is replaced, so these factories of QD NetTest are never called.
+    /** The statistics v1 of one connector (NetTest specification, section "Connector statistics"). */
+    static final class ConnectorStatistics {
+        final String address;
+        final long readBytes;
+        final long writtenBytes;
+        final long readDataRecords;
+        final long writtenDataRecords;
+        final long activeConnections;
+        final long closedConnections;
 
-    @Override
-    protected void createDistributor(QDEndpoint endpoint, int index) {
-        throw new UnsupportedOperationException();
-    }
+        ConnectorStatistics(String address, long readBytes, long writtenBytes, long readDataRecords,
+            long writtenDataRecords, long activeConnections, long closedConnections)
+        {
+            this.address = address;
+            this.readBytes = readBytes;
+            this.writtenBytes = writtenBytes;
+            this.readDataRecords = readDataRecords;
+            this.writtenDataRecords = writtenDataRecords;
+            this.activeConnections = activeConnections;
+            this.closedConnections = closedConnections;
+        }
 
-    @Override
-    protected void createAgent(QDEndpoint endpoint, int index) {
-        throw new UnsupportedOperationException();
+        static ConnectorStatistics of(MessageConnector connector) {
+            EndpointStats endpointStats = connector.retrieveCompleteEndpointStats();
+            QDStats stats = connector.getStats();
+            return new ConnectorStatistics(connector.getAddress(), endpointStats.getReadBytes(),
+                endpointStats.getWrittenBytes(), value(stats, QDStats.SValue.IO_DATA_READ_RECORDS),
+                value(stats, QDStats.SValue.IO_DATA_WRITE_RECORDS), endpointStats.getActiveConnectionCount(),
+                endpointStats.getClosedConnectionCount());
+        }
+
+        private static long value(QDStats stats, QDStats.SValue value) {
+            return stats == null ? 0 : Math.max(0, stats.getValue(value));
+        }
     }
 }

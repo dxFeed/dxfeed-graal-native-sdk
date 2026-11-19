@@ -102,7 +102,7 @@ public class NetTestApiConsumerTest {
     public void theListenerSumsTheSignedLagOfEachEvent() {
         NetTestApiConsumerSide side = new NetTestApiConsumerSide(
             NetTestApi.parseArguments("c", "127.0.0.1:1", "-S", "10"), new NetTestApi.Stop());
-        NetTestApiListener listener = new NetTestApiListener(side, side.counters[0]);
+        NetTestApiListener listener = new NetTestApiListener(side, side.counters[0], 10);
         long now = System.currentTimeMillis() * 1_000_000;
         Trade past = trade(now - 3_000_000_123L); // 3 s ago, with a nanosecond part
         Trade future = trade(now + 60_000_000_000L); // a minute ahead: a negative lag
@@ -111,13 +111,24 @@ public class NetTestApiConsumerTest {
         listener.eventsReceived(List.of(past, future));
         long after = (System.currentTimeMillis() + 1) * 1_000_000;
 
-        long[] value = new long[2];
+        long[] value = new long[NetTestApiStatistics.Counter.SIZE];
         side.counters[0].read(value);
-        assertEquals(2, value[0]);
+        assertEquals(2, value[NetTestApiStatistics.Counter.RECORDS]);
         // The clock is read once: the sum is 2 * now - (past + future) for one now between before and after.
-        long sum = value[1] + past.getTimeNanos() + future.getTimeNanos();
-        assertTrue(value[1] + " ns", sum >= 2 * before && sum <= 2 * after);
-        assertTrue("a negative lag enters with its sign: " + value[1], value[1] < 0);
+        long lagSum = value[NetTestApiStatistics.Counter.NANOS];
+        long sum = lagSum + past.getTimeNanos() + future.getTimeNanos();
+        assertTrue(lagSum + " ns", sum >= 2 * before && sum <= 2 * after);
+        assertTrue("a negative lag enters with its sign: " + lagSum, lagSum < 0);
+        assertEquals(1, value[NetTestApiStatistics.Counter.NEGATIVE]);
+        long maxLag = side.counters[0].takeMax();
+        assertTrue("the largest lag is the one of the past event: " + maxLag,
+            maxLag >= 3_000_000_123L && maxLag <= after - past.getTimeNanos());
+        // The negative lag enters the histogram and the first bucket of the metrics as 0.
+        assertEquals(1, side.lagBuckets()[0]);
+        assertEquals(1, side.lagBuckets()[NetTestApiMetrics.LAG_BUCKET_NANOS.length]);
+        assertEquals(2, side.lagRecorder().getIntervalHistogram().getTotalCount());
+        assertEquals(1, listener.symbolsSeen());
+        assertTrue("the first record starts the warm-up", side.warmupStartEpochNanos() >= before);
     }
 
     @Test
@@ -125,7 +136,7 @@ public class NetTestApiConsumerTest {
         NetTestApi.Stop stop = new NetTestApi.Stop();
         NetTestApiConsumerSide side = new NetTestApiConsumerSide(
             NetTestApi.parseArguments("c", "127.0.0.1:1", "-S", "10"), stop);
-        NetTestApiListener listener = new NetTestApiListener(side, side.counters[0]);
+        NetTestApiListener listener = new NetTestApiListener(side, side.counters[0], 10);
         List<MarketEvent> events = new ArrayList<>();
         for (int i = 0; i < 1_100; i++) {
             // Only the 1051st event has a nanosecond part: the first 1000 have none.
@@ -156,7 +167,7 @@ public class NetTestApiConsumerTest {
         {
             @Override
             NetTestApiGeneratorThread createGenerator(int index, DXEndpoint endpoint) {
-                return new NetTestApiGeneratorThread(index, this, qdEndpoint(endpoint), endpoint.getPublisher()) {
+                return new NetTestApiGeneratorThread(index, this, endpoint.getPublisher()) {
                     @Override
                     long epochNanos() {
                         return super.epochNanos() - INJECTED_DELAY_NANOS;

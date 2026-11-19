@@ -3,9 +3,12 @@
 
 package com.devexperts.qd.tools;
 
-import com.devexperts.qd.util.RateLimiter;
 import com.devexperts.util.TimePeriod;
 import com.dxfeed.api.DXEndpoint;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +30,8 @@ final class NetTestApiCommandLine {
     static final int DEFAULT_BATCH = 100;
     static final TimePeriod DEFAULT_STAT_PERIOD = TimePeriod.valueOf("10s");
     static final String DEFAULT_NAME = "NetTest";
+    static final String DEFAULT_METRICS_HOST = "127.0.0.1";
+    static final int MAX_PORT = 65_535;
 
     // The options with a value: every name maps to the key of its value.
     private static final Map<String, String> VALUE_OPTIONS = new HashMap<>();
@@ -36,7 +41,8 @@ final class NetTestApiCommandLine {
     static {
         for (String[] names : new String[][] {
             {"-S", "--symbols"}, {"-C", "--connections"}, {"-r", "--rate-limit"}, {"-s", "--stat"},
-            {"-n", "--name"}, {"-c", "--collector"}, {"--event"}, {"--batch"}, {"--role"}, {"--duration"}})
+            {"-n", "--name"}, {"-c", "--collector"}, {"--event"}, {"--batch"}, {"--role"}, {"--duration"},
+            {"--warmup"}, {"--summary"}, {"--metrics-port"}})
         {
             for (String name : names) {
                 VALUE_OPTIONS.put(name, names[0]);
@@ -44,6 +50,7 @@ final class NetTestApiCommandLine {
         }
     }
 
+    private final List<String> args;
     private final List<String> positional = new ArrayList<>();
     private final Map<String, Given> values = new HashMap<>();
     private final List<String[]> properties = new ArrayList<>();
@@ -61,7 +68,9 @@ final class NetTestApiCommandLine {
         }
     }
 
-    private NetTestApiCommandLine() {}
+    private NetTestApiCommandLine(String[] args) {
+        this.args = List.of(args);
+    }
 
     /** Whether the arguments ask for the usage: {@code --help} anywhere outside the value of an option. */
     static boolean isHelp(String... args) {
@@ -84,7 +93,7 @@ final class NetTestApiCommandLine {
      * @throws BadToolParametersException with the text of the specification for the first invalid argument.
      */
     static NetTestApi.Settings parse(String... args) {
-        NetTestApiCommandLine commandLine = new NetTestApiCommandLine();
+        NetTestApiCommandLine commandLine = new NetTestApiCommandLine(args);
         commandLine.tokenize(args);
         NetTestApi.Settings settings = commandLine.validate();
         for (String[] property : commandLine.properties) {
@@ -193,7 +202,6 @@ final class NetTestApiCommandLine {
         double rate = 0;
         if (rateGiven != null) {
             rate = parseRate(rateGiven);
-            config.rateLimiters = Map.of("*", RateLimiter.of(rate));
         }
         Given statGiven = values.get("-s");
         TimePeriod statPeriod = statGiven == null ? DEFAULT_STAT_PERIOD : TimePeriod.valueOf(parseTime(statGiven));
@@ -210,11 +218,29 @@ final class NetTestApiCommandLine {
         NetTestApi.EventKind event = parseEvent(values.get("--event"));
         Given durationGiven = values.get("--duration");
         long durationMillis = durationGiven == null ? 0 : parseTime(durationGiven);
+        Given warmupGiven = values.get("--warmup");
+        long warmupMillis = warmupGiven == null ? 0 : parseTime(warmupGiven);
+        Given summaryGiven = values.get("--summary");
+        Path summaryPath = summaryGiven == null ? null : parseSummaryPath(summaryGiven);
+        Given metricsGiven = values.get("--metrics-port");
+        String metricsHost = DEFAULT_METRICS_HOST;
+        int metricsPort = -1;
+        if (metricsGiven != null) {
+            String value = metricsGiven.value;
+            int colon = value.lastIndexOf(':');
+            String host = colon < 0 ? "" : value.substring(0, colon);
+            if (host.startsWith("[") && host.endsWith("]")) {
+                host = host.substring(1, host.length() - 1);
+            }
+            metricsHost = host.isEmpty() ? DEFAULT_METRICS_HOST : host;
+            metricsPort = parsePort(metricsGiven, value.substring(colon + 1));
+        }
 
         String collector = parseCollector(values.get("-c"));
         DXEndpoint.Role role = parseRole(values.get("--role"), mode, collector, event);
         return new NetTestApi.Settings(mode, config, address, event, collector, role, batch, reuse,
-            rateGiven == null ? null : rate, durationMillis, statPeriod);
+            rateGiven == null ? null : rate, durationMillis, statPeriod, warmupMillis, summaryPath, metricsHost,
+            metricsPort, args);
     }
 
     private static void parseSymbols(String value, NetTestConfig config) {
@@ -306,6 +332,31 @@ final class NetTestApiCommandLine {
             throw error(given.name + " needs a positive time with ms, s or m (for example 10s): '" + value + "'");
         }
         return time * multiplier;
+    }
+
+    // The directory of the file must exist and be writable; the file itself is written after the run.
+    private static Path parseSummaryPath(Given given) {
+        Path path;
+        try {
+            path = given.value.isEmpty() ? null : Paths.get(given.value).toAbsolutePath();
+        } catch (InvalidPathException e) {
+            path = null;
+        }
+        Path directory = path == null ? null : path.getParent();
+        if (directory == null || !Files.isDirectory(directory) || !Files.isWritable(directory) ||
+            Files.isDirectory(path))
+        {
+            throw error(given.name + " cannot write to the directory of '" + given.value + "'");
+        }
+        return path;
+    }
+
+    private static int parsePort(Given given, String port) {
+        if (!isDigits(port) || port.length() > 5 || Integer.parseInt(port) > MAX_PORT) {
+            throw error(given.name + " needs [<host>:]<port>, where <port> is a number from 0 to " + MAX_PORT +
+                ": '" + given.value + "'");
+        }
+        return Integer.parseInt(port);
     }
 
     private static NetTestApi.EventKind parseEvent(Given given) {

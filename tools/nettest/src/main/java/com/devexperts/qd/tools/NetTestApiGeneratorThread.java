@@ -3,66 +3,55 @@
 
 package com.devexperts.qd.tools;
 
-import com.devexperts.qd.qtp.QDEndpoint;
-import com.devexperts.qd.util.RateLimiter;
 import com.dxfeed.api.DXPublisher;
 import com.dxfeed.event.market.MarketEvent;
 import com.dxfeed.event.market.TimeAndSale;
 import com.dxfeed.event.market.Trade;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SplittableRandom;
 
 /**
- * The generator of one {@link NetTestApi} instance: publishes batches of Trade or TimeAndSale events and counts them
- * in the statistics counter of its instance.
+ * The generator of one {@link NetTestApi} instance: publishes batches of Trade or TimeAndSale events on the schedule of
+ * the side and counts them in the statistics counter of its instance.
  *
- * <p>All events of a batch carry the time of the batch and consecutive sequences, so that a QD NetTest consumer
- * computes the business lag. The lag of this side is the time from building a batch to the return of
- * {@link DXPublisher#publishEvents}, weighted by the events of the batch; the wait in the rate limiter is not part of
- * it.
+ * <p>Each batch, as the NetTest specification orders it (section "Rate limit and schedule"): wait for the batch's time
+ * on the schedule, read the clock once (the time of every event of the batch and the reference of the slip), fill the
+ * batch from the pool (section "Events and pools"), publish it through {@link DXPublisher#publishEvents} and read the
+ * elapsed time. The lag of this side and the publishing time cover the fill and the call only.
  */
-class NetTestApiGeneratorThread extends NetTestWorkingThread {
+class NetTestApiGeneratorThread extends Thread {
     /** The largest sequence of Trade and TimeAndSale (22 bits). */
     static final int MAX_SEQUENCE = (1 << 22) - 1;
 
-    private static final int VALUE_TABLE_SIZE = 1 << 12; // a power of two
-    private static final long NANOS_PER_SECOND = 1_000_000_000L;
-
+    final int index;
     private final NetTestApiProducerSide side;
     private final DXPublisher publisher;
     private final boolean timeAndSale;
     private final boolean reuse;
     private final int batch;
     private final String[] symbols;
-    private final MarketEvent[] pool; // one event per symbol, republished in place; only with --reuse
-    private final double[] prices = new double[VALUE_TABLE_SIZE];
-    private final long[] sizes = new long[VALUE_TABLE_SIZE];
-    private final SplittableRandom random;
+    private final MarketEvent[] pool; // one event per symbol, stamped in place; only with --reuse
+    private final NetTestApiPool random;
     private final List<MarketEvent> events;
     private final NetTestApiStatistics.Counter counter;
     private int sequence;
-    private int valueIndex;
 
-    NetTestApiGeneratorThread(int index, NetTestApiProducerSide side, QDEndpoint endpoint, DXPublisher publisher) {
-        super("NetTestApi", index, side, endpoint);
+    NetTestApiGeneratorThread(int index, NetTestApiProducerSide side, DXPublisher publisher) {
+        super("NetTestApi-" + side.config.name + "." + index);
+        setDaemon(true);
+        this.index = index;
         this.side = side;
         this.publisher = publisher;
         this.timeAndSale = side.settings.event == NetTestApi.EventKind.TIME_AND_SALE;
         this.reuse = side.settings.reuse;
         this.batch = side.settings.batch;
         this.symbols = side.getSymbols();
-        this.random = new SplittableRandom(index);
+        this.random = new NetTestApiPool(index, symbols.length);
         this.pool = reuse ? new MarketEvent[symbols.length] : null;
         if (reuse) {
             for (int i = 0; i < symbols.length; i++) {
                 pool[i] = newEvent(symbols[i]);
             }
-        }
-        for (int i = 0; i < VALUE_TABLE_SIZE; i++) {
-            prices[i] = (10_000 + random.nextInt(990_000)) / 100.0; // 100.00 .. 9999.99
-            sizes[i] = 1 + random.nextInt(1_000);
         }
         this.events = new ArrayList<>(batch);
         this.counter = side.counters[index - 1];
@@ -70,12 +59,16 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
 
     @Override
     public void run() {
+        NetTestApiSchedule schedule = side.schedule;
         try {
             while (!side.stop.isRequested() && !isInterrupted()) {
-                int count = acquire();
+                long due = schedule.grant();
+                schedule.awaitDue(due);
                 long start = System.nanoTime();
-                publisher.publishEvents(fill(count, epochNanos()));
-                record(count, System.nanoTime() - start);
+                long time = epochNanos();
+                schedule.recordSlip(due, start);
+                publish(fill(batch, time));
+                record(batch, System.nanoTime() - start);
             }
         } catch (InterruptedException e) {
             // stopped
@@ -84,41 +77,34 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
         }
     }
 
-    /** Takes up to one batch of events from the shared rate limit, waiting for at least one. */
-    private int acquire() throws InterruptedException {
-        RateLimiter limiter = side.rateLimiter;
-        if (limiter == null) {
-            return batch;
-        }
-        synchronized (limiter) {
-            int count = (int) Math.min(batch, limiter.availableOrWait());
-            limiter.reportConsumed(count);
-            return count;
-        }
+    /** Publishes a batch; a test may slow it down. */
+    void publish(List<MarketEvent> batchEvents) {
+        publisher.publishEvents(batchEvents);
     }
 
     /**
-     * Fills the next batch: {@code count} events of random symbols, all with the time {@code timeNanos} and
-     * consecutive sequences.
+     * Fills the next batch: {@code count} events, each with one draw of the pool for its symbol and its row, all with
+     * the time {@code timeNanos} and consecutive sequences.
      */
     List<MarketEvent> fill(int count, long timeNanos) {
         events.clear();
         for (int i = 0; i < count; i++) {
-            int symbol = symbols.length == 1 ? 0 : random.nextInt(symbols.length);
+            long r = random.next();
+            int symbol = random.symbolIndex(r);
+            int row = NetTestApiPool.row(r);
             MarketEvent event = reuse ? pool[symbol] : newEvent(symbols[symbol]);
-            int value = valueIndex++ & (VALUE_TABLE_SIZE - 1);
             if (timeAndSale) {
                 TimeAndSale timeAndSaleEvent = (TimeAndSale) event;
                 timeAndSaleEvent.setTimeNanos(timeNanos);
                 timeAndSaleEvent.setSequence(sequence);
-                timeAndSaleEvent.setPrice(prices[value]);
-                timeAndSaleEvent.setSize(sizes[value]);
+                timeAndSaleEvent.setPrice(random.price(row));
+                timeAndSaleEvent.setSizeAsDouble(random.size(row));
             } else {
                 Trade trade = (Trade) event;
                 trade.setTimeNanos(timeNanos);
                 trade.setSequence(sequence);
-                trade.setPrice(prices[value]);
-                trade.setSize(sizes[value]);
+                trade.setPrice(random.price(row));
+                trade.setSizeAsDouble(random.size(row));
             }
             sequence = (sequence + 1) & MAX_SEQUENCE;
             events.add(event);
@@ -131,9 +117,9 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
         this.sequence = sequence & MAX_SEQUENCE;
     }
 
-    /** Counts a published batch of {@code count} events that took {@code nanos}, weighted by its events. */
+    /** Counts a published batch of {@code count} events whose fill and call took {@code nanos}. */
     void record(int count, long nanos) {
-        counter.add(count, nanos * count);
+        counter.addBatch(count, nanos);
     }
 
     private MarketEvent newEvent(String symbol) {
@@ -142,7 +128,6 @@ class NetTestApiGeneratorThread extends NetTestWorkingThread {
 
     /** The time of the next batch in nanoseconds since the epoch; a test may shift it. */
     long epochNanos() {
-        Instant now = Instant.now();
-        return now.getEpochSecond() * NANOS_PER_SECOND + now.getNano();
+        return NetTestApiClock.epochNanos();
     }
 }

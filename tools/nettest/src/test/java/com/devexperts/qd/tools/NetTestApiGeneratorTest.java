@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Test;
 
-/** The batches and the statistics of the generator (KTD6 of the plan), without endpoints. */
+/** The batches and the statistics of the generator, without endpoints. */
 public class NetTestApiGeneratorTest {
     private static final long TIME_NANOS = 1_700_000_000_123_456_789L;
 
@@ -67,17 +67,12 @@ public class NetTestApiGeneratorTest {
     }
 
     @Test
-    public void cipherCodedSymbolsArePublishedAsStrings() {
+    public void theEventsCarryTheGeneratedSymbols() {
         NetTestApiProducerSide side = side("p", ":1", "-S", "1000");
-        boolean anyCipher = false;
-        for (int i = 0; i < side.symbols.size(); i++) {
-            anyCipher |= side.symbols.getSymbol(i) == null;
-        }
-        assertTrue("QD's generated symbols include short cipher-coded ones", anyCipher);
         Set<String> symbols = new HashSet<>(Arrays.asList(side.getSymbols()));
         assertEquals(1000, symbols.size());
 
-        List<MarketEvent> batch = new NetTestApiGeneratorThread(1, side, null, null).fill(2000, TIME_NANOS);
+        List<MarketEvent> batch = new NetTestApiGeneratorThread(1, side, null).fill(2000, TIME_NANOS);
 
         for (MarketEvent event : batch) {
             assertNotNull(event.getEventSymbol());
@@ -110,7 +105,7 @@ public class NetTestApiGeneratorTest {
     @Test
     public void statisticsAreRecordWeightedAndKeepSubMillisecondBatches() {
         NetTestApiProducerSide side = side("p", ":1", "-S", "1");
-        NetTestApiGeneratorThread generator = new NetTestApiGeneratorThread(1, side, null, null);
+        NetTestApiGeneratorThread generator = new NetTestApiGeneratorThread(1, side, null);
         long[] value = new long[2];
 
         generator.record(10, 300_000); // 0.3 ms
@@ -132,7 +127,7 @@ public class NetTestApiGeneratorTest {
     }
 
     private static NetTestApiGeneratorThread generator(String... args) {
-        return new NetTestApiGeneratorThread(1, side(args), null, null);
+        return new NetTestApiGeneratorThread(1, side(args), null);
     }
 
     private static NetTestApiProducerSide side(String... args) {
