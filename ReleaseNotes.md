@@ -1,3 +1,8 @@
+* **\[MDAPI-602]\[GRAAL]** The README explains the LeakSanitizer reports inside the SDK at the exit of a process that
+  does not tear the isolate down (the memory of the isolate's runtime, up to about 11 KB, which does not grow), and the
+  two ways for sanitizer tests: tear the isolate down, or suppress `leak:libDxFeedGraalNativeSdk`, which also hides the
+  leaks in callbacks and unreleased handles. See [LeakSanitizer](README.md#leaksanitizer).
+
 ## v3.18.0
 
 * **\[MDAPI-577]\[GRAAL]** [NetTest](src/main/c/src/apps/NetTest) writes the JSON summary of the

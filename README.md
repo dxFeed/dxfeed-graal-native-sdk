@@ -41,6 +41,7 @@ into your projects.
   * [Event queue](#event-queue)
   * [Message connectors](#message-connectors)
   * [Shutdown](#shutdown)
+  * [LeakSanitizer](#leaksanitizer)
   * [Network activity](#network-activity)
   * [Deserialization](#deserialization)
 - [Documentation](#documentation)
@@ -809,6 +810,30 @@ for them forever while any endpoint is open. Before tearing down the isolate (or
 
 To find the threads that block the tear-down, pass `-XX:TearDownWarningSeconds=<seconds>` in
 `graal_create_isolate_params_t.argv` (the debug builds use 10 seconds by default).
+
+### LeakSanitizer
+
+A process that exits without tearing the isolate down gets LeakSanitizer reports inside `libDxFeedGraalNativeSdk`:
+up to about 11 KB in a few blocks (measured on Linux x64). They are not leaks. The blocks belong to the runtime of the
+isolate, and the pointers to them are in the Java heap and the image heap, which the isolate maps itself; LSan does not
+scan that memory. The blocks are:
+
+- the heap size parameters (128 bytes) and the nodes of the heap address space (56 bytes each);
+- the cached temporary direct buffers of the JDK, 8 KB and 2 KB, filled by the jvmstat thread;
+- about 140 bytes for each thread that is still attached at exit (its parker).
+
+Their total does not grow with the threads that attach and detach or with the endpoints, and after
+`graal_tear_down_isolate` LSan reports none of them.
+
+For the sanitizer tests of an application or a wrapper, either:
+
+- tear the isolate down before the exit, as [Shutdown](#shutdown) describes. Nothing then needs to be suppressed, and
+  LSan reports the leaks of the calling code, including the handles that are never released
+  (`dxfg_v4_JavaObjectHandler_release`);
+- or suppress the library: `leak:libDxFeedGraalNativeSdk` in the file of `LSAN_OPTIONS=suppressions=<file>`. LSan
+  matches a suppression against every frame of the stack, so this one also hides the leaks of the calling code in the
+  listeners and other callbacks that the SDK calls, and the handles that are never released. The release libraries have
+  no symbols of their internal code, so a narrower suppression is not possible.
 
 ### Network activity
 
