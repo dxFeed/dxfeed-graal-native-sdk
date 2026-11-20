@@ -271,14 +271,6 @@
       "type": "com.devexperts.io.ChunkPool"
     },
     {
-      "type": "com.devexperts.io.SerialClassContext",
-      "fields": [
-        {
-          "name": "defaultSerialContextMap"
-        }
-      ]
-    },
-    {
       "type": "com.devexperts.io.StreamCompression",
       "methods": [
         {
@@ -919,6 +911,10 @@
           "parameterTypes": []
         },
         {
+          "name": "getMaxSub",
+          "parameterTypes": []
+        },
+        {
           "name": "getMinAggregationPeriod",
           "parameterTypes": []
         },
@@ -946,6 +942,12 @@
           "name": "setMaxAggregationPeriod",
           "parameterTypes": [
             "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
+          "name": "setMaxSub",
+          "parameterTypes": [
+            "int"
           ]
         },
         {
@@ -1810,6 +1812,10 @@
           "parameterTypes": []
         },
         {
+          "name": "getStatusPeriod",
+          "parameterTypes": []
+        },
+        {
           "name": "getUser",
           "parameterTypes": []
         },
@@ -1856,6 +1862,12 @@
           ]
         },
         {
+          "name": "setStatusPeriod",
+          "parameterTypes": [
+            "com.devexperts.util.TimePeriod"
+          ]
+        },
+        {
           "name": "setUser",
           "parameterTypes": [
             "java.lang.String"
@@ -1875,11 +1887,35 @@
           "parameterTypes": []
         },
         {
+          "name": "getDroppedRecordsStr",
+          "parameterTypes": []
+        },
+        {
           "name": "getMaxAggregationPeriod",
           "parameterTypes": []
         },
         {
           "name": "getMinAggregationPeriod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerDroppedRecordsStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerRejectedSubFilterStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPeerRejectedSubLimitStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRejectedSubFilterStr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRejectedSubLimitStr",
           "parameterTypes": []
         },
         {
@@ -2928,6 +2964,22 @@
       ]
     },
     {
+      "type": "com.dxfeed.ipf.filter.IPFRegistry"
+    },
+    {
+      "type": "com.dxfeed.ipf.filter.IPFRegistryMXBean",
+      "methods": [
+        {
+          "name": "getRegisteredFilters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRegisteredFiltersCount",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "com.dxfeed.ipf.filter.IPFSymbolFilter$Config",
       "methods": [
         {
@@ -3935,10 +3987,7 @@
       "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
     },
     {
-      "glob": "/META-INF/SerialClassBlacklist.txt"
-    },
-    {
-      "glob": "/META-INF/SerialClassWhitelist.txt"
+      "glob": "META-INF/SerialClassBlacklist.txt"
     },
     {
       "glob": "META-INF/SerialClassWhitelist.txt"
@@ -4075,6 +4124,10 @@
     },
     {
       "glob": "org/slf4j/impl/StaticLoggerBinder.class"
+    },
+    {
+      "module": "java.base",
+      "glob": "sun/net/www/content-types.properties"
     },
     {
       "glob": "types.xml"

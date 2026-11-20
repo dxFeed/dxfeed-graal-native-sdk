@@ -13,9 +13,9 @@
   }, {
     "pattern":".*\\.xsd$"
   }, {
-    "pattern":"\\Q/META-INF/SerialClassBlacklist.txt\\E"
+    "pattern":"\\QMETA-INF/SerialClassBlacklist.txt\\E"
   }, {
-    "pattern":"\\Q/META-INF/SerialClassWhitelist.txt\\E"
+    "pattern":"\\QMETA-INF/SerialClassWhitelist.txt\\E"
   }, {
     "pattern":"\\QMETA-INF/logformatter.properties\\E"
   }, {

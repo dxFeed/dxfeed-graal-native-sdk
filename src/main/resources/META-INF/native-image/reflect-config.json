@@ -1272,6 +1272,10 @@
         "parameterTypes": []
       },
       {
+        "name": "getMaxSub",
+        "parameterTypes": []
+      },
+      {
         "name": "getMinAggregationPeriod",
         "parameterTypes": []
       },
@@ -1299,6 +1303,12 @@
         "name": "setMaxAggregationPeriod",
         "parameterTypes": [
           "com.devexperts.util.TimePeriod"
+        ]
+      },
+      {
+        "name": "setMaxSub",
+        "parameterTypes": [
+          "int"
         ]
       },
       {
@@ -2194,6 +2204,10 @@
         "parameterTypes": []
       },
       {
+        "name": "getStatusPeriod",
+        "parameterTypes": []
+      },
+      {
         "name": "getUser",
         "parameterTypes": []
       },
@@ -2240,6 +2254,12 @@
         ]
       },
       {
+        "name": "setStatusPeriod",
+        "parameterTypes": [
+          "com.devexperts.util.TimePeriod"
+        ]
+      },
+      {
         "name": "setUser",
         "parameterTypes": [
           "java.lang.String"
@@ -2264,11 +2284,35 @@
         "parameterTypes": []
       },
       {
+        "name": "getDroppedRecordsStr",
+        "parameterTypes": []
+      },
+      {
         "name": "getMaxAggregationPeriod",
         "parameterTypes": []
       },
       {
         "name": "getMinAggregationPeriod",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPeerDroppedRecordsStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPeerRejectedSubFilterStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPeerRejectedSubLimitStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRejectedSubFilterStr",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRejectedSubLimitStr",
         "parameterTypes": []
       },
       {
@@ -6423,6 +6467,19 @@
       },
       {
         "name": "getInstance",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.dxfeed.ipf.filter.IPFRegistryMXBean",
+    "methods": [
+      {
+        "name": "getRegisteredFilters",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRegisteredFiltersCount",
         "parameterTypes": []
       }
     ]

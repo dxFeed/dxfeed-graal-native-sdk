@@ -14,25 +14,34 @@ import com.devexperts.io.SerialClassContext;
 import com.dxfeed.event.candle.CandleSymbol;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.junit.Test;
 
 /**
- * The allow-list of the classes that QD deserializes in the SDK ({@link SerialClassAllowList}): it accepts every class
- * registered for serialization in the native image except the RMI, JMX and JAAS ones, and nothing else, and it is in
- * effect in QD once installed.
+ * The allow-list of the classes that QD deserializes in the SDK ({@link #RESOURCE}), which QD reads itself into the
+ * default serial class context: it accepts every class registered for serialization in the native image except the
+ * RMI, JMX and JAAS ones, and nothing else.
  */
+@SuppressWarnings("deprecation") // The whitelist API of QD is deprecated in favour of ObjectInputFilter (QD-1810).
 public class SerialClassAllowListTest {
+
+    /**
+     * The allow-list resource of the SDK, the name QD reads.
+     */
+    public static final String RESOURCE = SerialClassContext.DEFAULT_WHITE_LIST_NAME;
 
     // Registered for serialization (JMX and RMI monitoring), never deserialized from a peer.
     private static final List<String> REJECTED_PREFIXES = List.of("java.rmi.", "javax.management.", "javax.security.");
@@ -41,12 +50,27 @@ public class SerialClassAllowListTest {
     private static final Set<String> ALLOWED_DESPITE_THE_PREFIX = Set.of("java.rmi.RemoteException");
 
     /**
-     * The context of the allow-list, as the SDK installs it into QD.
+     * The default serial class context of QD, which the RMI framework and {@link Marshalled} use.
      */
-    public static SerialClassContext allowList() throws IOException {
-        final ClassLoader loader = SerialClassAllowListTest.class.getClassLoader();
+    public static SerialClassContext allowList() {
+        return SerialClassContext.getDefaultSerialContext(SerialClassAllowListTest.class.getClassLoader());
+    }
 
-        return SerialClassContext.createSerialClassContext(loader, SerialClassAllowList.readNames(loader), null);
+    @Test
+    public void qdReadsTheListOfTheSdkAndNoOther() throws IOException {
+        final ClassLoader loader = SerialClassAllowListTest.class.getClassLoader();
+        final List<URL> resources = Collections.list(loader.getResources(RESOURCE));
+
+        // Another list on the class path would widen the allow-list: QD joins all of them.
+        assertEquals("Allow-lists on the class path: " + resources, 1, resources.size());
+        assertTrue(resources.get(0).toString(), resources.get(0).getPath().contains("/target/classes/"));
+
+        final List<String> names = readNames(resources.get(0));
+
+        assertFalse("The list is empty", names.isEmpty());
+        assertEquals(new TreeSet<>(SerialClassContext.createSerialClassContext(loader, names, null).getWhitelist()),
+            new TreeSet<>(allowList().getWhitelist()));
+        assertTrue(allowList().getBlacklist().isEmpty());
     }
 
     @Test
@@ -64,7 +88,7 @@ public class SerialClassAllowListTest {
     }
 
     @Test
-    public void theKnownGadgetClassesAreRejected() throws IOException {
+    public void theKnownGadgetClassesAreRejected() {
         final SerialClassContext allowList = allowList();
 
         for (final String className : List.of("java.rmi.dgc.VMID", "java.rmi.MarshalledObject",
@@ -79,9 +103,7 @@ public class SerialClassAllowListTest {
     }
 
     @Test
-    public void qdRejectsTheClassesOutsideTheListOnceInstalled() throws IOException {
-        SerialClassAllowList.install();
-
+    public void qdRejectsTheClassesOutsideTheList() throws IOException {
         final IllegalStateException exception = new IllegalStateException("boom");
 
         exception.setStackTrace(new StackTraceElement[0]);
@@ -103,30 +125,23 @@ public class SerialClassAllowListTest {
         }
     }
 
-    @Test
-    public void theNamesAreReadLikeQdAndAMissingOrEmptyListFails() throws IOException {
-        assertEquals(List.of("a.B", "c.*", "d.E"), SerialClassAllowList.readNames(loaderOf("a.B,c.*\n\nd.E,\n")));
+    // The names of the list, as QD reads them: separated by commas or lines.
+    private static List<String> readNames(final URL resource) throws IOException {
+        final List<String> names = new ArrayList<>();
 
-        for (final String content : new String[] {null, "", "\n,\n"}) {
-            try {
-                SerialClassAllowList.readNames(loaderOf(content));
-                fail("Read names from " + content);
-            } catch (final IOException expected) {
-                // No list: install() logs the error and QD keeps its default.
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8)))
+        {
+            for (String line; (line = reader.readLine()) != null; ) {
+                for (final String name : line.split(",")) {
+                    if (!name.isEmpty()) {
+                        names.add(name);
+                    }
+                }
             }
         }
-    }
 
-    // A class loader whose allow-list resource has the content (none for null).
-    private static ClassLoader loaderOf(final String content) {
-        return new ClassLoader(null) {
-            @Override
-            public InputStream getResourceAsStream(final String name) {
-                return SerialClassAllowList.RESOURCE.equals(name) && content != null
-                    ? new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
-                    : null;
-            }
-        };
+        return names;
     }
 
     private static byte[] serialize(final Serializable object) throws IOException {

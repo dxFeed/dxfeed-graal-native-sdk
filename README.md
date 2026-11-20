@@ -9,7 +9,7 @@ and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-s
 it easily integrable
 into your projects.
 
-![QDS](https://img.shields.io/badge/QDS-v3.357-yellow)
+![QDS](https://img.shields.io/badge/QDS-v3.358-yellow)
 ![MDD](https://img.shields.io/badge/MDD-v549-red)
 ![GraalVM](https://img.shields.io/badge/GraalVM-25.5-orange)
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20linux--arm64%20%7C%20osx--x64%20%7C%20osx--arm64%20%7C%20ios%20%7C%20ios--simulator-lightgrey)
@@ -856,9 +856,9 @@ by default. To enable it, set the system property `com.dxfeed.sdk.TimeSyncTracke
 The SDK deserializes Java objects that come from a remote peer: the attachments of `Message` and `Configuration`, the
 object fields of QD records and the results of the ORCS `PriceLevelService`. It accepts only the classes of the
 allow-list `META-INF/SerialClassWhitelist.txt` in the library: the dxFeed and QD classes, the JDK collections, boxed
-values and exceptions. An attachment of another class is NULL in C, an ORCS result of another class fails the call. The
-SDK installs the list before the first endpoint is created (QD 3.357 does not find the list by itself and accepts every
-class registered in the library).
+values and exceptions. An attachment of another class is NULL in C, an ORCS result of another class fails the call. QD
+reads the list itself into its default deserialization context (since QD 3.358; QD 3.357 did not find it and the SDK
+installed it by reflection).
 
 The endpoint property `jmx.rmi.port` (set with `dxfg_DXEndpoint_Builder_withProperty`, `withProperties` or the
 properties file of the endpoint) starts a JMX RMI connector and an RMI registry on that port. They listen on all

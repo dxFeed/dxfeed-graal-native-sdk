@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // The requested aggregation period of an endpoint, the aggregation period info of an endpoint and of a subscription,
-// and the dropped events count of a subscription (QDS 3.348 and 3.351).
+// and the dropped events count of a subscription (QDS 3.348 and 3.351). The properties of a server address that QD
+// sets by reflection, including the channel limit maxSub and the connector property statusPeriod of QDS 3.358.
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -25,6 +26,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <utility>
 
 namespace dxfg {
 namespace test {
@@ -235,6 +237,38 @@ TEST_CASE("The aggregation period info of an endpoint comes from the server") {
 
     closeAndRelease(thread, client);
     closeAndRelease(thread, server);
+}
+
+// QD finds the setter of an address property by reflection, so a property of a newer QD fails with "Property is not
+// found" until its methods are in the Native Image metadata. A rejected value shows that the setter was called.
+TEST_CASE("The maxSub of a channel and the statusPeriod of a server address") {
+    graal_isolatethread_t *thread = isolateThread();
+
+    REQUIRE(thread != nullptr);
+
+    const std::string port = std::to_string(findFreeLoopbackPort());
+    const std::pair<std::string, bool> cases[] = {
+        {":" + port + "[channels=(ticker[maxSub=10])(stream[maxSub=5]),statusPeriod=1s]", true},
+        {":" + port + "[channels=(ticker[maxSub=-1])]", false},
+        {":" + port + "[channels=(ticker[maxSubX=10])]", false},
+        {":" + port + "[statusPeriodX=1s]", false},
+    };
+
+    for (const auto &[address, accepted] : cases) {
+        CAPTURE(address);
+
+        dxfg_endpoint_t *server = dxfg_DXEndpoint_create2(thread, DXFG_ENDPOINT_ROLE_PUBLISHER);
+
+        REQUIRE(server != nullptr);
+
+        if (accepted) {
+            CHECK(dxfg_DXEndpoint_connect(thread, server, address.c_str()) == 0);
+        } else {
+            CHECK(failed(thread, dxfg_DXEndpoint_connect(thread, server, address.c_str())));
+        }
+
+        closeAndRelease(thread, server);
+    }
 }
 
 TEST_CASE("The aggregation period info and the dropped events of a subscription") {

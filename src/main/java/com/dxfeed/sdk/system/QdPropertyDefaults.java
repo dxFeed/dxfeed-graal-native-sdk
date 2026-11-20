@@ -28,12 +28,9 @@ public final class QdPropertyDefaults {
     }
 
     /**
-     * Applies the defaults and installs the serialization allow-list ({@link SerialClassAllowList}). Must be called
-     * before an endpoint is created.
+     * Applies the defaults. Must be called before an endpoint is created.
      */
     public static synchronized void apply() {
-        SerialClassAllowList.install();
-
         final boolean enable = Boolean.parseBoolean(System.getProperty(TIME_SYNC_TRACKER_ENABLE_PROPERTY));
         if (!enable && System.getProperty(TIME_SYNC_TRACKER_DISABLE_PROPERTY) == null) {
             System.setProperty(TIME_SYNC_TRACKER_DISABLE_PROPERTY, "true");

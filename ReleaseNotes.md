@@ -3,6 +3,17 @@
   `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new`: the endpoint terminates only after the tasks it scheduled on the
   executor have run, so these functions now run them on the calling thread while they wait. The active listeners of
   such an endpoint may be called on that thread. See [Shutdown](README.md#shutdown).
+* **\[MDAPI-581]\[GRAAL]** Migrated to QDS 3.358
+  (see the [QD release notes](https://github.com/devexperts/QD/blob/master/ReleaseNotes.txt)). QD now reads the
+  deserialization allow-list `META-INF/SerialClassWhitelist.txt` itself, so the SDK no longer installs it by reflection
+  into QD; the classes it accepts stay the same ([Deserialization](README.md#deserialization)). The new address
+  properties of QD work in the library: `maxSub` limits the subscription of a channel of a server address
+  (`:7400[channels=(ticker[maxSub=100])(stream[maxSub=50])]`), and `statusPeriod` (10 s by default) sets how often a
+  connection reports the records it dropped and the subscription it rejected to its peer and to the log; the new
+  connection attributes of JMX show these counts. Control characters
+  other than tab, line feed and carriage return in the messages of the log are written as `?`. Among the fixes of QD:
+  the NIO writer of a connection no longer hangs in its selector loop, the thread-local object pool no longer keeps
+  every object it hands out, and a closed RMI connection releases its composed responses; the holidays of 2027.
 * **\[MDAPI-602]\[GRAAL]** The README explains the LeakSanitizer reports inside the SDK at the exit of a process that
   does not tear the isolate down (the memory of the isolate's runtime, up to about 11 KB, which does not grow), and the
   two ways for sanitizer tests: tear the isolate down, or suppress `leak:libDxFeedGraalNativeSdk`, which also hides the

@@ -6,7 +6,6 @@ package com.dxfeed.sdk.orcs;
 import static org.junit.Assert.assertTrue;
 
 import com.devexperts.io.SerialClassContext;
-import com.dxfeed.sdk.system.SerialClassAllowList;
 import com.dxfeed.sdk.system.SerialClassAllowListTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,7 +85,8 @@ public class OrcsSerializationMetadataTest {
     }
 
     @Test
-    public void theClassesFromTheServerAreInTheSerialClassAllowList() throws IOException {
+    @SuppressWarnings("deprecation") // SerialClassContext.accept, see SerialClassAllowListTest.
+    public void theClassesFromTheServerAreInTheSerialClassAllowList() {
         final SerialClassContext whitelist = SerialClassAllowListTest.allowList();
         final List<String> rejected = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public class OrcsSerializationMetadataTest {
             }
         }
 
-        assertTrue("Not in " + SerialClassAllowList.RESOURCE + ": " + rejected, rejected.isEmpty());
+        assertTrue("Not in " + SerialClassAllowListTest.RESOURCE + ": " + rejected, rejected.isEmpty());
     }
 
     @Test

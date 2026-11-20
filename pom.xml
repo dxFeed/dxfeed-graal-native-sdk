@@ -129,7 +129,7 @@
     <assembly.cmake.component>src/assembly/cmake.xml</assembly.cmake.component>
     <!-- qd version and auther-api version must be compatible -->
     <auther-api.version>549</auther-api.version>
-    <qd.version>3.357</qd.version>
+    <qd.version>3.358</qd.version>
     <orcs-api.version>549</orcs-api.version>
     <graalvm-native-maven-plugin.version>1.1.14</graalvm-native-maven-plugin.version>
     <mdd-maven.url>https://repo.devexperts.com/repository/mdd-maven/</mdd-maven.url>
