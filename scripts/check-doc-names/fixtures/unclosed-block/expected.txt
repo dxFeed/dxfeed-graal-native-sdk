@@ -1,0 +1,3 @@
+page.md:3: the end of a dxfg-deprecated block that is not open
+page.md:4: dxfg_free_strings is deprecated: use dxfg_v4_string_list_release
+page.md:6: the dxfg-deprecated block is not closed

@@ -1,0 +1,7 @@
+page.md:4: the item of dxfg_Schedule_getInstance does not name its replacement dxfg_v4_Schedule_getInstanceByProfileHandle
+page.md:4: dxfg_free_strings is not replaced by dxfg_v4_Schedule_getInstance
+page.md:4: the item of dxfg_Schedule_getInstance does not name dxfg_Schedule_getInstance4, which dxfg_v4_Schedule_getInstance replaces
+page.md:7: the item of dxfg_Schedule_getInstance does not name dxfg_Schedule_getInstance4, which dxfg_v4_Schedule_getInstance replaces
+page.md:5: dxfg_DXEndpoint_executor has no dxfg_v4_ function of the same name that is another overload
+page.md:6: the item does not start with a deprecated older function
+page.md:7: dxfg_Schedule_getInstance is listed twice

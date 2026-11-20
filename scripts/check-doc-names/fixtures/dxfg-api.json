@@ -12,6 +12,12 @@
   ],
   "functions": [
     {"name": "dxfg_free_strings", "deprecated": {"message": "use dxfg_v4_string_list_release()", "replacements": ["dxfg_v4_string_list_release"]}},
+    {"name": "dxfg_DXEndpoint_executor", "deprecated": {"message": "use dxfg_v4_DXEndpoint_Builder_withExecutor()", "replacements": ["dxfg_v4_DXEndpoint_Builder_withExecutor"]}},
+    {"name": "dxfg_Schedule_getInstance", "deprecated": {"message": "use dxfg_v4_Schedule_getInstanceByProfileHandle()", "replacements": ["dxfg_v4_Schedule_getInstanceByProfileHandle"]}},
+    {"name": "dxfg_Schedule_getInstance4", "deprecated": {"message": "use dxfg_v4_Schedule_getInstance()", "replacements": ["dxfg_v4_Schedule_getInstance"]}},
+    {"name": "dxfg_v4_DXEndpoint_Builder_withExecutor", "deprecated": null},
+    {"name": "dxfg_v4_Schedule_getInstance", "deprecated": null},
+    {"name": "dxfg_v4_Schedule_getInstanceByProfileHandle", "deprecated": null},
     {"name": "dxfg_v4_EventQueue_poll", "deprecated": null},
     {"name": "dxfg_v4_string_list_release", "deprecated": null}
   ],

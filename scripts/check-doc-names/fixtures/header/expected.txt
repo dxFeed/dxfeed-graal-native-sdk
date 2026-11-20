@@ -1,0 +1,1 @@
+api.h:14: unknown name dxfg_v4_free_string_list

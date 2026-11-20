@@ -18,6 +18,21 @@
   does not tear the isolate down (the memory of the isolate's runtime, up to about 11 KB, which does not grow), and the
   two ways for sanitizer tests: tear the isolate down, or suppress `leak:libDxFeedGraalNativeSdk`, which also hides the
   leaks in callbacks and unreleased handles. See [LeakSanitizer](README.md#leaksanitizer).
+* **\[MDAPI-622]\[GRAAL]** The documentation of `dxfg_v4_system_shutdown`, the README and the wrapper guide state what
+  holds after the call, now covered by `ShutdownTest`: a second call is allowed and closes the endpoints created since
+  the first; the promise handlers, the `dxfg_v4_Object_finalize` functions and the day and session filters are still
+  called; a new isolate works, also after the old one is torn down, except in `oracle-g1`. They describe how a wrapper
+  bounds the wait of the call. `V4_Conventions`, the README and the
+  [wrapper guide](docs/wrapper-guide/versioning.md) state that a deprecated function is migrated to its replacement,
+  never by its name, and list the 11 older functions whose `dxfg_v4_` name is another overload and the alternatives of
+  another shape; the build checks the lists against `dxfg-api.json`. No function changes.
+
+### For integrators
+
+* Migrate every call of a deprecated function to the `replacements` of `dxfg-api.json` (the function its deprecation
+  message names), never to the `dxfg_v4_` function of the same name: for 11 older functions, e.g.
+  `dxfg_Schedule_getInstance`, that is another overload, which compiles and binds but does something else. Check the
+  migrations made so far against the list in the [wrapper guide](docs/wrapper-guide/versioning.md).
 
 ## v3.18.0
 

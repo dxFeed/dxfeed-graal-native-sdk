@@ -66,3 +66,31 @@ it deactivates the listeners, closes the event queues (the polls in progress ret
 closes the endpoints. Then end the wrapper's own threads that call the SDK, release the remaining handles, and tear
 the isolate down. Do not call it from an exit handler of a DLL (`DLL_PROCESS_DETACH`, a destructor of a static object
 of a DLL).
+
+What a wrapper may rely on after the call, and what it may not:
+
+- No listener of a `dxfg_*Listener_new` function is called, and none of their calls is in progress: their user data
+  can be freed. The listeners created afterwards are never called, the event queues created afterwards are closed.
+- The callbacks that are not listeners are still called: the handlers of dxfg_v4_Promise_whenDone() and
+  dxfg_v4_Promise_whenDoneAsync() when a promise completes, the functions of dxfg_v4_Object_finalize() when an object
+  is collected (@ref wrapper_threads_finalizers), and the filters of dxfg_v4_DayFilter_new(),
+  dxfg_v4_DayFilter_newWithUserData(), dxfg_v4_SessionFilter_new() and dxfg_v4_SessionFilter_newWithUserData() when a
+  search uses them. Their user data lives until they have run or the isolate is torn down; a filter's until it is
+  released. A wrapper that promises "no callback after shutdown" has to gate these itself.
+- A second call is allowed: it closes what was created since the previous one and returns at once when nothing is
+  left, so a wrapper need not track whether it has shut down already.
+- The call acts on its own isolate. A new isolate created afterwards works, also after graal_tear_down_isolate() of the
+  old one, except in the `oracle-g1` build variant, which allows one isolate per process: there the isolate that was
+  shut down is the last one of the process, and it serves only the calls that need no listener and no event queue.
+
+The call waits without a limit: for a listener's call in progress (a callback that blocks blocks the shutdown) and for
+the termination of the endpoints. A wrapper that must stop its application in bounded time:
+
+1. Calls dxfg_v4_system_shutdown() on a thread of its own, attached to the isolate, and waits for that thread with a
+   timeout.
+2. When the thread returns in time, goes on with the sequence above.
+3. When the timeout expires, the call is still running. The wrapper must not free the user data of the listeners (a
+   call may still be in progress), call graal_tear_down_isolate() (it waits for that thread to detach) or
+   graal_detach_all_threads_and_tear_down_isolate() (that thread is in an SDK function). It may keep waiting, or
+   report the hang and let the process exit with the isolate as it is: the threads of the isolate end with the
+   process.

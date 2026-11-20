@@ -147,7 +147,8 @@ int32_t dxfg_v4_NativeListener_deactivate(graal_isolatethread_t *thread, dxfg_v4
  * The handles of the listeners stay valid and must be released as usual. Use dxfg_v4_system_shutdown() to deactivate
  * the listeners and then close the endpoints. Only the listeners are deactivated: the handlers of
  * dxfg_v4_Promise_whenDone(), dxfg_v4_Promise_whenDoneAsync(), the finalizers of dxfg_v4_Object_finalize() and the
- * filters of dxfg_v4_SessionFilter_new() and dxfg_v4_DayFilter_new() are still called.
+ * filters of dxfg_v4_SessionFilter_new(), dxfg_v4_SessionFilter_newWithUserData(), dxfg_v4_DayFilter_new() and
+ * dxfg_v4_DayFilter_newWithUserData() are still called.
  *
  * Calling it from a listener's callback is allowed (the function does not wait for that call), but not from the
  * callbacks of two threads at once: each would wait for the other. Do not hold the locks that the listeners' functions

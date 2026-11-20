@@ -1,0 +1,1 @@
+page.md:5: the list of the renamed overloads misses dxfg_Schedule_getInstance (use dxfg_v4_Schedule_getInstanceByProfileHandle)

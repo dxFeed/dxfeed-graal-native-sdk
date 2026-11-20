@@ -19,7 +19,7 @@
 namespace dxfg {
 namespace test {
 
-// A new isolate; never torn down, its threads end with the process.
+// A new isolate; not torn down here, its threads end with the process unless a test calls graal_tear_down_isolate().
 struct Isolate {
     graal_isolate_t *isolate = nullptr;
     graal_isolatethread_t *thread = nullptr;

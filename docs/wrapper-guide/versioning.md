@@ -13,7 +13,7 @@ defined in @ref V4_Conventions, the runtime queries in @ref V4_System.
   (#DXFG_V4_ADVANCED_REVISION), so a wrapper bound by name misses the old symbol instead of calling it with a changed
   signature.
 - A **deprecated** function is marked `DXFG_DEPRECATED`, and its warning names its replacement. The deprecated
-  functions are removed in 4.0.0: a wrapper binds the replacements.
+  functions are removed in 4.0.0: a wrapper binds the replacements (@ref wrapper_versioning_migration).
 
 ## The start-up check {#wrapper_versioning_check}
 
@@ -42,3 +42,69 @@ what the description lists, and only the stable tier unless the revisions match,
 The headers and the description of a release keep every stable declaration of the previous one: the build checks the
 headers against the description of the last release, so a wrapper built for an older release keeps working with a
 newer library of the same major version.
+
+## Migrating to the v4 functions {#wrapper_versioning_migration}
+
+Migrate a call of a deprecated function to the function that its deprecation message names, which is also the
+`replacements` of the function in `dxfg-api.json`; never by the name. A `dxfg_v4_` function has no digit suffix, since
+an overload is named by what it takes (@ref V4_Conventions), so the same name may stand for another overload in the
+two generations. A migration by the name then compiles, or binds, and calls another function:
+
+<!-- dxfg-deprecated:begin -->
+- Without the digit suffix, the `dxfg_v4_` name of an older function may be its replacement
+  (dxfg_v4_AdditionalUnderlyings_getSPC() replaces dxfg_AdditionalUnderlyings_getSPC2()) or another function:
+  dxfg_DXEndpoint_getInstance2() is replaced by dxfg_v4_DXEndpoint_createWithRole(), while
+  dxfg_v4_DXEndpoint_getInstance() replaces dxfg_DXEndpoint_getInstance().
+- An older function without a digit suffix may have a `dxfg_v4_` function of the same name that is another overload.
+  These are all of them, each with its replacement and the older function that the `dxfg_v4_` function of the same
+  name replaces (the build checks the list against `dxfg-api.json`):
+<!-- dxfg-deprecated:end -->
+
+<!-- dxfg-renamed:begin -->
+- dxfg_AdditionalUnderlyings_getSPC() -> dxfg_v4_AdditionalUnderlyings_getSPCFromText();
+  dxfg_v4_AdditionalUnderlyings_getSPC() replaces dxfg_AdditionalUnderlyings_getSPC2().
+- dxfg_InstrumentProfileCollector_updateInstrumentProfile() ->
+  dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandle();
+  dxfg_v4_InstrumentProfileCollector_updateInstrumentProfile() replaces
+  dxfg_InstrumentProfileCollector_updateInstrumentProfile2().
+- dxfg_InstrumentProfileCollector_updateInstrumentProfiles() ->
+  dxfg_v4_InstrumentProfileCollector_updateInstrumentProfileHandles();
+  dxfg_v4_InstrumentProfileCollector_updateInstrumentProfiles() replaces
+  dxfg_InstrumentProfileCollector_updateInstrumentProfiles2() and
+  dxfg_InstrumentProfileCollector_updateInstrumentProfiles3().
+- dxfg_InstrumentProfileReader_read() -> dxfg_v4_InstrumentProfileReader_readAsHandles();
+  dxfg_v4_InstrumentProfileReader_read() replaces dxfg_InstrumentProfileReader_read3() and
+  dxfg_InstrumentProfileReader_read5().
+- dxfg_InstrumentProfileReader_readCompressed() -> dxfg_v4_InstrumentProfileReader_readCompressedAsHandles();
+  dxfg_v4_InstrumentProfileReader_readCompressed() replaces dxfg_InstrumentProfileReader_readCompressed2() and
+  dxfg_InstrumentProfileReader_readCompressed3().
+- dxfg_InstrumentProfileReader_readFromFile() -> dxfg_v4_InstrumentProfileReader_readFromFileAsHandles();
+  dxfg_v4_InstrumentProfileReader_readFromFile() replaces dxfg_InstrumentProfileReader_readFromFile4() and
+  dxfg_InstrumentProfileReader_readFromFile7().
+- dxfg_Iterable_InstrumentProfile_next() -> dxfg_v4_Iterable_InstrumentProfile_nextHandle();
+  dxfg_v4_Iterable_InstrumentProfile_next() replaces dxfg_Iterable_InstrumentProfile_next2().
+- dxfg_PriceLevelService_getOrders() -> dxfg_v4_PriceLevelService_getOrdersWithCaller();
+  dxfg_v4_PriceLevelService_getOrders() replaces dxfg_PriceLevelService_getOrders2().
+- dxfg_PriceLevelService_getQuotes() -> dxfg_v4_PriceLevelService_getQuotesWithCaller();
+  dxfg_v4_PriceLevelService_getQuotes() replaces dxfg_PriceLevelService_getQuotes2().
+- dxfg_Schedule_getInstance() -> dxfg_v4_Schedule_getInstanceByProfileHandle();
+  dxfg_v4_Schedule_getInstance() replaces dxfg_Schedule_getInstance4().
+- dxfg_Schedule_getTradingVenues() -> dxfg_v4_Schedule_getTradingVenuesByProfileHandle();
+  dxfg_v4_Schedule_getTradingVenues() replaces dxfg_Schedule_getTradingVenues2().
+<!-- dxfg-renamed:end -->
+
+The replacements of a few older functions are alternatives of another shape rather than twins, so no `dxfg_v4_`
+function has their names:
+
+<!-- dxfg-alternatives:begin -->
+- dxfg_DXEndpoint_executor() -> dxfg_v4_DXEndpoint_Builder_withExecutor(): the executor is set on the builder,
+  before the endpoint is built, not on an endpoint.
+- dxfg_InstrumentProfileCustomFields_addNonEmptyFieldNames() ->
+  dxfg_v4_InstrumentProfileCustomFields_getNonEmptyFieldNames(): the same list, without the `updated` flag.
+- dxfg_free_strings() -> dxfg_v4_string_list_release(): the v4 functions return lists instead of arrays and sizes.
+- dxfg_free_string_to_double_map_entries() -> dxfg_v4_string_to_double_map_entry_list_release(): the same, for the
+  entries of a map.
+<!-- dxfg-alternatives:end -->
+
+A wrapper generator that reads `dxfg-api.json` follows the rule by construction when it maps every deprecated function
+to its `replacements` and never derives a `dxfg_v4_` name from an older one.

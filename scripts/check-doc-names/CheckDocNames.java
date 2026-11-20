@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -31,14 +32,32 @@ import java.util.stream.Stream;
  *   {@code dxfg_time_and_sale_t}) are structs of the description, and the fields they name are fields of the struct,
  *   with the members of embedded structs flattened recursively (as the kit's protocol does). The fields of
  *   {@code last} and {@code increasing} checks must be fields of one of the types of the scenario's queues.</li>
+ *   <li>the lists of the migration to the v4 functions, kept by hand between HTML comments in the {@code *.md} files
+ *   and in the documentation comments of the {@code *.h} files (only these blocks of a header are checked, the rest of
+ *   it names the deprecated functions anyway). Each list item names an older function first and then its
+ *   replacements, all of them (the {@code replacements} of the description). Deprecated names are allowed inside the
+ *   blocks:
+ *   <ul>
+ *     <li>{@code <!-- dxfg-renamed:begin -->} ... {@code <!-- dxfg-renamed:end -->}: exactly the older functions
+ *     without a digit suffix whose {@code dxfg_v4_} name is a function that does not replace them (another
+ *     overload). An item names the older functions that this {@code dxfg_v4_} function replaces, all of them and
+ *     no other;</li>
+ *     <li>{@code <!-- dxfg-alternatives:begin -->} ... {@code end}: older functions whose replacements are
+ *     alternatives of another shape, chosen by hand; no {@code dxfg_v4_} function has their names;</li>
+ *     <li>{@code <!-- dxfg-deprecated:begin -->} ... {@code end}: prose that names deprecated functions.</li>
+ *   </ul>
+ *   </li>
  * </ul>
  *
- * <p>Usage: {@code java CheckDocNames.java <dxfg-api.json> <directory>...}. The errors name the file and the line.
+ * <p>Usage: {@code java CheckDocNames.java <dxfg-api.json> <directory or file>... [--require-renamed-list <file>]...}.
+ * Each {@code --require-renamed-list} file must have a {@code dxfg-renamed} list. The errors name the file and the
+ * line.
  *
  * <p>Self-test: {@code java CheckDocNames.java --self-test <directory of fixtures>}. The directory has a
- * {@code dxfg-api.json}, and each of its subdirectories is a fixture: the files to check and {@code expected.txt}
+ * {@code dxfg-api.json}, and each of its subdirectories is a fixture: the files to check, {@code expected.txt}
  * with the errors the check must report (a part of each error, one per line; an empty file when the check must
- * pass). The self-test fails if a fixture reports another set of errors.
+ * pass) and, optionally, {@code require-renamed-list.txt} with the files of the fixture that must have a
+ * {@code dxfg-renamed} list. The self-test fails if a fixture reports another set of errors.
  */
 public final class CheckDocNames {
 
@@ -46,6 +65,17 @@ public final class CheckDocNames {
 
     // The attribute macros of dxfg_common.h, which the description gives as the out flags, `deprecated` and the tiers.
     private static final Set<String> ATTRIBUTE_MACROS = Set.of("DXFG_OUT", "DXFG_DEPRECATED", "DXFG_EXPERIMENTAL");
+
+    // The markers of the blocks in which deprecated names are allowed (see the class description).
+    private static final Pattern BLOCK =
+            Pattern.compile("<!--\\s*dxfg-(renamed|alternatives|deprecated):(begin|end)\\s*-->");
+
+    // A list item of a Markdown file or of a documentation comment (" *  - ").
+    private static final Pattern ITEM = Pattern.compile("^\\s*(?:\\*\\s*)?- (.*)$");
+
+    private static final String RENAMED = "renamed";
+    private static final String ALTERNATIVES = "alternatives";
+    private static final String REQUIRE_RENAMED_LIST = "--require-renamed-list";
 
     private CheckDocNames() {
     }
@@ -55,19 +85,34 @@ public final class CheckDocNames {
             System.exit(selfTest(Path.of(args[1])) ? 0 : 1);
         }
 
-        if (args.length < 2) {
-            System.err.println("Usage: java CheckDocNames.java <dxfg-api.json> <directory>...");
+        final List<Path> paths = new ArrayList<>();
+        final List<Path> required = new ArrayList<>();
+
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].equals(REQUIRE_RENAMED_LIST) && i + 1 < args.length) {
+                required.add(Path.of(args[++i]));
+            } else {
+                paths.add(Path.of(args[i]));
+            }
+        }
+
+        if (args.length < 2 || paths.isEmpty()) {
+            System.err.println("Usage: java CheckDocNames.java <dxfg-api.json> <directory or file>... ["
+                    + REQUIRE_RENAMED_LIST + " <file>]...");
             System.err.println("       java CheckDocNames.java --self-test <directory of fixtures>");
             System.exit(2);
         }
 
         final Api api = Api.read(Path.of(args[0]));
         final List<String> errors = new ArrayList<>();
+        final Set<Path> withRenamedList = new LinkedHashSet<>();
         int files = 0;
 
-        for (int i = 1; i < args.length; i++) {
-            files += check(api, Path.of(args[i]), errors);
+        for (final Path path : paths) {
+            files += check(api, path, errors, withRenamedList);
         }
+
+        checkRequired(required, withRenamedList, errors);
 
         if (!errors.isEmpty()) {
             errors.forEach(error -> System.err.println("ERROR: " + error));
@@ -99,12 +144,24 @@ public final class CheckDocNames {
             final List<String> expected = Files.readAllLines(fixture.resolve("expected.txt"), StandardCharsets.UTF_8)
                     .stream().map(String::strip).filter(line -> !line.isEmpty()).toList();
             final List<String> unexpected = new ArrayList<>();
-            check(api, fixture, unexpected);
+            final Set<Path> withRenamedList = new LinkedHashSet<>();
+            check(api, fixture, unexpected, withRenamedList);
+            final Path requiredList = fixture.resolve("require-renamed-list.txt");
+
+            if (Files.exists(requiredList)) {
+                checkRequired(Files.readAllLines(requiredList, StandardCharsets.UTF_8).stream().map(String::strip)
+                        .filter(line -> !line.isEmpty()).map(fixture::resolve).toList(), withRenamedList, unexpected);
+            }
+
             final List<String> missing = new ArrayList<>();
 
-            for (final String part : expected) {
-                if (!unexpected.removeIf(error -> error.contains(part))) {
+            for (final String part : expected) { // each expected line takes one error, so a duplicate is unexpected
+                final int index = indexOfError(unexpected, part);
+
+                if (index < 0) {
                     missing.add(part);
+                } else {
+                    unexpected.remove(index);
                 }
             }
 
@@ -129,19 +186,25 @@ public final class CheckDocNames {
         return passed;
     }
 
-    // Checks the *.md and *.scenario files under the directory; returns the number of the files.
-    private static int check(final Api api, final Path directory, final List<String> errors) throws IOException {
+    // Checks the *.md, *.scenario and *.h files under the directory (or the file itself); returns the number of the
+    // files. Adds the files that have a dxfg-renamed list to withRenamedList.
+    private static int check(final Api api, final Path directory, final List<String> errors,
+                             final Set<Path> withRenamedList) throws IOException {
         final List<Path> files;
 
         try (Stream<Path> paths = Files.walk(directory)) {
             files = paths.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".md") || path.toString().endsWith(".scenario"))
+                    .filter(path -> path.toString().endsWith(".md") || path.toString().endsWith(".scenario")
+                            || path.toString().endsWith(".h"))
                     .sorted().toList();
         }
 
         for (final Path file : files) {
             final List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
-            checkNames(api, file, lines, errors);
+
+            if (checkNames(api, file, lines, errors)) {
+                withRenamedList.add(file.toAbsolutePath().normalize());
+            }
 
             if (file.toString().endsWith(".scenario")) {
                 checkScenario(api, file, lines, errors);
@@ -151,10 +214,96 @@ public final class CheckDocNames {
         return files.size();
     }
 
-    private static void checkNames(final Api api, final Path file, final List<String> lines,
-                                   final List<String> errors) {
+    private static int indexOfError(final List<String> errors, final String part) {
+        for (int i = 0; i < errors.size(); i++) {
+            if (errors.get(i).contains(part)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // Each of the files must have a dxfg-renamed list.
+    private static void checkRequired(final List<Path> required, final Set<Path> withRenamedList,
+                                      final List<String> errors) {
+        for (final Path file : required) {
+            if (!withRenamedList.contains(file.toAbsolutePath().normalize())) {
+                errors.add(file + ": no list of the older functions whose dxfg_v4_ name is another overload"
+                        + " (<!-- dxfg-renamed:begin -->)");
+            }
+        }
+    }
+
+    // A list item of a block: where it starts and its text, continuation lines included.
+    private static final class Item {
+
+        final String where;
+        final StringBuilder text;
+
+        Item(final String where, final String text) {
+            this.where = where;
+            this.text = new StringBuilder(text);
+        }
+    }
+
+    // Checks the names of the file and its blocks; returns true if the file has a dxfg-renamed list. In a header only
+    // the names of the blocks are checked.
+    private static boolean checkNames(final Api api, final Path file, final List<String> lines,
+                                      final List<String> errors) {
+        final boolean header = file.toString().endsWith(".h");
+        final List<Item> items = new ArrayList<>();
+        boolean renamedList = false;
+        String block = null;
+        String blockWhere = null;
+        Item item = null;
+
         for (int i = 0; i < lines.size(); i++) {
             final String line = lines.get(i);
+            final String where = file + ":" + (i + 1) + ": ";
+            final Matcher marker = BLOCK.matcher(line);
+
+            if (marker.find()) {
+                final String kind = marker.group(1);
+
+                if (marker.group(2).equals("begin")) {
+                    if (block != null) {
+                        errors.add(where + "a dxfg-" + kind + " block inside the dxfg-" + block + " block");
+                    }
+
+                    block = kind;
+                    blockWhere = where;
+                    items.clear();
+                } else if (!kind.equals(block)) {
+                    errors.add(where + "the end of a dxfg-" + kind + " block that is not open");
+                } else {
+                    checkBlock(api, blockWhere, block, items, errors);
+                    renamedList |= block.equals(RENAMED);
+                    block = null;
+                }
+
+                item = null;
+                continue;
+            }
+
+            if (RENAMED.equals(block) || ALTERNATIVES.equals(block)) {
+                final Matcher itemMatcher = ITEM.matcher(line);
+                final String text = line.strip().replaceFirst("^\\*", "").strip();
+
+                if (itemMatcher.matches()) {
+                    item = new Item(where, itemMatcher.group(1));
+                    items.add(item);
+                } else if (text.isEmpty()) {
+                    item = null;
+                } else if (item != null) {
+                    item.text.append(' ').append(text);
+                }
+            }
+
+            if (header && block == null) {
+                continue;
+            }
+
             final Matcher matcher = NAME.matcher(line);
 
             while (matcher.find()) {
@@ -164,16 +313,90 @@ public final class CheckDocNames {
                     continue; // a prefix: dxfg_v4_<area>.h, DXFG_V4_FEATURE_*
                 }
 
-                final String where = file + ":" + (i + 1) + ": ";
-
                 if (line.startsWith(".h", matcher.end())) {
                     if (!api.headers.contains(name + ".h")) {
                         errors.add(where + "unknown header " + name + ".h");
                     }
                 } else if (api.deprecated.containsKey(name)) {
-                    errors.add(where + name + " is deprecated: " + api.deprecated.get(name));
+                    if (block == null) {
+                        errors.add(where + name + " is deprecated: " + api.deprecated.get(name));
+                    }
                 } else if (!api.names.contains(name)) {
                     errors.add(where + "unknown name " + name);
+                }
+            }
+        }
+
+        if (block != null) {
+            errors.add(blockWhere + "the dxfg-" + block + " block is not closed");
+        }
+
+        return renamedList;
+    }
+
+    // Checks the items of a dxfg-renamed or dxfg-alternatives block against the description.
+    private static void checkBlock(final Api api, final String blockWhere, final String block, final List<Item> items,
+                                   final List<String> errors) {
+        if (!block.equals(RENAMED) && !block.equals(ALTERNATIVES)) {
+            return;
+        }
+
+        final Set<String> listed = new TreeSet<>();
+
+        for (final Item item : items) {
+            final List<String> named = NAME.matcher(item.text).results().map(MatchResult::group).toList();
+
+            if (named.isEmpty() || !api.isOlderDeprecated(named.get(0))) {
+                errors.add(item.where + "the item does not start with a deprecated older function: " + item.text);
+                continue;
+            }
+
+            final String older = named.get(0);
+            final String sameName = Api.sameNameV4(older);
+
+            if (!listed.add(older)) {
+                errors.add(item.where + older + " is listed twice");
+            }
+
+            for (final String replacement : api.replacements.get(older)) {
+                if (!named.contains(replacement)) {
+                    errors.add(item.where + "the item of " + older + " does not name its replacement " + replacement);
+                }
+            }
+
+            if (block.equals(ALTERNATIVES)) {
+                if (api.functions.contains(sameName)) {
+                    errors.add(item.where + older + " has a dxfg_v4_ function of the same name: " + sameName);
+                }
+
+                continue;
+            }
+
+            if (!api.renamed().contains(older)) {
+                errors.add(item.where + older + " has no dxfg_v4_ function of the same name that is another overload");
+                continue;
+            }
+
+            for (final String other : named.subList(1, named.size())) {
+                if (api.isOlderDeprecated(other) && !api.replacements.get(other).contains(sameName)) {
+                    errors.add(item.where + other + " is not replaced by " + sameName);
+                }
+            }
+
+            for (final Map.Entry<String, List<String>> entry : api.replacements.entrySet()) {
+                if (api.isOlderDeprecated(entry.getKey()) && entry.getValue().contains(sameName)
+                        && !named.contains(entry.getKey())) {
+                    errors.add(item.where + "the item of " + older + " does not name " + entry.getKey()
+                            + ", which " + sameName + " replaces");
+                }
+            }
+        }
+
+        if (block.equals(RENAMED)) {
+            for (final String older : api.renamed()) {
+                if (!listed.contains(older)) {
+                    errors.add(blockWhere + "the list of the renamed overloads misses " + older + " (use "
+                            + String.join(", ", api.replacements.get(older)) + ")");
                 }
             }
         }
@@ -277,6 +500,39 @@ public final class CheckDocNames {
         final Set<String> features = new TreeSet<>();
         final Map<String, Map<String, Object>> types = new LinkedHashMap<>();
         final Map<String, Set<String>> eventFields = new LinkedHashMap<>();
+        final Set<String> functions = new TreeSet<>();
+        final Map<String, List<String>> replacements = new LinkedHashMap<>(); // of the deprecated functions
+        private Set<String> renamed;
+
+        // The dxfg_v4_ name of an older function: dxfg_Schedule_getInstance -> dxfg_v4_Schedule_getInstance.
+        static String sameNameV4(final String older) {
+            return "dxfg_v4_" + older.substring("dxfg_".length());
+        }
+
+        // A deprecated function of the older generation (dxfg_, not dxfg_v4_).
+        boolean isOlderDeprecated(final String name) {
+            return replacements.containsKey(name) && !name.startsWith("dxfg_v4_");
+        }
+
+        // The older deprecated functions without a digit suffix whose dxfg_v4_ name is a function that does not replace
+        // them: another overload, so a migration by the name calls another function.
+        Set<String> renamed() {
+            if (renamed == null) {
+                renamed = new TreeSet<>();
+
+                for (final Map.Entry<String, List<String>> entry : replacements.entrySet()) {
+                    final String older = entry.getKey();
+                    final String sameName = older.startsWith("dxfg_v4_") ? null : sameNameV4(older);
+
+                    if (sameName != null && !Character.isDigit(older.charAt(older.length() - 1))
+                            && functions.contains(sameName) && !entry.getValue().contains(sameName)) {
+                        renamed.add(older);
+                    }
+                }
+            }
+
+            return renamed;
+        }
 
         @SuppressWarnings("unchecked")
         static Api read(final Path path) throws IOException {
@@ -298,9 +554,12 @@ public final class CheckDocNames {
                 final String name = (String) function.get("name");
                 final Map<String, Object> deprecation = (Map<String, Object>) function.get("deprecated");
                 api.names.add(name);
+                api.functions.add(name);
 
                 if (deprecation != null) {
                     final List<Object> replacements = (List<Object>) deprecation.get("replacements");
+                    api.replacements.put(name, replacements == null ? List.of()
+                            : replacements.stream().map(String::valueOf).toList());
                     api.deprecated.put(name, replacements == null || replacements.isEmpty()
                             ? String.valueOf(deprecation.get("message"))
                             : "use " + String.join(", ", replacements.stream().map(String::valueOf).toList()));

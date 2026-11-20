@@ -1,0 +1,2 @@
+page.md:4: dxfg_Schedule_getInstance has a dxfg_v4_ function of the same name: dxfg_v4_Schedule_getInstance
+page.md:5: the item of dxfg_DXEndpoint_executor does not name its replacement dxfg_v4_DXEndpoint_Builder_withExecutor

@@ -328,6 +328,15 @@ library.
   empty before the headers: `#define DXFG_DEPRECATED(message)` (or disable the warning C4996 of MSVC).
   The deprecated functions are removed in 4.0.0, the next major release: keep the warnings on to find their calls and
   move each call to the function that its warning names.
+- **Migrate by the replacement, never by the name.** The v4 functions name an overload by what it takes, so the same
+  name may stand for another overload in the two generations: `dxfg_DXEndpoint_getInstance2` is replaced by
+  `dxfg_v4_DXEndpoint_createWithRole`, not by `dxfg_v4_DXEndpoint_getInstance` (the twin of
+  `dxfg_DXEndpoint_getInstance`), and `dxfg_Schedule_getInstance` by `dxfg_v4_Schedule_getInstanceByProfileHandle`,
+  not by `dxfg_v4_Schedule_getInstance`. Take the replacement from the deprecation message or from the `replacements`
+  of the function in `dxfg-api.json` (see [API description](#api-description)). The 11 older functions whose
+  `dxfg_v4_` name is another overload, and the replacements that are alternatives of another shape
+  (`dxfg_DXEndpoint_executor` -> `dxfg_v4_DXEndpoint_Builder_withExecutor`), are listed in the "The v4 functions"
+  group of the C API reference and in the wrapper guide ("Tiers and versioning").
 - **The v4 functions.** The `dxfg_v4_` functions (`dxfg_v4_<area>.h`, included by `dxfg_api.h`) do what the older
   functions do in one form: they return the `int32_t` status only, write the result to the last parameter, marked
   `DXFG_OUT`, take the exception with `dxfg_v4_get_and_clear_thread_exception`, return collections as
@@ -810,6 +819,22 @@ for them forever while any endpoint is open. Before tearing down the isolate (or
    the isolate to detach (`graal_detach_thread`). A wrapper that keeps threads attached until they end (a thread pool,
    isolate threads kept in thread-local storage) calls `graal_detach_all_threads_and_tear_down_isolate` instead, once
    none of those threads runs an SDK function: it detaches them all and tears the isolate down.
+
+What `dxfg_v4_system_shutdown` guarantees and what it does not (`dxfg_v4_system.h` has the details):
+
+- A second call is allowed. The listeners stay deactivated; the call closes what was created since the previous one
+  (event queues, endpoints, instrument profile connections) and returns at once when nothing is left.
+- Only the listeners of the `dxfg_*Listener_new` functions stop. The handlers of `dxfg_v4_Promise_whenDone` and
+  `dxfg_v4_Promise_whenDoneAsync`, the functions of `dxfg_v4_Object_finalize` and the schedule filters of
+  `dxfg_v4_DayFilter_new`/`dxfg_v4_SessionFilter_new` (and their `WithUserData` variants) are still called afterwards,
+  so their user data lives until they have run or the isolate is torn down (a filter: until it is released).
+- It acts on its own isolate. A new isolate created after it works, also after `graal_tear_down_isolate` of the old
+  one, except in `oracle-g1`, which allows one isolate per process: there a process does not get a new isolate after
+  the shutdown.
+- It waits without a limit. To bound the wait, call it on a thread of its own (attached to the isolate) and wait for
+  that thread with a timeout. If the timeout expires, the call is still running: do not free the listeners' user data
+  and do not tear the isolate down (the tear-down waits for that thread); keep waiting, or report the hang and end the
+  process.
 
 An endpoint terminates only after the tasks it scheduled on its executor have run. For an endpoint with the executor
 of `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new`, which runs tasks only when asked, `dxfg_v4_system_shutdown`,

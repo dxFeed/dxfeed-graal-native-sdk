@@ -124,9 +124,13 @@ target_link_options(${target}
 # Testing
 #
 
-add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
+# The case that tears an isolate down runs in a process of its own, selected by its test suite; a test suite that
+# matches no case fails instead of passing.
+add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> --test-suite-exclude=TearDown)
+add_test(NAME ${target}TearDown COMMAND $<TARGET_FILE:${target}> --test-suite=TearDown)
+set_tests_properties(${target}TearDown PROPERTIES FAIL_REGULAR_EXPRESSION "test cases: *0 [|]")
 # Uses a second isolate or one created after a teardown: not run with the G1 GC (one isolate per process).
-set_tests_properties(${target} PROPERTIES LABELS multi-isolate)
+set_tests_properties(${target} ${target}TearDown PROPERTIES LABELS multi-isolate)
 
 
 #

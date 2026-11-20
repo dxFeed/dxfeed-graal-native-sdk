@@ -106,12 +106,38 @@ int32_t dxfg_v4_system_close_all_and_await_termination(graal_isolatethread_t *th
  * The function calls dxfg_v4_NativeListener_deactivateAll(), which also closes the event queues, and then
  * dxfg_v4_system_close_all_and_await_termination(), so that no listener is called and no poll waits while the
  * endpoints are closed. Both steps wait without a limit; like them, the function is irreversible: the listeners
- * created afterwards are never called, the endpoints created afterwards are not closed by it.
+ * created afterwards are never called, the event queues created afterwards are closed from the start, the endpoints
+ * created afterwards are not closed by it.
+ *
+ * A second call is allowed: the listeners stay deactivated, and the call closes the event queues, the endpoints and
+ * the instrument profile connections created since the previous one and waits for those endpoints; with nothing to
+ * close, it returns #DXFG_EXECUTE_SUCCESSFULLY at once.
+ *
+ * Only the listeners of the `dxfg_*Listener_new` functions are stopped. These callbacks are not listeners and are still
+ * called after the function returns: the handlers of dxfg_v4_Promise_whenDone() and dxfg_v4_Promise_whenDoneAsync()
+ * when a promise completes, the functions of dxfg_v4_Object_finalize() when an object is collected, and the filters of
+ * dxfg_v4_DayFilter_new(), dxfg_v4_DayFilter_newWithUserData(), dxfg_v4_SessionFilter_new() and
+ * dxfg_v4_SessionFilter_newWithUserData() when a search uses them. Keep their user data until they cannot be called
+ * anymore: a promise handler or a finalizer until it has run (it runs once) or the isolate is torn down, a filter until
+ * its last handle is released.
+ *
+ * The function acts on the isolate of `thread` only. Another isolate of the process keeps its listeners and endpoints,
+ * and a new isolate created afterwards works from the start, also after graal_tear_down_isolate() of this one. The
+ * `oracle-g1` build variant allows one isolate per process, so there the process cannot create another one: after the
+ * shutdown its isolate serves only the calls that need no listener and no event queue, until the process exits.
+ *
+ * The function waits for the listeners' calls in progress and for the endpoints without a limit. To bound the wait, a
+ * wrapper calls it on a thread of its own, attached to the isolate, and waits for that thread with a timeout. When the
+ * timeout expires, the function is still running, so the wrapper must not free the user data of the listeners (a call
+ * may still be in progress), call graal_tear_down_isolate() (it waits for that thread to detach) or
+ * graal_detach_all_threads_and_tear_down_isolate() (that thread is in an SDK function). It may keep waiting, or report
+ * the hang and end the process with the isolate as it is: the threads of the isolate end with the process.
  *
  * Recommended shutdown sequence:
  * 1. dxfg_v4_system_shutdown(). After it returns, no listener's function is called and none of its calls is in
- *    progress, so the user data of the listeners can be freed; every poll of an event queue returns
- *    #DXFG_EVENT_QUEUE_CLOSED, so the polling threads can leave the SDK.
+ *    progress, so the user data of the listeners can be freed (not that of the promise handlers, the finalizers and
+ *    the filters, see above); every poll of an event queue returns #DXFG_EVENT_QUEUE_CLOSED, so the polling threads
+ *    can leave the SDK.
  * 2. Release the remaining handles (dxfg_v4_JavaObjectHandler_release()), the listeners among them.
  * 3. graal_tear_down_isolate(), if the isolate is torn down at all; the process may also just exit.
  *
