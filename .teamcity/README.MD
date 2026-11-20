@@ -524,8 +524,8 @@ its mail.
 The Rust API (`dxfeed-graal-rust-api`) is synced the same way by the `[DXFR]: GitHub -> Jira Sync & EMail On Release`
 build (Etc.) with `jira-sync/rust_api_jira_sync.py`: the Jira versions `graal-rust-api vX.Y.Z`, the component
 `dxfeed-graal-rust-api`, the issue property `rust-api-github-sync`, the release mail `[release][DXFR]` with the link to
-docs.rs. The build starts with `scheduled = false`. `graal-rust-api v0.5.0` is there and released; the tickets of the
-next major release have the fix version `graal-rust-api v1.0.0` already, which a merge keeps.
+docs.rs. Its dry run was checked before it was scheduled: `graal-rust-api v0.5.0` is there and released, and the
+tickets of the next major release have the fix version `graal-rust-api v1.0.0` already, which a merge keeps.
 
 The code that the build shares with `Release in Jira` (below) is in `jira-sync/jira_sync_common.py`: the clients of
 GitHub and Jira, the log, the mail, the dry run and the transitions.
