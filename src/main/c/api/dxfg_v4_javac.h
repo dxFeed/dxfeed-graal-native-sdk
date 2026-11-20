@@ -346,6 +346,10 @@ int32_t dxfg_v4_Executors_newScheduledThreadPool(graal_isolatethread_t *thread, 
  * dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks() is called, on the thread that calls it. Use it
  * to have the calls of the listeners made on a thread of your own.
  *
+ * An endpoint terminates only after the tasks it scheduled on its executor have run. For an endpoint with this executor,
+ * dxfg_v4_DXEndpoint_closeAndAwaitTermination(), dxfg_v4_system_close_all_and_await_termination() and
+ * dxfg_v4_system_shutdown() therefore run the tasks of the executor on their calling thread while they wait.
+ *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[out] executor The pointer to the variable that receives the executor (release it with
  * dxfg_v4_JavaObjectHandler_release()); must not be NULL.

@@ -806,7 +806,15 @@ for them forever while any endpoint is open. Before tearing down the isolate (or
    profile connections created through the SDK and waits for the termination of the endpoints
    (`dxfg_v4_system_close_all_and_await_termination`). It cannot be undone; call it in the explicit shutdown of the
    application, not from an exit handler of a DLL.
-2. Release the remaining handles and call `graal_tear_down_isolate`.
+2. Release the remaining handles and call `graal_tear_down_isolate`. It also waits for the other threads attached to
+   the isolate to detach (`graal_detach_thread`). A wrapper that keeps threads attached until they end (a thread pool,
+   isolate threads kept in thread-local storage) calls `graal_detach_all_threads_and_tear_down_isolate` instead, once
+   none of those threads runs an SDK function: it detaches them all and tears the isolate down.
+
+An endpoint terminates only after the tasks it scheduled on its executor have run. For an endpoint with the executor
+of `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new`, which runs tasks only when asked, `dxfg_v4_system_shutdown`,
+`dxfg_v4_system_close_all_and_await_termination` and `dxfg_v4_DXEndpoint_closeAndAwaitTermination` run those tasks on
+the calling thread while they wait.
 
 To find the threads that block the tear-down, pass `-XX:TearDownWarningSeconds=<seconds>` in
 `graal_create_isolate_params_t.argv` (the debug builds use 10 seconds by default).
@@ -827,7 +835,8 @@ Their total does not grow with the threads that attach and detach or with the en
 
 For the sanitizer tests of an application or a wrapper, either:
 
-- tear the isolate down before the exit, as [Shutdown](#shutdown) describes. Nothing then needs to be suppressed, and
+- tear the isolate down before the exit, as [Shutdown](#shutdown) describes (with
+  `graal_detach_all_threads_and_tear_down_isolate` when threads stay attached). Nothing then needs to be suppressed, and
   LSan reports the leaks of the calling code, including the handles that are never released
   (`dxfg_v4_JavaObjectHandler_release`);
 - or suppress the library: `leak:libDxFeedGraalNativeSdk` in the file of `LSAN_OPTIONS=suppressions=<file>`. LSan

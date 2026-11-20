@@ -101,7 +101,7 @@ public final class EndpointNative {
             final IsolateThread ignoredThread,
             final DxfgEndpoint dxfgEndpoint
     ) throws InterruptedException {
-        NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint).closeAndAwaitTermination();
+        IsolateResources.closeAndAwaitTermination(NativeUtils.MAPPER_ENDPOINT.toJava(dxfgEndpoint));
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 

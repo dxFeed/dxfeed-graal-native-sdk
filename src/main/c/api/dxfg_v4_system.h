@@ -88,7 +88,9 @@ int32_t dxfg_v4_system_release_property(graal_isolatethread_t *thread, const cha
  *
  * The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an
  * endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the
- * call are not closed by it. The function is a function of the SDK: there is no QD method that it calls.
+ * call are not closed by it. The function is a function of the SDK: there is no QD method that it calls. For an
+ * endpoint with the executor of dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new(), it runs the tasks of that executor on
+ * the calling thread while it waits, as dxfg_v4_DXEndpoint_closeAndAwaitTermination() does.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also if

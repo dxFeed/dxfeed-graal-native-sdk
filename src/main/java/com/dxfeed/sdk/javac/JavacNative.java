@@ -17,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -809,7 +808,7 @@ public class JavacNative {
     public static DxfgExecutorHandle dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(
             final IsolateThread ignoredThread
     ) {
-        return NativeUtils.MAPPER_EXECUTOR.toNative(new ExecutorBaseOnConcurrentLinkedQueue());
+        return NativeUtils.MAPPER_EXECUTOR.toNative(new InPlaceExecutor());
     }
 
     @CEntryPoint(
@@ -821,12 +820,12 @@ public class JavacNative {
             final DxfgExecutorHandle executor
     ) {
         final Executor javaExecutor = NativeUtils.MAPPER_EXECUTOR.toJavaOfAnyKind(executor);
-        if (!(javaExecutor instanceof ExecutorBaseOnConcurrentLinkedQueue)) {
+        if (!(javaExecutor instanceof InPlaceExecutor)) {
             throw new IllegalArgumentException("The executor was not created by "
                     + "dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new or "
                     + "dxfg_ExecutorBaseOnConcurrentLinkedQueue_new");
         }
-        ((ExecutorBaseOnConcurrentLinkedQueue) javaExecutor).processAllPendingTasks();
+        ((InPlaceExecutor) javaExecutor).processAllPendingTasks();
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
     }
 
@@ -891,23 +890,6 @@ public class JavacNative {
                 }
         );
         return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
-    }
-
-    private static class ExecutorBaseOnConcurrentLinkedQueue implements Executor {
-
-        private final ConcurrentLinkedQueue<Runnable> taskQueue = new ConcurrentLinkedQueue<>();
-
-        @Override
-        public void execute(final Runnable command) {
-            taskQueue.add(command);
-        }
-
-        public void processAllPendingTasks() {
-            Runnable task;
-            while ((task = taskQueue.poll()) != null) {
-                task.run();
-            }
-        }
     }
 
     private static class PoolThreadFactory implements ThreadFactory {

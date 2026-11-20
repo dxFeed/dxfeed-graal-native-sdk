@@ -1,3 +1,8 @@
+* **\[MDAPI-603]\[GRAAL]** `dxfg_v4_system_shutdown`, `dxfg_v4_system_close_all_and_await_termination` and
+  `dxfg_v4_DXEndpoint_closeAndAwaitTermination` no longer wait forever for an endpoint with the executor of
+  `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new`: the endpoint terminates only after the tasks it scheduled on the
+  executor have run, so these functions now run them on the calling thread while they wait. The active listeners of
+  such an endpoint may be called on that thread. See [Shutdown](README.md#shutdown).
 * **\[MDAPI-602]\[GRAAL]** The README explains the LeakSanitizer reports inside the SDK at the exit of a process that
   does not tear the isolate down (the memory of the isolate's runtime, up to about 11 KB, which does not grow), and the
   two ways for sanitizer tests: tear the isolate down, or suppress `leak:libDxFeedGraalNativeSdk`, which also hides the
