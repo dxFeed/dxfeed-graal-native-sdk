@@ -15,6 +15,20 @@ var group__V4__MessageConnector =
       [ "written_bytes", "structdxfg__v4__message__connector__stats__t.html#a50ae9ef625a764d8869650edbfc13028", null ],
       [ "written_data_records", "structdxfg__v4__message__connector__stats__t.html#a178b32d00af6b09aa127a4f41bf30eb2", null ]
     ] ],
+    [ "dxfg_v4_message_connector_io_stats_t", "structdxfg__v4__message__connector__io__stats__t.html", [
+      [ "active_connection_count", "structdxfg__v4__message__connector__io__stats__t.html#abef564bd9051fd939c051f90389783a7", null ],
+      [ "closed_connection_count", "structdxfg__v4__message__connector__io__stats__t.html#aabc9ace32d33e4c8aa9d92aff1b8360a", null ],
+      [ "read_bytes", "structdxfg__v4__message__connector__io__stats__t.html#a5bffd490c02d4b684fb304f388a6ca37", null ],
+      [ "read_data_lag_sum_us", "structdxfg__v4__message__connector__io__stats__t.html#af4cd8472c81e94212c97a1f9810f5118", null ],
+      [ "read_data_records", "structdxfg__v4__message__connector__io__stats__t.html#adef7fd35bc6aee4fa68b56df0d04a118", null ],
+      [ "read_rtt_sum_us", "structdxfg__v4__message__connector__io__stats__t.html#af8080ecd598cb9486bebe25716245e31", null ],
+      [ "read_sub_records", "structdxfg__v4__message__connector__io__stats__t.html#a753e300c702225a16ba3a38bd331f749", null ],
+      [ "written_bytes", "structdxfg__v4__message__connector__io__stats__t.html#afa3ee59fa55f93999a935af3bc2ee0b0", null ],
+      [ "written_data_lag_sum_us", "structdxfg__v4__message__connector__io__stats__t.html#a81cee4d75b6226d571815d877ea645f6", null ],
+      [ "written_data_records", "structdxfg__v4__message__connector__io__stats__t.html#a0fc23a86c645b213ebc357d63f964423", null ],
+      [ "written_rtt_sum_us", "structdxfg__v4__message__connector__io__stats__t.html#a5a3938e903aee870425519d5b91bc71e", null ],
+      [ "written_sub_records", "structdxfg__v4__message__connector__io__stats__t.html#a1208138fccc21f664a8beb04636da710", null ]
+    ] ],
     [ "dxfg_v4_message_connector_listener_t", "structdxfg__v4__message__connector__listener__t.html", [
       [ "handler", "structdxfg__v4__message__connector__listener__t.html#a9e5144812cc6dfaa15ba5a846d0b9b7c", null ]
     ] ],
@@ -42,6 +56,7 @@ var group__V4__MessageConnector =
     [ "DXFG_V4_MESSAGE_CONNECTOR_STATE_CONNECTING", "group__V4__MessageConnector.html#gafcc6d7d5a3b1a6474f5d01ca030d7502", null ],
     [ "DXFG_V4_MESSAGE_CONNECTOR_STATE_DISCONNECTED", "group__V4__MessageConnector.html#ga7f9282785d522e6592e3debb17ce1f6a", null ],
     [ "dxfg_v4_connection_error_t", "group__V4__MessageConnector.html#ga4722e23599c19a44162a50c32d77fefd", null ],
+    [ "dxfg_v4_message_connector_io_stats_t", "group__V4__MessageConnector.html#gad72c58e18fc1220d85909ba1c275980a", null ],
     [ "dxfg_v4_message_connector_list", "group__V4__MessageConnector.html#ga97c5804d3414dc41e0f0c2f115cccbc6", null ],
     [ "dxfg_v4_message_connector_listener_func", "group__V4__MessageConnector.html#ga6fe4e678f04141a528b84b2e9233069e", null ],
     [ "dxfg_v4_message_connector_listener_t", "group__V4__MessageConnector.html#ga327c44a9c7bb6086f2699265163269e5", null ],
@@ -57,6 +72,7 @@ var group__V4__MessageConnector =
     [ "dxfg_v4_MessageConnector_getClosedConnectionCount", "group__V4__MessageConnector.html#ga08f19a749878d15e506cb0e719a46b32", null ],
     [ "dxfg_v4_MessageConnector_getConnectionCount", "group__V4__MessageConnector.html#gaeec6575095d1d8576f2a1c5d7c5c4c2a", null ],
     [ "dxfg_v4_MessageConnector_getCurrentAddresses", "group__V4__MessageConnector.html#ga6c7899e20abaa636fcc318784a98bf50", null ],
+    [ "dxfg_v4_MessageConnector_getIoStatistics", "group__V4__MessageConnector.html#gaae03242bdeccee35b4698289e508f471", null ],
     [ "dxfg_v4_MessageConnector_getKind", "group__V4__MessageConnector.html#ga419035554cf20479dbda7d22c528ca93", null ],
     [ "dxfg_v4_MessageConnector_getLastError", "group__V4__MessageConnector.html#ga0a6f461c672ddc0e6bd29535118aa0e0", null ],
     [ "dxfg_v4_MessageConnector_getName", "group__V4__MessageConnector.html#ga38acc258682f4617e45d9e052122a6f0", null ],

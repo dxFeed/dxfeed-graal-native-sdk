@@ -126,6 +126,7 @@ var annotated_dup =
     [ "dxfg_v4_feed_filter_listener_t", "structdxfg__v4__feed__filter__listener__t.html", "structdxfg__v4__feed__filter__listener__t" ],
     [ "dxfg_v4_feed_filter_t", "structdxfg__v4__feed__filter__t.html", "structdxfg__v4__feed__filter__t" ],
     [ "dxfg_v4_feed_filter_tracker_t", "structdxfg__v4__feed__filter__tracker__t.html", "structdxfg__v4__feed__filter__tracker__t" ],
+    [ "dxfg_v4_message_connector_io_stats_t", "structdxfg__v4__message__connector__io__stats__t.html", "structdxfg__v4__message__connector__io__stats__t" ],
     [ "dxfg_v4_message_connector_list", "structdxfg__v4__message__connector__list.html", "structdxfg__v4__message__connector__list" ],
     [ "dxfg_v4_message_connector_listener_t", "structdxfg__v4__message__connector__listener__t.html", "structdxfg__v4__message__connector__listener__t" ],
     [ "dxfg_v4_message_connector_stats_t", "structdxfg__v4__message__connector__stats__t.html", "structdxfg__v4__message__connector__stats__t" ],

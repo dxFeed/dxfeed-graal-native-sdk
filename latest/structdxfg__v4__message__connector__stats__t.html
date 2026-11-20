@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.17.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.18.0</span>
    </div>
   </td>
  </tr>
@@ -129,6 +129,7 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The statistics of a message connector (<a class="el" href="group__V4__MessageConnector.html#ga972b22a5fd181b80302e36492338ea8b" title="Reads the statistics of a message connector: the bytes and data records read and written,...">dxfg_v4_MessageConnector_getStatistics()</a>). </p>
 <p>The counters cover all the connections of the connector since it was created, the closed ones included. The layout of the struct does not change: new counters will come with a new function.</p>
+<p>A stopped connector (replaced by a connect to another address, disconnected, or of a closed endpoint) reads 0 for <span class="tt"><a class="el" href="#a9948c4f0b6afc5f8abd5ff628e019653">read_data_records</a></span> and <span class="tt"><a class="el" href="#a178b32d00af6b09aa127a4f41bf30eb2">written_data_records</a></span>: QD closes its statistics. The bytes and connection counts stay.</p>
 <p>On iOS and the iOS Simulator, <span class="tt"><a class="el" href="#a9948c4f0b6afc5f8abd5ff628e019653">read_data_records</a></span> and <span class="tt"><a class="el" href="#a178b32d00af6b09aa127a4f41bf30eb2">written_data_records</a></span> stay 0: the SDK of these platforms has no QD monitoring (<span class="tt">qds-monitoring</span>), which keeps the statistics they come from. The other counters work there too. </p><dl class="section since"><dt>Since</dt><dd>3.14.0 </dd></dl>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a9b6bc3c3a212e87b260b6d600c035b29" name="a9b6bc3c3a212e87b260b6d600c035b29"></a>

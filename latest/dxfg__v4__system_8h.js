@@ -5,6 +5,7 @@ var dxfg__v4__system_8h =
     [ "DXFG_V4_FEATURE_EVENT_QUEUE", "group__V4__System.html#ga2bd91d32cda673e8c955ed4bc54f2c11", null ],
     [ "DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL", "group__V4__System.html#ga789bfc852d0146265a381c2c7105acfd", null ],
     [ "DXFG_V4_FEATURE_FEED_FILTER", "group__V4__System.html#gaad3bb12d3592eeacb2798e1d06eafd1e", null ],
+    [ "DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS", "group__V4__System.html#gab3c427b312dfc0de9712d503a99e9c3d", null ],
     [ "DXFG_V4_FEATURE_MESSAGE_CONNECTORS", "group__V4__System.html#ga9d4a7c677cef2f7f5a0e0a23fed0012f", null ],
     [ "DXFG_V4_FEATURE_RUNTIME_STATISTICS", "group__V4__System.html#gaee725d60e625e3ccb1e4874296cf1e70", null ],
     [ "DXFG_V4_FEATURE_SHARED_EVENT_QUEUE", "group__V4__System.html#gad1d9a26203f86a4889b8f64899a377d4", null ],

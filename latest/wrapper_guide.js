@@ -32,5 +32,24 @@ var wrapper_guide =
       [ "What the kit proves", "wrapper_kit.html#wrapper_kit_proves", null ],
       [ "What the kit cannot prove", "wrapper_kit.html#wrapper_kit_limits", null ],
       [ "What the LOCAL_HUB does not keep", "wrapper_kit.html#wrapper_kit_hub", null ]
+    ] ],
+    [ "NetTest specification", "wrapper_nettest.html", [
+      [ "Terms", "wrapper_nettest.html#wrapper_nettest_terms", null ],
+      [ "Command line", "wrapper_nettest.html#wrapper_nettest_cli", null ],
+      [ "Contracts and roles", "wrapper_nettest.html#wrapper_nettest_roles", null ],
+      [ "Rate limit and schedule", "wrapper_nettest.html#wrapper_nettest_rate", null ],
+      [ "Events and pools", "wrapper_nettest.html#wrapper_nettest_events", null ],
+      [ "Time, sequence and symbols", "wrapper_nettest.html#wrapper_nettest_time", null ],
+      [ "Output lines", "wrapper_nettest.html#wrapper_nettest_lines", null ],
+      [ "Consumer", "wrapper_nettest.html#wrapper_nettest_consumer", null ],
+      [ "Summary file", "wrapper_nettest.html#wrapper_nettest_summary", null ],
+      [ "Metrics", "wrapper_nettest.html#wrapper_nettest_metrics", null ],
+      [ "Connector statistics", "wrapper_nettest.html#wrapper_nettest_connectors", null ],
+      [ "Exit codes and status", "wrapper_nettest.html#wrapper_nettest_exit", null ],
+      [ "Sustainability", "wrapper_nettest.html#wrapper_nettest_sustainability", null ],
+      [ "What the tests of a tool prove", "wrapper_nettest.html#wrapper_nettest_tests", null ],
+      [ "The kit", "wrapper_nettest.html#wrapper_nettest_kit", null ],
+      [ "Differences from QD NetTest", "wrapper_nettest.html#wrapper_nettest_qd", null ],
+      [ "The SDK tools", "wrapper_nettest.html#wrapper_nettest_sdk_tools", null ]
     ] ]
 ];

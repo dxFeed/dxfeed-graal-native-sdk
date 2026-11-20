@@ -1,5 +1,8 @@
 var NAVTREEINDEX9 =
 {
+"structdxfg__logging__listener__t.html":[3,11,0],
+"structdxfg__logging__listener__t.html#aa87188093c8871bd23f662242879f3f8":[3,11,0,0],
+"structdxfg__market__event__t.html":[4,0,53],
 "structdxfg__market__event__t.html#aa8eebb92788be779a60f32d3f1884bd7":[4,0,53,1],
 "structdxfg__market__event__t.html#ac66652e38ece78f5898b3916a7f3d2c0":[4,0,53,0],
 "structdxfg__market__event__t.html#ad4208cef23f72af602a9a49960387881":[4,0,53,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX9 =
 "structdxfg__text__configuration__t.html#aecc477d1943e59688e87fefb2af1b9e0":[4,0,100,5],
 "structdxfg__text__configuration__t.html#af40b4f8734d59759e9c0b1bb3f9ba842":[4,0,100,2],
 "structdxfg__text__message__t.html":[4,0,101],
-"structdxfg__text__message__t.html#a113778a98011d5b6a9a3048f8f5885a5":[4,0,101,1],
-"structdxfg__text__message__t.html#a199243c06d3600bc955e9701b6912e09":[4,0,101,3],
-"structdxfg__text__message__t.html#a419bfad013e704b18a7280dd69bff282":[4,0,101,2],
-"structdxfg__text__message__t.html#a43fce1f30c03356e55d949a36a082acd":[4,0,101,0]
+"structdxfg__text__message__t.html#a113778a98011d5b6a9a3048f8f5885a5":[4,0,101,1]
 };

@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['objects_0',['Lifetimes of objects',['../wrapper_ownership.html#wrapper_ownership_lifetimes',1,'']]],
-  ['of_20data_1',['Delivery of data',['../wrapper_delivery.html',1,'wrapper_guide']]],
-  ['of_20objects_2',['Lifetimes of objects',['../wrapper_ownership.html#wrapper_ownership_lifetimes',1,'']]],
-  ['outcomes_3',['Return codes and outcomes',['../wrapper_outcomes.html',1,'wrapper_guide']]],
-  ['outcomes_20that_20are_20not_20errors_4',['Outcomes that are not errors',['../wrapper_outcomes.html#wrapper_outcomes_waiting',1,'']]],
-  ['ownership_20and_20lifetimes_5',['Ownership and lifetimes',['../wrapper_ownership.html',1,'wrapper_guide']]]
+  ['nettest_0',['Differences from QD NetTest',['../wrapper_nettest.html#wrapper_nettest_qd',1,'']]],
+  ['nettest_20specification_1',['NetTest specification',['../wrapper_nettest.html',1,'wrapper_guide']]],
+  ['not_20errors_2',['Outcomes that are not errors',['../wrapper_outcomes.html#wrapper_outcomes_waiting',1,'']]],
+  ['not_20keep_3',['What the LOCAL_HUB does not keep',['../wrapper_kit.html#wrapper_kit_hub',1,'']]]
 ];

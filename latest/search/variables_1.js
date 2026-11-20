@@ -1,7 +1,7 @@
 var searchData=
 [
   ['action_5ftime_0',['action_time',['../structdxfg__order__base__t.html#a9275c0b7cc2f8f99073e766f3931d655',1,'dxfg_order_base_t']]],
-  ['active_5fconnection_5fcount_1',['active_connection_count',['../structdxfg__v4__message__connector__stats__t.html#a9b6bc3c3a212e87b260b6d600c035b29',1,'dxfg_v4_message_connector_stats_t']]],
+  ['active_5fconnection_5fcount_1',['active_connection_count',['../structdxfg__v4__message__connector__stats__t.html#a9b6bc3c3a212e87b260b6d600c035b29',1,'dxfg_v4_message_connector_stats_t::active_connection_count'],['../structdxfg__v4__message__connector__io__stats__t.html#abef564bd9051fd939c051f90389783a7',1,'dxfg_v4_message_connector_io_stats_t::active_connection_count']]],
   ['actor_5fid_2',['actor_id',['../structdxfg__nuam__order__t.html#a6011b9fbd2bb47b7d7ab3b80efd47922',1,'dxfg_nuam_order_t']]],
   ['additional_5funderlyings_3',['additional_underlyings',['../structdxfg__instrument__profile2__t.html#ad1fcc307a75196ac8ba37abc46c7d5b4',1,'dxfg_instrument_profile2_t']]],
   ['address_4',['address',['../structdxfg__v4__connection__error__t.html#a22bc3a9d8bbcd75e55a9658d5926349f',1,'dxfg_v4_connection_error_t']]],

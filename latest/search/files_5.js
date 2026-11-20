@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['threads_2emd_0',['threads.md',['../threads_8md.html',1,'']]]
+  ['outcomes_2emd_0',['outcomes.md',['../outcomes_8md.html',1,'']]],
+  ['ownership_2emd_1',['ownership.md',['../ownership_8md.html',1,'']]]
 ];
