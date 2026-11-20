@@ -62,7 +62,7 @@ NOTES_KEY_PATTERN = re.compile(r"\b(?:MDAPI|QD)-\d+\b")
 SDK_TAG = "[graal]"
 SDK_COMPONENTS = {"dxfeed-graal-api", "dxfeed-graal-native-sdk"}
 SHARED_COMPONENT = "dxfeed-graal-api"  # of the tickets of the other APIs too
-OTHER_API_TAGS = ("[c++]", "[c#]", "[.net]", "[go]", "[swift]")
+OTHER_API_TAGS = ("[c++]", "[c#]", "[.net]", "[go]", "[rust]", "[swift]")
 OTHER_API_COMPONENT_PREFIX = "dxfeed-graal-"  # the components of the APIs other than SDK_COMPONENTS
 
 # The ids of the statuses of the MDAPI workflow.
@@ -84,6 +84,7 @@ APIS = [
     ("C++ API", "https://github.com/dxFeed/dxfeed-graal-cxx-api", None),
     (".NET API", "https://github.com/dxFeed/dxfeed-graal-net-api", None),
     ("Go API", "https://github.com/dxFeed/dxfeed-graal-go-api", None),
+    ("Rust API", "https://github.com/dxFeed/dxfeed-graal-rust-api", None),
     ("Swift API", "https://github.com/dxFeed/dxfeed-graal-swift-api",
      "https://stash.in.devexperts.com/projects/MDAPI/repos/dxfeed-graal-swift-api"),
 ]

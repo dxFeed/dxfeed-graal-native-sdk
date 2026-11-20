@@ -513,13 +513,20 @@ itself.
 The Go API (`dxfeed-graal-go-api`) is synced the same way by the `[DXFGO]: GitHub -> Jira Sync & EMail On Release` build
 (Etc.) with `jira-sync/go_api_jira_sync.py`: the Jira versions `graal-go-api vX.Y.Z` (the release `v0.5.0` renames the
 placeholder `graal-go-api v0.4.1` that the first merge after `v0.4.0` creates), the component `dxfeed-graal-go-api`, the
-issue property `go-api-github-sync`, the release mail `[release][DXFGO]` to the same recipients. The two builds share
+issue property `go-api-github-sync`, the release mail `[release][DXFGO]` to the same recipients. The builds share
 the steps (`gitHubJiraSync` in `Common.kt`) and nothing else: each sees only the pull requests of its repository, so a
 ticket belongs to one repository (a ticket with pull requests in both moves on with the first merge and gets the fix
 version of that repository alone). A build for another repository starts with `scheduled = false` until a run with
 `env.DRY_RUN` = `1` in the Run dialog has been checked: the Jira version of its last release has to be there and
 released, or else the first merge creates the placeholder `v0.0.1` and that release renames it, releases it and sends
 its mail.
+
+The Rust API (`dxfeed-graal-rust-api`) is synced the same way by the `[DXFR]: GitHub -> Jira Sync & EMail On Release`
+build (Etc.) with `jira-sync/rust_api_jira_sync.py`: the Jira versions `graal-rust-api vX.Y.Z`, the component
+`dxfeed-graal-rust-api`, the issue property `rust-api-github-sync`, the release mail `[release][DXFR]` with the link to
+docs.rs. The build starts with `scheduled = false`. `graal-rust-api v0.5.0` is there and released; the tickets of the
+next major release have the fix version `graal-rust-api v1.0.0` already, which a merge keeps.
+
 The code that the build shares with `Release in Jira` (below) is in `jira-sync/jira_sync_common.py`: the clients of
 GitHub and Jira, the log, the mail, the dry run and the transitions.
 

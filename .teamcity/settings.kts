@@ -231,6 +231,7 @@ object Etc : Project({
 
     buildType(CxxApiGitGubJiraSync)
     buildType(GoApiGitHubJiraSync)
+    buildType(RustApiGitHubJiraSync)
 })
 
 object ReleaseTheNextPatch : BuildType({
@@ -1923,6 +1924,17 @@ object GoApiGitHubJiraSync : BuildType({
     description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-go-api"
 
     gitHubJiraSync("go_api_jira_sync.py", resendExample = "v0.5.0")
+})
+
+/**
+ * The same for the Rust API (dxfeed-graal-rust-api on GitHub), with the Jira versions graal-rust-api vX.Y.Z (see
+ * .teamcity/jira-sync/rust_api_jira_sync.py). Not scheduled until a run with env.DRY_RUN = 1 has been checked.
+ */
+object RustApiGitHubJiraSync : BuildType({
+    name = "[DXFR]: GitHub -> Jira Sync & EMail On Release"
+    description = "The MDAPI tickets of the pull requests and the Jira versions of the releases of dxfeed-graal-rust-api"
+
+    gitHubJiraSync("rust_api_jira_sync.py", resendExample = "v0.5.0", scheduled = false)
 })
 
 object ListDockerImages : BuildType({
