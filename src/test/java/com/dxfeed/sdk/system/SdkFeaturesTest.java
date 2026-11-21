@@ -71,6 +71,12 @@ public class SdkFeaturesTest {
     }
 
     @Test
+    public void buildInfoFeatureIsSupported() {
+        assertTrue(SdkFeatures.isSupported(SdkFeatures.BUILD_INFO));
+        assertTrue(SdkFeatures.isSupported("build_info"));
+    }
+
+    @Test
     public void unknownAndEmptyNamesAreNotSupported() {
         assertFalse(SdkFeatures.isSupported("no_such_feature"));
         assertFalse(SdkFeatures.isSupported(""));

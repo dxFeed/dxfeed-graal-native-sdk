@@ -68,9 +68,16 @@ public final class SdkFeatures {
      */
     public static final String MESSAGE_CONNECTOR_IO_STATISTICS = "message_connector_io_statistics";
 
+    /**
+     * {@code DXFG_V4_FEATURE_BUILD_INFO}: the build info of the library ({@code dxfg_v4_system_get_build_info}).
+     *
+     * @since 3.19.0
+     */
+    public static final String BUILD_INFO = "build_info";
+
     private static final Set<String> FEATURES = Set.of(EVENT_QUEUE, SHARED_EVENT_QUEUE, EVENT_QUEUE_READY_SIGNAL,
             FEED_FILTER, TIME_SERIES_TX_MODEL_EVENT_PEEK, MESSAGE_CONNECTORS, CONNECTION_ERRORS, RUNTIME_STATISTICS,
-            MESSAGE_CONNECTOR_IO_STATISTICS);
+            MESSAGE_CONNECTOR_IO_STATISTICS, BUILD_INFO);
 
     private SdkFeatures() {
     }

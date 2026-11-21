@@ -180,6 +180,29 @@ public final class SystemV4Native {
     }
 
     @CEntryPoint(
+            name = "dxfg_v4_system_get_build_info",
+            exceptionHandler = ExceptionHandlerReturnMinusOne.class
+    )
+    public static int dxfg_v4_system_get_build_info(
+            final IsolateThread ignoredThread,
+            final CCharPointer key,
+            @DxfgOut final WordPointer value
+    ) {
+        if (key.isNull()) {
+            throw new IllegalArgumentException("The `key` pointer is null");
+        }
+
+        if (value.isNull()) {
+            throw new IllegalArgumentException("The `value` pointer is null");
+        }
+
+        // A null value is written as the null pointer.
+        value.write(MAPPER_STRING.toNative(SdkBuildInfo.get(MAPPER_STRING.toJava(key))));
+
+        return ExceptionHandlerReturnMinusOne.EXECUTE_SUCCESSFULLY;
+    }
+
+    @CEntryPoint(
             name = "dxfg_v4_system_get_runtime_statistics",
             exceptionHandler = ExceptionHandlerReturnMinusOne.class
     )

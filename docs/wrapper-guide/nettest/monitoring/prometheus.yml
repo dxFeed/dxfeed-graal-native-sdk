@@ -1,0 +1,18 @@
+# Prometheus configuration for NetTest runs (see "Prometheus and Grafana" in ../../nettest.md).
+#
+# The targets are in targets.json next to this file, reread every 5 s: list the address of each --metrics-port there,
+# one entry per tool. Prometheus sets the label `instance` to the address; the tools set `tool`, `side` and `name`.
+global:
+  # The records, the e2e lag and the publishing counters change with every event, so a window of a few scrapes follows
+  # them; the connector and runtime counters change once per statistics period (-s, 10 s by default), and the
+  # dashboard takes a longer window for them.
+  scrape_interval: 2s
+  scrape_timeout: 1s
+
+scrape_configs:
+  - job_name: nettest
+    metrics_path: /metrics
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets.json
+        refresh_interval: 5s

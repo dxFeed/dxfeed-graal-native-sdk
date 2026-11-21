@@ -38,9 +38,10 @@ final class NetTestApiStatistics {
     private final NetTestApiSchedule schedule; // the schedule of the producer; null on the consumer
     private final long warmupNanos; // 0 without --warmup
     private final LongSupplier warmupStart; // the epoch nanoseconds where the warm-up starts, 0 before it starts
-    private long[][] last; // the counters at the last tick, guarded by this; null before the first tick
+    private long[][] last; // the counters at the last tick (zeros at the start), guarded by this
     private long lastNanos;
     private long lastEpochNanos;
+    private boolean ticked; // whether a tick has ended an interval, guarded by this
 
     /** The cumulative values of one instance. */
     static final class Counter {
@@ -155,6 +156,8 @@ final class NetTestApiStatistics {
         this.schedule = schedule;
         this.warmupNanos = warmupNanos;
         this.warmupStart = warmupStart;
+        // The first interval begins here with zero counts, so the intervals cover the whole run.
+        start(System.nanoTime(), NetTestApiClock.epochNanos(), new long[counters.length][Counter.SIZE]);
     }
 
     /** A recorder of e2e lags with the histogram of the specification. */
@@ -173,8 +176,10 @@ final class NetTestApiStatistics {
     }
 
     /**
-     * Ends an interval: returns it, or {@code null} for the first tick, which only starts the count, and for an
-     * interval shorter than {@code minNanos}.
+     * Ends an interval and returns it. The first interval begins when the statistics are created, each next one where
+     * the previous one ends, so the intervals cover the whole run. The {@link Interval#text} of the interval is
+     * {@code null} (no block is printed) for the first tick, which ends the part before the first multiple of the
+     * period, and for an interval shorter than {@code minNanos}.
      */
     synchronized Interval tick(long minNanos) {
         long now = System.nanoTime();
@@ -183,24 +188,9 @@ final class NetTestApiStatistics {
         for (int i = 0; i < counters.length; i++) {
             counters[i].read(values[i]);
         }
-        if (last == null) {
-            // The counts so far belong to no interval; later the swaps of the tick start each new count.
-            if (lags != null) {
-                lags.reset();
-            }
-            if (schedule != null) {
-                schedule.takeSlipMax();
-            }
-            for (Counter counter : counters) {
-                counter.takeMax();
-            }
-            start(now, epochNanos, values);
-            return null;
-        }
         long length = now - lastNanos;
-        if (length < minNanos) {
-            return null;
-        }
+        boolean printed = ticked && length >= minNanos;
+        ticked = true;
         long[] totals = new long[Counter.SIZE];
         long[] records = new long[counters.length];
         long[] nanos = new long[counters.length];
@@ -219,7 +209,8 @@ final class NetTestApiStatistics {
         int open = connections.getAsInt();
         long startEpochNanos = lastEpochNanos;
         start(now, epochNanos, values);
-        return new Interval(format(label, name, length, open, records, nanos), startEpochNanos / NANOS_PER_MILLI,
+        return new Interval(printed ? format(label, name, length, open, records, nanos) : null,
+            startEpochNanos / NANOS_PER_MILLI,
             epochNanos / NANOS_PER_MILLI, length, isWarmup(startEpochNanos, warmupNanos, warmupStart.getAsLong()),
             totals, maxLag, histogram, slipMax, slipEnd, open);
     }

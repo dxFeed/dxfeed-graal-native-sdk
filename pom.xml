@@ -95,7 +95,7 @@
     <windows.static.runtime.buildArg7>-DDXFG1=0</windows.static.runtime.buildArg7>
     <windows.static.runtime.buildArg8>-DDXFG1=0</windows.static.runtime.buildArg8>
     <initialize-at-build-time>
-      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.sdk.model.tx.TimeSeriesTxModel$SortOrder,com.dxfeed.sdk.system.SdkFeatures
+      org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,com.dxfeed.schedule.SessionType,com.dxfeed.api.DXEndpoint$Role,com.dxfeed.api.DXEndpoint$State,com.dxfeed.ipf.live.InstrumentProfileConnection$State,org.slf4j.LoggerFactory,sun.instrument.InstrumentationImpl,com.dxfeed.event.market.Scope,com.dxfeed.model.market.OrderBookModelFilter,com.dxfeed.schedule.SessionFilter,com.dxfeed.schedule.DayFilter,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Compression,com.dxfeed.sdk.candlewebservice.HistoryEndpoint$Format,com.dxfeed.sdk.model.tx.TimeSeriesTxModel$SortOrder,com.dxfeed.sdk.system.SdkFeatures,com.dxfeed.sdk.system.SdkBuildInfo
     </initialize-at-build-time>
     <isRelease>true</isRelease>
     <isDebug>false</isDebug>
@@ -814,6 +814,7 @@
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
+                <buildArg>-Ddxfg.sdk.qd.version=${qd.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core=ALL-UNNAMED</buildArg>
@@ -822,6 +823,7 @@
                   --initialize-at-build-time=${initialize-at-build-time}
                 </buildArg>
                 <buildArg>${march.buildArg}</buildArg>
+                <buildArg>-Ddxfg.sdk.march=${march}</buildArg>
                 <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
                 <buildArg>-H:NativeLinkerOption=${project.build.directory}\version.res</buildArg>
                 <buildArg>${debug.buildArg1}</buildArg>
@@ -1088,6 +1090,7 @@
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
+                <buildArg>-Ddxfg.sdk.qd.version=${qd.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>
@@ -1179,6 +1182,7 @@
                 <buildArg>-H:Name=${native.image.name}</buildArg>
                 <buildArg>-Dproject.path=${project.basedir}</buildArg>
                 <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
+                <buildArg>-Ddxfg.sdk.qd.version=${qd.version}</buildArg>
                 <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
                 <buildArg>-H:Path=${native.image.path}</buildArg>
                 <buildArg>
@@ -1357,6 +1361,7 @@
           <systemPropertyVariables>
             <!-- As the build argument of native-image: the version that SdkFeatures reports. -->
             <dxfg.sdk.version>${project.version}</dxfg.sdk.version>
+            <dxfg.sdk.qd.version>${qd.version}</dxfg.sdk.qd.version>
             <!-- Whether the tests may expect QD's statistics (MessageConnectorsTest). -->
             <dxfg.test.qdMonitoring>${qdMonitoring}</dxfg.test.qdMonitoring>
           </systemPropertyVariables>
@@ -1392,6 +1397,7 @@
             <buildArg>-H:Name=${native.image.name}</buildArg>
             <buildArg>-Dproject.path=${project.basedir}</buildArg>
             <buildArg>-Ddxfg.sdk.version=${project.version}</buildArg>
+            <buildArg>-Ddxfg.sdk.qd.version=${qd.version}</buildArg>
             <buildArg>-H:CLibraryPath=${project.basedir}/</buildArg>
             <buildArg>-H:Path=${native.image.path}</buildArg>
             <buildArg>
@@ -1404,6 +1410,7 @@
               --initialize-at-build-time=${initialize-at-build-time}
             </buildArg>
             <buildArg>${march.buildArg}</buildArg>
+            <buildArg>-Ddxfg.sdk.march=${march}</buildArg>
             <buildArg>-H:BuildOutputJSONFile=${native.image.build.report}</buildArg>
             <buildArg>${debug.buildArg1}</buildArg>
             <buildArg>${debug.buildArg2}</buildArg>

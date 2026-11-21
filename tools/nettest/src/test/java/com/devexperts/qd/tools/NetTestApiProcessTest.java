@@ -51,7 +51,7 @@ public class NetTestApiProcessTest {
     @Test
     public void durationEndsTheRunWithZeroAfterPrintingStatisticsAndTheSummary() throws Exception {
         Path summary = folder.getRoot().toPath().resolve("producer.json");
-        // The first tick only starts the count and the last block needs a second: 5 s leave a tick to spare.
+        // The first tick prints no block and the last block needs a second: 5 s leave a tick to spare.
         ToolProcess process = ToolProcess.start("p", ":0", "-S", "100", "-r", "*/100k", "--duration", "5s",
             "-s", "1s", "--summary", summary.toString(), "--metrics-port", "0");
         String url = process.awaitMetricsUrl();

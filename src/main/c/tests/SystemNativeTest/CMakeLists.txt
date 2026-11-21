@@ -102,10 +102,22 @@ if (NOT CMAKE_MATCH_1)
     message(FATAL_ERROR "No <version> in pom.xml")
 endif ()
 
+set(DXFG_TEST_SDK_VERSION "${CMAKE_MATCH_1}")
+
+# The QDS version that dxfg_v4_system_get_build_info() must report: <qd.version> of pom.xml.
+string(REGEX MATCH "<qd\\.version>([^<]+)</qd\\.version>" POM_QD_VERSION_TAG "${POM_XML}")
+
+if (NOT CMAKE_MATCH_1)
+    message(FATAL_ERROR "No <qd.version> in pom.xml")
+endif ()
+
+set(DXFG_TEST_QD_VERSION "${CMAKE_MATCH_1}")
+
 target_compile_definitions(${target}
         PRIVATE
         ${DEFAULT_COMPILE_DEFINITIONS}
-        DXFG_TEST_SDK_VERSION="${CMAKE_MATCH_1}"
+        DXFG_TEST_SDK_VERSION="${DXFG_TEST_SDK_VERSION}"
+        DXFG_TEST_QD_VERSION="${DXFG_TEST_QD_VERSION}"
         # How the tested library was built (its GC): the build-info file of the same Maven build.
         DXFG_TEST_BUILD_INFO="${GRAAL_CUSTOM_BIN_LOCATION}../docs/graal-native-sdk-build-info.properties"
         )

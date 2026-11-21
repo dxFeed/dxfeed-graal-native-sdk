@@ -123,6 +123,11 @@ struct SummaryStatus {
     std::string error{};
     // The SDK version (dxfg_v4_system_get_version()); empty is null.
     std::string version{};
+    // The values of dxfg_v4_system_get_build_info(): `tool.qd_version` and `tool.build`; empty is null.
+    std::string qdVersion{};
+    std::string vendor{};
+    std::string march{};
+    std::string gc{};
 };
 
 // The JSON text of the summary file, with a line break at the end.

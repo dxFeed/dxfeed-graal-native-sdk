@@ -240,13 +240,17 @@ std::string jsonString(const std::string &text) {
 
 std::string formatSummary(const Options &options, const RunReport &report, const SummaryStatus &status) {
     const bool producer = options.mode == Mode::PRODUCER;
-    const auto build = Object().add("vendor", "null").add("march", "null").add("gc", "null").text();
+    const auto build = Object()
+                           .add("vendor", stringOrNull(status.vendor))
+                           .add("march", stringOrNull(status.march))
+                           .add("gc", stringOrNull(status.gc))
+                           .text();
     const auto tool = Object()
                           .add("implementation", "\"c-api\"")
                           .add("name", "\"NetTest\"")
                           .add("version", stringOrNull(status.version))
                           .add("sdk_version", stringOrNull(status.version))
-                          .add("qd_version", "null")
+                          .add("qd_version", stringOrNull(status.qdVersion))
                           .add("build", build)
                           .text();
     const auto length = report.endEpochNs - report.startEpochNs;

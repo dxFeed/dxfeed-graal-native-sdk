@@ -60,6 +60,8 @@ or after `<address>`.
 - A rate is a positive decimal number with at most one dot and an optional `k`, `M` or `G`: `*/500k`, `*/1.5M`.
 - A tool takes `--option value` and `--option=value` for its long options. A repeated option takes its last value,
   except `-D` and `-X`, which apply in the command-line order.
+- An option with a value takes the next argument as it is, even one that starts with `-`: `-n --help` names the run
+  `--help` and the parsing goes on. `--help` anywhere else prints the usage.
 - A tool should also pass the `-D` properties to its endpoint builders where its API allows; `dxscheme.nanoTime` must
   reach them (@ref wrapper_nettest_time).
 - A tool may add options of its own; their names must not start with `-S`, `-C`, `-r`, `-s`, `-n`, `-c`, `-D`, `-X`
@@ -72,6 +74,8 @@ each one for its command line, and the rest of stderr is free. The first error f
 
 - an unknown option: `unknown flag <option>`;
 - a number out of its limits: `<option> needs a number from 1 to <max>: '<value>'`;
+- a rate of `-r` below 1, above `1e12` or not in the form above:
+  `-r has a bad rate (a positive number with an optional k, M or G): '<value>'`;
 - an option of the class "optional" that the tool does not implement: a text that starts with
   `unsupported option: <option>`;
 - an option of the mode `p` on `c`: `<option> is an option of the mode p`;
@@ -163,8 +167,9 @@ The C API `NetTest`'s algorithm is normative for every tool, so that all tools p
 
 - One clock read per batch, after the limiter's wait and before the fill (step 2 of @ref wrapper_nettest_rate): the
   wall clock with nanosecond resolution (C and C++ `std::chrono::system_clock`, Java `Instant.now()`, .NET
-  `DateTime.UtcNow` with a `Stopwatch` offset where its resolution is coarser, Rust `SystemTime::now()`, Go
-  `time.Now()`).
+  `DateTime.UtcNow`, Rust `SystemTime::now()`, Go `time.Now()`). Where the wall clock of a platform steps coarser than
+  1 us (.NET, Go on Windows), the tool reads it once at the start and adds the time of a monotonic clock since then
+  (.NET `Stopwatch`, Go `time.Since` of the start time, which uses its monotonic reading).
 - From that time `t` in nanoseconds since the epoch: the time in milliseconds `t / 1000000`, the nanosecond part
   `t % 1000000`, and the sequence, a 22-bit counter per instance that grows by one per event and wraps at `2^22`.
   Trade packs the time and the sequence into its time-and-sequence field, TimeAndSale into its index, as the seconds
@@ -198,7 +203,9 @@ there); a parser matches from `{*`. A line ends with the platform's line break; 
 
 A statistics block, once per interval. The intervals end at the multiples of the period on the wall clock; the first
 tick after the start only starts the count and prints nothing. At the stop, a last block covers the time since the last
-tick at its real length, and is printed only when it is at least one second long.
+tick at its real length, and is printed only when it is at least one second long. After a failure (`no_data`,
+`nano_missing`, an error at run time) the last block may be left out; a parser must not expect it. The summary keeps
+both ends whatever is printed (@ref wrapper_nettest_summary).
 
 ```text
 {*NetTestProducerSide-<name>*} data <rps> rps, lag <us> us, instances <C>, connections <M>
@@ -266,8 +273,10 @@ isolate_rejection:  ^NetTest: the isolate rejected one of the options: ([^ \t\r\
   1000 received events all have the nanosecond part 0, the consumer stops with the status `nano_missing` and exit
   code 1: a hop of the path lacks `dxscheme.nanoTime`. With `-Ddxscheme.nanoTime=false` the check is off, and the lag
   is computed with the nanosecond part 0.
-- Starvation: with open connections and no records for 30 s after the first record, or for 60 s after the connection
-  when no record came at all, the consumer stops with the status `no_data` and exit code 1.
+- Starvation: with open connections and no records for 30 s since the last record, once a record has come, or for
+  60 s after the connection when no record came at all, the consumer stops with the status `no_data` and exit code 1.
+  The connections are the open connections of the connectors, not the state of the endpoint: a listening consumer
+  without a peer does not starve.
 - `symbols_seen`: the distinct symbols received.
 - `--warmup` on `c` starts at the first received record, not at the start of the tool, since the consumer starts before
   the publisher; on `p` it starts at the first grant `t0`. An interval that overlaps the end of the warm-up belongs to
@@ -328,7 +337,16 @@ directory that does not exist or cannot be written exits with 2. All keys are al
   @ref wrapper_nettest_rate, the span of the publisher's lag) and
   `schedule_slip: {"max_ns": n, "end_ns": n, "growth_ns_per_s": n}`, which is `null` without `-r`.
 - `phase` is `warmup` or `measure`. The totals of `e2e_lag` leave out the warm-up intervals; each interval keeps its
-  own percentiles. The records of the intervals add up to `records`.
+  own percentiles. The records of the intervals add up to `records`: the intervals cover the whole run, the first from
+  the start to the first tick and the last from the last tick to the end, whatever their length.
+- `schedule_slip`: `max_ns` is the largest `slip_max_ns` of the measured intervals, of all intervals when none is
+  measured (as the totals of `e2e_lag`); `end_ns` is the slip of the last batch; `growth_ns_per_s` is
+  `(slip_end_ns of the last measured interval - slip_end_ns of the first) * 1000 / (end_epoch_ms of the last -
+  end_epoch_ms of the first)`, divided toward zero, and `null` with fewer than two measured intervals.
+- `runtime`: the heap values are those of the end; `gc_count`, `gc_time_ms` and the CPU time are their growth from the
+  start of the run (the first sample of the statistics, before the first tick) to the end, `null` when a counter went
+  back or the runtime does not give it; `cpu_percent_mean` is that CPU time over the same span, in percent of one
+  core, divided toward zero.
 - The percentiles come from an HdrHistogram with the lowest value 1 ns, the highest 3600 s and 3 significant digits:
   a percentile is the value that Java's HdrHistogram 2.1 gives for it (`getValueAtPercentile`, the highest value
   equivalent to its bucket); `histogram-vectors.json` of the kit has recorded values and their percentiles. A lag
@@ -337,6 +355,11 @@ directory that does not exist or cannot be written exits with 2. All keys are al
 - `time_source` is always `actual` in `nettest/1`: the events carry the clock read of their batch. `time_resolution`
   is `ns` when the nanosecond part is set, `ms` otherwise.
 - `implementation` is one of `qd`, `c-api`, `java-api`, `cpp-api`, `net-api`, `rust-api`, `go-api`.
+- `qd_version` is the QDS version that the tool runs on; `build` describes its runtime: `vendor` is the vendor and
+  version of the runtime (Java: `java.vendor.version`, else `java.vm.vendor`), `march` the target machine of a native
+  build (`-march` of native-image), `gc` the names of the garbage collectors, separated by `, `. A tool over the Graal
+  Native SDK takes them from `dxfg_v4_system_get_build_info()` (SDK 3.19.0 and newer, `DXFG_V4_FEATURE_BUILD_INFO`);
+  a value the tool cannot tell is `null`.
 - `status` is one of `ok`, `stopped_by_signal`, `error`, `no_data`, `nano_missing` (@ref wrapper_nettest_exit).
 
 ## Metrics {#wrapper_nettest_metrics}
@@ -365,9 +388,66 @@ used: Prometheus reserves it. A parser reads the `le` values of the buckets as n
 | `nettest_runtime_gc_total`, `nettest_runtime_gc_seconds_total` | counter | collections, s | both | the runtime |
 | `nettest_runtime_cpu_seconds_total` | counter | s | both | the CPU time of the process |
 
-A scrape reads counters that the tool keeps; it must not call into a native runtime from a thread that is not attached
-to it. The port is bound at the start; a port in use exits with 1 before the first endpoint.
+Without `-r`, `nettest_schedule_slip_seconds` has no sample; its `# HELP` and `# TYPE` lines may still be there, and a
+parser must not depend on either form. A scrape reads counters that the tool keeps; it must not call into a native
+runtime from a thread that is not attached to it. The port is bound at the start; a port in use exits with 1 before the first endpoint.
 `metrics-sample-producer.txt` and `metrics-sample-consumer.txt` of the kit are scrapes of each side.
+
+## Prometheus and Grafana {#wrapper_nettest_monitoring}
+
+`monitoring/` of the kit has a Prometheus configuration and a Grafana dashboard for the metrics of every tool: they
+watch a run while it goes; the summary file stays its result. The dashboard selects the runs by `name` and the tools by
+`tool`, and shows the rate of each side and connection, the percentiles and the mean of the e2e lag (from the buckets
+of `nettest_e2e_lag_seconds`, coarser than the summary), the negative lags, the connector lag and round-trip time, the
+publishing time per event, the events per call and the schedule slip, the connections, the bytes and records of the
+connectors, the heap, the GC and the CPU. The tools update the connector and runtime counters once per statistics
+period (`-s`), so their panels take the window of the dashboard variable `window` (30 s), which must hold at least two
+periods; the other panels follow the scrapes.
+
+| File | Mounted at |
+|---|---|
+| `prometheus.yml` | `/etc/prometheus/prometheus.yml` of Prometheus: scrapes every 2 s the targets of `targets.json` |
+| `targets.json` | `/etc/prometheus/targets.json`: the addresses of the `--metrics-port` of the tools, reread every 5 s |
+| `grafana-datasource.yml` | `/etc/grafana/provisioning/datasources/nettest.yml`: Prometheus at `NETTEST_PROMETHEUS_URL` |
+| `grafana-dashboards.yml` | `/etc/grafana/provisioning/dashboards/nettest.yml`: loads the dashboard |
+| `nettest-dashboard.json` | `/var/lib/grafana/dashboards/nettest/nettest-dashboard.json`: the dashboard `NetTest` |
+
+On a Linux host the containers share the host network, so Prometheus reaches the tools at their default address
+`127.0.0.1`. With Docker the commands are the same with `docker` for `podman`; `K` is the kit directory:
+
+```sh
+K="$PWD/docs/wrapper-guide/nettest/monitoring"
+podman run -d --name nettest-prometheus --network host \
+  -v "$K/prometheus.yml:/etc/prometheus/prometheus.yml:ro" -v "$K/targets.json:/etc/prometheus/targets.json:ro" \
+  docker.io/prom/prometheus:v3.16.0 --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus \
+  --web.listen-address=127.0.0.1:9090
+podman run -d --name nettest-grafana --network host \
+  -e GF_SERVER_HTTP_ADDR=127.0.0.1 -e NETTEST_PROMETHEUS_URL=http://127.0.0.1:9090 \
+  -v "$K/grafana-datasource.yml:/etc/grafana/provisioning/datasources/nettest.yml:ro" \
+  -v "$K/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/nettest.yml:ro" \
+  -v "$K/nettest-dashboard.json:/var/lib/grafana/dashboards/nettest/nettest-dashboard.json:ro" \
+  docker.io/grafana/grafana:13.3.1
+NetTest p :6666 -S 10000 -r */100k --metrics-port 9101 &
+NetTest c 127.0.0.1:6666 -S 10000 --metrics-port 9102
+```
+
+Grafana is then at `http://127.0.0.1:3000` (user `admin`, password `admin` at the first login). `podman rm -fv
+nettest-prometheus nettest-grafana` removes both with the anonymous volume of the Prometheus data.
+
+Docker Desktop and the Podman machine (Windows, macOS) run the containers in a virtual machine, which does not reach the
+`127.0.0.1` of the host:
+
+- put both containers on one network (`podman network create nettest`, `--network nettest` instead of
+  `--network host`), publish their ports on the loopback of the host (`-p 127.0.0.1:9090:9090`,
+  `-p 127.0.0.1:3000:3000`), drop `--web.listen-address` and `GF_SERVER_HTTP_ADDR`, and set
+  `NETTEST_PROMETHEUS_URL=http://nettest-prometheus:9090`;
+- bind the metrics of the tools to an address the virtual machine reaches (`--metrics-port 0.0.0.0:9101`; the port is
+  then open to the network of the host, so keep it behind its firewall) and list them in `targets.json` with the
+  address of the host as the containers see it: `host.docker.internal:9101` with Docker Desktop,
+  `host.containers.internal:9101` with the Podman machine of macOS. In the Podman machine of Windows on WSL that name
+  is the machine itself; the host is the default gateway of the machine, which
+  `podman machine ssh "ip -4 route show default"` prints (`default via 172.24.176.1 ...` gives
+  `172.24.176.1:9101`).
 
 ## Connector statistics {#wrapper_nettest_connectors}
 
@@ -440,6 +520,7 @@ from there:
 | `symbols-generated-10.txt` | the first ten generated symbols, one per line |
 | `symbols-generated-vectors.json` | for 10, 1000 and 100000 generated symbols: the draws, samples and the FNV-1a hash of the list |
 | `metrics-sample-producer.txt`, `metrics-sample-consumer.txt` | a scrape of each side |
+| `monitoring/` | the Prometheus configuration and the Grafana dashboard of @ref wrapper_nettest_monitoring |
 
 An entry of `cli-vectors.json` may list `requires`: the optional features it needs (`isolate` for `-X`, `legacy`), or
 their absence (`!isolate`); a tool skips the entries whose features it does not match. Each entry also names its
@@ -473,6 +554,6 @@ README of each tool lists how it differs from this page until then.
 | @ref wrapper_nettest_time | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_lines | 3.17.0 for `p`, 3.18.0 for `c` and the `NetTestMetrics` line | 3.18.0 |
 | @ref wrapper_nettest_consumer | 3.18.0 | 3.18.0 |
-| @ref wrapper_nettest_summary | 3.18.0; `qd_version` and the values of `build` are null | 3.18.0 |
+| @ref wrapper_nettest_summary | 3.18.0; `qd_version` and the values of `build` since 3.19.0 | 3.18.0 |
 | @ref wrapper_nettest_metrics | 3.18.0 | 3.18.0 |
 | @ref wrapper_nettest_exit | 3.18.0 | 3.18.0 |

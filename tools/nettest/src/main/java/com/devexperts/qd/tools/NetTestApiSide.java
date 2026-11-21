@@ -294,8 +294,8 @@ abstract class NetTestApiSide {
     }
 
     /**
-     * Starts the statistics: a thread that ends an interval at each multiple of the period on the wall clock. The
-     * first tick only starts the count.
+     * Starts the statistics: a thread that ends an interval at each multiple of the period on the wall clock. Every
+     * interval goes to the summary; the first tick and a short last interval print no block.
      */
     void startStatistics() {
         NetTestApiStatistics statistics = new NetTestApiStatistics(statisticsLabel(), config.name, counters,
@@ -304,9 +304,6 @@ abstract class NetTestApiSide {
         NetTestApiRuntime.Reporter created = new NetTestApiRuntime.Reporter(minNanos -> {
             NetTestApiStatistics.Interval interval = statistics.tick(minNanos);
             readConnectorStatistics();
-            if (interval == null) {
-                return null;
-            }
             summary.add(interval);
             return interval.text;
         }, config.name);

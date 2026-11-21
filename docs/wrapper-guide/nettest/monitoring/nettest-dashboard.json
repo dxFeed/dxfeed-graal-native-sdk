@@ -1,0 +1,1205 @@
+{
+  "uid": "nettest",
+  "title": "NetTest",
+  "description": "The nettest_* metrics of the NetTest tools (nettest/1, docs/wrapper-guide/nettest.md).",
+  "tags": [
+    "nettest",
+    "dxfeed"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "name",
+        "label": "Run name",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "nettest-prometheus"
+        },
+        "query": {
+          "query": "label_values(nettest_info, name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(nettest_info, name)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "sort": 1
+      },
+      {
+        "name": "tool",
+        "label": "Tool",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "nettest-prometheus"
+        },
+        "query": {
+          "query": "label_values(nettest_info{name=~\"$name\"}, tool)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(nettest_info{name=~\"$name\"}, tool)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "sort": 1
+      },
+      {
+        "name": "window",
+        "label": "Window of the connector and runtime panels",
+        "type": "custom",
+        "description": "At least two statistics periods (-s) of the tools: those counters change once per period.",
+        "query": "20s,30s,1m,2m,5m",
+        "current": {
+          "selected": true,
+          "text": "30s",
+          "value": "30s"
+        },
+        "options": [
+          {
+            "selected": false,
+            "text": "20s",
+            "value": "20s"
+          },
+          {
+            "selected": true,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "2m",
+            "value": "2m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          }
+        ],
+        "includeAll": false,
+        "multi": false
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "links": [],
+  "panels": [
+    {
+      "type": "row",
+      "id": 1,
+      "title": "Run",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "type": "table",
+      "id": 2,
+      "title": "Tools",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "description": "nettest_info of each tool: its configuration labels.",
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "nettest_info{name=~\"$name\",tool=~\"$tool\"}",
+          "format": "table",
+          "instant": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "job": true
+            },
+            "indexByName": {
+              "tool": 0,
+              "side": 1,
+              "name": 2,
+              "role": 3,
+              "event": 4,
+              "collector": 5,
+              "version": 6,
+              "sdk_version": 7,
+              "spec_version": 8,
+              "instance": 9
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "type": "row",
+      "id": 3,
+      "title": "Rate",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "id": 4,
+      "title": "Records per second",
+      "description": "Published (producer) or received (consumer) events per second, all connections.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_records_total{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{side}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 5,
+      "title": "Records per second by connection",
+      "description": "One series per instance (label connection).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, connection) (rate(nettest_records_total{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{side}} #{{connection}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "id": 6,
+      "title": "End-to-end lag (consumer)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "id": 7,
+      "title": "E2E lag percentiles",
+      "description": "From the buckets of nettest_e2e_lag_seconds (50 us to 1 s): coarser than the HdrHistogram percentiles of the summary file, which stay the result of a run.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by (le, tool, name) (rate(nettest_e2e_lag_seconds_bucket{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])))",
+          "legendFormat": "p50 {{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le, tool, name) (rate(nettest_e2e_lag_seconds_bucket{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])))",
+          "legendFormat": "p99 {{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.999, sum by (le, tool, name) (rate(nettest_e2e_lag_seconds_bucket{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])))",
+          "legendFormat": "p99.9 {{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 8,
+      "title": "E2E lag mean",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, name) (rate(nettest_e2e_lag_seconds_sum{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])) / sum by (tool, name) (rate(nettest_e2e_lag_seconds_count{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 9,
+      "title": "Negative lags per second",
+      "description": "A clock step or skew between the hosts; 0 on one host.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, name) (rate(nettest_e2e_lag_negative_total{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 10,
+      "title": "Connector lag and round-trip time",
+      "description": "Connector statistics v2 (QD's own time marks): the data read lag of the consumer and the round-trip time; no data without v2. The publisher's lag is not exported. Over the window $window: the tools update these counters once per statistics period.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_lag_seconds_total{name=~\"$name\",tool=~\"$tool\"}[$window])) / sum by (tool, side, name) (rate(nettest_connector_read_records_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "lag {{tool}} {{side}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_rtt_seconds_total{name=~\"$name\",tool=~\"$tool\"}[$window])) / (sum by (tool, side, name) (rate(nettest_connector_read_records_total{name=~\"$name\",tool=~\"$tool\"}[$window])) + sum by (tool, side, name) (rate(nettest_connector_written_records_total{name=~\"$name\",tool=~\"$tool\"}[$window])) + sum by (tool, side, name) (rate(nettest_connector_sub_records_total{name=~\"$name\",tool=~\"$tool\"}[$window])))",
+          "legendFormat": "rtt {{tool}} {{side}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "id": 11,
+      "title": "Publisher",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "id": 12,
+      "title": "Publish time per event",
+      "description": "The fill and the publishing call per event (steps 3 and 4 of the rate loop).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 33
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, name) (rate(nettest_publish_seconds_total{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])) / sum by (tool, name) (rate(nettest_records_total{side=\"producer\",name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 13,
+      "title": "Events per publishing call",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 33
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, name) (rate(nettest_records_total{side=\"producer\",name=~\"$name\",tool=~\"$tool\"}[$__rate_interval])) / sum by (tool, name) (rate(nettest_publish_calls_total{name=~\"$name\",tool=~\"$tool\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 14,
+      "title": "Schedule slip",
+      "description": "The slip of the last batch behind the schedule of -r; it grows when the publisher cannot keep the rate.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 33
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "max by (tool, name) (nettest_schedule_slip_seconds{name=~\"$name\",tool=~\"$tool\"})",
+          "legendFormat": "{{tool}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "id": 15,
+      "title": "Connections and I/O",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "id": 16,
+      "title": "Open connections",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 42
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (nettest_connections{name=~\"$name\",tool=~\"$tool\"})",
+          "legendFormat": "{{tool}} {{side}} {{name}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 17,
+      "title": "Bytes per second",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 42
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_read_bytes_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "read {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_written_bytes_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "written {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 18,
+      "title": "Connector records per second",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 42
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_read_records_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "read {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_connector_written_records_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "written {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "id": 19,
+      "title": "Runtime",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 50
+      },
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "id": 20,
+      "title": "Heap",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 51
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (nettest_runtime_heap_used_bytes{name=~\"$name\",tool=~\"$tool\"})",
+          "legendFormat": "used {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (tool, side, name) (nettest_runtime_heap_committed_bytes{name=~\"$name\",tool=~\"$tool\"})",
+          "legendFormat": "committed {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 21,
+      "title": "GC",
+      "description": "Collections per second and the share of time in GC (1 = all of the time), over the window $window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 51
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_runtime_gc_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "collections/s {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_runtime_gc_seconds_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "time share {{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 22,
+      "title": "CPU",
+      "description": "CPU time of the process per second over the window $window: 1 is one core busy.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "nettest-prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 51
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (tool, side, name) (rate(nettest_runtime_cpu_seconds_total{name=~\"$name\",tool=~\"$tool\"}[$window]))",
+          "legendFormat": "{{tool}} {{side}}",
+          "range": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "nettest-prometheus"
+          },
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}

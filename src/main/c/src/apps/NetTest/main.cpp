@@ -74,6 +74,25 @@ std::string sdkVersion(graal_isolatethread_t *thread) {
     return text;
 }
 
+// A value of the build info (DXFG_V4_BUILD_INFO_*), empty when the library does not know it or the call fails.
+std::string buildInfo(graal_isolatethread_t *thread, const char *key) {
+    const char *value = nullptr;
+
+    if (dxfg_v4_system_get_build_info(thread, key, &value) != DXFG_EXECUTE_SUCCESSFULLY) {
+        dxfg::nettest::takeThreadException(thread);
+
+        return {};
+    }
+
+    std::string text = value == nullptr ? "" : value;
+
+    if (value != nullptr) {
+        dxfg_v4_String_release(thread, value);
+    }
+
+    return text;
+}
+
 // Writes the summary file when --summary is given. Returns the exit code of the status, or 1 when the file cannot be
 // written.
 int finish(const dxfg::nettest::Options &options, const dxfg::nettest::RunReport &report,
@@ -104,6 +123,10 @@ int runInIsolate(graal_isolatethread_t *thread, const dxfg::nettest::Options &op
     RunReport failedReport;
 
     status.version = sdkVersion(thread);
+    status.qdVersion = buildInfo(thread, DXFG_V4_BUILD_INFO_QD_VERSION);
+    status.vendor = buildInfo(thread, DXFG_V4_BUILD_INFO_VENDOR);
+    status.march = buildInfo(thread, DXFG_V4_BUILD_INFO_MARCH);
+    status.gc = buildInfo(thread, DXFG_V4_BUILD_INFO_GC);
     failedReport.startEpochNs = epochNanos();
 
     // A failure before the run: the message on stderr and the summary of the status `error`.

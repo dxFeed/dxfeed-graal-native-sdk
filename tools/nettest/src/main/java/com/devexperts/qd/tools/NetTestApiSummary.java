@@ -115,7 +115,7 @@ final class NetTestApiSummary {
         json.field("sdk_version", versions.getProperty("version"));
         json.field("qd_version", versions.getProperty("qd.version"));
         json.key("build").begin();
-        json.field("vendor", System.getProperty("java.vm.vendor"));
+        json.field("vendor", vendor());
         json.field("march", null);
         json.field("gc", garbageCollectors());
         json.end();
@@ -262,25 +262,28 @@ final class NetTestApiSummary {
     }
 
     private void writeSlip(Json json, NetTestApiSchedule schedule) {
-        long max = 0;
+        long measuredMax = 0;
+        long allMax = 0;
         NetTestApiStatistics.Interval first = null;
         NetTestApiStatistics.Interval last = null;
         for (NetTestApiStatistics.Interval interval : intervals) {
-            if (interval.warmup || interval.slipMax == null) {
+            if (interval.slipMax == null) {
                 continue;
             }
-            max = Math.max(max, interval.slipMax);
+            allMax = Math.max(allMax, interval.slipMax);
+            if (interval.warmup) {
+                continue;
+            }
+            measuredMax = Math.max(measuredMax, interval.slipMax);
             if (first == null) {
                 first = interval;
             }
             last = interval;
         }
-        // The slip at the end comes after the last interval, so the maximum takes it too.
-        long end = schedule.lastSlip();
-        max = Math.max(max, end);
+        // The intervals cover the whole run, so the slip of the last batch is in the last one already.
         json.begin();
-        json.field("max_ns", max);
-        json.field("end_ns", end);
+        json.field("max_ns", first != null ? measuredMax : allMax);
+        json.field("end_ns", schedule.lastSlip());
         json.field("growth_ns_per_s", growth(first, last));
         json.end();
     }
@@ -317,6 +320,16 @@ final class NetTestApiSummary {
 
     private static Long growth(long start, long end) {
         return present(start) && present(end) && end >= start ? end - start : null;
+    }
+
+    /** The vendor version of the runtime (e.g. {@code Temurin-21.0.5+11}), else its vendor; null when neither is set. */
+    private static String vendor() {
+        String vendorVersion = System.getProperty("java.vendor.version");
+        if (vendorVersion != null && !vendorVersion.isEmpty()) {
+            return vendorVersion;
+        }
+        String vendor = System.getProperty("java.vm.vendor");
+        return vendor == null || vendor.isEmpty() ? null : vendor;
     }
 
     private static String garbageCollectors() {

@@ -56,10 +56,19 @@ public class NetTestApiSummaryTest {
         assertTrue(text, growth > TimeUnit.MILLISECONDS.toNanos(100));
         assertTrue(text, slip.get("max_ns").asLong() >= slip.get("end_ns").asLong() - BATCH_MILLIS * 1_000_000);
         List<Long> ends = new ArrayList<>();
-        for (JsonNode interval : json.get("intervals")) {
+        JsonNode intervals = json.get("intervals");
+        for (int i = 0; i < intervals.size(); i++) {
+            JsonNode interval = intervals.get(i);
+            // The part before the first tick and the part after the last one may be too short for a batch.
+            if (interval.get("records").asLong() == 0) {
+                continue;
+            }
             ends.add(interval.get("slip_end_ns").asLong());
-            assertTrue(text, interval.get("publish_ns_per_event").asLong() >=
-                TimeUnit.MILLISECONDS.toNanos(THROTTLED_CALL_MILLIS) / 100);
+            // The stop cuts the sleep of the last call, which may weigh in a short last interval.
+            if (i < intervals.size() - 1) {
+                assertTrue(text, interval.get("publish_ns_per_event").asLong() >=
+                    TimeUnit.MILLISECONDS.toNanos(THROTTLED_CALL_MILLIS) / 100);
+            }
         }
         assertTrue(text, ends.size() >= 2);
         for (int i = 1; i < ends.size(); i++) {
@@ -157,6 +166,61 @@ public class NetTestApiSummaryTest {
     }
 
     @Test
+    public void theIntervalsCoverTheWholeRunAndOnlyTheFullOnesPrintABlock() {
+        NetTestApiStatistics.Counter counter = new NetTestApiStatistics.Counter();
+        NetTestApiStatistics statistics = new NetTestApiStatistics(NetTestApiStatistics.PRODUCER_LABEL, "NetTest",
+            new NetTestApiStatistics.Counter[] {counter}, () -> 1);
+
+        counter.add(5, 0);
+        NetTestApiStatistics.Interval first = statistics.tick(0);
+        counter.add(7, 0);
+        NetTestApiStatistics.Interval second = statistics.tick(0);
+        counter.add(3, 0);
+        NetTestApiStatistics.Interval last = statistics.tick(TimeUnit.HOURS.toNanos(1));
+
+        // The part before the first tick: counted, not printed.
+        assertNull(first.text);
+        assertEquals(5, first.records);
+        assertNotNull(second.text);
+        assertEquals(7, second.records);
+        assertEquals(first.endEpochMs, second.startEpochMs);
+        // A last interval shorter than the minimum: counted, not printed.
+        assertNull(last.text);
+        assertEquals(3, last.records);
+        assertEquals(second.endEpochMs, last.startEpochMs);
+    }
+
+    @Test
+    public void theSlipMaximumIsTheOneOfTheMeasuredIntervals() throws Exception {
+        NetTestApiSummary summary = rateLimitedSummary();
+        summary.started();
+        summary.add(slipInterval(true, 1, 900, 900));
+        summary.add(slipInterval(false, 2, 100, 50));
+        summary.add(slipInterval(false, 3, 200, 150));
+        summary.ended();
+
+        String text = summary.toJson();
+        JsonNode slip = NetTestApiChecks.checkSummary(text).get("schedule_slip");
+        assertEquals(text, 200, slip.get("max_ns").asLong());
+        // (150 - 50) ns over the 1 s between the ends of the measured intervals.
+        assertEquals(text, 100, slip.get("growth_ns_per_s").asLong());
+    }
+
+    @Test
+    public void withoutAMeasuredIntervalTheSlipMaximumIsTheOneOfAll() throws Exception {
+        NetTestApiSummary summary = rateLimitedSummary();
+        summary.started();
+        summary.add(slipInterval(true, 1, 900, 900));
+        summary.add(slipInterval(true, 2, 300, 300));
+        summary.ended();
+
+        String text = summary.toJson();
+        JsonNode slip = NetTestApiChecks.checkSummary(text).get("schedule_slip");
+        assertEquals(text, 900, slip.get("max_ns").asLong());
+        assertTrue(text, slip.get("growth_ns_per_s").isNull());
+    }
+
+    @Test
     public void stringsAreEscaped() {
         NetTestApiSummary.Json json = new NetTestApiSummary.Json();
         json.begin().field("a", "q\"b\\n\n\u0001").field("n", null).key("l").value(List.of("x", 1L)).end();
@@ -180,5 +244,22 @@ public class NetTestApiSummaryTest {
         long start = 1_763_380_800_000L + index * 1_000;
         return new NetTestApiStatistics.Interval("", start, start + 1_000, 1_000_000_000L, warmup, totals,
             maxLag, lags, null, null, 1);
+    }
+
+    // The summary of a producer with a rate and a warm-up, not started.
+    private static NetTestApiSummary rateLimitedSummary() {
+        return new NetTestApiProducerSide(NetTestApi.parseArguments("p", ":0", "-S", "10", "-r", "*/10k",
+            "--warmup", "1s"), new NetTestApi.Stop()).summary();
+    }
+
+    // An interval of 1 s with 100 records in one call and the given slips.
+    private static NetTestApiStatistics.Interval slipInterval(boolean warmup, long index, long slipMax, long slipEnd) {
+        long[] totals = new long[NetTestApiStatistics.Counter.SIZE];
+        totals[NetTestApiStatistics.Counter.RECORDS] = 100;
+        totals[NetTestApiStatistics.Counter.CALLS] = 1;
+        totals[NetTestApiStatistics.Counter.CALL_NANOS] = 1_000_000;
+        long start = 1_763_380_800_000L + index * 1_000;
+        return new NetTestApiStatistics.Interval("", start, start + 1_000, 1_000_000_000L, warmup, totals,
+            Long.MIN_VALUE, null, slipMax, slipEnd, 1);
     }
 }

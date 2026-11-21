@@ -1,0 +1,13 @@
+# The Prometheus data source of the NetTest dashboard. NETTEST_PROMETHEUS_URL is the address of Prometheus as Grafana
+# reaches it, e.g. http://127.0.0.1:9090 on the host network or http://nettest-prometheus:9090 on a container network.
+apiVersion: 1
+
+datasources:
+  - name: NetTest Prometheus
+    uid: nettest-prometheus
+    type: prometheus
+    access: proxy
+    url: ${NETTEST_PROMETHEUS_URL}
+    isDefault: true
+    jsonData:
+      timeInterval: 2s

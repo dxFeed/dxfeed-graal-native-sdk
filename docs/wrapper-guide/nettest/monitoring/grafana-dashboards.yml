@@ -1,0 +1,10 @@
+# Loads nettest-dashboard.json, mounted at /var/lib/grafana/dashboards/nettest.
+apiVersion: 1
+
+providers:
+  - name: NetTest
+    type: file
+    disableDeletion: true
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/nettest

@@ -172,6 +172,7 @@ TEST_CASE("The features of the headers are supported, unknown ones are not") {
     CHECK(isSupported(DXFG_V4_FEATURE_CONNECTION_ERRORS));
     CHECK(isSupported(DXFG_V4_FEATURE_RUNTIME_STATISTICS));
     CHECK(isSupported(DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS));
+    CHECK(isSupported(DXFG_V4_FEATURE_BUILD_INFO));
     CHECK_FALSE(isSupported("no_such_feature"));
     CHECK_FALSE(isSupported(""));
     CHECK(takeExceptionClassName(isolate.thread).empty());
@@ -193,12 +194,12 @@ static_assert(offsetof(dxfg_v4_runtime_stats_t, allocated_bytes) == 11 * sizeof(
 static_assert(offsetof(dxfg_v4_runtime_stats_t, available_processors) == 17 * sizeof(int64_t),
               "The layout of dxfg_v4_runtime_stats_t changed");
 
-// Whether the tested library is built with the Serial GC, from its build-info file (the G1 variant has another GC).
-static bool isSerialGc() {
+// A value of the build-info file of the tested library (the same Maven build).
+static std::string buildInfoFileValue(const std::string &name) {
     std::ifstream file(DXFG_TEST_BUILD_INFO);
     REQUIRE(file.is_open());
 
-    const std::string key = "native-image.garbage-collector=";
+    const std::string key = name + "=";
 
     for (std::string line; std::getline(file, line);) {
         if (!line.empty() && line.back() == '\r') {
@@ -206,13 +207,57 @@ static bool isSerialGc() {
         }
 
         if (line.compare(0, key.size(), key) == 0) {
-            return line.substr(key.size()) == "Serial GC";
+            return line.substr(key.size());
         }
     }
 
     FAIL("No " << key << " in " << DXFG_TEST_BUILD_INFO);
 
-    return false;
+    return {};
+}
+
+// Whether the tested library is built with the Serial GC, from its build-info file (the G1 variant has another GC).
+static bool isSerialGc() {
+    return buildInfoFileValue("native-image.garbage-collector") == "Serial GC";
+}
+
+// The value of dxfg_v4_system_get_build_info() for the key; "<null>" for NULL.
+static std::string buildInfo(graal_isolatethread_t *thread, const char *key) {
+    const char *value = reinterpret_cast<const char *>(1);
+    REQUIRE(dxfg_v4_system_get_build_info(thread, key, &value) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    if (value == nullptr) {
+        return "<null>";
+    }
+
+    std::string text = value;
+    REQUIRE(dxfg_v4_String_release(thread, value) == DXFG_EXECUTE_SUCCESSFULLY);
+
+    return text;
+}
+
+TEST_CASE("The build info is the one of the build") {
+    const Isolate isolate;
+    REQUIRE(isolate.thread != nullptr);
+
+    CHECK(buildInfo(isolate.thread, DXFG_V4_BUILD_INFO_QD_VERSION) == DXFG_TEST_QD_VERSION);
+    CHECK(buildInfo(isolate.thread, DXFG_V4_BUILD_INFO_MARCH) == buildInfoFileValue("native-image.march"));
+    CHECK(buildInfo(isolate.thread, DXFG_V4_BUILD_INFO_VENDOR) == buildInfoFileValue("native-image.vendor-version"));
+
+    const auto gc = buildInfo(isolate.thread, DXFG_V4_BUILD_INFO_GC);
+    CHECK_FALSE(gc.empty());
+    CHECK(gc != "<null>");
+
+    CHECK(buildInfo(isolate.thread, "no_such_key") == "<null>");
+    CHECK(buildInfo(isolate.thread, "") == "<null>");
+    CHECK(takeExceptionClassName(isolate.thread).empty());
+
+    const char *value = nullptr;
+    CHECK(dxfg_v4_system_get_build_info(isolate.thread, nullptr, &value) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
+    CHECK(value == nullptr);
+    CHECK(dxfg_v4_system_get_build_info(isolate.thread, DXFG_V4_BUILD_INFO_GC, nullptr) == DXFG_EXECUTE_FAIL);
+    CHECK(takeExceptionClassName(isolate.thread) == "java.lang.IllegalArgumentException");
 }
 
 // The fields of the runtime statistics with their names, in the order of the struct.

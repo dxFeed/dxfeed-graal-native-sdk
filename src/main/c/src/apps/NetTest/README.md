@@ -319,9 +319,8 @@ expression `isolate_rejection` of the specification:
 
 ## Differences from the specification
 
-What the tool does not do yet of the [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md):
-
-- The summary has `qd_version` and the values of `build` as `null`: the SDK does not report them.
+None: since 3.19.0 the tool follows the whole [NetTest specification](../../../../../../docs/wrapper-guide/nettest.md).
+The summary takes `qd_version` and `build` from `dxfg_v4_system_get_build_info()`.
 
 ## Differences from QD NetTest
 

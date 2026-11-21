@@ -1,3 +1,17 @@
+* **\[MDAPI-626]\[GRAAL]** The experimental `dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, feature
+  `DXFG_V4_FEATURE_BUILD_INFO`) tells how the library was built and what runs it: the QDS version, the vendor and version
+  of the runtime, the target machine of the build (`-march`) and the garbage collectors, keys `DXFG_V4_BUILD_INFO_*`.
+  The C NetTest writes them to `tool.qd_version` and `tool.build` of its summary file, which were `null`, and follows
+  the whole NetTest specification now. The NetTest kit has a Prometheus configuration and a Grafana dashboard for the
+  `nettest_*` metrics of every tool (`docs/wrapper-guide/nettest/monitoring/`, "Prometheus and Grafana" in the wrapper
+  guide). `tool.build.vendor` of the Java NetTestApi is the vendor version of the JVM (`java.vendor.version`) when it
+  has one. The specification settles what the tools of other APIs asked about: the rate errors of `-r`, an option value
+  that starts with `-`, the summary intervals (they cover the whole run), `schedule_slip`, the `runtime` totals, the
+  coarse wall clocks and the last block after a failure; the kit has vectors for the first two. The summary file of the
+  Java NetTestApi now has the intervals before the first tick and the short last one too, as the C tool's, and its
+  `schedule_slip.max_ns` is the largest slip of the measured intervals (of all when none is measured) without the slip
+  at the end added.
+
 ## v3.19.0-rc1
 
 * **\[MDAPI-603]\[GRAAL]** `dxfg_v4_system_shutdown`, `dxfg_v4_system_close_all_and_await_termination` and

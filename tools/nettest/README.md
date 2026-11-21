@@ -144,8 +144,9 @@ With `--metrics-port` a line with the address of the metrics comes first, once t
 - `connections`: open connections of all instances' connectors.
 - A line per instance follows the first line, also for one instance.
 
-The first tick only starts the count. When the run stops, a last block covers the time since the last tick, if it is
-at least one second long.
+The first tick prints no block. When the run stops, a last block covers the time since the last tick, if it is at
+least one second long. The summary file has an interval for every part of the run, printed or not: the part before the
+first tick and a short last part too.
 
 The runtime line shows the JVM, in the format of the C tool's runtime line of the isolate, so that one load can be
 compared between the JVM and the Graal isolate:
