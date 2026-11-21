@@ -276,7 +276,9 @@ static void checkRuntimeStatistics(const dxfg_v4_runtime_stats_t &stats) {
     CHECK(stats.peak_thread_count >= stats.thread_count);
     CHECK(stats.daemon_thread_count <= stats.thread_count);
     CHECK(stats.total_started_thread_count >= stats.thread_count);
-    CHECK(stats.process_cpu_time_ns > 0);
+    // Windows counts the CPU time in steps of 15.625 ms, so a process that has only started an isolate can read 0; the
+    // allocation test checks that it grows.
+    CHECK(stats.process_cpu_time_ns >= 0);
     CHECK(stats.uptime_ms >= 0);
     CHECK(stats.available_processors >= 1);
 
