@@ -1,3 +1,5 @@
+## v3.19.0-rc1
+
 * **\[MDAPI-603]\[GRAAL]** `dxfg_v4_system_shutdown`, `dxfg_v4_system_close_all_and_await_termination` and
   `dxfg_v4_DXEndpoint_closeAndAwaitTermination` no longer wait forever for an endpoint with the executor of
   `dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new`: the endpoint terminates only after the tasks it scheduled on the
