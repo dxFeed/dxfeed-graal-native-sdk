@@ -18,11 +18,11 @@ TEST_CASE("DXFG_EXPERIMENTAL defined by the application as a deprecation attribu
     const Isolate isolate;
     REQUIRE(isolate.thread != nullptr);
 
-    int64_t droppedEvents = -1;
-    CHECK(dxfg_v4_DXFeedSubscription_getTotalDroppedEvents(isolate.thread, nullptr, &droppedEvents) ==
-          DXFG_EXECUTE_FAIL);
+    dxfg_v4_connection_error_t sentinel{};
+    dxfg_v4_connection_error_t *error = &sentinel;
+    CHECK(dxfg_v4_DXEndpoint_getLastConnectionError(isolate.thread, nullptr, &error) == DXFG_EXECUTE_FAIL);
     CHECK_FALSE(takeExceptionClassName(isolate.thread).empty());
-    CHECK(droppedEvents == -1);
+    CHECK(error == &sentinel);
 }
 
 } // namespace test

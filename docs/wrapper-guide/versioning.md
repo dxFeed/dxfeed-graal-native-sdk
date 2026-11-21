@@ -7,7 +7,13 @@ defined in @ref V4_Conventions, the runtime queries in @ref V4_System.
 ## Tiers {#wrapper_versioning_tiers}
 
 - A **stable** function keeps its name, parameters and behaviour. It changes only by deprecation, and is removed only
-  in a major release. A wrapper binds the stable functions unconditionally.
+  in a major release. A wrapper binds the stable functions unconditionally. A stable function may call a Java member
+  that is `@Experimental` in QD (`IndexedEventTxModel`, `SubscriptionController`, the Nuam and `OrderImbalance`
+  events): a change of the member does not reach the C function. If the member is removed without a replacement, the
+  function stays, its body is replaced by one that fails with `UnsupportedOperationException`, and the function is
+  deprecated and removed only in a major release. The layout of a stable event structure does not change. A function
+  promoted from experimental to stable keeps its name: a wrapper that still binds it under the revision check keeps
+  working until the revision changes, so it moves the function out of the check.
 - An **experimental** function is marked `DXFG_EXPERIMENTAL` and listed on the page @ref experimental. It may change or
   be removed in any minor release. An incompatible change gives it a new name and increments the advanced revision
   (#DXFG_V4_ADVANCED_REVISION), so a wrapper bound by name misses the old symbol instead of calling it with a changed

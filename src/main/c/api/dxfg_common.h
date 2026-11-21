@@ -250,14 +250,19 @@ int32_t dxfg_free_strings(graal_isolatethread_t *thread, char** strings, int32_t
  *    symbol instead of calling it with a changed signature. A compatible addition adds a feature
  *    (dxfg_v4_system_is_feature_supported()) and keeps the revision. A function promoted to stable keeps its name.
  *
- *  The experimental functions are the twins of the Java API that is experimental (`@Experimental` in QD, and the
- *  transaction models taken from the experimental Java API), and the functions of the advanced headers: the
- *  `dxfg_v4_*.h` headers that dxfg_v4_api.h does not include, each one included on its own. The twins came out in
- *  3.12.0, before the tiers, and are experimental since 3.13.0; their older functions stay until 4.0.0, as the other
- *  deprecated functions do, and their deprecation messages say that the replacement is experimental. An advanced header
- *  may include the basic headers, never the other way round. The experimental event types say so in their descriptions;
- *  their structures are delivered as the other events are. Every declaration added after 3.12.0 names the release that
- *  added it (`@since`).
+ *  The experimental functions are the ones whose shape is not settled yet (the feed filters, the ready signal of an
+ *  event queue, the event peek of the time series model, the listener of the message connectors and the last connection
+ *  errors), and the functions of the advanced headers: the `dxfg_v4_*.h` headers that dxfg_v4_api.h does not include,
+ *  each one included on its own. An advanced header may include the basic headers, never the other way round. Every
+ *  declaration added after 3.12.0 names the release that added it (`@since`).
+ *
+ *  A stable function may call a Java member that is `@Experimental` in QD (`IndexedEventTxModel`,
+ *  `SubscriptionController`, `DXFeedSubscription.getSubscriptionController()` and `getTotalDroppedEvents()`, the Nuam
+ *  and `OrderImbalance` events). A change of the Java member does not reach the C function. If the member is removed
+ *  without a replacement, the function stays: its body is replaced by one that fails with
+ *  `UnsupportedOperationException`, and the function is deprecated and removed only in a major release. The layout of
+ *  a stable event structure does not change. These twins and the ones of the transaction models (`IndexedTxModel`,
+ *  `TimeSeriesTxModel`, part of the SDK) were experimental from 3.13.0 to 3.18.0 and are stable now.
  *
  *  The older and the v4 functions can be mixed on the same objects: a handle, a string or a list that one of them
  *  returned can be passed to the other one and released by the release function of either.

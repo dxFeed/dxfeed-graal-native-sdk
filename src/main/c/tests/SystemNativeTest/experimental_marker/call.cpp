@@ -7,8 +7,8 @@
 
 #include <dxfg_api.h>
 
-int32_t callExperimentalFunction(graal_isolatethread_t *thread, dxfg_v4_subscription_t *subscription) {
-    int64_t droppedEvents = 0;
+int32_t callExperimentalFunction(graal_isolatethread_t *thread, dxfg_v4_endpoint_t *endpoint) {
+    dxfg_v4_connection_error_t *error = nullptr;
 
-    return dxfg_v4_DXFeedSubscription_getTotalDroppedEvents(thread, subscription, &droppedEvents);
+    return dxfg_v4_DXEndpoint_getLastConnectionError(thread, endpoint, &error);
 }

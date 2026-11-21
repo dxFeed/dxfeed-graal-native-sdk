@@ -349,12 +349,16 @@ library.
 - **Stable and experimental functions.** A stable function changes only by deprecation and is removed only in a major
   release. An experimental function is marked `DXFG_EXPERIMENTAL` and says so in its description (the "Experimental
   declarations" page of the C API reference lists them): it may change or be removed in a minor release, and an
-  incompatible change gives it a new name. The experimental functions are the twins of the experimental Java API
-  (`IndexedEventTxModel`, `SubscriptionController`, `DXFeedSubscription.getTotalDroppedEvents`, the transaction
-  models `IndexedTxModel` and `TimeSeriesTxModel`) and the functions of the advanced headers, which `dxfg_api.h` does
-  not include. The twins came out in 3.12.0 and are experimental since 3.13.0; their older functions stay until 4.0.0
-  and their deprecation messages say that the replacement is experimental. The marker expands to nothing; to see where the experimental functions are used, define it before the
-  headers, e.g. `#define DXFG_EXPERIMENTAL [[deprecated("experimental")]]`.
+  incompatible change gives it a new name. The experimental functions are the ones whose shape is not settled yet: the
+  feed filters, the ready signal of an event queue, the event peek of `TimeSeriesTxModel`, the listener of the message
+  connectors and the last connection errors. The transaction models (`IndexedTxModel`, `TimeSeriesTxModel`,
+  `IndexedEventTxModel`), `SubscriptionController`, `DXFeedSubscription.getSubscriptionController` and
+  `getTotalDroppedEvents` and the Nuam and `OrderImbalance` events were experimental from 3.13.0 to 3.18.0 and are
+  stable now. Some of them call Java members that are `@Experimental` in QD: a change of such a member does not reach
+  the C function, and if the member is removed without a replacement, the function stays, its body is replaced by one
+  that fails with `UnsupportedOperationException`, and the function is deprecated and removed only in a major release.
+  The marker expands to nothing; to see where the experimental functions are used, define it before the headers, e.g.
+  `#define DXFG_EXPERIMENTAL [[deprecated("experimental")]]`.
 
 ### Example
 

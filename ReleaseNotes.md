@@ -26,6 +26,18 @@
   [wrapper guide](docs/wrapper-guide/versioning.md) state that a deprecated function is migrated to its replacement,
   never by its name, and list the 11 older functions whose `dxfg_v4_` name is another overload and the alternatives of
   another shape; the build checks the lists against `dxfg-api.json`. No function changes.
+* **\[MDAPI-623]\[GRAAL]** 72 experimental functions and 4 event structures are stable now, with the same names and
+  signatures: the functions of `IndexedTxModel`, `TimeSeriesTxModel` and `TxModelListener`
+  (`dxfg_v4_event_model.h`), of `IndexedEventTxModel` (`dxfg_v4_indexed_event_tx_model.h`) and
+  `SubscriptionController` (`dxfg_v4_subscription_controller.h`),
+  `dxfg_v4_DXFeedSubscription_getSubscriptionController`, `dxfg_v4_DXFeedSubscription_getTotalDroppedEvents`, and the
+  structures `dxfg_nuam_order_t`, `dxfg_nuam_trade_t`, `dxfg_nuam_time_and_sale_t` and `dxfg_order_imbalance_t`.
+  Where the Java member is `@Experimental` in QD, a change of it does not reach the C function; if it is removed
+  without a replacement, the function stays, its body is replaced by one that fails with
+  `UnsupportedOperationException`, and the function is deprecated and removed only in a major release
+  ([wrapper guide](docs/wrapper-guide/versioning.md)). The event peek of `TimeSeriesTxModel`, the feed filters, the
+  ready signal of an event queue, the listener of the message connectors and the last connection errors stay
+  experimental. The deprecation messages of the older functions no longer call the replacement experimental.
 
 ### For integrators
 
@@ -33,6 +45,9 @@
   message names), never to the `dxfg_v4_` function of the same name: for 11 older functions, e.g.
   `dxfg_Schedule_getInstance`, that is another overload, which compiles and binds but does something else. Check the
   migrations made so far against the list in the [wrapper guide](docs/wrapper-guide/versioning.md).
+* Bind the functions of MDAPI-623 unconditionally: move them out of the check of
+  `dxfg_v4_system_get_advanced_revision()`. A wrapper that keeps them under the check works while the revision stays
+  1, but a later increment for the experimental functions would make it drop the stable ones too.
 
 ## v3.18.0
 

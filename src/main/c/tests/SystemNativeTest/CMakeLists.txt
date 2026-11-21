@@ -153,7 +153,7 @@ endif ()
 add_test(NAME ${target}_ExperimentalMarker
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${target}_ExperimentalMarker --config $<CONFIG>)
 set_tests_properties(${target}_ExperimentalMarker PROPERTIES
-        PASS_REGULAR_EXPRESSION "dxfg_v4_DXFeedSubscription_getTotalDroppedEvents[^\r\n]*experimental")
+        PASS_REGULAR_EXPRESSION "dxfg_v4_DXEndpoint_getLastConnectionError[^\r\n]*experimental")
 
 
 #
