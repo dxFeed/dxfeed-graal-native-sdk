@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.18.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.19.0</span>
    </div>
   </td>
  </tr>
@@ -142,6 +142,16 @@ Macros</h2></td></tr>
 <tr class="memdesc:gaee725d60e625e3ccb1e4874296cf1e70"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "runtime statistics" (<a class="el" href="#ga98b5dff55916dd4666e8add20503c20a" title="Reads the runtime statistics of the isolate and its process: heap, garbage collections,...">dxfg_v4_system_get_runtime_statistics()</a>, <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
 <tr class="memitem:gab3c427b312dfc0de9712d503a99e9c3d" id="r_gab3c427b312dfc0de9712d503a99e9c3d"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#gab3c427b312dfc0de9712d503a99e9c3d">DXFG_V4_FEATURE_MESSAGE_CONNECTOR_IO_STATISTICS</a>&#160;&#160;&#160;&quot;message_connector_io_statistics&quot;</td></tr>
 <tr class="memdesc:gab3c427b312dfc0de9712d503a99e9c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "message connector I/O statistics" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#gaae03242bdeccee35b4698289e508f471" title="Reads the I/O statistics of a message connector: the data and subscription records,...">dxfg_v4_MessageConnector_getIoStatistics()</a>, <a class="el" href="structdxfg__v4__message__connector__io__stats__t.html" title="The I/O statistics of a message connector (dxfg_v4_MessageConnector_getIoStatistics()): the ten cumul...">dxfg_v4_message_connector_io_stats_t</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+<tr class="memitem:gae4519731e65d544bb66c3b2492c67e0c" id="r_gae4519731e65d544bb66c3b2492c67e0c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#gae4519731e65d544bb66c3b2492c67e0c">DXFG_V4_FEATURE_BUILD_INFO</a>&#160;&#160;&#160;&quot;build_info&quot;</td></tr>
+<tr class="memdesc:gae4519731e65d544bb66c3b2492c67e0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the feature "build info" (<a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>.  <br /></td></tr>
+<tr class="memitem:gac2ab3f9e5f30ccea167bb518a738f5a2" id="r_gac2ab3f9e5f30ccea167bb518a738f5a2"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#gac2ab3f9e5f30ccea167bb518a738f5a2">DXFG_V4_BUILD_INFO_QD_VERSION</a>&#160;&#160;&#160;&quot;qd_version&quot;</td></tr>
+<tr class="memdesc:gac2ab3f9e5f30ccea167bb518a738f5a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the version of QDS that the library is built with, e.g. <span class="tt">3.358</span>.  <br /></td></tr>
+<tr class="memitem:ga3fd8c9620b453258acaa958f2f0b83c0" id="r_ga3fd8c9620b453258acaa958f2f0b83c0"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga3fd8c9620b453258acaa958f2f0b83c0">DXFG_V4_BUILD_INFO_VENDOR</a>&#160;&#160;&#160;&quot;vendor&quot;</td></tr>
+<tr class="memdesc:ga3fd8c9620b453258acaa958f2f0b83c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the vendor and the version of the runtime that the library is built with, e.g. <span class="tt">GraalVM CE 25.0.1+8.1</span> (Java: the system property <span class="tt">java.vendor.version</span>, else <span class="tt">java.vm.vendor</span>).  <br /></td></tr>
+<tr class="memitem:ga5f27c40fa139accd84eca150cd62fc0f" id="r_ga5f27c40fa139accd84eca150cd62fc0f"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga5f27c40fa139accd84eca150cd62fc0f">DXFG_V4_BUILD_INFO_MARCH</a>&#160;&#160;&#160;&quot;march&quot;</td></tr>
+<tr class="memdesc:ga5f27c40fa139accd84eca150cd62fc0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the target machine of the build (<span class="tt">-march</span> of native-image), e.g. <span class="tt">compatibility</span> (the baseline CPU of the architecture) or <span class="tt">x86-64-v3</span>. The iOS libraries have no value.  <br /></td></tr>
+<tr class="memitem:ga8faa91c58dbfc936919e8ea72237603f" id="r_ga8faa91c58dbfc936919e8ea72237603f"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ga8faa91c58dbfc936919e8ea72237603f">DXFG_V4_BUILD_INFO_GC</a>&#160;&#160;&#160;&quot;gc&quot;</td></tr>
+<tr class="memdesc:ga8faa91c58dbfc936919e8ea72237603f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the garbage collectors of the runtime, separated by <span class="tt">, </span> (Java: the names of <span class="tt">ManagementFactory.getGarbageCollectorMXBeans()</span>).  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -168,6 +178,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:gaa3e30ef33590b58e74e65a4298627776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tells whether the library supports a feature, e.g. <a class="el" href="#ga2bd91d32cda673e8c955ed4bc54f2c11" title="The name of the feature &quot;event queue&quot; (dxfg_v4_event_queue.h: dxfg_v4_EventQueue_new(),...">DXFG_V4_FEATURE_EVENT_QUEUE</a>.  <br /></td></tr>
 <tr class="memitem:ga98b5dff55916dd4666e8add20503c20a" id="r_ga98b5dff55916dd4666e8add20503c20a"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#ga98b5dff55916dd4666e8add20503c20a">dxfg_v4_system_get_runtime_statistics</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> <a class="el" href="structdxfg__v4__runtime__stats__t.html">dxfg_v4_runtime_stats_t</a> *stats)</td></tr>
 <tr class="memdesc:ga98b5dff55916dd4666e8add20503c20a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the runtime statistics of the isolate and its process: heap, garbage collections, threads, process CPU time and uptime (see <a class="el" href="structdxfg__v4__runtime__stats__t.html" title="The runtime statistics of the isolate and its process (dxfg_v4_system_get_runtime_statistics()).">dxfg_v4_runtime_stats_t</a>).  <br /></td></tr>
+<tr class="memitem:gae22ad3f7bb4ce3c0de38c3343bad1655" id="r_gae22ad3f7bb4ce3c0de38c3343bad1655"><td class="memItemLeft">int32_t&#160;</td><td class="memItemRight"><a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655">dxfg_v4_system_get_build_info</a> (<a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *thread, const char *key, <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> const char **value)</td></tr>
+<tr class="memdesc:gae22ad3f7bb4ce3c0de38c3343bad1655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a value that tells how the library was built and what runs it: the version of QDS, the vendor of the runtime, the target machine and the garbage collectors (the <span class="tt">DXFG_V4_BUILD_INFO_</span> macros).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The v4 functions and type names of the group <a class="el" href="group__System.html" title="System">System</a>. Every function returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> and writes its result to a <a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> parameter, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </p>
@@ -189,6 +201,91 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga8faa91c58dbfc936919e8ea72237603f" name="ga8faa91c58dbfc936919e8ea72237603f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8faa91c58dbfc936919e8ea72237603f">&#9670;&#160;</a></span>DXFG_V4_BUILD_INFO_GC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_BUILD_INFO_GC&#160;&#160;&#160;&quot;gc&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the garbage collectors of the runtime, separated by <span class="tt">, </span> (Java: the names of <span class="tt">ManagementFactory.getGarbageCollectorMXBeans()</span>). </p>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
+
+</div>
+</div>
+<a id="ga5f27c40fa139accd84eca150cd62fc0f" name="ga5f27c40fa139accd84eca150cd62fc0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5f27c40fa139accd84eca150cd62fc0f">&#9670;&#160;</a></span>DXFG_V4_BUILD_INFO_MARCH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_BUILD_INFO_MARCH&#160;&#160;&#160;&quot;march&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the target machine of the build (<span class="tt">-march</span> of native-image), e.g. <span class="tt">compatibility</span> (the baseline CPU of the architecture) or <span class="tt">x86-64-v3</span>. The iOS libraries have no value. </p>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
+
+</div>
+</div>
+<a id="gac2ab3f9e5f30ccea167bb518a738f5a2" name="gac2ab3f9e5f30ccea167bb518a738f5a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac2ab3f9e5f30ccea167bb518a738f5a2">&#9670;&#160;</a></span>DXFG_V4_BUILD_INFO_QD_VERSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_BUILD_INFO_QD_VERSION&#160;&#160;&#160;&quot;qd_version&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the version of QDS that the library is built with, e.g. <span class="tt">3.358</span>. </p>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
+
+</div>
+</div>
+<a id="ga3fd8c9620b453258acaa958f2f0b83c0" name="ga3fd8c9620b453258acaa958f2f0b83c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3fd8c9620b453258acaa958f2f0b83c0">&#9670;&#160;</a></span>DXFG_V4_BUILD_INFO_VENDOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_BUILD_INFO_VENDOR&#160;&#160;&#160;&quot;vendor&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The key of <a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a> for the vendor and the version of the runtime that the library is built with, e.g. <span class="tt">GraalVM CE 25.0.1+8.1</span> (Java: the system property <span class="tt">java.vendor.version</span>, else <span class="tt">java.vm.vendor</span>). </p>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
+
+</div>
+</div>
+<a id="gae4519731e65d544bb66c3b2492c67e0c" name="gae4519731e65d544bb66c3b2492c67e0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae4519731e65d544bb66c3b2492c67e0c">&#9670;&#160;</a></span>DXFG_V4_FEATURE_BUILD_INFO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DXFG_V4_FEATURE_BUILD_INFO&#160;&#160;&#160;&quot;build_info&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The name of the feature "build info" (<a class="el" href="#gae22ad3f7bb4ce3c0de38c3343bad1655" title="Returns a value that tells how the library was built and what runs it: the version of QDS,...">dxfg_v4_system_get_build_info()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
+
+</div>
+</div>
 <a id="ga3c6022295c693681093e8cab02248c97" name="ga3c6022295c693681093e8cab02248c97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga3c6022295c693681093e8cab02248c97">&#9670;&#160;</a></span>DXFG_V4_FEATURE_CONNECTION_ERRORS</h2>
 
@@ -202,7 +299,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "connection errors" (<a class="el" href="dxfg__v4__message__connector_8h.html" title="The message connectors of an endpoint: their state, addresses and statistics (see the group Message c...">dxfg_v4_message_connector.h</a>: <a class="el" href="group__V4__MessageConnector.html#ga0a6f461c672ddc0e6bd29535118aa0e0" title="Returns the last connection error of a message connector: the newest failed connect or dropped connec...">dxfg_v4_MessageConnector_getLastError()</a>, <a class="el" href="group__V4__MessageConnector.html#gac44c8e780d9afb715d9284e41175e02c" title="Returns the last connection error of an endpoint: the newest error of all its connectors.">dxfg_v4_DXEndpoint_getLastConnectionError()</a>, <a class="el" href="group__V4__MessageConnector.html#ga1e0cc9a122227310326b82fd383d5f28" title="Releases a connection error and its strings.">dxfg_v4_ConnectionError_release()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000121">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000045">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.14.0 </dd></dl>
 
 </div>
@@ -237,7 +334,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "event queue ready signal" (<a class="el" href="group__V4__EventQueue.html#ga25017bb48333e5b8ae1c8e069b039bb9" title="Sets, replaces or removes the ready signal of the queue: the OS object that the SDK makes ready whene...">dxfg_v4_EventQueue_setReadySignal()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000118">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000042">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
@@ -255,7 +352,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "feed filter" (<a class="el" href="dxfg__v4__feed__filter_8h.html" title="The filter of the subscriptions and the events by named categories of QD filter expressions,...">dxfg_v4_feed_filter.h</a>: <a class="el" href="group__V4__FeedFilter.html#gacbae336b531ac8135aa18963349c9084" title="Creates a new builder of a feed filter for the endpoint, without categories.">dxfg_v4_DXFeedFilter_newBuilder()</a>, <a class="el" href="group__V4__FeedFilter.html#ga5d4eac881003eeca7660785449c63616" title="Builds a filter of the categories of the builder.">dxfg_v4_DXFeedFilter_Builder_build()</a>, <a class="el" href="group__V4__FeedFilter.html#gaaa99a354944c430c173444b05b0fa060" title="Adds a listener to the tracker: it is called after each later update of the filter.">dxfg_v4_DXFeedFilterTracker_addListener()</a> and the other functions of the group <a class="el" href="group__V4__FeedFilter.html" title="Feed filter (v4, experimental)">Feed filter (v4, experimental)</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000119">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000043">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
@@ -341,7 +438,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the feature "time series model event peek" (<a class="el" href="group__V4__EventModel.html#gad2a2a00ed40bc3c447f34e61b315b5a8" title="Sets the event peek of the model: a function that sees each event before the listener gets the list.">dxfg_v4_TimeSeriesTxModel_Builder_withEventPeekFunction()</a>) for <a class="el" href="#gaa3e30ef33590b58e74e65a4298627776" title="Tells whether the library supports a feature, e.g. DXFG_V4_FEATURE_EVENT_QUEUE.">dxfg_v4_system_is_feature_supported()</a>. </p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000120">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000044">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
@@ -384,7 +481,7 @@ Functions</h2></td></tr>
 <p>Closes all the endpoints and instrument profile connections created through the SDK in this isolate and waits for the termination of the endpoints. </p>
 <p>It includes the default endpoints of <a class="el" href="group__V4__Endpoint.html#ga0a682ec7f22eb6ac07536991489bb036" title="Returns the default application-wide singleton endpoint with the DXFG_ENDPOINT_ROLE_FEED role,...">dxfg_v4_DXEndpoint_getInstance()</a>, <a class="el" href="group__V4__Feed.html#ga8fde471e92c0921fda0d3961afbf3fdf" title="Returns the feed of the default endpoint of the process.">dxfg_v4_DXFeed_getInstance()</a>, <a class="el" href="group__V4__Publisher.html#ga7a99d97f003d25935c6df9255c6911e0">dxfg_v4_DXPublisher_getInstance()</a> and <a class="el" href="group__V4__OnDemand.html#ga8353e859eacc45834e125b6949a08667" title="Returns the on-demand service of the default endpoint with the DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED role...">dxfg_v4_OnDemandService_getInstance()</a>. The handles of the objects stay valid and must be released as usual.</p>
 <p>Call it before <a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a> (or before the process exits): the threads of an open endpoint ("DXEndpoint-DXExecutorThread-N", etc.) do not stop on <span class="tt">Thread.interrupt()</span>, so <a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a> waits for them forever while any endpoint is open. The function does not stop the calls of the native listeners: <a class="el" href="#ga3c7ae00bdfc464776675196aac4b9e47" title="Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...">dxfg_v4_system_shutdown()</a> stops them first and then calls this function. To find the threads that block the tear-down, pass the <span class="tt">-XX:TearDownWarningSeconds=&lt;seconds&gt;</span> option in <span class="tt"><a class="el" href="struct____graal__create__isolate__params__t.html#aaea91f6afee3bab6efc4030bed8a5fad" title="The isolate arguments, parsed like a command line (see graal_create_isolate_params_t).">graal_create_isolate_params_t.argv</a></span>.</p>
-<p>The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the call are not closed by it. The function is a function of the SDK: there is no QD method that it calls.</p>
+<p>The function blocks the calling thread until the endpoints are terminated: do not call it from a listener of an endpoint, it would wait for the notification that is calling it. The endpoints and connections created after the call are not closed by it. The function is a function of the SDK: there is no QD method that it calls. For an endpoint with the executor of <a class="el" href="group__V4__Javac.html#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()</a>, it runs the tasks of that executor on the calling thread while it waits, as <a class="el" href="group__V4__Endpoint.html#ga6441fa74687c0202ee5363dd32cac6ba" title="Closes the endpoint and waits until all the data processing and the scheduled notifications are compl...">dxfg_v4_DXEndpoint_closeAndAwaitTermination()</a> does.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
@@ -425,6 +522,45 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">revision</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
+
+</div>
+</div>
+<a id="gae22ad3f7bb4ce3c0de38c3343bad1655" name="gae22ad3f7bb4ce3c0de38c3343bad1655"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae22ad3f7bb4ce3c0de38c3343bad1655">&#9670;&#160;</a></span>dxfg_v4_system_get_build_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t dxfg_v4_system_get_build_info </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="graal__isolate_8h.html#aa00ad74821ed5cfab0f750c01e7255b2">graal_isolatethread_t</a> *</td>          <td class="paramname"><span class="paramname"><em>thread</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>key</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__Common.html#gabe09f48f000ac537e4be758d089abb7d">DXFG_OUT</a> const char **</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a value that tells how the library was built and what runs it: the version of QDS, the vendor of the runtime, the target machine and the garbage collectors (the <span class="tt">DXFG_V4_BUILD_INFO_</span> macros). </p>
+<p>A tool records them next to its measurements, as the NetTest summary does (<span class="tt">tool.qd_version</span> and <span class="tt">tool.build</span>). An unknown key, also an empty one, is not an error: the value is NULL, as it is for a value that the library does not know (<a class="el" href="#ga5f27c40fa139accd84eca150cd62fc0f" title="The key of dxfg_v4_system_get_build_info() for the target machine of the build (-march of native-imag...">DXFG_V4_BUILD_INFO_MARCH</a> of an iOS library). The values are for display and records: their text may change with the runtime or the build, so a program must not parse them. New keys may be added in any release.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>The current GraalVM Isolate's thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key (the <span class="tt">DXFG_V4_BUILD_INFO_</span> macros), a NUL-terminated UTF-8 string. It must not be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>The pointer to the variable that receives the value, a NUL-terminated UTF-8 string allocated by the SDK (release it with <a class="el" href="group__V4__Javac.html#ga3e57b4137ef6eb063c0c90d0c41b61c9">dxfg_v4_String_release()</a>), or NULL; must not be NULL. It is written on success only. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (also when <span class="tt">key</span> or <span class="tt">value</span> is NULL). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown. </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.19.0 </dd></dl>
 
 </div>
 </div>
@@ -661,9 +797,13 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instrument profile connections and waits for the termination of the endpoints. </p>
-<p>The function calls <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a>, which also closes the event queues, and then <a class="el" href="#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a>, so that no listener is called and no poll waits while the endpoints are closed. Both steps wait without a limit; like them, the function is irreversible: the listeners created afterwards are never called, the endpoints created afterwards are not closed by it.</p>
+<p>The function calls <a class="el" href="group__V4__Javac.html#ga0f617c8ecc1eba5fa336c19dffd6708a">dxfg_v4_NativeListener_deactivateAll()</a>, which also closes the event queues, and then <a class="el" href="#ga6724b7ccea9b2938c315f3771ef9ce8a" title="Closes all the endpoints and instrument profile connections created through the SDK in this isolate a...">dxfg_v4_system_close_all_and_await_termination()</a>, so that no listener is called and no poll waits while the endpoints are closed. Both steps wait without a limit; like them, the function is irreversible: the listeners created afterwards are never called, the event queues created afterwards are closed from the start, the endpoints created afterwards are not closed by it.</p>
+<p>A second call is allowed: the listeners stay deactivated, and the call closes the event queues, the endpoints and the instrument profile connections created since the previous one and waits for those endpoints; with nothing to close, it returns <a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> at once.</p>
+<p>Only the listeners of the <span class="tt">dxfg_*Listener_new</span> functions are stopped. These callbacks are not listeners and are still called after the function returns: the handlers of <a class="el" href="group__V4__Feed.html#gaa4e7ca9410421b76f471dd116393f980" title="Adds a handler that is called when the promise is done.">dxfg_v4_Promise_whenDone()</a> and <a class="el" href="group__V4__Feed.html#ga20cd50132facc045ee7d0583b2d3d9c9" title="Adds a handler that is called by the given executor when the promise is done.">dxfg_v4_Promise_whenDoneAsync()</a> when a promise completes, the functions of <a class="el" href="group__V4__Javac.html#gad01b963a22e456bf5d2089f626b36253">dxfg_v4_Object_finalize()</a> when an object is collected, and the filters of <a class="el" href="group__V4__Schedule.html#gad864eebe419168866b82e1654de58cc7">dxfg_v4_DayFilter_new()</a>, <a class="el" href="group__V4__Schedule.html#ga2ffe27e57e3201628a4682bef80484e2">dxfg_v4_DayFilter_newWithUserData()</a>, <a class="el" href="group__V4__Schedule.html#ga80b4c85fe6ae0ece61d051dd59236130">dxfg_v4_SessionFilter_new()</a> and <a class="el" href="group__V4__Schedule.html#gadb0f7db69364fb15bf84938c8db80fa8">dxfg_v4_SessionFilter_newWithUserData()</a> when a search uses them. Keep their user data until they cannot be called anymore: a promise handler or a finalizer until it has run (it runs once) or the isolate is torn down, a filter until its last handle is released.</p>
+<p>The function acts on the isolate of <span class="tt">thread</span> only. Another isolate of the process keeps its listeners and endpoints, and a new isolate created afterwards works from the start, also after <a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a> of this one. The <span class="tt">oracle-g1</span> build variant allows one isolate per process, so there the process cannot create another one: after the shutdown its isolate serves only the calls that need no listener and no event queue, until the process exits.</p>
+<p>The function waits for the listeners' calls in progress and for the endpoints without a limit. To bound the wait, a wrapper calls it on a thread of its own, attached to the isolate, and waits for that thread with a timeout. When the timeout expires, the function is still running, so the wrapper must not free the user data of the listeners (a call may still be in progress), call <a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a> (it waits for that thread to detach) or <a class="el" href="graal__isolate_8h.html#a1e203cf376ae60794dd178429ba874c4" title="Detaches all the threads that were started outside Java and attached to the isolate afterwards (inclu...">graal_detach_all_threads_and_tear_down_isolate()</a> (that thread is in an SDK function). It may keep waiting, or report the hang and end the process with the isolate as it is: the threads of the isolate end with the process.</p>
 <p>Recommended shutdown sequence:</p><ol type="1">
-<li><a class="el" href="#ga3c7ae00bdfc464776675196aac4b9e47" title="Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...">dxfg_v4_system_shutdown()</a>. After it returns, no listener's function is called and none of its calls is in progress, so the user data of the listeners can be freed; every poll of an event queue returns <a class="el" href="group__V4__EventQueue.html#ga36cc44daaa2a6ba62bdfe178c741be22" title="The result of dxfg_v4_EventQueue_poll() when the queue is closed.">DXFG_EVENT_QUEUE_CLOSED</a>, so the polling threads can leave the SDK.</li>
+<li><a class="el" href="#ga3c7ae00bdfc464776675196aac4b9e47" title="Stops the calls of all the native listeners of this isolate, then closes all the endpoints and instru...">dxfg_v4_system_shutdown()</a>. After it returns, no listener's function is called and none of its calls is in progress, so the user data of the listeners can be freed (not that of the promise handlers, the finalizers and the filters, see above); every poll of an event queue returns <a class="el" href="group__V4__EventQueue.html#ga36cc44daaa2a6ba62bdfe178c741be22" title="The result of dxfg_v4_EventQueue_poll() when the queue is closed.">DXFG_EVENT_QUEUE_CLOSED</a>, so the polling threads can leave the SDK.</li>
 <li>Release the remaining handles (<a class="el" href="group__V4__Javac.html#gae64ce3845e693eacc91198a12693d938">dxfg_v4_JavaObjectHandler_release()</a>), the listeners among them.</li>
 <li><a class="el" href="graal__isolate_8h.html#a93f3ba0c5302eb2304934c5f819a671b" title="Tears down the isolate of the isolate thread (which must still be attached): waits for the other atta...">graal_tear_down_isolate()</a>, if the isolate is torn down at all; the process may also just exit.</li>
 </ol>

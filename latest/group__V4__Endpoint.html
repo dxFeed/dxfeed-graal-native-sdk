@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.18.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.19.0</span>
    </div>
   </td>
  </tr>
@@ -836,6 +836,7 @@ Functions</h2></td></tr>
 <p>Closes the endpoint and waits until all the data processing and the scheduled notifications are completed. </p>
 <p>It does the same as <a class="el" href="#gadf6d322bead5ef6c8f54a2b86b35c8a4" title="Closes the endpoint: disconnects it and releases its resources. The endpoint cannot be used after tha...">dxfg_v4_DXEndpoint_close()</a> and blocks until the outstanding tasks of the endpoint are finished. It is designed for the <a class="el" href="group__Endpoint.html#ggaec83860f86076b8cabecbd13a0d16445a5fcb325acaa68fc27bb41a89c00d90a5">DXFG_ENDPOINT_ROLE_STREAM_FEED</a> role, after <a class="el" href="#gaca6bff5a5717e067fe599e5b4d9f99b2" title="Waits until the state of the endpoint becomes DXFG_ENDPOINT_STATE_NOT_CONNECTED or DXFG_ENDPOINT_STAT...">dxfg_v4_DXEndpoint_awaitNotConnected()</a> returns, to make sure that a file was completely processed.</p>
 <p>Do not call it from a listener of this endpoint: it would wait for the notification that is calling it.</p>
+<p>If the endpoint has the executor of <a class="el" href="group__V4__Javac.html#gac370f979a7d014c8a88fa4ce8dbd904b">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_new()</a>, the function runs the tasks of that executor on the calling thread while it waits, as <a class="el" href="group__V4__Javac.html#gac3b47c71f1d40d9bc247e9d4e390cc06">dxfg_v4_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks()</a> would: the endpoint terminates only after they run, so the active listeners of the endpoint may be called on this thread before the function returns.</p>
 <p>Java: <span class="tt">DXEndpoint.closeAndAwaitTermination()</span>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

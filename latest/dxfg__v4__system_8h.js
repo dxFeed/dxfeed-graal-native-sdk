@@ -1,6 +1,11 @@
 var dxfg__v4__system_8h =
 [
     [ "DXFG_V4_ADVANCED_REVISION", "group__V4__System.html#gaaa1b2224c2c32cbcc22f475ab4972db4", null ],
+    [ "DXFG_V4_BUILD_INFO_GC", "group__V4__System.html#ga8faa91c58dbfc936919e8ea72237603f", null ],
+    [ "DXFG_V4_BUILD_INFO_MARCH", "group__V4__System.html#ga5f27c40fa139accd84eca150cd62fc0f", null ],
+    [ "DXFG_V4_BUILD_INFO_QD_VERSION", "group__V4__System.html#gac2ab3f9e5f30ccea167bb518a738f5a2", null ],
+    [ "DXFG_V4_BUILD_INFO_VENDOR", "group__V4__System.html#ga3fd8c9620b453258acaa958f2f0b83c0", null ],
+    [ "DXFG_V4_FEATURE_BUILD_INFO", "group__V4__System.html#gae4519731e65d544bb66c3b2492c67e0c", null ],
     [ "DXFG_V4_FEATURE_CONNECTION_ERRORS", "group__V4__System.html#ga3c6022295c693681093e8cab02248c97", null ],
     [ "DXFG_V4_FEATURE_EVENT_QUEUE", "group__V4__System.html#ga2bd91d32cda673e8c955ed4bc54f2c11", null ],
     [ "DXFG_V4_FEATURE_EVENT_QUEUE_READY_SIGNAL", "group__V4__System.html#ga789bfc852d0146265a381c2c7105acfd", null ],
@@ -13,6 +18,7 @@ var dxfg__v4__system_8h =
     [ "dxfg_v4_runtime_stats_t", "group__V4__System.html#ga3394b9a0ce36c1c8ac97f49de45c12c5", null ],
     [ "dxfg_v4_system_close_all_and_await_termination", "group__V4__System.html#ga6724b7ccea9b2938c315f3771ef9ce8a", null ],
     [ "dxfg_v4_system_get_advanced_revision", "group__V4__System.html#ga93947aadbc5d342385aee354b49e8bf0", null ],
+    [ "dxfg_v4_system_get_build_info", "group__V4__System.html#gae22ad3f7bb4ce3c0de38c3343bad1655", null ],
     [ "dxfg_v4_system_get_property", "group__V4__System.html#gaff81951e37bd4714da88582908e3a661", null ],
     [ "dxfg_v4_system_get_runtime_statistics", "group__V4__System.html#ga98b5dff55916dd4666e8add20503c20a", null ],
     [ "dxfg_v4_system_get_version", "group__V4__System.html#ga3246a4368f9b9a8531f6713d1be07742", null ],

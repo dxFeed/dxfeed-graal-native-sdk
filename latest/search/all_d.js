@@ -8,8 +8,9 @@ var searchData=
   ['message_20connectors_20v4_5',['Message connectors (v4)',['../group__V4__MessageConnector.html',1,'']]],
   ['method_5fname_6',['method_name',['../structdxfg__stack__trace__element__t.html#a1660560f183c8e0ae08a0e3842d03748',1,'dxfg_stack_trace_element_t']]],
   ['metrics_7',['Metrics',['../wrapper_nettest.html#wrapper_nettest_metrics',1,'']]],
-  ['mmy_8',['mmy',['../structdxfg__instrument__profile2__t.html#afe487c4063e7f8b4e2e0050a590b5fd5',1,'dxfg_instrument_profile2_t']]],
-  ['module_5fname_9',['module_name',['../structdxfg__stack__trace__element__t.html#ab239e74fb5e49f17e09fcb0635a8cfdb',1,'dxfg_stack_trace_element_t']]],
-  ['module_5fversion_10',['module_version',['../structdxfg__stack__trace__element__t.html#a1a22ed9ed2d4aeba1aabd8306a82f390',1,'dxfg_stack_trace_element_t']]],
-  ['multiplier_11',['multiplier',['../structdxfg__instrument__profile2__t.html#a178ad4dfc4d032d62b6148522d97ac2f',1,'dxfg_instrument_profile2_t']]]
+  ['migrating_20to_20the_20v4_20functions_8',['Migrating to the v4 functions',['../wrapper_versioning.html#wrapper_versioning_migration',1,'']]],
+  ['mmy_9',['mmy',['../structdxfg__instrument__profile2__t.html#afe487c4063e7f8b4e2e0050a590b5fd5',1,'dxfg_instrument_profile2_t']]],
+  ['module_5fname_10',['module_name',['../structdxfg__stack__trace__element__t.html#ab239e74fb5e49f17e09fcb0635a8cfdb',1,'dxfg_stack_trace_element_t']]],
+  ['module_5fversion_11',['module_version',['../structdxfg__stack__trace__element__t.html#a1a22ed9ed2d4aeba1aabd8306a82f390',1,'dxfg_stack_trace_element_t']]],
+  ['multiplier_12',['multiplier',['../structdxfg__instrument__profile2__t.html#a178ad4dfc4d032d62b6148522d97ac2f',1,'dxfg_instrument_profile2_t']]]
 ];

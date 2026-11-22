@@ -1,5 +1,11 @@
 var NAVTREEINDEX9 =
 {
+"structdxfg__java__object__handler__list.html#a4f2b699be729e9719ad19541111c5dd8":[3,10,3,0],
+"structdxfg__java__object__t.html":[3,10,1],
+"structdxfg__java__object__t.html#ae4acecfa064b8e04964a83d0a41ed508":[3,10,1,0],
+"structdxfg__list.html":[3,10,2],
+"structdxfg__list.html#acfe3f7cc1f8047b3ea8cdd54344ffcea":[3,10,2,0],
+"structdxfg__list.html#ad29f6fadde4d072696c7ccbe921f8be7":[3,10,2,1],
 "structdxfg__logging__listener__t.html":[3,11,0],
 "structdxfg__logging__listener__t.html#aa87188093c8871bd23f662242879f3f8":[3,11,0,0],
 "structdxfg__market__event__t.html":[4,0,53],
@@ -243,11 +249,5 @@ var NAVTREEINDEX9 =
 "structdxfg__symbols__by__order__source__map__entry__t.html#ab8088179b071a06ac5b06067835879aa":[3,13,1,4,0],
 "structdxfg__text__configuration__t.html":[4,0,100],
 "structdxfg__text__configuration__t.html#a2651c61e1a36b1afca1ba81593b1c3eb":[4,0,100,4],
-"structdxfg__text__configuration__t.html#a4e37ba5361b95d191350a0f594de15fd":[4,0,100,3],
-"structdxfg__text__configuration__t.html#aba98a591ef1c2f183cb75a9408b96a8c":[4,0,100,1],
-"structdxfg__text__configuration__t.html#ae276afc39f82347ab247c3d6211b44a4":[4,0,100,0],
-"structdxfg__text__configuration__t.html#aecc477d1943e59688e87fefb2af1b9e0":[4,0,100,5],
-"structdxfg__text__configuration__t.html#af40b4f8734d59759e9c0b1bb3f9ba842":[4,0,100,2],
-"structdxfg__text__message__t.html":[4,0,101],
-"structdxfg__text__message__t.html#a113778a98011d5b6a9a3048f8f5885a5":[4,0,101,1]
+"structdxfg__text__configuration__t.html#a4e37ba5361b95d191350a0f594de15fd":[4,0,100,3]
 };

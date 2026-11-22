@@ -20,7 +20,8 @@ var wrapper_guide =
     [ "Tiers and versioning", "wrapper_versioning.html", [
       [ "Tiers", "wrapper_versioning.html#wrapper_versioning_tiers", null ],
       [ "The start-up check", "wrapper_versioning.html#wrapper_versioning_check", null ],
-      [ "The API description", "wrapper_versioning.html#wrapper_versioning_description", null ]
+      [ "The API description", "wrapper_versioning.html#wrapper_versioning_description", null ],
+      [ "Migrating to the v4 functions", "wrapper_versioning.html#wrapper_versioning_migration", null ]
     ] ],
     [ "Delivery of data", "wrapper_delivery.html", [
       [ "Event queues", "wrapper_delivery.html#wrapper_delivery_queue", null ],
@@ -44,6 +45,7 @@ var wrapper_guide =
       [ "Consumer", "wrapper_nettest.html#wrapper_nettest_consumer", null ],
       [ "Summary file", "wrapper_nettest.html#wrapper_nettest_summary", null ],
       [ "Metrics", "wrapper_nettest.html#wrapper_nettest_metrics", null ],
+      [ "Prometheus and Grafana", "wrapper_nettest.html#wrapper_nettest_monitoring", null ],
       [ "Connector statistics", "wrapper_nettest.html#wrapper_nettest_connectors", null ],
       [ "Exit codes and status", "wrapper_nettest.html#wrapper_nettest_exit", null ],
       [ "Sustainability", "wrapper_nettest.html#wrapper_nettest_sustainability", null ],

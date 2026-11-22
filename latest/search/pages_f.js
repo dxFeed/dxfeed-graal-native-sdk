@@ -13,11 +13,13 @@ var searchData=
   ['the_20sdk_20tools_10',['The SDK tools',['../wrapper_nettest.html#wrapper_nettest_sdk_tools',1,'']]],
   ['the_20start_20up_20check_11',['The start-up check',['../wrapper_versioning.html#wrapper_versioning_check',1,'']]],
   ['the_20tests_20of_20a_20tool_20prove_12',['What the tests of a tool prove',['../wrapper_nettest.html#wrapper_nettest_tests',1,'']]],
-  ['threads_13',['Threads',['../wrapper_threads.html',1,'wrapper_guide']]],
-  ['threads_14',['Long-lived threads',['../wrapper_threads.html#wrapper_threads_long_lived',1,'']]],
-  ['tiers_15',['Tiers',['../wrapper_versioning.html#wrapper_versioning_tiers',1,'']]],
-  ['tiers_20and_20versioning_16',['Tiers and versioning',['../wrapper_versioning.html',1,'wrapper_guide']]],
-  ['time_20sequence_20and_20symbols_17',['Time, sequence and symbols',['../wrapper_nettest.html#wrapper_nettest_time',1,'']]],
-  ['tool_20prove_18',['What the tests of a tool prove',['../wrapper_nettest.html#wrapper_nettest_tests',1,'']]],
-  ['tools_19',['The SDK tools',['../wrapper_nettest.html#wrapper_nettest_sdk_tools',1,'']]]
+  ['the_20v4_20functions_13',['Migrating to the v4 functions',['../wrapper_versioning.html#wrapper_versioning_migration',1,'']]],
+  ['threads_14',['Threads',['../wrapper_threads.html',1,'wrapper_guide']]],
+  ['threads_15',['Long-lived threads',['../wrapper_threads.html#wrapper_threads_long_lived',1,'']]],
+  ['tiers_16',['Tiers',['../wrapper_versioning.html#wrapper_versioning_tiers',1,'']]],
+  ['tiers_20and_20versioning_17',['Tiers and versioning',['../wrapper_versioning.html',1,'wrapper_guide']]],
+  ['time_20sequence_20and_20symbols_18',['Time, sequence and symbols',['../wrapper_nettest.html#wrapper_nettest_time',1,'']]],
+  ['to_20the_20v4_20functions_19',['Migrating to the v4 functions',['../wrapper_versioning.html#wrapper_versioning_migration',1,'']]],
+  ['tool_20prove_20',['What the tests of a tool prove',['../wrapper_nettest.html#wrapper_nettest_tests',1,'']]],
+  ['tools_21',['The SDK tools',['../wrapper_nettest.html#wrapper_nettest_sdk_tools',1,'']]]
 ];

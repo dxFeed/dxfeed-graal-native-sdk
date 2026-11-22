@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.18.0</span>
+   <div id="projectname">dxFeed Graal Native SDK<span id="projectnumber">&#160;3.19.0</span>
    </div>
   </td>
  </tr>
@@ -301,7 +301,7 @@ Functions</h2></td></tr>
 
 <p>The kind of the OS object that is the ready signal of an event queue (<a class="el" href="#ga25017bb48333e5b8ae1c8e069b039bb9" title="Sets, replaces or removes the ready signal of the queue: the OS object that the SDK makes ready whene...">dxfg_v4_EventQueue_setReadySignal()</a>). </p>
 <p>The value is an <span class="tt">int</span> of the C ABI. New kinds may be added.</p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000049">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000004">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>
@@ -338,7 +338,7 @@ Functions</h2></td></tr>
 
 <p>The kind of the OS object that is the ready signal of an event queue (<a class="el" href="#ga25017bb48333e5b8ae1c8e069b039bb9" title="Sets, replaces or removes the ready signal of the queue: the OS object that the SDK makes ready whene...">dxfg_v4_EventQueue_setReadySignal()</a>). </p>
 <p>The value is an <span class="tt">int</span> of the C ABI. New kinds may be added.</p>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000049">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000004">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga5a5165dbd41574cec56364b8e55d3e87a07341d51736491f941046d85df6698b8" name="gga5a5165dbd41574cec56364b8e55d3e87a07341d51736491f941046d85df6698b8"></a>DXFG_V4_READY_SIGNAL_NONE&#160;</td><td class="fielddoc"><p>No signal: removes the ready signal of the queue; the handle is ignored. </p>
@@ -724,7 +724,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__Common.html#ga1f963123e29eb44994e0b7e10161527a">DXFG_EXECUTE_SUCCESSFULLY</a> (0) on successful function execution or <a class="el" href="group__Common.html#gaf4d4784150d58e6f47e3b4856ccccebe">DXFG_EXECUTE_FAIL</a> (-1) on error (<span class="tt">IllegalArgumentException</span> for an unknown kind, a kind of the other OS, a descriptor outside 0 to <span class="tt">INT32_MAX</span>, a descriptor that is closed, blocking or read-only, and a handle 0 or -1; the message says how to fix it; the signal of the queue stays as it was). Use <a class="el" href="group__V4__Exceptions.html#ga53dbde35fb19611839fd0ec91061f602" title="Writes the exception of the last failed function call of the calling thread and clears it.">dxfg_v4_get_and_clear_thread_exception()</a> to determine if an exception was thrown.</dd></dl>
-<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000050">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
+<dl class="experimental"><dt><b><a class="el" href="experimental.html#_experimental000005">Experimental</a></b></dt><dd>It may change or be removed in a minor release, see <a class="el" href="group__V4__Conventions.html" title="The v4 functions">The v4 functions</a>. </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>3.13.0 </dd></dl>
 
 </div>

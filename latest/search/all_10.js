@@ -19,10 +19,11 @@ var searchData=
   ['print_5fstack_5ftrace_16',['print_stack_trace',['../structdxfg__exception__t.html#abb3e3eae0e3253c74a5c55cc470ce3c1',1,'dxfg_exception_t']]],
   ['process_5fcpu_5ftime_5fns_17',['process_cpu_time_ns',['../structdxfg__v4__runtime__stats__t.html#ab9ca6915869a1e81c440951715935939',1,'dxfg_v4_runtime_stats_t']]],
   ['product_18',['product',['../structdxfg__instrument__profile2__t.html#a47f75eae629c5baea56579738c57d051',1,'dxfg_instrument_profile2_t']]],
-  ['prove_19',['prove',['../wrapper_kit.html#wrapper_kit_limits',1,'What the kit cannot prove'],['../wrapper_nettest.html#wrapper_nettest_tests',1,'What the tests of a tool prove']]],
-  ['proves_20',['What the kit proves',['../wrapper_kit.html#wrapper_kit_proves',1,'']]],
-  ['publisher_21',['Publisher',['../group__Publisher.html',1,'']]],
-  ['publisher_20v4_22',['Publisher (v4)',['../group__V4__Publisher.html',1,'']]],
-  ['put_5fcall_5fratio_23',['put_call_ratio',['../structdxfg__underlying__t.html#ab08b5ae463a40aa8f91d40013a460af2',1,'dxfg_underlying_t::put_call_ratio'],['../structdxfg__series__t.html#a4be03c0b43b89215d863ca0ee3d7ac97',1,'dxfg_series_t::put_call_ratio']]],
-  ['put_5fvolume_24',['put_volume',['../structdxfg__underlying__t.html#a2c581c6a8063deb48d358baf65c12b68',1,'dxfg_underlying_t::put_volume'],['../structdxfg__series__t.html#ad341cfda5b477961762be30898ceaf7c',1,'dxfg_series_t::put_volume']]]
+  ['prometheus_20and_20grafana_19',['Prometheus and Grafana',['../wrapper_nettest.html#wrapper_nettest_monitoring',1,'']]],
+  ['prove_20',['prove',['../wrapper_kit.html#wrapper_kit_limits',1,'What the kit cannot prove'],['../wrapper_nettest.html#wrapper_nettest_tests',1,'What the tests of a tool prove']]],
+  ['proves_21',['What the kit proves',['../wrapper_kit.html#wrapper_kit_proves',1,'']]],
+  ['publisher_22',['Publisher',['../group__Publisher.html',1,'']]],
+  ['publisher_20v4_23',['Publisher (v4)',['../group__V4__Publisher.html',1,'']]],
+  ['put_5fcall_5fratio_24',['put_call_ratio',['../structdxfg__underlying__t.html#ab08b5ae463a40aa8f91d40013a460af2',1,'dxfg_underlying_t::put_call_ratio'],['../structdxfg__series__t.html#a4be03c0b43b89215d863ca0ee3d7ac97',1,'dxfg_series_t::put_call_ratio']]],
+  ['put_5fvolume_25',['put_volume',['../structdxfg__underlying__t.html#a2c581c6a8063deb48d358baf65c12b68',1,'dxfg_underlying_t::put_volume'],['../structdxfg__series__t.html#ad341cfda5b477961762be30898ceaf7c',1,'dxfg_series_t::put_volume']]]
 ];
