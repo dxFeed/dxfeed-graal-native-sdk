@@ -1,3 +1,5 @@
+## v3.19.0-rc2
+
 * **\[MDAPI-626]\[GRAAL]** Build information of the library, and the NetTest tools closer to their specification:
   * The stable `dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, feature `DXFG_V4_FEATURE_BUILD_INFO`) tells how
     the library was built and what runs it: the QDS version, the vendor and version of the runtime, the target machine
@@ -20,8 +22,6 @@
   * A signal while the C NetTest reads its symbols (a large IPF file) ends it, once the symbols are read, with the
     summary of the status `stopped_by_signal`, and a second signal ends the process at once; the specification says so
     for every tool.
-
-## v3.19.0-rc1
 
 * **\[MDAPI-603]\[GRAAL]** `dxfg_v4_system_shutdown`, `dxfg_v4_system_close_all_and_await_termination` and
   `dxfg_v4_DXEndpoint_closeAndAwaitTermination` no longer wait forever for an endpoint with the executor of
