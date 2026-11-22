@@ -464,6 +464,10 @@ Docker Desktop and the Podman machine (Windows, macOS) run the containers in a v
   window is its growth over that of `nettest_connector_read_records_total`; `nettest_connector_rtt_seconds_total` is
   the read plus write sums and `nettest_connector_sub_records_total` the subscription records of both directions.
   Without v2 the three families are absent and the `v2` of each connector in the summary is `null`.
+- The subscription records count both the additions and the removals. A consumer reads its statistics for the summary
+  before it closes its endpoint, and the close sends the removal of its subscription. So a publisher that outlives the
+  consumer reads twice the records the consumer wrote (`read_sub_records` 200 against `written_sub_records` 100 for
+  `-S 100`); when the publisher stops first, or the connection breaks, both show 100.
 - A tool reads the connector statistics at most once per interval.
 
 ## Exit codes and status {#wrapper_nettest_exit}
