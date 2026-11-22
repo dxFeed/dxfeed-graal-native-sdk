@@ -172,11 +172,11 @@ public class NetTestApiSummaryTest {
             new NetTestApiStatistics.Counter[] {counter}, () -> 1);
 
         counter.add(5, 0);
-        NetTestApiStatistics.Interval first = statistics.tick(0);
+        NetTestApiStatistics.Interval first = statistics.tick(false);
         counter.add(7, 0);
-        NetTestApiStatistics.Interval second = statistics.tick(0);
+        NetTestApiStatistics.Interval second = statistics.tick(false);
         counter.add(3, 0);
-        NetTestApiStatistics.Interval last = statistics.tick(TimeUnit.HOURS.toNanos(1));
+        NetTestApiStatistics.Interval last = statistics.tick(true); // much shorter than a second
 
         // The part before the first tick: counted, not printed.
         assertNull(first.text);
@@ -188,6 +188,22 @@ public class NetTestApiSummaryTest {
         assertNull(last.text);
         assertEquals(3, last.records);
         assertEquals(second.endEpochMs, last.startEpochMs);
+    }
+
+    @Test
+    public void aLastIntervalOfASecondPrintsABlockWithoutATickBeforeIt() throws Exception {
+        NetTestApiStatistics.Counter counter = new NetTestApiStatistics.Counter();
+        NetTestApiStatistics statistics = new NetTestApiStatistics(NetTestApiStatistics.PRODUCER_LABEL, "NetTest",
+            new NetTestApiStatistics.Counter[] {counter}, () -> 1);
+
+        counter.add(4, 0);
+        Thread.sleep(TimeUnit.NANOSECONDS.toMillis(NetTestApiStatistics.LAST_BLOCK_MIN_NANOS) + 50);
+        NetTestApiStatistics.Interval last = statistics.tick(true);
+
+        // A run shorter than the period: its only interval is the last one, printed from the start of the run.
+        assertNotNull(last.text);
+        assertTrue(last.text, last.text.startsWith("{*NetTestProducerSide-NetTest*} data "));
+        assertEquals(4, last.records);
     }
 
     @Test

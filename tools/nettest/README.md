@@ -68,7 +68,7 @@ specification:
 | `--summary <file>`       | write the [summary file](#the-summary-file) when the run ends; a path whose directory is missing or not writable exits with 2 at once |
 | `--metrics-port [<host>:]<port>` | serve [`/metrics`](#metrics) on the host, default `127.0.0.1`; port 0 takes a free port. A port that cannot be bound exits with 1 before the first endpoint |
 | `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Dmonitoring.stat=10s`; `-Ddxscheme.nanoTime` also goes to the builder of every endpoint (see below) |
-| `--help`                 | print the usage with the line `spec_version nettest/1` and exit with 0                        |
+| `--help`, `-h`, `-help`  | print the usage with the line `spec_version nettest/1` and exit with 0                        |
 
 The roles, as the specification sets them:
 
@@ -117,6 +117,7 @@ be written, 1 for a failure at run time: a failed start (unreadable IPF file, a 
 a `:port` that does not start listening within 3 s, for example because it is in use), a failed publishing call,
 `no_data`, `nano_missing` or a summary file that cannot be written at the end. Connecting is asynchronous: a
 `host:port` without a listener is not an error, the tool runs and reports `connections 0` until a peer is there.
+Ctrl+C while the symbols are read also ends with the summary; a second Ctrl+C ends the process at once, without it.
 
 ## Statistics
 
@@ -144,8 +145,8 @@ With `--metrics-port` a line with the address of the metrics comes first, once t
 - `connections`: open connections of all instances' connectors.
 - A line per instance follows the first line, also for one instance.
 
-The first tick prints no block. When the run stops, a last block covers the time since the last tick, if it is at
-least one second long. The summary file has an interval for every part of the run, printed or not: the part before the
+The first tick prints no block. When the run stops, a last block covers the time since the last tick, or since the
+start when no tick came (a run shorter than the period), if it is at least one second long. The summary file has an interval for every part of the run, printed or not: the part before the
 first tick and a short last part too.
 
 The runtime line shows the JVM, in the format of the C tool's runtime line of the isolate, so that one load can be

@@ -118,18 +118,20 @@ final class NetTestApiRuntime {
 
     /** The statistics blocks of the intervals, see {@link NetTestApiStatistics#tick}. */
     interface Blocks {
-        /** Ends an interval and returns its block, or {@code null} when nothing is printed for it. */
-        String tick(long minNanos);
+        /**
+         * Ends an interval, the {@code last} one at the stop, and returns its block, or {@code null} when nothing is
+         * printed for it.
+         */
+        String tick(boolean last);
     }
 
     /**
      * Logs the statistics block of each interval and the runtime line after it in one write, so that no other output
-     * comes between them. The first run only starts the count. {@link #finish} logs the last block of the time since
-     * the last run when it is at least one second long; after it nothing is logged.
+     * comes between them. The first run only starts the count. {@link #finish} ends the last interval, whose block
+     * the {@link Blocks} may print even without a run before it; after it nothing is logged. The runtime line covers
+     * the time since the previous block, or since the creation of the reporter before the first one.
      */
     static final class Reporter implements Runnable {
-        static final long LAST_BLOCK_MIN_NANOS = 1_000_000_000L;
-
         private final Blocks blocks;
         private final String name;
         private final Supplier<Sample> source;
@@ -147,35 +149,35 @@ final class NetTestApiRuntime {
             this.name = name;
             this.source = source;
             this.output = output;
+            this.previous = source.get();
+            this.previousNanos = System.nanoTime();
         }
 
         @Override
         public synchronized void run() {
-            report(0);
+            report(false);
         }
 
         /** Logs the last block once and stops the reporting. */
         synchronized void finish() {
-            report(LAST_BLOCK_MIN_NANOS);
+            report(true);
             finished = true;
         }
 
-        private void report(long minNanos) {
+        private void report(boolean last) {
             if (finished) {
                 return;
             }
-            String block = blocks.tick(minNanos);
+            String block = blocks.tick(last);
             if (block == null) {
-                if (previous == null) {
-                    previous = source.get();
-                    previousNanos = System.nanoTime();
-                }
+                // The next block starts here: the first tick or a short last interval.
+                previous = source.get();
+                previousNanos = System.nanoTime();
                 return;
             }
             Sample current = source.get();
             long currentNanos = System.nanoTime();
-            Sample start = previous != null ? previous : current;
-            output.accept(block + "\n" + format(name, start, current, currentNanos - previousNanos));
+            output.accept(block + "\n" + format(name, previous, current, currentNanos - previousNanos));
             previous = current;
             previousNanos = currentNanos;
         }

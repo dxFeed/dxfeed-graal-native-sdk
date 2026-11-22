@@ -140,6 +140,12 @@ int runInIsolate(graal_isolatethread_t *thread, const dxfg::nettest::Options &op
         return finish(options, failedReport, status);
     };
 
+    // Ctrl+C and SIGTERM end the run like --duration does: the last statistics are printed, the summary is written and
+    // the endpoints close. The watcher is installed once the isolate exists, so that a signal while the symbols are read
+    // (a large IPF file) also ends with the summary; a second signal ends the process.
+    StopControl stop;
+    const SignalWatcher signalWatcher(stop);
+
     // The system properties come before the first endpoint.
     std::string error;
 
@@ -184,10 +190,15 @@ int runInIsolate(graal_isolatethread_t *thread, const dxfg::nettest::Options &op
         return failBeforeRun(pool.error);
     }
 
-    // Ctrl+C and SIGTERM end the run like --duration does: the last statistics are printed, the summary is written and
-    // the endpoints close.
-    StopControl stop;
-    const SignalWatcher signalWatcher(stop);
+    // A signal before the start of the endpoints: the summary of the empty run, without the endpoints.
+    if (signalWatcher.received()) {
+        failedReport.endEpochNs = epochNanos();
+        status.status = "stopped_by_signal";
+        status.exitCode = EXIT_SUCCESS;
+
+        return finish(options, failedReport, status);
+    }
+
     const auto result = runNetTest(thread, options, pool.symbols, stop, std::cout, runHooks(), &live);
 
     if (result.exitCode != EXIT_SUCCESS) {

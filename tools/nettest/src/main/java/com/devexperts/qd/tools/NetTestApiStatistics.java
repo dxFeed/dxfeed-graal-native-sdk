@@ -27,6 +27,9 @@ final class NetTestApiStatistics {
     static final long HISTOGRAM_HIGHEST = 3_600_000_000_000L;
     static final int HISTOGRAM_DIGITS = 3;
 
+    /** The shortest last interval that prints its block: a shorter one is mostly the noise of its few batches. */
+    static final long LAST_BLOCK_MIN_NANOS = 1_000_000_000L;
+
     private static final long NANOS_PER_SECOND = 1_000_000_000L;
     private static final long NANOS_PER_MILLI = 1_000_000L;
 
@@ -179,9 +182,10 @@ final class NetTestApiStatistics {
      * Ends an interval and returns it. The first interval begins when the statistics are created, each next one where
      * the previous one ends, so the intervals cover the whole run. The {@link Interval#text} of the interval is
      * {@code null} (no block is printed) for the first tick, which ends the part before the first multiple of the
-     * period, and for an interval shorter than {@code minNanos}.
+     * period, and for the last interval ({@code atStop}) when it is shorter than {@link #LAST_BLOCK_MIN_NANOS}. The last
+     * interval prints its block even when no tick came before it, as for a run shorter than the period.
      */
-    synchronized Interval tick(long minNanos) {
+    synchronized Interval tick(boolean atStop) {
         long now = System.nanoTime();
         long epochNanos = NetTestApiClock.epochNanos();
         long[][] values = new long[counters.length][Counter.SIZE];
@@ -189,7 +193,7 @@ final class NetTestApiStatistics {
             counters[i].read(values[i]);
         }
         long length = now - lastNanos;
-        boolean printed = ticked && length >= minNanos;
+        boolean printed = atStop ? length >= LAST_BLOCK_MIN_NANOS : ticked;
         ticked = true;
         long[] totals = new long[Counter.SIZE];
         long[] records = new long[counters.length];

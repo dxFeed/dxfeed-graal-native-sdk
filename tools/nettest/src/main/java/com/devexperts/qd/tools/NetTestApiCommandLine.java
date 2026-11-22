@@ -72,11 +72,14 @@ final class NetTestApiCommandLine {
         this.args = List.of(args);
     }
 
-    /** Whether the arguments ask for the usage: {@code --help} anywhere outside the value of an option. */
+    /**
+     * Whether the arguments ask for the usage: {@code --help}, {@code -h} or {@code -help} anywhere outside the value of
+     * an option.
+     */
     static boolean isHelp(String... args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if (arg.equals("--help")) {
+            if (isHelpFlag(arg)) {
                 return true;
             }
             if (VALUE_OPTIONS.containsKey(arg)) {
@@ -84,6 +87,10 @@ final class NetTestApiCommandLine {
             }
         }
         return false;
+    }
+
+    private static boolean isHelpFlag(String arg) {
+        return arg.equals("--help") || arg.equals("-h") || arg.equals("-help");
     }
 
     /**
@@ -149,6 +156,8 @@ final class NetTestApiCommandLine {
                     reuse = true;
                     break;
                 case "--help":
+                case "-h":
+                case "-help":
                     break; // NetTestApi prints the usage before parsing
                 case "-w":
                 case "--wildcard":

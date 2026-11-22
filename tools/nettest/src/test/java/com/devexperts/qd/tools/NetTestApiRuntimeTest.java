@@ -93,9 +93,9 @@ public class NetTestApiRuntimeTest {
     public void theReporterWritesTheBlockAndTheRuntimeLineAtOnce() {
         List<String> calls = new ArrayList<>();
         List<String> written = new ArrayList<>();
-        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(minNanos -> {
-            calls.add("block " + minNanos);
-            return calls.size() == 1 ? null : "{*NetTestProducerSide-NetTest*} block";
+        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(last -> {
+            calls.add("block " + last);
+            return calls.size() == 2 ? null : "{*NetTestProducerSide-NetTest*} block";
         }, "NetTest", () -> {
             calls.add("sample");
             return sample(MB, MB, 0, 0, 0);
@@ -106,7 +106,8 @@ public class NetTestApiRuntimeTest {
         reporter.finish();
         reporter.run(); // nothing after the finish
 
-        assertEquals(List.of("block 0", "sample", "block 0", "sample", "block 1000000000", "sample"), calls);
+        assertEquals(List.of("sample", "block false", "sample", "block false", "sample", "block true", "sample"),
+            calls);
         assertEquals(2, written.size());
         String[] lines = written.get(0).split("\n");
         assertEquals("{*NetTestProducerSide-NetTest*} block", lines[0]);
@@ -116,12 +117,29 @@ public class NetTestApiRuntimeTest {
     @Test
     public void aShortLastIntervalPrintsNothing() {
         List<String> written = new ArrayList<>();
-        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(minNanos -> null, "NetTest",
+        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(last -> null, "NetTest",
             () -> sample(MB, MB, 0, 0, 0), written::add);
 
         reporter.run();
         reporter.finish();
 
         assertTrue(written.isEmpty());
+    }
+
+    @Test
+    public void aLastBlockWithoutATickHasTheRuntimeLineSinceTheStart() {
+        List<String> written = new ArrayList<>();
+        long[] gcCount = {2};
+        NetTestApiRuntime.Reporter reporter = new NetTestApiRuntime.Reporter(
+            last -> last ? "{*NetTestProducerSide-NetTest*} block" : null, "NetTest",
+            () -> sample(MB, MB, gcCount[0]++, 0, 0), written::add);
+
+        reporter.finish();
+
+        assertEquals(1, written.size());
+        String[] lines = written.get(0).split("\n");
+        assertEquals("{*NetTestProducerSide-NetTest*} block", lines[0]);
+        // The sample of the creation (gc 2) is the start of the line, the one of the finish (gc 3) its end.
+        assertTrue(lines[1], lines[1].startsWith("{*NetTestRuntime-NetTest*} heap 1 MB of 1 MB, gc 1 ("));
     }
 }

@@ -1160,8 +1160,20 @@ namespace {
 
 std::atomic<bool> signalReceived{false};
 
-extern "C" void onSignal(int) {
-    signalReceived.store(true);
+static_assert(std::atomic<bool>::is_always_lock_free, "the signal handler needs a lock-free flag");
+
+extern "C" void onSignal(int signalNumber) {
+    // The second signal ends the process at once, as without the watcher: the tool may wait for something that does
+    // not check the stop (the symbols of a large IPF file).
+    if (signalReceived.exchange(true)) {
+        std::signal(signalNumber, SIG_DFL);
+        std::raise(signalNumber);
+
+        return;
+    }
+
+    // Windows restores the default handler before calling this one.
+    std::signal(signalNumber, onSignal);
 }
 
 std::vector<int> watchedSignals() {

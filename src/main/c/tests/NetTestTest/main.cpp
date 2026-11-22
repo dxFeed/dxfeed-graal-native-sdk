@@ -310,6 +310,17 @@ TEST_CASE("U1: --help and the long options") {
     REQUIRE(late.ok);
     CHECK(late.options.help);
 
+    // -h and -help are short forms of --help, as the first argument and after the mode.
+    for (const auto &flag : {"-h", "-help"}) {
+        const auto first = parse({flag});
+        const auto later = parse({"p", ":1", "-S", "1", flag});
+
+        REQUIRE(first.ok);
+        CHECK(first.options.help);
+        REQUIRE(later.ok);
+        CHECK(later.options.help);
+    }
+
     const auto longForms = parse({"c", "h:1", "--stat=1s", "--name=run", "-S", "3", "--duration=2s"});
 
     REQUIRE(longForms.ok);

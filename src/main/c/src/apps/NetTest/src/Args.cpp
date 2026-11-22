@@ -92,9 +92,15 @@ constexpr OptionSpec OPTIONS[] = {
     {"--duration", Option::DURATION, true, false}, {"--legacy", Option::LEGACY, false, true},
     {"--warmup", Option::WARMUP, true, false},     {"--summary", Option::SUMMARY, true, false},
     {"--metrics-port", Option::METRICS_PORT, true, false},
-    {"--help", Option::HELP, false, false},       {"-w", Option::WILDCARD, false, false},
+    {"--help", Option::HELP, false, false},       {"-h", Option::HELP, false, false},
+    {"-help", Option::HELP, false, false},        {"-w", Option::WILDCARD, false, false},
     {"--wildcard", Option::WILDCARD, false, false},
 };
+
+// --help and its short forms -h and -help.
+bool isHelpFlag(const std::string &argument) {
+    return argument == "--help" || argument == "-h" || argument == "-help";
+}
 
 const OptionSpec *findOption(const std::string &name) {
     for (const auto &spec : OPTIONS) {
@@ -430,7 +436,7 @@ struct Parser {
             return fail("no mode");
         }
 
-        if (args[1] == "--help") {
+        if (isHelpFlag(args[1])) {
             options.help = true;
 
             return true;
@@ -515,7 +521,7 @@ struct Parser {
                 return false;
             }
 
-            // --help ends the parsing: the usage is printed whatever follows.
+            // --help (-h, -help) ends the parsing: the usage is printed whatever follows.
             if (options.help) {
                 return true;
             }
@@ -741,7 +747,7 @@ std::string usageText() {
                        "(512m, 1g)\n"
                        "  -Xss<size>           the stack size of the threads that the isolate starts (1m)\n"
                        "  -XX:<option>         an option of the isolate (for example -XX:+PrintGC -XX:+PrintGCSummary)\n"
-                       "  --help               print this text and exit\n"
+                       "  --help, -h, -help   print this text and exit\n"
                        "\n"
                        "A long option also takes its value as --option=value.\n"
                        "\n"

@@ -51,7 +51,7 @@ or after `<address>`.
 | `--summary <file>` | common | p, c | none | write the summary file (@ref wrapper_nettest_summary) |
 | `--metrics-port [<host>:]<port>` | common | p, c | none | serve `/metrics` (@ref wrapper_nettest_metrics); the host defaults to `127.0.0.1`, port 0 takes a free port |
 | `-D<key>=<value>` | common | p, c | | a system property, set before the first endpoint |
-| `--help` | common | | | print the usage with the line `spec_version nettest/1` to stdout and exit with 0 |
+| `--help`, `-h`, `-help` | common | | | print the usage with the line `spec_version nettest/1` to stdout and exit with 0 |
 | `-X<option>`, `-XX:<option>` | optional | p, c | | an option of the runtime of a native tool, for example of a Graal isolate |
 | `--legacy` | optional | p | off | publish through a deprecated entry point of the API |
 | `-w`, `--wildcard` | rejected | | | |
@@ -61,7 +61,7 @@ or after `<address>`.
 - A tool takes `--option value` and `--option=value` for its long options. A repeated option takes its last value,
   except `-D` and `-X`, which apply in the command-line order.
 - An option with a value takes the next argument as it is, even one that starts with `-`: `-n --help` names the run
-  `--help` and the parsing goes on. `--help` anywhere else prints the usage.
+  `--help` and the parsing goes on. `--help` anywhere else prints the usage; so do `-h` and `-help`.
 - A tool should also pass the `-D` properties to its endpoint builders where its API allows; `dxscheme.nanoTime` must
   reach them (@ref wrapper_nettest_time).
 - A tool may add options of its own; their names must not start with `-S`, `-C`, `-r`, `-s`, `-n`, `-c`, `-D`, `-X`
@@ -203,7 +203,8 @@ there); a parser matches from `{*`. A line ends with the platform's line break; 
 
 A statistics block, once per interval. The intervals end at the multiples of the period on the wall clock; the first
 tick after the start only starts the count and prints nothing. At the stop, a last block covers the time since the last
-tick at its real length, and is printed only when it is at least one second long. After a failure (`no_data`,
+tick, or since the start when no tick came (a run shorter than the period), at its real length, and is printed only
+when it is at least one second long. After a failure (`no_data`,
 `nano_missing`, an error at run time) the last block may be left out; a parser must not expect it. The summary keeps
 both ends whatever is printed (@ref wrapper_nettest_summary).
 
@@ -474,11 +475,19 @@ Docker Desktop and the Podman machine (Windows, macOS) run the containers in a v
 
 | Exit code | When | `status` of the summary |
 |---|---|---|
-| 0 | `--duration` ended the run, or SIGINT or SIGTERM after the start | `ok`, `stopped_by_signal` |
+| 0 | `--duration` ended the run, or SIGINT or SIGTERM | `ok`, `stopped_by_signal` |
 | 1 | a failure at run time: an endpoint, a port in use, an unreadable symbol file, the summary file, the watchdog, the nanosecond check | `error`, `no_data`, `nano_missing` |
 | 2 | an invalid command line, an unwritable summary path, a rejected runtime option | no summary file |
 
 Ctrl+C (SIGINT) and SIGTERM end the run like `--duration`: the last block, then the summary, then exit code 0.
+
+- A tool takes the signals from the moment its runtime is up, before it reads the symbols. A signal that comes before
+  the endpoints start (for example while a large symbol file is read) ends the tool with the summary of the status
+  `stopped_by_signal` and exit code 0; the tool may skip the endpoints then. A signal before the runtime is up (the
+  start of a Graal isolate or a JVM) may end the process with the default action and no summary.
+- A second signal ends the process at once, without the last block and the summary, with a non-zero exit code: that
+  of the default action of the signal, or 128 plus the signal number. It ends a tool that waits for something that
+  does not check the stop.
 
 ## Sustainability {#wrapper_nettest_sustainability}
 

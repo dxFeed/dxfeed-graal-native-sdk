@@ -301,8 +301,8 @@ abstract class NetTestApiSide {
         NetTestApiStatistics statistics = new NetTestApiStatistics(statisticsLabel(), config.name, counters,
             this::connectionCount, lagRecorder(), schedule(), TimeUnit.MILLISECONDS.toNanos(settings.warmupMillis),
             this::warmupStartEpochNanos);
-        NetTestApiRuntime.Reporter created = new NetTestApiRuntime.Reporter(minNanos -> {
-            NetTestApiStatistics.Interval interval = statistics.tick(minNanos);
+        NetTestApiRuntime.Reporter created = new NetTestApiRuntime.Reporter(last -> {
+            NetTestApiStatistics.Interval interval = statistics.tick(last);
             readConnectorStatistics();
             summary.add(interval);
             return interval.text;

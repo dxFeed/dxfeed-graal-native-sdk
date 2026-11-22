@@ -127,6 +127,11 @@ public class NetTestApiOptionsTest {
         assertTrue(NetTestApiCommandLine.isHelp("--help"));
         assertTrue(NetTestApiCommandLine.isHelp("c", "h:1", "-S", "1", "--help"));
         assertFalse(NetTestApiCommandLine.isHelp("p", ":1", "-S", "1", "-n", "--help"));
+        // -h and -help are short forms of --help.
+        assertTrue(NetTestApiCommandLine.isHelp("-h"));
+        assertTrue(NetTestApiCommandLine.isHelp("-help"));
+        assertTrue(NetTestApiCommandLine.isHelp("p", ":1", "-S", "1", "-h"));
+        assertFalse(NetTestApiCommandLine.isHelp("p", ":1", "-S", "1", "-n", "-h"));
         assertTrue(new NetTestApi().usage().endsWith("spec_version nettest/1"));
     }
 

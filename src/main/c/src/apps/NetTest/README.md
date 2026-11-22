@@ -79,7 +79,7 @@ NetTest --help
 | `--metrics-port [<host>:]<port>` | serve `GET /metrics` in the Prometheus text format (see [Metrics](#metrics)); the host defaults to `127.0.0.1`, port 0 takes a free port; a port in use exits with 1 before the first endpoint |
 | `-D<key>=<value>`        | set a system property before the first endpoint, for example `-Dmonitoring.stat=10s`; `-Ddxscheme.nanoTime` also goes to the builder of every endpoint (see below) |
 | `-Xmx<size>`, `-Xms<size>`, `-Xmn<size>`, `-Xss<size>`, `-XX:<option>` | an option of the Graal isolate, as `java` takes it, for example `-Xmx512m` or `-XX:+PrintGC` (see [GC of the isolate](#gc-of-the-isolate)) |
-| `--help`                 | print the usage text with the line `spec_version nettest/1` and exit with 0                   |
+| `--help`, `-h`, `-help`  | print the usage text with the line `spec_version nettest/1` and exit with 0                   |
 
 A long option also takes its value after `=`: `--stat=1s`. The options of `p` (`-r`, `--batch`, `--reuse`,
 `--legacy`) are an error on `c`.
@@ -134,10 +134,11 @@ NetTest: no_data: no records for 30000 ms after the last record, with 1 open con
 NetTest: nano_missing: the first 1000 events have the nanosecond part 0: a hop of the path lacks dxscheme.nanoTime=true (run with -Ddxscheme.nanoTime=false to receive without it)
 ```
 
-Exit codes: 0 after `--duration`, Ctrl+C or `--help`; 2 for invalid arguments (also an option that the isolate
-rejects, or a `--summary` path that cannot be written); 1 for a failed start (unreadable IPF file, failed endpoint,
-malformed address, a `:port` that does not start listening within 3 s, for example because it is in use, a metrics
-port in use), a failed publishing call, `no_data`, `nano_missing` or a failed write of the summary file.
+Exit codes: 0 after `--duration`, Ctrl+C (also while the symbols are read: the summary of an empty run) or `--help`;
+2 for invalid arguments (also an option that the isolate rejects, or a `--summary` path that cannot be written); 1 for
+a failed start (unreadable IPF file, failed endpoint, malformed address, a `:port` that does not start listening
+within 3 s, for example because it is in use, a metrics port in use), a failed publishing call, `no_data`,
+`nano_missing` or a failed write of the summary file. A second Ctrl+C ends the process at once, without the summary.
 Connecting is asynchronous: a `host:port` without a listener is not an error, the tool runs and reports
 `connections 0` until a peer is there.
 
@@ -179,8 +180,8 @@ A value that the isolate does not give is `n/a`: with the G1 GC (the oracle-g1 v
 `gc n/a`. The summary line keeps the QD NetTest format; parsers that read it are not affected by the new line, which
 has its own prefix.
 
-When the run stops, a last block covers the time since the last tick, scaled by its real length; a last block shorter
-than one second is not printed.
+When the run stops, a last block covers the time since the last tick (or since the start when no tick came), scaled by
+its real length; a last block shorter than one second is not printed.
 
 With `--metrics-port`, one line at the start, after the port is bound, gives the address to scrape:
 
