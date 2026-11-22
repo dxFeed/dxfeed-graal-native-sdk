@@ -485,9 +485,10 @@ Ctrl+C (SIGINT) and SIGTERM end the run like `--duration`: the last block, then 
   the endpoints start (for example while a large symbol file is read) ends the tool with the summary of the status
   `stopped_by_signal` and exit code 0; the tool may skip the endpoints then. A signal before the runtime is up (the
   start of a Graal isolate or a JVM) may end the process with the default action and no summary.
-- A second signal ends the process at once, without the last block and the summary, with a non-zero exit code: that
-  of the default action of the signal, or 128 plus the signal number. It ends a tool that waits for something that
-  does not check the stop.
+- A second signal ends the process at once, without the last block and the summary, with a non-zero exit code. It
+  ends a tool that waits for something that does not check the stop. A harness relies only on the code being
+  non-zero: a tool takes the default action of the signal or exits with 128 plus the signal number where it can tell
+  the signals apart, and with another non-zero code where it cannot.
 
 ## Sustainability {#wrapper_nettest_sustainability}
 
