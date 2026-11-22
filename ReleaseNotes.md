@@ -1,4 +1,4 @@
-## v3.19.0-rc2
+## v3.19.0
 
 * **\[MDAPI-626]\[GRAAL]** Build information of the library, and the NetTest tools closer to their specification:
   * The stable `dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, feature `DXFG_V4_FEATURE_BUILD_INFO`) tells how
