@@ -242,7 +242,6 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 /**
  * @brief The name of the feature "build info" (dxfg_v4_system_get_build_info()) for
  * dxfg_v4_system_is_feature_supported().
- * @experimental
  * @since 3.19.0
  */
 #define DXFG_V4_FEATURE_BUILD_INFO "build_info"
@@ -250,7 +249,6 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 /**
  * @brief The key of dxfg_v4_system_get_build_info() for the version of QDS that the library is built with, e.g.
  * `3.358`.
- * @experimental
  * @since 3.19.0
  */
 #define DXFG_V4_BUILD_INFO_QD_VERSION "qd_version"
@@ -258,7 +256,6 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 /**
  * @brief The key of dxfg_v4_system_get_build_info() for the vendor and the version of the runtime that the library is
  * built with, e.g. `GraalVM CE 25.0.1+8.1` (Java: the system property `java.vendor.version`, else `java.vm.vendor`).
- * @experimental
  * @since 3.19.0
  */
 #define DXFG_V4_BUILD_INFO_VENDOR "vendor"
@@ -266,7 +263,6 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 /**
  * @brief The key of dxfg_v4_system_get_build_info() for the target machine of the build (`-march` of native-image),
  * e.g. `compatibility` (the baseline CPU of the architecture) or `x86-64-v3`. The iOS libraries have no value.
- * @experimental
  * @since 3.19.0
  */
 #define DXFG_V4_BUILD_INFO_MARCH "march"
@@ -274,7 +270,6 @@ int32_t dxfg_v4_system_shutdown(graal_isolatethread_t *thread);
 /**
  * @brief The key of dxfg_v4_system_get_build_info() for the garbage collectors of the runtime, separated by `, `
  * (Java: the names of `ManagementFactory.getGarbageCollectorMXBeans()`).
- * @experimental
  * @since 3.19.0
  */
 #define DXFG_V4_BUILD_INFO_GC "gc"
@@ -407,7 +402,8 @@ int32_t dxfg_v4_system_get_runtime_statistics(graal_isolatethread_t *thread, DXF
  *
  * A tool records them next to its measurements, as the NetTest summary does (`tool.qd_version` and `tool.build`). An
  * unknown key, also an empty one, is not an error: the value is NULL, as it is for a value that the library does not
- * know (#DXFG_V4_BUILD_INFO_MARCH of an iOS library).
+ * know (#DXFG_V4_BUILD_INFO_MARCH of an iOS library). The values are for display and records: their text may change
+ * with the runtime or the build, so a program must not parse them. New keys may be added in any release.
  *
  * @param[in] thread The current GraalVM Isolate's thread.
  * @param[in] key The key (the `DXFG_V4_BUILD_INFO_` macros), a NUL-terminated UTF-8 string. It must not be NULL.
@@ -415,10 +411,8 @@ int32_t dxfg_v4_system_get_runtime_statistics(graal_isolatethread_t *thread, DXF
  * SDK (release it with dxfg_v4_String_release()), or NULL; must not be NULL. It is written on success only.
  * @return #DXFG_EXECUTE_SUCCESSFULLY (0) on successful function execution or #DXFG_EXECUTE_FAIL (-1) on error (also
  * when `key` or `value` is NULL). Use dxfg_v4_get_and_clear_thread_exception() to determine if an exception was thrown.
- * @experimental
  * @since 3.19.0
  */
-DXFG_EXPERIMENTAL
 int32_t dxfg_v4_system_get_build_info(graal_isolatethread_t *thread, const char *key, DXFG_OUT const char **value);
 
 /** @} */ // end of V4_System

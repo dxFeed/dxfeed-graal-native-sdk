@@ -604,12 +604,13 @@ the change. A value that the platform or the GC does not give is -1. The header 
 availability of each field. A wrapper that loads the library at run time checks `DXFG_V4_FEATURE_RUNTIME_STATISTICS`
 with `dxfg_v4_system_is_feature_supported()` first.
 
-`dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, experimental, since 3.19.0) tells how the library was built and
+`dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, since 3.19.0) tells how the library was built and
 what runs it, for a benchmark to record next to its results: the QDS version (`DXFG_V4_BUILD_INFO_QD_VERSION`), the
 vendor and version of the runtime (`DXFG_V4_BUILD_INFO_VENDOR`, e.g. `GraalVM CE 25.0.1+8.1`), the target machine of
 the build (`DXFG_V4_BUILD_INFO_MARCH`, e.g. `compatibility`) and the garbage collectors (`DXFG_V4_BUILD_INFO_GC`). The
 build-info file of the archive (`docs/graal-native-sdk-build-info.properties`) has the same values and more; the
-function gives them to a program that has only the library. A wrapper checks `DXFG_V4_FEATURE_BUILD_INFO` first.
+function gives them to a program that has only the library. The values are text for display and records, not for
+parsing; new keys may come in any release. A wrapper checks `DXFG_V4_FEATURE_BUILD_INFO` first.
 
 ### Listeners
 

@@ -1,6 +1,7 @@
-* **\[MDAPI-626]\[GRAAL]** The experimental `dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, feature
+* **\[MDAPI-626]\[GRAAL]** The stable `dxfg_v4_system_get_build_info()` (`dxfg_v4_system.h`, feature
   `DXFG_V4_FEATURE_BUILD_INFO`) tells how the library was built and what runs it: the QDS version, the vendor and version
   of the runtime, the target machine of the build (`-march`) and the garbage collectors, keys `DXFG_V4_BUILD_INFO_*`.
+  The values are text for display and records, not for parsing.
   The C NetTest writes them to `tool.qd_version` and `tool.build` of its summary file, which were `null`, and follows
   the whole NetTest specification now. The NetTest kit has a Prometheus configuration and a Grafana dashboard for the
   `nettest_*` metrics of every tool (`docs/wrapper-guide/nettest/monitoring/`, "Prometheus and Grafana" in the wrapper
