@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
-  "sdk_version": "3.18.0",
+  "sdk_version": "3.19.0",
   "advanced_revision": 1,
   "features": [
+    "build_info",
     "connection_errors",
     "event_queue",
     "event_queue_ready_signal",
@@ -3524,7 +3525,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_DXFeedSubscription_getSubscriptionController() (experimental)",
+        "message": "use dxfg_v4_DXFeedSubscription_getSubscriptionController()",
         "replacements": [
           "dxfg_v4_DXFeedSubscription_getSubscriptionController"
         ]
@@ -3587,7 +3588,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents() (experimental)",
+        "message": "use dxfg_v4_DXFeedSubscription_getTotalDroppedEvents()",
         "replacements": [
           "dxfg_v4_DXFeedSubscription_getTotalDroppedEvents"
         ]
@@ -6756,7 +6757,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_build() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_build()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_build"
         ]
@@ -6790,7 +6791,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_new() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_new()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_new"
         ]
@@ -6824,7 +6825,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod"
         ]
@@ -6857,7 +6858,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis"
         ]
@@ -6890,7 +6891,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit"
         ]
@@ -6923,7 +6924,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withExecutor() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withExecutor()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withExecutor"
         ]
@@ -6956,7 +6957,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withFeed() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withFeed()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withFeed"
         ]
@@ -6989,7 +6990,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withListener() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withListener()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withListener"
         ]
@@ -7022,7 +7023,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSource() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSource()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withSource"
         ]
@@ -7055,7 +7056,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSymbol() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withSymbol()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withSymbol"
         ]
@@ -7088,7 +7089,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol"
         ]
@@ -7121,7 +7122,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_Listener_new() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_Listener_new()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_Listener_new"
         ]
@@ -7160,7 +7161,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_close() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_close()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_close"
         ]
@@ -7188,7 +7189,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol"
         ]
@@ -7222,7 +7223,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSource() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSource()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSource"
         ]
@@ -7256,7 +7257,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSubscriptionController() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSubscriptionController()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSubscriptionController"
         ]
@@ -7290,7 +7291,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_getSymbol() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_getSymbol()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_getSymbol"
         ]
@@ -7324,7 +7325,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_isClosed() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_isClosed()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_isClosed"
         ]
@@ -7357,7 +7358,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedEventTxModel_newBuilder() (experimental)",
+        "message": "use dxfg_v4_IndexedEventTxModel_newBuilder()",
         "replacements": [
           "dxfg_v4_IndexedEventTxModel_newBuilder"
         ]
@@ -7420,7 +7421,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_build() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_build()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_build"
         ]
@@ -7449,7 +7450,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod"
         ]
@@ -7483,7 +7484,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withBatchProcessing()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withBatchProcessing"
         ]
@@ -7517,7 +7518,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withExecutor() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withExecutor()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withExecutor"
         ]
@@ -7551,7 +7552,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withFeed() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withFeed()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withFeed"
         ]
@@ -7585,7 +7586,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withListener() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withListener()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withListener"
         ]
@@ -7619,7 +7620,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing"
         ]
@@ -7653,7 +7654,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSources() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSources()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSources"
         ]
@@ -7687,7 +7688,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_Builder_withSymbol() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_Builder_withSymbol()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_Builder_withSymbol"
         ]
@@ -7721,7 +7722,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_attach() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_attach()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_attach"
         ]
@@ -7754,7 +7755,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_close() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_close()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_close"
         ]
@@ -7782,7 +7783,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_detach() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_detach()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_detach"
         ]
@@ -7815,7 +7816,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_getSources() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_getSources()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_getSources"
         ]
@@ -7844,7 +7845,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_isBatchProcessing() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_isBatchProcessing()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_isBatchProcessing"
         ]
@@ -7872,7 +7873,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_isSnapshotProcessing() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_isSnapshotProcessing()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_isSnapshotProcessing"
         ]
@@ -7900,7 +7901,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_newBuilder() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_newBuilder()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_newBuilder"
         ]
@@ -7929,7 +7930,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_setAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_setAggregationPeriod()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_setAggregationPeriod"
         ]
@@ -7962,7 +7963,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_IndexedTxModel_setSources() (experimental)",
+        "message": "use dxfg_v4_IndexedTxModel_setSources()",
         "replacements": [
           "dxfg_v4_IndexedTxModel_setSources"
         ]
@@ -16956,7 +16957,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_attach() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_attach()",
         "replacements": [
           "dxfg_v4_SubscriptionController_attach"
         ]
@@ -16989,7 +16990,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_detach() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_detach()",
         "replacements": [
           "dxfg_v4_SubscriptionController_detach"
         ]
@@ -17022,7 +17023,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriod()",
         "replacements": [
           "dxfg_v4_SubscriptionController_getAggregationPeriod"
         ]
@@ -17056,7 +17057,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriodMillis() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_getAggregationPeriodMillis()",
         "replacements": [
           "dxfg_v4_SubscriptionController_getAggregationPeriodMillis"
         ]
@@ -17089,7 +17090,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getEventsBatchLimit() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_getEventsBatchLimit()",
         "replacements": [
           "dxfg_v4_SubscriptionController_getEventsBatchLimit"
         ]
@@ -17122,7 +17123,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_getExecutor() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_getExecutor()",
         "replacements": [
           "dxfg_v4_SubscriptionController_getExecutor"
         ]
@@ -17156,7 +17157,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriod()",
         "replacements": [
           "dxfg_v4_SubscriptionController_setAggregationPeriod"
         ]
@@ -17189,7 +17190,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriodMillis() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_setAggregationPeriodMillis()",
         "replacements": [
           "dxfg_v4_SubscriptionController_setAggregationPeriodMillis"
         ]
@@ -17222,7 +17223,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setEventsBatchLimit() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_setEventsBatchLimit()",
         "replacements": [
           "dxfg_v4_SubscriptionController_setEventsBatchLimit"
         ]
@@ -17255,7 +17256,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_SubscriptionController_setExecutor() (experimental)",
+        "message": "use dxfg_v4_SubscriptionController_setExecutor()",
         "replacements": [
           "dxfg_v4_SubscriptionController_setExecutor"
         ]
@@ -18226,7 +18227,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_build() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_build()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_build"
         ]
@@ -18255,7 +18256,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast"
         ]
@@ -18289,7 +18290,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents"
         ]
@@ -18323,7 +18324,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod"
         ]
@@ -18357,7 +18358,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing"
         ]
@@ -18391,7 +18392,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick"
         ]
@@ -18459,7 +18460,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withExecutor()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withExecutor"
         ]
@@ -18493,7 +18494,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFeed() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFeed()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withFeed"
         ]
@@ -18527,7 +18528,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withFromTime()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withFromTime"
         ]
@@ -18561,7 +18562,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withListener() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withListener()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withListener"
         ]
@@ -18595,7 +18596,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing"
         ]
@@ -18629,7 +18630,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSorting() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSorting()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSorting"
         ]
@@ -18663,7 +18664,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_Builder_withSymbol()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_Builder_withSymbol"
         ]
@@ -18697,7 +18698,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_attach() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_attach()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_attach"
         ]
@@ -18730,7 +18731,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_close() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_close()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_close"
         ]
@@ -18758,7 +18759,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_detach() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_detach()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_detach"
         ]
@@ -18791,7 +18792,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_getFromTime() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_getFromTime()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_getFromTime"
         ]
@@ -18819,7 +18820,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_isBatchProcessing() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_isBatchProcessing()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_isBatchProcessing"
         ]
@@ -18847,7 +18848,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing"
         ]
@@ -18875,7 +18876,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_newBuilder() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_newBuilder()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_newBuilder"
         ]
@@ -18904,7 +18905,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_setAggregationPeriod()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_setAggregationPeriod"
         ]
@@ -18937,7 +18938,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TimeSeriesTxModel_setFromTime() (experimental)",
+        "message": "use dxfg_v4_TimeSeriesTxModel_setFromTime()",
         "replacements": [
           "dxfg_v4_TimeSeriesTxModel_setFromTime"
         ]
@@ -19512,7 +19513,7 @@
       "tier": "stable",
       "since": "before 3.12.0",
       "deprecated": {
-        "message": "use dxfg_v4_TxModelListener_new() (experimental)",
+        "message": "use dxfg_v4_TxModelListener_new()",
         "replacements": [
           "dxfg_v4_TxModelListener_new"
         ]
@@ -23434,7 +23435,7 @@
     {
       "name": "dxfg_v4_DXFeedSubscription_getSubscriptionController",
       "header": "dxfg_v4_subscription.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -23492,7 +23493,7 @@
     {
       "name": "dxfg_v4_DXFeedSubscription_getTotalDroppedEvents",
       "header": "dxfg_v4_subscription.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26777,7 +26778,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_build",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26806,7 +26807,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_new",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26835,7 +26836,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriod",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26863,7 +26864,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withAggregationPeriodMillis",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26891,7 +26892,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withEventsBatchLimit",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26919,7 +26920,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withExecutor",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26947,7 +26948,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withFeed",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -26975,7 +26976,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withListener",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27003,7 +27004,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withSource",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27031,7 +27032,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withStringSymbol",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27059,7 +27060,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Builder_withSymbol",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27087,7 +27088,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_Listener_new",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27121,7 +27122,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_close",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27144,7 +27145,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_getIndexedEventSubscriptionSymbol",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27173,7 +27174,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_getSource",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27202,7 +27203,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_getSubscriptionController",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27231,7 +27232,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_getSymbol",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27260,7 +27261,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_isClosed",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27288,7 +27289,7 @@
     {
       "name": "dxfg_v4_IndexedEventTxModel_newBuilder",
       "header": "dxfg_v4_indexed_event_tx_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27346,7 +27347,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_build",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27375,7 +27376,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withAggregationPeriod",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27409,7 +27410,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withBatchProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27443,7 +27444,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withExecutor",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27477,7 +27478,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withFeed",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27511,7 +27512,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withListener",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27545,7 +27546,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withSnapshotProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27579,7 +27580,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withSources",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27613,7 +27614,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_Builder_withSymbol",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27647,7 +27648,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_attach",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27675,7 +27676,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_close",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27698,7 +27699,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_detach",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27726,7 +27727,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_getSources",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27755,7 +27756,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_isBatchProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27783,7 +27784,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_isSnapshotProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27811,7 +27812,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_newBuilder",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27840,7 +27841,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_setAggregationPeriod",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -27868,7 +27869,7 @@
     {
       "name": "dxfg_v4_IndexedTxModel_setSources",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36554,7 +36555,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_attach",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36582,7 +36583,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_detach",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36610,7 +36611,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_getAggregationPeriod",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36639,7 +36640,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_getAggregationPeriodMillis",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36667,7 +36668,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_getEventsBatchLimit",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36695,7 +36696,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_getExecutor",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36724,7 +36725,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_setAggregationPeriod",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36752,7 +36753,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_setAggregationPeriodMillis",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36780,7 +36781,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_setEventsBatchLimit",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -36808,7 +36809,7 @@
     {
       "name": "dxfg_v4_SubscriptionController_setExecutor",
       "header": "dxfg_v4_subscription_controller.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37729,7 +37730,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_build",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37758,7 +37759,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_ignoreEventsFromPast",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37792,7 +37793,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_ignoreRemoveEvents",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37826,7 +37827,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withAggregationPeriod",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37860,7 +37861,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withBatchProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -37894,7 +37895,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withConfirmationTick",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38001,7 +38002,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withExecutor",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38035,7 +38036,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withFeed",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38069,7 +38070,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withFromTime",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38103,7 +38104,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withListener",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38137,7 +38138,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withSnapshotProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38171,7 +38172,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withSorting",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38205,7 +38206,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_Builder_withSymbol",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38239,7 +38240,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_attach",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38267,7 +38268,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_close",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38290,7 +38291,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_detach",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38318,7 +38319,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_getFromTime",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38346,7 +38347,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_isBatchProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38374,7 +38375,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_isSnapshotProcessing",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38402,7 +38403,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_newBuilder",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38431,7 +38432,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_setAggregationPeriod",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -38459,7 +38460,7 @@
     {
       "name": "dxfg_v4_TimeSeriesTxModel_setFromTime",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -39014,7 +39015,7 @@
     {
       "name": "dxfg_v4_TxModelListener_new",
       "header": "dxfg_v4_event_model.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "3.12.0",
       "deprecated": null,
       "returns": {
@@ -39710,6 +39711,35 @@
           "name": "revision",
           "type": "int32_t *",
           "out": true
+        }
+      ],
+      "threads": "unknown"
+    },
+    {
+      "name": "dxfg_v4_system_get_build_info",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "deprecated": null,
+      "returns": {
+        "type": "int32_t"
+      },
+      "parameters": [
+        {
+          "name": "thread",
+          "type": "graal_isolatethread_t *",
+          "out": false
+        },
+        {
+          "name": "key",
+          "type": "const char *",
+          "out": false
+        },
+        {
+          "name": "value",
+          "type": "const char **",
+          "out": true,
+          "release": "dxfg_v4_String_release"
         }
       ],
       "threads": "unknown"
@@ -41720,7 +41750,7 @@
     {
       "name": "dxfg_nuam_order_t",
       "header": "dxfg_events.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "before 3.12.0",
       "kind": "struct",
       "fields": [
@@ -41805,7 +41835,7 @@
     {
       "name": "dxfg_nuam_time_and_sale_t",
       "header": "dxfg_events.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "before 3.12.0",
       "kind": "struct",
       "fields": [
@@ -41822,7 +41852,7 @@
     {
       "name": "dxfg_nuam_trade_t",
       "header": "dxfg_events.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "before 3.12.0",
       "kind": "struct",
       "fields": [
@@ -42173,7 +42203,7 @@
     {
       "name": "dxfg_order_imbalance_t",
       "header": "dxfg_events.h",
-      "tier": "experimental",
+      "tier": "stable",
       "since": "before 3.12.0",
       "kind": "struct",
       "fields": [
@@ -45376,6 +45406,34 @@
       "value": "((int32_t)1)"
     },
     {
+      "name": "DXFG_V4_BUILD_INFO_GC",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "value": "\"gc\""
+    },
+    {
+      "name": "DXFG_V4_BUILD_INFO_MARCH",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "value": "\"march\""
+    },
+    {
+      "name": "DXFG_V4_BUILD_INFO_QD_VERSION",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "value": "\"qd_version\""
+    },
+    {
+      "name": "DXFG_V4_BUILD_INFO_VENDOR",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "value": "\"vendor\""
+    },
+    {
       "name": "DXFG_V4_CONNECTION_ERROR_CLOSED_BY_REMOTE",
       "header": "dxfg_v4_message_connector.h",
       "tier": "experimental",
@@ -45430,6 +45488,13 @@
       "tier": "experimental",
       "since": "3.14.0",
       "value": "((int32_t)6)"
+    },
+    {
+      "name": "DXFG_V4_FEATURE_BUILD_INFO",
+      "header": "dxfg_v4_system.h",
+      "tier": "stable",
+      "since": "3.19.0",
+      "value": "\"build_info\""
     },
     {
       "name": "DXFG_V4_FEATURE_CONNECTION_ERRORS",
