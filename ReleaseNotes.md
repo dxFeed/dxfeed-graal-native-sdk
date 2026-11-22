@@ -15,7 +15,8 @@
     C tool's, and its `schedule_slip.max_ns` is the largest slip of the measured intervals (of all when none is
     measured) without the slip at the end added. It prints the last block of a run shorter than the statistics period,
     as the C tool does.
-  * The NetTest tools take `-h` and `-help` as `--help`.
+  * The NetTest tools take `-h` and `-help` as `--help`. The C NetTest prints the usage for `--help` anywhere outside
+    the value of an option, also after an invalid argument, as the specification says.
   * A signal while the C NetTest reads its symbols (a large IPF file) ends it, once the symbols are read, with the
     summary of the status `stopped_by_signal`, and a second signal ends the process at once; the specification says so
     for every tool.

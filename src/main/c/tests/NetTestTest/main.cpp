@@ -321,6 +321,24 @@ TEST_CASE("U1: --help and the long options") {
         CHECK(later.options.help);
     }
 
+    // --help anywhere outside the value of an option prints the usage, whatever the arguments before it are.
+    for (const std::vector<std::string> &arguments : std::vector<std::vector<std::string>>{
+             {"p", ":1", "-S", "abc", "-h"},
+             {"c", ":1", "--no-such-flag", "--help"},
+             {"x", "-help"},
+             {"c", ":1", "-r", "*/1k", "--help"},
+             {"p", ":1", "-S", "1", "--name=-h", "--help"},
+         }) {
+        const auto result = parse(arguments);
+
+        REQUIRE(result.ok);
+        CHECK(result.options.help);
+    }
+
+    // The value of an option is not --help, also when an invalid argument comes before it.
+    requireRejected({"p", ":1", "-S", "abc", "-n", "--help"},
+                    "-S needs <total> or <total>@<file>, where <total> is a number from 1 to 100000000: 'abc'");
+
     const auto longForms = parse({"c", "h:1", "--stat=1s", "--name=run", "-S", "3", "--duration=2s"});
 
     REQUIRE(longForms.ok);

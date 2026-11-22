@@ -112,6 +112,22 @@ const OptionSpec *findOption(const std::string &name) {
     return nullptr;
 }
 
+// Whether --help (-h, -help) comes anywhere after the tool name outside the value of an option: then the usage is
+// printed whatever the other arguments are, as the specification says. A value is skipped as the parsing skips it.
+bool asksForHelp(const std::vector<std::string> &args) {
+    for (std::size_t index = 1; index < args.size(); ++index) {
+        if (isHelpFlag(args[index])) {
+            return true;
+        }
+
+        if (const auto *spec = findOption(args[index]); spec != nullptr && spec->hasValue) {
+            ++index;
+        }
+    }
+
+    return false;
+}
+
 // The state of one parsing: the error is set by the first failure.
 struct Parser {
     Options options{};
@@ -436,7 +452,7 @@ struct Parser {
             return fail("no mode");
         }
 
-        if (isHelpFlag(args[1])) {
+        if (asksForHelp(args)) {
             options.help = true;
 
             return true;
@@ -519,11 +535,6 @@ struct Parser {
 
             if (!apply(*spec, flag, value)) {
                 return false;
-            }
-
-            // --help (-h, -help) ends the parsing: the usage is printed whatever follows.
-            if (options.help) {
-                return true;
             }
         }
 

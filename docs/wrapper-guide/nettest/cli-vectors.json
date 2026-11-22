@@ -270,6 +270,38 @@
     },
     {
       "section": "cli",
+      "args": [
+        "p",
+        ":7001",
+        "-S",
+        "abc",
+        "--help"
+      ],
+      "exit": 0,
+      "stdout_contains": "spec_version nettest/1"
+    },
+    {
+      "section": "cli",
+      "args": [
+        "c",
+        ":7001",
+        "--no-such-flag",
+        "-h"
+      ],
+      "exit": 0,
+      "stdout_contains": "spec_version nettest/1"
+    },
+    {
+      "section": "cli",
+      "args": [
+        "x",
+        "-help"
+      ],
+      "exit": 0,
+      "stdout_contains": "spec_version nettest/1"
+    },
+    {
+      "section": "cli",
       "args": [],
       "exit": 2
     },
